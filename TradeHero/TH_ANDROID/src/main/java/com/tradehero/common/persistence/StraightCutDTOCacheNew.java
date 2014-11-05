@@ -1,7 +1,7 @@
 package com.tradehero.common.persistence;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class StraightCutDTOCacheNew<
         DTOKeyType extends DTOKey,
@@ -10,16 +10,16 @@ abstract public class StraightCutDTOCacheNew<
     extends StraightDTOCacheNew<DTOKeyType, DTOType>
 {
     //<editor-fold desc="Constructors">
-    public StraightCutDTOCacheNew(int maxSize, @NotNull DTOCacheUtilNew dtoCacheUtil)
+    public StraightCutDTOCacheNew(int maxSize, @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 
-    @NotNull abstract protected DTOCutType cutValue(@NotNull DTOKeyType key, @NotNull DTOType value);
-    @Nullable abstract protected DTOType inflateValue(@NotNull DTOKeyType key, @Nullable DTOCutType cutValue);
+    @NonNull abstract protected DTOCutType cutValue(@NonNull DTOKeyType key, @NonNull DTOType value);
+    @Nullable abstract protected DTOType inflateValue(@NonNull DTOKeyType key, @Nullable DTOCutType cutValue);
 
-    @Override @NotNull protected CacheValue<DTOKeyType, DTOType> createCacheValue(@NotNull DTOKeyType key)
+    @Override @NonNull protected CacheValue<DTOKeyType, DTOType> createCacheValue(@NonNull DTOKeyType key)
     {
         return new PartialCutCacheValue(key);
     }
@@ -29,11 +29,11 @@ abstract public class StraightCutDTOCacheNew<
      */
     protected class PartialCutCacheValue extends PartialCacheValue
     {
-        @NotNull private final DTOKeyType key;
+        @NonNull private final DTOKeyType key;
         @Nullable private DTOCutType shrunkValue;
 
         //<editor-fold desc="Constructors">
-        public PartialCutCacheValue(@NotNull DTOKeyType key)
+        public PartialCutCacheValue(@NonNull DTOKeyType key)
         {
             super();
             this.key = key;
@@ -50,7 +50,7 @@ abstract public class StraightCutDTOCacheNew<
             return inflateValue(key, shrunkValue);
         }
 
-        @Override public void setValue(@NotNull DTOType value)
+        @Override public void setValue(@NonNull DTOType value)
         {
             shrunkValue = cutValue(key, value);
         }

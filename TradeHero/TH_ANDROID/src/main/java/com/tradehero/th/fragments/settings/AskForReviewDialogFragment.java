@@ -10,13 +10,13 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {
     @Inject MarketUtil marketUtil;
 
-    @NotNull public static AskForReviewDialogFragment showReviewDialog(FragmentManager fragmentManager)
+    @NonNull public static AskForReviewDialogFragment showReviewDialog(FragmentManager fragmentManager)
     {
         AskForReviewDialogFragment dialogFragment = new AskForReviewDialogFragment();
         dialogFragment.show(fragmentManager, AskForReviewDialogFragment.class.getName());

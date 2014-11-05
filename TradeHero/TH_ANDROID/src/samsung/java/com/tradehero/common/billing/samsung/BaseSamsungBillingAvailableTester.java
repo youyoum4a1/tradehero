@@ -4,8 +4,8 @@ import android.content.Context;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseSamsungBillingAvailableTester<SamsungExceptionType extends SamsungException>
     extends BaseSamsungActor
@@ -14,7 +14,7 @@ abstract public class BaseSamsungBillingAvailableTester<SamsungExceptionType ext
     @Nullable private OnBillingAvailableListener<SamsungExceptionType> availableListener;
 
     //<editor-fold desc="Description">
-    public BaseSamsungBillingAvailableTester(@NotNull Context context, int mode)
+    public BaseSamsungBillingAvailableTester(@NonNull Context context, int mode)
     {
         super(context, mode);
     }

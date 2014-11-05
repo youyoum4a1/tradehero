@@ -5,7 +5,7 @@ import com.tradehero.common.billing.amazon.BaseAmazonPurchaserHolder;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonPurchaserHolder
     extends BaseAmazonPurchaserHolder<
@@ -19,7 +19,7 @@ public class THBaseAmazonPurchaserHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaserHolder(
-            @NotNull Provider<THAmazonPurchaser> thAmazonPurchaserProvider)
+            @NonNull Provider<THAmazonPurchaser> thAmazonPurchaserProvider)
     {
         super(thAmazonPurchaserProvider);
     }

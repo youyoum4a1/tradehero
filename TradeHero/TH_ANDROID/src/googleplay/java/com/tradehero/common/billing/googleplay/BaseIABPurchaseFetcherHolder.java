@@ -4,7 +4,7 @@ import com.tradehero.common.billing.BaseBillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ abstract public class BaseIABPurchaseFetcherHolder<
         IABPurchaseType,
         IABException>
 {
-    @NotNull protected final Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
+    @NonNull protected final Map<Integer /*requestCode*/, IABPurchaseFetcherType> purchaseFetchers;
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseFetcherHolder()

@@ -1,15 +1,15 @@
 package com.tradehero.common.utils;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class SimpleCounterUtils
 {
     private final int expectedCount;
     private int currentCount;
-    @NotNull private SimpleCounter simpleCounter;
+    @NonNull private SimpleCounter simpleCounter;
 
-    public SimpleCounterUtils(int expectedCount, @NotNull SimpleCounter simpleCounterListener)
+    public SimpleCounterUtils(int expectedCount, @NonNull SimpleCounter simpleCounterListener)
     {
         this.expectedCount = expectedCount;
         this.simpleCounter = simpleCounterListener;

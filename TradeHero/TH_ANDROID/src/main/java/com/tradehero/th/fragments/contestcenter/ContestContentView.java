@@ -16,7 +16,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class ContestContentView extends RelativeLayout
         implements DTOView<ContestPageDTO>

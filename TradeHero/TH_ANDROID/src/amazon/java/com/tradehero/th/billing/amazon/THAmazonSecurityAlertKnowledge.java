@@ -7,8 +7,8 @@ import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton public class THAmazonSecurityAlertKnowledge extends SecurityAlertKnowledge
 {
@@ -18,12 +18,12 @@ import org.jetbrains.annotations.Nullable;
     }
     //</editor-fold>
 
-    @NotNull @Override public AmazonSKU createFrom(@NotNull AlertPlanDTO alertPlanDTO)
+    @NonNull @Override public AmazonSKU createFrom(@NonNull AlertPlanDTO alertPlanDTO)
     {
         return new AmazonSKU(alertPlanDTO.productIdentifier);
     }
 
-    @Override @Nullable public AmazonSKU getServerEquivalentSKU(@NotNull ProductIdentifier localSKU)
+    @Override @Nullable public AmazonSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
     {
         if (localSKU instanceof AmazonSKU)
         {

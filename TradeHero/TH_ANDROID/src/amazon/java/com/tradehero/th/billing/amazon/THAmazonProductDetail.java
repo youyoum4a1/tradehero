@@ -9,8 +9,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 import com.tradehero.th.models.number.THSignedMoney;
 import java.math.BigDecimal;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     implements THProductDetail<AmazonSKU>
@@ -23,13 +23,13 @@ public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
-    public THAmazonProductDetail(@NotNull Product product)
+    public THAmazonProductDetail(@NonNull Product product)
     {
         super(product);
     }
     //</editor-fold>
 
-    @NotNull @Override public AmazonSKU getProductIdentifier()
+    @NonNull @Override public AmazonSKU getProductIdentifier()
     {
         return new AmazonSKU(product.getSku());
     }

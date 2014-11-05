@@ -7,9 +7,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PositionDTO extends PositionDTOCompact
 {
@@ -80,12 +79,11 @@ public class PositionDTO extends PositionDTOCompact
         return positionIds;
     }
 
-    @NotNull public SecurityIntegerId getSecurityIntegerId()
+    @NonNull public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(securityId);
     }
 
-    @Contract("null -> null")
     @Nullable
     public static List<PositionDTOKey> getFiledPositionIds(@Nullable List<PositionDTO> positionDTOs)
     {

@@ -33,7 +33,7 @@ import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -340,7 +340,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
     {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull FollowerSummaryDTO value)
+        public void onDTOReceived(@NonNull UserBaseKey key, @NonNull FollowerSummaryDTO value)
         {
             displayProgress(false);
             onRefreshCompleted();
@@ -348,7 +348,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             notifyFollowerLoaded(value);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             displayProgress(false);
             onRefreshCompleted();

@@ -7,14 +7,14 @@ import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class AmazonSKUListCache extends ProductIdentifierListCache<AmazonSKU, AmazonSKUListKey, AmazonSKUList>
 {
     public static final int MAX_SIZE = 5;
 
     //<editor-fold desc="Constructors">
-    @Inject public AmazonSKUListCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public AmazonSKUListCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(MAX_SIZE, dtoCacheUtil);
     }

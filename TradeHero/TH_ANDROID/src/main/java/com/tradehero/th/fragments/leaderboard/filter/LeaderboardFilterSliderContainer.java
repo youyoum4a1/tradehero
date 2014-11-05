@@ -15,8 +15,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
@@ -29,7 +29,7 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     @InjectView(R.id.leaderboard_filter_consistency_container) protected MinConsistencyLeaderboardFilterValueSlider minConsistencyView;
     @InjectView(R.id.leaderboard_filter_reset_button) protected View buttonResetFilters;
 
-    @NotNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+    @NonNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Nullable protected LeaderboardDTO leaderboardDTO;
 
     //<editor-fold desc="Constructors">
@@ -66,14 +66,14 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void setParameters(@NotNull PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey, @Nullable LeaderboardDTO leaderboardDTO)
+    public void setParameters(@NonNull PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey, @Nullable LeaderboardDTO leaderboardDTO)
     {
         this.perPagedFilteredLeaderboardKey = perPagedFilteredLeaderboardKey;
         this.leaderboardDTO = leaderboardDTO;
         displayPerPagedFilteredLeaderboardKey();
     }
 
-    @NotNull
+    @NonNull
     public PerPagedFilteredLeaderboardKey getFilteredLeaderboardKey()
     {
         this.perPagedFilteredLeaderboardKey = new PerPagedFilteredLeaderboardKey(

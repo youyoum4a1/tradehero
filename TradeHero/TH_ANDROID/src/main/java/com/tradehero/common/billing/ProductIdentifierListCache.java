@@ -3,7 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.Map;
 
@@ -17,13 +17,13 @@ abstract public class ProductIdentifierListCache<
 {
     //<editor-fold desc="Constructors">
     public ProductIdentifierListCache(int maxSize,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 
-    @Override @NotNull public ProductIdentifierListType fetch(@NotNull ProductIdentifierListKeyType key) throws Throwable
+    @Override @NonNull public ProductIdentifierListType fetch(@NonNull ProductIdentifierListKeyType key) throws Throwable
     {
         throw new IllegalArgumentException("Do not fetch on this cache");
     }
@@ -40,8 +40,8 @@ abstract public class ProductIdentifierListCache<
     }
 
     @Override public ProductIdentifierListType put(
-            @NotNull ProductIdentifierListKeyType key,
-            @NotNull ProductIdentifierListType value)
+            @NonNull ProductIdentifierListKeyType key,
+            @NonNull ProductIdentifierListType value)
     {
         Timber.d("Put %s", key);
         return super.put(key, value);

@@ -5,26 +5,26 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDTO>
     , Action1<UserProfileDTO>
 {
-    @NotNull protected final UserProfileCacheRx userProfileCache;
-    @NotNull protected final HomeContentCacheRx homeContentCache;
+    @NonNull protected final UserProfileCacheRx userProfileCache;
+    @NonNull protected final HomeContentCacheRx homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public DTOProcessorUpdateUserProfile(
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache)
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache)
     {
         this.userProfileCache = userProfileCache;
         this.homeContentCache = homeContentCache;
     }
     //</editor-fold>
 
-    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NonNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO cached = userProfileCache.getValue(userProfileDTO.getBaseKey());
         if (cached != null
@@ -37,7 +37,7 @@ public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDT
         return userProfileDTO;
     }
 
-    @Override public void call(@NotNull UserProfileDTO userProfileDTO)
+    @Override public void call(@NonNull UserProfileDTO userProfileDTO)
     {
         process(userProfileDTO);
     }

@@ -15,7 +15,7 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
@@ -27,7 +27,7 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
     private int extraTileStartrow = -1;
 
     private final LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
-    @NotNull private final ProviderDTO providerDTO;
+    @NonNull private final ProviderDTO providerDTO;
     private final LayoutInflater inflater;
     private int[] masterTilesMarker;
     private int[] extraTilesMarker;
@@ -35,8 +35,8 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardMarkUserListAdapter(
-            @NotNull Context context,
-            @NotNull ProviderDTO providerDTO,
+            @NonNull Context context,
+            @NonNull ProviderDTO providerDTO,
             LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter)
     {
         this.inflater = LayoutInflater.from(context);

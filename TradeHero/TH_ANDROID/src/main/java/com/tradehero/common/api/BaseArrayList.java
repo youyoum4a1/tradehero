@@ -3,8 +3,8 @@ package com.tradehero.common.api;
 import com.android.internal.util.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class BaseArrayList<T> extends ArrayList<T>
 {
@@ -28,7 +28,7 @@ public class BaseArrayList<T> extends ArrayList<T>
 
     public boolean hasNullItem()
     {
-        for (@Nullable T item : this)
+        for (T item : this)
         {
             if (item == null)
             {
@@ -38,7 +38,7 @@ public class BaseArrayList<T> extends ArrayList<T>
         return false;
     }
 
-    @Nullable public T findFirstWhere(@NotNull Predicate<T> predicate)
+    @Nullable public T findFirstWhere(@NonNull Predicate<T> predicate)
     {
         for (T item : this)
         {

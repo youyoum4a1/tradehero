@@ -6,21 +6,21 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LeaderboardDefDTOKnowledge
 {
-    @NotNull private final LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
+    @NonNull private final LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge;
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefDTOKnowledge(@NotNull LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge)
+    @Inject public LeaderboardDefDTOKnowledge(@NonNull LeaderboardDefKeyKnowledge leaderboardDefKeyKnowledge)
     {
         this.leaderboardDefKeyKnowledge = leaderboardDefKeyKnowledge;
     }
     //</editor-fold>
 
-    @NotNull
-    public List<Integer> getLeaderboardDefIcon(@NotNull LeaderboardDefDTO leaderboardDefDTO)
+    @NonNull
+    public List<Integer> getLeaderboardDefIcon(@NonNull LeaderboardDefDTO leaderboardDefDTO)
     {
         List<Integer> iconResIds = new ArrayList<>();
         Integer byKey = leaderboardDefKeyKnowledge.getLeaderboardDefIcon(leaderboardDefDTO.getLeaderboardDefKey());
@@ -30,7 +30,7 @@ public class LeaderboardDefDTOKnowledge
         }
         else if (leaderboardDefDTO.countryCodes != null)
         {
-            for (@NotNull String countryCode : leaderboardDefDTO.countryCodes)
+            for (String countryCode : leaderboardDefDTO.countryCodes)
             {
                 try
                 {

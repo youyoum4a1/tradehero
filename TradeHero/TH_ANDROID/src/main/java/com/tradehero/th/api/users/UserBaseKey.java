@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserBaseKey extends AbstractIntegerDTOKey
 {
@@ -17,12 +17,12 @@ public class UserBaseKey extends AbstractIntegerDTOKey
         super();
     }
 
-    public UserBaseKey(@NotNull Integer key)
+    public UserBaseKey(@NonNull Integer key)
     {
         super(key);
     }
 
-    public UserBaseKey(@NotNull Bundle args)
+    public UserBaseKey(@NonNull Bundle args)
     {
         super(args);
     }

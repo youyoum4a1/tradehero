@@ -1,6 +1,6 @@
 package com.tradehero.th.network.retrofit;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 
 public interface CallbackWrapper<ValueType>

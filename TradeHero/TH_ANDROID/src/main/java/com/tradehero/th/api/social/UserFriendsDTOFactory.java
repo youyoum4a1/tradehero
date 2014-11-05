@@ -1,8 +1,8 @@
 package com.tradehero.th.api.social;
 
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class UserFriendsDTOFactory
@@ -18,7 +18,7 @@ public class UserFriendsDTOFactory
     }
     //</editor-fold>
 
-    @Nullable public UserFriendsDTO createFrom(@NotNull String socialId, @NotNull String socialUserId)
+    @Nullable public UserFriendsDTO createFrom(@NonNull String socialId, @NonNull String socialUserId)
     {
         UserFriendsDTO created = null;
         switch (socialId)

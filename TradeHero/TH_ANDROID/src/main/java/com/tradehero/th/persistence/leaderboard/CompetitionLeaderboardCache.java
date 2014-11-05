@@ -8,31 +8,31 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton @UserCache
 public class CompetitionLeaderboardCache extends StraightCutDTOCacheNew<CompetitionLeaderboardId, CompetitionLeaderboardDTO, CompetitionLeaderboardCutDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
-    @NotNull private final LeaderboardCache leaderboardCache;
+    @NonNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NonNull private final LeaderboardCache leaderboardCache;
 
     //<editor-fold desc="Constructors">
     @Inject public CompetitionLeaderboardCache(
-            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
-            @NotNull LeaderboardCache leaderboardCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NonNull LeaderboardCache leaderboardCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         this(DEFAULT_MAX_SIZE, competitionServiceWrapper, leaderboardCache, dtoCacheUtil);
     }
 
     public CompetitionLeaderboardCache(
             int maxSize,
-            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
-            @NotNull LeaderboardCache leaderboardCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NonNull LeaderboardCache leaderboardCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
         this.competitionServiceWrapper = competitionServiceWrapper;
@@ -40,20 +40,20 @@ public class CompetitionLeaderboardCache extends StraightCutDTOCacheNew<Competit
     }
     //</editor-fold>
 
-    @Override @NotNull public CompetitionLeaderboardDTO fetch(@NotNull CompetitionLeaderboardId key) throws Throwable
+    @Override @NonNull public CompetitionLeaderboardDTO fetch(@NonNull CompetitionLeaderboardId key) throws Throwable
     {
         return competitionServiceWrapper.getCompetitionLeaderboard(key);
     }
 
-    @NotNull @Override protected CompetitionLeaderboardCutDTO cutValue(
-            @NotNull CompetitionLeaderboardId key,
-            @NotNull CompetitionLeaderboardDTO value)
+    @NonNull @Override protected CompetitionLeaderboardCutDTO cutValue(
+            @NonNull CompetitionLeaderboardId key,
+            @NonNull CompetitionLeaderboardDTO value)
     {
         return new CompetitionLeaderboardCutDTO(value, leaderboardCache);
     }
 
     @Nullable @Override protected CompetitionLeaderboardDTO inflateValue(
-            @NotNull CompetitionLeaderboardId key,
+            @NonNull CompetitionLeaderboardId key,
             @Nullable CompetitionLeaderboardCutDTO cutValue)
     {
         if (cutValue == null)

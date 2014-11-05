@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class ProviderSpecificKnowledgeDTO
 {

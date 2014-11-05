@@ -8,22 +8,22 @@ import com.tradehero.th.network.UrlEncoderHelper;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 import retrofit.client.Response;
 import rx.Observable;
 
 @Singleton public class QuoteServiceWrapper
 {
-    @NotNull private final QuoteServiceRx quoteServiceRx;
-    @NotNull private final QuoteServiceAsync quoteServiceAsync;
-    @NotNull private final RawQuoteParser rawQuoteParser;
+    @NonNull private final QuoteServiceRx quoteServiceRx;
+    @NonNull private final QuoteServiceAsync quoteServiceAsync;
+    @NonNull private final RawQuoteParser rawQuoteParser;
 
     //<editor-fold desc="Constructors">
     @Inject public QuoteServiceWrapper(
-            @NotNull QuoteServiceAsync quoteServiceAsync,
-            @NotNull QuoteServiceRx quoteServiceRx,
-            @NotNull RawQuoteParser rawQuoteParser)
+            @NonNull QuoteServiceAsync quoteServiceAsync,
+            @NonNull QuoteServiceRx quoteServiceRx,
+            @NonNull RawQuoteParser rawQuoteParser)
     {
         super();
         this.quoteServiceAsync = quoteServiceAsync;
@@ -58,7 +58,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Raw Quote">
-    @NotNull public Observable<QuoteDTO> getQuoteRx(@NotNull SecurityId securityId)
+    @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
         return this.quoteServiceRx.getRawQuote(
@@ -67,7 +67,7 @@ import rx.Observable;
                 .map(rawQuoteParser);
     }
 
-    @NotNull public Observable<Response> getRawQuoteRx(@NotNull SecurityId securityId)
+    @NonNull public Observable<Response> getRawQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
         return this.quoteServiceRx.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(

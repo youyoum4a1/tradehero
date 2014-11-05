@@ -31,8 +31,8 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class UserProfileResideMenuItem extends LinearLayout
@@ -199,12 +199,12 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
         {
             display(value);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             THToast.show(new THException(error));
         }

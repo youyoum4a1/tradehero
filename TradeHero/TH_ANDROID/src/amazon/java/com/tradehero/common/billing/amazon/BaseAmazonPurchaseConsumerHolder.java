@@ -4,8 +4,8 @@ import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class BaseAmazonPurchaseConsumerHolder<
@@ -23,16 +23,16 @@ public class BaseAmazonPurchaseConsumerHolder<
         AmazonPurchaseType,
         AmazonException>
 {
-    @NotNull protected final Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider;
-    @NotNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumerType> amazonPurchaseConsumers;
-    @NotNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<
+    @NonNull protected final Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider;
+    @NonNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumerType> amazonPurchaseConsumers;
+    @NonNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<
             AmazonSKUType,
             AmazonOrderIdType,
             AmazonPurchaseType,
             AmazonException>> parentConsumeFinishedHandlers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaseConsumerHolder(@NotNull Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider)
+    public BaseAmazonPurchaseConsumerHolder(@NonNull Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider)
     {
         super();
         this.purchaseConsumerTypeProvider = purchaseConsumerTypeProvider;
@@ -87,7 +87,7 @@ public class BaseAmazonPurchaseConsumerHolder<
         iabPurchaseConsumer.consume(requestCode, purchase);
     }
 
-    @NotNull protected AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException>
+    @NonNull protected AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException>
     createConsumptionFinishedListener()
     {
         return new AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException>()

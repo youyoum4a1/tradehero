@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import com.tradehero.th.R;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public abstract class BaseShowUnreadPreference extends Preference
     implements ShowUnreadPreference
@@ -17,7 +17,7 @@ public abstract class BaseShowUnreadPreference extends Preference
     int iconResId;
 
     //<editor-fold desc="Constructors">
-    public BaseShowUnreadPreference(@NotNull Context context, @NotNull AttributeSet attrs)
+    public BaseShowUnreadPreference(@NonNull Context context, @NonNull AttributeSet attrs)
     {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, new int[] {android.R.attr.icon});
@@ -26,7 +26,7 @@ public abstract class BaseShowUnreadPreference extends Preference
     }
     //</editor-fold>
 
-    @Override protected void onBindView(@NotNull View view)
+    @Override protected void onBindView(@NonNull View view)
     {
         super.onBindView(view);
         if (!isVisited())

@@ -2,7 +2,7 @@ package com.tradehero.th.api.discussion;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class MessageHeaderDTOList extends BaseArrayList<MessageHeaderDTO>
     implements DTO
@@ -16,10 +16,10 @@ public class MessageHeaderDTOList extends BaseArrayList<MessageHeaderDTO>
     }
     //</editor-fold>
 
-    @NotNull public MessageHeaderIdList createKeys()
+    @NonNull public MessageHeaderIdList createKeys()
     {
         MessageHeaderIdList keys = new MessageHeaderIdList();
-        for (@NotNull MessageHeaderDTO messageHeaderDTO : this)
+        for (MessageHeaderDTO messageHeaderDTO : this)
         {
             keys.add(messageHeaderDTO.getDTOKey());
         }

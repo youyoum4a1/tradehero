@@ -2,24 +2,24 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class BooleanPreference extends AbstractPreference<Boolean>
 {
     public BooleanPreference(
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
             boolean defaultValue)
     {
         super(preference, key, defaultValue);
     }
 
-    @Override @NotNull public Boolean get()
+    @Override @NonNull public Boolean get()
     {
         return preference.getBoolean(key, defaultValue);
     }
 
-    @Override public void set(@NotNull Boolean value)
+    @Override public void set(@NonNull Boolean value)
     {
         preference.edit().putBoolean(key, value).apply();
     }

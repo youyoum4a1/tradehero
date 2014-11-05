@@ -25,7 +25,7 @@ import com.tradehero.th.persistence.translation.UserTranslationSettingPreference
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -121,7 +121,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         }
     }
 
-    protected void handleTranslationTokenReceived(@NotNull TranslationToken translationToken)
+    protected void handleTranslationTokenReceived(@NonNull TranslationToken translationToken)
     {
         try
         {
@@ -143,7 +143,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         }
     }
 
-    protected void handleLanguages(@NotNull List<LanguageDTO> languageDTOs)
+    protected void handleLanguages(@NonNull List<LanguageDTO> languageDTOs)
     {
         itemAdapter.clear();
         itemAdapter.addAll(languageDTOs);
@@ -153,7 +153,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     @OnItemClick(android.R.id.list)
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {
-        @NotNull LanguageDTO languageDTO = (LanguageDTO) adapterView.getItemAtPosition(position);
+        LanguageDTO languageDTO = (LanguageDTO) adapterView.getItemAtPosition(position);
         Timber.d("%s", languageDTO);
         UserTranslationSettingDTO newSettings = this.currentSettings;
         if (newSettings != null)

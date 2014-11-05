@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class BaseAmazonInventoryFetcherHolder<
@@ -27,12 +27,12 @@ abstract public class BaseAmazonInventoryFetcherHolder<
             AmazonProductDetailType,
             AmazonExceptionType>
 {
-    @NotNull protected final Provider<AmazonInventoryFetcherType> amazonInventoryFetcherTypeProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, AmazonInventoryFetcherType> inventoryFetchers;
+    @NonNull protected final Provider<AmazonInventoryFetcherType> amazonInventoryFetcherTypeProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, AmazonInventoryFetcherType> inventoryFetchers;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonInventoryFetcherHolder(
-            @NotNull Provider<AmazonInventoryFetcherType> amazonInventoryFetcherTypeProvider)
+            @NonNull Provider<AmazonInventoryFetcherType> amazonInventoryFetcherTypeProvider)
     {
         super();
         this.amazonInventoryFetcherTypeProvider = amazonInventoryFetcherTypeProvider;

@@ -5,8 +5,8 @@ import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements DTO
 {
@@ -19,7 +19,7 @@ public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements D
      * @param next number of {@link com.tradehero.th.api.achievement.QuestBonusDTO} to be retrieved
      * @return {@link java.util.List} of {@link com.tradehero.th.api.achievement.QuestBonusDTO}
      */
-    @NotNull public List<QuestBonusDTO> getNextInclusive(int currentLevel, int next)
+    @NonNull public List<QuestBonusDTO> getNextInclusive(int currentLevel, int next)
     {
         List<QuestBonusDTO> list = new ArrayList<>();
         ListIterator<QuestBonusDTO> iterator = listIterator();
@@ -75,7 +75,7 @@ public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements D
         return questBonusDTO;
     }
 
-    @NotNull public List<QuestBonusDTO> getPrevious(int currentLevel, int numOfItems)
+    @NonNull public List<QuestBonusDTO> getPrevious(int currentLevel, int numOfItems)
     {
         List<QuestBonusDTO> questBonusDTOList = new ArrayList<>();
         if (numOfItems > 0)

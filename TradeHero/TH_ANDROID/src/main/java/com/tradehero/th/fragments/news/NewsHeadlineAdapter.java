@@ -8,8 +8,8 @@ import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear>
@@ -67,7 +67,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
     }
 
     @Override
-    public void setItems(@NotNull List<NewsItemDTOKey> items)
+    public void setItems(@NonNull List<NewsItemDTOKey> items)
     {
         super.setItems(items);
         setBackgroundsArray();

@@ -7,23 +7,23 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorMessageRead implements DTOProcessor<BaseResponseDTO>
 {
-    @NotNull private final MessageHeaderCacheRx messageHeaderCache;
-    @NotNull private final UserProfileCacheRx userProfileCache;
-    @NotNull private final HomeContentCacheRx homeContentCache;
-    @NotNull private MessageHeaderId messageHeaderId;
-    @NotNull private UserBaseKey readerId;
+    @NonNull private final MessageHeaderCacheRx messageHeaderCache;
+    @NonNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final HomeContentCacheRx homeContentCache;
+    @NonNull private MessageHeaderId messageHeaderId;
+    @NonNull private UserBaseKey readerId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorMessageRead(
-            @NotNull MessageHeaderCacheRx messageHeaderCache,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache,
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
+            @NonNull MessageHeaderCacheRx messageHeaderCache,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache,
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey readerId)
     {
         this.messageHeaderCache = messageHeaderCache;
         this.userProfileCache = userProfileCache;

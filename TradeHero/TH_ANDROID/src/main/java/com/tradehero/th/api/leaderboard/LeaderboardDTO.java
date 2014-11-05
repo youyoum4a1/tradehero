@@ -8,7 +8,7 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.io.IOException;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LeaderboardDTO extends BaseHasExpiration
         implements DTO
@@ -48,7 +48,7 @@ public class LeaderboardDTO extends BaseHasExpiration
             double maxSharpeRatioInPeriodVsSP500,
             double maxStdDevPositionRoiInPeriod,
             double avgStdDevPositionRoiInPeriod,
-            @NotNull Date expirationDate)
+            @NonNull Date expirationDate)
     {
         super(expirationDate);
         this.id = id;
@@ -65,7 +65,7 @@ public class LeaderboardDTO extends BaseHasExpiration
     //</editor-fold>
 
     @JsonIgnore
-    @NotNull public LeaderboardKey getLeaderboardKey()
+    @NonNull public LeaderboardKey getLeaderboardKey()
     {
         return new LeaderboardKey(id);
     }

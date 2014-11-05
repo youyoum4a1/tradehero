@@ -6,25 +6,25 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.functions.Action1;
 import timber.log.Timber;
 
 public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositionDTO>,
         Action1<WatchlistPositionDTO>
 {
-    @NotNull protected final UserBaseKey concernedUser;
-    @NotNull protected final WatchlistPositionCache watchlistPositionCache;
-    @NotNull protected final PortfolioCompactCacheRx portfolioCompactCache;
-    @NotNull protected final PortfolioCacheRx portfolioCache;
+    @NonNull protected final UserBaseKey concernedUser;
+    @NonNull protected final WatchlistPositionCache watchlistPositionCache;
+    @NonNull protected final PortfolioCompactCacheRx portfolioCompactCache;
+    @NonNull protected final PortfolioCacheRx portfolioCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistUpdate(
-            @NotNull UserBaseKey concernedUser,
-            @NotNull WatchlistPositionCache watchlistPositionCache,
-            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
-            @NotNull PortfolioCacheRx portfolioCache)
+            @NonNull UserBaseKey concernedUser,
+            @NonNull WatchlistPositionCache watchlistPositionCache,
+            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NonNull PortfolioCacheRx portfolioCache)
     {
         this.concernedUser = concernedUser;
         this.watchlistPositionCache = watchlistPositionCache;

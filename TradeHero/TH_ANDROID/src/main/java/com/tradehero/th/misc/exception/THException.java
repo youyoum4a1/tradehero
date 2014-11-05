@@ -8,7 +8,7 @@ import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
@@ -52,7 +52,7 @@ public class THException extends Exception
                         Header responseCodeHeader = new RetrofitHelper().findHeaderByName(headers, Constants.TH_ERROR_CODE);
                         if (responseCodeHeader != null)
                         {
-                            @Nullable ResponseErrorCode errorCode = ResponseErrorCode.getByCode(responseCodeHeader.getValue());
+                            ResponseErrorCode errorCode = ResponseErrorCode.getByCode(responseCodeHeader.getValue());
                             if (errorCode != null)
                             {
                                 switch (errorCode)

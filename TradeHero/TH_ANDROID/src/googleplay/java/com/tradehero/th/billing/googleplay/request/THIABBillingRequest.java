@@ -13,8 +13,8 @@ import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THIABBillingRequest<
         IABSKUListKeyType extends IABSKUListKey,
@@ -47,7 +47,7 @@ public class THIABBillingRequest<
             IABExceptionType> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
-    protected THIABBillingRequest(@NotNull Builder<
+    protected THIABBillingRequest(@NonNull Builder<
             IABSKUListKeyType,
             IABSKUType,
             IABSKUListType,

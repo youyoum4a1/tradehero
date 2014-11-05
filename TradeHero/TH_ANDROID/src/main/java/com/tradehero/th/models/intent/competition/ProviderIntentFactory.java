@@ -6,11 +6,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderIntentFactory extends THIntentSubFactory<ProviderIntent>
 {
-    @Inject public ProviderIntentFactory(@NotNull Context context)
+    @Inject public ProviderIntentFactory(@NonNull Context context)
     {
         super(context.getResources());
     }

@@ -19,7 +19,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -37,14 +37,14 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
     public static final int DEFAULT_MAX_VALUE_SIZE = 15;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
-    @NotNull private final Lazy<SecurityCompactCacheRx> securityCache;
-    @NotNull private final YahooNewsServiceWrapper yahooServiceWrapper;
+    @NonNull private final Lazy<SecurityCompactCacheRx> securityCache;
+    @NonNull private final YahooNewsServiceWrapper yahooServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public YahooNewsHeadlineCacheRx(
-            @NotNull Lazy<SecurityCompactCacheRx> securityCache,
-            @NotNull YahooNewsServiceWrapper yahooNewsServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<SecurityCompactCacheRx> securityCache,
+            @NonNull YahooNewsServiceWrapper yahooNewsServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.securityCache = securityCache;
@@ -59,13 +59,13 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
      *  - use YahooNewsService to fetch the news for the given yahooSymbol
      *  - parse the xml feed
      */
-    @Override @NotNull protected Observable<NewsHeadlineList> fetch(@NotNull SecurityId key)
+    @Override @NonNull protected Observable<NewsHeadlineList> fetch(@NonNull SecurityId key)
     {
         return getYahooSymbol(key)
                 .flatMap(this::fetchYahooNews);
     }
 
-    @NotNull private Observable<String> getYahooSymbol(@NotNull SecurityId key)
+    @NonNull private Observable<String> getYahooSymbol(@NonNull SecurityId key)
     {
         return securityCache.get().get(key)
                 .flatMap(pair -> {
@@ -77,7 +77,7 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
                 });
     }
 
-    @NotNull private Observable<NewsHeadlineList> fetchYahooNews(@NotNull String yahooSymbol)
+    @NonNull private Observable<NewsHeadlineList> fetchYahooNews(@NonNull String yahooSymbol)
     {
         return yahooServiceWrapper.getNewsRx(yahooSymbol)
             .map(rawResponse -> {
@@ -90,7 +90,7 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
             });
     }
 
-    @NotNull private List<YahooNewsHeadline> tryParseResponse(@NotNull Response response)
+    @NonNull private List<YahooNewsHeadline> tryParseResponse(@NonNull Response response)
     {
         try
         {
@@ -107,7 +107,7 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
         return null;
     }
 
-    @NotNull private List<YahooNewsHeadline> parseResponse(@NotNull Response response) throws XPathExpressionException, IOException
+    @NonNull private List<YahooNewsHeadline> parseResponse(@NonNull Response response) throws XPathExpressionException, IOException
     {
         XPathExpression xpathItems = getxPathExpression();
         InputSource input = new InputSource(response.getBody().in());
@@ -122,7 +122,7 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
         return xPath.compile("//item");
     }
 
-    @NotNull private List<YahooNewsHeadline> processItems(@NotNull NodeList nodes)
+    @NonNull private List<YahooNewsHeadline> processItems(@NonNull NodeList nodes)
     {
         List<YahooNewsHeadline> result = new ArrayList<>();
         for (int i = 0; i < nodes.getLength(); i++)

@@ -11,23 +11,23 @@ import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
     , Action1<UserLoginDTO> // TODO remove when changed DTOProcessor
 {
-    @NotNull private final SystemStatusCache systemStatusCache;
-    @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final DTOProcessorSignInUpUserProfile processorSignInUp;
+    @NonNull private final SystemStatusCache systemStatusCache;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final DTOProcessorSignInUpUserProfile processorSignInUp;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorUserLogin(
-            @NotNull SystemStatusCache systemStatusCache,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull DTOCacheUtilImpl dtoCacheUtil)
+            @NonNull SystemStatusCache systemStatusCache,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull DTOCacheUtilImpl dtoCacheUtil)
     {
         this.systemStatusCache = systemStatusCache;
         this.currentUserId = currentUserId;

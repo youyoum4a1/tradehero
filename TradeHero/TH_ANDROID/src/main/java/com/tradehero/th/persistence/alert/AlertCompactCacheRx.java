@@ -11,7 +11,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class AlertCompactCacheRx extends BaseDTOCacheRx<AlertId, AlertCompactDTO>
@@ -19,19 +19,19 @@ public class AlertCompactCacheRx extends BaseDTOCacheRx<AlertId, AlertCompactDTO
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
+    @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertCompactCacheRx(
-            @NotNull Lazy<SecurityCompactCacheRx> securityCompactCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
 
-    @Override public void onNext(@NotNull AlertId key, @NotNull AlertCompactDTO value)
+    @Override public void onNext(@NonNull AlertId key, @NonNull AlertCompactDTO value)
     {
         if (value.security != null)
         {
@@ -40,9 +40,9 @@ public class AlertCompactCacheRx extends BaseDTOCacheRx<AlertId, AlertCompactDTO
         super.onNext(key, value);
     }
 
-    public void onNext(@NotNull UserBaseKey userBaseKey, @NotNull List<AlertCompactDTO> values)
+    public void onNext(@NonNull UserBaseKey userBaseKey, @NonNull List<AlertCompactDTO> values)
     {
-        for (@NotNull AlertCompactDTO alertCompactDTO : values)
+        for (AlertCompactDTO alertCompactDTO : values)
         {
             onNext(new AlertId(userBaseKey, alertCompactDTO.id), alertCompactDTO);
         }

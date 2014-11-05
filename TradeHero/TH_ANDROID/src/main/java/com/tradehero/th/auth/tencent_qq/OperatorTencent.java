@@ -4,7 +4,7 @@ import android.app.Activity;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 import rx.Observable;
 import rx.Subscriber;
@@ -12,14 +12,14 @@ import timber.log.Timber;
 
 public class OperatorTencent implements Observable.OnSubscribe<QQAppAuthData>
 {
-    @NotNull private final Tencent mTencent;
-    @NotNull private final Activity activity;
-    @NotNull private final String scope;
+    @NonNull private final Tencent mTencent;
+    @NonNull private final Activity activity;
+    @NonNull private final String scope;
 
     //<editor-fold desc="Constructors">
-    public OperatorTencent(@NotNull Tencent mTencent,
-            @NotNull Activity activity,
-            @NotNull String scope)
+    public OperatorTencent(@NonNull Tencent mTencent,
+            @NonNull Activity activity,
+            @NonNull String scope)
     {
         this.mTencent = mTencent;
         this.activity = activity;
@@ -27,7 +27,7 @@ public class OperatorTencent implements Observable.OnSubscribe<QQAppAuthData>
     }
     //</editor-fold>
 
-    @Override public void call(@NotNull final Subscriber<? super QQAppAuthData> subscriber)
+    @Override public void call(@NonNull final Subscriber<? super QQAppAuthData> subscriber)
     {
         mTencent.login(
                 activity,

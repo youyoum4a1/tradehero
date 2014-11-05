@@ -6,36 +6,36 @@ import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class MarketServiceWrapper
 {
-    @NotNull private final MarketServiceRx marketServiceRx;
+    @NonNull private final MarketServiceRx marketServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public MarketServiceWrapper(@NotNull MarketServiceRx marketServiceRx)
+    @Inject public MarketServiceWrapper(@NonNull MarketServiceRx marketServiceRx)
     {
         this.marketServiceRx = marketServiceRx;
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Exchanges">
-    @NotNull public Observable<ExchangeCompactDTOList> getExchangesRx()
+    @NonNull public Observable<ExchangeCompactDTOList> getExchangesRx()
     {
         return marketServiceRx.getExchanges();
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Exchange">
-    @NotNull public Observable<ExchangeDTO> getExchangeRx(@NotNull ExchangeIntegerId exchangeId)
+    @NonNull public Observable<ExchangeDTO> getExchangeRx(@NonNull ExchangeIntegerId exchangeId)
     {
         return marketServiceRx.getExchange(exchangeId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get All Exchange And Sectors Compact">
-    @NotNull public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
+    @NonNull public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
     {
         return marketServiceRx.getAllExchangeSectorCompact();
     }

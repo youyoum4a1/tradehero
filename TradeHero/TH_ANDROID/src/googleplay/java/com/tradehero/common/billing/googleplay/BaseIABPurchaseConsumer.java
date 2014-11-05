@@ -9,8 +9,8 @@ import com.tradehero.common.billing.googleplay.exception.IABMissingTokenExceptio
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseConsumer<
@@ -31,8 +31,8 @@ abstract public class BaseIABPurchaseConsumer<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseConsumer(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         super(context, iabExceptionFactory);
     }
@@ -49,7 +49,7 @@ abstract public class BaseIABPurchaseConsumer<
         super.onDestroy();
     }
 
-    @NotNull abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
+    @NonNull abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
 
     public boolean isConsuming()
     {

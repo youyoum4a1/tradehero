@@ -15,8 +15,8 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseUIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -355,7 +355,7 @@ abstract public class BaseUIBillingRequest<
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
-    protected BaseUIBillingRequest(@NotNull Builder<
+    protected BaseUIBillingRequest(@NonNull Builder<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,

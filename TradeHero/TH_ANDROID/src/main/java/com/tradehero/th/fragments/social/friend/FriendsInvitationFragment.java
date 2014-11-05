@@ -50,8 +50,8 @@ import java.util.Map;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -83,7 +83,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
 
-    @NotNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
+    @NonNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
     private MiddleCallback<UserFriendsDTOList> searchCallback;
@@ -411,18 +411,18 @@ public class FriendsInvitationFragment extends DashboardFragment
     }
 
     @Override
-    public void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+    public void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         handleFollowUsers(userFriendsDTO);
     }
 
     @Override
-    public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+    public void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         handleInviteUsers(userFriendsDTO);
     }
 
-    public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
+    public void onCheckBoxClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onCheckBoxClicked " + userFriendsDTO);
     }
@@ -550,7 +550,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    @NotNull private UserFriendsDTOList filterTheDuplicated(@NotNull List<UserFriendsDTO> friendDTOList)
+    @NonNull private UserFriendsDTOList filterTheDuplicated(@NonNull List<UserFriendsDTO> friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
@@ -560,7 +560,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     class SearchFriendsCallback implements Callback<UserFriendsDTOList>
     {
         @Override
-        public void success(@NotNull UserFriendsDTOList userFriendsDTOs, Response response)
+        public void success(@NonNull UserFriendsDTOList userFriendsDTOs, Response response)
         {
             FriendsInvitationFragment.this.userFriendsDTOs = filterTheDuplicated(userFriendsDTOs);
             bindSearchData();

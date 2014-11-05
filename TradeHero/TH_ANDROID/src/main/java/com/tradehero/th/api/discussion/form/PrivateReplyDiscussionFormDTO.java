@@ -3,7 +3,7 @@ package com.tradehero.th.api.discussion.form;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PrivateReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {
@@ -14,12 +14,12 @@ public class PrivateReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
         super();
     }
 
-    @Override @NotNull public DiscussionType getInReplyToType()
+    @Override @NonNull public DiscussionType getInReplyToType()
     {
         return TYPE;
     }
 
-    @Override @NotNull public DiscussionKey getInitiatingDiscussionKey()
+    @Override @NonNull public DiscussionKey getInitiatingDiscussionKey()
     {
         return new PrivateMessageKey(inReplyToId);
     }

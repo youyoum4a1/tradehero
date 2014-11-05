@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>
@@ -33,7 +33,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         return true;
     }
 
-    @Override public void setItems(@NotNull List<DisplayablePortfolioDTO> items)
+    @Override public void setItems(@NonNull List<DisplayablePortfolioDTO> items)
     {
         super.setItems(items);
         // Prepare the data for display

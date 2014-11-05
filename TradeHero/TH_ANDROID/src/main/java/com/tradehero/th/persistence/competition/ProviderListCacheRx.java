@@ -8,7 +8,7 @@ import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,14 +17,14 @@ public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, Pr
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
-    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NotNull private final ProviderCacheRx providerCache;
+    @NonNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NonNull private final ProviderCacheRx providerCache;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderListCacheRx(
-            @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull ProviderCacheRx providerCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull ProviderServiceWrapper providerServiceWrapper,
+            @NonNull ProviderCacheRx providerCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
@@ -32,7 +32,7 @@ public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, Pr
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<ProviderDTOList> fetch(@NotNull ProviderListKey key)
+    @Override @NonNull public Observable<ProviderDTOList> fetch(@NonNull ProviderListKey key)
     {
         if (key.key.equals(ProviderListKey.ALL_PROVIDERS))
         {
@@ -42,7 +42,7 @@ public class ProviderListCacheRx extends BaseFetchDTOCacheRx<ProviderListKey, Pr
         throw new IllegalArgumentException("Unknown ProviderListKey " + key);
     }
 
-    @Override public void onNext(@NotNull ProviderListKey key, @NotNull ProviderDTOList value)
+    @Override public void onNext(@NonNull ProviderListKey key, @NonNull ProviderDTOList value)
     {
         super.onNext(key, value);
         providerCache.onNext(value);

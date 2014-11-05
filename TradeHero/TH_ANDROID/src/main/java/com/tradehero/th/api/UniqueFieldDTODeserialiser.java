@@ -10,19 +10,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserializer<DTOType>
 {
-    @NotNull private final Map<String, Class<? extends DTOType>> uniqueAttributes;
+    @NonNull private final Map<String, Class<? extends DTOType>> uniqueAttributes;
     // We need an inner mapper to avoid infinite looping
-    @NotNull private final ObjectMapper innerMapper;
+    @NonNull private final ObjectMapper innerMapper;
 
     //<editor-fold desc="Constructors">
     protected UniqueFieldDTODeserialiser(
-            @NotNull ObjectMapper innerMapper,
-            @NotNull Map<String, Class<? extends DTOType>> uniqueAttributes,
-            @NotNull Class<? extends DTOType> baseClass)
+            @NonNull ObjectMapper innerMapper,
+            @NonNull Map<String, Class<? extends DTOType>> uniqueAttributes,
+            @NonNull Class<? extends DTOType> baseClass)
     {
         super(baseClass);
         this.uniqueAttributes = uniqueAttributes;
@@ -32,7 +32,7 @@ abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserialize
     //</editor-fold>
 
     @Override
-    public DTOType deserialize(@NotNull JsonParser jp, DeserializationContext ctxt)
+    public DTOType deserialize(@NonNull JsonParser jp, DeserializationContext ctxt)
             throws IOException
     {
         ObjectMapper mapper = (ObjectMapper) jp.getCodec();

@@ -6,11 +6,11 @@ import android.util.AttributeSet;
 import android.widget.ToggleButton;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SocialLinkToggleButton extends ToggleButton
 {
-    @NotNull private SocialNetworkEnum socialNetworkEnum;
+    @NonNull private SocialNetworkEnum socialNetworkEnum;
 
     //<editor-fold desc="Constructors">
     public SocialLinkToggleButton(Context context, AttributeSet attrs)
@@ -20,14 +20,14 @@ public class SocialLinkToggleButton extends ToggleButton
     }
     //</editor-fold>
 
-    private void init(@NotNull Context context, @NotNull AttributeSet attrs)
+    private void init(@NonNull Context context, @NonNull AttributeSet attrs)
     {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SocialLinkToggleButton);
         socialNetworkEnum = SocialNetworkEnum.fromIndex(a.getInt(R.styleable.SocialLinkToggleButton_networkType, -1));
         a.recycle();
     }
 
-    @NotNull public SocialNetworkEnum getSocialNetworkEnum()
+    @NonNull public SocialNetworkEnum getSocialNetworkEnum()
     {
         return socialNetworkEnum;
     }

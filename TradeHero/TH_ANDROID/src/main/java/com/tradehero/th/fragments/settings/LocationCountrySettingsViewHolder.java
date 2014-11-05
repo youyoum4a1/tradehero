@@ -11,7 +11,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -19,21 +19,21 @@ import timber.log.Timber;
 
 public class LocationCountrySettingsViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
     protected Subscription userProfileCacheSubscription;
 
     //<editor-fold desc="Constructors">
     @Inject public LocationCountrySettingsViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache)
     {
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         fetchUserProfile();

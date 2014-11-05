@@ -7,7 +7,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AskForReviewSuggestedDialogFragment extends AskForReviewDialogFragment
 {
@@ -16,7 +16,7 @@ public class AskForReviewSuggestedDialogFragment extends AskForReviewDialogFragm
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
 
-    @NotNull public static AskForReviewSuggestedDialogFragment showReviewDialog(FragmentManager fragmentManager)
+    @NonNull public static AskForReviewSuggestedDialogFragment showReviewDialog(FragmentManager fragmentManager)
     {
         AskForReviewSuggestedDialogFragment dialogFragment = new AskForReviewSuggestedDialogFragment();
         dialogFragment.show(fragmentManager, AskForReviewSuggestedDialogFragment.class.getName());

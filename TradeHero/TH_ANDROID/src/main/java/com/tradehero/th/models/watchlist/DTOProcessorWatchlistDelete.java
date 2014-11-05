@@ -9,26 +9,26 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 import timber.log.Timber;
 
 public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositionDTO>,
         Action1<WatchlistPositionDTO>
 {
-    @NotNull private final UserBaseKey concernedUser;
-    @NotNull private final WatchlistPositionCache watchlistPositionCache;
-    @NotNull private final PortfolioCompactCacheRx portfolioCompactCache;
-    @NotNull private final PortfolioCacheRx portfolioCache;
-    @NotNull private final UserWatchlistPositionCache userWatchlistPositionCache;
+    @NonNull private final UserBaseKey concernedUser;
+    @NonNull private final WatchlistPositionCache watchlistPositionCache;
+    @NonNull private final PortfolioCompactCacheRx portfolioCompactCache;
+    @NonNull private final PortfolioCacheRx portfolioCache;
+    @NonNull private final UserWatchlistPositionCache userWatchlistPositionCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistDelete(
-            @NotNull WatchlistPositionCache watchlistPositionCache,
-            @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
-            @NotNull PortfolioCacheRx portfolioCache,
-            @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
+            @NonNull WatchlistPositionCache watchlistPositionCache,
+            @NonNull UserBaseKey concernedUser,
+            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super();
         this.concernedUser = concernedUser;
@@ -39,7 +39,7 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
     }
     //</editor-fold>
 
-    @Override public WatchlistPositionDTO process(@NotNull WatchlistPositionDTO watchlistPositionDTO)
+    @Override public WatchlistPositionDTO process(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
         portfolioCompactCache.invalidate(concernedUser, true);
         portfolioCache.invalidate(concernedUser, true);

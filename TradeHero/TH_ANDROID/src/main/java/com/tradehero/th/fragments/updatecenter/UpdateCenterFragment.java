@@ -45,7 +45,7 @@ import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -301,18 +301,18 @@ public class UpdateCenterFragment extends DashboardFragment
         return fm.findFragmentByTag(tag);
     }
 
-    private void changeTabTitleNumber(@NotNull UpdateCenterTabType tabType, int number)
+    private void changeTabTitleNumber(@NonNull UpdateCenterTabType tabType, int number)
     {
-        @NotNull THTabView tabView = (THTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
+        THTabView tabView = (THTabView) mTabHost.getTabWidget().getChildAt(tabType.ordinal());
         tabView.setNumber(number);
     }
 
-    @Override public void onTitleNumberChanged(@NotNull UpdateCenterTabType tabType, int number)
+    @Override public void onTitleNumberChanged(@NonNull UpdateCenterTabType tabType, int number)
     {
         changeTabTitleNumber(tabType, number);
     }
 
-    @NotNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
+    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
         return new FetchUserProfileObserver();
     }
@@ -334,7 +334,7 @@ public class UpdateCenterFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(@NotNull UserProfileDTO userProfileDTO, boolean andDisplay)
+    private void linkWith(@NonNull UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         if (andDisplay)
         {

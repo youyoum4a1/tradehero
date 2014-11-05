@@ -12,8 +12,8 @@ import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -77,7 +77,7 @@ public final class HomeWebView extends NotifyingWebView
         homeContentCacheSubscription = null;
     }
 
-    private void reloadWebView(@NotNull HomeContentDTO homeContentDTO)
+    private void reloadWebView(@NonNull HomeContentDTO homeContentDTO)
     {
         String appHomeLink = String.format("%s/%d", Constants.APP_HOME, currentUserId.get());
 
@@ -85,7 +85,7 @@ public final class HomeWebView extends NotifyingWebView
     }
 
     //<editor-fold desc="Listeners">
-    @NotNull private Observer<Pair<UserBaseKey, HomeContentDTO>> createHomeContentCacheObserver()
+    @NonNull private Observer<Pair<UserBaseKey, HomeContentDTO>> createHomeContentCacheObserver()
     {
         return new HomeContentCacheObserver();
     }

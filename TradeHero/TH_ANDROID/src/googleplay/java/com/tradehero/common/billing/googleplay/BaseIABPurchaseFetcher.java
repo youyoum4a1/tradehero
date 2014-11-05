@@ -15,8 +15,8 @@ import com.tradehero.th.base.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -31,7 +31,7 @@ abstract public class BaseIABPurchaseFetcher<
         IABPurchaseType,
         IABException>
 {
-    @NotNull protected final IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache;
+    @NonNull protected final IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache;
 
     protected int requestCode;
     protected boolean fetching;
@@ -40,9 +40,9 @@ abstract public class BaseIABPurchaseFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseFetcher(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
-            @NotNull IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
+            @NonNull IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
     {
         super(context, iabExceptionFactory);
         this.purchaseCache = purchaseCache;

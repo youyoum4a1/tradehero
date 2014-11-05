@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class BasePagedListFragment<
@@ -301,7 +301,7 @@ abstract public class BasePagedListFragment<
     }
 
     abstract public boolean canMakePagedDtoKey();
-    @NotNull abstract public PagedDTOKeyType makePagedDtoKey(int page);
+    @NonNull abstract public PagedDTOKeyType makePagedDtoKey(int page);
 
     protected void updateVisibilities()
     {
@@ -346,7 +346,7 @@ abstract public class BasePagedListFragment<
             implements DTOCacheNew.Listener<PagedDTOKeyType, ContainerDTOType>
     {
         @Override
-        public void onDTOReceived(@NotNull PagedDTOKeyType key, @NotNull ContainerDTOType value)
+        public void onDTOReceived(@NonNull PagedDTOKeyType key, @NonNull ContainerDTOType value)
         {
             PagedDTOKey properKey = (PagedDTOKey) key;
             Timber.d("Page loaded: %d", properKey.getPage());
@@ -371,7 +371,7 @@ abstract public class BasePagedListFragment<
             }
         }
 
-        @Override public void onErrorThrown(@NotNull PagedDTOKeyType key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull PagedDTOKeyType key, @NonNull Throwable error)
         {
             PagedDTOKey properKey = (PagedDTOKey) key;
             dtoListeners.remove(properKey.getPage());

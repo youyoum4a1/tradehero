@@ -11,7 +11,7 @@ import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import rx.Observable;
@@ -19,14 +19,14 @@ import timber.log.Timber;
 
 @Singleton public class TranslationServiceWrapper
 {
-    @NotNull private final TranslationTokenCacheRx translationTokenCache;
-    @NotNull private final TranslationTokenCacheRx translationTokenCacheRx;
-    @NotNull private final TranslationServiceBingWrapper translationServiceBingWrapper;
+    @NonNull private final TranslationTokenCacheRx translationTokenCache;
+    @NonNull private final TranslationTokenCacheRx translationTokenCacheRx;
+    @NonNull private final TranslationServiceBingWrapper translationServiceBingWrapper;
 
     @Inject public TranslationServiceWrapper(
-            @NotNull TranslationTokenCacheRx translationTokenCache,
-            @NotNull TranslationTokenCacheRx translationTokenCacheRx,
-            @NotNull TranslationServiceBingWrapper translationServiceBingWrapper)
+            @NonNull TranslationTokenCacheRx translationTokenCache,
+            @NonNull TranslationTokenCacheRx translationTokenCacheRx,
+            @NonNull TranslationServiceBingWrapper translationServiceBingWrapper)
     {
         this.translationTokenCache = translationTokenCache;
         this.translationTokenCacheRx = translationTokenCacheRx;
@@ -81,12 +81,12 @@ import timber.log.Timber;
             this.middleCallback = middleCallback;
         }
 
-        @Override public void onDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        @Override public void onDTOReceived(@NonNull TranslationTokenKey key, @NonNull TranslationToken value)
         {
             translate(value, from, to, text, middleCallback);
         }
 
-        @Override public void onErrorThrown(@NotNull TranslationTokenKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull TranslationTokenKey key, @NonNull Throwable error)
         {
             if (middleCallback != null && error instanceof RetrofitError)
             {

@@ -1,13 +1,13 @@
 package com.tradehero.th.api.social;
 
 import com.tradehero.th.R;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserFriendsFacebookDTO extends UserFriendsDTO
 {
     public static final String FACEBOOK_ID = "fbId";
 
-    @NotNull public String fbId;       // FB id
+    @NonNull public String fbId;       // FB id
     public String fbPicUrl;
 
     //<editor-fold desc="Constructors">
@@ -16,7 +16,7 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
         super();
     }
 
-    public UserFriendsFacebookDTO(@NotNull String fbId)
+    public UserFriendsFacebookDTO(@NonNull String fbId)
     {
         this.fbId = fbId;
     }
@@ -42,7 +42,7 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
         return super.hashCode() ^ fbId.hashCode();
     }
 
-    @Override protected boolean equals(@NotNull UserFriendsDTO other)
+    @Override protected boolean equals(@NonNull UserFriendsDTO other)
     {
         return super.equals(other) &&
                 other instanceof UserFriendsFacebookDTO &&

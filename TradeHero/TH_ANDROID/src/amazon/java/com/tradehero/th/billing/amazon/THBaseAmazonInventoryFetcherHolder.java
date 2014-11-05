@@ -5,7 +5,7 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonInventoryFetcherHolder
     extends BaseAmazonInventoryFetcherHolder<
@@ -17,7 +17,7 @@ public class THBaseAmazonInventoryFetcherHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInventoryFetcherHolder(
-            @NotNull Provider<THAmazonInventoryFetcher> thAmazonInventoryFetcherProvider)
+            @NonNull Provider<THAmazonInventoryFetcher> thAmazonInventoryFetcherProvider)
     {
         super(thAmazonInventoryFetcherProvider);
     }

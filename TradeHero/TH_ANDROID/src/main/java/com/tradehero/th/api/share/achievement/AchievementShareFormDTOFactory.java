@@ -5,7 +5,7 @@ import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AchievementShareFormDTOFactory
 {
@@ -16,9 +16,9 @@ public class AchievementShareFormDTOFactory
     }
     //</editor-fold>
 
-    @NotNull public AchievementShareFormDTO createFrom(
-            @NotNull List<SocialNetworkEnum> shareDestinationWithEnums,
-            @NotNull UserAchievementDTO userAchievementDTO)
+    @NonNull public AchievementShareFormDTO createFrom(
+            @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
+            @NonNull UserAchievementDTO userAchievementDTO)
     {
         AchievementShareFormDTO timelineItemShareFormDTO = new AchievementShareFormDTO();
         populateWith(timelineItemShareFormDTO, shareDestinationWithEnums, userAchievementDTO);
@@ -26,9 +26,9 @@ public class AchievementShareFormDTOFactory
     }
 
     protected void populateWith(
-            @NotNull AchievementShareFormDTO timelineItemShareFormDTO,
-            @NotNull List<SocialNetworkEnum> shareDestinationWithEnums,
-            @NotNull UserAchievementDTO userAchievementDTO)
+            @NonNull AchievementShareFormDTO timelineItemShareFormDTO,
+            @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
+            @NonNull UserAchievementDTO userAchievementDTO)
     {
         timelineItemShareFormDTO.achievementShareReqFormDTO = new AchievementShareReqFormDTO(shareDestinationWithEnums);
         timelineItemShareFormDTO.userAchievementId = userAchievementDTO.getUserAchievementId();

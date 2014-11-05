@@ -17,22 +17,22 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache
 public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey, ReadablePaginatedMessageHeaderDTO>
 {
-    @NotNull final private MessageHeaderCacheRx messageHeaderCache;
-    @NotNull final private MessageServiceWrapper messageServiceWrapper;
+    @NonNull final private MessageHeaderCacheRx messageHeaderCache;
+    @NonNull final private MessageServiceWrapper messageServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public MessageHeaderListCacheRx(
             @ListCacheMaxSize IntPreference maxSize,
-            @NotNull MessageHeaderCacheRx messageHeaderCache,
-            @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull MessageHeaderCacheRx messageHeaderCache,
+            @NonNull MessageServiceWrapper messageServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(maxSize.get(), 5, 5, dtoCacheUtil);
         this.messageHeaderCache = messageHeaderCache;
@@ -40,12 +40,12 @@ public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<ReadablePaginatedMessageHeaderDTO> fetch(@NotNull MessageListKey key)
+    @Override @NonNull protected Observable<ReadablePaginatedMessageHeaderDTO> fetch(@NonNull MessageListKey key)
     {
         return messageServiceWrapper.getMessageHeadersRx(key);
     }
 
-    @Override public void onNext(@NotNull MessageListKey key, @NotNull ReadablePaginatedMessageHeaderDTO value)
+    @Override public void onNext(@NonNull MessageListKey key, @NonNull ReadablePaginatedMessageHeaderDTO value)
     {
         messageHeaderCache.onNext(value.getData());
         super.onNext(key, value);
@@ -67,7 +67,7 @@ public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey
      * Invalidate the keys where the parameter is listed in the value.
      * @param messageHeaderId
      */
-    public void invalidateKeysThatList(@NotNull MessageHeaderId messageHeaderId)
+    public void invalidateKeysThatList(@NonNull MessageHeaderId messageHeaderId)
     {
         for (Map.Entry<MessageListKey, ReadablePaginatedMessageHeaderDTO> entry : new HashMap<>(snapshot()).entrySet())
         {
@@ -84,7 +84,7 @@ public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey
      * Invalidates the keys that are part of the same listing as the key.
      * @param key
      */
-    public void invalidateSameListing(@NotNull MessageListKey key)
+    public void invalidateSameListing(@NonNull MessageListKey key)
     {
         for (MessageListKey entry : new ArrayList<>(snapshot().keySet()))
         {

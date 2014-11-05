@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -37,15 +37,15 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
     private static final String CALLBACK_URL = "x-oauthflow-linkedin://callback";
     private static final String SERVICE_URL_ID = "www.linkedin";
 
-    @NotNull final String consumerKey;
-    @NotNull final String consumerSecret;
-    @NotNull final CommonsHttpOAuthProvider oAuthProvider;
-    @NotNull final CommonsHttpOAuthConsumer oAuthConsumer;
+    @NonNull final String consumerKey;
+    @NonNull final String consumerSecret;
+    @NonNull final CommonsHttpOAuthProvider oAuthProvider;
+    @NonNull final CommonsHttpOAuthConsumer oAuthConsumer;
 
     @Inject public LinkedInAuthenticationProvider(
-            @NotNull SocialLinker socialLinker,
-            @ConsumerKey(SocialNetworkEnum.LN) @NotNull String consumerKey,
-            @ConsumerSecret(SocialNetworkEnum.LN) @NotNull String consumerSecret)
+            @NonNull SocialLinker socialLinker,
+            @ConsumerKey(SocialNetworkEnum.LN) @NonNull String consumerKey,
+            @ConsumerSecret(SocialNetworkEnum.LN) @NonNull String consumerSecret)
     {
         super(socialLinker);
         this.consumerKey = consumerKey;
@@ -54,7 +54,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
         this.oAuthConsumer = createOAuthConsumer();
     }
 
-    @NotNull private CommonsHttpOAuthProvider createOAuthProvider()
+    @NonNull private CommonsHttpOAuthProvider createOAuthProvider()
     {
         String scope = null;
         try
@@ -72,7 +72,7 @@ public class LinkedInAuthenticationProvider extends SocialAuthenticationProvider
                 AUTHORIZE_URL);
     }
 
-    @NotNull private CommonsHttpOAuthConsumer createOAuthConsumer()
+    @NonNull private CommonsHttpOAuthConsumer createOAuthConsumer()
     {
         return new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
     }

@@ -2,7 +2,7 @@ package com.tradehero.th.api.level;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.level.key.LevelDefId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LevelDefDTO implements DTO
 {
@@ -13,7 +13,7 @@ public class LevelDefDTO implements DTO
     public String badge;
     public int level;
 
-    @NotNull public LevelDefId getId()
+    @NonNull public LevelDefId getId()
     {
         return new LevelDefId(id);
     }

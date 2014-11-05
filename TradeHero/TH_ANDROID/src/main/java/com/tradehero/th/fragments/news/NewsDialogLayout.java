@@ -19,8 +19,8 @@ import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class NewsDialogLayout extends ShareDialogLayout
 {
@@ -150,7 +150,7 @@ public class NewsDialogLayout extends ShareDialogLayout
         }
     }
 
-    @Override public void setDiscussionToShare(@NotNull AbstractDiscussionCompactDTO discussionToShare)
+    @Override public void setDiscussionToShare(@NonNull AbstractDiscussionCompactDTO discussionToShare)
     {
         super.setDiscussionToShare(discussionToShare);
         setNewsTitle();

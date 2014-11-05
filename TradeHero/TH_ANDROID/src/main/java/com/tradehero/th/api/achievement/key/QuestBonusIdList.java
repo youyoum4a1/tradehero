@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import java.util.Collection;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class QuestBonusIdList extends DTOKeyIdList<QuestBonusId>
 {

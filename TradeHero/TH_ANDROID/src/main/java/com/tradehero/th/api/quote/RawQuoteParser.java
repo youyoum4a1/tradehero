@@ -5,8 +5,8 @@ import com.tradehero.th.api.SignatureContainer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
@@ -16,16 +16,16 @@ import rx.functions.Func1;
 
 public class RawQuoteParser implements Func1<Response, QuoteDTO>
 {
-    @NotNull private Converter converter;
+    @NonNull private Converter converter;
 
     //<editor-fold desc="Constructors">
-    @Inject public RawQuoteParser(@NotNull Converter converter)
+    @Inject public RawQuoteParser(@NonNull Converter converter)
     {
         this.converter = converter;
     }
     //</editor-fold>
 
-    @Override @NotNull public QuoteDTO call(Response response)
+    @Override @NonNull public QuoteDTO call(Response response)
     {
         try
         {
@@ -42,7 +42,7 @@ public class RawQuoteParser implements Func1<Response, QuoteDTO>
         }
     }
 
-    @Nullable public QuoteDTO parse(@NotNull Response response) throws IOException, ConversionException
+    @Nullable public QuoteDTO parse(@NonNull Response response) throws IOException, ConversionException
     {
         QuoteDTO quoteDTO = null;
         TypedInput body = response.getBody();

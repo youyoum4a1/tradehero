@@ -3,7 +3,7 @@ package com.tradehero.th.api.portfolio;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
 {
@@ -14,8 +14,8 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
     }
 
     public OwnedPortfolioIdList(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull Collection<? extends PortfolioCompactDTO> portfolioCompactDTOs)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull Collection<? extends PortfolioCompactDTO> portfolioCompactDTOs)
     {
         for (PortfolioCompactDTO portfolioCompactDTO : portfolioCompactDTOs)
         {

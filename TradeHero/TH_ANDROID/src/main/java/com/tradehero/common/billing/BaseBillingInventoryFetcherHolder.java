@@ -2,8 +2,8 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ abstract public class BaseBillingInventoryFetcherHolder<
         ProductDetailType,
         BillingExceptionType>
 {
-    @NotNull protected final Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> parentInventoryFetchedListeners;
+    @NonNull protected final Map<Integer /*requestCode*/, BillingInventoryFetcher.OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType>> parentInventoryFetchedListeners;
 
     //<editor-fold desc="Constructors">
     public BaseBillingInventoryFetcherHolder()

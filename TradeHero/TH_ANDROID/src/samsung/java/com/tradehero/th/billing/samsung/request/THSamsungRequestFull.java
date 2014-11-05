@@ -9,7 +9,7 @@ import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THSamsungRequestFull
         extends THSamsungRequest<
@@ -23,7 +23,7 @@ public class THSamsungRequestFull
         SamsungException>
 {
     //<editor-fold desc="Constructors">
-    protected THSamsungRequestFull(@NotNull Builder<?> builder)
+    protected THSamsungRequestFull(@NonNull Builder<?> builder)
     {
         super(builder);
     }

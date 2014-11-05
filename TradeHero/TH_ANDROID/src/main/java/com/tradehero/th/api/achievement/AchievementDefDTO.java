@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.AchievementDefId;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class AchievementDefDTO implements DTO
 {
@@ -20,14 +20,14 @@ public class AchievementDefDTO implements DTO
     @Nullable public String subText;
     public int achievementLevel;
     public String category;
-    @NotNull public String hexColor;
-    @NotNull public String header;
+    @NonNull public String hexColor;
+    @NonNull public String header;
     public int contiguousMax;
     public boolean isQuest;
     public int categoryId;
 
     @JsonIgnore
-    @NotNull public AchievementDefId getAchievementsId()
+    @NonNull public AchievementDefId getAchievementsId()
     {
         return new AchievementDefId(id);
     }

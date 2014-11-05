@@ -4,8 +4,8 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class UserAchievementDTO implements DTO
 {
@@ -16,14 +16,14 @@ public class UserAchievementDTO implements DTO
     public int xpTotal;
     public int contiguousCount;
     public boolean isReset;
-    @NotNull public AchievementDefDTO achievementDef;
+    @NonNull public AchievementDefDTO achievementDef;
 
-    @NotNull public UserAchievementId getUserAchievementId()
+    @NonNull public UserAchievementId getUserAchievementId()
     {
         return new UserAchievementId(id);
     }
 
-    @NotNull public UserBaseKey getUserId()
+    @NonNull public UserBaseKey getUserId()
     {
         return new UserBaseKey(userId);
     }

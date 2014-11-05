@@ -3,8 +3,8 @@ package com.tradehero.common.billing;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,33 +23,33 @@ abstract public class ProductDetailCache<
     private static final int DEFAULT_MAX_SIZE = 200;
     public static int latest = 0;
 
-    @NotNull protected final ProductTunerType detailsTuner;
+    @NonNull protected final ProductTunerType detailsTuner;
     protected int me = latest++;
 
     //<editor-fold desc="Constructors">
     public ProductDetailCache(
-            @NotNull ProductTunerType detailsTuner,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull ProductTunerType detailsTuner,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         this(DEFAULT_MAX_SIZE, detailsTuner, dtoCacheUtil);
     }
 
     public ProductDetailCache(int defaultMaxSize,
-            @NotNull ProductTunerType detailsTuner,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull ProductTunerType detailsTuner,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(defaultMaxSize, dtoCacheUtil);
         this.detailsTuner = detailsTuner;
     }
     //</editor-fold>
 
-    @Override @Nullable public ProductDetailsType get(@NotNull ProductIdentifierType key)
+    @Override @Nullable public ProductDetailsType get(@NonNull ProductIdentifierType key)
     {
         Timber.d("get me %d", me);
         return super.get(key);
     }
 
-    @Override @Nullable public ProductDetailsType put(@NotNull ProductIdentifierType key, @NotNull ProductDetailsType value)
+    @Override @Nullable public ProductDetailsType put(@NonNull ProductIdentifierType key, @NonNull ProductDetailsType value)
     {
         Timber.d("put me %d", me);
         detailsTuner.fineTune(value);

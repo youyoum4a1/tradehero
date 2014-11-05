@@ -15,8 +15,8 @@ import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class AlertDialogUtil
 {
@@ -29,7 +29,7 @@ public class AlertDialogUtil
     }
     //</editor-fold>
 
-    @NotNull
+    @NonNull
     public DialogInterface.OnClickListener createDefaultCancelListener()
     {
         return new DialogInterface.OnClickListener()
@@ -41,9 +41,9 @@ public class AlertDialogUtil
         };
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithNegativeButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             int titleResId, int descriptionResId,
             int cancelResId)
     {
@@ -51,9 +51,9 @@ public class AlertDialogUtil
                 createDefaultCancelListener());
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithNegativeButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             int titleResId, int descriptionResId,
             int cancelResId,
             @Nullable DialogInterface.OnClickListener cancelListener)
@@ -65,21 +65,21 @@ public class AlertDialogUtil
                 cancelListener);
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithNegativeButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             @Nullable String titleRes, @Nullable String descriptionRes,
-            @NotNull String cancelRes)
+            @NonNull String cancelRes)
     {
         return popWithNegativeButton(context, titleRes, descriptionRes, cancelRes,
                 createDefaultCancelListener());
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithNegativeButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             @Nullable String titleRes, @Nullable String descriptionRes,
-            @NotNull String cancelRes,
+            @NonNull String cancelRes,
             @Nullable DialogInterface.OnClickListener cancelListener)
     {
         return popWithNegativeButton(context, titleRes,
@@ -88,11 +88,11 @@ public class AlertDialogUtil
                 cancelListener);
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithNegativeButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             @Nullable String titleRes, @Nullable String descriptionRes,
-            @NotNull String cancelRes,
+            @NonNull String cancelRes,
             @Nullable final ListAdapter detailsAdapter,
             @Nullable final OnClickListener adapterListener,
             @Nullable DialogInterface.OnClickListener cancelListener)
@@ -132,9 +132,9 @@ public class AlertDialogUtil
         return alertDialog;
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithOkCancelButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             int titleResId, int descriptionResId,
             int okResId, int cancelResId,
             @Nullable final DialogInterface.OnClickListener okClickListener)
@@ -143,9 +143,9 @@ public class AlertDialogUtil
                 okClickListener, createDefaultCancelListener());
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithOkCancelButton(
-            @NotNull final Context context,
+            @NonNull final Context context,
             int titleResId, int descriptionResId,
             int okResId, int cancelResId,
             @Nullable final DialogInterface.OnClickListener okClickListener,
@@ -160,10 +160,10 @@ public class AlertDialogUtil
                 cancelClickListener);
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithOkCancelButton(
-            @NotNull final Context context,
-            @NotNull String title, @NotNull String description,
+            @NonNull final Context context,
+            @NonNull String title, @NonNull String description,
             int okResId, int cancelResId,
             @Nullable final DialogInterface.OnClickListener okClickListener)
     {
@@ -171,10 +171,10 @@ public class AlertDialogUtil
                 okClickListener, createDefaultCancelListener());
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithOkCancelButton(
-            @NotNull final Context context,
-            @NotNull String title, @NotNull String description,
+            @NonNull final Context context,
+            @NonNull String title, @NonNull String description,
             int okResId, int cancelResId,
             @Nullable final DialogInterface.OnClickListener okClickListener,
             @Nullable final DialogInterface.OnClickListener cancelClickListener)
@@ -183,10 +183,10 @@ public class AlertDialogUtil
                 okClickListener, cancelClickListener, null);
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popWithOkCancelButton(
-            @NotNull final Context context,
-            @NotNull String title, @NotNull String description,
+            @NonNull final Context context,
+            @NonNull String title, @NonNull String description,
             int okResId, int cancelResId,
             @Nullable final DialogInterface.OnClickListener okClickListener,
             @Nullable final DialogInterface.OnClickListener cancelClickListener,
@@ -208,9 +208,9 @@ public class AlertDialogUtil
         return alertDialog;
     }
 
-    @NotNull
+    @NonNull
     public Dialog popTutorialContent(
-            @NotNull final Context context,
+            @NonNull final Context context,
             int layoutResourceId)
     {
         final Dialog dialog = new Dialog(context);
@@ -236,9 +236,9 @@ public class AlertDialogUtil
         return dialog;
     }
 
-    @NotNull
+    @NonNull
     public AlertDialog popMarketClosed(
-            @NotNull final Context context,
+            @NonNull final Context context,
             @Nullable SecurityId securityId)
     {
         AlertDialog dialog;
@@ -262,7 +262,7 @@ public class AlertDialogUtil
         return dialog;
     }
 
-    @NotNull public AlertDialog popAccountAlreadyLinked(@NotNull final Context context)
+    @NonNull public AlertDialog popAccountAlreadyLinked(@NonNull final Context context)
     {
         return popWithNegativeButton(
                 context,
@@ -271,7 +271,7 @@ public class AlertDialogUtil
                 R.string.ok);
     }
 
-    @NotNull public AlertDialog popNetworkUnavailable(@NotNull final Context context)
+    @NonNull public AlertDialog popNetworkUnavailable(@NonNull final Context context)
     {
         return popWithNegativeButton(
                 context,
@@ -280,7 +280,7 @@ public class AlertDialogUtil
                 R.string.ok);
     }
 
-    public void showProgressDialog(@NotNull final Context context, @Nullable String content)
+    public void showProgressDialog(@NonNull final Context context, @Nullable String content)
     {
         if (mProgressDialog != null)
         {

@@ -18,8 +18,8 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 
@@ -31,7 +31,7 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     @InjectView(R.id.post_comment_text) @Optional protected EditText postCommentText;
     @InjectView(R.id.mention_widget) @Optional protected MentionActionButtonsView mentionActionButtonsView;
 
-    @Inject @NotNull protected DiscussionKeyFactory discussionKeyFactory;
+    @Inject @NonNull protected DiscussionKeyFactory discussionKeyFactory;
     @Inject @BottomTabs protected Lazy<DashboardTabHost> dashboardTabHost;
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
 
@@ -39,12 +39,12 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
     private Subscription hasSelectedSubscription;
 
     //region Inflow bundling
-    public static void putDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKey discussionKey)
+    public static void putDiscussionKey(@NonNull Bundle args, @NonNull DiscussionKey discussionKey)
     {
         args.putBundle(DISCUSSION_KEY_BUNDLE_KEY, discussionKey.getArgs());
     }
 
-    @Nullable protected static DiscussionKey getDiscussionKey(@NotNull Bundle args, @NotNull DiscussionKeyFactory discussionKeyFactory)
+    @Nullable protected static DiscussionKey getDiscussionKey(@NonNull Bundle args, @NonNull DiscussionKeyFactory discussionKeyFactory)
     {
         if (args.containsKey(DISCUSSION_KEY_BUNDLE_KEY))
         {

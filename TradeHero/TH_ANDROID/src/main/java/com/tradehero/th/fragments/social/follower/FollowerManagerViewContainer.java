@@ -15,7 +15,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.list.ItemClickDTO;
 import com.tradehero.th.rx.view.list.ListViewObservable;
 import com.tradehero.th.utils.SecurityUtils;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class FollowerManagerViewContainer
@@ -32,13 +32,13 @@ public class FollowerManagerViewContainer
     private FollowerSummaryDTO followerSummaryDTO;
     private UserFollowerDTOSetAdapter adapter;
 
-    public FollowerManagerViewContainer(@NotNull Context context)
+    public FollowerManagerViewContainer(@NonNull Context context)
     {
         super();
         adapter = new UserFollowerDTOSetAdapter(context);
     }
 
-    public void onCreateView(@NotNull View view)
+    public void onCreateView(@NonNull View view)
     {
         ButterKnife.inject(this, view);
         pullToRefreshListView.setAdapter(adapter);
@@ -49,7 +49,7 @@ public class FollowerManagerViewContainer
         ButterKnife.reset(this);
     }
 
-    public void display(@NotNull FollowerSummaryDTO followerSummaryDTO)
+    public void display(@NonNull FollowerSummaryDTO followerSummaryDTO)
     {
         this.followerSummaryDTO = followerSummaryDTO;
 

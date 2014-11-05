@@ -8,7 +8,7 @@ import com.tradehero.th.api.security.SecurityId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityCompactDTO>
@@ -16,12 +16,12 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final SecurityIdCache securityIdCache;
+    @NonNull private final SecurityIdCache securityIdCache;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactCacheRx(
-            @NotNull SecurityIdCache securityIdCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull SecurityIdCache securityIdCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.securityIdCache = securityIdCache;
@@ -29,14 +29,14 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
     //</editor-fold>
 
     @Override protected SecurityCompactDTO putValue(
-            @NotNull SecurityId key, @NotNull SecurityCompactDTO value)
+            @NonNull SecurityId key, @NonNull SecurityCompactDTO value)
     {
         SecurityCompactDTO previous = super.putValue(key, value);
         securityIdCache.onNext(value.getSecurityIntegerId(), key);
         return previous;
     }
 
-    public void onNext(@NotNull List<? extends SecurityCompactDTO> securityCompacts)
+    public void onNext(@NonNull List<? extends SecurityCompactDTO> securityCompacts)
     {
         for (SecurityCompactDTO securityCompact : securityCompacts)
         {

@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 /**
@@ -36,7 +36,7 @@ abstract public class BaseSamsungInventoryFetcher<
     @Nullable private OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> inventoryFetchedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungInventoryFetcher(@NotNull Context context, int mode)
+    public BaseSamsungInventoryFetcher(@NonNull Context context, int mode)
     {
         super(context, mode);
         remainingGroupIds = new LinkedList<>();

@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,12 +25,12 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
     protected final String json;
 
     //<editor-fold desc="Constructors">
-    public BaseIABProductDetail(@NotNull String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetail(@NonNull String jsonSkuDetails) throws JSONException
     {
         this(IABConstants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
-    public BaseIABProductDetail(@NotNull String itemType, @NotNull String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetail(@NonNull String itemType, @NonNull String jsonSkuDetails) throws JSONException
     {
         this.itemType = itemType;
         this.json = jsonSkuDetails;

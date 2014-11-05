@@ -6,20 +6,20 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class DTOProcessorReadablePaginatedMessageReceived<
         MessageHeaderDTOType extends MessageHeaderDTO,
         ReadableType extends ReadablePaginatedDTO<MessageHeaderDTOType>>
      implements DTOProcessor<ReadableType>
 {
-    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final UserProfileCacheRx userProfileCache;
     @Nullable private final UserBaseKey readerUserId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorReadablePaginatedMessageReceived(
-            @NotNull UserProfileCacheRx userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCache,
             @Nullable UserBaseKey readerUserId)
     {
         this.userProfileCache = userProfileCache;
@@ -27,7 +27,7 @@ public class DTOProcessorReadablePaginatedMessageReceived<
     }
     //</editor-fold>
 
-    @Override @NotNull public ReadableType process(@NotNull ReadableType value)
+    @Override @NonNull public ReadableType process(@NonNull ReadableType value)
     {
         if (readerUserId != null)
         {

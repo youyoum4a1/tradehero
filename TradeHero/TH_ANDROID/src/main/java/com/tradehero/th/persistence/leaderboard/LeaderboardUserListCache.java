@@ -11,8 +11,8 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton @UserCache
 public class LeaderboardUserListCache
@@ -23,14 +23,14 @@ public class LeaderboardUserListCache
 {
     private static final int MAX_SIZE = 10;
 
-    @NotNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
-    @NotNull private final UserServiceWrapper userServiceWrapper;
+    @NonNull private final Lazy<LeaderboardUserCache> leaderboardUserCache;
+    @NonNull private final UserServiceWrapper userServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardUserListCache(
-            @NotNull Lazy<LeaderboardUserCache> leaderboardUserCache,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull Lazy<LeaderboardUserCache> leaderboardUserCache,
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(MAX_SIZE, dtoCacheUtil);
         this.leaderboardUserCache = leaderboardUserCache;
@@ -38,21 +38,21 @@ public class LeaderboardUserListCache
     }
     //</editor-fold>
 
-    @NotNull @Override public LeaderboardUserDTOList fetch(@NotNull SuggestHeroesListType key) throws Throwable
+    @NonNull @Override public LeaderboardUserDTOList fetch(@NonNull SuggestHeroesListType key) throws Throwable
     {
         return userServiceWrapper.suggestHeroes(key);
     }
 
-    @NotNull @Override protected LeaderboardUserIdList cutValue(
-            @NotNull SuggestHeroesListType key,
-            @NotNull LeaderboardUserDTOList value)
+    @NonNull @Override protected LeaderboardUserIdList cutValue(
+            @NonNull SuggestHeroesListType key,
+            @NonNull LeaderboardUserDTOList value)
     {
         leaderboardUserCache.get().put(value);
         return new LeaderboardUserIdList(value, (LeaderboardUserDTO) null);
     }
 
     @Nullable @Override protected LeaderboardUserDTOList inflateValue(
-            @NotNull SuggestHeroesListType key,
+            @NonNull SuggestHeroesListType key,
             @Nullable LeaderboardUserIdList cutValue)
     {
         if (cutValue == null)

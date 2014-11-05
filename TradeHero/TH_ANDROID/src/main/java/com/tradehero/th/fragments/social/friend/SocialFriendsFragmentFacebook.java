@@ -8,7 +8,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
@@ -59,7 +59,7 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         final List<UserFriendsDTO> usersToInvite;
 
         //<editor-fold desc="Constructors">
-        public FacebookInviteFriendCallback(@NotNull Context context, List<UserFriendsDTO> usersToInvite)
+        public FacebookInviteFriendCallback(@NonNull Context context, List<UserFriendsDTO> usersToInvite)
         {
             super(context);
             this.usersToInvite = usersToInvite;

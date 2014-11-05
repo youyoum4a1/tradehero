@@ -1,9 +1,9 @@
 package com.tradehero.th.models.social;
 
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface OnFreeFollowRequestedListener
 {
-    void freeFollowRequested(@NotNull UserBaseKey heroId);
+    void freeFollowRequested(@NonNull UserBaseKey heroId);
 }

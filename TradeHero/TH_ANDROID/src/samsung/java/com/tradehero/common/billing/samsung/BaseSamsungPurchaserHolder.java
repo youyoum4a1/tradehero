@@ -6,7 +6,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BaseSamsungPurchaserHolder<
         SamsungSKUType extends SamsungSKU,
@@ -33,11 +33,11 @@ abstract public class BaseSamsungPurchaserHolder<
         SamsungPurchaseType,
         SamsungExceptionType>
 {
-    @NotNull protected final Provider<SamsungPurchaserType> samsungPurchaserTypeProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, SamsungPurchaserType> purchasers;
+    @NonNull protected final Provider<SamsungPurchaserType> samsungPurchaserTypeProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, SamsungPurchaserType> purchasers;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungPurchaserHolder(@NotNull Provider<SamsungPurchaserType> samsungPurchaserTypeProvider)
+    public BaseSamsungPurchaserHolder(@NonNull Provider<SamsungPurchaserType> samsungPurchaserTypeProvider)
     {
         super();
         this.samsungPurchaserTypeProvider = samsungPurchaserTypeProvider;

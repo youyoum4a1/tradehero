@@ -11,22 +11,22 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton @UserCache @Deprecated
 public class UserBaseKeyListCache extends StraightCutDTOCacheNew<UserListType, UserSearchResultDTOList, UserBaseKeyList>
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @NotNull private final Lazy<UserServiceWrapper> userServiceWrapper;
-    @NotNull private final Lazy<UserSearchResultCacheRx> userSearchResultCache;
+    @NonNull private final Lazy<UserServiceWrapper> userServiceWrapper;
+    @NonNull private final Lazy<UserSearchResultCacheRx> userSearchResultCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserBaseKeyListCache(
-            @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<UserSearchResultCacheRx> userSearchResultCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
+            @NonNull Lazy<UserSearchResultCacheRx> userSearchResultCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
@@ -34,24 +34,24 @@ public class UserBaseKeyListCache extends StraightCutDTOCacheNew<UserListType, U
     }
     //</editor-fold>
 
-    @Override @NotNull public UserSearchResultDTOList fetch(@NotNull UserListType key) throws Throwable
+    @Override @NonNull public UserSearchResultDTOList fetch(@NonNull UserListType key) throws Throwable
     {
         return userServiceWrapper.get().searchUsers(key);
     }
 
-    @NotNull @Override protected UserBaseKeyList cutValue(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)
+    @NonNull @Override protected UserBaseKeyList cutValue(@NonNull UserListType key, @NonNull UserSearchResultDTOList value)
     {
         userSearchResultCache.get().onNext(value);
         return value.createKeys();
     }
 
-    @Nullable @Override protected UserSearchResultDTOList inflateValue(@NotNull UserListType key, @Nullable UserBaseKeyList cutValue)
+    @Nullable @Override protected UserSearchResultDTOList inflateValue(@NonNull UserListType key, @Nullable UserBaseKeyList cutValue)
     {
         if (cutValue == null)
         {
             return null;
         }
-        @NotNull UserSearchResultDTOList list = new UserSearchResultDTOList();
+        UserSearchResultDTOList list = new UserSearchResultDTOList();
         for (UserBaseKey key1 : cutValue)
         {
             list.add(userSearchResultCache.get().getValue(key1));

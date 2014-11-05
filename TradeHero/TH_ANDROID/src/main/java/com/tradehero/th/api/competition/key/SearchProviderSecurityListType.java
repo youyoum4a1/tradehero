@@ -1,7 +1,7 @@
 package com.tradehero.th.api.competition.key;
 
 import com.tradehero.th.api.competition.ProviderId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SearchProviderSecurityListType extends ProviderSecurityListType
 {
@@ -33,14 +33,14 @@ public class SearchProviderSecurityListType extends ProviderSecurityListType
                 (searchString == null ? 0 : searchString.hashCode());
     }
 
-    @Override protected boolean equals(@NotNull ProviderSecurityListType other)
+    @Override protected boolean equals(@NonNull ProviderSecurityListType other)
     {
         return super.equals(other)
                 && other instanceof SearchProviderSecurityListType
                 && equals((SearchProviderSecurityListType) other);
     }
 
-    protected boolean equals(@NotNull SearchProviderSecurityListType other)
+    protected boolean equals(@NonNull SearchProviderSecurityListType other)
     {
         return super.equals(other)
                 && searchString.equals(other.searchString);

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFriendDTOView>
@@ -34,7 +34,7 @@ public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFrien
         super(context, itemLayoutId);
     }
 
-    @Override public void setItems(@NotNull List<UserFriendsDTO> items)
+    @Override public void setItems(@NonNull List<UserFriendsDTO> items)
     {
         filterOutInvitedFriends(items);
 

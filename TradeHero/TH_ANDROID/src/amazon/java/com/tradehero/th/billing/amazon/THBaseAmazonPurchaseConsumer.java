@@ -8,7 +8,7 @@ import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumer;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonPurchaseConsumer
         extends BaseAmazonPurchaseConsumer<
@@ -17,15 +17,15 @@ public class THBaseAmazonPurchaseConsumer
                 THAmazonPurchase>
     implements THAmazonPurchaseConsumer
 {
-    @NotNull protected final THAmazonExceptionFactory thAmazonExceptionFactory;
-    @NotNull protected final THAmazonPurchaseCache thiabPurchaseCache;
+    @NonNull protected final THAmazonExceptionFactory thAmazonExceptionFactory;
+    @NonNull protected final THAmazonPurchaseCache thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseConsumer(
-            @NotNull Context appContext,
-            @NotNull AmazonPurchasingService purchasingService,
-            @NotNull THAmazonExceptionFactory amazonExceptionFactory,
-            @NotNull THAmazonPurchaseCache thAmazonPurchaseCache)
+            @NonNull Context appContext,
+            @NonNull AmazonPurchasingService purchasingService,
+            @NonNull THAmazonExceptionFactory amazonExceptionFactory,
+            @NonNull THAmazonPurchaseCache thAmazonPurchaseCache)
     {
         super(appContext, purchasingService);
         this.thAmazonExceptionFactory = amazonExceptionFactory;
@@ -33,7 +33,7 @@ public class THBaseAmazonPurchaseConsumer
     }
     //</editor-fold>
 
-    @Override @NotNull protected AmazonPurchaseCache<AmazonSKU, THAmazonOrderId, THAmazonPurchase> getPurchaseCache()
+    @Override @NonNull protected AmazonPurchaseCache<AmazonSKU, THAmazonOrderId, THAmazonPurchase> getPurchaseCache()
     {
         return thiabPurchaseCache;
     }

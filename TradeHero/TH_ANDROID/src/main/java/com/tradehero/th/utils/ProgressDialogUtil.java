@@ -6,8 +6,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ProgressDialogUtil
 {
@@ -20,7 +20,7 @@ public class ProgressDialogUtil
     }
     //</editor-fold>
 
-    @Nullable protected ProgressDialog getDialog(@NotNull Context context)
+    @Nullable protected ProgressDialog getDialog(@NonNull Context context)
     {
         WeakReference<ProgressDialog> weakDialog = dialogs.get(context);
         if (weakDialog != null)
@@ -30,7 +30,7 @@ public class ProgressDialogUtil
         return null;
     }
 
-    @NotNull public ProgressDialog create(@NotNull Context context, @Nullable String title, @Nullable String message)
+    @NonNull public ProgressDialog create(@NonNull Context context, @Nullable String title, @Nullable String message)
     {
         ProgressDialog dialog = getDialog(context);
         if (dialog == null)
@@ -47,24 +47,24 @@ public class ProgressDialogUtil
         return dialog;
     }
 
-    @NotNull public ProgressDialog create(@NotNull Context context, int titleResId, int messageResId)
+    @NonNull public ProgressDialog create(@NonNull Context context, int titleResId, int messageResId)
     {
         return create(context, context.getString(titleResId), context.getString(messageResId));
     }
 
-    @NotNull public ProgressDialog show(@NotNull Context context, @Nullable String title, @Nullable String message)
+    @NonNull public ProgressDialog show(@NonNull Context context, @Nullable String title, @Nullable String message)
     {
         ProgressDialog dialog = create(context, title, message);
         dialog.show();
         return dialog;
     }
 
-    @NotNull public ProgressDialog show(@NotNull Context context, int titleResId, int messageResId)
+    @NonNull public ProgressDialog show(@NonNull Context context, int titleResId, int messageResId)
     {
         return show(context, context.getString(titleResId), context.getString(messageResId));
     }
 
-    public void dismiss(@NotNull Context context)
+    public void dismiss(@NonNull Context context)
     {
         ProgressDialog dialog = getDialog(context);
         if (dialog != null)

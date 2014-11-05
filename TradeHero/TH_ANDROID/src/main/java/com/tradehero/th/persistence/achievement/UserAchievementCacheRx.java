@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -27,18 +27,18 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
     public static final int DEFAULT_VALUE_SIZE = 20;
     public static final int DEFAULT_SUBJECT_SIZE = 2;
 
-    @NotNull private final AchievementServiceWrapper achievementServiceWrapper;
-    @NotNull private final BroadcastUtils broadcastUtils;
-    @NotNull private final Lazy<CurrentUserId> currentUserId;
-    @NotNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
+    @NonNull private final AchievementServiceWrapper achievementServiceWrapper;
+    @NonNull private final BroadcastUtils broadcastUtils;
+    @NonNull private final Lazy<CurrentUserId> currentUserId;
+    @NonNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserAchievementCacheRx(
-            @NotNull AchievementServiceWrapper achievementServiceWrapper,
-            @NotNull BroadcastUtils broadcastUtils,
-            @NotNull Lazy<CurrentUserId> currentUserId,
-            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull AchievementServiceWrapper achievementServiceWrapper,
+            @NonNull BroadcastUtils broadcastUtils,
+            @NonNull Lazy<CurrentUserId> currentUserId,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
@@ -48,12 +48,12 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
     }
     //</editor-fold>
 
-    @NotNull @Override protected Observable<UserAchievementDTO> fetch(@NotNull UserAchievementId key)
+    @NonNull @Override protected Observable<UserAchievementDTO> fetch(@NonNull UserAchievementId key)
     {
         return achievementServiceWrapper.getUserAchievementDetailsRx(key);
     }
 
-    @Nullable public UserAchievementDTO pop(@NotNull UserAchievementId userAchievementId)
+    @Nullable public UserAchievementDTO pop(@NonNull UserAchievementId userAchievementId)
     {
         UserAchievementDTO userAchievementDTO = getValue(userAchievementId);
         if (userAchievementDTO != null)
@@ -63,14 +63,14 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
         return userAchievementDTO;
     }
 
-    public boolean shouldShow(@NotNull UserAchievementId userAchievementId)
+    public boolean shouldShow(@NonNull UserAchievementId userAchievementId)
     {
         UserAchievementDTO userAchievementDTO = getValue(userAchievementId);
         return userAchievementDTO != null &&
                 !userAchievementDTO.shouldShow();
     }
 
-    public void onNextNonDefDuplicates(@NotNull List<? extends UserAchievementDTO> userAchievementDTOs)
+    public void onNextNonDefDuplicates(@NonNull List<? extends UserAchievementDTO> userAchievementDTOs)
     {
         for (UserAchievementDTO userAchievementDTO : userAchievementDTOs)
         {
@@ -85,7 +85,7 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
         }
     }
 
-    public BroadcastTaskNew onNextAndBroadcast(@NotNull UserAchievementDTO userAchievementDTO)
+    public BroadcastTaskNew onNextAndBroadcast(@NonNull UserAchievementDTO userAchievementDTO)
     {
         onNext(userAchievementDTO.getUserAchievementId(), userAchievementDTO);
         final UserAchievementId userAchievementId = userAchievementDTO.getUserAchievementId();
@@ -93,9 +93,9 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
         return broadcastUtils.enqueue(userAchievementId);
     }
 
-    public boolean isDuplicateDef(@NotNull UserAchievementDTO userAchievementDTO)
+    public boolean isDuplicateDef(@NonNull UserAchievementDTO userAchievementDTO)
     {
-        for (@NotNull UserAchievementDTO cachedValue: new ArrayList<>(snapshot().values()))
+        for (UserAchievementDTO cachedValue: new ArrayList<>(snapshot().values()))
         {
             if (userAchievementDTO.isSameDefId(cachedValue))
             {
@@ -105,7 +105,7 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
         return false;
     }
 
-    public void clearPortfolioCaches(@NotNull AchievementDefDTO achievementDefDTO)
+    public void clearPortfolioCaches(@NonNull AchievementDefDTO achievementDefDTO)
     {
         if (achievementDefDTO.virtualDollars != 0)
         {

@@ -26,8 +26,8 @@ import com.tradehero.th.loaders.TimelineListLoader;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -50,8 +50,8 @@ public class MainTimelineAdapter extends ArrayAdapter
     private final int statResId;
     private UserProfileDTO userProfileDTO;
 
-    public MainTimelineAdapter(@NotNull Activity context,
-            @NotNull UserBaseKey shownUserBaseKey,
+    public MainTimelineAdapter(@NonNull Activity context,
+            @NonNull UserBaseKey shownUserBaseKey,
             int timelineItemViewResId,
             int portfolioItemViewResId,
             int statResId)
@@ -76,7 +76,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         this.profileClickListener = profileClickListener;
     }
 
-    protected void notifyProfileClickListener(@NotNull TimelineFragment.TabType tabType)
+    protected void notifyProfileClickListener(@NonNull TimelineFragment.TabType tabType)
     {
         TimelineProfileClickListener listenerCopy = profileClickListener;
         if (listenerCopy != null)
@@ -122,7 +122,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         castedView.changeButtonLook(currentTabType);
         castedView.setTimelineProfileClickListener(new TimelineProfileClickListener()
         {
-            @Override public void onBtnClicked(@NotNull TimelineFragment.TabType tabType)
+            @Override public void onBtnClicked(@NonNull TimelineFragment.TabType tabType)
             {
                 notifyProfileClickListener(tabType);
             }

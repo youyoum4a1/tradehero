@@ -22,7 +22,7 @@ import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungLogicHolderFull
@@ -39,20 +39,20 @@ public class THSamsungLogicHolderFull
         SamsungException>
     implements THSamsungLogicHolder
 {
-    @NotNull protected final THSamsungGroupItemCache groupItemCache;
-    @NotNull protected final Handler uiHandler;
+    @NonNull protected final THSamsungGroupItemCache groupItemCache;
+    @NonNull protected final Handler uiHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungLogicHolderFull(
-            @NotNull SamsungSKUListCache samsungSKUListCache,
-            @NotNull THSamsungProductDetailCache thskuDetailCache,
-            @NotNull THSamsungBillingAvailableTesterHolder thSamsungBillingAvailableTesterHolder,
-            @NotNull THSamsungProductIdentifierFetcherHolder thSamsungProductIdentifierFetcherHolder,
-            @NotNull THSamsungInventoryFetcherHolder thSamsungInventoryFetcherHolder,
-            @NotNull THSamsungPurchaseFetcherHolder thSamsungPurchaseFetcherHolder,
-            @NotNull THSamsungPurchaserHolder thSamsungPurchaserHolder,
-            @NotNull THSamsungPurchaseReporterHolder thSamsungPurchaseReporterHolder,
-            @NotNull THSamsungGroupItemCache groupItemCache)
+            @NonNull SamsungSKUListCache samsungSKUListCache,
+            @NonNull THSamsungProductDetailCache thskuDetailCache,
+            @NonNull THSamsungBillingAvailableTesterHolder thSamsungBillingAvailableTesterHolder,
+            @NonNull THSamsungProductIdentifierFetcherHolder thSamsungProductIdentifierFetcherHolder,
+            @NonNull THSamsungInventoryFetcherHolder thSamsungInventoryFetcherHolder,
+            @NonNull THSamsungPurchaseFetcherHolder thSamsungPurchaseFetcherHolder,
+            @NonNull THSamsungPurchaserHolder thSamsungPurchaserHolder,
+            @NonNull THSamsungPurchaseReporterHolder thSamsungPurchaseReporterHolder,
+            @NonNull THSamsungGroupItemCache groupItemCache)
     {
         super(
                 samsungSKUListCache,

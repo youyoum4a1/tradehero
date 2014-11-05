@@ -16,7 +16,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
 {
@@ -59,7 +59,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         lbmuRoi.setBackgroundResource(R.drawable.basic_transparent_selector);
     }
 
-    @Override public void linkWith(@NotNull UserBaseDTO userBaseDTO)
+    @Override public void linkWith(@NonNull UserBaseDTO userBaseDTO)
     {
         super.linkWith(userBaseDTO);
     }

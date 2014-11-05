@@ -11,8 +11,8 @@ import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
@@ -94,7 +94,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
         return userBaseDTO != null && isFollowingUser(userBaseDTO.id);
     }
 
-    public boolean isPremiumFollowingUser(@NotNull UserBaseKey userBaseKey)
+    public boolean isPremiumFollowingUser(@NonNull UserBaseKey userBaseKey)
     {
         return this.premiumHeroIds != null && this.premiumHeroIds.contains(userBaseKey.key);
     }

@@ -12,8 +12,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.THPurchaseReporter;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -44,7 +44,7 @@ public class THBillingRequest<
             BillingExceptionType> purchaseReportedListener;
 
     //<editor-fold desc="Constructors">
-    protected THBillingRequest(@NotNull Builder<
+    protected THBillingRequest(@NonNull Builder<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,

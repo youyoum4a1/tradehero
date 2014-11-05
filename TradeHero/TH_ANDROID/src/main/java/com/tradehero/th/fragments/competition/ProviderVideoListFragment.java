@@ -29,7 +29,7 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -104,7 +104,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         super.onDestroyView();
     }
 
-    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         if (andDisplay)
@@ -150,7 +150,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
     }
 
-    private void launchVideo(@NotNull HelpVideoDTO videoDTO)
+    private void launchVideo(@NonNull HelpVideoDTO videoDTO)
     {
         openWithDefaultApp(videoDTO);
     }

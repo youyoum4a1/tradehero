@@ -37,8 +37,8 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -79,7 +79,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         start = System.currentTimeMillis();
     }
 
-    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
@@ -176,7 +176,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         return securityCompactCache;
     }
 
-    @Override public void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
     {
         super.linkWith(securityId, andDisplay);
         fetchSecurity(securityId);
@@ -192,7 +192,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
     }
 
-    protected void fetchSecurity(@NotNull SecurityId securityId)
+    protected void fetchSecurity(@NonNull SecurityId securityId)
     {
         AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -292,7 +292,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         .subscribe(createDiscussionFetchObserver());
     }
 
-    @NotNull protected Observer<Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>> createNewsCacheObserver()
+    @NonNull protected Observer<Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>> createNewsCacheObserver()
     {
         return new NewsHeadlineNewsListObserver();
     }

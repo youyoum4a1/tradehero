@@ -9,7 +9,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Endpoint;
 
 public class ProviderPageIntent extends OneProviderIntent
@@ -18,9 +18,9 @@ public class ProviderPageIntent extends OneProviderIntent
 
     //<editor-fold desc="Constructors">
     public ProviderPageIntent(
-            @NotNull Resources resources,
-            @NotNull ProviderId providerId,
-            @NotNull String uri)
+            @NonNull Resources resources,
+            @NonNull ProviderId providerId,
+            @NonNull String uri)
     {
         super(resources);
         setData(getProviderActionUri(providerId, uri));
@@ -29,16 +29,16 @@ public class ProviderPageIntent extends OneProviderIntent
     }
     //</editor-fold>
 
-    @NotNull public Uri getProviderActionUri(
-            @NotNull ProviderId providerId,
-            @NotNull String uri)
+    @NonNull public Uri getProviderActionUri(
+            @NonNull ProviderId providerId,
+            @NonNull String uri)
     {
         return Uri.parse(getProviderActionUriPath(providerId, uri));
     }
 
-    @NotNull public String getProviderActionUriPath(
-            @NotNull ProviderId portfolioId,
-            @NotNull String uri)
+    @NonNull public String getProviderActionUriPath(
+            @NonNull ProviderId portfolioId,
+            @NonNull String uri)
     {
         return resources.getString(
                 getIntentActionUriResId(),
@@ -64,7 +64,7 @@ public class ProviderPageIntent extends OneProviderIntent
         return R.string.intent_uri_action_provider_page;
     }
 
-    @NotNull public String getCompleteForwardUriPath()
+    @NonNull public String getCompleteForwardUriPath()
     {
         String path = getForwardUriPath();
         Uri forwardUri = Uri.parse(path);
@@ -78,21 +78,21 @@ public class ProviderPageIntent extends OneProviderIntent
         }
     }
 
-    @NotNull public String getForwardUriPath()
+    @NonNull public String getForwardUriPath()
     {
         return getForwardUriPath(resources, getData());
     }
 
-    @NotNull public static String getForwardUriPath(
-            @NotNull Resources resources,
-            @NotNull Uri data)
+    @NonNull public static String getForwardUriPath(
+            @NonNull Resources resources,
+            @NonNull Uri data)
     {
         return getForwardUriPath(resources, data.getPathSegments());
     }
 
-    @NotNull public static String getForwardUriPath(
-            @NotNull Resources resources,
-            @NotNull List<String> pathSegments)
+    @NonNull public static String getForwardUriPath(
+            @NonNull Resources resources,
+            @NonNull List<String> pathSegments)
     {
         // Only 1 decode is necessary here as the getDataPathSegments already does one.
         return Uri.decode(

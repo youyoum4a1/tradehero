@@ -1,7 +1,7 @@
 package com.tradehero.common.utils;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,7 +49,7 @@ public class IOUtils
         return new String(streamToBytes(stream), "UTF-8");
     }
 
-    public static String errorToBodyString(@NotNull RetrofitError error) throws IOException
+    public static String errorToBodyString(@NonNull RetrofitError error) throws IOException
     {
         return streamToString(error.getResponse().getBody().in());
     }

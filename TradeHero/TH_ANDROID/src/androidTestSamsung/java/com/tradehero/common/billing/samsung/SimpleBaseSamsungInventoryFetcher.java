@@ -7,7 +7,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import java.util.Arrays;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SimpleBaseSamsungInventoryFetcher
     extends BaseSamsungInventoryFetcher<
@@ -29,7 +29,7 @@ public class SimpleBaseSamsungInventoryFetcher
     {
         return new BaseSamsungProductDetail<SamsungSKU>(samsungItemGroup, itemVo)
         {
-            @NotNull @Override public SamsungSKU getProductIdentifier()
+            @NonNull @Override public SamsungSKU getProductIdentifier()
             {
                 return new SamsungSKU(samsungItemGroup.groupId, itemVo.getItemId());
             }

@@ -1,11 +1,11 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserOnLeaderboardKey extends LeaderboardKey
 {
-    @NotNull public final UserBaseKey userBaseKey;
+    @NonNull public final UserBaseKey userBaseKey;
 
     //<editor-fold desc="Constructors">
     public UserOnLeaderboardKey(int leaderboardId, int userId)
@@ -15,8 +15,8 @@ public class UserOnLeaderboardKey extends LeaderboardKey
     }
 
     public UserOnLeaderboardKey(
-            @NotNull LeaderboardKey leaderboardKey,
-            @NotNull UserBaseKey userBaseKey)
+            @NonNull LeaderboardKey leaderboardKey,
+            @NonNull UserBaseKey userBaseKey)
     {
         super(leaderboardKey.id);
         this.userBaseKey = userBaseKey;
@@ -29,14 +29,14 @@ public class UserOnLeaderboardKey extends LeaderboardKey
                 userBaseKey.hashCode();
     }
 
-    @Override protected boolean equalFields(@NotNull LeaderboardKey other)
+    @Override protected boolean equalFields(@NonNull LeaderboardKey other)
     {
         return super.equalFields(other)
                 && other instanceof UserOnLeaderboardKey
                 && equalFields((UserOnLeaderboardKey) other);
     }
 
-    protected boolean equalFields(@NotNull UserOnLeaderboardKey other)
+    protected boolean equalFields(@NonNull UserOnLeaderboardKey other)
     {
         return super.equalFields(other)
                 && userBaseKey.equals(other.userBaseKey);

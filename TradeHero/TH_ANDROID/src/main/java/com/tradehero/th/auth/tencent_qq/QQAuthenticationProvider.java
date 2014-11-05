@@ -9,7 +9,7 @@ import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.network.service.SocialLinker;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,14 +21,14 @@ import rx.functions.Func1;
 public class QQAuthenticationProvider extends SocialAuthenticationProvider
 {
     private static final String SCOPE = "all";
-    @NotNull private final Context context;
-    @NotNull private final Tencent tencent;
+    @NonNull private final Context context;
+    @NonNull private final Tencent tencent;
 
     //<editor-fold desc="Constructors">
     @Inject public QQAuthenticationProvider(
-            @NotNull SocialLinker socialLinker,
-            @NotNull Context context,
-            @NotNull Tencent tencent)
+            @NonNull SocialLinker socialLinker,
+            @NonNull Context context,
+            @NonNull Tencent tencent)
     {
         super(socialLinker);
         this.context = context;
@@ -43,7 +43,7 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
         return Observable.create(new OperatorTencent(tencent, activity, SCOPE))
             .map(new Func1<QQAppAuthData, AuthData>()
             {
-                @Override public AuthData call(@NotNull QQAppAuthData qqAppAuthData)
+                @Override public AuthData call(@NonNull QQAppAuthData qqAppAuthData)
                 {
                     return new AuthData(
                             SocialNetworkEnum.QQ,

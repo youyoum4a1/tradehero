@@ -4,9 +4,8 @@ import android.os.Bundle;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.Iterator;
 import java.util.Set;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
 {
@@ -27,7 +26,6 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
     public final Float minSharpeRatio;
     public final Float minConsistency;
 
-    @Contract("null -> null; !null -> !null")
     private static Float clampConsistency(@Nullable Float consistency)
     {
         if (consistency == null)
@@ -74,7 +72,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.minConsistency = clampConsistency(other.minConsistency);
     }
 
-    public PerPagedFilteredLeaderboardKey(@NotNull Bundle args, @Nullable PerPagedFilteredLeaderboardKey defaultValues)
+    public PerPagedFilteredLeaderboardKey(@NonNull Bundle args, @Nullable PerPagedFilteredLeaderboardKey defaultValues)
     {
         super(args, defaultValues);
         this.winRatio = args.containsKey(BUNDLE_KEY_WIN_RATIO) ? (Float) args.getFloat(BUNDLE_KEY_WIN_RATIO) : ((defaultValues != null) ? defaultValues.winRatio : null);
@@ -85,7 +83,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 : ((defaultValues != null) ? defaultValues.minConsistency : null));
     }
 
-    public PerPagedFilteredLeaderboardKey(@NotNull Set<String> catValues,  @Nullable PerPagedFilteredLeaderboardKey defaultValues)
+    public PerPagedFilteredLeaderboardKey(@NonNull Set<String> catValues,  @Nullable PerPagedFilteredLeaderboardKey defaultValues)
     {
         super(catValues, defaultValues);
         Iterator<String> iterator = catValues.iterator();
@@ -159,14 +157,14 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 ^ (minConsistency == null ? 0 : minConsistency.hashCode());
     }
 
-    @Override public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
+    @Override public boolean equalFields(@NonNull PerPagedLeaderboardKey other)
     {
         return super.equalFields(other)
                 && other instanceof PerPagedFilteredLeaderboardKey
                 && equalFields((PerPagedFilteredLeaderboardKey) other);
     }
 
-    public boolean equalFields(@NotNull PerPagedFilteredLeaderboardKey other)
+    public boolean equalFields(@NonNull PerPagedFilteredLeaderboardKey other)
     {
         return super.equalFields(other) &&
                 (winRatio == null ? other.winRatio == null : winRatio.equals(other.winRatio)) &&
@@ -191,7 +189,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         return new PerPagedFilteredLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (winRatio == null)

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.market;
 
 import java.util.Comparator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ExchangeCompactDTODescriptionNameComparator<ExchangeCompactDTOType extends ExchangeCompactDTO>
         implements Comparator<ExchangeCompactDTOType>
@@ -28,7 +28,7 @@ public class ExchangeCompactDTODescriptionNameComparator<ExchangeCompactDTOType 
         return compareName(lhs, rhs);
     }
 
-    protected int compareDesc(@NotNull ExchangeCompactDTOType lhs, @NotNull ExchangeCompactDTOType rhs)
+    protected int compareDesc(@NonNull ExchangeCompactDTOType lhs, @NonNull ExchangeCompactDTOType rhs)
     {
         if (lhs.desc == null)
         {
@@ -41,7 +41,7 @@ public class ExchangeCompactDTODescriptionNameComparator<ExchangeCompactDTOType 
         return lhs.desc.compareTo(rhs.desc);
     }
 
-    protected int compareName(@NotNull ExchangeCompactDTOType lhs, @NotNull ExchangeCompactDTOType rhs)
+    protected int compareName(@NonNull ExchangeCompactDTOType lhs, @NonNull ExchangeCompactDTOType rhs)
     {
         return lhs.name.compareTo(rhs.name);
     }

@@ -34,8 +34,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -201,7 +201,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected class AllRelationsFollowRequestedListener implements OnPremiumFollowRequestedListener
     {
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(@NonNull UserBaseKey userBaseKey)
         {
             handleFollowRequested(userBaseKey);
         }
@@ -211,19 +211,19 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
             implements FollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(
-                @NotNull UserBaseKey userFollowed,
-                @NotNull UserProfileDTO currentUserProfileDTO)
+                @NonNull UserBaseKey userFollowed,
+                @NonNull UserProfileDTO currentUserProfileDTO)
         {
             forceUpdateLook(userFollowed);
         }
 
-        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
         {
             // nothing for now
         }
     }
 
-    protected void forceUpdateLook(@NotNull final UserBaseKey userFollowed)
+    protected void forceUpdateLook(@NonNull final UserBaseKey userFollowed)
     {
         AndroidObservable.bindFragment(
                 this,

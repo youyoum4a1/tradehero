@@ -12,8 +12,8 @@ import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THAmazonRequest<
         AmazonSKUListKeyType extends AmazonSKUListKey,
@@ -45,7 +45,7 @@ public class THAmazonRequest<
             AmazonExceptionType> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
-    protected THAmazonRequest(@NotNull Builder<
+    protected THAmazonRequest(@NonNull Builder<
             AmazonSKUListKeyType,
             AmazonSKUType,
             AmazonSKUListType,

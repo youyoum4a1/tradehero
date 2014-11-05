@@ -23,7 +23,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 
@@ -163,7 +163,7 @@ public class AlertItemView extends RelativeLayout
         }
     }
 
-    private Spanned getFormattedActiveUntilString(@NotNull Date activeUntilDate)
+    private Spanned getFormattedActiveUntilString(@NonNull Date activeUntilDate)
     {
         return Html.fromHtml(getContext().getString(R.string.stock_alert_active_until_date, DateUtils.getFormattedDate(getResources(), activeUntilDate)));
     }

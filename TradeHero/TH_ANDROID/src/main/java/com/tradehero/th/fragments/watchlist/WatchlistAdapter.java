@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, WatchlistItemView>
 {
@@ -29,7 +29,7 @@ public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, W
         showGainLossPercentage = show;
     }
 
-    public void remove(@NotNull SecurityId object)
+    public void remove(@NonNull SecurityId object)
     {
         WatchlistPositionDTO item;
         for (int position = 0; position < getCount(); position++)

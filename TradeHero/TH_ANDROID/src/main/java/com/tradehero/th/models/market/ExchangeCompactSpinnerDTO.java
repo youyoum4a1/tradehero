@@ -8,24 +8,24 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence
 {
     public static final String ALL_EXCHANGES = "allExchanges";
 
-    @NotNull private final Resources resources;
+    @NonNull private final Resources resources;
     @Nullable private Drawable flagDrawable;
 
-    public static String getName(@NotNull Resources resources, @NotNull Bundle args)
+    public static String getName(@NonNull Resources resources, @NonNull Bundle args)
     {
         return args.getString(BUNDLE_KEY_NAME, resources.getString(R.string.trending_filter_exchange_all));
     }
 
     //<editor-fold desc="Constructors">
-    public ExchangeCompactSpinnerDTO(@NotNull Resources resources)
+    public ExchangeCompactSpinnerDTO(@NonNull Resources resources)
     {
         super(-1,
                 ALL_EXCHANGES,
@@ -38,13 +38,13 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
         this.resources = resources;
     }
 
-    public ExchangeCompactSpinnerDTO(@NotNull Resources resources, @NotNull ExchangeCompactDTO exchangeDTO)
+    public ExchangeCompactSpinnerDTO(@NonNull Resources resources, @NonNull ExchangeCompactDTO exchangeDTO)
     {
         super(exchangeDTO);
         this.resources = resources;
     }
 
-    public ExchangeCompactSpinnerDTO(@NotNull Resources resources, @NotNull Bundle bundle)
+    public ExchangeCompactSpinnerDTO(@NonNull Resources resources, @NonNull Bundle bundle)
     {
         super(bundle);
         this.resources = resources;
@@ -57,7 +57,7 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
         return name.equals(ALL_EXCHANGES) ? null : name;
     }
 
-    @NotNull @JsonIgnore public String getUsableDisplayName()
+    @NonNull @JsonIgnore public String getUsableDisplayName()
     {
         return name.equals(ALL_EXCHANGES) ? resources.getString(R.string.trending_filter_exchange_all) : name;
     }
@@ -71,7 +71,7 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
         return super.getExchangeByName();
     }
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         String usableName = getUsableDisplayName();
         if (desc == null)
@@ -129,7 +129,7 @@ public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements Cha
                 equals((ExchangeCompactSpinnerDTO) other);
     }
 
-    protected boolean equals(@NotNull ExchangeCompactSpinnerDTO other)
+    protected boolean equals(@NonNull ExchangeCompactSpinnerDTO other)
     {
         return name.equals(other.name);
     }

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.tradehero.th.api.pagination.PaginatedKey;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PaginatedNotificationListKey extends NotificationListKey
     implements PaginatedKey
@@ -41,7 +41,7 @@ public class PaginatedNotificationListKey extends NotificationListKey
     }
     //</editor-fold>
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
 

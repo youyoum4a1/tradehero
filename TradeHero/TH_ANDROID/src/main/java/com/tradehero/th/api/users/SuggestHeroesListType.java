@@ -3,8 +3,8 @@ package com.tradehero.th.api.users;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.SectorId;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SuggestHeroesListType extends UserListType
         implements PagedDTOKey
@@ -57,7 +57,7 @@ public class SuggestHeroesListType extends UserListType
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(@NotNull UserListType other)
+    @Override public int compareTo(@NonNull UserListType other)
     {
         if (!(other instanceof SuggestHeroesListType))
         {

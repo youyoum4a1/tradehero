@@ -8,31 +8,31 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.CompetitionFragment;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class OneProviderIntent extends ProviderIntent
 {
     //<editor-fold desc="Constructors">
-    protected OneProviderIntent(@NotNull Resources resources)
+    protected OneProviderIntent(@NonNull Resources resources)
     {
         super(resources);
     }
 
     protected OneProviderIntent(
-            @NotNull Resources resources,
-            @NotNull ProviderId providerId)
+            @NonNull Resources resources,
+            @NonNull ProviderId providerId)
     {
         super(resources);
         setData(getProviderActionUri(providerId));
     }
     //</editor-fold>
 
-    @NotNull public Uri getProviderActionUri(@NotNull ProviderId providerId)
+    @NonNull public Uri getProviderActionUri(@NonNull ProviderId providerId)
     {
         return Uri.parse(getProviderActionUriPath(providerId));
     }
 
-    @NotNull public String getProviderActionUriPath(@NotNull ProviderId portfolioId)
+    @NonNull public String getProviderActionUriPath(@NonNull ProviderId portfolioId)
     {
         return resources.getString(
                 getIntentActionUriResId(),
@@ -55,22 +55,22 @@ abstract public class OneProviderIntent extends ProviderIntent
     }
 
     public static ProviderId getProviderId(
-            @NotNull Resources resources,
-            @NotNull Uri data)
+            @NonNull Resources resources,
+            @NonNull Uri data)
     {
         return getProviderId(resources, data.getPathSegments());
     }
 
     public static ProviderId getProviderId(
-            @NotNull Resources resources,
-            @NotNull List<String> pathSegments)
+            @NonNull Resources resources,
+            @NonNull List<String> pathSegments)
     {
         return new ProviderId(Integer.parseInt(pathSegments.get(resources.getInteger(R.integer.intent_uri_action_provider_path_index_id))));
     }
 
     @Override abstract public Class<? extends Fragment> getActionFragment();
 
-    @Override public void populate(@NotNull Bundle bundle)
+    @Override public void populate(@NonNull Bundle bundle)
     {
         super.populate(bundle);
         CompetitionFragment.putProviderId(bundle, getProviderId());

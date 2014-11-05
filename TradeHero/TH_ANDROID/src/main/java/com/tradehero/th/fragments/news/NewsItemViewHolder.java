@@ -25,7 +25,7 @@ import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +52,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     }
     //</editor-fold>
 
-    @Override public void onFinishInflate(@NotNull View view)
+    @Override public void onFinishInflate(@NonNull View view)
     {
         super.onFinishInflate(view);
         if (mNewsDetailReference != null)

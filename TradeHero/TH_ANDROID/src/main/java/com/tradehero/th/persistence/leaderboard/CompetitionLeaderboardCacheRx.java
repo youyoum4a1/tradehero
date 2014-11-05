@@ -8,7 +8,7 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,19 +17,19 @@ public class CompetitionLeaderboardCacheRx extends BaseFetchDTOCacheRx<Competiti
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NonNull private final CompetitionServiceWrapper competitionServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public CompetitionLeaderboardCacheRx(
-            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.competitionServiceWrapper = competitionServiceWrapper;
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<CompetitionLeaderboardDTO> fetch(@NotNull CompetitionLeaderboardId key)
+    @Override @NonNull public Observable<CompetitionLeaderboardDTO> fetch(@NonNull CompetitionLeaderboardId key)
     {
         return competitionServiceWrapper.getCompetitionLeaderboardRx(key);
     }

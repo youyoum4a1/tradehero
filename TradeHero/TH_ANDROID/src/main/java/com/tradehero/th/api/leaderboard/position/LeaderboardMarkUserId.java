@@ -3,7 +3,7 @@ package com.tradehero.th.api.leaderboard.position;
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
     implements GetPositionsDTOKey
@@ -16,13 +16,13 @@ public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
         super(key);
     }
 
-    public LeaderboardMarkUserId(@NotNull Bundle args)
+    public LeaderboardMarkUserId(@NonNull Bundle args)
     {
         super(args);
     }
     //</editor-fold>
 
-    public static boolean isLeaderboardMarkUserId(@NotNull Bundle args)
+    public static boolean isLeaderboardMarkUserId(@NonNull Bundle args)
     {
         return args.containsKey(BUNDLE_KEY);
     }

@@ -6,8 +6,8 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PortfolioCompactDTO implements DTO
 {
@@ -15,7 +15,7 @@ public class PortfolioCompactDTO implements DTO
 
     public int id;
     //<editor-fold desc="Populated on client side">
-    @NotNull public Integer userId;
+    @NonNull public Integer userId;
     //</editor-fold>
 
     public Integer providerId;
@@ -43,17 +43,17 @@ public class PortfolioCompactDTO implements DTO
     }
     //</editor-fold>
 
-    @JsonIgnore @NotNull public UserBaseKey getUserBaseKey()
+    @JsonIgnore @NonNull public UserBaseKey getUserBaseKey()
     {
         return new UserBaseKey(userId);
     }
 
-    @JsonIgnore @NotNull public PortfolioId getPortfolioId()
+    @JsonIgnore @NonNull public PortfolioId getPortfolioId()
     {
         return new PortfolioId(id);
     }
 
-    @JsonIgnore @NotNull public OwnedPortfolioId getOwnedPortfolioId()
+    @JsonIgnore @NonNull public OwnedPortfolioId getOwnedPortfolioId()
     {
         return new OwnedPortfolioId(userId, id);
     }
@@ -107,7 +107,7 @@ public class PortfolioCompactDTO implements DTO
         return cashBalance * getProperRefCcyToUsdRate();
     }
 
-    @JsonIgnore @NotNull public String getNiceCurrency()
+    @JsonIgnore @NonNull public String getNiceCurrency()
     {
         if (currencyDisplay != null && !currencyDisplay.isEmpty())
         {
@@ -126,7 +126,7 @@ public class PortfolioCompactDTO implements DTO
         return txnCostUsd != null ? txnCostUsd : SecurityUtils.DEFAULT_TRANSACTION_COST_USD;
     }
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         return "[PortfolioCompactDTO " +
                 "cashBalance=" + cashBalance +

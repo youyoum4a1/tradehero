@@ -9,7 +9,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.SectorCompactDTO;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class SectorSpinnerItemView extends RelativeLayout
     implements DTOView<SectorCompactDTO>

@@ -8,7 +8,7 @@ import com.tradehero.th.api.level.key.LevelDefId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class LevelDefCacheRx extends BaseDTOCacheRx<LevelDefId, LevelDefDTO>
@@ -17,13 +17,13 @@ public class LevelDefCacheRx extends BaseDTOCacheRx<LevelDefId, LevelDefDTO>
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 101;
 
     //<editor-fold desc="Constructors">
-    @Inject public LevelDefCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public LevelDefCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 
-    public void onNext(@NotNull List<LevelDefDTO> levelDefDTOList)
+    public void onNext(@NonNull List<LevelDefDTO> levelDefDTOList)
     {
         for (LevelDefDTO levelDefDTO : levelDefDTOList)
         {

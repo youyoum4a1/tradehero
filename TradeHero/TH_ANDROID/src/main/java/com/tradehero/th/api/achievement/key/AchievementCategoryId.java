@@ -2,15 +2,15 @@ package com.tradehero.th.api.achievement.key;
 
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AchievementCategoryId implements DTOKey
 {
-    @NotNull public final Integer userId;
-    @NotNull public final Integer categoryId;
+    @NonNull public final Integer userId;
+    @NonNull public final Integer categoryId;
 
     //<editor-fold desc="Constructors">
-    public AchievementCategoryId(@NotNull UserBaseKey userBaseKey, int categoryId)
+    public AchievementCategoryId(@NonNull UserBaseKey userBaseKey, int categoryId)
     {
         this.userId = userBaseKey.getUserId();
         this.categoryId = categoryId;

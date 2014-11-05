@@ -5,12 +5,12 @@ import com.tradehero.th.api.UniqueFieldDTODeserialiser;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserFriendsDTODeserialiser extends UniqueFieldDTODeserialiser<UserFriendsDTO>
 {
     //<editor-fold desc="Constructors">
-    @Inject public UserFriendsDTODeserialiser(@NotNull ObjectMapper objectMapper)
+    @Inject public UserFriendsDTODeserialiser(@NonNull ObjectMapper objectMapper)
     {
         super(objectMapper, createUniqueAttributes(), UserFriendsDTO.class);
 

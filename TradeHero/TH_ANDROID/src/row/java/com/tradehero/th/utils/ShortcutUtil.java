@@ -1,11 +1,11 @@
 package com.tradehero.th.utils;
 
 import android.app.Activity;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ShortcutUtil
 {
-    public static void recreateShortcut(@NotNull Activity activity)
+    public static void recreateShortcut(@NonNull Activity activity)
     {
         // Nothing to do
     }

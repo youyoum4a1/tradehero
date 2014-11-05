@@ -4,12 +4,12 @@ import android.content.Intent;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public abstract class PrecacheNotificationHandler implements PushNotificationHandler
 {
-    @NotNull protected final NotificationCacheRx notificationCache;
+    @NonNull protected final NotificationCacheRx notificationCache;
 
     protected NotificationKey getNotificationKey()
     {
@@ -17,18 +17,18 @@ public abstract class PrecacheNotificationHandler implements PushNotificationHan
     }
     private NotificationKey notificationKey;
 
-    public PrecacheNotificationHandler(@NotNull NotificationCacheRx notificationCache)
+    public PrecacheNotificationHandler(@NonNull NotificationCacheRx notificationCache)
     {
         this.notificationCache = notificationCache;
     }
 
-    @Override public boolean handle(@NotNull Intent intent)
+    @Override public boolean handle(@NonNull Intent intent)
     {
         injectNotificationKey(intent);
         return false;
     }
 
-    private void injectNotificationKey(@NotNull Intent intent)
+    private void injectNotificationKey(@NonNull Intent intent)
     {
         String notificationIdValue = intent.getStringExtra(PushConstants.KEY_PUSH_ID);
         if (notificationIdValue != null)

@@ -6,15 +6,15 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class OpenSimpleFollowUserAssistant extends SimpleFollowUserAssistant
 {
     //<editor-fold desc="Constructors">
     public OpenSimpleFollowUserAssistant(
-            @NotNull Context context,
-            @NotNull UserBaseKey heroId,
+            @NonNull Context context,
+            @NonNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener)
     {
         super(context, heroId, userFollowedListener);
@@ -31,12 +31,12 @@ public class OpenSimpleFollowUserAssistant extends SimpleFollowUserAssistant
         super.launchPremiumFollow();
     }
 
-    @Override public void notifyFollowSuccess(@NotNull UserBaseKey userToFollow, @NotNull UserProfileDTO currentUserProfile)
+    @Override public void notifyFollowSuccess(@NonNull UserBaseKey userToFollow, @NonNull UserProfileDTO currentUserProfile)
     {
         super.notifyFollowSuccess(userToFollow, currentUserProfile);
     }
 
-    @Override public void notifyFollowFailed(@NotNull UserBaseKey userToFollow, @NotNull Throwable error)
+    @Override public void notifyFollowFailed(@NonNull UserBaseKey userToFollow, @NonNull Throwable error)
     {
         super.notifyFollowFailed(userToFollow, error);
     }

@@ -1,13 +1,13 @@
 package com.tradehero.th.fragments.settings;
 
 import android.preference.Preference;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class OneSettingViewHolder extends BaseSettingViewHolder
 {
     protected Preference clickablePref;
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
 

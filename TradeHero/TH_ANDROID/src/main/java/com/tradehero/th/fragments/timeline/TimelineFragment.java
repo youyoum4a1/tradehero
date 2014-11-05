@@ -70,8 +70,8 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -90,7 +90,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         bundle.putBundle(USER_BASE_KEY_BUNDLE_KEY, userBaseKey.getArgs());
     }
 
-    @Nullable protected static UserBaseKey getUserBaseKey(@NotNull Bundle args)
+    @Nullable protected static UserBaseKey getUserBaseKey(@NonNull Bundle args)
     {
         if (args.containsKey(USER_BASE_KEY_BUNDLE_KEY))
         {
@@ -514,7 +514,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void display(@NotNull TabType tabType)
+    protected void display(@NonNull TabType tabType)
     {
         currentTab = tabType;
         mainTimelineAdapter.setCurrentTabType(tabType);
@@ -569,7 +569,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Initial methods">
-    private MainTimelineAdapter createTimelineAdapter(@NotNull UserBaseKey shownUserBaseKey)
+    private MainTimelineAdapter createTimelineAdapter(@NonNull UserBaseKey shownUserBaseKey)
     {
         return new MainTimelineAdapter(getActivity(),
                 shownUserBaseKey,
@@ -721,7 +721,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         });
     }
 
-    protected void handleFollowRequested(@NotNull final UserBaseDTO heroDTO)
+    protected void handleFollowRequested(@NonNull final UserBaseDTO heroDTO)
     {
         detachChoiceFollowAssistant();
         choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
@@ -784,7 +784,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return 0;
     }
 
-    protected void freeFollow(@NotNull UserBaseKey heroId, @Nullable Callback<UserProfileDTO> followCallback)
+    protected void freeFollow(@NonNull UserBaseKey heroId, @Nullable Callback<UserProfileDTO> followCallback)
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
@@ -796,7 +796,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         return new TimelineProfileClickListener()
         {
-            @Override public void onBtnClicked(@NotNull TabType tabType)
+            @Override public void onBtnClicked(@NonNull TabType tabType)
             {
                 display(tabType);
             }
@@ -830,12 +830,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     public class TimelineFollowForMessageRequestedListener implements OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
         {
             freeFollow(heroId, createFreeFollowForMessageCallback());
         }
 
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)
         {
             premiumFollowUser(heroId);
         }
@@ -844,8 +844,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected class TimelinePremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(
-                @NotNull UserBaseKey userFollowed,
-                @NotNull UserProfileDTO currentUserProfileDTO)
+                @NonNull UserBaseKey userFollowed,
+                @NonNull UserProfileDTO currentUserProfileDTO)
         {
             if (!mIsOtherProfile)
             {
@@ -855,7 +855,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
         }
 
-        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
         {
             // Nothing for now
         }
@@ -886,12 +886,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected class TimelineMessageThreadHeaderCacheListener implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull MessageHeaderDTO value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull MessageHeaderDTO value)
         {
             linkWithMessageThread(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             if (!(error instanceof RetrofitError) ||
                     (((RetrofitError) error).getResponse() != null &&

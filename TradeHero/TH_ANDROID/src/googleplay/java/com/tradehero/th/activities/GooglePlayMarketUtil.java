@@ -7,7 +7,7 @@ import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class GooglePlayMarketUtil implements MarketUtil
@@ -15,17 +15,17 @@ public class GooglePlayMarketUtil implements MarketUtil
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
 
-    @NotNull protected final AlertDialogUtil alertDialogUtil;
+    @NonNull protected final AlertDialogUtil alertDialogUtil;
 
     //<editor-fold desc="Constructors">
-    @Inject public GooglePlayMarketUtil(@NotNull AlertDialogUtil alertDialogUtil)
+    @Inject public GooglePlayMarketUtil(@NonNull AlertDialogUtil alertDialogUtil)
     {
         super();
         this.alertDialogUtil = alertDialogUtil;
     }
     //</editor-fold>
 
-    @Override public void showAppOnMarket(@NotNull Activity activity)
+    @Override public void showAppOnMarket(@NonNull Activity activity)
     {
         try
         {
@@ -52,7 +52,7 @@ public class GooglePlayMarketUtil implements MarketUtil
         }
     }
 
-    @Override public void sendToReviewAllOnMarket(@NotNull Activity activity)
+    @Override public void sendToReviewAllOnMarket(@NonNull Activity activity)
     {
         showAppOnMarket(activity);
     }

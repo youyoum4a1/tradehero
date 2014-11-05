@@ -7,17 +7,17 @@ import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class OpenFollowUserAssistant extends FollowUserAssistant
 {
     //<editor-fold desc="Constructors">
     public OpenFollowUserAssistant(
-            @NotNull Context context,
-            @NotNull UserBaseKey heroId,
+            @NonNull Context context,
+            @NonNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         super(context, heroId, userFollowedListener, applicablePortfolioId);
     }

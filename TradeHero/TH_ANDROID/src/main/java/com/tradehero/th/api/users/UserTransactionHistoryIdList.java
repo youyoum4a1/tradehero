@@ -2,7 +2,7 @@ package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Deprecated
 public class UserTransactionHistoryIdList extends DTOKeyIdList<UserTransactionHistoryId>
@@ -13,9 +13,9 @@ public class UserTransactionHistoryIdList extends DTOKeyIdList<UserTransactionHi
         super();
     }
 
-    public UserTransactionHistoryIdList(@NotNull Collection<? extends UserTransactionHistoryDTO> transactionHistoryDTOs)
+    public UserTransactionHistoryIdList(@NonNull Collection<? extends UserTransactionHistoryDTO> transactionHistoryDTOs)
     {
-        for (@NotNull UserTransactionHistoryDTO transactionHistoryDTO : transactionHistoryDTOs)
+        for (UserTransactionHistoryDTO transactionHistoryDTO : transactionHistoryDTOs)
         {
             add(transactionHistoryDTO.getUserTransactionHistoryId());
         }

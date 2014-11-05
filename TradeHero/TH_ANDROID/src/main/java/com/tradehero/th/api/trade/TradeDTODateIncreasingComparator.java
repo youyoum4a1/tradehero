@@ -2,7 +2,7 @@ package com.tradehero.th.api.trade;
 
 import java.util.Comparator;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class TradeDTODateIncreasingComparator implements Comparator<TradeDTO>
 {

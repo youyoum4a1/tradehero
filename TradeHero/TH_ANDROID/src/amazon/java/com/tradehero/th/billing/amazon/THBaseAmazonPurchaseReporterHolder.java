@@ -9,7 +9,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<
@@ -22,10 +22,10 @@ public class THBaseAmazonPurchaseReporterHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseReporterHolder(
-            @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NotNull Provider<THAmazonPurchaseReporter> thAmazonPurchaseReporterProvider)
+            @NonNull Lazy<UserProfileCache> userProfileCache,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NonNull Provider<THAmazonPurchaseReporter> thAmazonPurchaseReporterProvider)
     {
         super(userProfileCache, portfolioCompactListCache, portfolioCache, thAmazonPurchaseReporterProvider);
     }

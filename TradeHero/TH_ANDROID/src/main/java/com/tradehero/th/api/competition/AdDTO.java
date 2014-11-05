@@ -1,6 +1,6 @@
 package com.tradehero.th.api.competition;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class AdDTO
 {

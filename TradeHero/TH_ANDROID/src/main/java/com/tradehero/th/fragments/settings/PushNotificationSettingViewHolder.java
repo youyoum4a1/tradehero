@@ -12,31 +12,31 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 
 public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewHolder
 {
-    @NotNull protected final PushNotificationManager pushNotificationManager;
+    @NonNull protected final PushNotificationManager pushNotificationManager;
 
     @Nullable protected CheckBoxPreference pushNotificationSound;
     @Nullable protected CheckBoxPreference pushNotificationVibrate;
 
     //<editor-fold desc="Constructors">
     @Inject public PushNotificationSettingViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull PushNotificationManager pushNotificationManager)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull PushNotificationManager pushNotificationManager)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
         this.pushNotificationManager = pushNotificationManager;
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         pushNotificationSound = (CheckBoxPreference) preferenceFragment.findPreference(
@@ -77,7 +77,7 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         return R.string.key_settings_notifications_push;
     }
 
-    @Override protected void updateStatus(@NotNull UserProfileDTO userProfileDTO)
+    @Override protected void updateStatus(@NonNull UserProfileDTO userProfileDTO)
     {
         if (clickablePref != null)
         {

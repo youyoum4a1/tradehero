@@ -2,15 +2,15 @@ package com.tradehero.th.fragments.settings;
 
 import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Subscription;
 
 abstract public class BaseSettingViewHolder implements SettingViewHolder
 {
     @Nullable protected DashboardPreferenceFragment preferenceFragment;
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         this.preferenceFragment = preferenceFragment;
     }

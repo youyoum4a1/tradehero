@@ -40,7 +40,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,7 +55,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     private HeroManagerViewContainer viewContainer;
     private HeroListItemAdapter heroListAdapter;
     // The follower whose heroes we are listing
-    @NotNull private UserBaseKey followerId;
+    @NonNull private UserBaseKey followerId;
     private UserProfileDTO userProfileDTO;
     private List<HeroDTO> heroDTOs;
     protected SimpleFollowUserAssistant simpleFollowUserAssistant;
@@ -75,7 +75,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
     }
 
-    @NotNull public static UserBaseKey getFollowerId(@NotNull Bundle args)
+    @NonNull public static UserBaseKey getFollowerId(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
@@ -265,8 +265,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         {
             @Override
             public void onUserFollowSuccess(
-                    @NotNull UserBaseKey userFollowed,
-                    @NotNull UserProfileDTO currentUserProfileDTO)
+                    @NonNull UserBaseKey userFollowed,
+                    @NonNull UserProfileDTO currentUserProfileDTO)
             {
                 Timber.d("onUserFollowSuccess");
                 THToast.show(getString(R.string.manage_heroes_unfollow_success));
@@ -274,7 +274,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                 fetchHeroes();
             }
 
-            @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+            @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
             {
                 //TODO offical accounts, do not unfollow
                 if (userFollowed.isOfficialAccount())
@@ -368,7 +368,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
     }
 
-    protected void unfollow(@NotNull UserBaseKey userBaseKey)
+    protected void unfollow(@NonNull UserBaseKey userBaseKey)
     {
         detachFollowAssistant();
         simpleFollowUserAssistant = new SimpleFollowUserAssistant(getActivity(), userBaseKey, createPremiumUserFollowedListener());

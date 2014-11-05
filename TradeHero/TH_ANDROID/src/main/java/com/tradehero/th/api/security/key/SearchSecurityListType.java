@@ -1,6 +1,6 @@
 package com.tradehero.th.api.security.key;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SearchSecurityListType extends SecurityListType
 {
@@ -32,21 +32,21 @@ public class SearchSecurityListType extends SecurityListType
                 super.hashCode();
     }
 
-    @Override protected boolean equals(@NotNull SecurityListType other)
+    @Override protected boolean equals(@NonNull SecurityListType other)
     {
         return super.equals(other)
                 && other instanceof SearchSecurityListType
                 && equals((SearchSecurityListType) other);
     }
 
-    protected boolean equals(@NotNull SearchSecurityListType other)
+    protected boolean equals(@NonNull SearchSecurityListType other)
     {
         return super.equals(other) &&
                 (searchString == null ? other.searchString == null : searchString.equals(other.searchString));
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(@NotNull SecurityListType another)
+    @Override public int compareTo(@NonNull SecurityListType another)
     {
         if (!SearchSecurityListType.class.isInstance(another))
         {

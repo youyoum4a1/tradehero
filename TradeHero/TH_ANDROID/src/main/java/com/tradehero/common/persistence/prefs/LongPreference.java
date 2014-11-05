@@ -2,25 +2,25 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LongPreference extends AbstractPreference<Long>
 {
     public LongPreference(
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
             long defaultValue)
     {
         super(preference, key, defaultValue);
     }
 
-    @Override @NotNull public Long get()
+    @Override @NonNull public Long get()
     {
         return preference.getLong(key, defaultValue);
     }
 
-    @Override public void set(@NotNull Long value)
+    @Override public void set(@NonNull Long value)
     {
         preference.edit().putLong(key, value).apply();
     }

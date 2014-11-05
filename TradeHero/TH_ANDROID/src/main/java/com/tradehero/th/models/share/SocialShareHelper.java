@@ -20,17 +20,17 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SocialShareHelper
 {
-    @NotNull protected final Context applicationContext;
-    @NotNull protected final Provider<Activity> activityHolder;
-    @NotNull protected final Provider<DashboardNavigator> navigatorProvider;
-    @NotNull protected final ShareDialogFactory shareDialogFactory;
-    @NotNull protected final AlertDialogUtil alertDialogUtil;
-    @NotNull protected final Provider<SocialSharer> socialSharerProvider;
+    @NonNull protected final Context applicationContext;
+    @NonNull protected final Provider<Activity> activityHolder;
+    @NonNull protected final Provider<DashboardNavigator> navigatorProvider;
+    @NonNull protected final ShareDialogFactory shareDialogFactory;
+    @NonNull protected final AlertDialogUtil alertDialogUtil;
+    @NonNull protected final Provider<SocialSharer> socialSharerProvider;
 
     @Nullable protected OnMenuClickedListener menuClickedListener;
 
@@ -42,12 +42,12 @@ public class SocialShareHelper
 
     //<editor-fold desc="Constructors">
     @Inject public SocialShareHelper(
-            @NotNull Context applicationContext,
-            @NotNull Provider<Activity> activityHolder,
-            @NotNull Provider<DashboardNavigator> navigatorProvider,
-            @NotNull ShareDialogFactory shareDialogFactory,
-            @NotNull AlertDialogUtil alertDialogUtil,
-            @NotNull Provider<SocialSharer> socialSharerProvider)
+            @NonNull Context applicationContext,
+            @NonNull Provider<Activity> activityHolder,
+            @NonNull Provider<DashboardNavigator> navigatorProvider,
+            @NonNull ShareDialogFactory shareDialogFactory,
+            @NonNull AlertDialogUtil alertDialogUtil,
+            @NonNull Provider<SocialSharer> socialSharerProvider)
     {
         this.applicationContext = applicationContext;
         this.activityHolder = activityHolder;
@@ -153,7 +153,7 @@ public class SocialShareHelper
     }
     //</editor-fold>
 
-    public void share(@NotNull AbstractDiscussionCompactDTO discussionToShare)
+    public void share(@NonNull AbstractDiscussionCompactDTO discussionToShare)
     {
         cancelFormWaiting();
         dismissShareDialog();
@@ -177,7 +177,7 @@ public class SocialShareHelper
             notifyShareMenuCancelClicked();
         }
 
-        @Override public void onShareRequestedClicked(@NotNull SocialShareFormDTO socialShareFormDTO)
+        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
         {
             dismissShareDialog();
             notifyShareMenuRequestedClicked(socialShareFormDTO);
@@ -185,7 +185,7 @@ public class SocialShareHelper
         }
     }
 
-    public void share(@NotNull SocialShareFormDTO socialShareFormDTO)
+    public void share(@NonNull SocialShareFormDTO socialShareFormDTO)
     {
         cancelFormWaiting();
         formWaitingToConnect = socialShareFormDTO;

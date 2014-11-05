@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
 {
@@ -18,7 +18,7 @@ public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
     @JsonProperty(USER_TO_FOLLOW_JSON_KEY)
     public UserBaseKey userToFollow;
     @JsonProperty(APPLICABLE_PORTFOLIO_JSON_KEY)
-    @NotNull public OwnedPortfolioId applicablePortfolioId;
+    @NonNull public OwnedPortfolioId applicablePortfolioId;
     @JsonProperty(PURCHASE_VO_STRING_JSON_KEY)
     public String purchaseVoJsonString;
 
@@ -30,7 +30,7 @@ public class SamsungPurchaseInProcessDTO extends SamsungPurchaseReportDTO
         super();
     }
 
-    public SamsungPurchaseInProcessDTO(@NotNull THSamsungPurchase samsungPurchase)
+    public SamsungPurchaseInProcessDTO(@NonNull THSamsungPurchase samsungPurchase)
     {
         super(samsungPurchase);
         this.groupId = samsungPurchase.getGroupId();

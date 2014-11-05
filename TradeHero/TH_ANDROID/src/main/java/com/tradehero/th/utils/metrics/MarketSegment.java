@@ -1,7 +1,7 @@
 package com.tradehero.th.utils.metrics;
 
 import com.tradehero.th.api.misc.DeviceType;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public enum MarketSegment
 {
@@ -9,9 +9,9 @@ public enum MarketSegment
     ROW(DeviceType.Android), // Rest Of World
     ;
 
-    @NotNull public final DeviceType deviceType;
+    @NonNull public final DeviceType deviceType;
 
-    MarketSegment(@NotNull DeviceType deviceType)
+    MarketSegment(@NonNull DeviceType deviceType)
     {
         this.deviceType = deviceType;
     }

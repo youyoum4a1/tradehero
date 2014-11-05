@@ -9,7 +9,7 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class THIABPurchaseCache
         extends IABPurchaseCache<
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
     public static final int DEFAULT_MAX_SIZE = 200;
 
     //<editor-fold desc="Constructors">
-    @Inject public THIABPurchaseCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public THIABPurchaseCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }

@@ -10,8 +10,8 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton @UserCache @Deprecated
 public class UserTransactionHistoryListCache extends StraightCutDTOCacheNew<
@@ -21,14 +21,14 @@ public class UserTransactionHistoryListCache extends StraightCutDTOCacheNew<
 {
     public static final int DEFAULT_MAX_SIZE = 50;
 
-    @NotNull private final UserServiceWrapper userServiceWrapper;
-    @NotNull private final UserTransactionHistoryCacheRx userTransactionHistoryCache;
+    @NonNull private final UserServiceWrapper userServiceWrapper;
+    @NonNull private final UserTransactionHistoryCacheRx userTransactionHistoryCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTransactionHistoryListCache(
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull UserTransactionHistoryCacheRx userTransactionHistoryCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull UserTransactionHistoryCacheRx userTransactionHistoryCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
@@ -36,21 +36,21 @@ public class UserTransactionHistoryListCache extends StraightCutDTOCacheNew<
     }
     //</editor-fold>
 
-    @Override @NotNull public UserTransactionHistoryDTOList fetch(@NotNull UserTransactionHistoryListType key)
+    @Override @NonNull public UserTransactionHistoryDTOList fetch(@NonNull UserTransactionHistoryListType key)
     {
         return userServiceWrapper.getUserTransactions(key);
     }
 
-    @NotNull @Override protected UserTransactionHistoryIdList cutValue(
-            @NotNull UserTransactionHistoryListType key,
-            @NotNull UserTransactionHistoryDTOList value)
+    @NonNull @Override protected UserTransactionHistoryIdList cutValue(
+            @NonNull UserTransactionHistoryListType key,
+            @NonNull UserTransactionHistoryDTOList value)
     {
         userTransactionHistoryCache.onNext(value);
         return new UserTransactionHistoryIdList(value);
     }
 
     @Nullable @Override protected UserTransactionHistoryDTOList inflateValue(
-            @NotNull UserTransactionHistoryListType key,
+            @NonNull UserTransactionHistoryListType key,
             @Nullable UserTransactionHistoryIdList cutValue)
     {
         if (cutValue == null)

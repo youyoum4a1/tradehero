@@ -3,19 +3,19 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.client.Response;
 import rx.Observable;
 
 public class HomeServiceWrapper
 {
-    @NotNull private final HomeService homeService;
-    @NotNull private final HomeServiceRx homeServiceRx;
+    @NonNull private final HomeService homeService;
+    @NonNull private final HomeServiceRx homeServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public HomeServiceWrapper(
-            @NotNull HomeService homeService,
-            @NotNull HomeServiceRx homeServiceRx)
+            @NonNull HomeService homeService,
+            @NonNull HomeServiceRx homeServiceRx)
     {
         this.homeService = homeService;
         this.homeServiceRx = homeServiceRx;
@@ -23,14 +23,14 @@ public class HomeServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Home Page Content">
-    public Response getHomePageContent(@NotNull UserBaseKey userBaseKey)
+    public Response getHomePageContent(@NonNull UserBaseKey userBaseKey)
     {
         return homeService.getHomePageContent(
                 userBaseKey.key,
                 Constants.USE_BETA_HOME_PAGE ? true : null);
     }
 
-    @NotNull public Observable<Response> getHomePageContentRx(@NotNull UserBaseKey userBaseKey)
+    @NonNull public Observable<Response> getHomePageContentRx(@NonNull UserBaseKey userBaseKey)
     {
         return homeServiceRx.getHomePageContent(
                 userBaseKey.key,

@@ -7,35 +7,35 @@ import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THComposedAmazonPurchase implements THAmazonPurchase
 {
-    @NotNull public final Receipt receipt;
-    @NotNull private final AmazonPurchaseInProcessDTO purchaseInProcessDTO;
+    @NonNull public final Receipt receipt;
+    @NonNull private final AmazonPurchaseInProcessDTO purchaseInProcessDTO;
 
     //<editor-fold desc="Constructors">
     public THComposedAmazonPurchase(
-            @NotNull Receipt receipt,
-            @NotNull AmazonPurchaseInProcessDTO purchaseInProcessDTO)
+            @NonNull Receipt receipt,
+            @NonNull AmazonPurchaseInProcessDTO purchaseInProcessDTO)
     {
         this.receipt = receipt;
         this.purchaseInProcessDTO = purchaseInProcessDTO;
     }
     //</editor-fold>
 
-    @NotNull @Override public THAmazonOrderId getOrderId()
+    @NonNull @Override public THAmazonOrderId getOrderId()
     {
         return new THAmazonOrderId(receipt);
     }
 
-    @NotNull @Override public AmazonSKU getProductIdentifier()
+    @NonNull @Override public AmazonSKU getProductIdentifier()
     {
         return new AmazonSKU(receipt.getSku());
     }
 
-    @NotNull @Override public AmazonPurchaseInProcessDTO getPurchaseToSaveDTO()
+    @NonNull @Override public AmazonPurchaseInProcessDTO getPurchaseToSaveDTO()
     {
         return purchaseInProcessDTO;
     }
@@ -50,22 +50,22 @@ public class THComposedAmazonPurchase implements THAmazonPurchase
         return purchaseInProcessDTO.userToFollow;
     }
 
-    @NotNull @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
+    @NonNull @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         return purchaseInProcessDTO.applicablePortfolioId;
     }
 
-    @Override public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
+    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this.purchaseInProcessDTO.applicablePortfolioId = applicablePortfolioId;
     }
 
-    @NotNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
+    @NonNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
     {
         return new AmazonPurchaseReportDTO(purchaseInProcessDTO);
     }
 
-    @NotNull @Override public String getAmazonUserId()
+    @NonNull @Override public String getAmazonUserId()
     {
         return purchaseInProcessDTO.amazonUserId;
     }

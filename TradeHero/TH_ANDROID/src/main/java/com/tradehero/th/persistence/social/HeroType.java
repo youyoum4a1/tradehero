@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.social;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public enum HeroType
 {
@@ -10,9 +10,9 @@ public enum HeroType
     ALL(2, "All");
 
     public final int typeId;
-    @NotNull public final String description;
+    @NonNull public final String description;
 
-    private HeroType(int id, @NotNull String description)
+    private HeroType(int id, @NonNull String description)
     {
         this.typeId = id;
         this.description = description;

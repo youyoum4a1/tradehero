@@ -14,7 +14,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache @Deprecated
@@ -22,22 +22,22 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
 {
     public static final int DEFAULT_MAX_SIZE = 1000;
 
-    @NotNull private final Lazy<UserServiceWrapper> userServiceWrapper;
-    @NotNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
-    @NotNull private final Lazy<HeroListCacheRx> heroListCache;
-    @NotNull private final Lazy<LeaderboardCache> leaderboardCache;
-    @NotNull private final Lazy<MessageHeaderListCacheRx> messageHeaderListCache;
-    @NotNull private final Lazy<NotificationListCacheRx> notificationListCache;
+    @NonNull private final Lazy<UserServiceWrapper> userServiceWrapper;
+    @NonNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
+    @NonNull private final Lazy<HeroListCacheRx> heroListCache;
+    @NonNull private final Lazy<LeaderboardCache> leaderboardCache;
+    @NonNull private final Lazy<MessageHeaderListCacheRx> messageHeaderListCache;
+    @NonNull private final Lazy<NotificationListCacheRx> notificationListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCache(
-            @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<UserProfileCompactCacheRx> userProfileCompactCache,
-            @NotNull Lazy<HeroListCacheRx> heroListCache,
-            @NotNull Lazy<LeaderboardCache> leaderboardCache,
-            @NotNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
-            @NotNull Lazy<NotificationListCacheRx> notificationListCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
+            @NonNull Lazy<UserProfileCompactCacheRx> userProfileCompactCache,
+            @NonNull Lazy<HeroListCacheRx> heroListCache,
+            @NonNull Lazy<LeaderboardCache> leaderboardCache,
+            @NonNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
+            @NonNull Lazy<NotificationListCacheRx> notificationListCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
@@ -49,13 +49,13 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
     }
     //</editor-fold>
 
-    @Override @NotNull public UserProfileDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NonNull public UserProfileDTO fetch(@NonNull UserBaseKey key) throws Throwable
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUser(key);
     }
 
-    @Override public UserProfileDTO put(@NotNull UserBaseKey userBaseKey, @NotNull UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO put(@NonNull UserBaseKey userBaseKey, @NonNull UserProfileDTO userProfileDTO)
     {
         heroListCache.get().invalidate(userBaseKey);
         if (userProfileDTO.mostSkilledLbmu != null)
@@ -78,7 +78,7 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
         return previous;
     }
 
-    public void updateXPIfNecessary(@NotNull UserBaseKey userBaseKey, int newXpTotal)
+    public void updateXPIfNecessary(@NonNull UserBaseKey userBaseKey, int newXpTotal)
     {
         UserProfileDTO userProfileDTO = get(userBaseKey);
         if(userProfileDTO != null && userProfileDTO.currentXP < newXpTotal)
@@ -88,7 +88,7 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
         }
     }
 
-    public void addAchievements(@NotNull UserBaseKey userBaseKey, int count)
+    public void addAchievements(@NonNull UserBaseKey userBaseKey, int count)
     {
         if (count <= 0)
         {
@@ -102,7 +102,7 @@ public class UserProfileCache extends StraightDTOCacheNew<UserBaseKey, UserProfi
         }
     }
 
-    @NotNull public Observable<UserProfileDTO> createObservable(@NotNull UserBaseKey key)
+    @NonNull public Observable<UserProfileDTO> createObservable(@NonNull UserBaseKey key)
     {
         UserProfileDTO cached = get(key);
         if (cached != null)

@@ -27,8 +27,8 @@ import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import java.util.ArrayDeque;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -44,16 +44,16 @@ public class XpToast extends RelativeLayout
     @Inject LevelDefListCacheRx levelDefListCache;
     @Inject BroadcastUtils broadcastUtils;
 
-    @NotNull private LevelDefListId levelDefListId = new LevelDefListId();
+    @NonNull private LevelDefListId levelDefListId = new LevelDefListId();
     private Subscription mLevelDefListCacheSubscription;
 
-    @NotNull private ArrayDeque<LevelAnimationDefinition> levelAnimationDefinitions = new ArrayDeque<>();
+    @NonNull private ArrayDeque<LevelAnimationDefinition> levelAnimationDefinitions = new ArrayDeque<>();
     private LevelAnimationDefinition currentLevelAnimationDefinition;
     @Nullable private UserXPAchievementDTO xpToBePlayed;
     private boolean isLevelDefError;
 
     //<editor-fold desc="Constructors">
-    public XpToast(@NotNull Context context, AttributeSet attrs)
+    public XpToast(@NonNull Context context, AttributeSet attrs)
     {
         super(context, attrs);
         //Always hidden after inflate
@@ -101,7 +101,7 @@ public class XpToast extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    public void showWhenReady(@NotNull UserXPAchievementDTO userXPAchievementDTO)
+    public void showWhenReady(@NonNull UserXPAchievementDTO userXPAchievementDTO)
     {
         cleanUp();
         populateAnimationLists(userXPAchievementDTO);
@@ -119,13 +119,13 @@ public class XpToast extends RelativeLayout
         }
     }
 
-    private void setAndPlay(@NotNull UserXPAchievementDTO userXPAchievementDTO)
+    private void setAndPlay(@NonNull UserXPAchievementDTO userXPAchievementDTO)
     {
         userLevelProgressBar.startsWith(userXPAchievementDTO.getBaseXp());
         playAllAnimations();
     }
 
-    private void populateAnimationLists(@NotNull UserXPAchievementDTO userXPAchievementDTO)
+    private void populateAnimationLists(@NonNull UserXPAchievementDTO userXPAchievementDTO)
     {
         LevelAnimationDefinition l0 = new LevelAnimationDefinition(0, userXPAchievementDTO.xpEarned, userXPAchievementDTO.text);
         levelAnimationDefinitions.add(l0);
@@ -232,7 +232,7 @@ public class XpToast extends RelativeLayout
         levelAnimationDefinitions.clear();
     }
 
-    private void setLevelDefList(@NotNull LevelDefDTOList levelDefList)
+    private void setLevelDefList(@NonNull LevelDefDTOList levelDefList)
     {
         if (userLevelProgressBar != null)
         {
@@ -244,7 +244,7 @@ public class XpToast extends RelativeLayout
         }
     }
 
-    @Override public void onLevelUp(@NotNull LevelDefDTO fromLevel, @NotNull LevelDefDTO toLevel)
+    @Override public void onLevelUp(@NonNull LevelDefDTO fromLevel, @NonNull LevelDefDTO toLevel)
     {
         Context context = getContext();
         if (context instanceof DashboardActivity)

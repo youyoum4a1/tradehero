@@ -11,8 +11,8 @@ import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -21,18 +21,18 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
     public static final int DEFAULT_MAX_VALUE_SIZE = 200;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 20;
 
-    @NotNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
-    @NotNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
-    @NotNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
-    @NotNull protected final Lazy<GetPositionsCacheRx> getPositionsCache;
+    @NonNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
+    @NonNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
+    @NonNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
+    @NonNull protected final Lazy<GetPositionsCacheRx> getPositionsCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCacheRx(
-            @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NotNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
-            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NotNull Lazy<GetPositionsCacheRx> getPositionsCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
+            @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull Lazy<GetPositionsCacheRx> getPositionsCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.portfolioServiceWrapper = portfolioServiceWrapper;
@@ -42,14 +42,14 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<PortfolioDTO> fetch(@NotNull OwnedPortfolioId key)
+    @Override @NonNull protected Observable<PortfolioDTO> fetch(@NonNull OwnedPortfolioId key)
     {
         return portfolioServiceWrapper.get().getPortfolioRx(key);
     }
 
-    @Override public void onNext(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
+    @Override public void onNext(@NonNull OwnedPortfolioId key, @NonNull PortfolioDTO value)
     {
-        @Nullable PortfolioDTO previous = getValue(key);
+        PortfolioDTO previous = getValue(key);
         //noinspection ConstantConditions
         if (previous != null && previous.userId != null)
         {
@@ -65,15 +65,15 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
         super.onNext(key, value);
     }
 
-    public void invalidate(@NotNull UserBaseKey concernedUser)
+    public void invalidate(@NonNull UserBaseKey concernedUser)
     {
         invalidate(concernedUser, false);
     }
 
-    public void invalidate(@NotNull UserBaseKey concernedUser, boolean onlyWatchlist)
+    public void invalidate(@NonNull UserBaseKey concernedUser, boolean onlyWatchlist)
     {
         PortfolioDTO cached;
-        for (@NotNull OwnedPortfolioId key : snapshot().keySet())
+        for (OwnedPortfolioId key : snapshot().keySet())
         {
             cached = getValue(key);
             if (cached != null
@@ -85,7 +85,7 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
         }
     }
 
-    @Override public void invalidate(@NotNull OwnedPortfolioId key)
+    @Override public void invalidate(@NonNull OwnedPortfolioId key)
     {
         super.invalidate(key);
         getPositionsCache.get().invalidate(key);

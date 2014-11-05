@@ -7,7 +7,7 @@ import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABProductDetailTuner;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,14 +19,14 @@ public class THIABProductDetailCache extends ProductDetailCache<IABSKU, THIABPro
 
     //<editor-fold desc="Constructors">
     @Inject public THIABProductDetailCache(
-            @NotNull THIABProductDetailTuner thiabProductDetailTuner,
-            @NotNull DTOCacheUtilNew dtoCacheUtilNew)
+            @NonNull THIABProductDetailTuner thiabProductDetailTuner,
+            @NonNull DTOCacheUtilNew dtoCacheUtilNew)
     {
         super(DEFAULT_MAX_SIZE, thiabProductDetailTuner, dtoCacheUtilNew);
     }
     //</editor-fold>
 
-    @Override @NotNull public THIABProductDetail fetch(@NotNull IABSKU key)
+    @Override @NonNull public THIABProductDetail fetch(@NonNull IABSKU key)
     {
         throw new IllegalStateException("You should not fetch THIABProductDetail individually");
     }

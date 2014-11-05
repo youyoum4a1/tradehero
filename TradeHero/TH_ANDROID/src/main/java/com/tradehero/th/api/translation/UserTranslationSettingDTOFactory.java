@@ -10,21 +10,21 @@ import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.io.IOException;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class UserTranslationSettingDTOFactory
 {
-    @NotNull private final Context applicationContext;
-    @NotNull private final ObjectMapper objectMapper;
-    @NotNull private final TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
+    @NonNull private final Context applicationContext;
+    @NonNull private final ObjectMapper objectMapper;
+    @NonNull private final TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingDTOFactory(
-            @NotNull TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory,
-            @NotNull Context applicationContext,
-            @NotNull @ForApp ObjectMapper objectMapper)
+            @NonNull TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory,
+            @NonNull Context applicationContext,
+            @NonNull @ForApp ObjectMapper objectMapper)
     {
         this.translatableLanguageDTOFactoryFactory = translatableLanguageDTOFactoryFactory;
         this.applicationContext = applicationContext;
@@ -33,21 +33,21 @@ public class UserTranslationSettingDTOFactory
     //</editor-fold>
 
     @SuppressWarnings("DuplicateThrows")
-    @NotNull public UserTranslationSettingDTO create(@NotNull String serialised)
+    @NonNull public UserTranslationSettingDTO create(@NonNull String serialised)
             throws JsonParseException, JsonMappingException, IOException
     {
         return objectMapper.readValue(serialised, UserTranslationSettingDTO.class);
     }
 
-    @NotNull public String serialise(@NotNull UserTranslationSettingDTO settingDTO)
+    @NonNull public String serialise(@NonNull UserTranslationSettingDTO settingDTO)
             throws JsonProcessingException
     {
         return objectMapper.writeValueAsString(settingDTO);
     }
 
-    @Nullable public UserTranslationSettingDTO createDefaultPerType(@NotNull TranslationToken translationToken)
+    @Nullable public UserTranslationSettingDTO createDefaultPerType(@NonNull TranslationToken translationToken)
     {
-        @Nullable TranslatableLanguageDTOFactory translatableLanguageDTOFactory = translatableLanguageDTOFactoryFactory.create(translationToken);
+        TranslatableLanguageDTOFactory translatableLanguageDTOFactory = translatableLanguageDTOFactoryFactory.create(translationToken);
         String bestTranslatableMatch = UserTranslationSettingDTO.DEFAULT_LANGUAGE_CODE;
         if (translatableLanguageDTOFactory != null)
         {

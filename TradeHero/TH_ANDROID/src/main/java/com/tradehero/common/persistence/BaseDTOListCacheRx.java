@@ -1,7 +1,7 @@
 package com.tradehero.common.persistence;
 
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BaseDTOListCacheRx<
         DTOKeyType extends DTOKey,
@@ -13,7 +13,7 @@ abstract public class BaseDTOListCacheRx<
     protected BaseDTOListCacheRx(
             int valueSize,
             int subjectSize,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(valueSize, subjectSize, dtoCacheUtil);
     }

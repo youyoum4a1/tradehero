@@ -9,18 +9,18 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class DTOSetAdapter<T> extends BaseAdapter
 {
-    @NotNull protected final Context context;
+    @NonNull protected final Context context;
     @Nullable protected Comparator<T> comparator;
-    @NotNull protected Set<T> set;
-    @NotNull private ArrayList<T> items;
+    @NonNull protected Set<T> set;
+    @NonNull private ArrayList<T> items;
 
     //<editor-fold desc="Constructors">
-    public DTOSetAdapter(@NotNull Context context)
+    public DTOSetAdapter(@NonNull Context context)
     {
         super();
         this.context = context;
@@ -28,7 +28,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items = new ArrayList<>();
     }
 
-    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator)
+    public DTOSetAdapter(@NonNull Context context, @Nullable Comparator<T> comparator)
     {
         super();
         this.context = context;
@@ -37,7 +37,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items = new ArrayList<>();
     }
 
-    public DTOSetAdapter(@NotNull Context context, @Nullable Collection<? extends T> objects)
+    public DTOSetAdapter(@NonNull Context context, @Nullable Collection<? extends T> objects)
     {
         super();
         this.context = context;
@@ -46,7 +46,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
 
     }
 
-    public DTOSetAdapter(@NotNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<? extends T> objects)
+    public DTOSetAdapter(@NonNull Context context, @Nullable Comparator<T> comparator, @Nullable Collection<? extends T> objects)
     {
         super();
         this.comparator = comparator;
@@ -63,7 +63,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         items.clear();
     }
 
-    @NotNull protected Set<T> createSet(@Nullable Collection<? extends T> objects)
+    @NonNull protected Set<T> createSet(@Nullable Collection<? extends T> objects)
     {
         Set<T> created;
         if (comparator == null)
@@ -82,7 +82,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         return created;
     }
 
-    public void remove(@NotNull T element)
+    public void remove(@NonNull T element)
     {
         set.remove(element);
         items = new ArrayList<>(set);
@@ -140,7 +140,7 @@ abstract public class DTOSetAdapter<T> extends BaseAdapter
         return getItem(position).hashCode();
     }
 
-    public int getPositionOf(@NotNull T item)
+    public int getPositionOf(@NonNull T item)
     {
         return items.indexOf(item);
     }

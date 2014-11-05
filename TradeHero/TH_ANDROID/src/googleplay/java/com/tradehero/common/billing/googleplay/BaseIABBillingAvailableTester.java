@@ -5,8 +5,8 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class BaseIABBillingAvailableTester
         extends IABServiceConnector
@@ -18,8 +18,8 @@ public class BaseIABBillingAvailableTester
 
     //<editor-fold desc="Constructors">
     @Inject public BaseIABBillingAvailableTester(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         super(context, iabExceptionFactory);
     }

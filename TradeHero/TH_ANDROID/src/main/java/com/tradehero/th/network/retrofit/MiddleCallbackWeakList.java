@@ -2,8 +2,8 @@ package com.tradehero.th.network.retrofit;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class MiddleCallbackWeakList<DTOType> extends ArrayList<WeakReference<MiddleCallback<DTOType>>>
 {
@@ -16,8 +16,8 @@ public class MiddleCallbackWeakList<DTOType> extends ArrayList<WeakReference<Mid
 
     public void detach()
     {
-        @Nullable MiddleCallback<DTOType> callback;
-        for (@NotNull WeakReference<MiddleCallback<DTOType>> ref : this)
+        MiddleCallback<DTOType> callback;
+        for (WeakReference<MiddleCallback<DTOType>> ref : this)
         {
             callback = ref.get();
             if (callback != null)

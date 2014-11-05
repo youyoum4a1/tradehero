@@ -63,8 +63,8 @@ import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -91,7 +91,7 @@ public class TrendingFragment extends SecurityListFragment
 
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     private boolean defaultFilterSelected;
-    @NotNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
     private ExtraTileAdapter wrapperAdapter;
     private Runnable handleCompetitionRunnable;
@@ -223,7 +223,7 @@ public class TrendingFragment extends SecurityListFragment
         refreshAdapterWithTiles(userProfileDTO.activeSurveyImageURL != null);
     }
 
-    private void linkWith(@NotNull ExchangeCompactDTOList exchangeDTOs, boolean andDisplay)
+    private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs, boolean andDisplay)
     {
         ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
                 getResources(),
@@ -235,7 +235,7 @@ public class TrendingFragment extends SecurityListFragment
         linkWith(spinnerList, andDisplay);
     }
 
-    private void linkWith(@NotNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)
+    private void linkWith(@NonNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)
     {
         this.exchangeCompactSpinnerDTOs = exchangeCompactSpinnerDTOs;
         setUpFilterSelectorView();
@@ -274,7 +274,7 @@ public class TrendingFragment extends SecurityListFragment
         }
     }
 
-    @Override @NotNull public TrendingSecurityListType getSecurityListType(int page)
+    @Override @NonNull public TrendingSecurityListType getSecurityListType(int page)
     {
         return trendingFilterTypeDTO.getSecurityListType(page, perPage);
     }

@@ -1,6 +1,6 @@
 package com.tradehero.th.models.chart;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ChartTimeSpanMetricsCodeFactory
 {
@@ -11,8 +11,8 @@ public class ChartTimeSpanMetricsCodeFactory
     }
     //</editor-fold>
 
-    @NotNull
-    public static String createCode(@NotNull ChartTimeSpan timeSpan)
+    @NonNull
+    public static String createCode(@NonNull ChartTimeSpan timeSpan)
     {
         if (timeSpan.duration <= ChartTimeSpan.DAY_1)
         {

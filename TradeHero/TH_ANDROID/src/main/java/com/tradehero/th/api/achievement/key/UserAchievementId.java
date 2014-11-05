@@ -4,19 +4,19 @@ import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastData;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserAchievementId extends AbstractIntegerDTOKey implements BroadcastData
 {
     private static final String BUNDLE_KEY = UserAchievementId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public UserAchievementId(@NotNull Integer key)
+    public UserAchievementId(@NonNull Integer key)
     {
         super(key);
     }
 
-    public UserAchievementId(@NotNull Bundle args)
+    public UserAchievementId(@NonNull Bundle args)
     {
         super(args);
     }
@@ -27,12 +27,12 @@ public class UserAchievementId extends AbstractIntegerDTOKey implements Broadcas
         return BUNDLE_KEY;
     }
 
-    @NotNull @Override public String getBroadcastBundleKey()
+    @NonNull @Override public String getBroadcastBundleKey()
     {
         return AchievementModule.KEY_USER_ACHIEVEMENT_ID;
     }
 
-    @NotNull @Override public String getBroadcastIntentActionName()
+    @NonNull @Override public String getBroadcastIntentActionName()
     {
         return AchievementModule.ACHIEVEMENT_INTENT_ACTION_NAME;
     }

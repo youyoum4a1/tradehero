@@ -3,11 +3,11 @@ package com.tradehero.th.fragments.settings;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UnreadSettingPreferenceHolder
 {
-    @NotNull private final BooleanPreference isVisitedReferralCodeSettingsPreference;
+    @NonNull private final BooleanPreference isVisitedReferralCodeSettingsPreference;
 
     //<editor-fold desc="Constructors">
     @Inject public UnreadSettingPreferenceHolder(

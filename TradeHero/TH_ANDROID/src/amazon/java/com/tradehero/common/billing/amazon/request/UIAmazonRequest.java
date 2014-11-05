@@ -5,7 +5,7 @@ import com.tradehero.common.billing.amazon.AmazonPurchase;
 import com.tradehero.common.billing.amazon.AmazonPurchaseConsumer;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public interface UIAmazonRequest<
         AmazonSKUType extends AmazonSKU,

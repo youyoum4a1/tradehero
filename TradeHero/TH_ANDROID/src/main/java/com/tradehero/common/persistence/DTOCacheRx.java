@@ -1,14 +1,14 @@
 package com.tradehero.common.persistence;
 
 import android.util.Pair;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 public interface DTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
 {
-    @NotNull Observable<Pair<DTOKeyType, DTOType>> get(@NotNull DTOKeyType key);
+    @NonNull Observable<Pair<DTOKeyType, DTOType>> get(@NonNull DTOKeyType key);
     void onNext(DTOKeyType key, DTOType value);
 
-    void invalidate(@NotNull DTOKeyType key);
+    void invalidate(@NonNull DTOKeyType key);
     void invalidateAll();
 }

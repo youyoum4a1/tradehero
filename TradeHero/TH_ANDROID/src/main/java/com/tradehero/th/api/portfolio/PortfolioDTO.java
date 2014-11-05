@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.quote.UpdatePricesQuoteDTO;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
@@ -33,7 +33,7 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public int countTrades;
     public int countExchanges;
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         return "[PortfolioDTO " +
                 super.toString() +

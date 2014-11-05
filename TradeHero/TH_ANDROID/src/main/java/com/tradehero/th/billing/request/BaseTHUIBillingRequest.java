@@ -20,8 +20,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.THPurchaseReporter;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseTHUIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -84,9 +84,9 @@ abstract public class BaseTHUIBillingRequest<
     /**
      * The portfolio to pass when making a purchase
      */
-    @NotNull private final OwnedPortfolioId applicablePortfolioId; // TODO Move out
+    @NonNull private final OwnedPortfolioId applicablePortfolioId; // TODO Move out
 
-    @Override @NotNull public OwnedPortfolioId getApplicablePortfolioId()
+    @Override @NonNull public OwnedPortfolioId getApplicablePortfolioId()
     {
         return applicablePortfolioId;
     }
@@ -143,7 +143,7 @@ abstract public class BaseTHUIBillingRequest<
 
     //<editor-fold desc="Constructors">
     protected BaseTHUIBillingRequest(
-            @NotNull BaseTHUIBillingRequest.Builder<
+            @NonNull BaseTHUIBillingRequest.Builder<
                     ProductIdentifierListKeyType,
                     ProductIdentifierType,
                     ProductIdentifierListType,
@@ -335,7 +335,7 @@ abstract public class BaseTHUIBillingRequest<
 
         //<editor-fold desc="Purchase Reporting">
         private boolean reportPurchase;
-        @NotNull private OwnedPortfolioId applicablePortfolioId;
+        @NonNull private OwnedPortfolioId applicablePortfolioId;
 
         private boolean popIfReportFailed;
         @Nullable private THPurchaseReporter.OnPurchaseReportedListener<
@@ -350,7 +350,7 @@ abstract public class BaseTHUIBillingRequest<
             return self();
         }
 
-        public BuilderType applicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
+        public BuilderType applicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
         {
             this.applicablePortfolioId = applicablePortfolioId;
             return self();

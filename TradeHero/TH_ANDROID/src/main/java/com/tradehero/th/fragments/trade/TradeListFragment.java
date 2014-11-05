@@ -54,8 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -93,12 +93,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     private Dialog securityActionDialog;
 
-    public static void putPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKey positionDTOKey)
+    public static void putPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKey positionDTOKey)
     {
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
     }
 
-    @NotNull private static PositionDTOKey getPositionDTOKey(@NotNull Bundle args, @NotNull PositionDTOKeyFactory positionDTOKeyFactory)
+    @NonNull private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKeyFactory positionDTOKeyFactory)
     {
         return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
@@ -243,7 +243,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return created;
     }
 
-    public void linkWith(@NotNull PositionDTOKey newPositionDTOKey, boolean andDisplay)
+    public void linkWith(@NonNull PositionDTOKey newPositionDTOKey, boolean andDisplay)
     {
         this.positionDTOKey = newPositionDTOKey;
         fetchPosition();
@@ -430,7 +430,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             dismissShareDialog();
         }
 
-        @Override public void onAddToWatchlistRequested(@NotNull SecurityId securityId)
+        @Override public void onAddToWatchlistRequested(@NonNull SecurityId securityId)
         {
             dismissShareDialog();
             Bundle args = new Bundle();
@@ -451,7 +451,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
         }
 
-        @Override public void onAddAlertRequested(@NotNull SecurityId securityId)
+        @Override public void onAddAlertRequested(@NonNull SecurityId securityId)
         {
             dismissShareDialog();
             Bundle args = new Bundle();
@@ -482,7 +482,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
         }
 
-        @Override public void onBuySellRequested(@NotNull SecurityId securityId)
+        @Override public void onBuySellRequested(@NonNull SecurityId securityId)
         {
             dismissShareDialog();
             Bundle args = new Bundle();

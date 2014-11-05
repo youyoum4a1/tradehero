@@ -1,21 +1,19 @@
 package com.tradehero.th.api.leaderboard;
 
 import com.android.internal.util.Predicate;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class CountryCodeListContainCodePredicate implements Predicate<CountryCodeList>
 {
-    @NotNull
+    @NonNull
     private final String lookedForCountryCode;
 
-    public CountryCodeListContainCodePredicate(@NotNull String countryCode)
+    public CountryCodeListContainCodePredicate(@NonNull String countryCode)
     {
         this.lookedForCountryCode = countryCode;
     }
 
-    @Contract("null -> false")
     @Override public boolean apply(@Nullable CountryCodeList countryCodeList)
     {
         if (countryCodeList == null)

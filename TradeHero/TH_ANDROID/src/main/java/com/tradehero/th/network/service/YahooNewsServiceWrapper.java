@@ -2,21 +2,21 @@ package com.tradehero.th.network.service;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.client.Response;
 import rx.Observable;
 
 @Singleton public class YahooNewsServiceWrapper
 {
-    @NotNull private final YahooNewsServiceRx yahooNewsServiceRx;
+    @NonNull private final YahooNewsServiceRx yahooNewsServiceRx;
 
-    @Inject public YahooNewsServiceWrapper(@NotNull YahooNewsServiceRx yahooNewsServiceRx)
+    @Inject public YahooNewsServiceWrapper(@NonNull YahooNewsServiceRx yahooNewsServiceRx)
     {
         super();
         this.yahooNewsServiceRx = yahooNewsServiceRx;
     }
 
-    public Observable<Response> getNewsRx(@NotNull String yahooSymbol)
+    public Observable<Response> getNewsRx(@NonNull String yahooSymbol)
     {
         return yahooNewsServiceRx.getNews(yahooSymbol);
     }

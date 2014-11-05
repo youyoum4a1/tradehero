@@ -1,7 +1,7 @@
 package com.tradehero.th.api.discussion;
 
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class MessageHeaderDTOFactory
 {
@@ -12,7 +12,7 @@ public class MessageHeaderDTOFactory
     }
     //</editor-fold>
 
-    @NotNull public MessageHeaderDTO create(@NotNull DiscussionDTO from)
+    @NonNull public MessageHeaderDTO create(@NonNull DiscussionDTO from)
     {
         MessageHeaderDTO created = new MessageHeaderDTO();
         created.discussionType = from.type;

@@ -5,11 +5,11 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapter<T>
 {
-    public ArrayDTOAdapter(@NotNull Context context, @LayoutRes int layoutResourceId)
+    public ArrayDTOAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }

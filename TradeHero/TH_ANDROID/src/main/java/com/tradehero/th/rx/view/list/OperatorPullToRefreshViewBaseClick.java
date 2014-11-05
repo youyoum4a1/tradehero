@@ -5,7 +5,7 @@ import android.widget.AbsListView;
 import com.handmark.pulltorefresh.library.PullToRefreshAdapterViewBase;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -17,10 +17,10 @@ public class OperatorPullToRefreshViewBaseClick<
         T extends PullToRefreshAdapterViewBase<S>>
         implements Observable.OnSubscribe<ItemClickDTO>
 {
-    @NotNull private final T view;
+    @NonNull private final T view;
 
     //<editor-fold desc="Constructors">
-    public OperatorPullToRefreshViewBaseClick(@NotNull T absLitView)
+    public OperatorPullToRefreshViewBaseClick(@NonNull T absLitView)
     {
         this.view = absLitView;
     }

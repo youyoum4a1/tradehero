@@ -19,7 +19,7 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TrendingFilterSelectorView extends RelativeLayout
 {
@@ -31,7 +31,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     @InjectView(R.id.exchange_selection) public ExchangeSpinner mExchangeSelection;
     private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
-    @NotNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
     @Inject Analytics analytics;
     private OnFilterTypeChangedListener changedListener;
 
@@ -72,7 +72,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection = null;
     }
 
-    public void setUpExchangeSpinner(@NotNull ExchangeCompactSpinnerDTOList items)
+    public void setUpExchangeSpinner(@NonNull ExchangeCompactSpinnerDTOList items)
     {
         ExchangeSpinner exchangeSelection = mExchangeSelection;
         if (exchangeSelection != null)
@@ -88,7 +88,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         }
     }
 
-    public void apply(@NotNull TrendingFilterTypeDTO typeDTO)
+    public void apply(@NonNull TrendingFilterTypeDTO typeDTO)
     {
         this.trendingFilterTypeDTO = typeDTO;
         if (mTitle != null)

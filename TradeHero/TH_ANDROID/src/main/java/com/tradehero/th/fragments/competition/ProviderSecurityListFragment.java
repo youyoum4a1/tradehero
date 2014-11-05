@@ -31,7 +31,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -42,7 +42,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     public final static int SECURITY_ID_LIST_LOADER_ID = 2531;
 
     // TODO sort warrants
-    @NotNull protected ProviderId providerId;
+    @NonNull protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
@@ -53,12 +53,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     private MenuItem wizardButton;
 
-    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    @NotNull private static ProviderId getProviderId(@NotNull Bundle args)
+    @NonNull private static ProviderId getProviderId(@NonNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -200,7 +200,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         return SECURITY_ID_LIST_LOADER_ID + providerId.key;
     }
 
-    @Override @NotNull public ProviderSecurityListType getSecurityListType(int page)
+    @Override @NonNull public ProviderSecurityListType getSecurityListType(int page)
     {
         return new BasicProviderSecurityListType(providerId, page, perPage);
     }

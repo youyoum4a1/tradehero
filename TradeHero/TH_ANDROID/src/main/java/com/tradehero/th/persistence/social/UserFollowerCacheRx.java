@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.FollowerServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -18,19 +18,19 @@ public class UserFollowerCacheRx extends BaseFetchDTOCacheRx<FollowerHeroRelatio
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
-    @NotNull private final Lazy<FollowerServiceWrapper> followerServiceWrapper;
+    @NonNull private final Lazy<FollowerServiceWrapper> followerServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public UserFollowerCacheRx(
-            @NotNull Lazy<FollowerServiceWrapper> followerServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<FollowerServiceWrapper> followerServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.followerServiceWrapper = followerServiceWrapper;
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<UserFollowerDTO> fetch(@NotNull FollowerHeroRelationId key)
+    @Override @NonNull protected Observable<UserFollowerDTO> fetch(@NonNull FollowerHeroRelationId key)
     {
         return this.followerServiceWrapper.get().getFollowerSubscriptionDetailRx(key);
     }

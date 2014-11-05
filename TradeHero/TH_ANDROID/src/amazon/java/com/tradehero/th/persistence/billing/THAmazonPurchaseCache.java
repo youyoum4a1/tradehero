@@ -8,7 +8,7 @@ import com.tradehero.th.billing.amazon.THAmazonOrderId;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class THAmazonPurchaseCache
         extends AmazonPurchaseCache<
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
     public static final int DEFAULT_MAX_SIZE = 200;
 
     //<editor-fold desc="Constructors">
-    @Inject public THAmazonPurchaseCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public THAmazonPurchaseCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }

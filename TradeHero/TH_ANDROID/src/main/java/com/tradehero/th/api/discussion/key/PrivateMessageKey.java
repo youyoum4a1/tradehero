@@ -2,19 +2,19 @@ package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PrivateMessageKey extends DiscussionKey<PrivateMessageKey>
 {
     private static final DiscussionType TYPE = DiscussionType.PRIVATE_MESSAGE;
 
     //<editor-fold desc="Constructors">
-    public PrivateMessageKey(@NotNull Integer id)
+    public PrivateMessageKey(@NonNull Integer id)
     {
         super(id);
     }
 
-    protected PrivateMessageKey(@NotNull Bundle args)
+    protected PrivateMessageKey(@NonNull Bundle args)
     {
         super(args);
     }

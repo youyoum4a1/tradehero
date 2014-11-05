@@ -2,7 +2,7 @@ package com.tradehero.common.billing.amazon;
 
 import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class AmazonPurchaseIncomplete<
         AmazonSKUType extends AmazonSKU,
@@ -11,11 +11,11 @@ abstract public class AmazonPurchaseIncomplete<
         AmazonSKUType,
         AmazonOrderIdType>
 {
-    @NotNull protected final Receipt receipt;
-    @NotNull protected final UserData userData;
+    @NonNull protected final Receipt receipt;
+    @NonNull protected final UserData userData;
 
     //<editor-fold desc="Constructors">
-    protected AmazonPurchaseIncomplete(@NotNull Receipt receipt, @NotNull UserData userData)
+    protected AmazonPurchaseIncomplete(@NonNull Receipt receipt, @NonNull UserData userData)
     {
         this.receipt = receipt;
         this.userData = userData;

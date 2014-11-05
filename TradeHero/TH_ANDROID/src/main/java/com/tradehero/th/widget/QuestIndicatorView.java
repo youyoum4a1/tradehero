@@ -16,8 +16,8 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {
@@ -118,13 +118,13 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
         botIndicator.setText(bot);
     }
 
-    public void display(@NotNull QuestBonusDTO dto, int currentLevel)
+    public void display(@NonNull QuestBonusDTO dto, int currentLevel)
     {
         this.mCurrentLevel = currentLevel;
         display(dto);
     }
 
-    @Override public void display(@NotNull QuestBonusDTO dto)
+    @Override public void display(@NonNull QuestBonusDTO dto)
     {
         this.mQuestBonusDTO = dto;
         display();

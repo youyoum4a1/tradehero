@@ -13,16 +13,16 @@ import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
 {
-    @NotNull private final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @NonNull private final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
     //<editor-fold desc="Constructors">
-    @Inject public CompetitionZoneDTOUtil(@NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
+    @Inject public CompetitionZoneDTOUtil(@NonNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
     {
         super();
         this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
@@ -30,13 +30,13 @@ public class CompetitionZoneDTOUtil
     //</editor-fold>
 
     public void populateLists(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable UserProfileCompactDTO portfolioUserProfileCompact,
             @Nullable ProviderDTO providerDTO,
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
-            @NotNull List<Integer> preparedOrderedTypes,
-            @NotNull List<CompetitionZoneDTO> preparedOrderedItems)
+            @NonNull List<Integer> preparedOrderedTypes,
+            @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
     {
         if (providerDTO != null)
         {

@@ -18,8 +18,8 @@ import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import java.io.IOException;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,9 +27,9 @@ import timber.log.Timber;
 
 public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 {
-    @NotNull private final LanguageDTOFactory languageDTOFactory;
-    @NotNull private final UserTranslationSettingPreference userTranslationSettingPreference;
-    @NotNull private final TranslationTokenCacheRx translationTokenCache;
+    @NonNull private final LanguageDTOFactory languageDTOFactory;
+    @NonNull private final UserTranslationSettingPreference userTranslationSettingPreference;
+    @NonNull private final TranslationTokenCacheRx translationTokenCache;
     @Nullable private Subscription translationTokenCacheSubscription;
     @Nullable protected UserTranslationSettingDTO userTranslationSettingDTO;
 
@@ -39,9 +39,9 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 
     //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingsViewHolder(
-            @NotNull LanguageDTOFactory languageDTOFactory,
-            @NotNull UserTranslationSettingPreference userTranslationSettingPreference,
-            @NotNull TranslationTokenCacheRx translationTokenCache)
+            @NonNull LanguageDTOFactory languageDTOFactory,
+            @NonNull UserTranslationSettingPreference userTranslationSettingPreference,
+            @NonNull TranslationTokenCacheRx translationTokenCache)
     {
         this.languageDTOFactory = languageDTOFactory;
         this.userTranslationSettingPreference = userTranslationSettingPreference;
@@ -49,7 +49,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
 
@@ -147,7 +147,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
         }
     }
 
-    protected void linkWith(@NotNull TranslationToken token)
+    protected void linkWith(@NonNull TranslationToken token)
     {
         try
         {
@@ -172,7 +172,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
         }
     }
 
-    protected void linkWith(@NotNull LanguageDTO languageDTO)
+    protected void linkWith(@NonNull LanguageDTO languageDTO)
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)

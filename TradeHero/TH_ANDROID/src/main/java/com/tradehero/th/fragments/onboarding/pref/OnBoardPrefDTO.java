@@ -4,24 +4,24 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OnBoardPrefDTO implements DTO
 {
-    @NotNull public final ExchangeCompactDTO preferredExchange;
-    @NotNull public final SectorCompactDTO preferredSector;
+    @NonNull public final ExchangeCompactDTO preferredExchange;
+    @NonNull public final SectorCompactDTO preferredSector;
 
     //<editor-fold desc="Constructors">
     public OnBoardPrefDTO(
-            @NotNull ExchangeCompactDTO preferredExchange,
-            @NotNull SectorCompactDTO preferredSector)
+            @NonNull ExchangeCompactDTO preferredExchange,
+            @NonNull SectorCompactDTO preferredSector)
     {
         this.preferredExchange = preferredExchange;
         this.preferredSector = preferredSector;
     }
     //</editor-fold>
 
-    @NotNull public ExchangeSectorSecurityListType createExchangeSectorSecurityListType()
+    @NonNull public ExchangeSectorSecurityListType createExchangeSectorSecurityListType()
     {
         return new ExchangeSectorSecurityListType(
                 preferredExchange,

@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -25,20 +25,20 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
     private static final int DEFAULT_VALUE_SIZE = 30;
     private static final int DEFAULT_SUBJECT_SIZE = 3;
 
-    @NotNull private final DiscussionCacheRx discussionCache;
-    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NonNull private final DiscussionCacheRx discussionCache;
+    @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
 
     @Inject public DiscussionListCacheRx(
-            @NotNull DiscussionServiceWrapper discussionServiceWrapper,
-            @NotNull DiscussionCacheRx discussionCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull DiscussionServiceWrapper discussionServiceWrapper,
+            @NonNull DiscussionCacheRx discussionCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
         this.discussionServiceWrapper = discussionServiceWrapper;
         this.discussionCache = discussionCache;
     }
 
-    @Override @NotNull protected Observable<PaginatedDTO<DiscussionDTO>> fetch(@NotNull DiscussionListKey discussionListKey)
+    @Override @NonNull protected Observable<PaginatedDTO<DiscussionDTO>> fetch(@NonNull DiscussionListKey discussionListKey)
     {
         if (discussionListKey instanceof MessageDiscussionListKey)
         {
@@ -51,7 +51,7 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
         throw new IllegalStateException("Unhandled key " + discussionListKey);
     }
 
-    @Override public void onNext(@NotNull DiscussionListKey key, @NotNull PaginatedDTO<DiscussionDTO> value)
+    @Override public void onNext(@NonNull DiscussionListKey key, @NonNull PaginatedDTO<DiscussionDTO> value)
     {
         List<DiscussionDTO> list = value.getData();
         if (list != null)
@@ -86,7 +86,7 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
         }
     }
 
-    public void getWhereSameField(@NotNull DiscussionKey originatingDiscussion)
+    public void getWhereSameField(@NonNull DiscussionKey originatingDiscussion)
     {
         for (DiscussionListKey key : snapshot().keySet())
         {

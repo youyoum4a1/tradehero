@@ -13,8 +13,8 @@ import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class HeroAlertDialogUtil extends AlertDialogUtil
 {
@@ -26,7 +26,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
     //</editor-fold>
 
     public AlertDialog popAlertFollowHero(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(
@@ -39,7 +39,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
     }
 
     public AlertDialog popAlertUnfollowHero(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable DialogInterface.OnClickListener okClickListener)
     {
         return popWithOkCancelButton(
@@ -52,7 +52,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
     }
 
     public AlertDialog popAlertNoMoreMessageFollow(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable DialogInterface.OnClickListener okClickListener,
             @Nullable String heroName)
     {
@@ -66,10 +66,10 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
     }
 
     @Nullable public FollowDialogCombo showFollowDialog(
-            @NotNull final Context context,
+            @NonNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,
             final int followType,
-            @NotNull final OnFollowRequestedListener followRequestedListener)
+            @NonNull final OnFollowRequestedListener followRequestedListener)
     {
         if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {
@@ -100,15 +100,15 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
 
     private static class MiddleFollowRequestedListener implements OnFollowRequestedListener
     {
-        @NotNull private final OnFollowRequestedListener followRequestedListener;
+        @NonNull private final OnFollowRequestedListener followRequestedListener;
         private final int followType;
-        @NotNull private final AlertDialog mFollowDialog;
+        @NonNull private final AlertDialog mFollowDialog;
 
         //<editor-fold desc="Constructors">
         private MiddleFollowRequestedListener(
-                @NotNull OnFollowRequestedListener followRequestedListener,
+                @NonNull OnFollowRequestedListener followRequestedListener,
                 int followType,
-                @NotNull AlertDialog mFollowDialog)
+                @NonNull AlertDialog mFollowDialog)
         {
             this.followRequestedListener = followRequestedListener;
             this.followType = followType;
@@ -116,7 +116,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
         }
         //</editor-fold>
 
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
         {
             onFinish();
             if (followType != UserProfileDTOUtil.IS_FREE_FOLLOWER)
@@ -125,7 +125,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
             }
         }
 
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)
         {
             onFinish();
             followRequestedListener.premiumFollowRequested(heroId);

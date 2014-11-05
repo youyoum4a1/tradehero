@@ -1,8 +1,8 @@
 package com.tradehero.th.api.security.key;
 
 import com.tradehero.common.api.PagedDTOKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
 {
@@ -70,13 +70,13 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
                 && equals(SecurityListType.class.cast(other));
     }
 
-    protected boolean equals(@NotNull SecurityListType other)
+    protected boolean equals(@NonNull SecurityListType other)
     {
         return (page == null ? other.page == null : page.equals(other.page))
                 && (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
-    @Override public int compareTo(@NotNull SecurityListType another)
+    @Override public int compareTo(@NonNull SecurityListType another)
     {
         int pageCompare = page == null ? (another.page == null ? 0 : -1) : page.compareTo(another.page);
         if (pageCompare != 0)

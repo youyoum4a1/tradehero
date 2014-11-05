@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 /**
@@ -28,14 +28,14 @@ abstract public class BaseAmazonInventoryFetcher<
             AmazonExceptionType>
 {
     protected boolean fetching;
-    @NotNull protected List<AmazonSKUType> productIdentifiers;
-    @NotNull protected Map<AmazonSKUType, AmazonProductDetailType> inventory;
+    @NonNull protected List<AmazonSKUType> productIdentifiers;
+    @NonNull protected Map<AmazonSKUType, AmazonProductDetailType> inventory;
     @Nullable private OnInventoryFetchedListener<AmazonSKUType, AmazonProductDetailType, AmazonExceptionType> inventoryFetchedListener;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonInventoryFetcher(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(context, purchasingService);
         inventory = new HashMap<>();
@@ -58,12 +58,12 @@ abstract public class BaseAmazonInventoryFetcher<
         this.inventoryFetchedListener = onInventoryFetchedListener;
     }
 
-    @Override @NotNull public List<AmazonSKUType> getProductIdentifiers()
+    @Override @NonNull public List<AmazonSKUType> getProductIdentifiers()
     {
         return productIdentifiers;
     }
 
-    @Override public void setProductIdentifiers(@NotNull List<AmazonSKUType> productIdentifiers)
+    @Override public void setProductIdentifiers(@NonNull List<AmazonSKUType> productIdentifiers)
     {
         this.productIdentifiers = productIdentifiers;
     }
@@ -95,7 +95,7 @@ abstract public class BaseAmazonInventoryFetcher<
         purchasingService.getProductData(skuIds, this);
     }
 
-    @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
+    @Override public void onProductDataResponse(@NonNull ProductDataResponse productDataResponse)
     {
         super.onProductDataResponse(productDataResponse);
         switch(productDataResponse.getRequestStatus())

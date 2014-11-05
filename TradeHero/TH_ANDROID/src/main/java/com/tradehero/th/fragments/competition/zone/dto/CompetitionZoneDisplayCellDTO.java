@@ -1,14 +1,14 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
 {
-    @NotNull protected ProviderDisplayCellDTO providerDisplayCellDTO;
+    @NonNull protected ProviderDisplayCellDTO providerDisplayCellDTO;
 
     //<editor-fold desc="Constructors">
-    public CompetitionZoneDisplayCellDTO(@NotNull ProviderDisplayCellDTO providerDisplayCellDTO)
+    public CompetitionZoneDisplayCellDTO(@NonNull ProviderDisplayCellDTO providerDisplayCellDTO)
     {
         super(providerDisplayCellDTO.title, providerDisplayCellDTO.subtitle);
         this.providerDisplayCellDTO = providerDisplayCellDTO;

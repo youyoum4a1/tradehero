@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface BillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -59,7 +59,7 @@ public interface BillingLogicHolder<
     void onActivityResult(int requestCode, int resultCode, Intent data);
     int getUnusedRequestCode();
 
-    void registerListeners(int requestCode, @NotNull BillingRequestType billingRequest);
+    void registerListeners(int requestCode, @NonNull BillingRequestType billingRequest);
     boolean run(int requestCode, BillingRequestType billingRequest);
 
     void unregisterBillingAvailableListener(int requestCode);

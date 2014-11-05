@@ -59,8 +59,8 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -98,7 +98,7 @@ public class PositionListFragment
     @InjectRoute PortfolioId injectedPortfolioId;
 
     private PortfolioHeaderView portfolioHeaderView;
-    @NotNull protected GetPositionsDTOKey getPositionsDTOKey;
+    @NonNull protected GetPositionsDTOKey getPositionsDTOKey;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected GetPositionsDTO getPositionsDTO;
     protected UserBaseKey shownUser;
@@ -111,22 +111,22 @@ public class PositionListFragment
     @Inject THRouter thRouter;
 
     //<editor-fold desc="Arguments Handling">
-    public static void putGetPositionsDTOKey(@NotNull Bundle args, @NotNull GetPositionsDTOKey getPositionsDTOKey)
+    public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
     {
         args.putBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE, getPositionsDTOKey.getArgs());
     }
 
-    private static GetPositionsDTOKey getGetPositionsDTOKey(@NotNull GetPositionsDTOKeyFactory getPositionsDTOKeyFactory, @NotNull Bundle args)
+    private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull GetPositionsDTOKeyFactory getPositionsDTOKeyFactory, @NonNull Bundle args)
     {
         return getPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
     }
 
-    public static void putShownUser(@NotNull Bundle args, @NotNull UserBaseKey shownUser)
+    public static void putShownUser(@NonNull Bundle args, @NonNull UserBaseKey shownUser)
     {
         args.putBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE, shownUser.getArgs());
     }
 
-    @NotNull private static UserBaseKey getUserBaseKey(@NotNull Bundle args)
+    @NonNull private static UserBaseKey getUserBaseKey(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
@@ -155,12 +155,12 @@ public class PositionListFragment
         }
     }
 
-    @NotNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NonNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
     {
         return new AbstractPositionListPremiumUserFollowedListener();
     }
 
-    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         if (savedInstanceState != null)
         {
@@ -287,7 +287,7 @@ public class PositionListFragment
                 getLayoutResIds());
     }
 
-    @NotNull protected Map<Integer, Integer> getLayoutResIds()
+    @NonNull protected Map<Integer, Integer> getLayoutResIds()
     {
         Map<Integer, Integer> layouts = new HashMap<>();
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
@@ -341,7 +341,7 @@ public class PositionListFragment
         navigator.get().pushFragment(TrendingFragment.class, args);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
+    @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
     {
         inflater.inflate(R.menu.position_list_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -381,7 +381,7 @@ public class PositionListFragment
         super.onDestroyOptionsMenu();
     }
 
-    @Override public void onSaveInstanceState(@NotNull Bundle outState)
+    @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
@@ -407,7 +407,7 @@ public class PositionListFragment
     /**
      * start
      */
-    public void linkWith(@NotNull GetPositionsDTOKey positionsDTOKey, boolean andDisplay)
+    public void linkWith(@NonNull GetPositionsDTOKey positionsDTOKey, boolean andDisplay)
     {
         this.getPositionsDTOKey = positionsDTOKey;
         userProfileDTO = null;
@@ -608,7 +608,7 @@ public class PositionListFragment
     }
     //</editor-fold>
 
-    @NotNull protected Observer<Pair<GetPositionsDTOKey, GetPositionsDTO>> createGetPositionsCacheObserver()
+    @NonNull protected Observer<Pair<GetPositionsDTOKey, GetPositionsDTO>> createGetPositionsCacheObserver()
     {
         return new GetPositionsObserver();
     }
@@ -643,7 +643,7 @@ public class PositionListFragment
         return R.layout.tutorial_position_list;
     }
 
-    @NotNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
+    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
     {
         return new AbstractPositionListProfileCacheObserver();
     }
@@ -651,14 +651,14 @@ public class PositionListFragment
     protected class AbstractPositionListPremiumUserFollowedListener
             implements FollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO)
         {
             displayHeaderView();
             fetchSimplePage();
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
         }
 
-        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
         {
             // do nothing for now
         }

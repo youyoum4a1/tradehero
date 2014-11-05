@@ -11,8 +11,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import java.util.HashSet;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator<FragmentActivity>
@@ -48,12 +48,12 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
     {
     }
 
-    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType)
+    public <T extends Fragment> T goToTab(@NonNull RootFragmentType tabType)
     {
         return goToTab(tabType, TAB_SHOW_HOME_AS_UP);
     }
 
-    public <T extends Fragment> T goToTab(@NotNull RootFragmentType tabType, boolean showHomeKeyAsUp)
+    public <T extends Fragment> T goToTab(@NonNull RootFragmentType tabType, boolean showHomeKeyAsUp)
     {
         if (tabType.fragmentClass.isInstance(getCurrentFragment()))
         {
@@ -75,7 +75,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         return tabFragment;
     }
 
-    @Override public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
+    @Override public <T extends Fragment> T pushFragment(@NonNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim,
             @Nullable String backStackName, boolean showHomeAsUp)
     {
         Fragment currentFragment = getCurrentFragment();

@@ -6,47 +6,47 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.samsung.exception.SamsungInvalidQuantityException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THSamsungPurchaseOrder
     implements SamsungPurchaseOrder<SamsungSKU>,
         THPurchaseOrder<SamsungSKU>
 {
-    @NotNull protected final SamsungSKU productIdentifier;
+    @NonNull protected final SamsungSKU productIdentifier;
     protected final int quantity;
-    @NotNull OwnedPortfolioId applicablePortfolioId;
+    @NonNull OwnedPortfolioId applicablePortfolioId;
     @Nullable protected UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
     public THSamsungPurchaseOrder(
-            @NotNull String groupId,
-            @NotNull String itemId,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull String groupId,
+            @NonNull String itemId,
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this(groupId, itemId, 1, applicablePortfolioId);
     }
 
     public THSamsungPurchaseOrder(
-            @NotNull String groupId,
-            @NotNull String itemId,
+            @NonNull String groupId,
+            @NonNull String itemId,
             int quantity,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId);
     }
 
     public THSamsungPurchaseOrder(
-            @NotNull SamsungSKU productIdentifier,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull SamsungSKU productIdentifier,
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this(productIdentifier, 1, applicablePortfolioId);
     }
 
     public THSamsungPurchaseOrder(
-            @NotNull SamsungSKU productIdentifier,
+            @NonNull SamsungSKU productIdentifier,
             int quantity,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this.productIdentifier = productIdentifier;
         this.quantity = quantity;
@@ -58,7 +58,7 @@ public class THSamsungPurchaseOrder
     }
     //</editor-fold>
 
-    @Override @NotNull public SamsungSKU getProductIdentifier()
+    @Override @NonNull public SamsungSKU getProductIdentifier()
     {
         return productIdentifier;
     }
@@ -68,12 +68,12 @@ public class THSamsungPurchaseOrder
         return quantity;
     }
 
-    @Override public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
+    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    @NotNull @Override public OwnedPortfolioId getApplicablePortfolioId()
+    @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {
         return applicablePortfolioId;
     }

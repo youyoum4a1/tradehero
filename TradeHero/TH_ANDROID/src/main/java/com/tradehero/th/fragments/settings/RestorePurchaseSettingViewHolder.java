@@ -11,7 +11,7 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -22,23 +22,23 @@ import timber.log.Timber;
 
 public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
 {
-    @NotNull protected final THBillingInteractor billingInteractor;
-    @NotNull protected final Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
+    @NonNull protected final THBillingInteractor billingInteractor;
+    @NonNull protected final Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
 
     private Integer restoreRequestCode;
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
 
     //<editor-fold desc="Constructors">
     @Inject public RestorePurchaseSettingViewHolder(
-            @NotNull THBillingInteractor billingInteractor,
-            @NotNull Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider)
+            @NonNull THBillingInteractor billingInteractor,
+            @NonNull Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider)
     {
         this.billingInteractor = billingInteractor;
         this.billingRequestBuilderProvider = billingRequestBuilderProvider;
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         purchaseRestorerFinishedListener = new BillingPurchaseRestorer.OnPurchaseRestorerListener()

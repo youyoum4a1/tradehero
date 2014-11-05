@@ -5,7 +5,7 @@ import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SamsungPurchaseCache<
             SamsungSKUType extends SamsungSKU,
@@ -17,13 +17,13 @@ public class SamsungPurchaseCache<
         SamsungPurchaseType>
 {
     //<editor-fold desc="Constructors">
-    public SamsungPurchaseCache(int maxSize, @NotNull DTOCacheUtilNew dtoCacheUtil)
+    public SamsungPurchaseCache(int maxSize, @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 
-    @Override @NotNull public SamsungPurchaseType fetch(@NotNull SamsungOrderIdType key) throws Throwable
+    @Override @NonNull public SamsungPurchaseType fetch(@NonNull SamsungOrderIdType key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch on this cache");
     }

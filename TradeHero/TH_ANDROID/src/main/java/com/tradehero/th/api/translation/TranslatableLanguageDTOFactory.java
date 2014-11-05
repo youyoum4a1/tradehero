@@ -3,23 +3,23 @@ package com.tradehero.th.api.translation;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.i18n.LanguageDTOList;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 /**
  * Given a translation service, not all languages known to Android may be translatable.
  */
 abstract public class TranslatableLanguageDTOFactory
 {
-    @NotNull protected final LanguageDTOFactory languageDTOFactory;
+    @NonNull protected final LanguageDTOFactory languageDTOFactory;
 
     //<editor-fold desc="Constructors">
-    protected TranslatableLanguageDTOFactory(@NotNull LanguageDTOFactory languageDTOFactory)
+    protected TranslatableLanguageDTOFactory(@NonNull LanguageDTOFactory languageDTOFactory)
     {
         this.languageDTOFactory = languageDTOFactory;
     }
     //</editor-fold>
 
-    @NotNull public LanguageDTOList getTargetLanguages()
+    @NonNull public LanguageDTOList getTargetLanguages()
     {
         LanguageDTOList targetLanguages = new LanguageDTOList();
         String[] langCodes = getLanguageCodes();
@@ -32,10 +32,10 @@ abstract public class TranslatableLanguageDTOFactory
 
     abstract protected String[] getLanguageCodes();
 
-    @NotNull public LanguageDTO getBestMatch(@NotNull String languageCode, @NotNull String fallback)
+    @NonNull public LanguageDTO getBestMatch(@NonNull String languageCode, @NonNull String fallback)
     {
         LanguageDTO bestMatch = languageDTOFactory.createFromCode(fallback);
-        for (@NotNull LanguageDTO languageDTO : getTargetLanguages())
+        for (LanguageDTO languageDTO : getTargetLanguages())
         {
             if (languageDTO.code.equals(languageCode))
             {

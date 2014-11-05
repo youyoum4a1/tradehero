@@ -4,7 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TimelineItemReplyCommentFormDTO extends ReplyDiscussionFormDTO
 {
@@ -15,12 +15,12 @@ public class TimelineItemReplyCommentFormDTO extends ReplyDiscussionFormDTO
         super();
     }
 
-    @Override @NotNull public DiscussionType getInReplyToType()
+    @Override @NonNull public DiscussionType getInReplyToType()
     {
         return TYPE;
     }
 
-    @Override @NotNull public DiscussionKey getInitiatingDiscussionKey()
+    @Override @NonNull public DiscussionKey getInitiatingDiscussionKey()
     {
         return new TimelineItemDTOKey(inReplyToId);
     }

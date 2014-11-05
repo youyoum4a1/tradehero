@@ -8,7 +8,7 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipientDTO, RelationsListItemView>
 {
@@ -34,7 +34,7 @@ public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipi
         this.premiumFollowRequestedListener = premiumFollowRequestedListener;
     }
 
-    protected void notifyFollowRequested(@NotNull UserBaseKey userBaseKey)
+    protected void notifyFollowRequested(@NonNull UserBaseKey userBaseKey)
     {
         OnPremiumFollowRequestedListener listener = premiumFollowRequestedListener;
         if (listener != null)
@@ -51,15 +51,15 @@ public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipi
     protected class RelationsListItemAdapterFollowRequestedListener implements
             OnPremiumFollowRequestedListener
     {
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey userBaseKey)
+        @Override public void premiumFollowRequested(@NonNull UserBaseKey userBaseKey)
         {
             notifyFollowRequested(userBaseKey);
         }
     }
 
     public void updateItem(
-            @NotNull UserBaseKey relationId,
-            @NotNull UserMessagingRelationshipDTO relationshipDTO)
+            @NonNull UserBaseKey relationId,
+            @NonNull UserMessagingRelationshipDTO relationshipDTO)
     {
         AllowableRecipientDTO item;
         for (int position = 0, size = getCount(); position < size; position++)

@@ -16,8 +16,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -31,8 +31,8 @@ public class InvitedCodeViewHolder
     @InjectView(R.id.action_view_switcher) ViewFlipper viewSwitcher;
     @InjectView(R.id.invite_code) EditText inviteCode;
 
-    @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final UserServiceWrapper userServiceWrapper;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final UserServiceWrapper userServiceWrapper;
     @Nullable private UserProfileDTO userProfileDTO;
 
     @Nullable private Callback<BaseResponseDTO> parentCallback;
@@ -40,8 +40,8 @@ public class InvitedCodeViewHolder
 
     //<editor-fold desc="Constructors">
     @Inject public InvitedCodeViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserServiceWrapper userServiceWrapper)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserServiceWrapper userServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.userServiceWrapper = userServiceWrapper;
@@ -70,7 +70,7 @@ public class InvitedCodeViewHolder
         middleCallbackUpdateInviteCode = null;
     }
 
-    public void setUserProfile(@NotNull UserProfileDTO userProfile)
+    public void setUserProfile(@NonNull UserProfileDTO userProfile)
     {
         this.userProfileDTO = userProfile;
         displayCurrentInviteCode();

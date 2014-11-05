@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -18,24 +18,24 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final MessageServiceWrapper messageServiceWrapper;
+    @NonNull private final MessageServiceWrapper messageServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public UserMessagingRelationshipCacheRx(
-            @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull MessageServiceWrapper messageServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<UserMessagingRelationshipDTO> fetch(@NotNull UserBaseKey key)
+    @Override @NonNull protected Observable<UserMessagingRelationshipDTO> fetch(@NonNull UserBaseKey key)
     {
         return messageServiceWrapper.getMessagingRelationshipStatusRx(key);
     }
 
-    private void markIsHero(@NotNull UserBaseKey heroId)
+    private void markIsHero(@NonNull UserBaseKey heroId)
     {
         UserMessagingRelationshipDTO cached = getValue(heroId);
         if (cached != null)
@@ -48,7 +48,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
         }
     }
 
-    public void markIsFreeHero(@NotNull UserBaseKey heroId)
+    public void markIsFreeHero(@NonNull UserBaseKey heroId)
     {
         markIsHero(heroId);
         UserMessagingRelationshipDTO cached = getValue(heroId);
@@ -58,7 +58,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
         }
     }
 
-    public void markIsPremiumHero(@NotNull UserBaseKey heroId)
+    public void markIsPremiumHero(@NonNull UserBaseKey heroId)
     {
         markIsHero(heroId);
         UserMessagingRelationshipDTO cached = getValue(heroId);
@@ -68,7 +68,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
         }
     }
 
-    public void markNotHero(@NotNull UserBaseKey formerHeroId)
+    public void markNotHero(@NonNull UserBaseKey formerHeroId)
     {
         UserMessagingRelationshipDTO cached = getValue(formerHeroId);
         if (cached != null)

@@ -13,8 +13,8 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import java.text.SimpleDateFormat;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class WatchlistPortfolioHeaderView extends LinearLayout
 {
@@ -23,7 +23,7 @@ public class WatchlistPortfolioHeaderView extends LinearLayout
     private TextView marking;
     private WatchlistPositionDTOList watchlistPositionDTOs;
     @Nullable private PortfolioCompactDTO portfolioCompactDTO;
-    @NotNull private SimpleDateFormat markingDateFormat;
+    @NonNull private SimpleDateFormat markingDateFormat;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

@@ -22,8 +22,8 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,17 +38,17 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @Inject LeaderboardDefCache leaderboardDefCache;
     @Inject LeaderboardCache leaderboardCache;
 
-    @NotNull protected LeaderboardDefKey leaderboardDefKey;
+    @NonNull protected LeaderboardDefKey leaderboardDefKey;
     @Nullable protected DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO> leaderboardDefCacheListener;
     protected LeaderboardDefDTO leaderboardDefDTO;
     protected UserProfileDTO currentUserProfileDTO;
 
-    public static void putLeaderboardDefKey(@NotNull Bundle args, @NotNull LeaderboardDefKey leaderboardDefKey)
+    public static void putLeaderboardDefKey(@NonNull Bundle args, @NonNull LeaderboardDefKey leaderboardDefKey)
     {
         args.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
     }
 
-    @NotNull public static LeaderboardDefKey getLeadboardDefKey(@NotNull Bundle args)
+    @NonNull public static LeaderboardDefKey getLeadboardDefKey(@NonNull Bundle args)
     {
         return new LeaderboardDefKey(args.getInt(BUNDLE_KEY_LEADERBOARD_ID));
     }
@@ -112,7 +112,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         return R.menu.leaderboard_menu;
     }
 
-    protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)
+    protected void pushLeaderboardListViewFragment(@NonNull LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
 
@@ -184,12 +184,12 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected class BaseLeaderboardFragmentLeaderboardDefCacheListener implements DTOCacheNew.Listener<LeaderboardDefKey, LeaderboardDefDTO>
     {
-        @Override public void onDTOReceived(@NotNull LeaderboardDefKey key, @NotNull LeaderboardDefDTO value)
+        @Override public void onDTOReceived(@NonNull LeaderboardDefKey key, @NonNull LeaderboardDefDTO value)
         {
             linkWith(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardDefKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull LeaderboardDefKey key, @NonNull Throwable error)
         {
             THToast.show(R.string.error_fetch_leaderboard_def);
         }
@@ -232,7 +232,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
+    protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
     }

@@ -13,8 +13,8 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.models.number.THSignedMoney;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
@@ -39,7 +39,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     }
     //</editor-fold>
 
-    public void setProviderDTO(@NotNull ProviderDTO providerDTO)
+    public void setProviderDTO(@NonNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
         displayLbmuPl();

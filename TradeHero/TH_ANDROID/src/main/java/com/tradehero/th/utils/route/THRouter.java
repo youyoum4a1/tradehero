@@ -13,20 +13,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 @Singleton
 public class THRouter extends Router
 {
-    @NotNull private final Provider<DashboardNavigator> navigatorProvider;
+    @NonNull private final Provider<DashboardNavigator> navigatorProvider;
     private Map<String, String> aliases;
 
     //<editor-fold desc="Constructors">
     public THRouter(
-            @NotNull Context context,
-            @NotNull Provider<DashboardNavigator> navigatorProvider)
+            @NonNull Context context,
+            @NonNull Provider<DashboardNavigator> navigatorProvider)
     {
         super(context);
         this.navigatorProvider = navigatorProvider;
@@ -98,7 +98,7 @@ public class THRouter extends Router
         this.aliases.put(alias, url);
     }
 
-    public void mapFragment(String format, @NotNull THRouterOptions options)
+    public void mapFragment(String format, @NonNull THRouterOptions options)
     {
         this.routes.put(format, options);
     }

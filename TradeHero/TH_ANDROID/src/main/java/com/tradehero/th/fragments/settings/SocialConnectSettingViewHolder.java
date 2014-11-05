@@ -22,8 +22,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -31,11 +31,11 @@ import timber.log.Timber;
 abstract public class SocialConnectSettingViewHolder
         extends UserProfileCheckBoxSettingViewHolder
 {
-    @NotNull protected final AlertDialogUtil alertDialogUtil;
-    @NotNull protected final SocialServiceWrapper socialServiceWrapper;
-    @NotNull protected final SocialAuthenticationProvider socialAuthenticationProvider;
-    @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NotNull protected final String authToken;
+    @NonNull protected final AlertDialogUtil alertDialogUtil;
+    @NonNull protected final SocialServiceWrapper socialServiceWrapper;
+    @NonNull protected final SocialAuthenticationProvider socialAuthenticationProvider;
+    @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NonNull protected final String authToken;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Nullable protected AlertDialog unlinkConfirmDialog;
     @Nullable protected Subscription linkingSubscription;
@@ -43,15 +43,15 @@ abstract public class SocialConnectSettingViewHolder
 
     //<editor-fold desc="Constructors">
     protected SocialConnectSettingViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull AlertDialogUtil alertDialogUtil,
-            @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull SocialAuthenticationProvider socialAuthenticationProvider,
-            @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull String authToken)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull AlertDialogUtil alertDialogUtil,
+            @NonNull SocialServiceWrapper socialServiceWrapper,
+            @NonNull SocialAuthenticationProvider socialAuthenticationProvider,
+            @NonNull UserProfileDTOUtil userProfileDTOUtil,
+            @NonNull String authToken)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
         this.alertDialogUtil = alertDialogUtil;
@@ -62,7 +62,7 @@ abstract public class SocialConnectSettingViewHolder
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         Preference clickablePrefCopy = clickablePref;
@@ -220,8 +220,8 @@ abstract public class SocialConnectSettingViewHolder
     protected class ChangedStatusObserver extends AlertDialogObserver<UserProfileDTO>
     {
         //<editor-fold desc="Constructors">
-        protected ChangedStatusObserver(@NotNull Context activityContext,
-                @NotNull AlertDialogUtil alertDialogUtil)
+        protected ChangedStatusObserver(@NonNull Context activityContext,
+                @NonNull AlertDialogUtil alertDialogUtil)
         {
             super(activityContext, alertDialogUtil);
         }
@@ -244,7 +244,7 @@ abstract public class SocialConnectSettingViewHolder
         }
     }
 
-    @NotNull abstract protected SocialNetworkEnum getSocialNetworkEnum();
+    @NonNull abstract protected SocialNetworkEnum getSocialNetworkEnum();
 
     @Nullable protected String getSocialNetworkName()
     {
@@ -255,7 +255,7 @@ abstract public class SocialConnectSettingViewHolder
 
     @StringRes abstract protected int getUnlinkingProgressDialogMessage();
 
-    @Override protected void updateStatus(@NotNull UserProfileDTO userProfileDTO)
+    @Override protected void updateStatus(@NonNull UserProfileDTO userProfileDTO)
     {
         showIsMainLogin();
         CheckBoxPreference clickablePrefCopy = clickablePref;

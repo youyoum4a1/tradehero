@@ -2,12 +2,12 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.OrderId;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class IABOrderId implements OrderId
 {
-    @NotNull public final String orderId;
+    @NonNull public final String orderId;
     public String packageName;
     public String productId;
     public long purchaseTime;
@@ -16,7 +16,7 @@ public class IABOrderId implements OrderId
     public String purchaseToken;
 
     //<editor-fold desc="Constructors">
-    public IABOrderId(@NotNull String orderId)
+    public IABOrderId(@NonNull String orderId)
     {
         this.orderId = orderId;
     }

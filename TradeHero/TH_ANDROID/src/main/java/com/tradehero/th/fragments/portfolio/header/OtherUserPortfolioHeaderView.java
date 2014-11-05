@@ -32,7 +32,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
@@ -127,18 +127,18 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public class OtherUserPortfolioFollowRequestedListener implements com.tradehero.th.models.social.OnFollowRequestedListener
     {
-        @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
+        @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
         {
             freeFollow(heroId);
         }
 
-        @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
+        @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)
         {
             follow(heroId);
         }
     }
 
-    protected void freeFollow(@NotNull UserBaseKey heroId)
+    protected void freeFollow(@NonNull UserBaseKey heroId)
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
@@ -147,7 +147,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
                         .freeFollow(heroId, new FreeFollowCallback());
     }
 
-    protected void follow(@NotNull UserBaseKey heroId)
+    protected void follow(@NonNull UserBaseKey heroId)
     {
         if (userProfileDTO != null)
         {
@@ -291,7 +291,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         this.followRequestedListenerWeak = new WeakReference<>(followRequestedListener);
     }
 
-    protected void notifyFollowRequested(@NotNull UserBaseKey userBaseKey)
+    protected void notifyFollowRequested(@NonNull UserBaseKey userBaseKey)
     {
         OnFollowRequestedListener followRequestedListener = followRequestedListenerWeak.get();
         if (followRequestedListener != null)
@@ -300,7 +300,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
     }
 
-    protected void notifyUserFollowed(@NotNull UserBaseKey userBaseKey)
+    protected void notifyUserFollowed(@NonNull UserBaseKey userBaseKey)
     {
         OnFollowRequestedListener followRequestedListener = followRequestedListenerWeak.get();
         if (followRequestedListener != null)
@@ -317,7 +317,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         this.timelineRequestedListenerWeak = new WeakReference<>(timelineRequestedListener);
     }
 
-    protected void notifyTimelineRequested(@NotNull UserBaseKey userBaseKey)
+    protected void notifyTimelineRequested(@NonNull UserBaseKey userBaseKey)
     {
         OnTimelineRequestedListener timelineRequestedListener = timelineRequestedListenerWeak.get();
         if (timelineRequestedListener != null)

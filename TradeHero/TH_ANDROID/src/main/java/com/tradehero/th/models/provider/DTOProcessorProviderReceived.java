@@ -5,14 +5,14 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorProviderReceived implements DTOProcessor<ProviderDTO>
 {
-    @NotNull private final DTOProcessor<PortfolioCompactDTO> portfolioCompactProcessor;
+    @NonNull private final DTOProcessor<PortfolioCompactDTO> portfolioCompactProcessor;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorProviderReceived(@NotNull CurrentUserId currentUserId)
+    public DTOProcessorProviderReceived(@NonNull CurrentUserId currentUserId)
     {
         this.portfolioCompactProcessor = new DTOProcessorPortfolioReceived<>(currentUserId.toUserBaseKey());
     }

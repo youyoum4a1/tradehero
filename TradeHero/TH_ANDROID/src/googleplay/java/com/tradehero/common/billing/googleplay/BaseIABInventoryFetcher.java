@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -38,8 +38,8 @@ abstract public class BaseIABInventoryFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseIABInventoryFetcher(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         super(context, iabExceptionFactory);
         this.inventory = new HashMap<>();

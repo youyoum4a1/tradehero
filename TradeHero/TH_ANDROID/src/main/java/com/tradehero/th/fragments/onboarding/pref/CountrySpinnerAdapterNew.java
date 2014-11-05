@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.CountryNameComparator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class CountrySpinnerAdapterNew
         extends ViewDTOSetAdapter<Country, CountrySpinnerItemView>
@@ -17,7 +17,7 @@ public class CountrySpinnerAdapterNew
     @LayoutRes private int dropDownResId;
 
     //<editor-fold desc="Constructors">
-    public CountrySpinnerAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)
+    public CountrySpinnerAdapterNew(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, new CountryNameComparator(context));
         this.resId = layoutResourceId;

@@ -6,20 +6,20 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class WeChatServiceWrapper
 {
-    @NotNull private final WeChatServiceRx weChatServiceRx;
-    @NotNull private final WeChatServiceAsync weChatServiceAsync;
+    @NonNull private final WeChatServiceRx weChatServiceRx;
+    @NonNull private final WeChatServiceAsync weChatServiceAsync;
 
     //<editor-fold desc="Constructors">
     @Inject public WeChatServiceWrapper(
-            @NotNull WeChatServiceAsync weChatServiceAsync,
-            @NotNull WeChatServiceRx weChatServiceRx)
+            @NonNull WeChatServiceAsync weChatServiceAsync,
+            @NonNull WeChatServiceRx weChatServiceRx)
     {
         super();
         this.weChatServiceAsync = weChatServiceAsync;
@@ -29,15 +29,15 @@ import rx.Observable;
 
     //<editor-fold desc="Track Share">
     public Observable<TrackShareDTO> trackShareRx(
-            @NotNull UserBaseKey userId,
-            @NotNull WeChatTrackShareFormDTO weChatTrackShareFormDTO)
+            @NonNull UserBaseKey userId,
+            @NonNull WeChatTrackShareFormDTO weChatTrackShareFormDTO)
     {
         return weChatServiceRx.trackShare(userId.key, weChatTrackShareFormDTO);
     }
 
     public BaseMiddleCallback<TrackShareDTO> trackShare(
-            @NotNull UserBaseKey userId,
-            @NotNull WeChatTrackShareFormDTO weChatTrackShareFormDTO,
+            @NonNull UserBaseKey userId,
+            @NonNull WeChatTrackShareFormDTO weChatTrackShareFormDTO,
             @Nullable Callback<TrackShareDTO> callback)
     {
         BaseMiddleCallback<TrackShareDTO> middleCallback = new BaseMiddleCallback<>(callback);

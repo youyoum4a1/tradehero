@@ -13,7 +13,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 /**
  * This fragment will not be the main, but one that is pushed from elsewhere
@@ -96,7 +96,7 @@ public class PushableTimelineFragment extends TimelineFragment
         });
     }
 
-    @Override public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
+    @Override public <T extends Fragment> boolean allowNavigateTo(@NonNull Class<T> fragmentClass, Bundle args)
     {
         return !(
                 ((Object) this).getClass().isAssignableFrom(fragmentClass) &&

@@ -3,7 +3,7 @@ package com.tradehero.th.api.position;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecurityPositionDetailDTO extends SecurityPositionDTO
 {
@@ -16,7 +16,7 @@ public class SecurityPositionDetailDTO extends SecurityPositionDTO
     }
 
     public SecurityPositionDetailDTO(
-            @NotNull SecurityCompactDTO security,
+            @NonNull SecurityCompactDTO security,
             @Nullable PositionDTOCompactList positions,
             int firstTradeAllTime,
             @Nullable ProviderDTOList providers)

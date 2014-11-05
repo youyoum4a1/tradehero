@@ -50,7 +50,7 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.Random;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import static org.mockito.Mockito.mock;
 
@@ -64,7 +64,7 @@ public class ValidMocker
     }
 
     //<editor-fold desc="Create valid parameters">
-    public Object mockValidParameter(@NotNull Class<?> type)
+    public Object mockValidParameter(@NonNull Class<?> type)
     {
         if (type.equals(UserBaseKey.class))
         {

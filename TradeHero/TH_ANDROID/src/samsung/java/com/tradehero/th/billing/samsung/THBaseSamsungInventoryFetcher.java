@@ -11,7 +11,7 @@ import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseSamsungInventoryFetcher
     extends BaseSamsungInventoryFetcher<
@@ -20,13 +20,13 @@ public class THBaseSamsungInventoryFetcher
         SamsungException>
     implements THSamsungInventoryFetcher
 {
-    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
+    @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungInventoryFetcher(
-            @NotNull Context context,
+            @NonNull Context context,
             @ForSamsungBillingMode int mode,
-            @NotNull THSamsungExceptionFactory samsungExceptionFactory)
+            @NonNull THSamsungExceptionFactory samsungExceptionFactory)
     {
         super(context, mode);
         this.samsungExceptionFactory = samsungExceptionFactory;

@@ -4,7 +4,7 @@ import com.tradehero.th.api.market.Country;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 class ListedLocationDTOFactory
 {
@@ -15,10 +15,10 @@ class ListedLocationDTOFactory
     }
     //</editor-fold>
 
-    @NotNull public List<ListedLocationDTO> createListToShow()
+    @NonNull public List<ListedLocationDTO> createListToShow()
     {
         List<ListedLocationDTO> created = new ArrayList<>();
-        for (@NotNull Country country : Country.values())
+        for (Country country : Country.values())
         {
             if (!country.equals(Country.NONE))
             {

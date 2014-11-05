@@ -3,17 +3,17 @@ package com.tradehero.th.rx.dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.util.Pair;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Subscriber;
 
 public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterface, Integer>>
 {
-    @NotNull final Builder builder;
+    @NonNull final Builder builder;
 
     //<editor-fold desc="Constructors">
-    public AlertDialogOnSubscribe(@NotNull Builder builder)
+    public AlertDialogOnSubscribe(@NonNull Builder builder)
     {
         this.builder = builder;
     }
@@ -59,7 +59,7 @@ public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<Dialo
         dialog.show();
     }
 
-    public static Builder builder(@NotNull AlertDialog.Builder alertDialogBuilder)
+    public static Builder builder(@NonNull AlertDialog.Builder alertDialogBuilder)
     {
         return new Builder(alertDialogBuilder);
     }
@@ -69,9 +69,9 @@ public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<Dialo
         @Nullable private CharSequence positiveButton;
         @Nullable private CharSequence negativeButton;
         @Nullable private CharSequence neutralButton;
-        @NotNull private final AlertDialog.Builder alertDialogBuilder;
+        @NonNull private final AlertDialog.Builder alertDialogBuilder;
 
-        public Builder(@NotNull AlertDialog.Builder alertDialogBuilder)
+        public Builder(@NonNull AlertDialog.Builder alertDialogBuilder)
         {
             this.alertDialogBuilder = alertDialogBuilder;
         }

@@ -10,7 +10,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 // TODO refactor with DTOAdapterNew and getItemTypeCount
@@ -68,7 +68,7 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
         return 5;
     }
 
-    @Override public void setItems(@NotNull List<HeroDTO> items)
+    @Override public void setItems(@NonNull List<HeroDTO> items)
     {
         super.setItems(items);
         if (items == null)

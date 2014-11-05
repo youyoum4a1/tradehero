@@ -3,7 +3,7 @@ package com.tradehero.th.api;
 import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
@@ -14,7 +14,7 @@ public class ValidMockerGooglePlay extends ValidMocker
         super();
     }
 
-    @Override public Object mockValidParameter(@NotNull Class<?> type)
+    @Override public Object mockValidParameter(@NonNull Class<?> type)
     {
         if (type.equals(PurchaseReportDTO.class))
         {

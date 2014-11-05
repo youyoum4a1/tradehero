@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PositionInPeriodDTO extends PositionDTO
 {
@@ -44,12 +44,12 @@ public class PositionInPeriodDTO extends PositionDTO
         return leaderboardMarkUserId;
     }
 
-    public void setLeaderboardMarkUserId(@NotNull LeaderboardMarkUserId leaderboardMarkUserId)
+    public void setLeaderboardMarkUserId(@NonNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    @NotNull public OwnedLeaderboardPositionId getLbOwnedPositionId()
+    @NonNull public OwnedLeaderboardPositionId getLbOwnedPositionId()
     {
         return new OwnedLeaderboardPositionId(userId, id);
     }

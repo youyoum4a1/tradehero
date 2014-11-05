@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -156,7 +156,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
                 });
     }
 
-    protected void display(@NotNull FollowerSummaryDTO followerSummaryDTO)
+    protected void display(@NonNull FollowerSummaryDTO followerSummaryDTO)
     {
         followerManagerViewContainer.display(followerSummaryDTO);
         followerManagerViewContainer.displayChild(FollowerManagerViewContainer.INDEX_VIEW_LIST);

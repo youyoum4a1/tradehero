@@ -1,13 +1,13 @@
 package com.tradehero.th.api.timeline;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TimelineItemShareRequestDTO
 {
-    @NotNull public final SocialNetworkEnum socialNetwork;
+    @NonNull public final SocialNetworkEnum socialNetwork;
 
-    public TimelineItemShareRequestDTO(@NotNull SocialNetworkEnum socialNetwork)
+    public TimelineItemShareRequestDTO(@NonNull SocialNetworkEnum socialNetwork)
     {
         this.socialNetwork = socialNetwork;
     }

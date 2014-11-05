@@ -9,8 +9,8 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -76,7 +76,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected class NewPrivateMessageFragmentThreadHeaderCacheListener
             implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull MessageHeaderDTO value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull MessageHeaderDTO value)
         {
             if (getDiscussionKey() == null)
             {
@@ -84,7 +84,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
             }
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             if (!(error instanceof RetrofitError) ||
                     ((RetrofitError) error).getResponse() == null ||

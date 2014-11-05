@@ -13,7 +13,7 @@ import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -22,16 +22,16 @@ public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, Abstra
     private static final int DEFAULT_VALUE_SIZE = 100;
     private static final int DEFAULT_SUBJECT_SIZE = 10;
 
-    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
-    @NotNull private final NewsServiceWrapper newsServiceWrapper;
-    @NotNull private final UserTimelineServiceWrapper timelineServiceWrapper;
+    @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NonNull private final NewsServiceWrapper newsServiceWrapper;
+    @NonNull private final UserTimelineServiceWrapper timelineServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public DiscussionCacheRx(
-            @NotNull NewsServiceWrapper newsServiceWrapper,
-            @NotNull UserTimelineServiceWrapper userTimelineServiceWrapper,
-            @NotNull DiscussionServiceWrapper discussionServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull NewsServiceWrapper newsServiceWrapper,
+            @NonNull UserTimelineServiceWrapper userTimelineServiceWrapper,
+            @NonNull DiscussionServiceWrapper discussionServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
 
@@ -41,7 +41,7 @@ public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, Abstra
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<AbstractDiscussionCompactDTO> fetch(@NotNull DiscussionKey discussionKey)
+    @Override @NonNull protected Observable<AbstractDiscussionCompactDTO> fetch(@NonNull DiscussionKey discussionKey)
     {
         if (discussionKey instanceof TimelineItemDTOKey)
         {
@@ -57,7 +57,7 @@ public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, Abstra
                 .map(comment -> (AbstractDiscussionCompactDTO) comment);
     }
 
-    public void onNext(@NotNull List<? extends AbstractDiscussionCompactDTO> discussionList)
+    public void onNext(@NonNull List<? extends AbstractDiscussionCompactDTO> discussionList)
     {
         for (AbstractDiscussionCompactDTO discussionDTO : discussionList)
         {

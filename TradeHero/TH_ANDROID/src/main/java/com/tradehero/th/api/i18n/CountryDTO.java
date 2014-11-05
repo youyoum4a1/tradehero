@@ -1,10 +1,10 @@
 package com.tradehero.th.api.i18n;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class CountryDTO extends LanguageDTO
 {
-    public CountryDTO(@NotNull String code, @NotNull String name)
+    public CountryDTO(@NonNull String code, @NonNull String name)
     {
         super(code, name);
     }

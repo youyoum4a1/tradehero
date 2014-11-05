@@ -10,7 +10,7 @@ import com.tradehero.th.network.service.VideoServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -19,14 +19,14 @@ public class PaginatedVideoCacheRx extends BaseFetchDTOCacheRx<VideoCategoryId, 
     private static final int DEFAULT_MAX_VALUE_SIZE = 50;
     private static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
-    @NotNull private final VideoCacheRx videoCache;
-    @NotNull private final VideoServiceWrapper videoServiceWrapper;
+    @NonNull private final VideoCacheRx videoCache;
+    @NonNull private final VideoServiceWrapper videoServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public PaginatedVideoCacheRx(
-            @NotNull VideoCacheRx videoCache,
-            @NotNull VideoServiceWrapper videoServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull VideoCacheRx videoCache,
+            @NonNull VideoServiceWrapper videoServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.videoCache = videoCache;
@@ -34,12 +34,12 @@ public class PaginatedVideoCacheRx extends BaseFetchDTOCacheRx<VideoCategoryId, 
     }
     //</editor-fold>
 
-    @NotNull @Override protected Observable<PaginatedVideoDTO> fetch(@NotNull VideoCategoryId key)
+    @NonNull @Override protected Observable<PaginatedVideoDTO> fetch(@NonNull VideoCategoryId key)
     {
         return videoServiceWrapper.getVideosRx(key);
     }
 
-    @Override public void onNext(@NotNull VideoCategoryId key, @NotNull PaginatedVideoDTO value)
+    @Override public void onNext(@NonNull VideoCategoryId key, @NonNull PaginatedVideoDTO value)
     {
         List<VideoDTO> data = value.getData();
         if (data != null)

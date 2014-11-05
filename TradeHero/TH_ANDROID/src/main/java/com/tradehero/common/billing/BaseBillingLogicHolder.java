@@ -3,8 +3,8 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,25 +46,25 @@ abstract public class BaseBillingLogicHolder<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
-    @NotNull protected final ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache;
-    @NotNull protected final ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache;
-    @NotNull protected final BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
-    @NotNull protected final ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder;
-    @NotNull protected final BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
-    @NotNull protected final BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
-    @NotNull protected final BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
+    @NonNull protected final ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache;
+    @NonNull protected final ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache;
+    @NonNull protected final BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
+    @NonNull protected final ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder;
+    @NonNull protected final BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
+    @NonNull protected final BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder;
+    @NonNull protected final BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder;
 
-    @NotNull protected final Map<Integer, BillingRequestType> billingRequests;
+    @NonNull protected final Map<Integer, BillingRequestType> billingRequests;
 
     //<editor-fold desc="Constructors">
     public BaseBillingLogicHolder(
-            @NotNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
-            @NotNull ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache,
-            @NotNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
-            @NotNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
-            @NotNull BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder,
-            @NotNull BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
-            @NotNull BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder)
+            @NonNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
+            @NonNull ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache,
+            @NonNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
+            @NonNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
+            @NonNull BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder,
+            @NonNull BillingPurchaseFetcherHolder<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
+            @NonNull BillingPurchaserHolder<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaserHolder)
     {
         super();
         this.productIdentifierCache = productIdentifierCache;
@@ -131,7 +131,7 @@ abstract public class BaseBillingLogicHolder<
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, @NotNull BillingRequestType billingRequest)
+    @Override public void registerListeners(int requestCode, @NonNull BillingRequestType billingRequest)
     {
         registerBillingAvailableListener(requestCode, billingRequest.billingAvailableListener);
         registerProductIdentifierFetchedListener(requestCode, billingRequest.productIdentifierFetchedListener);
@@ -146,7 +146,7 @@ abstract public class BaseBillingLogicHolder<
      *
      * @return true if sequence launched, false otherwise
      */
-    @Override public boolean run(int requestCode, @NotNull BillingRequestType billingRequest)
+    @Override public boolean run(int requestCode, @NonNull BillingRequestType billingRequest)
     {
         billingRequests.put(requestCode, billingRequest);
         registerListeners(requestCode, billingRequest);
@@ -156,7 +156,7 @@ abstract public class BaseBillingLogicHolder<
     protected boolean runInternal(int requestCode)
     {
         boolean launched = false;
-        @Nullable BillingRequestType billingRequest = billingRequests.get(requestCode);
+        BillingRequestType billingRequest = billingRequests.get(requestCode);
         if (billingRequest != null)
         {
             if (billingRequest.testBillingAvailable)

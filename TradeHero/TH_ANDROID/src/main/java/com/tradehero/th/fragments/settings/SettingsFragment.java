@@ -27,8 +27,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment
@@ -59,10 +59,10 @@ public final class SettingsFragment extends DashboardPreferenceFragment
     @Inject protected ClearCacheViewHolder clearCacheViewHolder;
     @Inject protected AboutPrefViewHolder aboutPrefViewHolder;
 
-    @NotNull private SettingViewHolderList allSettingViewHolders;
+    @NonNull private SettingViewHolderList allSettingViewHolders;
     private SocialNetworkEnum socialNetworkToConnectTo;
 
-    public static void putSocialNetworkToConnect(@NotNull Bundle args, @NotNull SocialNetworkEnum socialNetwork)
+    public static void putSocialNetworkToConnect(@NonNull Bundle args, @NonNull SocialNetworkEnum socialNetwork)
     {
         args.putString(KEY_SOCIAL_NETWORK_TO_CONNECT, socialNetwork.name());
     }
@@ -183,7 +183,7 @@ public final class SettingsFragment extends DashboardPreferenceFragment
         }
     }
 
-    private void waitAndMoveTo(@NotNull final ListView listView, final int index)
+    private void waitAndMoveTo(@NonNull final ListView listView, final int index)
     {
         listView.post(new Runnable()
         {

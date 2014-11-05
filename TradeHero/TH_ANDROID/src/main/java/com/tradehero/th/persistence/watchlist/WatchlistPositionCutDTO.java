@@ -6,8 +6,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Deprecated
 class WatchlistPositionCutDTO implements DTO
@@ -42,8 +42,8 @@ class WatchlistPositionCutDTO implements DTO
     public Double watchlistPrice;
     @Nullable public SecurityId securityIdKey;
 
-    WatchlistPositionCutDTO(@NotNull WatchlistPositionDTO inflated,
-            @NotNull SecurityCompactCacheRx securityCompactCache)
+    WatchlistPositionCutDTO(@NonNull WatchlistPositionDTO inflated,
+            @NonNull SecurityCompactCacheRx securityCompactCache)
     {
         this.id = inflated.id;
         this.shares = inflated.shares;
@@ -74,7 +74,7 @@ class WatchlistPositionCutDTO implements DTO
         }
     }
 
-    @Nullable WatchlistPositionDTO inflate(@NotNull SecurityCompactCacheRx securityCompactCache)
+    @Nullable WatchlistPositionDTO inflate(@NonNull SecurityCompactCacheRx securityCompactCache)
     {
         WatchlistPositionDTO inflated = new WatchlistPositionDTO();
 

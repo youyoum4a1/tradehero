@@ -4,7 +4,7 @@ import com.tradehero.common.billing.samsung.BaseSamsungBillingAvailableTesterHol
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseSamsungBillingAvailableTesterHolder
     extends BaseSamsungBillingAvailableTesterHolder<
@@ -14,7 +14,7 @@ public class THBaseSamsungBillingAvailableTesterHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungBillingAvailableTesterHolder(
-            @NotNull Provider<THSamsungBillingAvailableTester> thSamsungBillingAvailableTesterProvider)
+            @NonNull Provider<THSamsungBillingAvailableTester> thSamsungBillingAvailableTesterProvider)
     {
         super(thSamsungBillingAvailableTesterProvider);
     }

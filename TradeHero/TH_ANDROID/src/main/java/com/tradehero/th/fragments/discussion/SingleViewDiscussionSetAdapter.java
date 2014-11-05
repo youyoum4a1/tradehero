@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
 {
@@ -13,7 +13,7 @@ public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
 
     //<editor-fold desc="Constructors">
     public SingleViewDiscussionSetAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             @LayoutRes int layoutResId)
     {
         super(context);
@@ -21,7 +21,7 @@ public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
     }
 
     public SingleViewDiscussionSetAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable Collection<DiscussionKey> objects,
             @LayoutRes int layoutResId)
     {

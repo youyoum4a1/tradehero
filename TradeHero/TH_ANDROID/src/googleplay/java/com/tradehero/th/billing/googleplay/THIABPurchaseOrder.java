@@ -10,8 +10,8 @@ import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.googleplay.exception.IABInvalidQuantityException;
 import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.IOException;
 
@@ -19,19 +19,19 @@ import timber.log.Timber;
 
 public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseOrder<IABSKU>
 {
-    @NotNull private IABSKU sku;
+    @NonNull private IABSKU sku;
     private int quantity;
-    @NotNull private OwnedPortfolioId developerPayload;
+    @NonNull private OwnedPortfolioId developerPayload;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchaseOrder (@NotNull IABSKU sku, @NotNull OwnedPortfolioId developerPayload)
+    public THIABPurchaseOrder (@NonNull IABSKU sku, @NonNull OwnedPortfolioId developerPayload)
     {
         this(sku, 1, developerPayload);
         Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
-    public THIABPurchaseOrder (@NotNull IABSKU sku, int quantity, @NotNull OwnedPortfolioId developerPayload)
+    public THIABPurchaseOrder (@NonNull IABSKU sku, int quantity, @NonNull OwnedPortfolioId developerPayload)
     {
         this.sku = sku;
         this.quantity = quantity;
@@ -45,7 +45,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
     }
     //</editor-fold>
 
-    public void testOwnedPortfolioIdValid(@NotNull OwnedPortfolioId developerPayload)
+    public void testOwnedPortfolioIdValid(@NonNull OwnedPortfolioId developerPayload)
     {
         if (!developerPayload.isValid())
         {
@@ -53,7 +53,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
         }
     }
 
-    @Override @NotNull public IABSKU getProductIdentifier()
+    @Override @NonNull public IABSKU getProductIdentifier()
     {
         return this.sku;
     }
@@ -63,7 +63,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
         return this.quantity;
     }
 
-    @Override @NotNull public String getDeveloperPayload()
+    @Override @NonNull public String getDeveloperPayload()
     {
         try
         {
@@ -76,12 +76,12 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
         }
     }
 
-    @Override public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
+    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this.developerPayload = applicablePortfolioId;
     }
 
-    @NotNull @Override public OwnedPortfolioId getApplicablePortfolioId()
+    @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {
         return developerPayload;
     }

@@ -6,15 +6,15 @@ import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class FollowerServiceWrapper
 {
-    @NotNull private final FollowerServiceRx followerServiceRx;
+    @NonNull private final FollowerServiceRx followerServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public FollowerServiceWrapper(@NotNull FollowerServiceRx followerServiceRx)
+    @Inject public FollowerServiceWrapper(@NonNull FollowerServiceRx followerServiceRx)
     {
         super();
         this.followerServiceRx = followerServiceRx;
@@ -22,14 +22,14 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get All Followers Summary">
-    @NotNull public Observable<FollowerSummaryDTO> getAllFollowersSummaryRx(@NotNull UserBaseKey heroId)
+    @NonNull public Observable<FollowerSummaryDTO> getAllFollowersSummaryRx(@NonNull UserBaseKey heroId)
     {
         return followerServiceRx.getAllFollowersSummary(heroId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Follower Subscription Detail">
-    @NotNull public Observable<UserFollowerDTO> getFollowerSubscriptionDetailRx(@NotNull FollowerHeroRelationId followerHeroRelationId)
+    @NonNull public Observable<UserFollowerDTO> getFollowerSubscriptionDetailRx(@NonNull FollowerHeroRelationId followerHeroRelationId)
     {
         return this.followerServiceRx.getFollowerSubscriptionDetail(followerHeroRelationId.heroId, followerHeroRelationId.followerId);
     }

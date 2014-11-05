@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.client.Header;
 import rx.Observable;
 
@@ -23,14 +23,14 @@ import rx.Observable;
 public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeContentDTO>
 {
     private static final int DEFAULT_MAX_CACHE = 1;
-    @NotNull private final HomeServiceWrapper homeServiceWrapper;
-    @NotNull private final RetrofitHelper retrofitHelper;
+    @NonNull private final HomeServiceWrapper homeServiceWrapper;
+    @NonNull private final RetrofitHelper retrofitHelper;
 
     //<editor-fold desc="Constructors">
     @Inject public HomeContentCacheRx(
-            @NotNull HomeServiceWrapper homeServiceWrapper,
-            @NotNull RetrofitHelper retrofitHelper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull HomeServiceWrapper homeServiceWrapper,
+            @NonNull RetrofitHelper retrofitHelper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_CACHE, DEFAULT_MAX_CACHE, DEFAULT_MAX_CACHE, dtoCacheUtil);
         this.homeServiceWrapper = homeServiceWrapper;
@@ -38,7 +38,7 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
     }
     //</editor-fold>
 
-    @NotNull @Override protected Observable<HomeContentDTO> fetch(@NotNull UserBaseKey key)
+    @NonNull @Override protected Observable<HomeContentDTO> fetch(@NonNull UserBaseKey key)
     {
         return homeServiceWrapper.getHomePageContentRx(key)
                 .flatMap(response -> {
@@ -59,7 +59,7 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
                 });
     }
 
-    @NotNull @Override public Observable<Pair<UserBaseKey, HomeContentDTO>> get(@NotNull UserBaseKey key)
+    @NonNull @Override public Observable<Pair<UserBaseKey, HomeContentDTO>> get(@NonNull UserBaseKey key)
     {
         return super.get(key);
     }

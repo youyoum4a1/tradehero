@@ -32,8 +32,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -82,12 +82,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected MenuItem marketCloseIcon;
 
-    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
-    @Nullable public static SecurityId getSecurityId(@NotNull Bundle args)
+    @Nullable public static SecurityId getSecurityId(@NonNull Bundle args)
     {
         Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
         if (securityIdBundle == null)
@@ -149,7 +149,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onResume()
     {
         super.onResume();
-        @Nullable SecurityId securityIdFromArgs = getSecurityId(getArguments());
+        SecurityId securityIdFromArgs = getSecurityId(getArguments());
         if (securityIdFromArgs != null)
         {
             linkWith(securityIdFromArgs, true);
@@ -354,7 +354,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    public void linkWith(@NotNull final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
+    public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
         linkWith(securityPositionDetailDTO.security, andDisplay);

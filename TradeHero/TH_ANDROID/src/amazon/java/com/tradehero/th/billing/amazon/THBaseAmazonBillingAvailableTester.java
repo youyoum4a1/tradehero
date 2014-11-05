@@ -6,7 +6,7 @@ import com.tradehero.common.billing.amazon.BaseAmazonBillingAvailableTester;
 import com.tradehero.common.billing.amazon.exception.AmazonBillingNotAvailableException;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonBillingAvailableTester
     extends BaseAmazonBillingAvailableTester<AmazonException>
@@ -14,8 +14,8 @@ public class THBaseAmazonBillingAvailableTester
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonBillingAvailableTester(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(context, purchasingService);
     }

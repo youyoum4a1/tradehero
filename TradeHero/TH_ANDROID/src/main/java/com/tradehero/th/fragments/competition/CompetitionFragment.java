@@ -12,8 +12,8 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -30,12 +30,12 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription providerCacheSubscription;
     protected ProviderDTO providerDTO;
 
-    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    @NotNull public static ProviderId getProviderId(@NotNull Bundle args)
+    @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -74,7 +74,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
                 .subscribe(createProviderCacheObserver());
     }
 
-    protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
+    protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
     {
         this.providerDTO = providerDTO;
 
@@ -88,7 +88,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         }
     }
 
-    @NotNull protected Observer<Pair<ProviderId, ProviderDTO>> createProviderCacheObserver()
+    @NonNull protected Observer<Pair<ProviderId, ProviderDTO>> createProviderCacheObserver()
     {
         return new CompetitionFragmentProviderCacheObserver();
     }

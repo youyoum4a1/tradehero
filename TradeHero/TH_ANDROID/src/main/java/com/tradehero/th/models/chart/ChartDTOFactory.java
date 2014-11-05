@@ -1,16 +1,16 @@
 package com.tradehero.th.models.chart;
 
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface ChartDTOFactory
 {
-    @NotNull
+    @NonNull
     ChartDTO createChartDTO();
-    @NotNull
+    @NonNull
     ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO);
-    @NotNull
+    @NonNull
     ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize);
-    @NotNull
+    @NonNull
     ChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize, ChartTimeSpan timeSpan);
 }

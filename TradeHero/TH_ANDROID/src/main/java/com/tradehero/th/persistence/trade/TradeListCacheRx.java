@@ -8,7 +8,7 @@ import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.network.service.TradeServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,14 +17,14 @@ public class TradeListCacheRx extends BaseFetchDTOCacheRx<OwnedPositionId, Trade
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final TradeServiceWrapper tradeServiceWrapper;
-    @NotNull private final TradeCacheRx tradeCache;
+    @NonNull private final TradeServiceWrapper tradeServiceWrapper;
+    @NonNull private final TradeCacheRx tradeCache;
 
     //<editor-fold desc="Constructors">
     @Inject public TradeListCacheRx(
-            @NotNull TradeServiceWrapper tradeServiceWrapper,
-            @NotNull TradeCacheRx tradeCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull TradeServiceWrapper tradeServiceWrapper,
+            @NonNull TradeCacheRx tradeCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.tradeServiceWrapper = tradeServiceWrapper;
@@ -32,12 +32,12 @@ public class TradeListCacheRx extends BaseFetchDTOCacheRx<OwnedPositionId, Trade
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<TradeDTOList> fetch(@NotNull OwnedPositionId key)
+    @Override @NonNull protected Observable<TradeDTOList> fetch(@NonNull OwnedPositionId key)
     {
         return tradeServiceWrapper.getTradesRx(key);
     }
 
-    @Override public void onNext(@NotNull OwnedPositionId key, @NotNull TradeDTOList value)
+    @Override public void onNext(@NonNull OwnedPositionId key, @NonNull TradeDTOList value)
     {
         tradeCache.onNext(value);
         super.onNext(key, value);

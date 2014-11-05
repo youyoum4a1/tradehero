@@ -11,7 +11,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THSamsungRequest<
         SamsungSKUListKeyType extends SamsungSKUListKey,
@@ -35,7 +35,7 @@ public class THSamsungRequest<
         SamsungExceptionType>
 {
     //<editor-fold desc="Constructors">
-    protected THSamsungRequest(@NotNull Builder<
+    protected THSamsungRequest(@NonNull Builder<
             SamsungSKUListKeyType,
             SamsungSKUType,
             SamsungSKUListType,

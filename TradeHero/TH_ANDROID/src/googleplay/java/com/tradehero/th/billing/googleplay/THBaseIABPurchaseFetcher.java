@@ -6,7 +6,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 
 import javax.inject.Inject;
@@ -22,15 +22,15 @@ public class THBaseIABPurchaseFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABPurchaseFetcher(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
-            @NotNull THIABPurchaseCache thiabPurchaseCache)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
+            @NonNull THIABPurchaseCache thiabPurchaseCache)
     {
         super(context, iabExceptionFactory, thiabPurchaseCache);
     }
     //</editor-fold>
 
-    @Override @NotNull protected THIABPurchase createPurchase(String itemType, String purchaseData, String signature) throws JSONException
+    @Override @NonNull protected THIABPurchase createPurchase(String itemType, String purchaseData, String signature) throws JSONException
     {
         return new THIABPurchase(itemType, purchaseData, signature);
     }

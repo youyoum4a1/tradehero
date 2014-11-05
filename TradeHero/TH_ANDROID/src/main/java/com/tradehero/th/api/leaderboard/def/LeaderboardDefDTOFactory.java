@@ -11,7 +11,7 @@ import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 
@@ -19,17 +19,17 @@ import javax.inject.Inject;
 
 public class LeaderboardDefDTOFactory
 {
-    @NotNull private final Context context;
+    @NonNull private final Context context;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefDTOFactory(
-            @NotNull Context context)
+            @NonNull Context context)
     {
         this.context = context;
     }
     //</editor-fold>
 
-    public void complementServerLeaderboardDefDTOs(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
+    public void complementServerLeaderboardDefDTOs(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
         leaderboardDefDTOs.add(new InviteFriendsLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new HeroLeaderboardDefDTO(context));
@@ -39,8 +39,8 @@ public class LeaderboardDefDTOFactory
         leaderboardDefDTOs.add(new SectorContainerLeaderboardDefDTO(context));
     }
 
-    @NotNull
-    public HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
+    @NonNull
+    public HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
         HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> filed = new HashMap<>();
         filed.put(new LeaderboardDefListKey(), new LeaderboardDefDTOList());
@@ -51,7 +51,7 @@ public class LeaderboardDefDTOFactory
         filed.put(new TimePeriodLeaderboardDefListKey(), new LeaderboardDefDTOList());
         filed.put(new MostSkilledLeaderboardDefListKey(), new LeaderboardDefDTOList());
 
-        for (@NotNull LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
+        for (LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
         {
             filed.get(new LeaderboardDefListKey()).add(leaderboardDefDTO);
             LeaderboardDefListKey listKey = leaderboardDefDTO.getLeaderboardDefListKey();

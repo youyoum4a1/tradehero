@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<WarrantDTO>
 {
@@ -27,7 +27,7 @@ public class MacquarieWarrantItemViewAdapter extends SecurityItemViewAdapter<War
     }
     //</editor-fold>
 
-    @Override public void setItems(@NotNull final List<WarrantDTO> items)
+    @Override public void setItems(@NonNull final List<WarrantDTO> items)
     {
         if (items == null)
         {

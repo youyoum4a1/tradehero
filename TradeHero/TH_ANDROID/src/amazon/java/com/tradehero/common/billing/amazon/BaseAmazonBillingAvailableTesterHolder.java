@@ -6,7 +6,7 @@ import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonBillingAvailableTesterHolder<
         AmazonBillingAvailableTesterType extends AmazonBillingAvailableTester<AmazonExceptionType>,
@@ -14,12 +14,12 @@ abstract public class BaseAmazonBillingAvailableTesterHolder<
     extends BaseBillingAvailableTesterHolder<AmazonExceptionType>
     implements AmazonBillingAvailableTesterHolder<AmazonExceptionType>
 {
-    @NotNull protected final Provider<AmazonBillingAvailableTesterType> amazonBillingAvailableTesterTypeProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, AmazonBillingAvailableTesterType> testers;
+    @NonNull protected final Provider<AmazonBillingAvailableTesterType> amazonBillingAvailableTesterTypeProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, AmazonBillingAvailableTesterType> testers;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonBillingAvailableTesterHolder(
-            @NotNull Provider<AmazonBillingAvailableTesterType> amazonBillingAvailableTesterTypeProvider)
+            @NonNull Provider<AmazonBillingAvailableTesterType> amazonBillingAvailableTesterTypeProvider)
     {
         super();
         this.amazonBillingAvailableTesterTypeProvider = amazonBillingAvailableTesterTypeProvider;

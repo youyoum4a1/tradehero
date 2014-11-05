@@ -15,7 +15,7 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public interface UIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,

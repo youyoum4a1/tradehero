@@ -11,8 +11,8 @@ import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class BaseTHUIIABRequest
         extends BaseTHUIBillingRequest<
@@ -77,7 +77,7 @@ public class BaseTHUIIABRequest
 
     //<editor-fold desc="Constructors">
     protected BaseTHUIIABRequest(
-            @NotNull BaseTHUIIABRequest.Builder<?> builder)
+            @NonNull BaseTHUIIABRequest.Builder<?> builder)
     {
         super(builder);
         this.consumePurchase = builder.consumePurchase;

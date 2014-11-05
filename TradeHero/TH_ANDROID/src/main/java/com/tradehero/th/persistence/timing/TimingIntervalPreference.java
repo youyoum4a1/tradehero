@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 
 import com.tradehero.common.persistence.prefs.LongPreference;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TimingIntervalPreference extends LongPreference
 {
@@ -21,8 +21,8 @@ public class TimingIntervalPreference extends LongPreference
 
     //<editor-fold desc="Constructors">
     public TimingIntervalPreference(
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
             long interval)
     {
         super(preference, key, System.currentTimeMillis());

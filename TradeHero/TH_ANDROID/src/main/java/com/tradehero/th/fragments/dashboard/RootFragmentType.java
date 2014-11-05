@@ -25,8 +25,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public enum RootFragmentType
 {
@@ -105,7 +105,7 @@ public enum RootFragmentType
         return Collections.unmodifiableCollection(forBottomBar);
     }
 
-    private static void addAdminMenuIfNeeded(@NotNull List<RootFragmentType> forResideMenu)
+    private static void addAdminMenuIfNeeded(@NonNull List<RootFragmentType> forResideMenu)
     {
         if (!Constants.RELEASE)
         {
@@ -113,7 +113,7 @@ public enum RootFragmentType
         }
     }
 
-    @NotNull public static RootFragmentType getInitialTab()
+    @NonNull public static RootFragmentType getInitialTab()
     {
         return RootFragmentType.ME;
     }

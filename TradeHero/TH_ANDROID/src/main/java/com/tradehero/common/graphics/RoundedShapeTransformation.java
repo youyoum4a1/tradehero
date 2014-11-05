@@ -9,12 +9,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import com.squareup.picasso.Transformation;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class RoundedShapeTransformation implements Transformation
 {
-    @NotNull private final CenterCropTransformation centerCropTransformation;
+    @NonNull private final CenterCropTransformation centerCropTransformation;
 
     //<editor-fold desc="Constructors">
     @Inject public RoundedShapeTransformation()
@@ -24,13 +24,13 @@ public class RoundedShapeTransformation implements Transformation
     }
     //</editor-fold>
 
-    @NotNull
-    @Override public Bitmap transform(@NotNull Bitmap scaleBitmapImage)
+    @NonNull
+    @Override public Bitmap transform(@NonNull Bitmap scaleBitmapImage)
     {
         scaleBitmapImage = centerCropTransformation.transform(scaleBitmapImage);
         int desiredEdge = Math.min(scaleBitmapImage.getWidth(), scaleBitmapImage.getHeight());
 
-        @NotNull Bitmap targetBitmap;
+        Bitmap targetBitmap;
         try
         {
             targetBitmap = Bitmap.createBitmap(desiredEdge, desiredEdge, Bitmap.Config.ARGB_8888);

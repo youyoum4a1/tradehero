@@ -61,8 +61,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -216,7 +216,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionZoneListItemAdapter.setParentOnLegalElementClicked(this::handleItemClicked);
     }
 
-    @Override protected void linkWith(@NotNull ProviderDTO providerDTO, boolean andDisplay)
+    @Override protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
     {
         super.linkWith(providerDTO, andDisplay);
         competitionZoneListItemAdapter.setProvider(providerDTO);
@@ -416,7 +416,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    protected void handleItemClicked(@NotNull CompetitionZoneDTO competitionZoneDTO)
+    protected void handleItemClicked(@NonNull CompetitionZoneDTO competitionZoneDTO)
     {
         if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
         {
@@ -449,7 +449,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         // TODO others?
     }
 
-    private void pushAdvertisement(@NotNull CompetitionZoneAdvertisementDTO competitionZoneDTO)
+    private void pushAdvertisement(@NonNull CompetitionZoneAdvertisementDTO competitionZoneDTO)
     {
         AdDTO adDTO = competitionZoneDTO.getAdDTO();
         if (adDTO != null && adDTO.redirectUrl != null)
@@ -474,7 +474,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
-    private void pushPortfolioElement(@NotNull CompetitionZonePortfolioDTO competitionZoneDTO)
+    private void pushPortfolioElement(@NonNull CompetitionZonePortfolioDTO competitionZoneDTO)
     {
         // TODO We need to be able to launch async when the portfolio Id is finally not null
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
@@ -489,7 +489,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private void pushVideoElement(@NotNull CompetitionZoneVideoDTO competitionZoneDTO)
+    private void pushVideoElement(@NonNull CompetitionZoneVideoDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
         ProviderVideoListFragment.putProviderId(args, providerId);
@@ -501,7 +501,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         navigator.get().pushFragment(ProviderVideoListFragment.class, args);
     }
 
-    private void pushWizardElement(@NotNull CompetitionZoneWizardDTO competitionZoneDTO)
+    private void pushWizardElement(@NonNull CompetitionZoneWizardDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
 
@@ -517,7 +517,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
     }
 
-    private void pushLeaderboardElement(@NotNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
+    private void pushLeaderboardElement(@NonNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
     {
         LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
         Bundle args = new Bundle();
@@ -540,7 +540,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private void pushLegalElement(@NotNull CompetitionZoneLegalDTO competitionZoneDTO)
+    private void pushLegalElement(@NonNull CompetitionZoneLegalDTO competitionZoneDTO)
     {
         Bundle args = new Bundle();
         if ((competitionZoneDTO).requestedLink.equals(CompetitionZoneLegalDTO.LinkType.RULES))
@@ -557,7 +557,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private void handleDisplayCellClicked(@NotNull CompetitionZoneDisplayCellDTO competitionZoneDisplayCellDTO)
+    private void handleDisplayCellClicked(@NonNull CompetitionZoneDisplayCellDTO competitionZoneDisplayCellDTO)
     {
         String redirectUrl = competitionZoneDisplayCellDTO.getRedirectUrl();
         if (redirectUrl != null)

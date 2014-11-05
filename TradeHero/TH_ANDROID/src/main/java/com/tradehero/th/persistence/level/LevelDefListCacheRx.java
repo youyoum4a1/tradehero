@@ -8,7 +8,7 @@ import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -16,14 +16,14 @@ public class LevelDefListCacheRx extends BaseFetchDTOCacheRx<LevelDefListId, Lev
 {
     public static final int DEFAULT_MAX_SIZE = 1;
 
-    @NotNull private final AchievementServiceWrapper userServiceWrapper;
-    @NotNull private final LevelDefCacheRx levelDefCache;
+    @NonNull private final AchievementServiceWrapper userServiceWrapper;
+    @NonNull private final LevelDefCacheRx levelDefCache;
 
     //<editor-fold desc="Constructors">
     @Inject public LevelDefListCacheRx(
-            @NotNull AchievementServiceWrapper userServiceWrapper,
-            @NotNull LevelDefCacheRx levelDefCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull AchievementServiceWrapper userServiceWrapper,
+            @NonNull LevelDefCacheRx levelDefCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
@@ -32,12 +32,12 @@ public class LevelDefListCacheRx extends BaseFetchDTOCacheRx<LevelDefListId, Lev
     }
     //</editor-fold>
 
-    @NotNull @Override public Observable<LevelDefDTOList> fetch(@NotNull LevelDefListId key)
+    @NonNull @Override public Observable<LevelDefDTOList> fetch(@NonNull LevelDefListId key)
     {
         return userServiceWrapper.getLevelDefsRx();
     }
 
-    @Override public void onNext(@NotNull LevelDefListId key, @NotNull LevelDefDTOList value)
+    @Override public void onNext(@NonNull LevelDefListId key, @NonNull LevelDefDTOList value)
     {
         value.sort();
         levelDefCache.onNext(value);

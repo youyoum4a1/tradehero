@@ -2,7 +2,7 @@ package com.tradehero.th.api.share.wechat;
 
 import android.os.Bundle;
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class WeChatDTO implements SocialShareFormDTO
 {
@@ -36,7 +36,7 @@ public class WeChatDTO implements SocialShareFormDTO
         this.imageURL = imageURL;
     }
 
-    public WeChatDTO(@NotNull Bundle args)
+    public WeChatDTO(@NonNull Bundle args)
     {
         id = args.getInt(WECHAT_MESSAGE_ID_KEY);
         if (args.containsKey(WECHAT_MESSAGE_TYPE_KEY))
@@ -65,7 +65,7 @@ public class WeChatDTO implements SocialShareFormDTO
         return args;
     }
 
-    protected void populate(@NotNull Bundle args)
+    protected void populate(@NonNull Bundle args)
     {
         args.putInt(WECHAT_MESSAGE_ID_KEY, id);
         if (type != null)

@@ -2,7 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class HelpVideoDTOList extends BaseArrayList<HelpVideoDTO>
     implements DTO
@@ -14,7 +14,7 @@ public class HelpVideoDTOList extends BaseArrayList<HelpVideoDTO>
     }
     //</editor-fold>
 
-    @NotNull public HelpVideoIdList createKeys()
+    @NonNull public HelpVideoIdList createKeys()
     {
         HelpVideoIdList list = new HelpVideoIdList();
         for (HelpVideoDTO videoDTO : this)

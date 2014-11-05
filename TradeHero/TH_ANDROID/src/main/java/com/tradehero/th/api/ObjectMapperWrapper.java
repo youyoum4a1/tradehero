@@ -27,25 +27,25 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {
-    @NotNull protected final Lazy<UserAchievementCacheRx> userAchievementCacheLazy;
-    @NotNull protected final Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy;
-    @NotNull protected final Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy;
-    @NotNull private final Lazy<BroadcastUtils> broadcastUtilsLazy;
-    @NotNull private final Lazy<UserProfileCacheRx> userProfileCacheLazy;
-    @NotNull private final Lazy<CurrentUserId> currentUserIdLazy;
+    @NonNull protected final Lazy<UserAchievementCacheRx> userAchievementCacheLazy;
+    @NonNull protected final Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy;
+    @NonNull protected final Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy;
+    @NonNull private final Lazy<BroadcastUtils> broadcastUtilsLazy;
+    @NonNull private final Lazy<UserProfileCacheRx> userProfileCacheLazy;
+    @NonNull private final Lazy<CurrentUserId> currentUserIdLazy;
 
     //<editor-fold desc="Constructors">
     @Inject public ObjectMapperWrapper(
-            @NotNull Lazy<UserAchievementCacheRx> userAchievementCacheLazy,
-            @NotNull Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy,
-            @NotNull Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy,
-            @NotNull Lazy<UserProfileCacheRx> userProfileCacheLazy,
-            @NotNull Lazy<CurrentUserId> currentUserIdLazy,
-            @NotNull Lazy<BroadcastUtils> broadcastUtilsLazy)
+            @NonNull Lazy<UserAchievementCacheRx> userAchievementCacheLazy,
+            @NonNull Lazy<AchievementCategoryListCacheRx> achievementCategoryListCacheLazy,
+            @NonNull Lazy<AchievementCategoryCacheRx> achievementCategoryCacheLazy,
+            @NonNull Lazy<UserProfileCacheRx> userProfileCacheLazy,
+            @NonNull Lazy<CurrentUserId> currentUserIdLazy,
+            @NonNull Lazy<BroadcastUtils> broadcastUtilsLazy)
     {
         super();
         this.userAchievementCacheLazy = userAchievementCacheLazy;
@@ -59,8 +59,8 @@ public class ObjectMapperWrapper extends ObjectMapper
     //</editor-fold>
 
     @Override protected Object _readMapAndClose(
-            @NotNull JsonParser jp,
-            @NotNull JavaType valueType)
+            @NonNull JsonParser jp,
+            @NonNull JavaType valueType)
             throws IOException, JsonParseException, JsonMappingException
     {
         TreeNode root = readTree(jp);
@@ -71,7 +71,7 @@ public class ObjectMapperWrapper extends ObjectMapper
         return super._readMapAndClose(root.traverse(jp.getCodec()), valueType);
     }
 
-    protected void extractExtras(@NotNull ObjectNode objectNode)
+    protected void extractExtras(@NonNull ObjectNode objectNode)
             throws IOException
     {
         Map.Entry<String, JsonNode> element;
@@ -93,18 +93,18 @@ public class ObjectMapperWrapper extends ObjectMapper
         objectNode.remove(XpModule.KEY_XP_NODE);
     }
 
-    protected boolean isAchievementNode(@NotNull Map.Entry<String, JsonNode> element)
+    protected boolean isAchievementNode(@NonNull Map.Entry<String, JsonNode> element)
     {
         return element.getKey().equals(AchievementModule.KEY_ACHIEVEMENT_NODE);
     }
 
-    protected boolean isXPNode(@NotNull Map.Entry<String, JsonNode> element)
+    protected boolean isXPNode(@NonNull Map.Entry<String, JsonNode> element)
     {
         return element.getKey().equals(XpModule.KEY_XP_NODE);
     }
 
     protected void handleAchievement(
-            @NotNull JsonNode jsonNode)
+            @NonNull JsonNode jsonNode)
             throws IOException
     {
         UserAchievementDTOList userAchievementDTOs = readValue(
@@ -122,7 +122,7 @@ public class ObjectMapperWrapper extends ObjectMapper
         }
     }
 
-    protected void handleXP(@NotNull JsonNode jsonNode)
+    protected void handleXP(@NonNull JsonNode jsonNode)
             throws IOException
     {
         UserXPAchievementDTOList userXPAchievementDTOs = readValue(

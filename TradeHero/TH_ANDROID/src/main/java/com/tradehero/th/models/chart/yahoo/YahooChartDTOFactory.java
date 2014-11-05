@@ -1,6 +1,6 @@
 package com.tradehero.th.models.chart.yahoo;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
 import com.tradehero.th.models.chart.ChartSize;
@@ -14,25 +14,25 @@ public class YahooChartDTOFactory implements ChartDTOFactory
         super();
     }
 
-    @NotNull
+    @NonNull
     @Override public YahooChartDTO createChartDTO()
     {
         return new YahooChartDTO();
     }
 
-    @NotNull
+    @NonNull
     @Override public YahooChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO)
     {
         return new YahooChartDTO(securityCompactDTO);
     }
 
-    @NotNull
+    @NonNull
     @Override public YahooChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize)
     {
         return new YahooChartDTO(securityCompactDTO, chartSize);
     }
 
-    @NotNull
+    @NonNull
     @Override public YahooChartDTO createChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize, ChartTimeSpan timeSpan)
     {
         return new YahooChartDTO(securityCompactDTO, chartSize, timeSpan);

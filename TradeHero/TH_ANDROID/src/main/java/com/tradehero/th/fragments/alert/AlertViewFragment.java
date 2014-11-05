@@ -39,7 +39,7 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -76,12 +76,12 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private CompoundButton.OnCheckedChangeListener alertToggleCheckedChangeListener;
 
-    public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
+    public static void putAlertId(@NonNull Bundle args, @NonNull AlertId alertId)
     {
         args.putBundle(BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
     }
 
-    @NotNull public static AlertId getAlertId(@NotNull Bundle args)
+    @NonNull public static AlertId getAlertId(@NonNull Bundle args)
     {
         return new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
     }

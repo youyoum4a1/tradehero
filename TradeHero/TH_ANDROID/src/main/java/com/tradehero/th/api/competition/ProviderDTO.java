@@ -9,7 +9,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class ProviderDTO implements DTO
 {

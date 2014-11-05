@@ -7,7 +7,7 @@ import com.tradehero.th.billing.amazon.THAmazonProductDetail;
 import com.tradehero.th.billing.amazon.THAmazonProductDetailTuner;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class THAmazonProductDetailCache extends ProductDetailCache<AmazonSKU, THAmazonProductDetail, THAmazonProductDetailTuner>
 {
@@ -15,14 +15,14 @@ import org.jetbrains.annotations.NotNull;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonProductDetailCache(
-            @NotNull THAmazonProductDetailTuner thAmazonProductDetailTuner,
-            @NotNull DTOCacheUtilNew dtoCacheUtilNew)
+            @NonNull THAmazonProductDetailTuner thAmazonProductDetailTuner,
+            @NonNull DTOCacheUtilNew dtoCacheUtilNew)
     {
         super(DEFAULT_MAX_SIZE, thAmazonProductDetailTuner, dtoCacheUtilNew);
     }
     //</editor-fold>
 
-    @Override @NotNull public THAmazonProductDetail fetch(@NotNull AmazonSKU key)
+    @Override @NonNull public THAmazonProductDetail fetch(@NonNull AmazonSKU key)
     {
         throw new IllegalStateException("You should not fetch THAmazonProductDetail individually");
     }

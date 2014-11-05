@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ExpandablePositionItemAdapter extends PositionItemAdapter
         implements ExpandableListReporter
@@ -18,14 +18,14 @@ public class ExpandablePositionItemAdapter extends PositionItemAdapter
 
     //<editor-fold desc="Constructors">
     public ExpandablePositionItemAdapter(
-            @NotNull Context context,
-            @NotNull Map<Integer, Integer> positionItemTypeToLayoutId)
+            @NonNull Context context,
+            @NonNull Map<Integer, Integer> positionItemTypeToLayoutId)
     {
         super(context, positionItemTypeToLayoutId);
     }
     //</editor-fold>
 
-    protected ExpandableListItem<PositionDTO> createExpandableItem(@NotNull PositionDTO dto)
+    protected ExpandableListItem<PositionDTO> createExpandableItem(@NonNull PositionDTO dto)
     {
         return new ExpandableListItem<>(dto);
     }
@@ -40,7 +40,7 @@ public class ExpandablePositionItemAdapter extends PositionItemAdapter
         return super.getItemViewType(position);
     }
 
-    @Override protected void add(@NotNull List<Object> items, @NotNull PositionDTO item)
+    @Override protected void add(@NonNull List<Object> items, @NonNull PositionDTO item)
     {
         items.add(createExpandableItem(item));
     }

@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * See DTOKeyIdList to avoid duplicating data in caches.
@@ -14,38 +14,51 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
 {
     public static final boolean DEFAULT_FORCE_UPDATE = false;
 
-    boolean isValid(@NotNull DTOType value);
-    @Nullable DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value);
-    @Nullable DTOType get(@NotNull DTOKeyType key);
-    @NotNull DTOType fetch(@NotNull DTOKeyType key) throws Throwable;
-    @NotNull DTOType getOrFetchSync(@NotNull DTOKeyType key) throws Throwable;
-    @NotNull DTOType getOrFetchSync(@NotNull DTOKeyType key, boolean force) throws Throwable;
-    void register(@NotNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback);
-    void unregister(@NotNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback);
+    boolean isValid(@NonNull DTOType value);
+
+    @Nullable DTOType put(@NonNull DTOKeyType key, @NonNull DTOType value);
+
+    @Nullable DTOType get(@NonNull DTOKeyType key);
+
+    @NonNull DTOType fetch(@NonNull DTOKeyType key) throws Throwable;
+
+    @NonNull DTOType getOrFetchSync(@NonNull DTOKeyType key) throws Throwable;
+
+    @NonNull DTOType getOrFetchSync(@NonNull DTOKeyType key, boolean force) throws Throwable;
+
+    void register(@NonNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback);
+
+    void unregister(@NonNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback);
+
     void unregister(@Nullable Listener<DTOKeyType, DTOType> callback);
-    void getOrFetchAsync(@NotNull DTOKeyType key);
-    void getOrFetchAsync(@NotNull DTOKeyType key, boolean force);
-    void invalidate(@NotNull DTOKeyType key);
+
+    void getOrFetchAsync(@NonNull DTOKeyType key);
+
+    void getOrFetchAsync(@NonNull DTOKeyType key, boolean force);
+
+    void invalidate(@NonNull DTOKeyType key);
+
     void invalidateAll();
 
     public static interface Listener<DTOKeyType, DTOType>
     {
-        void onDTOReceived(@NotNull DTOKeyType key, @NotNull DTOType value);
-        void onErrorThrown(@NotNull DTOKeyType key, @NotNull Throwable error);
+        void onDTOReceived(@NonNull DTOKeyType key, @NonNull DTOType value);
+
+        void onErrorThrown(@NonNull DTOKeyType key, @NonNull Throwable error);
     }
 
     public static interface HurriedListener<DTOKeyType, DTOType>
             extends Listener<DTOKeyType, DTOType>
     {
-        void onPreCachedDTOReceived(@NotNull DTOKeyType key, @NotNull DTOType value);
+        void onPreCachedDTOReceived(@NonNull DTOKeyType key, @NonNull DTOType value);
     }
 
     abstract public static class CacheValue<DTOKeyType extends DTOKey, DTOType extends DTO>
     {
         @Nullable private DTOType value;
-        @NotNull private final Set<Listener<DTOKeyType, DTOType>> listeners;
-        @NotNull private final Set<HurriedListener<DTOKeyType, DTOType>> hurriedListeners;
-        @NotNull protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
+        @NonNull private final Set<Listener<DTOKeyType, DTOType>> listeners;
+        @NonNull private final Set<HurriedListener<DTOKeyType, DTOType>> hurriedListeners;
+        @NonNull protected WeakReference<GetOrFetchTask<DTOKeyType, DTOType>> fetchTask = new WeakReference<>(null);
 
         public CacheValue()
         {
@@ -61,7 +74,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return value;
         }
 
-        public void setValue(@SuppressWarnings("NullableProblems") @NotNull DTOType value)
+        public void setValue(@SuppressWarnings("NullableProblems") @NonNull DTOType value)
         {
             this.value = value;
         }
@@ -71,7 +84,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             return listeners.size();
         }
 
-        public void registerListener(@NotNull Listener<DTOKeyType, DTOType> listener)
+        public void registerListener(@NonNull Listener<DTOKeyType, DTOType> listener)
         {
             listeners.add(listener);
             if (listener instanceof HurriedListener)
@@ -80,7 +93,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             }
         }
 
-        public void unregisterListener(@NotNull Listener<DTOKeyType, DTOType> listener)
+        public void unregisterListener(@NonNull Listener<DTOKeyType, DTOType> listener)
         {
             listeners.remove(listener);
             if (listener instanceof HurriedListener)
@@ -89,36 +102,36 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
             }
         }
 
-        abstract public void getOrFetch(@NotNull final DTOKeyType key, boolean force);
+        abstract public void getOrFetch(@NonNull final DTOKeyType key, boolean force);
 
         protected boolean needsRecreate(@Nullable GetOrFetchTask<DTOKeyType, DTOType> fetchTask)
         {
             return fetchTask == null || fetchTask.isCancelled() || fetchTask.getStatus() == AsyncTask.Status.FINISHED;
         }
 
-        public void notifyHurriedListenersPreReceived(@NotNull DTOKeyType key, @NotNull DTOType value)
+        public void notifyHurriedListenersPreReceived(@NonNull DTOKeyType key, @NonNull DTOType value)
         {
-            for (@NotNull HurriedListener<DTOKeyType, DTOType> listener : new HashSet<>(hurriedListeners))
+            for (HurriedListener<DTOKeyType, DTOType> listener : new HashSet<>(hurriedListeners))
             {
                 hurriedListeners.remove(listener);
                 listener.onPreCachedDTOReceived(key, value);
             }
         }
 
-        public void notifyListenersReceived(@NotNull DTOKeyType key, @NotNull DTOType value)
+        public void notifyListenersReceived(@NonNull DTOKeyType key, @NonNull DTOType value)
         {
             fetchTask = new WeakReference<>(null);
-            for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
+            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
                 unregisterListener(listener);
                 listener.onDTOReceived(key, value);
             }
         }
 
-        public void notifyListenersFailed(@NotNull DTOKeyType key, @NotNull Throwable error)
+        public void notifyListenersFailed(@NonNull DTOKeyType key, @NonNull Throwable error)
         {
             fetchTask = new WeakReference<>(null);
-            for (@NotNull Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
+            for (Listener<DTOKeyType, DTOType> listener : new HashSet<>(listeners))
             {
                 unregisterListener(listener);
                 listener.onErrorThrown(key, error);
@@ -129,16 +142,16 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
     abstract public static class GetOrFetchTask<DTOKeyType extends DTOKey, DTOType extends DTO>
             extends AsyncTask<Void, Void, DTOType>
     {
-        @NotNull protected final DTOKeyType key;
+        @NonNull protected final DTOKeyType key;
         protected final boolean forceUpdateCache;
 
         //<editor-fold desc="Constructors">
-        public GetOrFetchTask(@NotNull DTOKeyType key)
+        public GetOrFetchTask(@NonNull DTOKeyType key)
         {
             this(key, false);
         }
 
-        public GetOrFetchTask(@NotNull DTOKeyType key, boolean forceUpdateCache)
+        public GetOrFetchTask(@NonNull DTOKeyType key, boolean forceUpdateCache)
         {
             super();
             this.key = key;
@@ -146,7 +159,7 @@ public interface DTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
         //</editor-fold>
 
-        @NotNull abstract protected Class<?> getContainerCacheClass();
+        @NonNull abstract protected Class<?> getContainerCacheClass();
 
         public final AsyncTask<Void, Void, DTOType> execute()
         {

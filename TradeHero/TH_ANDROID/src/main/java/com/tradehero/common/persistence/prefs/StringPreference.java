@@ -2,24 +2,24 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class StringPreference extends AbstractPreference<String>
 {
     public StringPreference(
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull String defaultValue)
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull String defaultValue)
     {
         super(preference, key, defaultValue);
     }
 
-    @Override @NotNull public String get()
+    @Override @NonNull public String get()
     {
         return preference.getString(key, defaultValue);
     }
 
-    @Override public void set(@NotNull String value)
+    @Override public void set(@NonNull String value)
     {
         preference.edit().putString(key, value).apply();
     }

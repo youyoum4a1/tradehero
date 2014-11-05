@@ -2,11 +2,11 @@ package com.tradehero.common.persistence;
 
 import java.util.Calendar;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class BaseHasExpiration implements HasExpiration
 {
-    @NotNull public Date expirationDate;
+    @NonNull public Date expirationDate;
 
     //<editor-fold desc="Constructors">
     public BaseHasExpiration(int seconds)
@@ -15,7 +15,7 @@ public class BaseHasExpiration implements HasExpiration
         setExpirationDateSecondsInFuture(seconds);
     }
 
-    public BaseHasExpiration(@NotNull Date expirationDate)
+    public BaseHasExpiration(@NonNull Date expirationDate)
     {
         this.expirationDate = expirationDate;
     }

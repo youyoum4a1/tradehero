@@ -7,7 +7,7 @@ import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.key.AchievementDefId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class AchievementDefCacheRx extends BaseDTOCacheRx<AchievementDefId, AchievementDefDTO>
@@ -16,7 +16,7 @@ public class AchievementDefCacheRx extends BaseDTOCacheRx<AchievementDefId, Achi
     private static final int DEFAULT_SUBJECT_SIZE = 5;
 
     //<editor-fold desc="Constructors">
-    @Inject public AchievementDefCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public AchievementDefCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
     }

@@ -13,7 +13,7 @@ import javax.inject.Singleton;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,7 +36,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
     private final OAuthProvider provider;
     private final CommonsHttpOAuthConsumer consumer;
 
-    @Inject public TwitterAuthenticationProvider(@NotNull SocialLinker socialLinker,
+    @Inject public TwitterAuthenticationProvider(@NonNull SocialLinker socialLinker,
             @ConsumerKey(SocialNetworkEnum.TW) String consumerKey,
             @ConsumerSecret(SocialNetworkEnum.TW) String consumerSecret)
     {

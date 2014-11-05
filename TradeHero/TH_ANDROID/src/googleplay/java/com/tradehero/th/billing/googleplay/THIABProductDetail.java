@@ -7,8 +7,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 
 public class THIABProductDetail
@@ -23,17 +23,17 @@ public class THIABProductDetail
     ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
-    public THIABProductDetail(@NotNull IABSKUListKey itemType, @NotNull String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NonNull IABSKUListKey itemType, @NonNull String jsonSkuDetails) throws JSONException
     {
         super(itemType.key, jsonSkuDetails);
     }
 
-    public THIABProductDetail(@NotNull String itemType, @NotNull String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NonNull String itemType, @NonNull String jsonSkuDetails) throws JSONException
     {
         super(itemType, jsonSkuDetails);
     }
 
-    public THIABProductDetail(@NotNull String jsonSkuDetails) throws JSONException
+    public THIABProductDetail(@NonNull String jsonSkuDetails) throws JSONException
     {
         super(jsonSkuDetails);
     }

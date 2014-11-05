@@ -13,7 +13,7 @@ import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LeaderboardDefDTO implements DTO
 {
@@ -44,12 +44,12 @@ public class LeaderboardDefDTO implements DTO
         super();
     }
 
-    @NotNull public LeaderboardDefKey getLeaderboardDefKey()
+    @NonNull public LeaderboardDefKey getLeaderboardDefKey()
     {
         return new LeaderboardDefKey(id);
     }
 
-    @NotNull public LeaderboardDefListKey getLeaderboardDefListKey()
+    @NonNull public LeaderboardDefListKey getLeaderboardDefListKey()
     {
         if (exchangeRestrictions)
         {

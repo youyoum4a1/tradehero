@@ -7,7 +7,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SocialShareVerifier
 {
@@ -26,9 +26,9 @@ public class SocialShareVerifier
     }
     //</editor-fold>
 
-    @NotNull public CanShareType canShare(
-            @NotNull UserProfileCompactDTO currentUserProfile,
-            @NotNull SocialShareFormDTO toShare)
+    @NonNull public CanShareType canShare(
+            @NonNull UserProfileCompactDTO currentUserProfile,
+            @NonNull SocialShareFormDTO toShare)
     {
         if (toShare instanceof WeChatDTO)
         {
@@ -60,9 +60,9 @@ public class SocialShareVerifier
         throw new IllegalStateException("Unhandled type " + toShare.getClass().getName());
     }
 
-    @NotNull protected CanShareType canShare(
-            @NotNull UserProfileCompactDTO currentUserProfile,
-            @NotNull SocialNetworkEnum socialNetworkEnum)
+    @NonNull protected CanShareType canShare(
+            @NonNull UserProfileCompactDTO currentUserProfile,
+            @NonNull SocialNetworkEnum socialNetworkEnum)
     {
         switch (socialNetworkEnum)
         {

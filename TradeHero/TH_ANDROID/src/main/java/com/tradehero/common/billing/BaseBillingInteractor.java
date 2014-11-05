@@ -9,8 +9,8 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,12 +72,12 @@ abstract public class BaseBillingInteractor<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
-    @NotNull protected final BillingLogicHolderType billingLogicHolder;
-    @NotNull protected final Map<Integer, UIBillingRequestType> uiBillingRequests;
+    @NonNull protected final BillingLogicHolderType billingLogicHolder;
+    @NonNull protected final Map<Integer, UIBillingRequestType> uiBillingRequests;
     @Nullable protected ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
-    public BaseBillingInteractor(@NotNull BillingLogicHolderType billingLogicHolder)
+    public BaseBillingInteractor(@NonNull BillingLogicHolderType billingLogicHolder)
     {
         super();
         this.billingLogicHolder = billingLogicHolder;
@@ -143,7 +143,7 @@ abstract public class BaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
-    @Override public int run(@NotNull UIBillingRequestType uiBillingRequest)
+    @Override public int run(@NonNull UIBillingRequestType uiBillingRequest)
     {
         int requestCode = getUnusedRequestCode();
         uiBillingRequests.put(requestCode, uiBillingRequest);
@@ -160,7 +160,7 @@ abstract public class BaseBillingInteractor<
     }
 
     abstract protected BillingRequestType createBillingRequest(
-            @NotNull UIBillingRequestType uiBillingRequest);
+            @NonNull UIBillingRequestType uiBillingRequest);
     //</editor-fold>
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

@@ -58,8 +58,8 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 import rx.functions.Action1;
@@ -67,39 +67,39 @@ import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
-    @NotNull private final UserService userService;
-    @NotNull private final UserServiceAsync userServiceAsync;
-    @NotNull private final UserServiceRx userServiceRx;
-    @NotNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
-    @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final DTOCacheUtilImpl dtoCacheUtil;
-    @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
-    @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
-    @NotNull private final Lazy<HeroListCacheRx> heroListCache;
-    @NotNull private final Lazy<GetPositionsCacheRx> getPositionsCache;
-    @NotNull private final Lazy<ProviderListCacheRx> providerListCache;
-    @NotNull private final Lazy<ProviderCacheRx> providerCache;
-    @NotNull private final Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache;
-    @NotNull private final Lazy<HomeContentCacheRx> homeContentCache;
-    @NotNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
+    @NonNull private final UserService userService;
+    @NonNull private final UserServiceAsync userServiceAsync;
+    @NonNull private final UserServiceRx userServiceRx;
+    @NonNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
+    @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
+    @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
+    @NonNull private final Lazy<HeroListCacheRx> heroListCache;
+    @NonNull private final Lazy<GetPositionsCacheRx> getPositionsCache;
+    @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
+    @NonNull private final Lazy<ProviderCacheRx> providerCache;
+    @NonNull private final Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache;
+    @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
+    @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
-            @NotNull UserService userService,
-            @NotNull UserServiceAsync userServiceAsync,
-            @NotNull UserServiceRx userServiceRx,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull DTOCacheUtilImpl dtoCacheUtil,
-            @NotNull Lazy<UserProfileCacheRx> userProfileCache,
-            @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
-            @NotNull Lazy<HeroListCacheRx> heroListCache,
-            @NotNull Lazy<GetPositionsCacheRx> getPositionsCache,
-            @NotNull Lazy<ProviderListCacheRx> providerListCache,
-            @NotNull Lazy<ProviderCacheRx> providerCache,
-            @NotNull Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache,
-            @NotNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NotNull Lazy<HomeContentCacheRx> homeContentCache,
-            @NotNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
+            @NonNull UserService userService,
+            @NonNull UserServiceAsync userServiceAsync,
+            @NonNull UserServiceRx userServiceRx,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull DTOCacheUtilImpl dtoCacheUtil,
+            @NonNull Lazy<UserProfileCacheRx> userProfileCache,
+            @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
+            @NonNull Lazy<HeroListCacheRx> heroListCache,
+            @NonNull Lazy<GetPositionsCacheRx> getPositionsCache,
+            @NonNull Lazy<ProviderListCacheRx> providerListCache,
+            @NonNull Lazy<ProviderCacheRx> providerCache,
+            @NonNull Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache,
+            @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
+            @NonNull Lazy<HomeContentCacheRx> homeContentCache,
+            @NonNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.userService = userService;
         this.userServiceAsync = userServiceAsync;
@@ -120,7 +120,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Sign-Up With Email">
-    @NotNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
+    @NonNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
     {
         return new DTOProcessorSignInUpUserProfile(
                 userProfileCache.get(),
@@ -194,14 +194,14 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @NotNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
+    @NonNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
     {
         return new DTOProcessorUpdateUserProfileDeep(userProfileCache.get(), homeContentCache.get());
     }
 
     public MiddleCallback<UserProfileDTO> updateProfile(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UserFormDTO userFormDTO,
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UserFormDTO userFormDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
@@ -248,8 +248,8 @@ import rx.functions.Func1;
     }
 
     public Observable<UserProfileDTO> updateProfileRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UserFormDTO userFormDTO)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UserFormDTO userFormDTO)
     {
         Observable<UserProfileDTO> created;
         if (userFormDTO.profilePicture == null)
@@ -299,9 +299,9 @@ import rx.functions.Func1;
         });
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull Boolean emailNotificationsEnabled,
+    @NonNull public MiddleCallback<UserProfileDTO> updateProfilePropertyEmailNotifications(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull Boolean emailNotificationsEnabled,
             @Nullable Callback<UserProfileDTO> callback)
     {
         UserFormDTO userFormDTO = userFormBuilderProvider.get()
@@ -311,8 +311,8 @@ import rx.functions.Func1;
     }
 
     public Observable<UserProfileDTO> updateProfilePropertyEmailNotificationsRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull Boolean emailNotificationsEnabled)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull Boolean emailNotificationsEnabled)
     {
         UserFormDTO userFormDTO = userFormBuilderProvider.get()
                 .emailNotificationsEnabled(emailNotificationsEnabled)
@@ -320,9 +320,9 @@ import rx.functions.Func1;
         return this.updateProfileRx(userBaseKey, userFormDTO);
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull Boolean pushNotificationsEnabled,
+    @NonNull public MiddleCallback<UserProfileDTO> updateProfilePropertyPushNotifications(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull Boolean pushNotificationsEnabled,
             @Nullable Callback<UserProfileDTO> callback)
     {
         UserFormDTO userFormDTO = userFormBuilderProvider.get()
@@ -332,8 +332,8 @@ import rx.functions.Func1;
     }
 
     public Observable<UserProfileDTO> updateProfilePropertyPushNotificationsRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull Boolean pushNotificationsEnabled)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull Boolean pushNotificationsEnabled)
     {
         UserFormDTO userFormDTO = userFormBuilderProvider.get()
                 .pushNotificationsEnabled(pushNotificationsEnabled)
@@ -343,20 +343,20 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
-    public UserAvailabilityDTO checkDisplayNameAvailable(@NotNull String username)
+    public UserAvailabilityDTO checkDisplayNameAvailable(@NonNull String username)
     {
         return userService.checkDisplayNameAvailable(username);
     }
 
-    public Observable<UserAvailabilityDTO> checkDisplayNameAvailableRx(@NotNull String username)
+    public Observable<UserAvailabilityDTO> checkDisplayNameAvailableRx(@NonNull String username)
     {
         return userServiceRx.checkDisplayNameAvailable(username);
     }
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    @NotNull public MiddleCallback<ForgotPasswordDTO> forgotPassword(
-            @NotNull ForgotPasswordFormDTO forgotPasswordFormDTO,
+    @NonNull public MiddleCallback<ForgotPasswordDTO> forgotPassword(
+            @NonNull ForgotPasswordFormDTO forgotPasswordFormDTO,
             @Nullable Callback<ForgotPasswordDTO> callback)
     {
         MiddleCallback<ForgotPasswordDTO> middleCallback = new BaseMiddleCallback<>(callback);
@@ -364,14 +364,14 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<ForgotPasswordDTO> forgotPasswordRx(@NotNull ForgotPasswordFormDTO forgotPasswordFormDTO)
+    public Observable<ForgotPasswordDTO> forgotPasswordRx(@NonNull ForgotPasswordFormDTO forgotPasswordFormDTO)
     {
         return userServiceRx.forgotPassword(forgotPasswordFormDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
-    public UserSearchResultDTOList searchUsers(@NotNull UserListType key)
+    public UserSearchResultDTOList searchUsers(@NonNull UserListType key)
     {
         if (key instanceof SearchUserListType)
         {
@@ -380,7 +380,7 @@ import rx.functions.Func1;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected UserSearchResultDTOList searchUsers(@NotNull SearchUserListType key)
+    protected UserSearchResultDTOList searchUsers(@NonNull SearchUserListType key)
     {
         if (key.searchString == null)
         {
@@ -389,7 +389,7 @@ import rx.functions.Func1;
         return this.userService.searchUsers(key.searchString, key.page, key.perPage);
     }
 
-    public Observable<UserSearchResultDTOList> searchUsersRx(@NotNull UserListType key)
+    public Observable<UserSearchResultDTOList> searchUsersRx(@NonNull UserListType key)
     {
         if (key instanceof SearchUserListType)
         {
@@ -398,7 +398,7 @@ import rx.functions.Func1;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected Observable<UserSearchResultDTOList> searchUsersRx(@NotNull SearchUserListType key)
+    protected Observable<UserSearchResultDTOList> searchUsersRx(@NonNull SearchUserListType key)
     {
         if (key.searchString == null)
         {
@@ -429,40 +429,40 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get User">
-    public UserProfileDTO getUser(@NotNull UserBaseKey userKey)
+    public UserProfileDTO getUser(@NonNull UserBaseKey userKey)
     {
         return userService.getUser(userKey.key);
     }
 
-    public Observable<UserProfileDTO> getUserRx(@NotNull UserBaseKey userKey)
+    public Observable<UserProfileDTO> getUserRx(@NonNull UserBaseKey userKey)
     {
         return userService.getUserRx(userKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get User Transactions History">
-    @NotNull public UserTransactionHistoryDTOList getUserTransactions(
-            @NotNull UserBaseKey userBaseKey)
+    @NonNull public UserTransactionHistoryDTOList getUserTransactions(
+            @NonNull UserBaseKey userBaseKey)
     {
         return userService.getUserTransactions(userBaseKey.key);
     }
 
-    @NotNull public Observable<UserTransactionHistoryDTOList> getUserTransactionsRx(
-            @NotNull UserBaseKey userBaseKey)
+    @NonNull public Observable<UserTransactionHistoryDTOList> getUserTransactionsRx(
+            @NonNull UserBaseKey userBaseKey)
     {
         return userServiceRx.getUserTransactions(userBaseKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @NotNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NotNull UserBaseKey userBaseKey)
+    @NonNull protected DTOProcessor<UpdatePayPalEmailDTO> createUpdatePaypalEmailProcessor(@NonNull UserBaseKey userBaseKey)
     {
         return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey);
     }
 
-    @NotNull public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
+    @NonNull public MiddleCallback<UpdatePayPalEmailDTO> updatePayPalEmail(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO,
             @Nullable Callback<UpdatePayPalEmailDTO> callback)
     {
         MiddleCallback<UpdatePayPalEmailDTO>
@@ -473,22 +473,22 @@ import rx.functions.Func1;
     }
 
     public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return userServiceRx.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
-    @NotNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NotNull UserBaseKey playerId)
+    @NonNull protected DTOProcessor<UpdateAlipayAccountDTO> createUpdateAlipayAccountProcessor(@NonNull UserBaseKey playerId)
     {
         return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId);
     }
 
-    @NotNull public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
+    @NonNull public MiddleCallback<UpdateAlipayAccountDTO> updateAlipayAccount(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO,
             @Nullable Callback<UpdateAlipayAccountDTO> callback)
     {
         MiddleCallback<UpdateAlipayAccountDTO>
@@ -499,22 +499,22 @@ import rx.functions.Func1;
     }
 
     public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
         return userServiceRx.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    public Observable<BaseResponseDTO> deleteUserRx(@NotNull UserBaseKey userKey)
+    public Observable<BaseResponseDTO> deleteUserRx(@NonNull UserBaseKey userKey)
     {
         return userServiceRx.deleteUser(userKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Social Friends">
-    public UserFriendsDTOList getFriends(@NotNull FriendsListKey friendsListKey)
+    public UserFriendsDTOList getFriends(@NonNull FriendsListKey friendsListKey)
     {
         UserFriendsDTOList received;
         if (friendsListKey.searchQuery != null)
@@ -545,7 +545,7 @@ import rx.functions.Func1;
         return received;
     }
 
-    public Observable<UserFriendsDTOList> getFriendsRx(@NotNull FriendsListKey friendsListKey)
+    public Observable<UserFriendsDTOList> getFriendsRx(@NonNull FriendsListKey friendsListKey)
     {
         Observable<UserFriendsDTOList> received;
         if (friendsListKey.searchQuery != null)
@@ -578,10 +578,10 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    @NotNull public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
-            @NotNull UserBaseKey userKey,
+    @NonNull public MiddleCallback<UserFriendsDTOList> searchSocialFriends(
+            @NonNull UserBaseKey userKey,
             @Nullable SocialNetworkEnum socialNetworkEnum,
-            @NotNull String query,
+            @NonNull String query,
             @Nullable Callback<UserFriendsDTOList> callback)
     {
         MiddleCallback<UserFriendsDTOList> middleCallback = new BaseMiddleCallback<>(callback);
@@ -589,14 +589,14 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NotNull UserBaseKey userKey, @NotNull SocialNetworkEnum socialNetworkEnum, @NotNull String query)
+    public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NonNull UserBaseKey userKey, @NonNull SocialNetworkEnum socialNetworkEnum, @NonNull String query)
     {
         return userServiceRx.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }
     //</editor-fold>
 
     //<editor-fold desc="Follow Batch Free">
-    protected DTOProcessor<UserProfileDTO> createBatchFollowFreeProcessor(@NotNull BatchFollowFormDTO batchFollowFormDTO)
+    protected DTOProcessor<UserProfileDTO> createBatchFollowFreeProcessor(@NonNull BatchFollowFormDTO batchFollowFormDTO)
     {
         return new DTOProcessorFollowFreeUserBatch(
                 userProfileCache.get(),
@@ -608,8 +608,8 @@ import rx.functions.Func1;
                 batchFollowFormDTO);
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> followBatchFree(
-            @NotNull BatchFollowFormDTO batchFollowFormDTO,
+    @NonNull public MiddleCallback<UserProfileDTO> followBatchFree(
+            @NonNull BatchFollowFormDTO batchFollowFormDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(
@@ -619,7 +619,7 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    @NotNull public Observable<UserProfileDTO> followBatchFreeRx(@NotNull BatchFollowFormDTO batchFollowFormDTO)
+    @NonNull public Observable<UserProfileDTO> followBatchFreeRx(@NonNull BatchFollowFormDTO batchFollowFormDTO)
     {
         return userServiceRx.followBatchFree(batchFollowFormDTO);
     }
@@ -627,15 +627,15 @@ import rx.functions.Func1;
 
     //<editor-fold desc="Invite Friends">
     public BaseResponseDTO inviteFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull InviteFormDTO inviteFormDTO)
+            @NonNull UserBaseKey userKey,
+            @NonNull InviteFormDTO inviteFormDTO)
     {
         return userService.inviteFriends(userKey.key, inviteFormDTO);
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> inviteFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull InviteFormDTO inviteFormDTO,
+    @NonNull public MiddleCallback<BaseResponseDTO> inviteFriends(
+            @NonNull UserBaseKey userKey,
+            @NonNull InviteFormDTO inviteFormDTO,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(callback);
@@ -644,16 +644,16 @@ import rx.functions.Func1;
     }
 
     public Observable<BaseResponseDTO> inviteFriendsRx(
-            @NotNull UserBaseKey userKey,
-            @NotNull InviteFormDTO inviteFormDTO)
+            @NonNull UserBaseKey userKey,
+            @NonNull InviteFormDTO inviteFormDTO)
     {
         return userServiceRx.inviteFriends(userKey.key, inviteFormDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    @NotNull public MiddleCallback<UserProfileDTO> addCredit(
-            @NotNull UserBaseKey userKey,
+    @NonNull public MiddleCallback<UserProfileDTO> addCredit(
+            @NonNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
@@ -663,7 +663,7 @@ import rx.functions.Func1;
     }
 
     public Observable<UserProfileDTO> addCreditRx(
-            @NotNull UserBaseKey userKey,
+            @NonNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO)
     {
         return userServiceRx.addCredit(userKey.key, purchaseDTO);
@@ -671,7 +671,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NotNull UserBaseKey heroId)
+    @NonNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NonNull UserBaseKey heroId)
     {
         return new DTOProcessorFollowPremiumUser(
                 userProfileCache.get(),
@@ -684,13 +684,13 @@ import rx.functions.Func1;
                 heroId);
     }
 
-    public UserProfileDTO follow(@NotNull UserBaseKey heroId)
+    public UserProfileDTO follow(@NonNull UserBaseKey heroId)
     {
         return createFollowPremiumUserProcessor(heroId).process(userService.follow(heroId.key));
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey heroId,
+    @NonNull public MiddleCallback<UserProfileDTO> follow(
+            @NonNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
@@ -698,21 +698,21 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<UserProfileDTO> followRx(@NotNull UserBaseKey heroId)
+    public Observable<UserProfileDTO> followRx(@NonNull UserBaseKey heroId)
     {
         return userServiceRx.follow(heroId.key);
     }
 
     public UserProfileDTO follow(
-            @NotNull UserBaseKey heroId,
-            @NotNull PurchaseReportDTO purchaseDTO)
+            @NonNull UserBaseKey heroId,
+            @NonNull PurchaseReportDTO purchaseDTO)
     {
         return createFollowPremiumUserProcessor(heroId).process(userService.follow(heroId.key, purchaseDTO));
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> follow(
-            @NotNull UserBaseKey heroId,
-            @NotNull PurchaseReportDTO purchaseDTO,
+    @NonNull public MiddleCallback<UserProfileDTO> follow(
+            @NonNull UserBaseKey heroId,
+            @NonNull PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowPremiumUserProcessor(heroId));
@@ -721,13 +721,13 @@ import rx.functions.Func1;
     }
 
     public Observable<UserProfileDTO> followRx(
-            @NotNull UserBaseKey heroId,
-            @NotNull PurchaseReportDTO purchaseDTO)
+            @NonNull UserBaseKey heroId,
+            @NonNull PurchaseReportDTO purchaseDTO)
     {
         return userServiceRx.follow(heroId.key, purchaseDTO);
     }
 
-    @NotNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NotNull UserBaseKey heroId)
+    @NonNull protected DTOProcessor<UserProfileDTO> createFollowFreeUserProcessor(@NonNull UserBaseKey heroId)
     {
         return new DTOProcessorFollowFreeUser(
                 userProfileCache.get(),
@@ -740,13 +740,13 @@ import rx.functions.Func1;
                 heroId);
     }
 
-    public UserProfileDTO freeFollow(@NotNull UserBaseKey heroId)
+    public UserProfileDTO freeFollow(@NonNull UserBaseKey heroId)
     {
         return createFollowFreeUserProcessor(heroId).process(userService.freeFollow(heroId.key));
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> freeFollow(
-            @NotNull UserBaseKey heroId,
+    @NonNull public MiddleCallback<UserProfileDTO> freeFollow(
+            @NonNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createFollowFreeUserProcessor(heroId));
@@ -754,14 +754,14 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<UserProfileDTO> freeFollowRx(@NotNull UserBaseKey heroId)
+    public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
     {
         return userServiceRx.freeFollow(heroId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
-    @NotNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NotNull UserBaseKey heroId)
+    @NonNull protected DTOProcessor<UserProfileDTO> createUnfollowUserProcessor(@NonNull UserBaseKey heroId)
     {
         return new DTOProcessorUnfollowUser(
                 userProfileCache.get(),
@@ -774,8 +774,8 @@ import rx.functions.Func1;
                 heroId);
     }
 
-    @NotNull public MiddleCallback<UserProfileDTO> unfollow(
-            @NotNull UserBaseKey heroId,
+    @NonNull public MiddleCallback<UserProfileDTO> unfollow(
+            @NonNull UserBaseKey heroId,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUnfollowUserProcessor(heroId));
@@ -783,27 +783,27 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<UserProfileDTO> unfollowRx(@NotNull UserBaseKey heroId)
+    public Observable<UserProfileDTO> unfollowRx(@NonNull UserBaseKey heroId)
     {
         return userServiceRx.unfollow(heroId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">
-    public HeroDTOList getHeroes(@NotNull UserBaseKey heroKey)
+    public HeroDTOList getHeroes(@NonNull UserBaseKey heroKey)
     {
         return userService.getHeroes(heroKey.key);
     }
 
-    public Observable<HeroDTOList> getHeroesRx(@NotNull UserBaseKey heroKey)
+    public Observable<HeroDTOList> getHeroesRx(@NonNull UserBaseKey heroKey)
     {
         return userServiceRx.getHeroes(heroKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Suggest Heroes">
-    @NotNull public LeaderboardUserDTOList suggestHeroes(
-            @NotNull SuggestHeroesListType suggestHeroesListType)
+    @NonNull public LeaderboardUserDTOList suggestHeroes(
+            @NonNull SuggestHeroesListType suggestHeroesListType)
     {
         return userService.suggestHeroes(
                 suggestHeroesListType.exchangeId == null ? null : suggestHeroesListType.exchangeId.key,
@@ -812,8 +812,8 @@ import rx.functions.Func1;
                 suggestHeroesListType.perPage);
     }
 
-    @NotNull public Observable<LeaderboardUserDTOList> suggestHeroesRx(
-            @NotNull SuggestHeroesListType suggestHeroesListType)
+    @NonNull public Observable<LeaderboardUserDTOList> suggestHeroesRx(
+            @NonNull SuggestHeroesListType suggestHeroesListType)
     {
         return userServiceRx.suggestHeroes(
                 suggestHeroesListType.exchangeId == null ? null : suggestHeroesListType.exchangeId.key,
@@ -824,9 +824,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
-    @NotNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(
-            @NotNull UserBaseKey playerId,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+    @NonNull protected DTOProcessor<UpdateCountryCodeDTO> createUpdateCountryCodeProcessor(
+            @NonNull UserBaseKey playerId,
+            @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return new DTOProcessorUpdateCountryCode(
                 userProfileCache.get(),
@@ -836,9 +836,9 @@ import rx.functions.Func1;
                 updateCountryCodeFormDTO);
     }
 
-    @NotNull public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(
-            @NotNull UserBaseKey userKey,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
+    @NonNull public MiddleCallback<UpdateCountryCodeDTO> updateCountryCode(
+            @NonNull UserBaseKey userKey,
+            @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO,
             @Nullable Callback<UpdateCountryCodeDTO> callback)
     {
         MiddleCallback<UpdateCountryCodeDTO> middleCallback = new BaseMiddleCallback<>(callback,
@@ -847,25 +847,25 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    @NotNull public Observable<UpdateCountryCodeDTO> updateCountryCodeRx(
-            @NotNull UserBaseKey userKey,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+    @NonNull public Observable<UpdateCountryCodeDTO> updateCountryCodeRx(
+            @NonNull UserBaseKey userKey,
+            @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return userServiceRx.updateCountryCode(userKey.key, updateCountryCodeFormDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
-    @NotNull protected DTOProcessor<BaseResponseDTO> createUpdateReferralCodeProcessor(
-            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
-            @NotNull UserBaseKey invitedUserId)
+    @NonNull protected DTOProcessor<BaseResponseDTO> createUpdateReferralCodeProcessor(
+            @NonNull UpdateReferralCodeDTO updateReferralCodeDTO,
+            @NonNull UserBaseKey invitedUserId)
     {
         return new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId);
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> updateReferralCode(
-            @NotNull UserBaseKey invitedUserId,
-            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
+    @NonNull public MiddleCallback<BaseResponseDTO> updateReferralCode(
+            @NonNull UserBaseKey invitedUserId,
+            @NonNull UpdateReferralCodeDTO updateReferralCodeDTO,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(
@@ -875,21 +875,21 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    @NotNull public Observable<BaseResponseDTO> updateReferralCodeRx(
-            @NotNull UserBaseKey invitedUserId,
-            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO)
+    @NonNull public Observable<BaseResponseDTO> updateReferralCodeRx(
+            @NonNull UserBaseKey invitedUserId,
+            @NonNull UpdateReferralCodeDTO updateReferralCodeDTO)
     {
         return userServiceRx.updateReferralCode(invitedUserId.key, updateReferralCodeDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Send Analytics">
-    @NotNull public BaseResponseDTO sendAnalytics(@NotNull BatchAnalyticsEventForm batchAnalyticsEventForm)
+    @NonNull public BaseResponseDTO sendAnalytics(@NonNull BatchAnalyticsEventForm batchAnalyticsEventForm)
     {
         return userService.sendAnalytics(batchAnalyticsEventForm);
     }
 
-    @NotNull public Observable<BaseResponseDTO> sendAnalyticsRx(@NotNull BatchAnalyticsEventForm batchAnalyticsEventForm)
+    @NonNull public Observable<BaseResponseDTO> sendAnalyticsRx(@NonNull BatchAnalyticsEventForm batchAnalyticsEventForm)
     {
         return userServiceRx.sendAnalytics(batchAnalyticsEventForm);
     }

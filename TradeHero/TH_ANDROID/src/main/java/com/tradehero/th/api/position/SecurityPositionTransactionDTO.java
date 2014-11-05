@@ -1,11 +1,11 @@
 package com.tradehero.th.api.position;
 
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecurityPositionTransactionDTO extends SecurityPositionDTO
 {
-    @NotNull public PortfolioDTO portfolio;
+    @NonNull public PortfolioDTO portfolio;
     public int tradeId;
 
     //<editor-fold desc="Constructors">

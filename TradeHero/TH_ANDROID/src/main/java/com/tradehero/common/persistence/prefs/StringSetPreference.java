@@ -2,8 +2,8 @@ package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -12,14 +12,14 @@ import java.util.Set;
 public class StringSetPreference extends AbstractPreference<Set<String>>
 {
     public StringSetPreference(
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull Set<String> defaultValue)
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
     }
 
-    @Override @NotNull public Set<String> get()
+    @Override @NonNull public Set<String> get()
     {
         return preference.getStringSet(key, defaultValue);
     }

@@ -5,21 +5,21 @@ import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorLogout implements DTOProcessor<UserProfileDTO>,
         Action1<UserProfileDTO>
 {
-    @NotNull private final DTOCacheUtilNew dtoCacheUtilNew;
-    @NotNull private final DTOCacheUtilRx dtoCacheUtilRx;
-    @NotNull private final NotificationManager notificationManager;
+    @NonNull private final DTOCacheUtilNew dtoCacheUtilNew;
+    @NonNull private final DTOCacheUtilRx dtoCacheUtilRx;
+    @NonNull private final NotificationManager notificationManager;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorLogout(
-            @NotNull DTOCacheUtilNew dtoCacheUtilNew,
-            @NotNull DTOCacheUtilRx dtoCacheUtilRx,
-            @NotNull NotificationManager notificationManager)
+            @NonNull DTOCacheUtilNew dtoCacheUtilNew,
+            @NonNull DTOCacheUtilRx dtoCacheUtilRx,
+            @NonNull NotificationManager notificationManager)
     {
         super();
         this.dtoCacheUtilNew = dtoCacheUtilNew;

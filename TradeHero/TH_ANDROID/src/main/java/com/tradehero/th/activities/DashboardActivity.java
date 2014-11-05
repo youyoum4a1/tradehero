@@ -118,8 +118,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -347,7 +347,7 @@ public class DashboardActivity extends BaseActivity
     }
 
     @Override
-    public boolean dispatchTouchEvent(@NotNull MotionEvent ev)
+    public boolean dispatchTouchEvent(@NonNull MotionEvent ev)
     {
         return resideMenu.onInterceptTouchEvent(ev) || super.dispatchTouchEvent(ev);
     }
@@ -718,7 +718,7 @@ public class DashboardActivity extends BaseActivity
     private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
     {
         boolean isHandled = false;
-        for (@NotNull ProviderDTO providerDTO : providerDTOs)
+        for (ProviderDTO providerDTO : providerDTOs)
         {
             if (!providerDTO.isUserEnrolled
                     && !enrollmentScreenOpened.contains(providerDTO.id))

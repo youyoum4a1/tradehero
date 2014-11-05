@@ -12,31 +12,31 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class DiscussionSetAdapter
         extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionCompactItemViewLinear<DiscussionKey>>
 {
     //<editor-fold desc="Constructors">
-    public DiscussionSetAdapter(@NotNull Context context)
+    public DiscussionSetAdapter(@NonNull Context context)
     {
         super(context, new DiscussionKeyComparatorIdAsc());
     }
 
-    public DiscussionSetAdapter(@NotNull Context context, @Nullable Comparator<DiscussionKey> comparator)
+    public DiscussionSetAdapter(@NonNull Context context, @Nullable Comparator<DiscussionKey> comparator)
     {
         super(context, comparator);
     }
 
     public DiscussionSetAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable Collection<DiscussionKey> objects)
     {
         super(context, new DiscussionKeyComparatorIdAsc(), objects);
     }
 
-    public DiscussionSetAdapter(@NotNull Context context, @Nullable Comparator<DiscussionKey> comparator, @Nullable Collection<DiscussionKey> objects)
+    public DiscussionSetAdapter(@NonNull Context context, @Nullable Comparator<DiscussionKey> comparator, @Nullable Collection<DiscussionKey> objects)
     {
         super(context, comparator, objects);
     }

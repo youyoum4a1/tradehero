@@ -26,7 +26,7 @@ import com.tradehero.th.widget.MultiScrollListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,12 +55,12 @@ abstract public class BasePagedListRxFragment<
 
     protected PagedArrayDTOAdapterNew<DTOType, ViewType> itemViewAdapter;
     protected Map<Integer, DTOListType> pagedDtos;
-    @NotNull protected Map<Integer, Subscription> pagedSubscriptions;
+    @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
     protected DTOType selectedItem;
 
     protected Runnable requestDataTask;
 
-    public static void putPerPage(@NotNull Bundle args, int perPage)
+    public static void putPerPage(@NonNull Bundle args, int perPage)
     {
         args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
     }
@@ -291,7 +291,7 @@ abstract public class BasePagedListRxFragment<
     }
 
     abstract public boolean canMakePagedDtoKey();
-    @NotNull abstract public PagedDTOKeyType makePagedDtoKey(int page);
+    @NonNull abstract public PagedDTOKeyType makePagedDtoKey(int page);
 
     protected void updateVisibilities()
     {
@@ -327,7 +327,7 @@ abstract public class BasePagedListRxFragment<
         this.selectedItem = clicked;
     }
 
-    protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NotNull PagedDTOKeyType key)
+    protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NonNull PagedDTOKeyType key)
     {
         return new ListCacheObserver(key);
     }
@@ -335,9 +335,9 @@ abstract public class BasePagedListRxFragment<
     protected class ListCacheObserver
             implements Observer<Pair<PagedDTOKeyType, ContainerDTOType>>
     {
-        @NotNull private final PagedDTOKeyType key;
+        @NonNull private final PagedDTOKeyType key;
 
-        protected ListCacheObserver(@NotNull PagedDTOKeyType key)
+        protected ListCacheObserver(@NonNull PagedDTOKeyType key)
         {
             this.key = key;
         }

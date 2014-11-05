@@ -19,20 +19,20 @@ import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
 {
-    @NotNull private final ProviderService providerService;
-    @NotNull private final ProviderServiceRx providerServiceRx;
-    @NotNull private final CurrentUserId currentUserId;
+    @NonNull private final ProviderService providerService;
+    @NonNull private final ProviderServiceRx providerServiceRx;
+    @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
-            @NotNull ProviderService providerService,
-            @NotNull ProviderServiceRx providerServiceRx,
-            @NotNull CurrentUserId currentUserId)
+            @NonNull ProviderService providerService,
+            @NonNull ProviderServiceRx providerServiceRx,
+            @NonNull CurrentUserId currentUserId)
     {
         super();
         this.providerService = providerService;
@@ -52,13 +52,13 @@ import rx.Observable;
         return new DTOProcessorProviderCompactListReceived(createProcessorProviderReceived());
     }
 
-    @NotNull public ProviderDTOList getProviders()
+    @NonNull public ProviderDTOList getProviders()
     {
         return createProcessorProviderCompactListReceived().process(
                 this.providerService.getProviders());
     }
 
-    @NotNull public Observable<ProviderDTOList> getProvidersRx()
+    @NonNull public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
                 .doOnNext(providerDTOList -> {
@@ -78,7 +78,7 @@ import rx.Observable;
 
     //</editor-fold>
 
-    @NotNull public Observable<ProviderDTO> getProviderRx(@NotNull ProviderId providerId)
+    @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)
                 .doOnNext(providerDTO -> {
@@ -91,7 +91,7 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Provider Securities">
-    public SecurityCompactDTOList getProviderSecurities(@NotNull ProviderSecurityListType key)
+    public SecurityCompactDTOList getProviderSecurities(@NonNull ProviderSecurityListType key)
     {
         SecurityCompactDTOList received;
         if (key instanceof SearchProviderSecurityListType)
@@ -124,7 +124,7 @@ import rx.Observable;
         return received;
     }
 
-    public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NotNull ProviderSecurityListType key)
+    public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NonNull ProviderSecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
         if (key instanceof SearchProviderSecurityListType)
@@ -159,34 +159,34 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Help Videos">
-    @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull HelpVideoListKey helpVideoListKey)
+    @NonNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NonNull HelpVideoListKey helpVideoListKey)
     {
         return this.getHelpVideosRx(helpVideoListKey.getProviderId());
     }
 
-    @NotNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NotNull ProviderId providerId)
+    @NonNull public Observable<HelpVideoDTOList> getHelpVideosRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getHelpVideos(providerId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Display Cells">
-    public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderDisplayCellListKey providerDisplayCellListKey)
+    public ProviderDisplayCellDTOList getDisplayCells(@NonNull ProviderDisplayCellListKey providerDisplayCellListKey)
     {
         return this.getDisplayCells(providerDisplayCellListKey.getProviderId());
     }
 
-    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NotNull ProviderDisplayCellListKey providerDisplayCellListKey)
+    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderDisplayCellListKey providerDisplayCellListKey)
     {
         return this.getDisplayCellsRx(providerDisplayCellListKey.getProviderId());
     }
 
-    public ProviderDisplayCellDTOList getDisplayCells(@NotNull ProviderId providerId)
+    public ProviderDisplayCellDTOList getDisplayCells(@NonNull ProviderId providerId)
     {
         return this.providerService.getDisplayCells(providerId.key);
     }
 
-    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NotNull ProviderId providerId)
+    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getDisplayCells(providerId.key);
     }

@@ -7,7 +7,7 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.android.observables.AndroidObservable;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
@@ -16,12 +16,12 @@ public class AlertCreateFragment extends BaseAlertEditFragment
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
-    @NotNull public static SecurityId getSecurityId(@NotNull Bundle args)
+    @NonNull public static SecurityId getSecurityId(@NonNull Bundle args)
     {
         return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
     }

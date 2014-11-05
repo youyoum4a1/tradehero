@@ -3,7 +3,7 @@ package com.tradehero.th.api.portfolio;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.th.api.users.UserBaseDTO;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DisplayablePortfolioDTOList extends BaseArrayList<DisplayablePortfolioDTO>
 {
@@ -13,13 +13,13 @@ public class DisplayablePortfolioDTOList extends BaseArrayList<DisplayablePortfo
         super();
     }
 
-    public DisplayablePortfolioDTOList(@NotNull Collection<? extends DisplayablePortfolioDTO> c)
+    public DisplayablePortfolioDTOList(@NonNull Collection<? extends DisplayablePortfolioDTO> c)
     {
         super(c);
     }
 
-    public DisplayablePortfolioDTOList(@NotNull UserBaseDTO userBaseDTO,
-            @NotNull Collection<? extends PortfolioDTO> portfolioDTOs)
+    public DisplayablePortfolioDTOList(@NonNull UserBaseDTO userBaseDTO,
+            @NonNull Collection<? extends PortfolioDTO> portfolioDTOs)
     {
         super();
         for (PortfolioDTO portfolioDTO : portfolioDTOs)

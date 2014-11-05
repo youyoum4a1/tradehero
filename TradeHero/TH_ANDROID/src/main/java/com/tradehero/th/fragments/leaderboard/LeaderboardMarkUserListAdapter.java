@@ -10,8 +10,8 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardMarkUserListAdapter extends
         LoaderDTOAdapter<
@@ -87,7 +87,7 @@ public class LeaderboardMarkUserListAdapter extends
         return this::notifyFollowRequested;
     }
 
-    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
+    protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
         LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)

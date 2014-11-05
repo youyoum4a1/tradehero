@@ -20,29 +20,29 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final ProgressDialogUtil progressDialogUtil;
-    @NotNull private final SessionServiceWrapper sessionServiceWrapper;
-    @NotNull private final String authHeader;
-    @NotNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
-    @NotNull private final AccountManager accountManager;
+    @NonNull private final ProgressDialogUtil progressDialogUtil;
+    @NonNull private final SessionServiceWrapper sessionServiceWrapper;
+    @NonNull private final String authHeader;
+    @NonNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
+    @NonNull private final AccountManager accountManager;
     @Nullable private ProgressDialog progressDialog;
     @Nullable private MiddleCallback<UserProfileDTO> logoutCallback;
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull SessionServiceWrapper sessionServiceWrapper,
-            @NotNull @AuthHeader String authHeader,
-            @NotNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap,
-            @NotNull AccountManager accountManager)
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull SessionServiceWrapper sessionServiceWrapper,
+            @NonNull @AuthHeader String authHeader,
+            @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap,
+            @NonNull AccountManager accountManager)
     {
         this.progressDialogUtil = progressDialogUtil;
         this.sessionServiceWrapper = sessionServiceWrapper;
@@ -147,10 +147,10 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
     protected class SignOutCallback implements Callback<UserProfileDTO>
     {
-        @NotNull private final Activity activity;
+        @NonNull private final Activity activity;
 
         //<editor-fold desc="Constructors">
-        public SignOutCallback(@NotNull Activity activity)
+        public SignOutCallback(@NonNull Activity activity)
         {
             this.activity = activity;
         }

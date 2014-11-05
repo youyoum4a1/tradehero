@@ -5,32 +5,32 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
     implements THPurchaseOrder<AmazonSKU>
 {
-    @NotNull private OwnedPortfolioId applicablePortfolioId;
+    @NonNull private OwnedPortfolioId applicablePortfolioId;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
     public THAmazonPurchaseOrder(
-            @NotNull AmazonSKU sku,
+            @NonNull AmazonSKU sku,
             int quantity,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         super(sku, quantity);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 
-    @Override public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
+    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    @NotNull @Override public OwnedPortfolioId getApplicablePortfolioId()
+    @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {
         return applicablePortfolioId;
     }

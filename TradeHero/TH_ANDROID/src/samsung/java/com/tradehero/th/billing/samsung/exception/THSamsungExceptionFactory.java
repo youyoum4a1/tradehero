@@ -4,7 +4,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class THSamsungExceptionFactory extends SamsungExceptionFactory
 {

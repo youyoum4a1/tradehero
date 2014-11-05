@@ -5,18 +5,18 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.misc.exception.KnownServerErrors;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.AlertDialogUtil;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 
 abstract public class AlertDialogObserver<T> implements Observer<T>
 {
-    @NotNull protected final Context activityContext;
-    @NotNull protected final AlertDialogUtil alertDialogUtil;
+    @NonNull protected final Context activityContext;
+    @NonNull protected final AlertDialogUtil alertDialogUtil;
 
     //<editor-fold desc="Constructors">
     protected AlertDialogObserver(
-            @NotNull Context activityContext,
-            @NotNull AlertDialogUtil alertDialogUtil)
+            @NonNull Context activityContext,
+            @NonNull AlertDialogUtil alertDialogUtil)
     {
         this.activityContext = activityContext;
         this.alertDialogUtil = alertDialogUtil;

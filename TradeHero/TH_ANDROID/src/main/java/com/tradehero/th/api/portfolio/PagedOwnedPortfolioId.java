@@ -1,8 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PagedOwnedPortfolioId extends OwnedPortfolioId
 {
@@ -24,7 +24,7 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
     }
     //</editor-fold>
 
-    public static boolean isPagedOwnedPortfolioId(@NotNull Bundle args)
+    public static boolean isPagedOwnedPortfolioId(@NonNull Bundle args)
     {
         return isOwnedPortfolioId(args)
                 && args.containsKey(BUNDLE_KEY_PAGE);
@@ -42,7 +42,7 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
                 (page == null ? other.page == null : page.equals(other.page));
     }
 
-    public int compareTo(@NotNull PagedOwnedPortfolioId other)
+    public int compareTo(@NonNull PagedOwnedPortfolioId other)
     {
         if (this == other)
         {
@@ -63,7 +63,7 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
         return page.compareTo(other.page);
     }
 
-    @Override protected void putParameters(@NotNull Bundle args)
+    @Override protected void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (page == null)
@@ -76,7 +76,7 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
         }
     }
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         return String.format("[userId=%d; portfolioId=%d; page=%d]", userId, portfolioId, page);
     }

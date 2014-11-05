@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.MarketServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,14 +17,14 @@ public class ExchangeCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeList
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1; // Be careful to increase when necessary
 
-    @NotNull private final Lazy<MarketServiceWrapper> marketServiceWrapper;
-    @NotNull private final Lazy<ExchangeIdCacheRx> exchangeIdCache;
+    @NonNull private final Lazy<MarketServiceWrapper> marketServiceWrapper;
+    @NonNull private final Lazy<ExchangeIdCacheRx> exchangeIdCache;
 
     //<editor-fold desc="Constructors">
     @Inject public ExchangeCompactListCacheRx(
-            @NotNull Lazy<MarketServiceWrapper> marketServiceWrapper,
-            @NotNull Lazy<ExchangeIdCacheRx> exchangeIdCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<MarketServiceWrapper> marketServiceWrapper,
+            @NonNull Lazy<ExchangeIdCacheRx> exchangeIdCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.marketServiceWrapper = marketServiceWrapper;
@@ -32,12 +32,12 @@ public class ExchangeCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeList
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<ExchangeCompactDTOList> fetch(@NotNull ExchangeListType key)
+    @Override @NonNull protected Observable<ExchangeCompactDTOList> fetch(@NonNull ExchangeListType key)
     {
         return marketServiceWrapper.get().getExchangesRx();
     }
 
-    @Override public void onNext(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
+    @Override public void onNext(@NonNull ExchangeListType key, @NonNull ExchangeCompactDTOList value)
     {
         exchangeIdCache.get().onNext(value);
         super.onNext(key, value);

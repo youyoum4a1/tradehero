@@ -22,7 +22,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
@@ -107,12 +107,12 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 
     protected class LeaderboardDefListViewFragmentDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList>
     {
-        @Override public void onDTOReceived(@NotNull LeaderboardDefListKey key, @NotNull LeaderboardDefDTOList value)
+        @Override public void onDTOReceived(@NonNull LeaderboardDefListKey key, @NonNull LeaderboardDefDTOList value)
         {
             handleDTOReceived(key, value);
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardDefListKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull LeaderboardDefListKey key, @NonNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
             Timber.e("Error fetching the leaderboard def key list %s", key, error);

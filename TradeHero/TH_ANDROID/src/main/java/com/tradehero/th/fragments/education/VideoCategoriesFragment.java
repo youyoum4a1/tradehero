@@ -17,7 +17,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class VideoCategoriesFragment extends BasePagedListFragment<
         PagedVideoCategories, // But it also needs to be a PagedDTOKey
@@ -82,7 +82,7 @@ public class VideoCategoriesFragment extends BasePagedListFragment<
         return true;
     }
 
-    @NotNull @Override public PagedVideoCategories makePagedDtoKey(int page)
+    @NonNull @Override public PagedVideoCategories makePagedDtoKey(int page)
     {
         return new PagedVideoCategories(page, perPage);
     }

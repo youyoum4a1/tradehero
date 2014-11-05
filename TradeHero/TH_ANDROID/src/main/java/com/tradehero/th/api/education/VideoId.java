@@ -4,19 +4,19 @@ import android.os.Bundle;
 
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class VideoId extends AbstractIntegerDTOKey
 {
     private static final String BUNDLE_KEY_LEY = VideoId.class.getName() + ".key";
 
     //<editor-fold desc="Constructors">
-    public VideoId(@NotNull Integer key)
+    public VideoId(@NonNull Integer key)
     {
         super(key);
     }
 
-    public VideoId(@NotNull Bundle args)
+    public VideoId(@NonNull Bundle args)
     {
         super(args);
     }

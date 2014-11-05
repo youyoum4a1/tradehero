@@ -8,7 +8,7 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class TimelineDTOProcessor implements Action1<TimelineDTO>
@@ -20,7 +20,7 @@ public class TimelineDTOProcessor implements Action1<TimelineDTO>
         this.discussionCache = discussionCache;
     }
 
-    @Override public void call(@NotNull TimelineDTO timelineDTO)
+    @Override public void call(@NonNull TimelineDTO timelineDTO)
     {
         List<TimelineItemDTO> timelineItemList = timelineDTO.getEnhancedItems();
         if (timelineItemList != null)

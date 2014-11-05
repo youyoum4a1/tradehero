@@ -11,7 +11,7 @@ import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -20,16 +20,16 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final Lazy<UserServiceWrapper> userServiceWrapper;
-    @NotNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
-    @NotNull private final Lazy<LeaderboardCache> leaderboardCache;
+    @NonNull private final Lazy<UserServiceWrapper> userServiceWrapper;
+    @NonNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
+    @NonNull private final Lazy<LeaderboardCache> leaderboardCache;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileCacheRx(
-            @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<UserProfileCompactCacheRx> userProfileCompactCache,
-            @NotNull Lazy<LeaderboardCache> leaderboardCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
+            @NonNull Lazy<UserProfileCompactCacheRx> userProfileCompactCache,
+            @NonNull Lazy<LeaderboardCache> leaderboardCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
@@ -38,13 +38,13 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<UserProfileDTO> fetch(@NotNull UserBaseKey key)
+    @Override @NonNull protected Observable<UserProfileDTO> fetch(@NonNull UserBaseKey key)
     {
         VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUserRx(key);
     }
 
-    @Override public void onNext(@NotNull UserBaseKey key, @NotNull UserProfileDTO userProfileDTO)
+    @Override public void onNext(@NonNull UserBaseKey key, @NonNull UserProfileDTO userProfileDTO)
     {
         if (userProfileDTO.mostSkilledLbmu != null)
         {
@@ -54,7 +54,7 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
         super.onNext(key, userProfileDTO);
     }
 
-    public void updateXPIfNecessary(@NotNull UserBaseKey userBaseKey, int newXpTotal)
+    public void updateXPIfNecessary(@NonNull UserBaseKey userBaseKey, int newXpTotal)
     {
         UserProfileDTO userProfileDTO = getValue(userBaseKey);
         if(userProfileDTO != null && userProfileDTO.currentXP < newXpTotal)
@@ -64,7 +64,7 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
         }
     }
 
-    public void addAchievements(@NotNull UserBaseKey userBaseKey, int count)
+    public void addAchievements(@NonNull UserBaseKey userBaseKey, int count)
     {
         if (count <= 0)
         {

@@ -5,7 +5,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AdapterViewUtils
 {
@@ -16,17 +16,17 @@ public class AdapterViewUtils
     }
     //</editor-fold>
 
-    public <T> boolean updateSingleRowWhere(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate)
+    public <T> boolean updateSingleRowWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate)
     {
         return updateRowsWhere(adapterView, type, predicate, 1) == 1;
     }
 
-    public <T> int updateAllRowsWhere(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate)
+    public <T> int updateAllRowsWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate)
     {
         return updateRowsWhere(adapterView, type, predicate, Integer.MAX_VALUE);
     }
 
-    public <T> int updateRowsWhere(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate, int maxCount)
+    public <T> int updateRowsWhere(@NonNull AdapterView adapterView, @NonNull Class<T> type, @NonNull Predicate<T> predicate, int maxCount)
     {
         if (maxCount < 1)
         {

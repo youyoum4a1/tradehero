@@ -18,8 +18,8 @@ import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class OnBoardPickExchangeSectorViewHolder
 {
@@ -28,16 +28,16 @@ public class OnBoardPickExchangeSectorViewHolder
     @InjectView(R.id.spinner_exchange) ExchangeSpinner exchangeSpinner;
     @InjectView(R.id.spinner_sector) Spinner sectorSpinner;
 
-    @NotNull Context context;
-    @NotNull TrendingFilterSpinnerIconAdapterNew exchangeAdapter;
-    @NotNull SectorSpinnerAdapterNew sectorAdapter;
+    @NonNull Context context;
+    @NonNull TrendingFilterSpinnerIconAdapterNew exchangeAdapter;
+    @NonNull SectorSpinnerAdapterNew sectorAdapter;
 
     @Nullable ExchangeSectorCompactListDTO exchangeSectorCompacts;
     @Nullable ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     @Nullable UserProfileDTO userProfile;
 
     //<editor-fold desc="Constructors">
-    public OnBoardPickExchangeSectorViewHolder(@NotNull Context context)
+    public OnBoardPickExchangeSectorViewHolder(@NonNull Context context)
     {
         super();
         this.context = context;
@@ -62,13 +62,13 @@ public class OnBoardPickExchangeSectorViewHolder
         ButterKnife.reset(this);
     }
 
-    public void setUserProfile(@NotNull UserProfileDTO userProfile)
+    public void setUserProfile(@NonNull UserProfileDTO userProfile)
     {
         this.userProfile = userProfile;
         setExchangeSpinnerToUserCountry();
     }
 
-    public void setExchangeSector(@NotNull ExchangeSectorCompactListDTO exchangeSectorCompactListDTO)
+    public void setExchangeSector(@NonNull ExchangeSectorCompactListDTO exchangeSectorCompactListDTO)
     {
         this.exchangeSectorCompacts = exchangeSectorCompactListDTO;
         exchangeAdapter.clear();

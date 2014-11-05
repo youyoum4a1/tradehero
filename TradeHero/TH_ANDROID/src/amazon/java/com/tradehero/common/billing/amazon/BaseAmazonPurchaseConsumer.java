@@ -4,8 +4,8 @@ import android.content.Context;
 import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.ProductType;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseAmazonPurchaseConsumer<
             AmazonSKUType extends AmazonSKU,
@@ -25,8 +25,8 @@ abstract public class BaseAmazonPurchaseConsumer<
 
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaseConsumer(
-            @NotNull Context appContext,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context appContext,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(appContext, purchasingService);
     }
@@ -43,7 +43,7 @@ abstract public class BaseAmazonPurchaseConsumer<
         super.onDestroy();
     }
 
-    @NotNull abstract protected AmazonPurchaseCache<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType> getPurchaseCache();
+    @NonNull abstract protected AmazonPurchaseCache<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType> getPurchaseCache();
 
     public boolean isConsuming()
     {

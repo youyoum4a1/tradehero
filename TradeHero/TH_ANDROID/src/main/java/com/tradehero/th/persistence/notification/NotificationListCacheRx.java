@@ -11,21 +11,21 @@ import com.tradehero.th.persistence.ListCacheMaxSize;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
 public class NotificationListCacheRx extends BaseFetchDTOCacheRx<NotificationListKey, PaginatedNotificationDTO>
 {
-    @NotNull private final Lazy<NotificationServiceWrapper> notificationService;
-    @NotNull private final Lazy<NotificationCacheRx> notificationCache;
+    @NonNull private final Lazy<NotificationServiceWrapper> notificationService;
+    @NonNull private final Lazy<NotificationCacheRx> notificationCache;
 
     //<editor-fold desc="Constructors">
     @Inject public NotificationListCacheRx(
             @ListCacheMaxSize IntPreference maxSize,
-            @NotNull Lazy<NotificationServiceWrapper> notificationService,
-            @NotNull Lazy<NotificationCacheRx> notificationCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<NotificationServiceWrapper> notificationService,
+            @NonNull Lazy<NotificationCacheRx> notificationCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(maxSize.get(), 5, 5, dtoCacheUtil);
         this.notificationService = notificationService;
@@ -33,12 +33,12 @@ public class NotificationListCacheRx extends BaseFetchDTOCacheRx<NotificationLis
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<PaginatedNotificationDTO> fetch(@NotNull NotificationListKey key)
+    @Override @NonNull protected Observable<PaginatedNotificationDTO> fetch(@NonNull NotificationListKey key)
     {
         return notificationService.get().getNotificationsRx(key);
     }
 
-    @Override public void onNext(@NotNull NotificationListKey key, @NotNull PaginatedNotificationDTO value)
+    @Override public void onNext(@NonNull NotificationListKey key, @NonNull PaginatedNotificationDTO value)
     {
         notificationCache.get().onNext(value.getData());
         super.onNext(key, value);

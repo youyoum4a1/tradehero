@@ -3,7 +3,7 @@ package com.tradehero.th.api.leaderboard.position;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.position.PositionDTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, DTO
 {
@@ -25,7 +25,7 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         this(leaderboardMarkUserId.key, leaderboardMarkUserPositionId);
     }
 
-    public OwnedLeaderboardPositionId(@NotNull Bundle args)
+    public OwnedLeaderboardPositionId(@NonNull Bundle args)
     {
         this.leaderboardMarkUserId = args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) ?
                 args.getInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) :
@@ -36,7 +36,7 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
     }
     //</editor-fold>
 
-    public static boolean isOwnedLeaderboardPositionId(@NotNull Bundle args)
+    public static boolean isOwnedLeaderboardPositionId(@NonNull Bundle args)
     {
         return args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_ID) &&
                 args.containsKey(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID);
@@ -61,7 +61,7 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
                         == null : leaderboardMarkUserPositionId.equals(other.leaderboardMarkUserPositionId));
     }
 
-    @Override public int compareTo(@NotNull Object o)
+    @Override public int compareTo(@NonNull Object o)
     {
         if (o.getClass() == OwnedLeaderboardPositionId.class)
         {
@@ -70,7 +70,7 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         return o.getClass().getName().compareTo(OwnedLeaderboardPositionId.class.getName());
     }
 
-    public int compareTo(@NotNull OwnedLeaderboardPositionId other)
+    public int compareTo(@NonNull OwnedLeaderboardPositionId other)
     {
         if (this == other)
         {
@@ -97,7 +97,7 @@ public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, D
         args.putInt(BUNDLE_KEY_LEADERBOARD_MARK_USER_POSITION_ID, leaderboardMarkUserPositionId);
     }
 
-    @NotNull public Bundle getArgs()
+    @NonNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);

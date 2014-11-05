@@ -5,8 +5,8 @@ import android.support.annotation.LayoutRes;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 {
@@ -16,14 +16,14 @@ public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
     @LayoutRes public final int mineResId;
     @LayoutRes public final int otherResId;
 
-    @NotNull DiscussionCacheRx discussionCache;
-    @NotNull CurrentUserId currentUserId;
+    @NonNull DiscussionCacheRx discussionCache;
+    @NonNull CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     public PrivateDiscussionSetAdapter(
-            @NotNull Context context,
-            @NotNull DiscussionCacheRx discussionCache,
-            @NotNull CurrentUserId currentUserId,
+            @NonNull Context context,
+            @NonNull DiscussionCacheRx discussionCache,
+            @NonNull CurrentUserId currentUserId,
             @LayoutRes int mineResId,
             @LayoutRes int otherResId)
     {

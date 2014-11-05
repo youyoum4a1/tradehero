@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.timeline;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface TimelineProfileClickListener
 {
-    void onBtnClicked(@NotNull TimelineFragment.TabType tabType);
+    void onBtnClicked(@NonNull TimelineFragment.TabType tabType);
 }

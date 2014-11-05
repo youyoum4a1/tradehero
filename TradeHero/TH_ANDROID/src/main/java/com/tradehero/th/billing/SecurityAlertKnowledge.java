@@ -5,8 +5,8 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public abstract class SecurityAlertKnowledge
 {
@@ -44,7 +44,7 @@ public abstract class SecurityAlertKnowledge
         }
     }
 
-    @NotNull public abstract ProductIdentifier createFrom(@NotNull AlertPlanDTO alertPlanDTO);
+    @NonNull public abstract ProductIdentifier createFrom(@NonNull AlertPlanDTO alertPlanDTO);
 
-    @Nullable public abstract ProductIdentifier getServerEquivalentSKU(@NotNull ProductIdentifier localProductId);
+    @Nullable public abstract ProductIdentifier getServerEquivalentSKU(@NonNull ProductIdentifier localProductId);
 }

@@ -10,8 +10,8 @@ import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
 import java.util.Collection;
 import java.util.Comparator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
 {
@@ -19,7 +19,7 @@ public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
 
     //<editor-fold desc="Constructors">
     public ShareDestinationSetAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable Comparator<ShareDestination> comparator,
             @Nullable Collection<ShareDestination> objects)
     {

@@ -5,12 +5,12 @@ import android.support.annotation.LayoutRes;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserFollowerDTOSetAdapter extends ViewDTOSetAdapter<UserFollowerDTO, FollowerListItemView>
 {
     //<editor-fold desc="Constructors">
-    public UserFollowerDTOSetAdapter(@NotNull Context context)
+    public UserFollowerDTOSetAdapter(@NonNull Context context)
     {
         super(context,
                 (lhs, rhs) -> Integer.valueOf(lhs.id).compareTo(rhs.id));

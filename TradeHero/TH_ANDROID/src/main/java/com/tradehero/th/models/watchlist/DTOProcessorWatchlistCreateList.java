@@ -8,21 +8,21 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPositionDTOList>,
         Action1<WatchlistPositionDTOList>
 {
-    @NotNull DTOProcessorWatchlistCreate individualProcessor;
+    @NonNull DTOProcessorWatchlistCreate individualProcessor;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistCreateList(
-            @NotNull WatchlistPositionCache watchlistPositionCache,
-            @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
-            @NotNull PortfolioCacheRx portfolioCache,
-            @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
+            @NonNull WatchlistPositionCache watchlistPositionCache,
+            @NonNull UserBaseKey concernedUser,
+            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super();
         individualProcessor = new DTOProcessorWatchlistCreate(
@@ -34,7 +34,7 @@ public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPo
     }
     //</editor-fold>
 
-    @Override public WatchlistPositionDTOList process(@NotNull WatchlistPositionDTOList value)
+    @Override public WatchlistPositionDTOList process(@NonNull WatchlistPositionDTOList value)
     {
         WatchlistPositionDTOList processed = new WatchlistPositionDTOList();
         for (WatchlistPositionDTO position : value)

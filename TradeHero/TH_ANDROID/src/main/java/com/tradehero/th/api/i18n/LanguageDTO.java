@@ -1,27 +1,27 @@
 package com.tradehero.th.api.i18n;
 
 import java.util.Locale;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LanguageDTO
 {
-    @NotNull public final String code;
-    @NotNull public final String name;
+    @NonNull public final String code;
+    @NonNull public final String name;
     @Nullable public String nameInOwnLang;
 
     //<editor-fold desc="Constructors">
-    public LanguageDTO(@NotNull String code, @NotNull Locale locale)
+    public LanguageDTO(@NonNull String code, @NonNull Locale locale)
     {
         this(code, locale.getDisplayName(), locale.getDisplayName(locale));
     }
 
-    public LanguageDTO(@NotNull String code, @NotNull String name)
+    public LanguageDTO(@NonNull String code, @NonNull String name)
     {
         this(code, name, null);
     }
 
-    public LanguageDTO(@NotNull String code, @NotNull String name, @Nullable String nameInOwnLang)
+    public LanguageDTO(@NonNull String code, @NonNull String name, @Nullable String nameInOwnLang)
     {
         this.code = code;
         this.name = name;
@@ -42,12 +42,12 @@ public class LanguageDTO
                 && equalFields((LanguageDTO) other);
     }
 
-    protected boolean equalClass(@NotNull Object other)
+    protected boolean equalClass(@NonNull Object other)
     {
         return other.getClass().equals(getClass());
     }
 
-    protected boolean equalFields(@NotNull LanguageDTO other)
+    protected boolean equalFields(@NonNull LanguageDTO other)
     {
         return other.code.equals(code);
     }

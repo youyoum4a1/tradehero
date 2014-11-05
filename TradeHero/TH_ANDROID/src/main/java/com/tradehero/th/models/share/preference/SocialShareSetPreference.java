@@ -4,32 +4,32 @@ import android.content.SharedPreferences;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import java.util.HashSet;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
 public class SocialShareSetPreference extends StringSetPreference
 {
-    @NotNull private final SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory;
+    @NonNull private final SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory;
 
     //<editor-fold desc="Constructors">
     public SocialShareSetPreference(
-            @NotNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory,
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull Set<String> defaultValue)
+            @NonNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
         this.socialSharePreferenceDTOFactory = socialSharePreferenceDTOFactory;
     }
     //</editor-fold>
 
-    @NotNull public Set<SocialSharePreferenceDTO> getSocialSharePreference()
+    @NonNull public Set<SocialSharePreferenceDTO> getSocialSharePreference()
     {
         Set<SocialSharePreferenceDTO> socialSharePreferenceDTOs = new HashSet<>();
-        @NotNull Set<String> stringSet = get();
-        for (@NotNull String jsonString : stringSet)
+        Set<String> stringSet = get();
+        for (String jsonString : stringSet)
         {
             try
             {
@@ -48,7 +48,7 @@ public class SocialShareSetPreference extends StringSetPreference
         if (socialSharePreferenceDTOSet != null)
         {
             savedStrings = new HashSet<>();
-            for (@NotNull SocialSharePreferenceDTO socialSharePreferenceDTO : socialSharePreferenceDTOSet)
+            for (SocialSharePreferenceDTO socialSharePreferenceDTO : socialSharePreferenceDTOSet)
             {
                 try
                 {

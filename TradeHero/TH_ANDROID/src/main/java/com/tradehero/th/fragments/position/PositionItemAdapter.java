@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
 {
@@ -32,7 +32,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     protected Map<Integer, Integer> itemTypeToLayoutId;
 
     //<editor-fold desc="Constructors">
-    public PositionItemAdapter(@NotNull Context context, @NotNull Map<Integer, Integer> itemTypeToLayoutId)
+    public PositionItemAdapter(@NonNull Context context, @NonNull Map<Integer, Integer> itemTypeToLayoutId)
     {
         super(context, 0);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
@@ -129,7 +129,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
             PositionDTOList<PositionDTO> closedPositions = new PositionDTOList<>();
 
             // Split in open / closed
-            for (@NotNull PositionDTO positionDTO : dtos)
+            for (PositionDTO positionDTO : dtos)
             {
                 if (positionDTO.isLocked())
                 {
@@ -168,7 +168,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
                         openPositions.getLatestTradeUtc()
                 ));
 
-                for (@NotNull PositionDTO openPosition : openPositions)
+                for (PositionDTO openPosition : openPositions)
                 {
                     add(newItems, openPosition);
                 }
@@ -189,7 +189,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
                         closedPositions.getLatestTradeUtc()
                 ));
 
-                for (@NotNull PositionDTO closedPosition : closedPositions)
+                for (PositionDTO closedPosition : closedPositions)
                 {
                     add(newItems, closedPosition);
                 }
@@ -199,7 +199,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         addAll(newItems);
     }
 
-    protected void add(@NotNull List<Object> items, @NotNull PositionDTO item)
+    protected void add(@NonNull List<Object> items, @NonNull PositionDTO item)
     {
         items.add(item);
     }

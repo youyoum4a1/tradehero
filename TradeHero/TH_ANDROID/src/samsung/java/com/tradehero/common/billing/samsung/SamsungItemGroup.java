@@ -1,14 +1,14 @@
 package com.tradehero.common.billing.samsung;
 
 import com.tradehero.common.persistence.DTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SamsungItemGroup implements DTOKey
 {
-    @NotNull public final String groupId;
+    @NonNull public final String groupId;
 
     //<editor-fold desc="Constructors">
-    public SamsungItemGroup(@NotNull String groupId)
+    public SamsungItemGroup(@NonNull String groupId)
     {
         super();
         this.groupId = groupId;

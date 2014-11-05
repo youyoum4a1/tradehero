@@ -19,8 +19,8 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -28,11 +28,11 @@ import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
 {
-    @NotNull private final Activity activity;
-    @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final UserProfileCache userProfileCache;
-    @NotNull private final DiscussionServiceWrapper discussionServiceWrapper;
-    @NotNull private final SocialShareVerifier socialShareVerifier;
+    @NonNull private final Activity activity;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final UserProfileCache userProfileCache;
+    @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NonNull private final SocialShareVerifier socialShareVerifier;
 
     private OnSharedListener sharedListener;
     @Nullable private UserProfileDTO currentUserProfile;
@@ -40,11 +40,11 @@ public class SocialSharerImpl implements SocialSharer
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharerImpl(
-            @NotNull Activity activity,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull DiscussionServiceWrapper discussionServiceWrapper,
-            @NotNull SocialShareVerifier socialShareVerifier)
+            @NonNull Activity activity,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCache userProfileCache,
+            @NonNull DiscussionServiceWrapper discussionServiceWrapper,
+            @NonNull SocialShareVerifier socialShareVerifier)
     {
         this.activity = activity;
         this.currentUserId = currentUserId;
@@ -88,7 +88,7 @@ public class SocialSharerImpl implements SocialSharer
     }
     //</editor-fold>
 
-    @Override public void share(@NotNull SocialShareFormDTO shareFormDTO)
+    @Override public void share(@NonNull SocialShareFormDTO shareFormDTO)
     {
         this.waitingSocialShareFormDTO = shareFormDTO;
         shareWaitingDTOIfCan();
@@ -164,12 +164,12 @@ public class SocialSharerImpl implements SocialSharer
                 createDiscussionCallback(timelineItemShareFormDTO));
     }
 
-    public void share(@NotNull WeChatDTO weChatDTO)
+    public void share(@NonNull WeChatDTO weChatDTO)
     {
         activity.startActivity(createWeChatIntent(activity, weChatDTO));
     }
 
-    public Intent createWeChatIntent(@NotNull Context activityContext, @NotNull WeChatDTO weChatDTO)
+    public Intent createWeChatIntent(@NonNull Context activityContext, @NonNull WeChatDTO weChatDTO)
     {
         Intent intent = new Intent(activityContext, WXEntryActivity.class);
         WXEntryActivity.putWeChatDTO(intent, weChatDTO);
@@ -217,13 +217,13 @@ public class SocialSharerImpl implements SocialSharer
 
     protected class SocialSharerUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
         {
             currentUserProfile = value;
             shareWaitingDTOIfCan();
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             THToast.show(R.string.error_fetch_user_profile);
         }

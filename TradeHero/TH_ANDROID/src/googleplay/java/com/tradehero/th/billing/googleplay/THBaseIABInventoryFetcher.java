@@ -7,7 +7,7 @@ import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 
 public class THBaseIABInventoryFetcher
@@ -18,14 +18,14 @@ public class THBaseIABInventoryFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABInventoryFetcher(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         super(context, iabExceptionFactory);
     }
     //</editor-fold>
 
-    @Override @NotNull protected THIABProductDetail createSKUDetails(IABSKUListKey itemType, String json) throws JSONException
+    @Override @NonNull protected THIABProductDetail createSKUDetails(IABSKUListKey itemType, String json) throws JSONException
     {
         return new THIABProductDetail(itemType, json);
     }

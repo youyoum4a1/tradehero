@@ -30,8 +30,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
@@ -224,7 +224,7 @@ public class PrivateDiscussionView extends DiscussionView
         return inflated;
     }
 
-    public void setRecipient(@NotNull UserBaseKey recipient)
+    public void setRecipient(@NonNull UserBaseKey recipient)
     {
         this.recipient = recipient;
         setRecipientOnPostCommentView();

@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class ProductDetailAdapter<
         ProductIdentifierType extends ProductIdentifier,
@@ -31,7 +31,7 @@ abstract public class ProductDetailAdapter<
     protected ProductIdentifierDomain skuDomain;
 
     //<editor-fold desc="Constructors">
-    public ProductDetailAdapter(@NotNull Context context, @LayoutRes int layoutResourceId, ProductIdentifierDomain skuDomain)
+    public ProductDetailAdapter(@NonNull Context context, @LayoutRes int layoutResourceId, ProductIdentifierDomain skuDomain)
     {
         super(context, layoutResourceId);
         this.skuDomain = skuDomain;
@@ -53,7 +53,7 @@ abstract public class ProductDetailAdapter<
         this.enabledItems = enabledItems;
     }
 
-    @Override public void setItems(@NotNull List<THProductDetailType> items)
+    @Override public void setItems(@NonNull List<THProductDetailType> items)
     {
         if (productDetailComparator == null || items == null)
         {

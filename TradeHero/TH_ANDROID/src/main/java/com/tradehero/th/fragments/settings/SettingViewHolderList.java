@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.settings;
 
 import java.util.ArrayList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SettingViewHolderList extends ArrayList<SettingViewHolder>
 {
@@ -13,9 +13,9 @@ public class SettingViewHolderList extends ArrayList<SettingViewHolder>
     }
     //</editor-fold>
 
-    public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
-        for (@NotNull SettingViewHolder viewHolder : this)
+        for (SettingViewHolder viewHolder : this)
         {
             viewHolder.initViews(preferenceFragment);
         }
@@ -23,7 +23,7 @@ public class SettingViewHolderList extends ArrayList<SettingViewHolder>
 
     public void destroyViews()
     {
-        for (@NotNull SettingViewHolder viewHolder : this)
+        for (SettingViewHolder viewHolder : this)
         {
             viewHolder.destroyViews();
         }
@@ -31,7 +31,7 @@ public class SettingViewHolderList extends ArrayList<SettingViewHolder>
 
     @Nullable public SettingViewHolder getFirstUnread()
     {
-        for (@NotNull SettingViewHolder viewHolder : this)
+        for (SettingViewHolder viewHolder : this)
         {
             if (viewHolder.isUnread())
             {

@@ -52,8 +52,8 @@ import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import timber.log.Timber;
 
@@ -130,7 +130,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     }
 
     protected void inflateHeaderView(
-            @NotNull LayoutInflater inflater,
+            @NonNull LayoutInflater inflater,
             @SuppressWarnings("UnusedParameters") ViewGroup container)
     {
         if (leaderboardMarkUserListView != null)
@@ -229,7 +229,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         prepareLeaderboardMarkUserAdapter();
     }
 
-    @NotNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
+    @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
                 getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
@@ -356,7 +356,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return mRankHeaderView;
     }
 
-    @Override protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
+    @Override protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
         if (leaderboardMarkUserListAdapter != null)
@@ -443,7 +443,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected class BaseLeaderboardFragmentUserOnLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
     {
-        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value)
+        @Override public void onDTOReceived(@NonNull LeaderboardKey key, @NonNull LeaderboardDTO value)
         {
             LeaderboardUserDTO received = null;
             if (value.users != null && value.users.size() == 1)
@@ -453,7 +453,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             linkWith(received, true);
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull LeaderboardKey key, @NonNull Throwable error)
         {
             Timber.e("Failed to download current User position on leaderboard", error);
             THToast.show(R.string.error_fetch_user_on_leaderboard);
@@ -478,12 +478,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         //invalidateCachedItemView();
     }
 
-    private void updateListViewRow(@NotNull final UserBaseKey heroId)
+    private void updateListViewRow(@NonNull final UserBaseKey heroId)
     {
         AdapterView list = leaderboardMarkUserListView.getRefreshableView();
         adapterViewUtilsLazy.get().updateSingleRowWhere(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
         {
-            @Override public boolean apply(@NotNull UserBaseDTO userBaseDTO)
+            @Override public boolean apply(@NonNull UserBaseDTO userBaseDTO)
             {
                 return userBaseDTO.getBaseKey().equals(heroId);
             }
@@ -550,7 +550,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected void handleFollowRequested(@NotNull final UserBaseDTO userBaseDTO)
+    protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
         detachChoiceFollowAssistant();
         choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
@@ -562,14 +562,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         choiceFollowUserAssistantWithDialog.launchChoice();
     }
 
-    @NotNull protected SimpleFollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
+    @NonNull protected SimpleFollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
     {
         return new LeaderboardMarkUserListOnUserFollowedListener();
     }
 
     protected class LeaderboardMarkUserListOnUserFollowedListener implements SimpleFollowUserAssistant.OnUserFollowedListener
     {
-        @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
+        @Override public void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO)
         {
             setCurrentUserProfileDTO(currentUserProfileDTO);
             int followType = currentUserProfileDTO.getFollowType(userFollowed);
@@ -584,7 +584,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             updateListViewRow(userFollowed);
         }
 
-        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
         {
             THToast.show(new THException(error));
         }

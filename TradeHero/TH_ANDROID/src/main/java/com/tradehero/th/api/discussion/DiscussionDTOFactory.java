@@ -5,23 +5,22 @@ import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.Date;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class DiscussionDTOFactory
 {
-    @NotNull private final CurrentUserId currentUserId;
+    @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    @Inject public DiscussionDTOFactory(@NotNull CurrentUserId currentUserId)
+    @Inject public DiscussionDTOFactory(@NonNull CurrentUserId currentUserId)
     {
         super();
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public DiscussionDTO createChildClass(@Nullable DiscussionDTO unidentified)
     {
         if (unidentified == null)

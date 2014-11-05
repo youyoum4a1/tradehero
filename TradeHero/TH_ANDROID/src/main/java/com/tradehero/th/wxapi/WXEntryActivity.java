@@ -46,7 +46,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -71,12 +71,12 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     @Inject Lazy<Picasso> picassoLazy;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
 
-    public static void putWeChatDTO(@NotNull Intent intent, @NotNull WeChatDTO weChatDTO)
+    public static void putWeChatDTO(@NonNull Intent intent, @NonNull WeChatDTO weChatDTO)
     {
         intent.putExtra(WECHAT_DTO_INTENT_KEY, weChatDTO.getArgs());
     }
 
-    @NotNull public static WeChatDTO getWeChatDTO(@NotNull Intent intent)
+    @NonNull public static WeChatDTO getWeChatDTO(@NonNull Intent intent)
     {
         return new WeChatDTO(intent.getBundleExtra(WECHAT_DTO_INTENT_KEY));
     }

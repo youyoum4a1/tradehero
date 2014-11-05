@@ -3,15 +3,15 @@ package com.tradehero.th.models.discussion;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class RunnableInvalidateMessageList implements Runnable
 {
-    @Inject @NotNull MessageHeaderListCacheRx messageHeaderListCache;
+    @Inject @NonNull MessageHeaderListCacheRx messageHeaderListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public RunnableInvalidateMessageList(
-            @NotNull MessageHeaderListCacheRx messageHeaderListCache)
+            @NonNull MessageHeaderListCacheRx messageHeaderListCache)
     {
         this.messageHeaderListCache = messageHeaderListCache;
     }

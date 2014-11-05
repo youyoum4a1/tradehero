@@ -13,15 +13,15 @@ import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecurityPushBuyIntent extends THIntent
 {
     //<editor-fold desc="Constructors">
     public SecurityPushBuyIntent(
-            @NotNull Resources resources,
-            @NotNull SecurityIntegerId securityIntegerId,
-            @NotNull SecurityId securityId)
+            @NonNull Resources resources,
+            @NonNull SecurityIntegerId securityIntegerId,
+            @NonNull SecurityId securityId)
     {
         super(resources);
         setData(getSecurityActionUri(securityIntegerId, securityId));
@@ -41,12 +41,12 @@ public class SecurityPushBuyIntent extends THIntent
         return null;
     }
 
-    public Uri getSecurityActionUri(@NotNull SecurityIntegerId securityIntegerId, @NotNull SecurityId securityId)
+    public Uri getSecurityActionUri(@NonNull SecurityIntegerId securityIntegerId, @NonNull SecurityId securityId)
     {
         return Uri.parse(getSecurityActionUriPath(securityIntegerId, securityId));
     }
 
-    public String getSecurityActionUriPath(@NotNull SecurityIntegerId securityIntegerId, @NotNull SecurityId securityId)
+    public String getSecurityActionUriPath(@NonNull SecurityIntegerId securityIntegerId, @NonNull SecurityId securityId)
     {
         return resources.getString(
                 R.string.intent_security_push_buy_action,
@@ -63,15 +63,15 @@ public class SecurityPushBuyIntent extends THIntent
     }
 
     public static SecurityIntegerId getSecurityIntegerId(
-            @NotNull Resources resources,
-            @NotNull Uri data)
+            @NonNull Resources resources,
+            @NonNull Uri data)
     {
         return getSecurityIntegerId(resources, data.getPathSegments());
     }
 
     public static SecurityIntegerId getSecurityIntegerId(
-            @NotNull Resources resources,
-            @NotNull List<String> pathSegments)
+            @NonNull Resources resources,
+            @NonNull List<String> pathSegments)
     {
         String[] splitElements = getSplitElements(pathSegments.get(resources.getInteger(R.integer.intent_security_push_buy_index_elements)));
         return new SecurityIntegerId(Integer.parseInt(splitElements[resources.getInteger(
@@ -84,15 +84,15 @@ public class SecurityPushBuyIntent extends THIntent
     }
 
     public static SecurityId getSecurityId(
-            @NotNull Resources resources,
-            @NotNull Uri data)
+            @NonNull Resources resources,
+            @NonNull Uri data)
     {
         return getSecurityId(resources, data.getPathSegments());
     }
 
     public static SecurityId getSecurityId(
-            @NotNull Resources resources,
-            @NotNull List<String> pathSegments)
+            @NonNull Resources resources,
+            @NonNull List<String> pathSegments)
     {
         String[] splitElements = getSplitElements(pathSegments.get(resources.getInteger(R.integer.intent_security_push_buy_index_elements)));
         return new SecurityId(

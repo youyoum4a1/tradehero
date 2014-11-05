@@ -1,13 +1,13 @@
 package com.squareup.widgets;
 
 import com.squareup.picasso.Callback;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AspectRatioImageViewCallback implements Callback
 {
-    @NotNull private final AspectRatioImageView loading;
+    @NonNull private final AspectRatioImageView loading;
 
-    public AspectRatioImageViewCallback(@NotNull AspectRatioImageView loading)
+    public AspectRatioImageViewCallback(@NonNull AspectRatioImageView loading)
     {
         this.loading = loading;
     }

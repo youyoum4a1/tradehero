@@ -3,30 +3,30 @@ package com.tradehero.th.api.social.key;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class FriendsListKey implements DTOKey
 {
-    @NotNull public final UserBaseKey userBaseKey;
+    @NonNull public final UserBaseKey userBaseKey;
     @Nullable public final SocialNetworkEnum socialNetworkEnum;
     @Nullable public final String searchQuery;
 
     //<editor-fold desc="Constructors">
-    public FriendsListKey(@NotNull UserBaseKey userBaseKey)
+    public FriendsListKey(@NonNull UserBaseKey userBaseKey)
     {
         this(userBaseKey, null);
     }
 
     public FriendsListKey(
-            @NotNull UserBaseKey userBaseKey,
+            @NonNull UserBaseKey userBaseKey,
             @Nullable SocialNetworkEnum socialNetworkEnum)
     {
         this(userBaseKey, socialNetworkEnum, null);
     }
 
     public FriendsListKey(
-            @NotNull UserBaseKey userBaseKey,
+            @NonNull UserBaseKey userBaseKey,
             @Nullable SocialNetworkEnum socialNetworkEnum,
             @Nullable String searchQuery)
     {
@@ -55,7 +55,7 @@ public class FriendsListKey implements DTOKey
         return other != null && other.getClass().equals(getClass());
     }
 
-    protected boolean equalFields(@NotNull FriendsListKey other)
+    protected boolean equalFields(@NonNull FriendsListKey other)
     {
         return userBaseKey.equals(other.userBaseKey) &&
                 (socialNetworkEnum == null ? other.socialNetworkEnum == null : socialNetworkEnum.equals(other.socialNetworkEnum)) &&

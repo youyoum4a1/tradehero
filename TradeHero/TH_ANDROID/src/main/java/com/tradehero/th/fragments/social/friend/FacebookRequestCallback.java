@@ -2,13 +2,13 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
 import com.tradehero.th.api.BaseResponseDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class FacebookRequestCallback extends RequestCallback<BaseResponseDTO>
 {
-    public FacebookRequestCallback(@NotNull Context context)
+    public FacebookRequestCallback(@NonNull Context context)
     {
         super(context);
     }

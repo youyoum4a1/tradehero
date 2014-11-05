@@ -2,11 +2,11 @@ package com.tradehero.th.api.social;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class InviteFormUserDTO extends InviteFormMessageDTO
 {
-    @NotNull public List<InviteDTO> users;
+    @NonNull public List<InviteDTO> users;
 
     //<editor-fold desc="Constructors">
     public InviteFormUserDTO()
@@ -15,22 +15,22 @@ public class InviteFormUserDTO extends InviteFormMessageDTO
         users = new ArrayList<>();
     }
 
-    public InviteFormUserDTO(@NotNull List<? extends UserFriendsDTO> userFriendsDTOs)
+    public InviteFormUserDTO(@NonNull List<? extends UserFriendsDTO> userFriendsDTOs)
     {
         this();
         addAll(userFriendsDTOs);
     }
     //</editor-fold>
 
-    public void addAll(@NotNull List<? extends UserFriendsDTO> userFriendsDTOs)
+    public void addAll(@NonNull List<? extends UserFriendsDTO> userFriendsDTOs)
     {
-        for (@NotNull UserFriendsDTO userFriendsDTO : userFriendsDTOs)
+        for (UserFriendsDTO userFriendsDTO : userFriendsDTOs)
         {
             add(userFriendsDTO);
         }
     }
 
-    public void add(@NotNull UserFriendsDTO userFriendsDTO)
+    public void add(@NonNull UserFriendsDTO userFriendsDTO)
     {
         users.add(userFriendsDTO.createInvite());
     }

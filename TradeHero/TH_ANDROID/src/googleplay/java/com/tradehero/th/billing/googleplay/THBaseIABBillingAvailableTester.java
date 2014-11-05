@@ -5,7 +5,7 @@ import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseIABBillingAvailableTester
     extends BaseIABBillingAvailableTester
@@ -13,8 +13,8 @@ public class THBaseIABBillingAvailableTester
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABBillingAvailableTester(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         super(context, iabExceptionFactory);
     }

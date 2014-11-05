@@ -4,8 +4,8 @@ import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class QuoteDTO
@@ -48,7 +48,7 @@ public class QuoteDTO
         super();
     }
 
-    public QuoteDTO(@NotNull Bundle bundle)
+    public QuoteDTO(@NonNull Bundle bundle)
     {
         if(!isValid(bundle))
         {

@@ -1,7 +1,7 @@
 package com.tradehero.common.billing.amazon;
 
 import com.amazon.device.iap.model.PurchaseResponse;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonPurchase<
         AmazonSKUType extends AmazonSKU,
@@ -10,16 +10,16 @@ abstract public class BaseAmazonPurchase<
         AmazonSKUType,
         AmazonOrderIdType>
 {
-    @NotNull protected final PurchaseResponse purchaseResponse;
+    @NonNull protected final PurchaseResponse purchaseResponse;
 
     //<editor-fold desc="Constructors">
-    protected BaseAmazonPurchase(@NotNull PurchaseResponse purchaseResponse)
+    protected BaseAmazonPurchase(@NonNull PurchaseResponse purchaseResponse)
     {
         this.purchaseResponse = purchaseResponse;
     }
     //</editor-fold>
 
-    @NotNull @Override public String getAmazonUserId()
+    @NonNull @Override public String getAmazonUserId()
     {
         return purchaseResponse.getUserData().getUserId();
     }

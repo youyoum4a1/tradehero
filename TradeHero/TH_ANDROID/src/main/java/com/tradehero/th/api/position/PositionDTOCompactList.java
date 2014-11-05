@@ -5,8 +5,8 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
@@ -161,8 +161,8 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     @Nullable public Double getSpentOnQuantityUsd(
-            @NotNull Integer shareCount,
-            @NotNull PortfolioCompactDTO portfolioCompactDTO)
+            @NonNull Integer shareCount,
+            @NonNull PortfolioCompactDTO portfolioCompactDTO)
     {
         Double total = null;
         for (PositionDTOCompact positionDTO: this)

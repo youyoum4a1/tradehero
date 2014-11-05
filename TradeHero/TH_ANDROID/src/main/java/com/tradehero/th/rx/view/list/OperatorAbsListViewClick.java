@@ -1,7 +1,7 @@
 package com.tradehero.th.rx.view.list;
 
 import android.widget.AbsListView;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -11,10 +11,10 @@ import rx.android.subscriptions.AndroidSubscriptions;
 public class OperatorAbsListViewClick<T extends AbsListView>
         implements Observable.OnSubscribe<ItemClickDTO>
 {
-    @NotNull private final T view;
+    @NonNull private final T view;
 
     //<editor-fold desc="Constructors">
-    public OperatorAbsListViewClick(@NotNull T absListView)
+    public OperatorAbsListViewClick(@NonNull T absListView)
     {
         this.view = absListView;
     }

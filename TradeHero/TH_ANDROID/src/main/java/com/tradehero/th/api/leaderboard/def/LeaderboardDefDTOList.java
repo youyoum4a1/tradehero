@@ -3,7 +3,7 @@ package com.tradehero.th.api.leaderboard.def;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
     implements DTO
@@ -15,8 +15,8 @@ public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
     }
     //</editor-fold>
 
-    @NotNull
-    public LeaderboardDefDTOList keepForCountryCode(@NotNull String countryCode)
+    @NonNull
+    public LeaderboardDefDTOList keepForCountryCode(@NonNull String countryCode)
     {
         Predicate<LeaderboardDefDTO> leaderboardDefDTOPredicate = new LeaderboardDefDTOCountryCodeContainPredicate(countryCode);
         LeaderboardDefDTOList kept = new LeaderboardDefDTOList();
@@ -30,10 +30,10 @@ public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
         return kept;
     }
 
-    @NotNull public LeaderboardDefKeyList createKeys()
+    @NonNull public LeaderboardDefKeyList createKeys()
     {
         LeaderboardDefKeyList list = new LeaderboardDefKeyList();
-        for (@NotNull LeaderboardDefDTO leaderboardDefDTO : this)
+        for (LeaderboardDefDTO leaderboardDefDTO : this)
         {
             list.add(leaderboardDefDTO.getLeaderboardDefKey());
         }

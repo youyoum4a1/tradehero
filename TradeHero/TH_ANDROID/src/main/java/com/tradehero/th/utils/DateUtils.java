@@ -5,8 +5,8 @@ import com.tradehero.th.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class DateUtils
 {
@@ -14,7 +14,7 @@ public class DateUtils
 
     private static SimpleDateFormat sdf;
 
-    public static String getDisplayableDate(@NotNull Resources resources, @Nullable Date d)
+    public static String getDisplayableDate(@NonNull Resources resources, @Nullable Date d)
     {
         if (d == null)
         {
@@ -29,7 +29,7 @@ public class DateUtils
         return sdf.format(d);
     }
 
-    public static String getDisplayableDate(@NotNull Resources resources, @Nullable Date dStart, @Nullable Date dEnd)
+    public static String getDisplayableDate(@NonNull Resources resources, @Nullable Date dStart, @Nullable Date dEnd)
     {
         if (dStart == null || dEnd == null)
         {
@@ -45,24 +45,24 @@ public class DateUtils
         return sdfStart.format(dStart) + " - " + sdfEnd.format(dEnd);
     }
 
-    public static int getNumberOfDaysBetweenDates(@NotNull Date start, @NotNull Date end)
+    public static int getNumberOfDaysBetweenDates(@NonNull Date start, @NonNull Date end)
     {
            return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
     }
 
-    public static String getFormattedDate(@NotNull Resources resources, @NotNull Date utcDate)
+    public static String getFormattedDate(@NonNull Resources resources, @NonNull Date utcDate)
     {
         SimpleDateFormat requiredFormat = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_hh_mm));
         return requiredFormat.format(utcDate);
     }
 
-    public static String getFormattedUtcDate(@NotNull Resources resources, @NotNull Date utcDate)
+    public static String getFormattedUtcDate(@NonNull Resources resources, @NonNull Date utcDate)
     {
         SimpleDateFormat requiredFormat = new SimpleDateFormat(resources.getString(R.string.data_format_dd_mmm_yyyy_hh_mm));
         return requiredFormat.format(utcDate);
     }
 
-    public static String getFormattedUtcDateFromDate(@NotNull Resources resources, @NotNull Date date)
+    public static String getFormattedUtcDateFromDate(@NonNull Resources resources, @NonNull Date date)
     {
         SimpleDateFormat requiredFormat = new SimpleDateFormat(resources.getString(R.string.data_format_yyyy_mm_dd_hh_mm_ss));
         requiredFormat.setTimeZone(TimeZone.getTimeZone("GMT00:00"));

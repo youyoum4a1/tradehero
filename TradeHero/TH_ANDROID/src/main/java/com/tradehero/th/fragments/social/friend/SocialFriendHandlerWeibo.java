@@ -6,21 +6,21 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SocialFriendHandlerWeibo extends SocialFriendHandler
 {
     //<editor-fold desc="Constructors">
-    @Inject public SocialFriendHandlerWeibo(@NotNull UserServiceWrapper userService)
+    @Inject public SocialFriendHandlerWeibo(@NonNull UserServiceWrapper userService)
     {
         super(userService);
     }
     //</editor-fold>
 
     public MiddleCallback<BaseResponseDTO> inviteWeiboFriends(
-            @NotNull String msg,
-            @NotNull UserBaseKey userKey,
+            @NonNull String msg,
+            @NonNull UserBaseKey userKey,
             @Nullable RequestCallback<BaseResponseDTO> callback)
     {
         return inviteFriends(userKey, new InviteFormWeiboDTO(msg), callback);

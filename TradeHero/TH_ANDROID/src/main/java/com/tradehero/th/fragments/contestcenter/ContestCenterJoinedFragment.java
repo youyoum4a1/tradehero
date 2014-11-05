@@ -4,7 +4,7 @@ import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
 {
@@ -16,7 +16,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
         contestListAdapter = createAdapter();
         if (providerDTOs != null)
         {
-            for (@NotNull ProviderDTO providerDTO : providerDTOs)
+            for (ProviderDTO providerDTO : providerDTOs)
             {
                 if (providerDTO.isUserEnrolled)
                 {
@@ -37,7 +37,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
         }
     }
 
-    @Override @NotNull public ContestCenterTabType getCCTabType()
+    @Override @NonNull public ContestCenterTabType getCCTabType()
     {
         return ContestCenterTabType.JOINED;
     }
@@ -46,7 +46,7 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
     {
         if (providerDTOs != null)
         {
-            for (@NotNull ProviderDTO providerDTO : providerDTOs)
+            for (ProviderDTO providerDTO : providerDTOs)
             {
                 if (providerDTO.isUserEnrolled)
                 {

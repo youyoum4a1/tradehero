@@ -1,25 +1,25 @@
 package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public abstract class AbstractPreference<T> implements TypePreference<T>
 {
-    @NotNull protected final SharedPreferences preference;
-    @NotNull protected final String key;
-    @NotNull protected final T defaultValue;
+    @NonNull protected final SharedPreferences preference;
+    @NonNull protected final String key;
+    @NonNull protected final T defaultValue;
 
     public AbstractPreference(
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull T defaultValue)
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull T defaultValue)
     {
         this.preference = preference;
         this.key = key;
         this.defaultValue = defaultValue;
     }
 
-    @Override @NotNull abstract public T get();
+    @Override @NonNull abstract public T get();
 
     @Override public void delete()
     {

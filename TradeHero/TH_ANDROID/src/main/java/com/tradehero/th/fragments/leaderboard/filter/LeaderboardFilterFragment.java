@@ -18,8 +18,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardFilterFragment extends DashboardFragment
 {
@@ -29,16 +29,16 @@ public class LeaderboardFilterFragment extends DashboardFragment
     @Inject LeaderboardCache leaderboardCache;
     @InjectView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
-    @NotNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
+    @NonNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Nullable protected LeaderboardDTO leaderboardDTO;
 
-    public static void putPerPagedFilteredLeaderboardKey(@NotNull Bundle args, @NotNull PerPagedFilteredLeaderboardKey key)
+    public static void putPerPagedFilteredLeaderboardKey(@NonNull Bundle args, @NonNull PerPagedFilteredLeaderboardKey key)
     {
         args.putBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE, key.getArgs());
     }
 
-    @NotNull
-    private static PerPagedFilteredLeaderboardKey getPerPagedFilteredLeaderboardKey(@NotNull Bundle args)
+    @NonNull
+    private static PerPagedFilteredLeaderboardKey getPerPagedFilteredLeaderboardKey(@NonNull Bundle args)
     {
         return new PerPagedFilteredLeaderboardKey(args.getBundle(BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE), null);
     }

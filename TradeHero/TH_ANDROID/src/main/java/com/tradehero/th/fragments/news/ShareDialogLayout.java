@@ -20,8 +20,8 @@ import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
 import java.util.Comparator;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ShareDialogLayout extends LinearLayout
 {
@@ -31,7 +31,7 @@ public class ShareDialogLayout extends LinearLayout
 
     @Inject ShareDestinationFactory shareDestinationFactory;
     @Inject SocialShareFormDTOFactory socialShareFormDTOFactory;
-    @Inject @NotNull Comparator<ShareDestination> shareDestinationIndexResComparator;
+    @Inject @NonNull Comparator<ShareDestination> shareDestinationIndexResComparator;
 
     @Nullable protected OnShareMenuClickedListener menuClickedListener;
     @Nullable protected AbstractDiscussionCompactDTO discussionToShare;
@@ -73,7 +73,7 @@ public class ShareDialogLayout extends LinearLayout
         listViewSharingOptions.setDividerHeight(1);
     }
 
-    public void setDiscussionToShare(@SuppressWarnings("NullableProblems") @NotNull AbstractDiscussionCompactDTO discussionToShare)
+    public void setDiscussionToShare(@SuppressWarnings("NullableProblems") @NonNull AbstractDiscussionCompactDTO discussionToShare)
     {
         this.discussionToShare = discussionToShare;
     }
@@ -114,6 +114,6 @@ public class ShareDialogLayout extends LinearLayout
     public static interface OnShareMenuClickedListener
     {
         void onCancelClicked();
-        void onShareRequestedClicked(@NotNull SocialShareFormDTO socialShareFormDTO);
+        void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO);
     }
 }

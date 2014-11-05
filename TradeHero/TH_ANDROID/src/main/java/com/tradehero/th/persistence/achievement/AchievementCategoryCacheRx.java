@@ -10,8 +10,8 @@ import com.tradehero.th.network.service.AchievementServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -23,20 +23,20 @@ public class AchievementCategoryCacheRx extends BaseFetchDTOCacheRx<AchievementC
 
     //<editor-fold desc="Constructors">
     @Inject public AchievementCategoryCacheRx(
-            @NotNull AchievementServiceWrapper achievementServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull AchievementServiceWrapper achievementServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
     }
     //</editor-fold>
 
-    @NotNull @Override public Observable<AchievementCategoryDTO> fetch(@NotNull AchievementCategoryId key)
+    @NonNull @Override public Observable<AchievementCategoryDTO> fetch(@NonNull AchievementCategoryId key)
     {
         return achievementServiceWrapper.getAchievementCategoryRx(key);
     }
 
-    public void onNext(@NotNull UserBaseKey userBaseKey, @Nullable List<AchievementCategoryDTO> value)
+    public void onNext(@NonNull UserBaseKey userBaseKey, @Nullable List<AchievementCategoryDTO> value)
     {
         if (value != null)
         {

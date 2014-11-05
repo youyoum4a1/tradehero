@@ -18,7 +18,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
@@ -74,7 +74,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         achievementProgressIndicator.delayedColorUpdate(mCurrentColor);
     }
 
-    @Override @NotNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
+    @Override @NonNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
         return new AchievementValueAnimatorUpdateListener();
     }
@@ -123,7 +123,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     protected class AchievementValueAnimatorUpdateListener extends AbstractAchievementValueAnimatorUpdateListener
     {
-        @Override public void onAnimationUpdate(@NotNull ValueAnimator valueAnimator)
+        @Override public void onAnimationUpdate(@NonNull ValueAnimator valueAnimator)
         {
             super.onAnimationUpdate(valueAnimator);
             float value = (Float) valueAnimator.getAnimatedValue(PROPERTY_DOLLARS_EARNED);

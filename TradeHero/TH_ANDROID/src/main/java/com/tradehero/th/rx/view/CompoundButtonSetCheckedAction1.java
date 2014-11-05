@@ -1,7 +1,7 @@
 package com.tradehero.th.rx.view;
 
 import android.widget.CompoundButton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class CompoundButtonSetCheckedAction1
@@ -16,7 +16,7 @@ public class CompoundButtonSetCheckedAction1
     }
     //</editor-fold>
 
-    @Override public void call(@NotNull CompoundButton compoundButton)
+    @Override public void call(@NonNull CompoundButton compoundButton)
     {
         compoundButton.setChecked(value);
     }

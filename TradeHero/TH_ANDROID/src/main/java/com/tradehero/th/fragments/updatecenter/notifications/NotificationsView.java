@@ -42,7 +42,7 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -69,8 +69,8 @@ public class NotificationsView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
 
-    @NotNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbacks;
-    @NotNull private List<Subscription> notificationListFetchSubscriptions;
+    @NonNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbacks;
+    @NonNull private List<Subscription> notificationListFetchSubscriptions;
     private NotificationListKey notificationListKey;
     private NotificationListAdapter notificationListAdapter;
     private PullToRefreshBase.OnRefreshListener<ListView> notificationPullToRefreshListener;
@@ -338,14 +338,14 @@ public class NotificationsView extends BetterViewAnimator
 
     private class NotificationRefreshListener implements DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO>
     {
-        @Override public void onDTOReceived(@NotNull NotificationListKey key, @NotNull PaginatedNotificationDTO paginatedNotificationDTO)
+        @Override public void onDTOReceived(@NonNull NotificationListKey key, @NonNull PaginatedNotificationDTO paginatedNotificationDTO)
         {
             resetPage();
             resetContent(paginatedNotificationDTO.getData());
             onFinish();
         }
 
-        @Override public void onErrorThrown(@NotNull NotificationListKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull NotificationListKey key, @NonNull Throwable error)
         {
             onFinish();
             Timber.e("NotificationRefreshListener onErrorThrown");

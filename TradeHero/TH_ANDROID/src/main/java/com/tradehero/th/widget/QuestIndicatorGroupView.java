@@ -12,12 +12,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class QuestIndicatorGroupView extends LinearLayout
 {
-    @NotNull List<QuestIndicatorView> questIndicatorViews = new ArrayList<>();
+    @NonNull List<QuestIndicatorView> questIndicatorViews = new ArrayList<>();
     private ValueAnimator revealNextAnimator;
     @Nullable private QuestBonusDTO mNextBonusDTO;
     private int mCurrentCount;
@@ -62,7 +62,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    public void setQuestBonusDef(@NotNull List<QuestBonusDTO> questBonusDef, int currentCount)
+    public void setQuestBonusDef(@NonNull List<QuestBonusDTO> questBonusDef, int currentCount)
     {
         this.mCurrentCount = currentCount;
         updateDisplay(questBonusDef);
@@ -94,7 +94,7 @@ public class QuestIndicatorGroupView extends LinearLayout
                 }
             }
 
-            private QuestIndicatorView createNextIndicatorView(@NotNull View source)
+            private QuestIndicatorView createNextIndicatorView(@NonNull View source)
             {
                 QuestIndicatorView indicatorView =
                         new QuestIndicatorView(getContext());
@@ -131,8 +131,8 @@ public class QuestIndicatorGroupView extends LinearLayout
             }
 
             private ValueAnimator.AnimatorListener createAnimListener(
-                    @NotNull final QuestIndicatorView questIndicatorView,
-                    @NotNull final QuestIndicatorView nextQuestIndicatorView)
+                    @NonNull final QuestIndicatorView questIndicatorView,
+                    @NonNull final QuestIndicatorView nextQuestIndicatorView)
             {
                 return new AnimatorListenerAdapter()
                 {
@@ -187,7 +187,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    private void updateDisplay(@NotNull List<QuestBonusDTO> questBonusDTOs)
+    private void updateDisplay(@NonNull List<QuestBonusDTO> questBonusDTOs)
     {
         for (int i = 0; i < questBonusDTOs.size() && i < questIndicatorViews.size(); i++)
         {
@@ -198,7 +198,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    private void hideUndefinedIndicators(@NotNull List<QuestBonusDTO> questBonusDef)
+    private void hideUndefinedIndicators(@NonNull List<QuestBonusDTO> questBonusDef)
     {
         if (questBonusDef.size() < questIndicatorViews.size())
         {
@@ -210,7 +210,7 @@ public class QuestIndicatorGroupView extends LinearLayout
         }
     }
 
-    private void detectNextIndicator(@NotNull List<QuestBonusDTO> questBonusDef)
+    private void detectNextIndicator(@NonNull List<QuestBonusDTO> questBonusDef)
     {
         if (questBonusDef.size() > questIndicatorViews.size())
         {

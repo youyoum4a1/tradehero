@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 import javax.inject.Inject;
 

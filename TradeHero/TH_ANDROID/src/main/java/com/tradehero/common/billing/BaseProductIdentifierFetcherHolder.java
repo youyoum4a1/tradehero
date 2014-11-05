@@ -2,8 +2,8 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ abstract public class BaseProductIdentifierFetcherHolder<
         ProductIdentifierListType,
         BillingExceptionType>
 {
-    @NotNull protected final Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    @NonNull protected final Map<Integer /*requestCode*/, ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,
@@ -63,7 +63,7 @@ abstract public class BaseProductIdentifierFetcherHolder<
         parentProductIdentifierFetchedListeners.put(requestCode, productIdentifierFetchedListener);
     }
 
-    @NotNull protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType,
+    @NonNull protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType, BillingExceptionType> createProductIdentifierFetchedListener()
     {

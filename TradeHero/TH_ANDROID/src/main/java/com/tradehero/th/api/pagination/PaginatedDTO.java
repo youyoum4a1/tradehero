@@ -3,7 +3,7 @@ package com.tradehero.th.api.pagination;
 import com.tradehero.common.persistence.DTO;
 import java.util.Collections;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class PaginatedDTO<ListedType> implements DTO
 {
@@ -37,7 +37,7 @@ public class PaginatedDTO<ListedType> implements DTO
         {
             return true;
         }
-        for (@Nullable ListedType item: data)
+        for (ListedType item: data)
         {
             if (item == null)
             {

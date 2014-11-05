@@ -11,7 +11,7 @@ import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseSamsungProductIdentifierFetcher
     extends BaseSamsungProductIdentifierFetcher<
@@ -21,20 +21,20 @@ public class THBaseSamsungProductIdentifierFetcher
             SamsungException>
     implements THSamsungProductIdentifierFetcher
 {
-    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
+    @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungProductIdentifierFetcher(
-            @NotNull Context context,
+            @NonNull Context context,
             @ForSamsungBillingMode int mode,
-            @NotNull THSamsungExceptionFactory samsungExceptionFactory)
+            @NonNull THSamsungExceptionFactory samsungExceptionFactory)
     {
         super(context, mode);
         this.samsungExceptionFactory = samsungExceptionFactory;
     }
     //</editor-fold>
 
-    @Override @NotNull protected List<String> getKnownItemGroups()
+    @Override @NonNull protected List<String> getKnownItemGroups()
     {
         List<String> knownGroupIds = new ArrayList<>();
         knownGroupIds.add(THSamsungConstants.IAP_ITEM_GROUP_ID);

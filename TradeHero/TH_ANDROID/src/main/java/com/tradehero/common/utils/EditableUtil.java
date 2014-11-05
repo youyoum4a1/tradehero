@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import com.tradehero.common.text.Span;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class EditableUtil
 {
@@ -14,7 +14,7 @@ public class EditableUtil
     }
     //</editor-fold>
 
-    @NotNull public Editable unSpanText(@NotNull Editable editable)
+    @NonNull public Editable unSpanText(@NonNull Editable editable)
     {
         // keep editable unchange
         SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);

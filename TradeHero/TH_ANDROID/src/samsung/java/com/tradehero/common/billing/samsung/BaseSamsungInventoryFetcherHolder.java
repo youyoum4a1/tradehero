@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class BaseSamsungInventoryFetcherHolder<
@@ -27,12 +27,12 @@ abstract public class BaseSamsungInventoryFetcherHolder<
         SamsungProductDetailType,
         SamsungExceptionType>
 {
-    @NotNull protected final Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, SamsungInventoryFetcherType> inventoryFetchers;
+    @NonNull protected final Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, SamsungInventoryFetcherType> inventoryFetchers;
 
     //<editor-fold desc="Constructors">
     public BaseSamsungInventoryFetcherHolder(
-            @NotNull Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider)
+            @NonNull Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider)
     {
         super();
         this.samsungInventoryFetcherTypeProvider = samsungInventoryFetcherTypeProvider;

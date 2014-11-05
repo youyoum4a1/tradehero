@@ -9,8 +9,8 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -20,14 +20,14 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
     @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
 
-    @NotNull private final Context context;
-    @NotNull protected final UserBaseKey heroId;
+    @NonNull private final Context context;
+    @NonNull protected final UserBaseKey heroId;
     @Nullable private OnUserFollowedListener userFollowedListener;
 
     //<editor-fold desc="Constructors">
     public SimpleFollowUserAssistant(
-            @NotNull Context context,
-            @NotNull UserBaseKey heroId,
+            @NonNull Context context,
+            @NonNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener)
     {
         super();
@@ -86,8 +86,8 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
     }
 
     protected void notifyFollowSuccess(
-            @NotNull UserBaseKey userToFollow,
-            @NotNull UserProfileDTO currentUserProfile)
+            @NonNull UserBaseKey userToFollow,
+            @NonNull UserProfileDTO currentUserProfile)
     {
         OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
         if (userFollowedListenerCopy != null)
@@ -97,8 +97,8 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
     }
 
     protected void notifyFollowFailed(
-            @NotNull UserBaseKey userToFollow,
-            @NotNull Throwable error)
+            @NonNull UserBaseKey userToFollow,
+            @NonNull Throwable error)
     {
         OnUserFollowedListener userFollowedListenerCopy = userFollowedListener;
         if (userFollowedListenerCopy != null)
@@ -109,7 +109,7 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
 
     public static interface OnUserFollowedListener
     {
-        void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO);
-        void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error);
+        void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO);
+        void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error);
     }
 }

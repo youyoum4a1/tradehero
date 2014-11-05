@@ -6,19 +6,19 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorUpdateReferralCode implements DTOProcessor<BaseResponseDTO>
 {
-    @NotNull private final UserProfileCacheRx userProfileCache;
-    @NotNull private final UpdateReferralCodeDTO updateReferralCodeDTO;
-    @NotNull private final UserBaseKey invitedUserId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final UpdateReferralCodeDTO updateReferralCodeDTO;
+    @NonNull private final UserBaseKey invitedUserId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorUpdateReferralCode(
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull UpdateReferralCodeDTO updateReferralCodeDTO,
-            @NotNull UserBaseKey invitedUserId)
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull UpdateReferralCodeDTO updateReferralCodeDTO,
+            @NonNull UserBaseKey invitedUserId)
     {
         this.userProfileCache = userProfileCache;
         this.updateReferralCodeDTO = updateReferralCodeDTO;

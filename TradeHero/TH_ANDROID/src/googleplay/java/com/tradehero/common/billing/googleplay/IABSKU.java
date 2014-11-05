@@ -2,15 +2,15 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.ProductIdentifier;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class IABSKU implements ProductIdentifier
 {
-    @NotNull public final String identifier;
+    @NonNull public final String identifier;
 
     //<editor-fold desc="Constructors">
-    public IABSKU(@NotNull String id)
+    public IABSKU(@NonNull String id)
     {
         identifier = id;
     }

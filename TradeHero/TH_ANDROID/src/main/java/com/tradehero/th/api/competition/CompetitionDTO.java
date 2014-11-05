@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class CompetitionDTO implements DTO
 {

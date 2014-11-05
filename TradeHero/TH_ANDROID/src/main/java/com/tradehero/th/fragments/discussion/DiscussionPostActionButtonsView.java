@@ -21,7 +21,7 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
@@ -216,7 +216,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         mWeiboShareButton.setVisibility(GONE);
     }
 
-    public void setReturnFragmentName(@NotNull String returnFragmentName)
+    public void setReturnFragmentName(@NonNull String returnFragmentName)
     {
         MentionActionButtonsView mentionActionButtonsViewCopy = mentionActionButtonsView;
         if (mentionActionButtonsViewCopy != null)
@@ -225,7 +225,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         }
     }
 
-    @NotNull public Observable<HasSelectedItem> getSelectedItemObservable()
+    @NonNull public Observable<HasSelectedItem> getSelectedItemObservable()
     {
         return mentionActionButtonsView.getSelectedItemObservable();
     }

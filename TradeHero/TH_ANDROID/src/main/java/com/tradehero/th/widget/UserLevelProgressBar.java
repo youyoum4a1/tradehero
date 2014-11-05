@@ -26,8 +26,8 @@ import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class UserLevelProgressBar extends RelativeLayout
 {
@@ -73,7 +73,7 @@ public class UserLevelProgressBar extends RelativeLayout
         return mLevelDefDTOList;
     }
 
-    public void setLevelDefDTOList(@NotNull LevelDefDTOList mLevelDefDTOList)
+    public void setLevelDefDTOList(@NonNull LevelDefDTOList mLevelDefDTOList)
     {
         this.mLevelDefDTOList = mLevelDefDTOList;
         mMaxLevelDTO = mLevelDefDTOList.getMaxLevelDTO();

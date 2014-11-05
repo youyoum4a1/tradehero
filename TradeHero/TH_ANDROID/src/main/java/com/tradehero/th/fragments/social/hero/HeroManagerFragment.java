@@ -31,7 +31,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class HeroManagerFragment extends BasePurchaseManagerFragment
@@ -176,13 +176,13 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             implements FollowUserAssistant.OnUserFollowedListener
     {
         @Override public void onUserFollowSuccess(
-                @NotNull UserBaseKey userFollowed,
-                @NotNull UserProfileDTO currentUserProfileDTO)
+                @NonNull UserBaseKey userFollowed,
+                @NonNull UserProfileDTO currentUserProfileDTO)
         {
             // TODO
         }
 
-        @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
         {
             // nothing for now
         }

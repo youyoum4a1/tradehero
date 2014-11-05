@@ -29,8 +29,8 @@ import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observer;
 import rx.Subscription;
@@ -263,7 +263,7 @@ public class TradeListItemView extends LinearLayout
         }
     }
 
-    @NotNull
+    @NonNull
     protected String getTradeDateText()
     {
         if (trade != null && trade.dateTime != null)
@@ -417,7 +417,7 @@ public class TradeListItemView extends LinearLayout
         }
     }
 
-    @NotNull
+    @NonNull
     private String getCurrencyDisplay()
     {
         if (strDisplay != null)

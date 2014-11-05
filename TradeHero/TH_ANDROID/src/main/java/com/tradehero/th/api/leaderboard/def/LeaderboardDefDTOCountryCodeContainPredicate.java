@@ -2,22 +2,20 @@ package com.tradehero.th.api.leaderboard.def;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.th.api.leaderboard.CountryCodeListContainCodePredicate;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardDefDTOCountryCodeContainPredicate implements Predicate<LeaderboardDefDTO>
 {
-    @NotNull
+    @NonNull
     private final CountryCodeListContainCodePredicate countryCodeListContainCodePredicate;
 
-    public LeaderboardDefDTOCountryCodeContainPredicate(@NotNull String countryCode)
+    public LeaderboardDefDTOCountryCodeContainPredicate(@NonNull String countryCode)
     {
         super();
         this.countryCodeListContainCodePredicate = new CountryCodeListContainCodePredicate(countryCode);
     }
 
-    @Contract("null -> false")
     @Override public boolean apply(@Nullable LeaderboardDefDTO leaderboardDefDTO)
     {
         if (leaderboardDefDTO == null)

@@ -6,15 +6,15 @@ import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PaginatedNotificationDTO extends PaginatedDTO<NotificationDTO>
     implements HasExpiration
 {
     public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 120;
 
-    @NotNull public Date expirationDate;
+    @NonNull public Date expirationDate;
 
     //<editor-fold desc="Constructors">
     public PaginatedNotificationDTO()
@@ -23,8 +23,8 @@ public class PaginatedNotificationDTO extends PaginatedDTO<NotificationDTO>
     }
 
     public PaginatedNotificationDTO(
-            @NotNull PaginationInfoDTO paginationInfoDTO,
-            @NotNull List<NotificationDTO> data)
+            @NonNull PaginationInfoDTO paginationInfoDTO,
+            @NonNull List<NotificationDTO> data)
     {
         setExpirationDateSecondsInFuture(DEFAULT_LIFE_EXPECTANCY_SECONDS);
         setPagination(paginationInfoDTO);
@@ -32,8 +32,8 @@ public class PaginatedNotificationDTO extends PaginatedDTO<NotificationDTO>
     }
 
     public PaginatedNotificationDTO(
-            @NotNull Date expirationDate,
-            @NotNull PaginationInfoDTO paginationInfoDTO,
+            @NonNull Date expirationDate,
+            @NonNull PaginationInfoDTO paginationInfoDTO,
             @Nullable List<NotificationDTO> data)
     {
         this.expirationDate = expirationDate;

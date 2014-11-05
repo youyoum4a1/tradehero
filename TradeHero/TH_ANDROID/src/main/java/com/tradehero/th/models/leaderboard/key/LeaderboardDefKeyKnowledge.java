@@ -3,8 +3,8 @@ package com.tradehero.th.models.leaderboard.key;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import javax.inject.Inject;
 
@@ -49,7 +49,7 @@ public class LeaderboardDefKeyKnowledge
     }
     //</editor-fold>
 
-    @Nullable public Integer getLeaderboardDefIcon(@NotNull LeaderboardDefKey leaderboardDefKey)
+    @Nullable public Integer getLeaderboardDefIcon(@NonNull LeaderboardDefKey leaderboardDefKey)
     {
         switch (leaderboardDefKey.key)
         {

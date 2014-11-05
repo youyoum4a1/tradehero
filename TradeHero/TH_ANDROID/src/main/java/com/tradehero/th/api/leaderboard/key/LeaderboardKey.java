@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class LeaderboardKey implements DTOKey
@@ -18,7 +18,7 @@ public class LeaderboardKey implements DTOKey
     public static final String STRING_SET_VALUE_SEPARATOR = ":";
     public static final String STRING_SET_LEFT_KEY = "id";
 
-    @NotNull public final Integer id;
+    @NonNull public final Integer id;
 
     //<editor-fold desc="Constructors">
     public LeaderboardKey(int id)
@@ -27,37 +27,37 @@ public class LeaderboardKey implements DTOKey
         this.id = id;
     }
 
-    public LeaderboardKey(@NotNull Bundle args)
+    public LeaderboardKey(@NonNull Bundle args)
     {
         this(args.getInt(BUNDLE_KEY_ID));
     }
 
-    public LeaderboardKey(@NotNull Bundle args, @SuppressWarnings("UnusedParameters") @Nullable LeaderboardKey defaultValues)
+    public LeaderboardKey(@NonNull Bundle args, @SuppressWarnings("UnusedParameters") @Nullable LeaderboardKey defaultValues)
     {
         this(args);
     }
 
-    public LeaderboardKey(@NotNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
+    public LeaderboardKey(@NonNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
     {
         //noinspection ConstantConditions
         this(findKey(catValues, defaultValues));
     }
     //</editor-fold>
 
-    @NotNull public Bundle getArgs()
+    @NonNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);
         return args;
     }
 
-    protected void putParameters(@NotNull Bundle args)
+    protected void putParameters(@NonNull Bundle args)
     {
         args.putInt(BUNDLE_KEY_ID, id);
     }
 
     @Nullable
-    public static Integer findKey(@NotNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
+    public static Integer findKey(@NonNull Set<String> catValues, @Nullable LeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;
@@ -111,7 +111,7 @@ public class LeaderboardKey implements DTOKey
                 && equalFields((LeaderboardKey) other);
     }
 
-    protected boolean equalFields(@NotNull LeaderboardKey other)
+    protected boolean equalFields(@NonNull LeaderboardKey other)
     {
         return id.equals(other.id);
     }

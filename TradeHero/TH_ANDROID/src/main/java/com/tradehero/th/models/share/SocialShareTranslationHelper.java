@@ -23,8 +23,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,11 +32,11 @@ import timber.log.Timber;
 
 public class SocialShareTranslationHelper extends SocialShareHelper
 {
-    @NotNull protected final TranslationKeyFactory translationKeyFactory;
-    @NotNull protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
-    @NotNull protected final TranslationTokenCacheRx translationTokenCache;
-    @NotNull protected final TranslationCacheRx translationCache;
-    @NotNull protected final UserTranslationSettingPreference userTranslationSettingPreference;
+    @NonNull protected final TranslationKeyFactory translationKeyFactory;
+    @NonNull protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
+    @NonNull protected final TranslationTokenCacheRx translationTokenCache;
+    @NonNull protected final TranslationCacheRx translationCache;
+    @NonNull protected final UserTranslationSettingPreference userTranslationSettingPreference;
 
     protected Subscription translationTokenSubscription;
     protected TranslationToken translationToken;
@@ -47,17 +47,17 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
     //<editor-fold desc="Constructors">
     @Inject public SocialShareTranslationHelper(
-            @NotNull Context applicationContext,
-            @NotNull Provider<Activity> activityProvider,
-            @NotNull Provider<DashboardNavigator> navigatorProvider,
-            @NotNull NewsDialogFactory newsDialogFactory,
-            @NotNull AlertDialogUtil alertDialogUtil,
-            @NotNull Provider<SocialSharer> socialSharerProvider,
-            @NotNull TranslationKeyFactory translationKeyFactory,
-            @NotNull AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
-            @NotNull TranslationTokenCacheRx translationTokenCache,
-            @NotNull TranslationCacheRx translationCache,
-            @NotNull UserTranslationSettingPreference userTranslationSettingPreference)
+            @NonNull Context applicationContext,
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull Provider<DashboardNavigator> navigatorProvider,
+            @NonNull NewsDialogFactory newsDialogFactory,
+            @NonNull AlertDialogUtil alertDialogUtil,
+            @NonNull Provider<SocialSharer> socialSharerProvider,
+            @NonNull TranslationKeyFactory translationKeyFactory,
+            @NonNull AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
+            @NonNull TranslationTokenCacheRx translationTokenCache,
+            @NonNull TranslationCacheRx translationCache,
+            @NonNull UserTranslationSettingPreference userTranslationSettingPreference)
     {
         super(applicationContext, activityProvider, navigatorProvider, newsDialogFactory, alertDialogUtil, socialSharerProvider);
         this.translationKeyFactory = translationKeyFactory;
@@ -125,7 +125,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     }
     //</editor-fold>
 
-    @NotNull public String getTargetLanguage()
+    @NonNull public String getTargetLanguage()
     {
         if (userTranslationSettingDTO != null)
         {
@@ -168,7 +168,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    @NotNull @Override protected NewsDialogLayout.OnMenuClickedListener createShareMenuClickedListener()
+    @NonNull @Override protected NewsDialogLayout.OnMenuClickedListener createShareMenuClickedListener()
     {
         return new SocialShareTranslationHelperShareMenuClickedListener();
     }
@@ -217,16 +217,16 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    @NotNull protected Observer<Pair<TranslationKey, TranslationResult>> createTranslationCacheObserver(@NotNull TranslationKey key)
+    @NonNull protected Observer<Pair<TranslationKey, TranslationResult>> createTranslationCacheObserver(@NonNull TranslationKey key)
     {
         return new SocialShareTranslationHelperTranslationCacheObserver(key);
     }
 
     protected class SocialShareTranslationHelperTranslationCacheObserver implements Observer<Pair<TranslationKey, TranslationResult>>
     {
-        @NotNull private TranslationKey key;
+        @NonNull private TranslationKey key;
 
-        public SocialShareTranslationHelperTranslationCacheObserver(@NotNull TranslationKey key)
+        public SocialShareTranslationHelperTranslationCacheObserver(@NonNull TranslationKey key)
         {
             this.key = key;
         }
@@ -303,7 +303,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    protected void linkWith(@NotNull TranslationToken token)
+    protected void linkWith(@NonNull TranslationToken token)
     {
         this.translationToken = token;
         try

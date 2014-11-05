@@ -10,7 +10,7 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SelectableUserViewRelative extends RelativeLayout
     implements DTOView<SelectableUserDTO>
@@ -18,7 +18,7 @@ public class SelectableUserViewRelative extends RelativeLayout
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation transformation;
-    @NotNull SelectableUserViewHolder viewHolder;
+    @NonNull SelectableUserViewHolder viewHolder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

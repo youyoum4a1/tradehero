@@ -9,8 +9,8 @@ import com.tradehero.th.billing.samsung.THSamsungConstants;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseSamsungPurchaseFetcher<
@@ -32,13 +32,13 @@ abstract public class BaseSamsungPurchaseFetcher<
     protected boolean fetching;
     protected LinkedList<String> remainingGroupIds;
     protected String fetchingGroupId;
-    @NotNull protected final List<SamsungPurchaseIncompleteType> fetchedIncompletePurchases;
-    @NotNull protected final List<SamsungPurchaseType> purchases;
+    @NonNull protected final List<SamsungPurchaseIncompleteType> fetchedIncompletePurchases;
+    @NonNull protected final List<SamsungPurchaseType> purchases;
     @Nullable protected OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener;
 
     //<editor-fold desc="Constructors">
     public BaseSamsungPurchaseFetcher(
-            @NotNull Context context,
+            @NonNull Context context,
             int mode)
     {
         super(context, mode);
@@ -122,7 +122,7 @@ abstract public class BaseSamsungPurchaseFetcher<
         }
     }
 
-    @NotNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(String groupId, InboxVo inboxVo);
+    @NonNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(String groupId, InboxVo inboxVo);
 
     @Override @Nullable public OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getFetchListener()
     {

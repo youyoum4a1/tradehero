@@ -7,7 +7,7 @@ import com.tradehero.th.models.translation.bing.BaseMiddleCallbackBingTranslatio
 import com.tradehero.th.network.retrofit.CallbackWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 import rx.Observable;
 
@@ -15,14 +15,14 @@ import rx.Observable;
 {
     private static final String PREFERRED_CONTENT_TYPE = "text/plain";
 
-    @NotNull private final TranslationServiceBing translationServiceBing;
-    @NotNull private final TranslationServiceBingAsync translationServiceBingAsync;
-    @NotNull private final TranslationServiceBingRx translationServiceBingRx;
+    @NonNull private final TranslationServiceBing translationServiceBing;
+    @NonNull private final TranslationServiceBingAsync translationServiceBingAsync;
+    @NonNull private final TranslationServiceBingRx translationServiceBingRx;
 
     @Inject public TranslationServiceBingWrapper(
-            @NotNull TranslationServiceBing translationServiceBing,
-            @NotNull TranslationServiceBingAsync translationServiceBingAsync,
-            @NotNull TranslationServiceBingRx translationServiceBingRx)
+            @NonNull TranslationServiceBing translationServiceBing,
+            @NonNull TranslationServiceBingAsync translationServiceBingAsync,
+            @NonNull TranslationServiceBingRx translationServiceBingRx)
     {
         this.translationServiceBing = translationServiceBing;
         this.translationServiceBingAsync = translationServiceBingAsync;
@@ -47,7 +47,7 @@ import rx.Observable;
         return middleCallback;
     }
 
-    public Observable<BingTranslationResult> translateRx(@NotNull BingTranslationToken token, String from, String to, String text)
+    public Observable<BingTranslationResult> translateRx(@NonNull BingTranslationToken token, String from, String to, String text)
     {
         return translationServiceBingRx.requestForTranslation(
                 token.getPrefixedAccessToken(),

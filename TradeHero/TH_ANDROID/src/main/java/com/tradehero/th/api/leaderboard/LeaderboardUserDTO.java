@@ -12,8 +12,8 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
         implements ExpandableItem
@@ -97,7 +97,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
         return null;
     }
 
-    @NotNull public LeaderboardUserId getLeaderboardUserId()
+    @NonNull public LeaderboardUserId getLeaderboardUserId()
     {
         return new LeaderboardUserId(id, lbmuId);
     }

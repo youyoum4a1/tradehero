@@ -9,8 +9,8 @@ import android.widget.Filter;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.social.UserFriendsDTO;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,12 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     @LayoutRes private int mLayoutItemResId;
     @LayoutRes private int mLayoutHeaderResId;
     @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
-    @NotNull private List<SocialFriendListItemDTO> mArrayList;
+    @NonNull private List<SocialFriendListItemDTO> mArrayList;
 
     //<editor-fold desc="Constructors">
     public SocialFriendsAdapter(
-            @NotNull Context context,
-            @NotNull List<SocialFriendListItemDTO> objects,
+            @NonNull Context context,
+            @NonNull List<SocialFriendListItemDTO> objects,
             @LayoutRes int layoutItemResId,
             @LayoutRes int layoutHeaderResId)
     {
@@ -82,7 +82,7 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         this.elementClickedListener = elementClickedListener;
     }
 
-    protected void handleFollowEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    protected void handleFollowEvent(@NonNull UserFriendsDTO userFriendsDTO)
     {
         SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
         if (listenerCopy != null)
@@ -91,7 +91,7 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         }
     }
 
-    protected void handleInviteEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    protected void handleInviteEvent(@NonNull UserFriendsDTO userFriendsDTO)
     {
         SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
         if (listenerCopy != null)
@@ -100,7 +100,7 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
         }
     }
 
-    protected void handleCheckBoxEvent(@NotNull UserFriendsDTO userFriendsDTO)
+    protected void handleCheckBoxEvent(@NonNull UserFriendsDTO userFriendsDTO)
     {
         SocialFriendUserView.OnElementClickListener listenerCopy = elementClickedListener;
         if (listenerCopy != null)
@@ -117,26 +117,26 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     protected class SocialElementClickListener implements SocialFriendUserView.OnElementClickListener
     {
         @Override
-        public void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+        public void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
         {
             handleFollowEvent(userFriendsDTO);
         }
 
         @Override
-        public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+        public void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
         {
             handleInviteEvent(userFriendsDTO);
         }
 
         @Override
-        public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
+        public void onCheckBoxClick(@NonNull UserFriendsDTO userFriendsDTO)
         {
             Timber.d("onCheckBoxClicked " + userFriendsDTO);
             handleCheckBoxEvent(userFriendsDTO);
         }
     }
 
-    public void setItemsToShow(@NotNull List<SocialFriendListItemDTO> showItems)
+    public void setItemsToShow(@NonNull List<SocialFriendListItemDTO> showItems)
     {
         super.clear();
         super.addAll(showItems);

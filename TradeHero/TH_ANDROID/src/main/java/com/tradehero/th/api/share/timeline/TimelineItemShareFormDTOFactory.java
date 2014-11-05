@@ -9,7 +9,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TimelineItemShareFormDTOFactory
 {
@@ -18,9 +18,9 @@ public class TimelineItemShareFormDTOFactory
         super();
     }
 
-    @NotNull public TimelineItemShareFormDTO createFrom(
-            @NotNull SocialNetworkEnum socialNetwork,
-            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    @NonNull public TimelineItemShareFormDTO createFrom(
+            @NonNull SocialNetworkEnum socialNetwork,
+            @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         TimelineItemShareFormDTO timelineItemShareFormDTO = new TimelineItemShareFormDTO();
         populateWith(timelineItemShareFormDTO, socialNetwork, abstractDiscussionCompactDTO);
@@ -28,9 +28,9 @@ public class TimelineItemShareFormDTOFactory
     }
 
     protected void populateWith(
-            @NotNull TimelineItemShareFormDTO timelineItemShareFormDTO,
-            @NotNull SocialNetworkEnum socialNetwork,
-            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+            @NonNull TimelineItemShareFormDTO timelineItemShareFormDTO,
+            @NonNull SocialNetworkEnum socialNetwork,
+            @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         timelineItemShareFormDTO.timelineItemShareRequestDTO = new TimelineItemShareRequestDTO(socialNetwork);
         if (abstractDiscussionCompactDTO instanceof DiscussionDTO)

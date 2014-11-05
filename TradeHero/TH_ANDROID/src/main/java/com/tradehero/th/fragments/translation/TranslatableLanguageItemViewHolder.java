@@ -8,8 +8,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
 {
@@ -21,7 +21,7 @@ public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
     @Nullable private UserTranslationSettingDTO currentTranslationSetting;
     private LanguageDTO languageDTO;
 
-    public void initViews(@NotNull View view)
+    public void initViews(@NonNull View view)
     {
         ButterKnife.inject(this, view);
     }

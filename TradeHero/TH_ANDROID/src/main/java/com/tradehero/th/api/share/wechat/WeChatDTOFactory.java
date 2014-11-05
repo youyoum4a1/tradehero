@@ -10,7 +10,7 @@ import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class WeChatDTOFactory
 {
@@ -20,14 +20,14 @@ public class WeChatDTOFactory
     }
     //</editor-fold>
 
-    @NotNull public WeChatDTO createFrom(@NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+    @NonNull public WeChatDTO createFrom(@NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(weChatDTO, abstractDiscussionCompactDTO);
         return weChatDTO;
     }
 
-    @NotNull public WeChatDTO createFrom(@NotNull Context context, @NotNull UserAchievementDTO userAchievementDTO)
+    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull UserAchievementDTO userAchievementDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = userAchievementDTO.id;
@@ -46,8 +46,8 @@ public class WeChatDTOFactory
     }
 
     protected void populateWith(
-            @NotNull WeChatDTO weChatDTO,
-            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
+            @NonNull WeChatDTO weChatDTO,
+            @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         weChatDTO.id = abstractDiscussionCompactDTO.id;
         if (abstractDiscussionCompactDTO instanceof DiscussionDTO)

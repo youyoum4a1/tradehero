@@ -2,8 +2,8 @@ package com.tradehero.common.utils;
 
 import java.util.Collection;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.client.Header;
 
 public class RetrofitHelper
@@ -16,8 +16,8 @@ public class RetrofitHelper
     //</editor-fold>
 
     @Nullable public Header findHeaderByName(
-            @NotNull Collection<? extends Header> headers,
-            @NotNull String name)
+            @NonNull Collection<? extends Header> headers,
+            @NonNull String name)
     {
         for (Header header : headers)
         {

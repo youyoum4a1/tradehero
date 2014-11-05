@@ -8,7 +8,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseSamsungProductIdentifierFetcherHolder
     extends BaseSamsungProductIdentifierFetcherHolder<
@@ -21,7 +21,7 @@ public class THBaseSamsungProductIdentifierFetcherHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungProductIdentifierFetcherHolder(
-            @NotNull Provider<THSamsungProductIdentifierFetcher> thSamsungProductIdentifierFetcherProvider)
+            @NonNull Provider<THSamsungProductIdentifierFetcher> thSamsungProductIdentifierFetcherProvider)
     {
         super(thSamsungProductIdentifierFetcherProvider);
     }

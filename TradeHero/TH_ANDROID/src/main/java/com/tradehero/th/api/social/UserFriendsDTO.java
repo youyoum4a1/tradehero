@@ -1,7 +1,7 @@
 package com.tradehero.th.api.social;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class UserFriendsDTO
         implements Comparable<UserFriendsDTO>
@@ -52,14 +52,14 @@ abstract public class UserFriendsDTO
         return equals((UserFriendsDTO) other);
     }
 
-    protected boolean equals(@NotNull UserFriendsDTO other)
+    protected boolean equals(@NonNull UserFriendsDTO other)
     {
         return (thUserId == other.thUserId) &&
             name == null ? other.name == null : name.equals(other.name);
     }
 
     @Override
-    public int compareTo(@NotNull UserFriendsDTO another)
+    public int compareTo(@NonNull UserFriendsDTO another)
     {
         if (isTradeHeroUser())
         {

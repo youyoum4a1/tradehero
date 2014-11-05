@@ -15,17 +15,17 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OnBoardPickStockViewHolder
 {
     @InjectView(R.id.stocks_list) AbsListView stockListView;
     @InjectView(R.id.switcher_stock) ViewSwitcher switcher;
 
-    @NotNull DTOAdapterNew<SelectableSecurityDTO> selectedStocksAdapter;
+    @NonNull DTOAdapterNew<SelectableSecurityDTO> selectedStocksAdapter;
 
     //<editor-fold desc="Constructors">
-    public OnBoardPickStockViewHolder(@NotNull Context context)
+    public OnBoardPickStockViewHolder(@NonNull Context context)
     {
         super();
         selectedStocksAdapter = new ArrayDTOAdapterNew<SelectableSecurityDTO, SecuritySelectableViewRelative>(
@@ -46,7 +46,7 @@ public class OnBoardPickStockViewHolder
         ButterKnife.reset(this);
     }
 
-    public void setStocks(@NotNull List<SecurityCompactDTO> securityCompactDTOs)
+    public void setStocks(@NonNull List<SecurityCompactDTO> securityCompactDTOs)
     {
         List<SelectableSecurityDTO> list = new ArrayList<>();
         for (SecurityCompactDTO securityCompactDTO : securityCompactDTOs)
@@ -73,7 +73,7 @@ public class OnBoardPickStockViewHolder
         selectedStocksAdapter.notifyDataSetChanged();
     }
 
-    public @NotNull SecurityCompactDTOList getSelectedStocks()
+    public @NonNull SecurityCompactDTOList getSelectedStocks()
     {
         SecurityCompactDTOList selected = new SecurityCompactDTOList();
         SelectableSecurityDTO value;

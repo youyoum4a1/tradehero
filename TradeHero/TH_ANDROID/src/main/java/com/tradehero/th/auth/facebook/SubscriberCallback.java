@@ -3,7 +3,7 @@ package com.tradehero.th.auth.facebook;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.SessionState;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import rx.Subscriber;
 
 public class SubscriberCallback implements Session.StatusCallback

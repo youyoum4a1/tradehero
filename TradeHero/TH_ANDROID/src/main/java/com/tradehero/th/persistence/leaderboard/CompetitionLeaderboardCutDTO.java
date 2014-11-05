@@ -7,8 +7,8 @@ import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 class CompetitionLeaderboardCutDTO implements DTO
 {
@@ -19,8 +19,8 @@ class CompetitionLeaderboardCutDTO implements DTO
     public final List<PrizeDTO> prizes;
 
     public CompetitionLeaderboardCutDTO(
-            @NotNull CompetitionLeaderboardDTO competitionLeaderboardDTO,
-            @NotNull LeaderboardCache leaderboardCache)
+            @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO,
+            @NonNull LeaderboardCache leaderboardCache)
     {
         if (competitionLeaderboardDTO.leaderboard != null)
         {
@@ -38,7 +38,7 @@ class CompetitionLeaderboardCutDTO implements DTO
         prizes = competitionLeaderboardDTO.prizes;
     }
 
-    public CompetitionLeaderboardDTO create(@NotNull LeaderboardCache leaderboardCache)
+    public CompetitionLeaderboardDTO create(@NonNull LeaderboardCache leaderboardCache)
     {
         LeaderboardDTO leaderboardDTO = null;
         if (leaderboardKey != null)

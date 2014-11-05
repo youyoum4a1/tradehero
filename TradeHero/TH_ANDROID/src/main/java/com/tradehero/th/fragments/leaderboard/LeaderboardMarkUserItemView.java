@@ -56,8 +56,8 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.client.Response;
 import timber.log.Timber;
 
@@ -271,7 +271,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(leaderboardItem);
     }
 
-    public void linkWith(@NotNull UserBaseDTO userBaseDTO)
+    public void linkWith(@NonNull UserBaseDTO userBaseDTO)
     {
         displayRankingColor(userBaseDTO);
 
@@ -290,7 +290,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         displayCountryLogo(userBaseDTO);
     }
 
-    private void displayRankingColor(@NotNull UserBaseDTO userBaseDTO)
+    private void displayRankingColor(@NonNull UserBaseDTO userBaseDTO)
     {
         if (currentUserId.get() == userBaseDTO.id)
         {
@@ -522,14 +522,14 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenProfileButtonClicked();
     }
 
-    protected void follow(@NotNull UserBaseDTO userBaseDTO)
+    protected void follow(@NonNull UserBaseDTO userBaseDTO)
     {
         notifyFollowRequested(userBaseDTO);
     }
 
     private void handleOpenPositionListClicked()
     {
-        @Nullable GetPositionsDTOKey getPositionsDTOKey = leaderboardItem.getGetPositionsDTOKey();
+        GetPositionsDTOKey getPositionsDTOKey = leaderboardItem.getGetPositionsDTOKey();
         if (getPositionsDTOKey == null)
         {
             Timber.e(new NullPointerException(), "Unable to get positions %s", leaderboardItem);
@@ -538,7 +538,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
 
         // get leaderboard definition from cache, supposedly it exists coz this view appears after leaderboard definition list
-        @Nullable LeaderboardDefDTO leaderboardDef = null;
+        LeaderboardDefDTO leaderboardDef = null;
         Integer leaderboardId = leaderboardItem.getLeaderboardId();
         if (leaderboardId != null)
         {
@@ -625,7 +625,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         linkWith(userProfileDTO, true);
     }
 
-    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
+    protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
@@ -636,7 +636,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public void displayRankingPosition()
     {
-        @Nullable Integer currentRank = getCurrentRank();
+        Integer currentRank = getCurrentRank();
         if (currentRank == null)
         {
             // TODO decide
@@ -684,7 +684,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     public static interface OnFollowRequestedListener
     {
-        void onFollowRequested(@NotNull UserBaseDTO userBaseKey);
+        void onFollowRequested(@NonNull UserBaseDTO userBaseKey);
     }
 
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> createLeaderboardUserRankingListener()
@@ -694,7 +694,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     protected class LeaderboardUserRankingCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO>
     {
-        @Override public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO leaderboardDTO)
+        @Override public void onDTOReceived(@NonNull LeaderboardKey key, @NonNull LeaderboardDTO leaderboardDTO)
         {
             if (leaderboardDTO.users != null && !leaderboardDTO.users.isEmpty())
             {
@@ -707,7 +707,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull LeaderboardKey key, @NonNull Throwable error)
         {
             THToast.show(new THException(error));
         }

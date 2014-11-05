@@ -5,19 +5,19 @@ import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorCompactDTOList;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class MarketServiceWrapperStub extends MarketServiceWrapper
 {
     //<editor-fold desc="Constructors">
-    @Inject public MarketServiceWrapperStub(@NotNull MarketServiceRx marketServiceRx)
+    @Inject public MarketServiceWrapperStub(@NonNull MarketServiceRx marketServiceRx)
     {
         super(marketServiceRx);
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
+    @Override @NonNull public Observable<ExchangeSectorCompactListDTO> getAllExchangeSectorCompactRx()
     {
         return getExchangesRx()
                 .map(exchanges -> {

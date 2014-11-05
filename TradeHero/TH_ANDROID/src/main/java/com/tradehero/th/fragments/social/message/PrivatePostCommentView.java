@@ -11,7 +11,7 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.PrivateMessageCreateFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.PostCommentView;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PrivatePostCommentView extends PostCommentView
 {
@@ -48,15 +48,15 @@ public class PrivatePostCommentView extends PostCommentView
         return DiscussionType.PRIVATE_MESSAGE;
     }
 
-    public void setRecipient(@NotNull UserBaseKey recipient)
+    public void setRecipient(@NonNull UserBaseKey recipient)
     {
         this.recipient = recipient;
     }
 
-    @NotNull
+    @NonNull
     @Override protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
-        @NotNull MessageCreateFormDTO message = super.buildMessageCreateFormDTO();
+        MessageCreateFormDTO message = super.buildMessageCreateFormDTO();
         if (recipient != null)
         {
             ((PrivateMessageCreateFormDTO) message).recipientUserId = recipient.key;

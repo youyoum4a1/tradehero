@@ -7,20 +7,20 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistUpdate
 {
-    @NotNull protected final UserWatchlistPositionCache userWatchlistPositionCache;
+    @NonNull protected final UserWatchlistPositionCache userWatchlistPositionCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorWatchlistCreate(
-            @NotNull WatchlistPositionCache watchlistPositionCache,
-            @NotNull UserBaseKey concernedUser,
-            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
-            @NotNull PortfolioCacheRx portfolioCache,
-            @NotNull UserWatchlistPositionCache userWatchlistPositionCache)
+            @NonNull WatchlistPositionCache watchlistPositionCache,
+            @NonNull UserBaseKey concernedUser,
+            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull UserWatchlistPositionCache userWatchlistPositionCache)
     {
         super(concernedUser,watchlistPositionCache, portfolioCompactCache, portfolioCache);
         this.userWatchlistPositionCache = userWatchlistPositionCache;
@@ -30,8 +30,8 @@ public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistUpdate
     @Nullable
     @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)
     {
-        @Nullable WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
-        @Nullable WatchlistPositionDTOList cached = userWatchlistPositionCache.get(concernedUser);
+        WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
+        WatchlistPositionDTOList cached = userWatchlistPositionCache.get(concernedUser);
         if (cached != null)
         {
             // Remove this test when #70827276 is fixed

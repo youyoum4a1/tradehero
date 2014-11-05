@@ -30,33 +30,33 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 import rx.functions.Func1;
 
 @Singleton public class SecurityServiceWrapper
 {
-    @NotNull private final SecurityService securityService;
-    @NotNull private final SecurityServiceAsync securityServiceAsync;
-    @NotNull private final SecurityServiceRx securityServiceRx;
-    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NotNull private final SecurityCompactCacheRx securityCompactCache;
-    @NotNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
-    @NotNull private final PortfolioCacheRx portfolioCache;
-    @NotNull private final CurrentUserId currentUserId;
+    @NonNull private final SecurityService securityService;
+    @NonNull private final SecurityServiceAsync securityServiceAsync;
+    @NonNull private final SecurityServiceRx securityServiceRx;
+    @NonNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NonNull private final SecurityCompactCacheRx securityCompactCache;
+    @NonNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @NonNull private final PortfolioCacheRx portfolioCache;
+    @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapper(
-            @NotNull SecurityService securityService,
-            @NotNull SecurityServiceAsync securityServiceAsync,
-            @NotNull SecurityServiceRx securityServiceRx,
-            @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull SecurityCompactCacheRx securityCompactCache,
-            @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
-            @NotNull PortfolioCacheRx portfolioCache,
-            @NotNull CurrentUserId currentUserId)
+            @NonNull SecurityService securityService,
+            @NonNull SecurityServiceAsync securityServiceAsync,
+            @NonNull SecurityServiceRx securityServiceRx,
+            @NonNull ProviderServiceWrapper providerServiceWrapper,
+            @NonNull SecurityCompactCacheRx securityCompactCache,
+            @NonNull SecurityPositionDetailCacheRx securityPositionDetailCache,
+            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;
@@ -71,12 +71,12 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Multiple Securities">
-    @NotNull private DTOProcessorMultiSecurities createMultipleSecurityProcessor()
+    @NonNull private DTOProcessorMultiSecurities createMultipleSecurityProcessor()
     {
         return new DTOProcessorMultiSecurities(securityCompactCache);
     }
 
-    public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NotNull SecurityIntegerIdList ids)
+    public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NonNull SecurityIntegerIdList ids)
     {
         return securityServiceRx.getMultipleSecurities(ids.getCommaSeparated())
                 .doOnNext(createMultipleSecurityProcessor());
@@ -85,7 +85,7 @@ import rx.functions.Func1;
 
     //<editor-fold desc="Get Securities">
     @Deprecated
-    public SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
+    public SecurityCompactDTOList getSecurities(@NonNull SecurityListType key)
     {
         SecurityCompactDTOList received;
         if (key instanceof TrendingSecurityListType)
@@ -152,7 +152,7 @@ import rx.functions.Func1;
         return received;
     }
 
-    public Observable<SecurityCompactDTOList> getSecuritiesRx(@NotNull SecurityListType key)
+    public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
         if (key instanceof TrendingSecurityListType)
@@ -221,13 +221,13 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @NotNull protected DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionDetailDTOProcessor(@NotNull SecurityId securityId)
+    @NonNull protected DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionDetailDTOProcessor(@NonNull SecurityId securityId)
     {
         return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
     }
 
-    @NotNull public Observable<SecurityPositionDetailDTO> getSecurityRx(
-            @NotNull SecurityId securityId)
+    @NonNull public Observable<SecurityPositionDetailDTO> getSecurityRx(
+            @NonNull SecurityId securityId)
     {
         return securityServiceRx.getSecurity(
                 securityId.getExchange(),
@@ -238,7 +238,7 @@ import rx.functions.Func1;
                     {
                         if (securityPositionDetailDTO.providers != null)
                         {
-                            for (@NotNull ProviderDTO providerDTO : securityPositionDetailDTO.providers)
+                            for (ProviderDTO providerDTO : securityPositionDetailDTO.providers)
                             {
                                 if (providerDTO.associatedPortfolio != null)
                                 {
@@ -254,7 +254,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-    @NotNull private DTOProcessorSecurityPositionTransactionUpdated createSecurityPositionTransactionUpdatedProcessor(@NotNull SecurityId securityId)
+    @NonNull private DTOProcessorSecurityPositionTransactionUpdated createSecurityPositionTransactionUpdatedProcessor(@NonNull SecurityId securityId)
     {
         return new DTOProcessorSecurityPositionTransactionUpdated(
                 securityId,
@@ -265,17 +265,17 @@ import rx.functions.Func1;
 
     @Deprecated
     public SecurityPositionTransactionDTO buy(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO)
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO)
     {
         return createSecurityPositionTransactionUpdatedProcessor(securityId).process(
                 this.securityService.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
     @Deprecated
-    @NotNull public MiddleCallback<SecurityPositionTransactionDTO> buy(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO,
+    @NonNull public MiddleCallback<SecurityPositionTransactionDTO> buy(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO,
             @Nullable Callback<SecurityPositionTransactionDTO> callback)
     {
         MiddleCallback<SecurityPositionTransactionDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionTransactionUpdatedProcessor(
@@ -285,8 +285,8 @@ import rx.functions.Func1;
     }
 
     public Observable<SecurityPositionTransactionDTO> buyRx(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO)
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO)
     {
         return this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
             .doOnNext(createSecurityPositionTransactionUpdatedProcessor(securityId));
@@ -296,17 +296,17 @@ import rx.functions.Func1;
     //<editor-fold desc="Sell Security">
     @Deprecated
     public SecurityPositionTransactionDTO sell(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO)
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO)
     {
         return createSecurityPositionTransactionUpdatedProcessor(securityId).process(
                 this.securityService.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
     }
 
     @Deprecated
-    @NotNull public MiddleCallback<SecurityPositionTransactionDTO> sell(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO,
+    @NonNull public MiddleCallback<SecurityPositionTransactionDTO> sell(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO,
             @Nullable Callback<SecurityPositionTransactionDTO> callback)
     {
         MiddleCallback<SecurityPositionTransactionDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionTransactionUpdatedProcessor(
@@ -315,9 +315,9 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    @NotNull public Observable<SecurityPositionTransactionDTO> sellRx(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO)
+    @NonNull public Observable<SecurityPositionTransactionDTO> sellRx(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO)
     {
         return this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
                 .doOnNext(createSecurityPositionTransactionUpdatedProcessor(securityId));
@@ -326,8 +326,8 @@ import rx.functions.Func1;
 
     //<editor-fold desc="Buy or Sell Security">
     public Observable<SecurityPositionTransactionDTO> doTransactionRx(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO,
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO,
             boolean isBuy)
     {
         if (isBuy)
@@ -338,9 +338,9 @@ import rx.functions.Func1;
     }
 
     @Deprecated
-    @NotNull public MiddleCallback<SecurityPositionTransactionDTO> doTransaction(
-            @NotNull SecurityId securityId,
-            @NotNull TransactionFormDTO transactionFormDTO,
+    @NonNull public MiddleCallback<SecurityPositionTransactionDTO> doTransaction(
+            @NonNull SecurityId securityId,
+            @NonNull TransactionFormDTO transactionFormDTO,
             boolean isBuy,
             @Nullable Callback<SecurityPositionTransactionDTO> callback)
     {

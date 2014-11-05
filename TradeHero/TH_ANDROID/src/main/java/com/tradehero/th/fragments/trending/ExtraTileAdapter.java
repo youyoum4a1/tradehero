@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class ExtraTileAdapter extends BaseAdapter
@@ -35,8 +35,8 @@ public class ExtraTileAdapter extends BaseAdapter
 
     private int itemHeight = 0;
 
-    @NotNull private final ListAdapter wrappedAdapter;
-    @NotNull private final LayoutInflater inflater;
+    @NonNull private final ListAdapter wrappedAdapter;
+    @NonNull private final LayoutInflater inflater;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -52,7 +52,7 @@ public class ExtraTileAdapter extends BaseAdapter
     private int headingTilesCount;
 
     //<editor-fold desc="Constructors">
-    public ExtraTileAdapter(Context context, @NotNull ListAdapter wrappedAdapter)
+    public ExtraTileAdapter(Context context, @NonNull ListAdapter wrappedAdapter)
     {
         this.inflater = LayoutInflater.from(context);
         this.wrappedAdapter = wrappedAdapter;
@@ -196,7 +196,7 @@ public class ExtraTileAdapter extends BaseAdapter
         return wrappedAdapter.isEmpty();
     }
 
-    @Override @NotNull public ListAdapter getWrappedAdapter()
+    @Override @NonNull public ListAdapter getWrappedAdapter()
     {
         return wrappedAdapter;
     }

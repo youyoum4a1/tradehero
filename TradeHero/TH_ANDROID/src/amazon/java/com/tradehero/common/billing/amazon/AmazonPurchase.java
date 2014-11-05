@@ -1,7 +1,7 @@
 package com.tradehero.common.billing.amazon;
 
 import com.tradehero.common.billing.ProductPurchase;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface AmazonPurchase<
         AmazonSKUType extends AmazonSKU,
@@ -10,5 +10,5 @@ public interface AmazonPurchase<
         AmazonSKUType,
         AmazonOrderIdType>
 {
-    @NotNull String getAmazonUserId();
+    @NonNull String getAmazonUserId();
 }

@@ -8,8 +8,8 @@ import com.amazon.device.iap.model.UserData;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseAmazonPurchaseFetcher<
@@ -26,15 +26,15 @@ abstract public class BaseAmazonPurchaseFetcher<
             AmazonExceptionType>
 {
     protected boolean fetching;
-    @NotNull protected final List<AmazonPurchaseIncompleteType> fetchedIncompletePurchases;
-    @NotNull protected final List<AmazonPurchaseIncompleteType> fetchedCanceledPurchases;
-    @NotNull protected final List<AmazonPurchaseType> purchases;
+    @NonNull protected final List<AmazonPurchaseIncompleteType> fetchedIncompletePurchases;
+    @NonNull protected final List<AmazonPurchaseIncompleteType> fetchedCanceledPurchases;
+    @NonNull protected final List<AmazonPurchaseType> purchases;
     @Nullable protected OnPurchaseFetchedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> fetchListener;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaseFetcher(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(context, purchasingService);
         fetchedIncompletePurchases = new ArrayList<>();
@@ -65,7 +65,7 @@ abstract public class BaseAmazonPurchaseFetcher<
         }
     }
 
-    @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
+    @Override public void onPurchaseUpdatesResponse(@NonNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
         super.onPurchaseUpdatesResponse(purchaseUpdatesResponse);
         switch (purchaseUpdatesResponse.getRequestStatus())
@@ -81,7 +81,7 @@ abstract public class BaseAmazonPurchaseFetcher<
         }
     }
 
-    protected void handleReceived(@NotNull List<Receipt> receipts, @NotNull UserData userData)
+    protected void handleReceived(@NonNull List<Receipt> receipts, @NonNull UserData userData)
     {
         for (Receipt receipt : receipts)
         {
@@ -97,9 +97,9 @@ abstract public class BaseAmazonPurchaseFetcher<
         }
     }
 
-    @NotNull protected abstract AmazonPurchaseIncompleteType createIncompletePurchase(@NotNull Receipt receipt, @NotNull UserData userData);
+    @NonNull protected abstract AmazonPurchaseIncompleteType createIncompletePurchase(@NonNull Receipt receipt, @NonNull UserData userData);
 
-    abstract protected AmazonExceptionType createException(@NotNull PurchaseUpdatesResponse.RequestStatus requestStatus);
+    abstract protected AmazonExceptionType createException(@NonNull PurchaseUpdatesResponse.RequestStatus requestStatus);
 
     @Override @Nullable public OnPurchaseFetchedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> getFetchListener()
     {

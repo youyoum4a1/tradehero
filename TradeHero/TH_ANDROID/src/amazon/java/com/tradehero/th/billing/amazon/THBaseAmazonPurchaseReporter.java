@@ -17,7 +17,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
 import java.io.IOException;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -33,13 +33,13 @@ public class THBaseAmazonPurchaseReporter
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseReporter(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
-            @NotNull Lazy<AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
-            @NotNull Lazy<UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NotNull Lazy<THAmazonProductDetailCache> skuDetailCache)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
+            @NonNull Lazy<AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
+            @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NonNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
+            @NonNull Lazy<THAmazonProductDetailCache> skuDetailCache)
     {
         super(
                 currentUserId,
@@ -52,7 +52,7 @@ public class THBaseAmazonPurchaseReporter
     }
     //</editor-fold>
 
-    @Override public void reportPurchase(int requestCode, @NotNull THAmazonPurchase purchase)
+    @Override public void reportPurchase(int requestCode, @NonNull THAmazonPurchase purchase)
     {
         this.requestCode = requestCode;
         this.purchase = purchase;

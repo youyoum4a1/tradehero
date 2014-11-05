@@ -5,20 +5,20 @@ import android.util.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheRx<DTOKeyType, DTOType>
 {
-    @NotNull final private THLruCache<DTOKeyType, DTOType> cachedValues;
-    @NotNull final private Map<DTOKeyType, BehaviorSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
-    @NotNull final private Map<DTOKeyType, Observable<Pair<DTOKeyType, DTOType>>> cachedObservables;
+    @NonNull final private THLruCache<DTOKeyType, DTOType> cachedValues;
+    @NonNull final private Map<DTOKeyType, BehaviorSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
+    @NonNull final private Map<DTOKeyType, Observable<Pair<DTOKeyType, DTOType>>> cachedObservables;
 
     //<editor-fold desc="Constructors">
     protected BaseDTOCacheRx(int valueSize, int subjectSize,
-            @NotNull DTOCacheUtilRx dtoCacheUtilRx)
+            @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         this.cachedValues = new THLruCache<>(valueSize);
         this.cachedSubjects = new HashMap<>();
@@ -27,13 +27,13 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     }
     //</editor-fold>
 
-    @NotNull @Override
-    public Observable<Pair<DTOKeyType, DTOType>> get(@NotNull final DTOKeyType key)
+    @NonNull @Override
+    public Observable<Pair<DTOKeyType, DTOType>> get(@NonNull final DTOKeyType key)
     {
         return getOrCreateObservable(key).asObservable();
     }
 
-    @NotNull protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateObservable(@NotNull final DTOKeyType key)
+    @NonNull protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateObservable(@NonNull final DTOKeyType key)
     {
         Observable<Pair<DTOKeyType, DTOType>> cachedObservable = getObservable(key);
         if (cachedObservable == null)
@@ -62,17 +62,17 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedObservable;
     }
 
-    @Nullable protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getBehavior(@NotNull final DTOKeyType key)
+    @Nullable protected BehaviorSubject<Pair<DTOKeyType, DTOType>> getBehavior(@NonNull final DTOKeyType key)
     {
         return cachedSubjects.get(key);
     }
 
-    @Nullable protected Observable<Pair<DTOKeyType, DTOType>> getObservable(@NotNull final DTOKeyType key)
+    @Nullable protected Observable<Pair<DTOKeyType, DTOType>> getObservable(@NonNull final DTOKeyType key)
     {
         return cachedObservables.get(key);
     }
 
-    @NotNull public Observable<Pair<DTOKeyType, DTOType>> getFirstOrEmpty(@NotNull final  DTOKeyType key)
+    @NonNull public Observable<Pair<DTOKeyType, DTOType>> getFirstOrEmpty(@NonNull final  DTOKeyType key)
     {
         DTOType value = getValue(key);
         if (value == null)
@@ -82,7 +82,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return Observable.just(Pair.create(key, value));
     }
 
-    @Override public void onNext(@NotNull DTOKeyType key, @NotNull DTOType value)
+    @Override public void onNext(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
         putValue(key, value);
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.get(key);
@@ -92,14 +92,14 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
     }
 
-    protected DTOType putValue(@NotNull DTOKeyType key, @NotNull DTOType value)
+    protected DTOType putValue(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
         return cachedValues.put(key, value);
     }
 
     // TODO make it protected when all is cleaned up
     @Deprecated
-    @Nullable public DTOType getValue(@NotNull DTOKeyType key)
+    @Nullable public DTOType getValue(@NonNull DTOKeyType key)
     {
         DTOType cachedValue = cachedValues.get(key);
         if (cachedValue != null && !isValid(cachedValue))
@@ -109,7 +109,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedValue;
     }
 
-    protected boolean isValid(@NotNull DTOType value)
+    protected boolean isValid(@NonNull DTOType value)
     {
         //noinspection RedundantIfStatement
         if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
@@ -119,7 +119,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return true;
     }
 
-    @Override public void invalidate(@NotNull DTOKeyType key)
+    @Override public void invalidate(@NonNull DTOKeyType key)
     {
         cachedValues.remove(key);
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.remove(key);
@@ -148,9 +148,9 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
      * @param cachedSubject
      */
     private void removeConditional(
-            @NotNull DTOKeyType key,
-            @NotNull RefCounter counter,
-            @NotNull BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject)
+            @NonNull DTOKeyType key,
+            @NonNull RefCounter counter,
+            @NonNull BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject)
     {
         if (counter.get() == 0 && cachedSubjects.get(key) == cachedSubject)
         {
@@ -159,7 +159,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
     }
 
-    @NotNull protected Map<DTOKeyType, DTOType> snapshot()
+    @NonNull protected Map<DTOKeyType, DTOType> snapshot()
     {
         return cachedValues.snapshot();
     }

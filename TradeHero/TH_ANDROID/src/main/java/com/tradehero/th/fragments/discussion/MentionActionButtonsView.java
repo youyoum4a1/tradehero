@@ -15,7 +15,7 @@ import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -23,7 +23,7 @@ public class MentionActionButtonsView extends LinearLayout
 {
     @Inject DashboardNavigator navigator;
 
-    @NotNull private String returnFragmentName;
+    @NonNull private String returnFragmentName;
 
     @InjectViews({R.id.btn_mention, R.id.btn_security_tag})
     View[] buttons;
@@ -43,12 +43,12 @@ public class MentionActionButtonsView extends LinearLayout
         HierarchyInjector.inject(this);
     }
 
-    public void setReturnFragmentName(@NotNull String returnFragmentName)
+    public void setReturnFragmentName(@NonNull String returnFragmentName)
     {
         this.returnFragmentName = returnFragmentName;
     }
 
-    @NotNull public Observable<HasSelectedItem> getSelectedItemObservable()
+    @NonNull public Observable<HasSelectedItem> getSelectedItemObservable()
     {
         return ViewArrayObservable.clicks(buttons, false)
                 .map(new Func1<View, HasSelectedItem>()

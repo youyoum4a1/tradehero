@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class TranslatableLanguageItemAdapter extends ArrayDTOAdapterNew<LanguageDTO, TranslatableLanguageItemLinearView>
 {

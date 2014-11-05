@@ -6,14 +6,14 @@ import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ReadablePaginatedMessageHeaderDTO extends ReadablePaginatedDTO<MessageHeaderDTO>
     implements HasExpiration
 {
     public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 120;
 
-    @NotNull public Date expirationDate;
+    @NonNull public Date expirationDate;
 
     //<editor-fold desc="Constructors">
     public ReadablePaginatedMessageHeaderDTO()
@@ -31,7 +31,7 @@ public class ReadablePaginatedMessageHeaderDTO extends ReadablePaginatedDTO<Mess
     }
 
     public ReadablePaginatedMessageHeaderDTO(
-            @NotNull Date expirationDate,
+            @NonNull Date expirationDate,
             PaginationInfoDTO paginationInfoDTO,
             List<MessageHeaderDTO> messageHeaderDTOs)
     {

@@ -5,26 +5,26 @@ import android.content.SharedPreferences;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import java.util.Set;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PagedLeaderboardKeyPreference extends LeaderboardKeyPreference
 {
     public PagedLeaderboardKeyPreference(
-            @NotNull Context context,
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull Set<String> defaultValue)
+            @NonNull Context context,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull Set<String> defaultValue)
     {
         super(context, preference, key, defaultValue);
     }
 
-    @NotNull public PagedLeaderboardKey getPagedLeaderboardKey()
+    @NonNull public PagedLeaderboardKey getPagedLeaderboardKey()
     {
         return new PagedLeaderboardKey(get(), createDefaultValues());
     }
 
-    @Override @NotNull public PagedLeaderboardKey createDefaultValues()
+    @Override @NonNull public PagedLeaderboardKey createDefaultValues()
     {
         return new PagedLeaderboardKey(Integer.MIN_VALUE, PagedLeaderboardKey.FIRST_PAGE);
     }

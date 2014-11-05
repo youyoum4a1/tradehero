@@ -4,7 +4,7 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.io.IOException;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class DisplayablePortfolioDTO implements Comparable
 {

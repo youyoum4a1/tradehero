@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
 import com.tradehero.th.R;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class QuickPriceButton extends Button
 {
@@ -21,7 +21,7 @@ public class QuickPriceButton extends Button
     }
     //</editor-fold>
 
-    protected void init(@NotNull Context context, @NotNull AttributeSet attrs)
+    protected void init(@NonNull Context context, @NonNull AttributeSet attrs)
     {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickPriceButton);
         setPrice(a.getInt(R.styleable.QuickPriceButton_price, 0));

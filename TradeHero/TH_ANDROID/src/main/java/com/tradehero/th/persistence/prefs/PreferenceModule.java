@@ -19,7 +19,7 @@ import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
@@ -63,8 +63,8 @@ public class PreferenceModule
     }
 
     @Provides @Singleton SocialShareSetPreference provideSocialSharePref(
-            @ForUser @NotNull SharedPreferences sharedPreferences,
-            @NotNull SocialSharePreferenceDTOFactory sharePreferenceDTOFactory)
+            @ForUser @NonNull SharedPreferences sharedPreferences,
+            @NonNull SocialSharePreferenceDTOFactory sharePreferenceDTOFactory)
     {
         return new SocialShareSetPreference(
                 sharePreferenceDTOFactory,
@@ -74,8 +74,8 @@ public class PreferenceModule
     }
 
     @Provides @Singleton UserTranslationSettingPreference provideUserTranslationSettingPref(
-            @ForUser @NotNull SharedPreferences sharedPreferences,
-            @NotNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory)
+            @ForUser @NonNull SharedPreferences sharedPreferences,
+            @NonNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory)
     {
         return new UserTranslationSettingPreference(
                 userTranslationSettingDTOFactory,

@@ -7,20 +7,20 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseAmazonActor implements PurchasingListener, AmazonActor
 {
-    @NotNull protected final Context appContext;
-    @NotNull protected final AmazonPurchasingService purchasingService;
+    @NonNull protected final Context appContext;
+    @NonNull protected final AmazonPurchasingService purchasingService;
     private int activityRequestCode;
     @Nullable private RequestId currentRequestId;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonActor(
-            @NotNull Context appContext,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context appContext,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super();
         this.appContext = appContext;
@@ -47,19 +47,19 @@ abstract public class BaseAmazonActor implements PurchasingListener, AmazonActor
         currentRequestId = null;
     }
 
-    @Override public void onUserDataResponse(@NotNull UserDataResponse userDataResponse)
+    @Override public void onUserDataResponse(@NonNull UserDataResponse userDataResponse)
     {
     }
 
-    @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
+    @Override public void onProductDataResponse(@NonNull ProductDataResponse productDataResponse)
     {
     }
 
-    @Override public void onPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
+    @Override public void onPurchaseResponse(@NonNull PurchaseResponse purchaseResponse)
     {
     }
 
-    @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
+    @Override public void onPurchaseUpdatesResponse(@NonNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
     }
 }

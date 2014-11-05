@@ -6,14 +6,14 @@ import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PaginatedAllowableRecipientDTO extends PaginatedDTO<AllowableRecipientDTO>
         implements HasExpiration
 {
     public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 60;
 
-    @NotNull public Date expirationDate;
+    @NonNull public Date expirationDate;
 
     //<editor-fold desc="Constructors">
     public PaginatedAllowableRecipientDTO()
@@ -21,7 +21,7 @@ public class PaginatedAllowableRecipientDTO extends PaginatedDTO<AllowableRecipi
         setExpirationDateSecondsInFuture(DEFAULT_LIFE_EXPECTANCY_SECONDS);
     }
 
-    public PaginatedAllowableRecipientDTO(@NotNull Date expirationDate)
+    public PaginatedAllowableRecipientDTO(@NonNull Date expirationDate)
     {
         this.expirationDate = expirationDate;
     }
@@ -36,7 +36,7 @@ public class PaginatedAllowableRecipientDTO extends PaginatedDTO<AllowableRecipi
     }
 
     public PaginatedAllowableRecipientDTO(
-            @NotNull Date expirationDate,
+            @NonNull Date expirationDate,
             PaginationInfoDTO paginationInfoDTO,
             List<AllowableRecipientDTO> allowableRecipientDTOs)
     {

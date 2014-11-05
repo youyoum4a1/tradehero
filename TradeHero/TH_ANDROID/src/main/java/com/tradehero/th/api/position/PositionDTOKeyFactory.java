@@ -3,7 +3,7 @@ package com.tradehero.th.api.position;
 import android.os.Bundle;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class PositionDTOKeyFactory
 {
@@ -14,7 +14,7 @@ public class PositionDTOKeyFactory
     }
     //</editor-fold>
 
-    @NotNull public PositionDTOKey createFrom(@NotNull Bundle args)
+    @NonNull public PositionDTOKey createFrom(@NonNull Bundle args)
     {
         if (OwnedPositionId.isOwnedPositionId(args))
         {

@@ -42,7 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
@@ -122,14 +122,14 @@ public final class HomeFragment extends BaseWebViewFragment
         webView.reload();
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
+    @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.dashboard_home);
         inflater.inflate(R.menu.menu_refresh_button, menu);
     }
 
-    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         switch (item.getItemId())
         {
@@ -326,7 +326,7 @@ public final class HomeFragment extends BaseWebViewFragment
         }
 
         @Override
-        public void success(@NotNull UserProfileDTO userProfileDTO, @NotNull Response response)
+        public void success(@NonNull UserProfileDTO userProfileDTO, @NonNull Response response)
         {
             super.success(userProfileDTO, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)

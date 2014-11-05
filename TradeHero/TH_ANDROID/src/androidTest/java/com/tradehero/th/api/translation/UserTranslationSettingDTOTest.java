@@ -6,7 +6,7 @@ import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,7 +19,7 @@ public class UserTranslationSettingDTOTest
 
     private class FakeSettingDTO extends UserTranslationSettingDTO
     {
-        public FakeSettingDTO(@NotNull String languageCode)
+        public FakeSettingDTO(@NonNull String languageCode)
         {
             super(languageCode);
         }

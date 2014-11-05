@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.SecurityUtils;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +49,13 @@ public class PositionDTOCompact implements DTO
         return shares != 0;
     }
 
-    @JsonIgnore @NotNull
+    @JsonIgnore @NonNull
     public PositionCompactId getPositionCompactId()
     {
         return new PositionCompactId(id);
     }
 
-    @JsonIgnore @NotNull
+    @JsonIgnore @NonNull
     public String getNiceCurrency()
     {
         if (currencyDisplay != null && !currencyDisplay.isEmpty())
@@ -66,7 +65,7 @@ public class PositionDTOCompact implements DTO
         return SecurityUtils.DEFAULT_VIRTUAL_CASH_CURRENCY_DISPLAY;
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public static List<PositionCompactId> getPositionCompactIds(
             @Nullable List<PositionDTOCompact> positionDTOCompacts)
     {

@@ -7,8 +7,8 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ShareDialogFactory
 {
@@ -28,8 +28,8 @@ public class ShareDialogFactory
      * @return
      */
     public Dialog createShareDialog(
-            @NotNull Context context,
-            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO,
+            @NonNull Context context,
+            @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO,
             @Nullable ShareDialogLayout.OnShareMenuClickedListener menuClickedListener)
     {
         ShareDialogLayout contentView = (ShareDialogLayout) LayoutInflater.from(context)

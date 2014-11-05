@@ -1,14 +1,14 @@
 package com.tradehero.common.billing.amazon;
 
 import com.tradehero.common.billing.ProductIdentifier;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AmazonSKU implements ProductIdentifier
 {
-    @NotNull public final String skuId;
+    @NonNull public final String skuId;
 
     //<editor-fold desc="Constructors">
-    public AmazonSKU(@NotNull String skuId)
+    public AmazonSKU(@NonNull String skuId)
     {
         this.skuId = skuId;
     }
@@ -25,7 +25,7 @@ public class AmazonSKU implements ProductIdentifier
                 && equalsFields((AmazonSKU) other);
     }
 
-    protected boolean equalsFields(@NotNull AmazonSKU other)
+    protected boolean equalsFields(@NonNull AmazonSKU other)
     {
         return skuId.equals(other.skuId);
     }

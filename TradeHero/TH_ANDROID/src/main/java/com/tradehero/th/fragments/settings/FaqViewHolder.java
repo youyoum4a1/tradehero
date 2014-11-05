@@ -8,14 +8,14 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class FaqViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final Analytics analytics;
+    @NonNull private final Analytics analytics;
 
     //<editor-fold desc="Constructors">
-    @Inject public FaqViewHolder(@NotNull Analytics analytics)
+    @Inject public FaqViewHolder(@NonNull Analytics analytics)
     {
         this.analytics = analytics;
     }

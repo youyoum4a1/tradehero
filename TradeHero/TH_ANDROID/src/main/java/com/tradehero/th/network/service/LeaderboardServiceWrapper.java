@@ -19,20 +19,20 @@ import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class LeaderboardServiceWrapper
 {
-    @NotNull private final LeaderboardService leaderboardService;
-    @NotNull private final LeaderboardServiceRx leaderboardServiceRx;
-    @NotNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
+    @NonNull private final LeaderboardService leaderboardService;
+    @NonNull private final LeaderboardServiceRx leaderboardServiceRx;
+    @NonNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
-            @NotNull LeaderboardService leaderboardService,
-            @NotNull LeaderboardServiceRx leaderboardServiceRx,
-            @NotNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
+            @NonNull LeaderboardService leaderboardService,
+            @NonNull LeaderboardServiceRx leaderboardServiceRx,
+            @NonNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
         this.leaderboardService = leaderboardService;
@@ -53,12 +53,12 @@ import rx.Observable;
 
     //<editor-fold desc="Get Leaderboard Definitions">
     @Deprecated
-    @NotNull public LeaderboardDefDTOList getLeaderboardDefinitions()
+    @NonNull public LeaderboardDefDTOList getLeaderboardDefinitions()
     {
         return createProcessorLeaderboardDefDTOList().process(leaderboardService.getLeaderboardDefinitions());
     }
 
-    @NotNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
+    @NonNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
                 .map(createProcessorLeaderboardDefDTOList());
@@ -67,7 +67,7 @@ import rx.Observable;
 
     //<editor-fold desc="Get Leaderboard">
     @Deprecated
-    public LeaderboardDTO getLeaderboard(@NotNull LeaderboardKey leaderboardKey)
+    public LeaderboardDTO getLeaderboard(@NonNull LeaderboardKey leaderboardKey)
     {
         if (leaderboardKey instanceof UserOnLeaderboardKey)
         {
@@ -123,7 +123,7 @@ import rx.Observable;
         return leaderboardService.getLeaderboard(leaderboardKey.id, null, null);
     }
 
-    public Observable<LeaderboardDTO> getLeaderboardRx(@NotNull LeaderboardKey leaderboardKey)
+    public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
     {
         if (leaderboardKey instanceof UserOnLeaderboardKey)
         {
@@ -188,7 +188,7 @@ import rx.Observable;
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
     public GetPositionsDTO getPositionsForLeaderboardMarkUser(
-            @NotNull LeaderboardMarkUserId key)
+            @NonNull LeaderboardMarkUserId key)
     {
         GetPositionsDTO received;
         if (key instanceof PerPagedLeaderboardMarkUserId)
@@ -222,7 +222,7 @@ import rx.Observable;
     }
 
     public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
-            @NotNull LeaderboardMarkUserId key)
+            @NonNull LeaderboardMarkUserId key)
     {
         Observable<GetPositionsDTO> received;
         if (key instanceof PerPagedLeaderboardMarkUserId)

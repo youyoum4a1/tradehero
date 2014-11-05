@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ArrayDTOAdapterNew<
         DTOType,
@@ -15,16 +15,16 @@ public class ArrayDTOAdapterNew<
 {
     //<editor-fold desc="Constructors">
     public ArrayDTOAdapterNew(
-            @NotNull Context context,
+            @NonNull Context context,
             @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
 
     public ArrayDTOAdapterNew(
-            @NotNull Context context,
+            @NonNull Context context,
             @LayoutRes int layoutResourceId,
-            @NotNull List<DTOType> objects)
+            @NonNull List<DTOType> objects)
     {
         super(context, layoutResourceId, objects);
     }

@@ -4,12 +4,12 @@ import com.tradehero.common.api.BaseArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class BaseArrayListHasExpiration<T> extends BaseArrayList<T>
     implements HasExpiration
 {
-    @NotNull public Date expirationDate;
+    @NonNull public Date expirationDate;
 
     //<editor-fold desc="Constructors">
     public BaseArrayListHasExpiration(int seconds)
@@ -24,13 +24,13 @@ public class BaseArrayListHasExpiration<T> extends BaseArrayList<T>
         setExpirationDateSecondsInFuture(seconds);
     }
 
-    public BaseArrayListHasExpiration(@NotNull Date expirationDate)
+    public BaseArrayListHasExpiration(@NonNull Date expirationDate)
     {
         super();
         this.expirationDate = expirationDate;
     }
 
-    public BaseArrayListHasExpiration(Collection<? extends T> c, @NotNull Date expirationDate)
+    public BaseArrayListHasExpiration(Collection<? extends T> c, @NonNull Date expirationDate)
     {
         super(c);
         this.expirationDate = expirationDate;

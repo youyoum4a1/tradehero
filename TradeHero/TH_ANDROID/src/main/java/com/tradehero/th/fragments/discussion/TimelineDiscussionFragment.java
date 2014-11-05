@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 {
@@ -26,7 +26,7 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
         // Nothing to do
     }
 
-    @Override public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
+    @Override public <T extends Fragment> boolean allowNavigateTo(@NonNull Class<T> fragmentClass, Bundle args)
     {
         boolean basicCheck = !this.getClass().isAssignableFrom(fragmentClass) && super.allowNavigateTo(fragmentClass, args);
         boolean sameKeyCheck = getDiscussionKey() != TimelineDiscussionFragment.getDiscussionKey(args, discussionKeyFactory);

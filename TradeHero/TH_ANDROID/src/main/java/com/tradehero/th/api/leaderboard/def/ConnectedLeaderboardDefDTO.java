@@ -3,8 +3,8 @@ package com.tradehero.th.api.leaderboard.def;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ConnectedLeaderboardDefDTO extends LeaderboardDefDTO
 {
@@ -17,7 +17,7 @@ public class ConnectedLeaderboardDefDTO extends LeaderboardDefDTO
     }
     //</editor-fold>
 
-    @NotNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
+    @NonNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
     {
         return new ConnectedLeaderboardDefListKey();
     }

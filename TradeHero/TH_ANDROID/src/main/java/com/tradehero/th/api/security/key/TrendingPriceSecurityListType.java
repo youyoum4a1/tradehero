@@ -1,12 +1,12 @@
 package com.tradehero.th.api.security.key;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TrendingPriceSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingPriceSecurityListType(@NotNull TrendingSecurityListType other)
+    public TrendingPriceSecurityListType(@NonNull TrendingSecurityListType other)
     {
         super(other);
     }
@@ -42,7 +42,7 @@ public class TrendingPriceSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
-    @Override protected boolean equals(@NotNull TrendingSecurityListType other)
+    @Override protected boolean equals(@NonNull TrendingSecurityListType other)
     {
         return super.equals(other)
                 && other instanceof TrendingPriceSecurityListType;

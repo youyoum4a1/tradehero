@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -22,7 +22,7 @@ public class UserTranslationSettingDTO implements DTO
     public static final String DEFAULT_LANGUAGE_CODE = "en";
     public static final boolean DEFAULT_AUTO_TRANSLATE = true;
 
-    @NotNull public final String languageCode;
+    @NonNull public final String languageCode;
     public final boolean autoTranslate;
 
     //<editor-fold desc="Constructors">
@@ -32,13 +32,13 @@ public class UserTranslationSettingDTO implements DTO
     }
 
     public UserTranslationSettingDTO(
-            @NotNull String languageCode)
+            @NonNull String languageCode)
     {
         this(languageCode, DEFAULT_AUTO_TRANSLATE);
     }
 
     public UserTranslationSettingDTO(
-            @NotNull String languageCode,
+            @NonNull String languageCode,
             boolean autoTranslate)
     {
         this.languageCode = languageCode;
@@ -46,12 +46,12 @@ public class UserTranslationSettingDTO implements DTO
     }
     //</editor-fold>
 
-    @NotNull public UserTranslationSettingDTO cloneForLanguage(@NotNull LanguageDTO languageDTO)
+    @NonNull public UserTranslationSettingDTO cloneForLanguage(@NonNull LanguageDTO languageDTO)
     {
         throw new IllegalArgumentException("Not implemented");
     }
 
-    @NotNull public UserTranslationSettingDTO cloneForAuto(boolean newAutoValue)
+    @NonNull public UserTranslationSettingDTO cloneForAuto(boolean newAutoValue)
     {
         throw new IllegalArgumentException("Not implemented");
     }

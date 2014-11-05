@@ -3,7 +3,7 @@ package com.tradehero.th.api.security;
 import com.tradehero.common.persistence.DTOKey;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     implements DTOKey
@@ -14,14 +14,14 @@ public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
         super();
     }
 
-    public SecurityIntegerIdList(@NotNull Collection<? extends SecurityIntegerId> c, SecurityIntegerId type)
+    public SecurityIntegerIdList(@NonNull Collection<? extends SecurityIntegerId> c, SecurityIntegerId type)
     {
         super(c);
     }
 
-    public SecurityIntegerIdList(@NotNull Collection<? extends Integer> c, Integer type)
+    public SecurityIntegerIdList(@NonNull Collection<? extends Integer> c, Integer type)
     {
-        for (@NotNull Integer id: c)
+        for (Integer id: c)
         {
             add(new SecurityIntegerId(id));
         }

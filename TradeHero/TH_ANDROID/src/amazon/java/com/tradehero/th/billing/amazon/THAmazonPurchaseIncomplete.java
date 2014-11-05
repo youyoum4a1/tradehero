@@ -4,7 +4,7 @@ import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
 import com.tradehero.common.billing.amazon.AmazonPurchaseIncomplete;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THAmazonPurchaseIncomplete
         extends AmazonPurchaseIncomplete<
@@ -12,23 +12,23 @@ public class THAmazonPurchaseIncomplete
                         THAmazonOrderId>
 {
     //<editor-fold desc="Constructors">
-    public THAmazonPurchaseIncomplete(@NotNull Receipt toCopyFrom, @NotNull UserData userData)
+    public THAmazonPurchaseIncomplete(@NonNull Receipt toCopyFrom, @NonNull UserData userData)
     {
         super(toCopyFrom, userData);
     }
     //</editor-fold>
 
-    @Override @NotNull public AmazonSKU getProductIdentifier()
+    @Override @NonNull public AmazonSKU getProductIdentifier()
     {
         return new AmazonSKU(receipt.getSku());
     }
 
-    @Override @NotNull public THAmazonOrderId getOrderId()
+    @Override @NonNull public THAmazonOrderId getOrderId()
     {
         return new THAmazonOrderId(receipt);
     }
 
-    @NotNull @Override public String getAmazonUserId()
+    @NonNull @Override public String getAmazonUserId()
     {
         return userData.getUserId();
     }

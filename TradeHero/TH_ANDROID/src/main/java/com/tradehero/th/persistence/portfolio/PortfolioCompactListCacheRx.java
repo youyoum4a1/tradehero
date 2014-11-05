@@ -12,8 +12,8 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -22,18 +22,18 @@ public class PortfolioCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
-    @NotNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
-    @NotNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
-    @NotNull protected final Lazy<PortfolioCacheRx> portfolioCache;
-    @NotNull protected final CurrentUserId currentUserId;
+    @NonNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
+    @NonNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
+    @NonNull protected final Lazy<PortfolioCacheRx> portfolioCache;
+    @NonNull protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactListCacheRx(
-            @NotNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NotNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
-            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
+            @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.portfolioServiceWrapper = portfolioServiceWrapper;
@@ -43,23 +43,23 @@ public class PortfolioCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<PortfolioCompactDTOList> fetch(@NotNull UserBaseKey key)
+    @Override @NonNull protected Observable<PortfolioCompactDTOList> fetch(@NonNull UserBaseKey key)
     {
         return portfolioServiceWrapper.get().getPortfoliosRx(key, key.equals(currentUserId.toUserBaseKey()));
     }
 
-    @Override public void onNext(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value)
+    @Override public void onNext(@NonNull UserBaseKey key, @NonNull PortfolioCompactDTOList value)
     {
         portfolioCompactCache.get().onNext(value);
         super.onNext(key, value);
     }
 
-    @Override public void invalidate(@NotNull UserBaseKey key)
+    @Override public void invalidate(@NonNull UserBaseKey key)
     {
-        @Nullable PortfolioCompactDTOList value = getValue(key);
+        PortfolioCompactDTOList value = getValue(key);
         if (value != null)
         {
-            for (@NotNull PortfolioCompactDTO portfolioCompactDTO : value)
+            for (PortfolioCompactDTO portfolioCompactDTO : value)
             {
                 portfolioCompactCache.get().invalidate(portfolioCompactDTO.getPortfolioId());
                 portfolioCache.get().invalidate(new OwnedPortfolioId(key.key, portfolioCompactDTO.id));
@@ -67,7 +67,7 @@ public class PortfolioCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey
         }
     }
 
-    @Nullable public Observable<PortfolioCompactDTO> getDefaultPortfolio(@NotNull UserBaseKey key)
+    @Nullable public Observable<PortfolioCompactDTO> getDefaultPortfolio(@NonNull UserBaseKey key)
     {
         return get(key)
                 .filter(pair -> pair.second.size() != 0)

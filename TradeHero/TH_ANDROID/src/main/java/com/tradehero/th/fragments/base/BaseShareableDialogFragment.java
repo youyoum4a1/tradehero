@@ -35,8 +35,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -252,8 +252,8 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     }
 
     protected Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> createSocialAuthObservable(
-            @NotNull final SocialLinkToggleButton socialLinkToggleButton,
-            @NotNull final SocialNetworkEnum socialNetwork)
+            @NonNull final SocialLinkToggleButton socialLinkToggleButton,
+            @NonNull final SocialNetworkEnum socialNetwork)
     {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setIcon(R.drawable.th_app_logo)
@@ -304,7 +304,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     }
     //</editor-fold>
 
-    protected boolean initialShareButtonState(@NotNull SocialNetworkEnum socialNetworkEnum)
+    protected boolean initialShareButtonState(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         return socialSharePreferenceHelperNew.isShareEnabled(
                 socialNetworkEnum,
@@ -313,7 +313,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     public boolean isSocialLinkedOr(SocialNetworkEnum socialNetwork, boolean orElse)
     {
-        @Nullable Boolean socialLinked = isSocialLinked(socialNetwork);
+        Boolean socialLinked = isSocialLinked(socialNetwork);
         return socialLinked != null ? socialLinked : orElse;
     }
 
@@ -327,7 +327,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         return userProfileDTOUtil.checkLinkedStatus(userProfileCopy, socialNetwork);
     }
 
-    public void setPublishEnable(@NotNull SocialNetworkEnum socialNetwork)
+    public void setPublishEnable(@NonNull SocialNetworkEnum socialNetwork)
     {
         socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
         for (SocialLinkToggleButton toggleButton : socialLinkingButtons)
@@ -339,7 +339,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         }
     }
 
-    protected boolean shareForTransaction(@NotNull SocialNetworkEnum socialNetworkEnum)
+    protected boolean shareForTransaction(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinkedOr(socialNetworkEnum, true));
     }
@@ -349,7 +349,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         socialSharePreferenceHelperNew.save();
     }
 
-    @NotNull protected List<SocialNetworkEnum> getEnabledSharePreferences()
+    @NonNull protected List<SocialNetworkEnum> getEnabledSharePreferences()
     {
         return socialSharePreferenceHelperNew.getAllEnabledSharePreferences();
     }

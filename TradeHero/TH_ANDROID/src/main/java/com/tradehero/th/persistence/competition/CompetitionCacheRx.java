@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -18,26 +18,26 @@ public class CompetitionCacheRx extends BaseFetchDTOCacheRx<CompetitionId, Compe
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NonNull private final CompetitionServiceWrapper competitionServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public CompetitionCacheRx(
-            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtilRx)
+            @NonNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtilRx);
         this.competitionServiceWrapper = competitionServiceWrapper;
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<CompetitionDTO> fetch(@NotNull CompetitionId key)
+    @Override @NonNull public Observable<CompetitionDTO> fetch(@NonNull CompetitionId key)
     {
         return competitionServiceWrapper.getCompetitionRx(key);
     }
 
-    public void onNext(@NotNull List<? extends CompetitionDTO> values)
+    public void onNext(@NonNull List<? extends CompetitionDTO> values)
     {
-        for (@NotNull CompetitionDTO competitionDTO: values)
+        for (CompetitionDTO competitionDTO: values)
         {
             onNext(competitionDTO.getCompetitionId(), competitionDTO);
         }

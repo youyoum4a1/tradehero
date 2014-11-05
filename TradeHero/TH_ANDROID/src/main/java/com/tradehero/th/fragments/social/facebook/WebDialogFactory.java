@@ -15,7 +15,7 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,17 +24,17 @@ import rx.schedulers.Schedulers;
 
 public class WebDialogFactory
 {
-    @NotNull private final Context context;
-    @NotNull private final Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider;
-    @NotNull private final Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
-    @NotNull private final CurrentUserId currentUserId;
+    @NonNull private final Context context;
+    @NonNull private final Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider;
+    @NonNull private final Lazy<SocialServiceWrapper> socialServiceWrapperLazy;
+    @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public WebDialogFactory(
-            @NotNull Context context,
-            @NotNull Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider,
-            @NotNull Lazy<SocialServiceWrapper> socialServiceWrapperLazy,
-            @NotNull CurrentUserId currentUserId)
+            @NonNull Context context,
+            @NonNull Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider,
+            @NonNull Lazy<SocialServiceWrapper> socialServiceWrapperLazy,
+            @NonNull CurrentUserId currentUserId)
     {
         this.context = context;
         this.facebookAuthenticationProvider = facebookAuthenticationProvider;
@@ -43,12 +43,12 @@ public class WebDialogFactory
     }
     //</editor-fold>
 
-    public void addTo(@NotNull Bundle bundle, @NotNull UserFriendsFacebookDTO userFriendsFacebookDTO)
+    public void addTo(@NonNull Bundle bundle, @NonNull UserFriendsFacebookDTO userFriendsFacebookDTO)
     {
         addTo(bundle, Arrays.asList(userFriendsFacebookDTO));
     }
 
-    public void addTo(@NotNull Bundle bundle, @NotNull Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
+    public void addTo(@NonNull Bundle bundle, @NonNull Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
     {
         StringBuilder sb = new StringBuilder();
         String separator = "";
@@ -60,7 +60,7 @@ public class WebDialogFactory
         bundle.putString(WebDialogConstants.REQUEST_BUNDLE_KEY_TO, sb.toString());
     }
 
-    public void addInvitation(@NotNull Bundle bundle, @NotNull UserProfileDTO userProfileDTO)
+    public void addInvitation(@NonNull Bundle bundle, @NonNull UserProfileDTO userProfileDTO)
     {
         bundle.putString(
                 WebDialogConstants.REQUEST_BUNDLE_KEY_MESSAGE,
@@ -69,7 +69,7 @@ public class WebDialogFactory
                         userProfileDTO.referralCode));
     }
 
-    public Observable<UserProfileDTO> authenticateWithPermission(@NotNull final Activity activity)
+    public Observable<UserProfileDTO> authenticateWithPermission(@NonNull final Activity activity)
     {
         return Observable.just(facebookAuthenticationProvider.get())
                 .observeOn(Schedulers.computation())
@@ -94,15 +94,15 @@ public class WebDialogFactory
     }
 
     public Func1<UserProfileDTO, Observable<String>> createDefaultWebDialogObservable(
-            @NotNull final Activity activity,
-            @NotNull final UserFriendsFacebookDTO userFriendsFacebookDTOs)
+            @NonNull final Activity activity,
+            @NonNull final UserFriendsFacebookDTO userFriendsFacebookDTOs)
     {
         return createDefaultWebDialogObservable(activity, Arrays.asList(userFriendsFacebookDTOs));
     }
 
     public Func1<UserProfileDTO, Observable<String>> createDefaultWebDialogObservable(
-            @NotNull final Activity activity,
-            @NotNull final Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
+            @NonNull final Activity activity,
+            @NonNull final Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
     {
         return new Func1<UserProfileDTO, Observable<String>>()
         {

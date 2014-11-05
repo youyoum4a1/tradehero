@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
@@ -82,7 +82,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_social_friends, container, false);
         ButterKnife.inject(this, v);
@@ -146,7 +146,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+    public void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userFriendsDTO);
         handleInviteUsers(usersToInvite);
@@ -154,7 +154,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO)
+    public void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onFollowButtonClick %s", userFriendsDTO);
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
@@ -162,7 +162,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO)
+    public void onCheckBoxClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onCheckBoxClicked " + userFriendsDTO);
         setInviteAllViewCountText(getCountOfCheckBoxInvited());
@@ -269,7 +269,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     }
 
     @Override
-    public void onClick(@NotNull View v)
+    public void onClick(@NonNull View v)
     {
         if (v.getId() == R.id.social_invite_all)
         {
@@ -418,7 +418,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    @NotNull private UserFriendsDTOList filterTheDuplicated(UserFriendsDTOList friendDTOList)
+    @NonNull private UserFriendsDTOList filterTheDuplicated(UserFriendsDTOList friendDTOList)
     {
         TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
         hashSet.addAll(friendDTOList);
@@ -541,7 +541,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
     }
 
-    @NotNull protected Observer<Pair<FriendsListKey, UserFriendsDTOList>> createFriendsFetchObserver()
+    @NonNull protected Observer<Pair<FriendsListKey, UserFriendsDTOList>> createFriendsFetchObserver()
     {
         return new FriendFetchObserver();
     }
@@ -641,7 +641,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         @Override
-        public void success(@NotNull UserProfileDTO userProfileDTO, @NotNull Response response)
+        public void success(@NonNull UserProfileDTO userProfileDTO, @NonNull Response response)
         {
             super.success(userProfileDTO, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)
@@ -673,7 +673,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
 
         @Override
-        public void success(BaseResponseDTO data, @NotNull Response response)
+        public void success(BaseResponseDTO data, @NonNull Response response)
         {
             super.success(data, response);
             if (response.getStatus() == 200 || response.getStatus() == 204)

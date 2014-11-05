@@ -18,8 +18,8 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache public class GetPositionsCacheRx extends BaseFetchDTOCacheRx<GetPositionsDTOKey, GetPositionsDTO>
@@ -27,22 +27,22 @@ import rx.Observable;
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NotNull private final Lazy<PositionServiceWrapper> positionServiceWrapper;
-    @NotNull private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
-    @NotNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
-    @NotNull private final Lazy<PortfolioCacheRx> portfolioCache;
-    @NotNull private final Lazy<PositionCacheRx> filedPositionCache;
-    @NotNull private final Lazy<LeaderboardUserCacheRx> leaderboardUserCache;
+    @NonNull private final Lazy<PositionServiceWrapper> positionServiceWrapper;
+    @NonNull private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
+    @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
+    @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
+    @NonNull private final Lazy<PositionCacheRx> filedPositionCache;
+    @NonNull private final Lazy<LeaderboardUserCacheRx> leaderboardUserCache;
 
     //<editor-fold desc="Constructors">
     @Inject public GetPositionsCacheRx(
-            @NotNull Lazy<PositionServiceWrapper> positionServiceWrapper,
-            @NotNull Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
-            @NotNull Lazy<SecurityCompactCacheRx> securityCompactCache,
-            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NotNull Lazy<PositionCacheRx> filedPositionCache,
-            @NotNull Lazy<LeaderboardUserCacheRx> leaderboardUserCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<PositionServiceWrapper> positionServiceWrapper,
+            @NonNull Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper,
+            @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NonNull Lazy<PositionCacheRx> filedPositionCache,
+            @NonNull Lazy<LeaderboardUserCacheRx> leaderboardUserCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.positionServiceWrapper = positionServiceWrapper;
@@ -54,7 +54,7 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<GetPositionsDTO> fetch(@NotNull final GetPositionsDTOKey key)
+    @Override @NonNull public Observable<GetPositionsDTO> fetch(@NonNull final GetPositionsDTOKey key)
     {
         if (key instanceof OwnedPortfolioId)
         {
@@ -67,7 +67,7 @@ import rx.Observable;
         throw new IllegalArgumentException("Unhandled key type " + key.getClass());
     }
 
-    @Override public void onNext(@NotNull GetPositionsDTOKey key, @NotNull GetPositionsDTO value)
+    @Override public void onNext(@NonNull GetPositionsDTOKey key, @NonNull GetPositionsDTO value)
     {
         if (value.securities != null)
         {
@@ -91,9 +91,9 @@ import rx.Observable;
      * Invalidates all the info about the given user
      * @param userBaseKey
      */
-    public void invalidate(@NotNull final UserBaseKey userBaseKey)
+    public void invalidate(@NonNull final UserBaseKey userBaseKey)
     {
-        for (@NotNull GetPositionsDTOKey key : snapshot().keySet())
+        for (GetPositionsDTOKey key : snapshot().keySet())
         {
             if (key instanceof OwnedPortfolioId && ((OwnedPortfolioId) key).userId.equals(userBaseKey.key))
             {
@@ -107,7 +107,7 @@ import rx.Observable;
 
         // Below is an attempt to find out more about this user. It is not 100%
         // fail-safe
-        for (@NotNull LeaderboardUserId leaderboardUserId : leaderboardUserCache.get().getAllKeys())
+        for (LeaderboardUserId leaderboardUserId : leaderboardUserCache.get().getAllKeys())
         {
             if (userBaseKey.key == leaderboardUserId.userId)
             {
@@ -116,7 +116,7 @@ import rx.Observable;
         }
     }
 
-    @Override public void invalidate(@NotNull final GetPositionsDTOKey key)
+    @Override public void invalidate(@NonNull final GetPositionsDTOKey key)
     {
         invalidateMatchingPositionCache(getValue(key));
         super.invalidate(key);
@@ -126,7 +126,7 @@ import rx.Observable;
     {
         if (value != null && value.positions != null)
         {
-            for (@Nullable PositionDTO positionDTO: value.positions)
+            for (PositionDTO positionDTO: value.positions)
             {
                 if (positionDTO != null)
                 {

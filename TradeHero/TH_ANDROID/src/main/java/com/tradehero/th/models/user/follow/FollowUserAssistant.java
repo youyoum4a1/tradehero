@@ -16,8 +16,8 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class FollowUserAssistant extends SimpleFollowUserAssistant
@@ -29,15 +29,15 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
     @Inject protected THBillingInteractor billingInteractor;
 
     protected UserProfileDTO currentUserProfile;
-    @NotNull protected final OwnedPortfolioId applicablePortfolioId;
+    @NonNull protected final OwnedPortfolioId applicablePortfolioId;
     @Nullable protected Integer requestCode;
 
     //<editor-fold desc="Constructors">
     public FollowUserAssistant(
-            @NotNull Context context,
-            @NotNull UserBaseKey heroId,
+            @NonNull Context context,
+            @NonNull UserBaseKey heroId,
             @Nullable OnUserFollowedListener userFollowedListener,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         super(context, heroId, userFollowedListener);
         this.applicablePortfolioId = applicablePortfolioId;
@@ -57,13 +57,13 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
         userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+    @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
     {
         this.currentUserProfile = value;
         checkBalanceAndFollow();
     }
 
-    @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+    @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
     {
         notifyFollowFailed(heroId, error);
     }
@@ -91,13 +91,13 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
         requestCode = null;
     }
 
-    @Override protected void notifyFollowFailed(@NotNull UserBaseKey userToFollow, @NotNull Throwable error)
+    @Override protected void notifyFollowFailed(@NonNull UserBaseKey userToFollow, @NonNull Throwable error)
     {
         haveInteractorForget();
         super.notifyFollowFailed(userToFollow, error);
     }
 
-    @Override protected void notifyFollowSuccess(@NotNull UserBaseKey userToFollow, @NotNull UserProfileDTO currentUserProfile)
+    @Override protected void notifyFollowSuccess(@NonNull UserBaseKey userToFollow, @NonNull UserProfileDTO currentUserProfile)
     {
         haveInteractorForget();
         super.notifyFollowSuccess(userToFollow, currentUserProfile);

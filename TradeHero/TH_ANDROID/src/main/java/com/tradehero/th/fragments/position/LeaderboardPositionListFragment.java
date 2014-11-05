@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.position;
 import android.content.Context;
 import android.os.Bundle;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardPositionListFragment
         extends PositionListFragment
@@ -18,22 +18,22 @@ public class LeaderboardPositionListFragment
 
     private boolean isTimeRestricted;
 
-    public static void putLeaderboardTimeRestricted(@NotNull Bundle args, boolean isTimeRestricted)
+    public static void putLeaderboardTimeRestricted(@NonNull Bundle args, boolean isTimeRestricted)
     {
         args.putBoolean(LEADERBOARD_DEF_TIME_RESTRICTED, isTimeRestricted);
     }
 
-    public static boolean getLeaderBoardTimeRestricted(@NotNull Bundle args)
+    public static boolean getLeaderBoardTimeRestricted(@NonNull Bundle args)
     {
         return args.getBoolean(LEADERBOARD_DEF_TIME_RESTRICTED, DEFAULT_IS_TIME_RESTRICTED);
     }
 
-    public static void putLeaderboardPeriodStartString(@NotNull Bundle args,@NotNull String periodStartString)
+    public static void putLeaderboardPeriodStartString(@NonNull Bundle args,@NonNull String periodStartString)
     {
         args.putString(LEADERBOARD_PERIOD_START_STRING, periodStartString);
     }
 
-    @Nullable public static String getLeaderboardPeriodStartString(@NotNull Bundle args)
+    @Nullable public static String getLeaderboardPeriodStartString(@NonNull Bundle args)
     {
         return args.getString(LEADERBOARD_PERIOD_START_STRING);
     }

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class LeaderboardUserCacheRx extends BaseDTOCacheRx<LeaderboardUserId, LeaderboardUserDTO>
@@ -19,13 +19,13 @@ public class LeaderboardUserCacheRx extends BaseDTOCacheRx<LeaderboardUserId, Le
     private static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardUserCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public LeaderboardUserCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 
-    public void onNext(@NotNull Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
+    public void onNext(@NonNull Map<LeaderboardUserId, LeaderboardUserDTO> leaderboardUserDTOs)
     {
         for (Map.Entry<LeaderboardUserId, LeaderboardUserDTO> pair: leaderboardUserDTOs.entrySet())
         {
@@ -33,9 +33,9 @@ public class LeaderboardUserCacheRx extends BaseDTOCacheRx<LeaderboardUserId, Le
         }
     }
 
-    public void put(@NotNull List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
+    public void put(@NonNull List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
     {
-        for (@NotNull LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
+        for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
         {
             onNext(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO);
         }

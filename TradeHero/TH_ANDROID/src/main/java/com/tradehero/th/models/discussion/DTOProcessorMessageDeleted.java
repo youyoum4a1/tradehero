@@ -7,21 +7,21 @@ import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
 {
-    @NotNull private final MessageHeaderListCacheRx messageHeaderListCache;
-    @NotNull private final MessageHeaderId messageHeaderId;
+    @NonNull private final MessageHeaderListCacheRx messageHeaderListCache;
+    @NonNull private final MessageHeaderId messageHeaderId;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorMessageDeleted(
-            @NotNull MessageHeaderCacheRx messageHeaderCache,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache,
-            @NotNull MessageHeaderListCacheRx messageHeaderListCache,
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
+            @NonNull MessageHeaderCacheRx messageHeaderCache,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache,
+            @NonNull MessageHeaderListCacheRx messageHeaderListCache,
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey readerId)
     {
         super(messageHeaderCache, userProfileCache, homeContentCache, messageHeaderId, readerId);
         this.messageHeaderListCache = messageHeaderListCache;

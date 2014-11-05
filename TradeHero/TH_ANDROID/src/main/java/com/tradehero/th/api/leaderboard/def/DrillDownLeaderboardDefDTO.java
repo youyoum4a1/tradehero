@@ -2,7 +2,7 @@ package com.tradehero.th.api.leaderboard.def;
 
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DrillDownLeaderboardDefDTO extends LeaderboardDefDTO
 {
@@ -13,7 +13,7 @@ public class DrillDownLeaderboardDefDTO extends LeaderboardDefDTO
     }
     //</editor-fold>
 
-    @NotNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
+    @NonNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
     {
         return new DrillDownLeaderboardDefListKey();
     }

@@ -11,19 +11,19 @@ import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class UserTranslationSettingPreference extends StringSetPreference
 {
-    @NotNull private final UserTranslationSettingDTOFactory userTranslationSettingDTOFactory;
+    @NonNull private final UserTranslationSettingDTOFactory userTranslationSettingDTOFactory;
 
     //<editor-fold desc="Constructors">
     public UserTranslationSettingPreference(
-            @NotNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory,
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull Set<String> defaultValue)
+            @NonNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
         this.userTranslationSettingDTOFactory = userTranslationSettingDTOFactory;
@@ -31,12 +31,12 @@ public class UserTranslationSettingPreference extends StringSetPreference
     //</editor-fold>
 
     @SuppressWarnings("DuplicateThrows")
-    @NotNull public HashSet<UserTranslationSettingDTO> getSettingDTOs()
+    @NonNull public HashSet<UserTranslationSettingDTO> getSettingDTOs()
             throws JsonParseException, JsonMappingException, IOException
     {
         HashSet<UserTranslationSettingDTO> set = new HashSet<>();
-        @NotNull Set<String> savedSet = get();
-        for (@NotNull String saved : savedSet)
+        Set<String> savedSet = get();
+        for (String saved : savedSet)
         {
             set.add(userTranslationSettingDTOFactory.create(saved));
         }
@@ -44,7 +44,7 @@ public class UserTranslationSettingPreference extends StringSetPreference
     }
 
     @SuppressWarnings("DuplicateThrows")
-    @Nullable public UserTranslationSettingDTO getOfSameTypeOrDefault(@NotNull TranslationToken translationToken)
+    @Nullable public UserTranslationSettingDTO getOfSameTypeOrDefault(@NonNull TranslationToken translationToken)
             throws JsonParseException, JsonMappingException, IOException
     {
         UserTranslationSettingDTO defaultOne = userTranslationSettingDTOFactory.createDefaultPerType(translationToken);
@@ -56,11 +56,11 @@ public class UserTranslationSettingPreference extends StringSetPreference
     }
 
     @SuppressWarnings("DuplicateThrows")
-    @NotNull public UserTranslationSettingDTO getOfSameTypeOrDefault(@NotNull UserTranslationSettingDTO defaultIfNotFound)
+    @NonNull public UserTranslationSettingDTO getOfSameTypeOrDefault(@NonNull UserTranslationSettingDTO defaultIfNotFound)
             throws JsonParseException, JsonMappingException, IOException
     {
         UserTranslationSettingDTO found = defaultIfNotFound;
-        for (@NotNull UserTranslationSettingDTO saved : getSettingDTOs())
+        for (UserTranslationSettingDTO saved : getSettingDTOs())
         {
             if (saved.getClass().equals(defaultIfNotFound.getClass()))
             {
@@ -77,7 +77,7 @@ public class UserTranslationSettingPreference extends StringSetPreference
         if (settingDTOs != null)
         {
             savedStrings = new HashSet<>();
-            for (@NotNull UserTranslationSettingDTO settingDTO : settingDTOs)
+            for (UserTranslationSettingDTO settingDTO : settingDTOs)
             {
                 savedStrings.add(userTranslationSettingDTOFactory.serialise(settingDTO));
             }
@@ -85,7 +85,7 @@ public class UserTranslationSettingPreference extends StringSetPreference
         set(savedStrings);
     }
 
-    public void addOrReplaceSettingDTO(@NotNull UserTranslationSettingDTO settingDTO)
+    public void addOrReplaceSettingDTO(@NonNull UserTranslationSettingDTO settingDTO)
             throws JsonProcessingException
     {
         //noinspection ConstantConditions

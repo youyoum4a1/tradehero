@@ -2,7 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderIdList extends DTOKeyIdList<ProviderId>
 {
@@ -12,7 +12,7 @@ public class ProviderIdList extends DTOKeyIdList<ProviderId>
         super();
     }
 
-    public ProviderIdList(@NotNull Collection<? extends ProviderDTO> providerDTOs)
+    public ProviderIdList(@NonNull Collection<? extends ProviderDTO> providerDTOs)
     {
         super();
         for (ProviderDTO providerDTO: providerDTOs)

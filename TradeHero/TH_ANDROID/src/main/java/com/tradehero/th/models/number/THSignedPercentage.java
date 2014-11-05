@@ -2,7 +2,7 @@ package com.tradehero.th.models.number;
 
 import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THSignedPercentage extends THSignedNumber
 {
@@ -43,7 +43,7 @@ public class THSignedPercentage extends THSignedNumber
     }
 
     //<editor-fold desc="Constructors">
-    protected THSignedPercentage(@NotNull Builder<?> builder)
+    protected THSignedPercentage(@NonNull Builder<?> builder)
     {
         super(builder);
     }

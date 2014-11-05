@@ -19,7 +19,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -28,18 +28,18 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
     private static final int DEFAULT_MAX_VALUE_SIZE = 5000;
     private static final int DEFAULT_MAX_SUBJECT_SIZE = 50;
 
-    @NotNull protected final Lazy<PositionCompactIdCacheRx> positionCompactIdCache;
-    @NotNull protected final Lazy<LeaderboardPositionIdCacheRx> positionIdCache;
-    @NotNull protected final Lazy<GetPositionsCacheRx> getPositionsCache;
-    @NotNull protected final Lazy<TradeListCacheRx> tradeListCache;
+    @NonNull protected final Lazy<PositionCompactIdCacheRx> positionCompactIdCache;
+    @NonNull protected final Lazy<LeaderboardPositionIdCacheRx> positionIdCache;
+    @NonNull protected final Lazy<GetPositionsCacheRx> getPositionsCache;
+    @NonNull protected final Lazy<TradeListCacheRx> tradeListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCacheRx(
-            @NotNull Lazy<PositionCompactIdCacheRx> positionCompactIdCache,
-            @NotNull Lazy<LeaderboardPositionIdCacheRx> positionIdCache,
-            @NotNull Lazy<GetPositionsCacheRx> getPositionsCache,
-            @NotNull Lazy<TradeListCacheRx> tradeListCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<PositionCompactIdCacheRx> positionCompactIdCache,
+            @NonNull Lazy<LeaderboardPositionIdCacheRx> positionIdCache,
+            @NonNull Lazy<GetPositionsCacheRx> getPositionsCache,
+            @NonNull Lazy<TradeListCacheRx> tradeListCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.positionCompactIdCache = positionCompactIdCache;
@@ -49,7 +49,7 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<PositionDTO> fetch(@NotNull final PositionDTOKey key)
+    @Override @NonNull protected Observable<PositionDTO> fetch(@NonNull final PositionDTOKey key)
     {
         GetPositionsDTOKey getPositionsDTOKey;
         if (key instanceof OwnedPositionId)
@@ -71,7 +71,7 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
                 .first(position -> position.getPositionDTOKey().equals(key));
     }
 
-    @Override public void onNext(@NotNull PositionDTOKey key, @NotNull PositionDTO value)
+    @Override public void onNext(@NonNull PositionDTOKey key, @NonNull PositionDTO value)
     {
         // Save the correspondence between integer id and compound key.
         if (key instanceof OwnedPositionId)
@@ -92,13 +92,13 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
         invalidateMatchingTrades(key); super.onNext(key, value);
     }
 
-    @Override public void invalidate(@NotNull PositionDTOKey key)
+    @Override public void invalidate(@NonNull PositionDTOKey key)
     {
         invalidateMatchingTrades(key);
         super.invalidate(key);
     }
 
-    protected void invalidateMatchingTrades(@NotNull PositionDTOKey key)
+    protected void invalidateMatchingTrades(@NonNull PositionDTOKey key)
     {
         if (key instanceof OwnedPositionId)
         {
@@ -114,7 +114,7 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
         }
     }
 
-    public void onNext(@NotNull List<PositionDTO> values)
+    public void onNext(@NonNull List<PositionDTO> values)
     {
         for (PositionDTO positionDTO: values)
         {

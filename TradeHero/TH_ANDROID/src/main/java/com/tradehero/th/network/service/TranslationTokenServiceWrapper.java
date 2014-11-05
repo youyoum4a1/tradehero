@@ -5,22 +5,22 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class TranslationTokenServiceWrapper
 {
-    @NotNull private final TranslationTokenService translationTokenService;
-    @NotNull private final TranslationTokenServiceAsync translationTokenServiceAsync;
-    @NotNull private final TranslationTokenServiceRx translationTokenServiceRx;
+    @NonNull private final TranslationTokenService translationTokenService;
+    @NonNull private final TranslationTokenServiceAsync translationTokenServiceAsync;
+    @NonNull private final TranslationTokenServiceRx translationTokenServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public TranslationTokenServiceWrapper(
-            @NotNull TranslationTokenService translationTokenService,
-            @NotNull TranslationTokenServiceAsync translationTokenServiceAsync,
-            @NotNull TranslationTokenServiceRx translationTokenServiceRx)
+            @NonNull TranslationTokenService translationTokenService,
+            @NonNull TranslationTokenServiceAsync translationTokenServiceAsync,
+            @NonNull TranslationTokenServiceRx translationTokenServiceRx)
     {
         this.translationTokenService = translationTokenService;
         this.translationTokenServiceAsync = translationTokenServiceAsync;
@@ -29,19 +29,19 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Token">
-    @NotNull public TranslationToken getToken()
+    @NonNull public TranslationToken getToken()
     {
         return translationTokenService.requestToken();
     }
 
-    @NotNull public MiddleCallback<TranslationToken> getToken(@Nullable Callback<TranslationToken> callback)
+    @NonNull public MiddleCallback<TranslationToken> getToken(@Nullable Callback<TranslationToken> callback)
     {
         MiddleCallback<TranslationToken> middleCallback = new BaseMiddleCallback<>(callback);
         translationTokenServiceAsync.requestToken(middleCallback);
         return middleCallback;
     }
 
-    @NotNull public Observable<TranslationToken> getTokenRx()
+    @NonNull public Observable<TranslationToken> getTokenRx()
     {
         return translationTokenServiceRx.requestToken();
     }

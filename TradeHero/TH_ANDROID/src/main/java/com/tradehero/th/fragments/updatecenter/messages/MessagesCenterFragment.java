@@ -54,8 +54,8 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -79,12 +79,12 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
-    @NotNull private List<Subscription> fetchMessageRefreshListSubscriptions;
+    @NonNull private List<Subscription> fetchMessageRefreshListSubscriptions;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
     @Nullable private MessageHeaderDTOList alreadyFetched;
     private MessagesView messagesView;
     private SwipeListener swipeListener;
-    @NotNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbackList;
+    @NonNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbackList;
     @Nullable private MessageListAdapter messageListAdapter;
     @Nullable private MiddleCallback<BaseResponseDTO> messageDeletionMiddleCallback;
     private boolean hasMorePage = true;
@@ -101,7 +101,7 @@ public class MessagesCenterFragment extends DashboardFragment
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
 
-    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         Timber.d("onCreateView");
@@ -160,7 +160,7 @@ public class MessagesCenterFragment extends DashboardFragment
         {
             broadcastReceiver = new BroadcastReceiver()
             {
-                @Override public void onReceive(Context context, @NotNull Intent intent)
+                @Override public void onReceive(Context context, @NonNull Intent intent)
                 {
                     if (PushConstants.ACTION_MESSAGE_RECEIVED.equals(intent.getAction()))
                     {
@@ -240,7 +240,7 @@ public class MessagesCenterFragment extends DashboardFragment
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
                 {
                     @Override
-                    public void onClick(@NotNull DialogInterface dialog, int which)
+                    public void onClick(@NonNull DialogInterface dialog, int which)
                     {
                         if (which == DialogInterface.BUTTON_POSITIVE)
                         {
@@ -256,12 +256,12 @@ public class MessagesCenterFragment extends DashboardFragment
         );
     }
 
-    @Override public void onUserClicked(@NotNull MessageHeaderDTO messageHeaderDTO)
+    @Override public void onUserClicked(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
         pushUserProfileFragment(messageHeaderDTO);
     }
 
-    @Override public void onDeleteClicked(@NotNull MessageHeaderDTO messageHeaderDTO)
+    @Override public void onDeleteClicked(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
         removeMessageOnServer(messageHeaderDTO);
     }
@@ -283,7 +283,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    @NotNull public UpdateCenterTabType getTabType()
+    @NonNull public UpdateCenterTabType getTabType()
     {
         return UpdateCenterTabType.Messages;
     }
@@ -327,7 +327,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    protected void pushMessageFragment(@NotNull DiscussionKey discussionKey, @NotNull UserBaseKey correspondentId)
+    protected void pushMessageFragment(@NonNull DiscussionKey discussionKey, @NonNull UserBaseKey correspondentId)
     {
         Bundle args = new Bundle();
         // TODO separate between Private and Broadcast
@@ -500,7 +500,7 @@ public class MessagesCenterFragment extends DashboardFragment
         removeMessageOnServer(messageHeaderDTO);
     }
 
-    private void removeMessageOnServer(@NotNull MessageHeaderDTO messageHeaderDTO)
+    private void removeMessageOnServer(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
         unsetDeletionMiddleCallback();
         messageDeletionMiddleCallback = messageServiceWrapper.get().deleteMessage(
@@ -565,7 +565,7 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.showLoadingView(onlyShowLoadingView);
     }
 
-    @NotNull protected Observer<Pair<MessageListKey, ReadablePaginatedMessageHeaderDTO>> createMessageHeaderIdListCacheObserver()
+    @NonNull protected Observer<Pair<MessageListKey, ReadablePaginatedMessageHeaderDTO>> createMessageHeaderIdListCacheObserver()
     {
         return new MessageFetchObserver();
     }
@@ -611,7 +611,7 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    @NotNull protected DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> createRefreshMessageHeaderIdListCacheListener()
+    @NonNull protected DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> createRefreshMessageHeaderIdListCacheListener()
     {
         return new RefreshMessageFetchListener();
     }
@@ -620,7 +620,7 @@ public class MessagesCenterFragment extends DashboardFragment
             implements DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO>
     {
         @Override
-        public void onDTOReceived(@NotNull MessageListKey key, @NotNull ReadablePaginatedMessageHeaderDTO value)
+        public void onDTOReceived(@NonNull MessageListKey key, @NonNull ReadablePaginatedMessageHeaderDTO value)
         {
             requestUpdateTabCounter();
             hasMorePage = (value.getData().size() > 0);
@@ -634,7 +634,7 @@ public class MessagesCenterFragment extends DashboardFragment
             //TODO how to invalidate the old data ..
         }
 
-        @Override public void onErrorThrown(@NotNull MessageListKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull MessageListKey key, @NonNull Throwable error)
         {
             hasMorePage = true;
             onRefreshCompleted();
@@ -716,7 +716,7 @@ public class MessagesCenterFragment extends DashboardFragment
         middleCallbackList.detach();
     }
 
-    private void reportMessageRead(@NotNull MessageHeaderDTO messageHeaderDTO)
+    private void reportMessageRead(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
         middleCallbackList.add(
                 messageServiceWrapper.get().readMessage(
@@ -737,12 +737,12 @@ public class MessagesCenterFragment extends DashboardFragment
                         createMessageAsReadAllCallback()));
     }
 
-    @NotNull private Callback<BaseResponseDTO> createMessageAsReadCallback(MessageHeaderDTO messageHeaderDTO)
+    @NonNull private Callback<BaseResponseDTO> createMessageAsReadCallback(MessageHeaderDTO messageHeaderDTO)
     {
         return new MessageMarkAsReadCallback(messageHeaderDTO);
     }
 
-    @NotNull private Callback<BaseResponseDTO> createMessageAsReadAllCallback()
+    @NonNull private Callback<BaseResponseDTO> createMessageAsReadAllCallback()
     {
         return new MessageMarkAsReadAllCallback();
     }
@@ -756,7 +756,7 @@ public class MessagesCenterFragment extends DashboardFragment
             this.messageHeaderDTO = messageHeaderDTO;
         }
 
-        @Override public void success(@NotNull BaseResponseDTO response, Response response2)
+        @Override public void success(@NonNull BaseResponseDTO response, Response response2)
         {
             if (response2.getStatus() == 200)
             {
@@ -780,7 +780,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageMarkAsReadAllCallback implements Callback<BaseResponseDTO>
     {
-        @Override public void success(@NotNull BaseResponseDTO response, Response response2)
+        @Override public void success(@NonNull BaseResponseDTO response, Response response2)
         {
             if (response2.getStatus() == 200)
             {
@@ -805,10 +805,10 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private class MessageDeletionCallback implements Callback<BaseResponseDTO>
     {
-        @NotNull private final MessageHeaderDTO messageHeaderDTO;
+        @NonNull private final MessageHeaderDTO messageHeaderDTO;
 
         //<editor-fold desc="Constructors">
-        MessageDeletionCallback(@NotNull MessageHeaderDTO messageHeaderDTO)
+        MessageDeletionCallback(@NonNull MessageHeaderDTO messageHeaderDTO)
         {
             this.messageHeaderDTO = messageHeaderDTO;
         }

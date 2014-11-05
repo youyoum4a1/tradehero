@@ -12,8 +12,8 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import java.util.Set;
 import java.util.TreeSet;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -23,7 +23,7 @@ public class PortfolioSelectorView extends RelativeLayout
     @Nullable private OwnedPortfolioId defaultPortfolioId;
     @Nullable private MenuOwnedPortfolioId defaultMenuPortfolioId;
     @Nullable private MenuOwnedPortfolioId currentMenu;
-    @NotNull private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
+    @NonNull private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -50,7 +50,7 @@ public class PortfolioSelectorView extends RelativeLayout
         return currentMenu;
     }
 
-    public void addMenuOwnedPortfolioId(@NotNull MenuOwnedPortfolioId menuOwnedPortfolioId)
+    public void addMenuOwnedPortfolioId(@NonNull MenuOwnedPortfolioId menuOwnedPortfolioId)
     {
         if (defaultPortfolioId == null)
         {
@@ -82,7 +82,7 @@ public class PortfolioSelectorView extends RelativeLayout
         setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
     }
 
-    @NotNull public Observable<MenuOwnedPortfolioId> createMenuObservable()
+    @NonNull public Observable<MenuOwnedPortfolioId> createMenuObservable()
     {
         return Observable.create(
                 new PortfolioPopupMenuOnSubscribe(

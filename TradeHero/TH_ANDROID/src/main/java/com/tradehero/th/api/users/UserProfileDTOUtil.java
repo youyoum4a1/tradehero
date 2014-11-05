@@ -11,8 +11,8 @@ import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class UserProfileDTOUtil extends UserBaseDTOUtil
 {
@@ -21,15 +21,15 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_FREE_FOLLOWER = 1;
     public final static int IS_PREMIUM_FOLLOWER = 2;
 
-    @NotNull protected final SecurityAlertKnowledge securityAlertKnowledge;
-    @NotNull protected final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    @NotNull protected final TimingIntervalPreference firstShowOnBoardDialogPreference;
+    @NonNull protected final SecurityAlertKnowledge securityAlertKnowledge;
+    @NonNull protected final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
+    @NonNull protected final TimingIntervalPreference firstShowOnBoardDialogPreference;
 
     //<editor-fold desc="Constructors">
     @Inject public UserProfileDTOUtil(
-            @NotNull SecurityAlertKnowledge securityAlertKnowledge,
-            @NotNull PortfolioCompactDTOUtil portfolioCompactDTOUtil,
-            @NotNull @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference)
+            @NonNull SecurityAlertKnowledge securityAlertKnowledge,
+            @NonNull PortfolioCompactDTOUtil portfolioCompactDTOUtil,
+            @NonNull @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference)
     {
         super();
         this.securityAlertKnowledge = securityAlertKnowledge;
@@ -57,8 +57,8 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     }
     //</editor-fold>
 
-    @NotNull public ArrayList<ProductIdentifier> getSubscribedAlerts(
-            @NotNull UserProfileDTO userProfileDTO)
+    @NonNull public ArrayList<ProductIdentifier> getSubscribedAlerts(
+            @NonNull UserProfileDTO userProfileDTO)
     {
         ArrayList<ProductIdentifier> subscribedAlerts = new ArrayList<>();
         if (userProfileDTO.userAlertPlans != null)
@@ -105,7 +105,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         }
     }
 
-    public boolean checkLinkedStatus(@NotNull UserProfileCompactDTO userProfileCompactDTO, @NotNull SocialNetworkEnum socialNetwork)
+    public boolean checkLinkedStatus(@NonNull UserProfileCompactDTO userProfileCompactDTO, @NonNull SocialNetworkEnum socialNetwork)
     {
         switch (socialNetwork)
         {

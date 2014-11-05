@@ -7,7 +7,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,8 +103,8 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
     }
 
     public void callingServiceWrapperWithCallbackPassesMiddleCallback(
-            @NotNull Class<?> serviceWrapperType,
-            @NotNull Class<?> serviceAsyncType)
+            @NonNull Class<?> serviceWrapperType,
+            @NonNull Class<?> serviceAsyncType)
             throws InvocationTargetException, IllegalAccessException, InstantiationException
     {
         Timber.d("Wrapper %s with own Async %s", serviceWrapperType.getSimpleName(), serviceAsyncType.getSimpleName());
@@ -119,9 +119,9 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
     }
 
     public void callingCallbackMethodPassesMiddleCallback(
-            @NotNull Object serviceWrapper,
-            @NotNull Method wrapperCallbackMethod,
-            @NotNull Class<?> serviceAsyncType)
+            @NonNull Object serviceWrapper,
+            @NonNull Method wrapperCallbackMethod,
+            @NonNull Class<?> serviceAsyncType)
             throws InvocationTargetException, IllegalAccessException
     {
         Timber.d("Wrapper %s, Method %s", serviceWrapper.getClass().getSimpleName(), wrapperCallbackMethod.getName());

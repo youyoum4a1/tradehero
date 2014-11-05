@@ -41,8 +41,8 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -211,7 +211,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     protected DiscussionFormDTO buildDiscussionFormDTO()
     {
-        @NotNull DiscussionFormDTO discussionFormDTO;
+        DiscussionFormDTO discussionFormDTO;
         DiscussionType discussionType = getDiscussionType();
         if (discussionType != null)
         {
@@ -281,7 +281,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         };
     }
 
-    private void linkWith(@NotNull DiscussionKey discussionKey, boolean andDisplay)
+    private void linkWith(@NonNull DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
         AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.getValue(discussionKey);
@@ -297,7 +297,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    private void linkWith(@NotNull NewsItemDTO newsItemDTO, boolean andDisplay)
+    private void linkWith(@NonNull NewsItemDTO newsItemDTO, boolean andDisplay)
     {
         if (andDisplay)
         {

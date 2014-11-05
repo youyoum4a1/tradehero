@@ -3,7 +3,7 @@ package com.tradehero.th.api.users;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserSearchResultDTOList extends BaseArrayList<UserSearchResultDTO>
     implements DTO, ContainerDTO<UserSearchResultDTO, UserSearchResultDTOList>
@@ -15,10 +15,10 @@ public class UserSearchResultDTOList extends BaseArrayList<UserSearchResultDTO>
     }
     //</editor-fold>
 
-    @NotNull public UserBaseKeyList createKeys()
+    @NonNull public UserBaseKeyList createKeys()
     {
         UserBaseKeyList keyList = new UserBaseKeyList();
-        for (@NotNull UserSearchResultDTO userSearchResultDTO : this)
+        for (UserSearchResultDTO userSearchResultDTO : this)
         {
             keyList.add(userSearchResultDTO.getUserBaseKey());
         }

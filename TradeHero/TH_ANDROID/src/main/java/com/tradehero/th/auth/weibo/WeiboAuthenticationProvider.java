@@ -14,8 +14,8 @@ import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -29,13 +29,13 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
     public static final String KEY_EXPIRES_IN = "expires_in";
     private static final String WEIBO_PACKAGE = "com.sina.weibo";
 
-    @NotNull private final WeiboAppAuthData appAuthData;
+    @NonNull private final WeiboAppAuthData appAuthData;
     @Nullable private OperatorSsoHandler operatorSsoHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public WeiboAuthenticationProvider(
-            @NotNull SocialLinker socialLinker,
-            @NotNull @ForWeiboAppAuthData WeiboAppAuthData appAuthData)
+            @NonNull SocialLinker socialLinker,
+            @NonNull @ForWeiboAppAuthData WeiboAppAuthData appAuthData)
     {
         super(socialLinker);
         this.appAuthData = appAuthData;

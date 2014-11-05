@@ -7,8 +7,8 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOUtil;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 // The purpose of this class is to save on memory usage by cutting out the elements that already enjoy their own cache.
 class LeaderboardCutDTO extends BaseHasExpiration
@@ -26,9 +26,9 @@ class LeaderboardCutDTO extends BaseHasExpiration
     public final double avgStdDevPositionRoiInPeriod;
 
     public LeaderboardCutDTO(
-            @NotNull LeaderboardDTO leaderboardDTO,
-            @NotNull LeaderboardUserCache leaderboardUserCache,
-            @NotNull LeaderboardUserDTOUtil leaderboardUserDTOUtil)
+            @NonNull LeaderboardDTO leaderboardDTO,
+            @NonNull LeaderboardUserCache leaderboardUserCache,
+            @NonNull LeaderboardUserDTOUtil leaderboardUserDTOUtil)
     {
         super(leaderboardDTO.expirationDate);
         this.id = leaderboardDTO.id;
@@ -45,7 +45,7 @@ class LeaderboardCutDTO extends BaseHasExpiration
         this.avgStdDevPositionRoiInPeriod = leaderboardDTO.avgStdDevPositionRoiInPeriod;
     }
 
-    @Nullable public LeaderboardDTO create(@NotNull LeaderboardUserCache leaderboardUserCache)
+    @Nullable public LeaderboardDTO create(@NonNull LeaderboardUserCache leaderboardUserCache)
     {
         LeaderboardUserDTOList leaderboardUserDTOs = leaderboardUserCache.get(userIds);
         if (leaderboardUserDTOs != null && leaderboardUserDTOs.hasNullItem())

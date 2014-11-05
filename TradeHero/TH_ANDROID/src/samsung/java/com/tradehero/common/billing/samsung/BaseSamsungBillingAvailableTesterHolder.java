@@ -6,7 +6,7 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BaseSamsungBillingAvailableTesterHolder<
         SamsungBillingAvailableTesterType extends SamsungBillingAvailableTester<SamsungExceptionType>,
@@ -14,12 +14,12 @@ abstract public class BaseSamsungBillingAvailableTesterHolder<
     extends BaseBillingAvailableTesterHolder<SamsungExceptionType>
     implements SamsungBillingAvailableTesterHolder<SamsungExceptionType>
 {
-    @NotNull protected final Provider<SamsungBillingAvailableTesterType> samsungBillingAvailableTesterTypeProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, SamsungBillingAvailableTesterType> testers;
+    @NonNull protected final Provider<SamsungBillingAvailableTesterType> samsungBillingAvailableTesterTypeProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, SamsungBillingAvailableTesterType> testers;
 
     //<editor-fold desc="Constructors">
     public BaseSamsungBillingAvailableTesterHolder(
-            @NotNull Provider<SamsungBillingAvailableTesterType> samsungBillingAvailableTesterTypeProvider)
+            @NonNull Provider<SamsungBillingAvailableTesterType> samsungBillingAvailableTesterTypeProvider)
     {
         super();
         this.samsungBillingAvailableTesterTypeProvider = samsungBillingAvailableTesterTypeProvider;

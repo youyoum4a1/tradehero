@@ -1,7 +1,7 @@
 package com.tradehero.th.api.alert;
 
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class AlertDTO extends AlertCompactDTO
 {

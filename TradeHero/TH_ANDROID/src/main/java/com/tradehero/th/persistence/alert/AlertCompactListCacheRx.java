@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -23,14 +23,14 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECt_SIZE = 5;
 
-    @NotNull private final AlertServiceWrapper alertServiceWrapper;
-    @NotNull private final AlertCompactCacheRx alertCompactCache;
+    @NonNull private final AlertServiceWrapper alertServiceWrapper;
+    @NonNull private final AlertCompactCacheRx alertCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertCompactListCacheRx(
-            @NotNull AlertServiceWrapper alertServiceWrapper,
-            @NotNull AlertCompactCacheRx alertCompactCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull AlertServiceWrapper alertServiceWrapper,
+            @NonNull AlertCompactCacheRx alertCompactCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECt_SIZE, DEFAULT_MAX_SUBJECt_SIZE, dtoCacheUtil);
         this.alertServiceWrapper = alertServiceWrapper;
@@ -38,18 +38,18 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<AlertCompactDTOList> fetch(@NotNull UserBaseKey key)
+    @Override @NonNull public Observable<AlertCompactDTOList> fetch(@NonNull UserBaseKey key)
     {
         return alertServiceWrapper.getAlertsRx(key);
     }
 
-    @Override public void onNext(@NotNull UserBaseKey key, @NotNull AlertCompactDTOList value)
+    @Override public void onNext(@NonNull UserBaseKey key, @NonNull AlertCompactDTOList value)
     {
         alertCompactCache.onNext(key, value);
         super.onNext(key, value);
     }
 
-    public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NotNull UserBaseKey userBaseKey)
+    public Observable<Map<SecurityId, AlertId>> getSecurityMappedAlerts(@NonNull UserBaseKey userBaseKey)
     {
         return get(userBaseKey)
                 .map(pair -> {

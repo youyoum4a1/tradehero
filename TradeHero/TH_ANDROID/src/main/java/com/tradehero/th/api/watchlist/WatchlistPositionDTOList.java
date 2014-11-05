@@ -4,8 +4,8 @@ import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 
@@ -18,10 +18,10 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
     }
     //</editor-fold>
 
-    @NotNull public SecurityIdList getSecurityIds()
+    @NonNull public SecurityIdList getSecurityIds()
     {
         SecurityIdList created = new SecurityIdList();
-        for (@NotNull WatchlistPositionDTO watchlistPositionDTO : this)
+        for (WatchlistPositionDTO watchlistPositionDTO : this)
         {
             //noinspection ConstantConditions
             created.add(watchlistPositionDTO.securityDTO.getSecurityId());
@@ -33,7 +33,7 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
     {
         double total = 0;
         Double investedOne;
-        for (@NotNull WatchlistPositionDTO watchlistItem: this)
+        for (WatchlistPositionDTO watchlistItem: this)
         {
             investedOne = watchlistItem.getInvestedUsd();
             if (investedOne == null)
@@ -49,7 +49,7 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
     {
         double total = 0;
         Double currentOne;
-        for (@NotNull WatchlistPositionDTO watchlistItem: this)
+        for (WatchlistPositionDTO watchlistItem: this)
         {
             currentOne = watchlistItem.getCurrentValueUsd();
             if (currentOne == null)
@@ -73,7 +73,7 @@ public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionD
         return false;
     }
 
-    public boolean remove(@NotNull SecurityId other)
+    public boolean remove(@NonNull SecurityId other)
     {
         boolean changed = false;
         for (WatchlistPositionDTO watchlistPositionDTO : new ArrayList<>(this))

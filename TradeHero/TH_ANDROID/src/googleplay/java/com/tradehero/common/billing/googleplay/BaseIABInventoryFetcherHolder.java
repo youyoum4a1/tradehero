@@ -4,7 +4,7 @@ import com.tradehero.common.billing.BaseBillingInventoryFetcherHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ abstract public class BaseIABInventoryFetcherHolder<
         IABProductDetailType,
         IABException>
 {
-    @NotNull protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
+    @NonNull protected Map<Integer /*requestCode*/, IABInventoryFetcherType> iabInventoryFetchers;
     protected Exception latestInventoryFetcherException; // TODO here too
 
     //<editor-fold desc="Constructors">

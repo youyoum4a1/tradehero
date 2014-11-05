@@ -4,11 +4,11 @@ import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecurityPositionDTO implements DTO
 {
-    @NotNull public SecurityCompactDTO security;
+    @NonNull public SecurityCompactDTO security;
     @Nullable public PositionDTOCompactList positions;
     //public PositionDTOCompact position; // This is a backward compatible element. Do not add back
     public int firstTradeAllTime;
@@ -19,7 +19,7 @@ public class SecurityPositionDTO implements DTO
     }
 
     public SecurityPositionDTO(
-            @NotNull SecurityCompactDTO security,
+            @NonNull SecurityCompactDTO security,
             @Nullable PositionDTOCompactList positions,
             int firstTradeAllTime)
     {
@@ -29,7 +29,7 @@ public class SecurityPositionDTO implements DTO
     }
     //</editor-fold>
 
-    @NotNull public SecurityId getSecurityId()
+    @NonNull public SecurityId getSecurityId()
     {
         return security.getSecurityId();
     }

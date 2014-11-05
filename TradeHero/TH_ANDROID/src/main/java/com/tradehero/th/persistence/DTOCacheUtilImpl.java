@@ -57,8 +57,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.observers.EmptyObserver;
 
@@ -92,14 +92,14 @@ import rx.observers.EmptyObserver;
     protected final StringPreference serverEndpointPreference;
     protected final SharedPreferences userSharedPreferences;
     private final BooleanPreference isOnboardShown;
-    @NotNull protected final BroadcastUtils broadcastUtils;
-    @NotNull protected final UserBaseDTOUtil userBaseDTOUtil;
-    @NotNull protected final Context context;
+    @NonNull protected final BroadcastUtils broadcastUtils;
+    @NonNull protected final UserBaseDTOUtil userBaseDTOUtil;
+    @NonNull protected final Context context;
 
-    @NotNull private List<DTOCacheNew> userCacheNews;
-    @NotNull private List<DTOCacheNew> systemCacheNews;
-    @NotNull private List<DTOCacheRx> userCacheRxs;
-    @NotNull private List<DTOCacheRx> systemCacheRxs;
+    @NonNull private List<DTOCacheNew> userCacheNews;
+    @NonNull private List<DTOCacheNew> systemCacheNews;
+    @NonNull private List<DTOCacheRx> userCacheRxs;
+    @NonNull private List<DTOCacheRx> systemCacheRxs;
 
     //<editor-fold desc="Constructors">
     @Inject public DTOCacheUtilImpl(
@@ -126,9 +126,9 @@ import rx.observers.EmptyObserver;
             @ServerEndpoint StringPreference serverEndpointPreference,
             @ForUser SharedPreferences userSharedPreferences,
             @IsOnBoardShown BooleanPreference isOnboardShown,
-            @NotNull BroadcastUtils broadcastUtils,
-            @NotNull UserBaseDTOUtil userBaseDTOUtil,
-            @NotNull Context context)
+            @NonNull BroadcastUtils broadcastUtils,
+            @NonNull UserBaseDTOUtil userBaseDTOUtil,
+            @NonNull Context context)
     {
         this.userCacheNews = new ArrayList<>();
         this.systemCacheNews = new ArrayList<>();
@@ -166,7 +166,7 @@ import rx.observers.EmptyObserver;
     }
     //</editor-fold>
 
-    @Override public void addCache(@NotNull DTOCacheNew dtoCacheNew)
+    @Override public void addCache(@NonNull DTOCacheNew dtoCacheNew)
     {
         if (dtoCacheNew.getClass().isAnnotationPresent(UserCache.class))
         {
@@ -182,7 +182,7 @@ import rx.observers.EmptyObserver;
         }
     }
 
-    @Override public void addCache(@NotNull DTOCacheRx dtoCacheRx)
+    @Override public void addCache(@NonNull DTOCacheRx dtoCacheRx)
     {
         if (dtoCacheRx.getClass().isAnnotationPresent(UserCache.class))
         {
@@ -247,7 +247,7 @@ import rx.observers.EmptyObserver;
                 .subscribe(new EmptyObserver<>());
     }
 
-    protected void preFetchTrending(@NotNull Pair<? extends UserBaseDTO, ExchangeCompactDTOList> pair)
+    protected void preFetchTrending(@NonNull Pair<? extends UserBaseDTO, ExchangeCompactDTOList> pair)
     {
         if (pair.first != null && pair.second != null)
         {
@@ -256,8 +256,8 @@ import rx.observers.EmptyObserver;
     }
 
     protected void preFetchTrending(
-            @NotNull UserBaseDTO userBaseDTO,
-            @NotNull ExchangeCompactDTOList exchangeCompactDTOs)
+            @NonNull UserBaseDTO userBaseDTO,
+            @NonNull ExchangeCompactDTOList exchangeCompactDTOs)
     {
         Country country = userBaseDTO.getCountry();
         ExchangeCompactDTO initialExchange = null;

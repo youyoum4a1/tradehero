@@ -6,8 +6,8 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Country;
 import java.io.IOException;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 // TODO remove ExtendedDTO
@@ -29,7 +29,7 @@ public class UserBaseDTO extends ExtendedDTO
     {
     }
 
-    @JsonIgnore @NotNull public UserBaseKey getBaseKey()
+    @JsonIgnore @NonNull public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);
     }

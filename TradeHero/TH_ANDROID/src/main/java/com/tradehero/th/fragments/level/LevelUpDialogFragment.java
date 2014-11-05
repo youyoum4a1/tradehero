@@ -26,7 +26,7 @@ import com.tradehero.th.api.level.key.LevelDefId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.persistence.level.LevelDefCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -53,7 +53,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
     private LevelDefDTO mNextLevelDefDTO;
     private AnimatorSet animatorSet;
 
-    public static LevelUpDialogFragment newInstance(@NotNull LevelDefId fromLevelId, @NotNull LevelDefId toLevelId)
+    public static LevelUpDialogFragment newInstance(@NonNull LevelDefId fromLevelId, @NonNull LevelDefId toLevelId)
     {
         Bundle b = new Bundle();
         b.putBundle(BUNDLE_KEY_CURRENT, fromLevelId.getArgs());
@@ -169,7 +169,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
-    private void update(LevelDefId key, @NotNull LevelDefDTO levelDefDTO)
+    private void update(LevelDefId key, @NonNull LevelDefDTO levelDefDTO)
     {
         if (key.equals(mCurrentLevelDefId))
         {

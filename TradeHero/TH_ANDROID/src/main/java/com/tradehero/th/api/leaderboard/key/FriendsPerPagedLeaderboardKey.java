@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
 {
@@ -35,14 +35,14 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         return super.hashCode() ^ (includeFoF == null ? 0 : includeFoF.hashCode());
     }
 
-    @Override public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
+    @Override public boolean equalFields(@NonNull PerPagedLeaderboardKey other)
     {
         return super.equalFields(other)
                 && other instanceof FriendsPerPagedLeaderboardKey
                 && equalFields((FriendsPerPagedLeaderboardKey) other);
     }
 
-    public boolean equalFields(@NotNull FriendsPerPagedLeaderboardKey other)
+    public boolean equalFields(@NonNull FriendsPerPagedLeaderboardKey other)
     {
         return super.equalFields(other) &&
                 (includeFoF == null ? other.includeFoF == null : includeFoF.equals(other.includeFoF));
@@ -53,7 +53,7 @@ public class FriendsPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         return new FriendsPerPagedLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (includeFoF == null)

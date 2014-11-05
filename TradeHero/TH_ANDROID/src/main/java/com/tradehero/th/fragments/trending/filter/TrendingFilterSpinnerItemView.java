@@ -11,7 +11,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<ExchangeCompactSpinnerDTO>

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class NumberDisplayUtils
 {
-    @NotNull private final Context context;
+    @NonNull private final Context context;
     protected final int[] SUFFIX_IDS =
     {
         R.string.number_presentation_unit_suffix,
@@ -22,7 +22,7 @@ public class NumberDisplayUtils
     protected final String[] FALLBACK_SUFFIXES = {"", "k", "M", "B", "Tr"};
 
     //<editor-fold desc="Constructors">
-    @Inject public NumberDisplayUtils(@NotNull Context context)
+    @Inject public NumberDisplayUtils(@NonNull Context context)
     {
         this.context = context;
     }

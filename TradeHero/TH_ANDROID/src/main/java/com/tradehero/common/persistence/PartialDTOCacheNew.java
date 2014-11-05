@@ -1,26 +1,26 @@
 package com.tradehero.common.persistence;
 
 import java.lang.ref.WeakReference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheNew<DTOKeyType, DTOType>
 {
     //<editor-fold desc="Constructors">
-    public PartialDTOCacheNew(@NotNull DTOCacheUtilNew dtoCacheUtilNew)
+    public PartialDTOCacheNew(@NonNull DTOCacheUtilNew dtoCacheUtilNew)
     {
         super();
         dtoCacheUtilNew.addCache(this);
     }
     //</editor-fold>
 
-    @Nullable abstract protected CacheValue<DTOKeyType, DTOType> getCacheValue(@NotNull DTOKeyType key);
-    abstract protected void putCacheValue(@NotNull DTOKeyType key, @NotNull CacheValue<DTOKeyType, DTOType> cacheValue);
+    @Nullable abstract protected CacheValue<DTOKeyType, DTOType> getCacheValue(@NonNull DTOKeyType key);
+    abstract protected void putCacheValue(@NonNull DTOKeyType key, @NonNull CacheValue<DTOKeyType, DTOType> cacheValue);
 
-    @NotNull protected CacheValue<DTOKeyType, DTOType> getOrCreateCacheValue(@NotNull DTOKeyType key)
+    @NonNull protected CacheValue<DTOKeyType, DTOType> getOrCreateCacheValue(@NonNull DTOKeyType key)
     {
-        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)
         {
             cacheValue = createCacheValue(key);
@@ -29,12 +29,12 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return cacheValue;
     }
 
-    @NotNull protected CacheValue<DTOKeyType, DTOType> createCacheValue(@NotNull DTOKeyType key)
+    @NonNull protected CacheValue<DTOKeyType, DTOType> createCacheValue(@NonNull DTOKeyType key)
     {
         return new PartialCacheValue();
     }
 
-    @Override public boolean isValid(@NotNull DTOType value)
+    @Override public boolean isValid(@NonNull DTOType value)
     {
         //noinspection RedundantIfStatement
         if (value instanceof HasExpiration && ((HasExpiration) value).getExpiresInSeconds() <= 0)
@@ -44,10 +44,10 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return true;
     }
 
-    @Override @Nullable public DTOType put(@NotNull DTOKeyType key, @NotNull DTOType value)
+    @Override @Nullable public DTOType put(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
-        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = this.getCacheValue(key);
-        @Nullable DTOType previous = null;
+        CacheValue<DTOKeyType, DTOType> cacheValue = this.getCacheValue(key);
+        DTOType previous = null;
         if (!isValid(value))
         {
             // We do not bother creating a CacheValue for an invalid value
@@ -65,14 +65,14 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return previous;
     }
 
-    @Override @Nullable public DTOType get(@NotNull DTOKeyType key)
+    @Override @Nullable public DTOType get(@NonNull DTOKeyType key)
     {
-        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)
         {
             return null;
         }
-        @Nullable DTOType value = cacheValue.getValue();
+        DTOType value = cacheValue.getValue();
         if (value != null && !isValid(value))
         {
             if (cacheValue.getListenersCount() == 0)
@@ -84,14 +84,14 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return value;
     }
 
-    @Override @NotNull public DTOType getOrFetchSync(@NotNull DTOKeyType key) throws Throwable
+    @Override @NonNull public DTOType getOrFetchSync(@NonNull DTOKeyType key) throws Throwable
     {
         return getOrFetchSync(key, DEFAULT_FORCE_UPDATE);
     }
 
-    @Override @NotNull public DTOType getOrFetchSync(@NotNull DTOKeyType key, boolean force) throws Throwable
+    @Override @NonNull public DTOType getOrFetchSync(@NonNull DTOKeyType key, boolean force) throws Throwable
     {
-        @Nullable DTOType value = get(key);
+        DTOType value = get(key);
 
         if (force || value == null)
         {
@@ -102,7 +102,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         return value;
     }
 
-    @Override public void register(@NotNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback)
+    @Override public void register(@NonNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback)
     {
         if (callback != null)
         {
@@ -111,24 +111,24 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         }
     }
 
-    @Override public void unregister(@NotNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback)
+    @Override public void unregister(@NonNull DTOKeyType key, @Nullable Listener<DTOKeyType, DTOType> callback)
     {
         // We do not need to create here as this is to forget anyway
-        @Nullable CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
+        CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (callback != null && cacheValue != null)
         {
             cacheValue.unregisterListener(callback);
         }
     }
 
-    @Override public void getOrFetchAsync(@NotNull final DTOKeyType key)
+    @Override public void getOrFetchAsync(@NonNull final DTOKeyType key)
     {
         getOrFetchAsync(key, DEFAULT_FORCE_UPDATE);
     }
 
-    @Override public void getOrFetchAsync(@NotNull final DTOKeyType key, final boolean forceUpdateCache)
+    @Override public void getOrFetchAsync(@NonNull final DTOKeyType key, final boolean forceUpdateCache)
     {
-        @Nullable DTOType cached = get(key);
+        DTOType cached = get(key);
         if (cached != null)
         {
             notifyHurriedListenersPreReceived(key, cached);
@@ -137,17 +137,17 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         getOrCreateCacheValue(key).getOrFetch(key, forceUpdateCache);
     }
 
-    protected void notifyHurriedListenersPreReceived(@NotNull DTOKeyType key, @NotNull DTOType value)
+    protected void notifyHurriedListenersPreReceived(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
         getOrCreateCacheValue(key).notifyHurriedListenersPreReceived(key, value);
     }
 
-    protected void notifyListenersReceived(@NotNull DTOKeyType key, @NotNull DTOType value)
+    protected void notifyListenersReceived(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
         getOrCreateCacheValue(key).notifyListenersReceived(key, value);
     }
 
-    protected void notifyListenersFailed(@NotNull DTOKeyType key, @NotNull Throwable error)
+    protected void notifyListenersFailed(@NonNull DTOKeyType key, @NonNull Throwable error)
     {
         getOrCreateCacheValue(key).notifyListenersFailed(key, error);
     }
@@ -161,9 +161,9 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         }
         //</editor-fold>
 
-        @Override public void getOrFetch(@NotNull DTOKeyType key, boolean force)
+        @Override public void getOrFetch(@NonNull DTOKeyType key, boolean force)
         {
-            @Nullable GetOrFetchTask<DTOKeyType, DTOType> myFetchTask = fetchTask.get();
+            GetOrFetchTask<DTOKeyType, DTOType> myFetchTask = fetchTask.get();
             if (needsRecreate(myFetchTask))
             {
                 myFetchTask = createGetOrFetchTask(key, force);
@@ -173,12 +173,12 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         }
     }
 
-    @NotNull protected PartialGetOrFetchTask createGetOrFetchTask(@NotNull DTOKeyType key)
+    @NonNull protected PartialGetOrFetchTask createGetOrFetchTask(@NonNull DTOKeyType key)
     {
         return createGetOrFetchTask(key, DEFAULT_FORCE_UPDATE);
     }
 
-    @NotNull protected PartialGetOrFetchTask createGetOrFetchTask(@NotNull DTOKeyType key, boolean force)
+    @NonNull protected PartialGetOrFetchTask createGetOrFetchTask(@NonNull DTOKeyType key, boolean force)
     {
         return new PartialGetOrFetchTask(key, force);
     }
@@ -188,18 +188,18 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         @Nullable private Throwable error = null;
 
         //<editor-fold desc="Constructors">
-        public PartialGetOrFetchTask(@NotNull DTOKeyType key)
+        public PartialGetOrFetchTask(@NonNull DTOKeyType key)
         {
             super(key);
         }
 
-        public PartialGetOrFetchTask(@NotNull DTOKeyType key, boolean forceUpdateCache)
+        public PartialGetOrFetchTask(@NonNull DTOKeyType key, boolean forceUpdateCache)
         {
             super(key, forceUpdateCache);
         }
         //</editor-fold>
 
-        @Override @NotNull protected Class<?> getContainerCacheClass()
+        @Override @NonNull protected Class<?> getContainerCacheClass()
         {
             return getCacheClass();
         }
@@ -242,7 +242,7 @@ abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType exte
         }
     }
 
-    @NotNull protected Class<?> getCacheClass()
+    @NonNull protected Class<?> getCacheClass()
     {
         return getClass();
     }

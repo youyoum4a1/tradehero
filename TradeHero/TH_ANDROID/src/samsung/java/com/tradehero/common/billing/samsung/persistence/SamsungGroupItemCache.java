@@ -6,7 +6,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightDTOCacheNew;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class SamsungGroupItemCache<
@@ -16,13 +16,13 @@ abstract public class SamsungGroupItemCache<
 {
     //<editor-fold desc="Constructors">
     public SamsungGroupItemCache(int maxSize,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 
-    @Override @NotNull public SamsungSKUListType fetch(@NotNull SamsungItemGroup key) throws Throwable
+    @Override @NonNull public SamsungSKUListType fetch(@NonNull SamsungItemGroup key) throws Throwable
     {
         throw new IllegalArgumentException("Cannot fetch on this cache");
     }

@@ -15,7 +15,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class THBaseBillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -60,19 +60,19 @@ abstract public class THBaseBillingLogicHolder<
                 BillingRequestType,
                 BillingExceptionType>
 {
-    @NotNull protected final THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>
+    @NonNull protected final THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>
             purchaseReporterHolder;
 
     //<editor-fold desc="Constructors">
     public THBaseBillingLogicHolder(
-            @NotNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
-            @NotNull ProductDetailCache<ProductIdentifierType, THProductDetailType, THProductTunerType> productDetailCache,
-            @NotNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
-            @NotNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
-            @NotNull BillingInventoryFetcherHolder<ProductIdentifierType, THProductDetailType, BillingExceptionType> inventoryFetcherHolder,
-            @NotNull BillingPurchaseFetcherHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
-            @NotNull BillingPurchaserHolder<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaserHolder,
-            @NotNull THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReporterHolder)
+            @NonNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
+            @NonNull ProductDetailCache<ProductIdentifierType, THProductDetailType, THProductTunerType> productDetailCache,
+            @NonNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
+            @NonNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
+            @NonNull BillingInventoryFetcherHolder<ProductIdentifierType, THProductDetailType, BillingExceptionType> inventoryFetcherHolder,
+            @NonNull BillingPurchaseFetcherHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseFetcherHolder,
+            @NonNull BillingPurchaserHolder<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaserHolder,
+            @NonNull THPurchaseReporterHolder<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> purchaseReporterHolder)
     {
         super(
                 productIdentifierCache,
@@ -110,7 +110,7 @@ abstract public class THBaseBillingLogicHolder<
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, @NotNull BillingRequestType billingRequest)
+    @Override public void registerListeners(int requestCode, @NonNull BillingRequestType billingRequest)
     {
         super.registerListeners(requestCode, billingRequest);
         registerPurchaseReportedListener(requestCode, billingRequest.purchaseReportedListener);

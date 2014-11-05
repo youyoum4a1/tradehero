@@ -16,7 +16,7 @@ import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class AchievementCellView extends RelativeLayout implements DTOView<AchievementCategoryDTO>
 {

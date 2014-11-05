@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public interface IABServiceListenerHolder
 {

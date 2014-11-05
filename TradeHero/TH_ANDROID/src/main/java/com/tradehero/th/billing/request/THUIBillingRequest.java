@@ -14,8 +14,8 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.THPurchaseReporter;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public interface THUIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -37,7 +37,7 @@ public interface THUIBillingRequest<
         BillingExceptionType>
 {
     //<editor-fold desc="Generics">
-    @NotNull OwnedPortfolioId getApplicablePortfolioId();
+    @NonNull OwnedPortfolioId getApplicablePortfolioId();
     //</editor-fold>
 
     //<editor-fold desc="Product Identifiers To Present">

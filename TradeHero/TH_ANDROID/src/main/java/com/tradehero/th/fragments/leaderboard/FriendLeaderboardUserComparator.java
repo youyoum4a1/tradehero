@@ -3,11 +3,11 @@ package com.tradehero.th.fragments.leaderboard;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.Comparator;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class FriendLeaderboardUserComparator implements Comparator<FriendLeaderboardUserDTO>
 {
-    @Override public int compare(@NotNull FriendLeaderboardUserDTO lhs, @NotNull FriendLeaderboardUserDTO rhs)
+    @Override public int compare(@NonNull FriendLeaderboardUserDTO lhs, @NonNull FriendLeaderboardUserDTO rhs)
     {
         if (lhs instanceof FriendLeaderboardMarkedUserDTO &&
                 rhs instanceof FriendLeaderboardSocialUserDTO)

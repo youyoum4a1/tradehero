@@ -8,7 +8,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,14 +17,14 @@ public class CompetitionListCacheRx extends BaseFetchDTOCacheRx<ProviderId, Comp
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
-    @NotNull private final CompetitionServiceWrapper competitionServiceWrapper;
-    @NotNull private final CompetitionCacheRx competitionCache;
+    @NonNull private final CompetitionServiceWrapper competitionServiceWrapper;
+    @NonNull private final CompetitionCacheRx competitionCache;
 
     //<editor-fold desc="Constructors">
     @Inject public CompetitionListCacheRx(
-            @NotNull CompetitionServiceWrapper competitionServiceWrapper,
-            @NotNull CompetitionCacheRx competitionCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull CompetitionServiceWrapper competitionServiceWrapper,
+            @NonNull CompetitionCacheRx competitionCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.competitionServiceWrapper = competitionServiceWrapper;
@@ -32,12 +32,12 @@ public class CompetitionListCacheRx extends BaseFetchDTOCacheRx<ProviderId, Comp
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<CompetitionDTOList> fetch(@NotNull ProviderId key)
+    @Override @NonNull public Observable<CompetitionDTOList> fetch(@NonNull ProviderId key)
     {
         return competitionServiceWrapper.getCompetitionsRx(key);
     }
 
-    @Override public void onNext(@NotNull ProviderId key, @NotNull CompetitionDTOList value)
+    @Override public void onNext(@NonNull ProviderId key, @NonNull CompetitionDTOList value)
     {
         super.onNext(key, value);
         competitionCache.onNext(value);

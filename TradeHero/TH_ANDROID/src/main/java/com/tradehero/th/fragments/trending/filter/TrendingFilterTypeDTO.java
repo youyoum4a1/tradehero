@@ -4,8 +4,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class TrendingFilterTypeDTO
 {
@@ -19,10 +19,10 @@ abstract public class TrendingFilterTypeDTO
     public final int titleIconResId;
     public final int descriptionResId;
 
-    @NotNull public ExchangeCompactSpinnerDTO exchange;
+    @NonNull public ExchangeCompactSpinnerDTO exchange;
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterTypeDTO(@NotNull Resources resources, int titleResId, int titleIconResId, int descriptionResId)
+    public TrendingFilterTypeDTO(@NonNull Resources resources, int titleResId, int titleIconResId, int descriptionResId)
     {
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
@@ -31,7 +31,7 @@ abstract public class TrendingFilterTypeDTO
     }
 
     public TrendingFilterTypeDTO(int titleResId, int titleIconResId, int descriptionResId,
-            @NotNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
+            @NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
@@ -39,7 +39,7 @@ abstract public class TrendingFilterTypeDTO
         this.exchange = exchangeCompactSpinnerDTO;
     }
 
-    public TrendingFilterTypeDTO(@NotNull Resources resources, @NotNull Bundle bundle)
+    public TrendingFilterTypeDTO(@NonNull Resources resources, @NonNull Bundle bundle)
     {
         this.titleResId = bundle.getInt(BUNDLE_KEY_TITLE_RES_ID);
         this.titleIconResId = bundle.getInt(BUNDLE_KEY_TITLE_ICON_RES_ID);
@@ -48,13 +48,13 @@ abstract public class TrendingFilterTypeDTO
     }
     //</editor-fold>
 
-    @NotNull public TrendingSecurityListType getSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
+    @NonNull public TrendingSecurityListType getSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
     {
         return getSecurityListType(exchange.getApiName(), page, perPage);
     }
 
-    @NotNull abstract public TrendingFilterTypeDTO getPrevious();
-    @NotNull abstract public TrendingFilterTypeDTO getNext();
-    @NotNull abstract public TrendingSecurityListType getSecurityListType(@Nullable String usableExchangeName, @Nullable Integer page, @Nullable Integer perPage);
-    @NotNull abstract public String getTrackEventCategory();
+    @NonNull abstract public TrendingFilterTypeDTO getPrevious();
+    @NonNull abstract public TrendingFilterTypeDTO getNext();
+    @NonNull abstract public TrendingSecurityListType getSecurityListType(@Nullable String usableExchangeName, @Nullable Integer page, @Nullable Integer perPage);
+    @NonNull abstract public String getTrackEventCategory();
 }

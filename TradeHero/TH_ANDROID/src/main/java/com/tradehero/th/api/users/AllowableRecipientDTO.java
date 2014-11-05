@@ -1,10 +1,10 @@
 package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AllowableRecipientDTO implements DTO
 {
-    @NotNull public UserBaseDTO user;
+    @NonNull public UserBaseDTO user;
     public UserMessagingRelationshipDTO relationship;
 }

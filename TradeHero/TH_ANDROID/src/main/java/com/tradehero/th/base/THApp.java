@@ -16,7 +16,7 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THApp extends PApplication
@@ -60,7 +60,7 @@ public class THApp extends PApplication
         objectGraph.inject(this);
     }
 
-    @NotNull protected Timber.Tree createTimberTree()
+    @NonNull protected Timber.Tree createTimberTree()
     {
         return new EasyDebugTree()
         {

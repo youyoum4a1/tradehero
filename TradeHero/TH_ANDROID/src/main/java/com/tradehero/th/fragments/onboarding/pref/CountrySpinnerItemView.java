@@ -10,7 +10,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class CountrySpinnerItemView extends RelativeLayout
     implements DTOView<Country>

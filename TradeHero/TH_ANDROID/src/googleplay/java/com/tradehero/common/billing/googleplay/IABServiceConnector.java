@@ -13,8 +13,8 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class IABServiceConnector implements ServiceConnection, IABServiceListenerHolder
@@ -23,8 +23,8 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
 
-    @NotNull protected final Context context;
-    @NotNull protected final Lazy<IABExceptionFactory> iabExceptionFactory;
+    @NonNull protected final Context context;
+    @NonNull protected final Lazy<IABExceptionFactory> iabExceptionFactory;
 
     @Nullable protected IInAppBillingService billingService;
 
@@ -36,8 +36,8 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
 
     //<editor-fold desc="Constructors">
     @Inject public IABServiceConnector(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         this.context = context;
         this.iabExceptionFactory = iabExceptionFactory;

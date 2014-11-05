@@ -14,7 +14,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsViewLinear;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment
@@ -34,12 +34,12 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private NewsItemDTOKey newsItemDTOKey;
 
-    public static void putBackgroundResId(@NotNull Bundle args, int resId)
+    public static void putBackgroundResId(@NonNull Bundle args, int resId)
     {
         args.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
     }
 
-    public static void putSecuritySymbol(@NotNull Bundle args, @NotNull String symbol)
+    public static void putSecuritySymbol(@NonNull Bundle args, @NonNull String symbol)
     {
         args.putString(NewsDiscussionFragment.BUNDLE_KEY_SECURITY_SYMBOL, symbol);
     }

@@ -4,9 +4,8 @@ import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import java.util.Collections;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LevelDefDTOList extends BaseArrayList<LevelDefDTO>
         implements DTO
@@ -15,7 +14,7 @@ public class LevelDefDTOList extends BaseArrayList<LevelDefDTO>
     {
         return findFirstWhere(new Predicate<LevelDefDTO>()
         {
-            @Override public boolean apply(@NotNull LevelDefDTO levelDefDTO)
+            @Override public boolean apply(@NonNull LevelDefDTO levelDefDTO)
             {
                 return levelDefDTO.isXPInLevel(currentXP);
             }
@@ -42,7 +41,6 @@ public class LevelDefDTOList extends BaseArrayList<LevelDefDTO>
         return null;
     }
 
-    @Contract("null -> false; !null -> _")
     public boolean isMaxLevel(@Nullable LevelDefDTO levelDefDTO)
     {
         return levelDefDTO != null && levelDefDTO.equals(getMaxLevelDTO());

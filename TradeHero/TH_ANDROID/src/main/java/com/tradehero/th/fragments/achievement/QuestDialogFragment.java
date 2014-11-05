@@ -15,8 +15,8 @@ import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
@@ -26,7 +26,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     @InjectView(R.id.quest_indicator_group) QuestIndicatorGroupView questIndicatorGroupView;
 
-    @NotNull private QuestBonusListId questBonusListId = new QuestBonusListId();
+    @NonNull private QuestBonusListId questBonusListId = new QuestBonusListId();
 
     @Inject QuestBonusListCacheRx questBonusListCache;
 
@@ -37,7 +37,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
     }
     //</editor-fold>
 
-    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.quest_dialog_fragment, container, false);
     }

@@ -1,16 +1,16 @@
 package com.tradehero.common.billing.samsung;
 
 import com.tradehero.common.billing.ProductIdentifier;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SamsungSKU
         extends SamsungItemGroup
         implements ProductIdentifier
 {
-    @NotNull public final String itemId;
+    @NonNull public final String itemId;
 
     //<editor-fold desc="Constructors">
-    public SamsungSKU(@NotNull String groupId, @NotNull String itemId)
+    public SamsungSKU(@NonNull String groupId, @NonNull String itemId)
     {
         super(groupId);
         this.itemId = itemId;

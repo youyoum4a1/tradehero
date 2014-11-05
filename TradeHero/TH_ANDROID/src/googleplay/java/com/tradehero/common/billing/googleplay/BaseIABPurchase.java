@@ -17,7 +17,7 @@ package com.tradehero.common.billing.googleplay;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,17 +39,17 @@ abstract public class BaseIABPurchase<
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
     public final String itemType;  // IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
-    @NotNull protected final IABOrderIdType orderId;
+    @NonNull protected final IABOrderIdType orderId;
     public final String packageName;
-    @NotNull protected final IABSKUType iabSKU;
+    @NonNull protected final IABSKUType iabSKU;
     public final long purchaseTime;
     public final int purchaseState;
-    @NotNull public final String developerPayload;
+    @NonNull public final String developerPayload;
     public final String token;
-    @NotNull public final String originalJson;
-    @NotNull public final String signature;
+    @NonNull public final String originalJson;
+    @NonNull public final String signature;
 
-    public BaseIABPurchase(@NotNull String itemType, @NotNull String jsonPurchaseInfo, @NotNull String signature) throws JSONException
+    public BaseIABPurchase(@NonNull String itemType, @NonNull String jsonPurchaseInfo, @NonNull String signature) throws JSONException
     {
         this.itemType = itemType;
         this.originalJson = jsonPurchaseInfo;
@@ -80,8 +80,8 @@ abstract public class BaseIABPurchase<
         this.signature = signature;
     }
 
-    @NotNull abstract protected IABSKUType createIABSKU(String skuString);
-    @NotNull abstract protected IABOrderIdType createIABOrderId(String orderIdString);
+    @NonNull abstract protected IABSKUType createIABSKU(String skuString);
+    @NonNull abstract protected IABOrderIdType createIABOrderId(String orderIdString);
 
     @JsonIgnore @Override public String getType()
     {
@@ -93,22 +93,22 @@ abstract public class BaseIABPurchase<
         return token;
     }
 
-    @JsonIgnore @Override @NotNull public IABOrderIdType getOrderId()
+    @JsonIgnore @Override @NonNull public IABOrderIdType getOrderId()
     {
         return orderId;
     }
 
-    @JsonIgnore @Override @NotNull public IABSKUType getProductIdentifier()
+    @JsonIgnore @Override @NonNull public IABSKUType getProductIdentifier()
     {
         return iabSKU;
     }
 
-    @JsonIgnore @Override @NotNull public String getOriginalJson()
+    @JsonIgnore @Override @NonNull public String getOriginalJson()
     {
         return this.originalJson;
     }
 
-    @JsonIgnore @Override @NotNull public String getSignature()
+    @JsonIgnore @Override @NonNull public String getSignature()
     {
         return this.signature;
     }

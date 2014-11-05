@@ -6,8 +6,8 @@ import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingConstants;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,12 +20,12 @@ import javax.inject.Singleton;
     }
     //</editor-fold>
 
-    @NotNull @Override public IABSKU createFrom(@NotNull AlertPlanDTO alertPlanDTO)
+    @NonNull @Override public IABSKU createFrom(@NonNull AlertPlanDTO alertPlanDTO)
     {
         return new IABSKU(alertPlanDTO.productIdentifier);
     }
 
-    @Override @Nullable public IABSKU getServerEquivalentSKU(@NotNull ProductIdentifier localSKU)
+    @Override @Nullable public IABSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
     {
         if (localSKU instanceof IABSKU)
         {

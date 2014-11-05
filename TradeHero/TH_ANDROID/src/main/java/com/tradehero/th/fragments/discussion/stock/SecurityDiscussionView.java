@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,7 +52,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
     @Nullable private Subscription securityCompactCacheSubscription;
     @Inject DiscussionListCacheRx discussionListCache;
 
-    @NotNull private List<Subscription> discussionListCacheSubscriptions;
+    @NonNull private List<Subscription> discussionListCacheSubscriptions;
     private DiscussionSetAdapter securityDiscussionAdapter;
     private AbsListView.OnScrollListener securityDiscussionListScrollListener;
     private PaginatedDiscussionListKey paginatedSecurityDiscussionListKey;
@@ -232,7 +232,7 @@ public class SecurityDiscussionView extends BetterViewAnimator
                 if (list != null)
                 {
                     DiscussionKeyList discussionKeyList = new DiscussionKeyList();
-                    for (@NotNull AbstractDiscussionDTO abstractDiscussionDTO : list)
+                    for (AbstractDiscussionDTO abstractDiscussionDTO : list)
                     {
                         discussionKeyList.add(abstractDiscussionDTO.getDiscussionKey());
                     }

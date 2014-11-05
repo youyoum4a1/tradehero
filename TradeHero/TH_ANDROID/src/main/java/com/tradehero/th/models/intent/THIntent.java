@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class THIntent extends Intent
 {
-    @NotNull protected Resources resources;
+    @NonNull protected Resources resources;
 
     //<editor-fold desc="Constructors">
-    public THIntent(@NotNull Resources resources)
+    public THIntent(@NonNull Resources resources)
     {
         super();
         this.resources = resources;
@@ -43,7 +43,7 @@ abstract public class THIntent extends Intent
         return getBaseUriPath(resources);
     }
 
-    public static String getBaseUriPath(@NotNull Resources resources)
+    public static String getBaseUriPath(@NonNull Resources resources)
     {
         return resources.getString(
                 R.string.intent_uri_base,
@@ -51,7 +51,7 @@ abstract public class THIntent extends Intent
     }
 
     public static String getHostUriPath(
-            @NotNull Resources resources,
+            @NonNull Resources resources,
             int hostResId)
     {
         return resources.getString(
@@ -61,7 +61,7 @@ abstract public class THIntent extends Intent
     }
 
     public static String getActionUriPath(
-            @NotNull Resources resources,
+            @NonNull Resources resources,
             int hostResId,
             int actionResId)
     {

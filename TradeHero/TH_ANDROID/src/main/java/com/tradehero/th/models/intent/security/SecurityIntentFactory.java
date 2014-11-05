@@ -6,11 +6,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecurityIntentFactory extends THIntentSubFactory<SecurityPushBuyIntent>
 {
-    @Inject public SecurityIntentFactory(@NotNull Context context)
+    @Inject public SecurityIntentFactory(@NonNull Context context)
     {
         super(context.getResources());
     }

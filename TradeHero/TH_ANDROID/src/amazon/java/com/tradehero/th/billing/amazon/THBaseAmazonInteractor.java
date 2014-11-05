@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THBaseAmazonInteractor
@@ -57,23 +57,23 @@ public class THBaseAmazonInteractor
                 AmazonException>
     implements THAmazonInteractor
 {
-    @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NotNull protected final HeroListCacheRx heroListCache;
-    @NotNull protected final UserService userService;
+    @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NonNull protected final HeroListCacheRx heroListCache;
+    @NonNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInteractor(
-            @NotNull Provider<Activity> activityProvider,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserProfileCacheRx userProfileCacheRx,
-            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull THAmazonAlertDialogUtil thAmazonAlertDialogUtil,
-            @NotNull THAmazonLogicHolder billingActor,
-            @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull HeroListCacheRx heroListCache,
-            @NotNull UserService userService)
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCache userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCacheRx,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull THAmazonAlertDialogUtil thAmazonAlertDialogUtil,
+            @NonNull THAmazonLogicHolder billingActor,
+            @NonNull UserProfileDTOUtil userProfileDTOUtil,
+            @NonNull HeroListCacheRx heroListCache,
+            @NonNull UserService userService)
     {
         super(
                 billingActor,
@@ -96,7 +96,7 @@ public class THBaseAmazonInteractor
     }
 
     //<editor-fold desc="Request Handling">
-    @Override public int run(@NotNull THUIAmazonRequest uiBillingRequest)
+    @Override public int run(@NonNull THUIAmazonRequest uiBillingRequest)
     {
         // Here we disable the initial restore
         if (uiBillingRequest.getRestorePurchase() && !uiBillingRequest.getStartWithProgressDialog())
@@ -111,7 +111,7 @@ public class THBaseAmazonInteractor
     }
 
     @Override protected THAmazonRequestFull createBillingRequest(
-            @NotNull THUIAmazonRequest uiBillingRequest)
+            @NonNull THUIAmazonRequest uiBillingRequest)
     {
         THAmazonRequestFull.Builder<?> builder = THAmazonRequestFull.builder();
         populateBillingRequestBuilder(builder, uiBillingRequest);
@@ -119,8 +119,8 @@ public class THBaseAmazonInteractor
     }
 
     protected void populateBillingRequestBuilder(
-            @NotNull THAmazonRequestFull.Builder<?> builder,
-            @NotNull THUIAmazonRequest uiBillingRequest)
+            @NonNull THAmazonRequestFull.Builder<?> builder,
+            @NonNull THUIAmazonRequest uiBillingRequest)
     {
         super.populateBillingRequestBuilder(builder, uiBillingRequest);
         if (uiBillingRequest.getDomainToPresent() != null)
@@ -267,7 +267,7 @@ public class THBaseAmazonInteractor
     @Override protected void populatePurchaseBillingRequest(
             int requestCode,
             THAmazonRequestFull request,
-            @NotNull AmazonSKU productIdentifier)
+            @NonNull AmazonSKU productIdentifier)
     {
         super.populatePurchaseBillingRequest(requestCode, request, productIdentifier);
         THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
@@ -277,9 +277,9 @@ public class THBaseAmazonInteractor
         }
     }
 
-    @Override @NotNull protected THAmazonPurchaseOrder createEmptyPurchaseOrder(
-            @NotNull THUIAmazonRequest uiBillingRequest,
-            @NotNull AmazonSKU productIdentifier)
+    @Override @NonNull protected THAmazonPurchaseOrder createEmptyPurchaseOrder(
+            @NonNull THUIAmazonRequest uiBillingRequest,
+            @NonNull AmazonSKU productIdentifier)
     {
         return new THAmazonPurchaseOrder(productIdentifier, 1, uiBillingRequest.getApplicablePortfolioId());
     }

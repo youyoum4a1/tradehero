@@ -19,8 +19,8 @@ import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class SocialFriendUserView extends SocialFriendItemView
@@ -112,7 +112,7 @@ public class SocialFriendUserView extends SocialFriendItemView
     }
 
     @Override
-    public void display(@NotNull SocialFriendListItemDTO dto)
+    public void display(@NonNull SocialFriendListItemDTO dto)
     {
         if(dto instanceof SocialFriendListItemUserDTO)
         {
@@ -210,8 +210,8 @@ public class SocialFriendUserView extends SocialFriendItemView
 
     public static interface OnElementClickListener
     {
-        void onFollowButtonClick(@NotNull UserFriendsDTO userFriendsDTO);
-        void onInviteButtonClick(@NotNull UserFriendsDTO userFriendsDTO);
-        void onCheckBoxClick(@NotNull UserFriendsDTO userFriendsDTO);
+        void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO);
+        void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO);
+        void onCheckBoxClick(@NonNull UserFriendsDTO userFriendsDTO);
     }
 }

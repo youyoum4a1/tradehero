@@ -3,7 +3,7 @@ package com.tradehero.util;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.IOUtils;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class TestUtil
         }
     }
 
-    public static ArrayList<Class<?>> getClassesForPackage(@NotNull Package pkg, @NotNull Predicate<Class<?>> thatMatch)
+    public static ArrayList<Class<?>> getClassesForPackage(@NonNull Package pkg, @NonNull Predicate<Class<?>> thatMatch)
     {
         ArrayList<Class<?>> classes = getClassesForPackage(pkg);
         ArrayList<Class<?>> matched = new ArrayList<>();
@@ -49,7 +49,7 @@ public class TestUtil
         return matched;
     }
 
-    public static ArrayList<Class<?>> getClassesForPackage( @NotNull Package pkg)
+    public static ArrayList<Class<?>> getClassesForPackage( @NonNull Package pkg)
     {
         // From http://stackoverflow.com/questions/176527/how-can-i-enumerate-all-classes-in-a-package-and-add-them-to-a-list
         String pkgname = pkg.getName();

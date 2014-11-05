@@ -1,17 +1,17 @@
 package com.tradehero.th.fragments.social.friend;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SocialTypeItem
 {
-    @NotNull public final SocialNetworkEnum socialNetwork;
+    @NonNull public final SocialNetworkEnum socialNetwork;
     public final int imageResource;
     public final int titleResource;
     public final int backgroundResource;
 
     //<editor-fold desc="Constructors">
-    public SocialTypeItem(int imageResource, int titleResource, int backgroundResource, @NotNull SocialNetworkEnum socialNetwork)
+    public SocialTypeItem(int imageResource, int titleResource, int backgroundResource, @NonNull SocialNetworkEnum socialNetwork)
     {
         this.imageResource = imageResource;
         this.titleResource = titleResource;

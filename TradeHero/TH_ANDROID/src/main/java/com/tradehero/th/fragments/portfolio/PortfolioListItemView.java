@@ -37,8 +37,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -390,7 +390,7 @@ public class PortfolioListItemView extends RelativeLayout
     protected class PortfolioListItemViewWatchedSecurityIdListListener
             implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull WatchlistPositionDTOList value)
         {
             watchedSecurityPositions = value;
             DisplayablePortfolioDTO displayablePortfolioDTOCopy =
@@ -407,7 +407,7 @@ public class PortfolioListItemView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             // We do not inform the user as this is not critical
         }

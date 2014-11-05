@@ -3,7 +3,7 @@ package com.tradehero.th.api.competition;
 import android.os.Bundle;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderId extends AbstractIntegerDTOKey
 {
@@ -20,7 +20,7 @@ public class ProviderId extends AbstractIntegerDTOKey
         super(key);
     }
 
-    public ProviderId(@NotNull Bundle args)
+    public ProviderId(@NonNull Bundle args)
     {
         super(args);
     }

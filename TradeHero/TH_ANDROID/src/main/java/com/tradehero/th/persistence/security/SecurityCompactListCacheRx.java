@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -21,19 +21,19 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
     public static final int DEFAULT_MAX_FETCHER_SIZE = 5;
 
-    @NotNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @NonNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactListCacheRx(
-            @NotNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>
 
-    @NotNull @Override protected Observable<SecurityCompactDTOList> fetch(@NotNull SecurityListType key)
+    @NonNull @Override protected Observable<SecurityCompactDTOList> fetch(@NonNull SecurityListType key)
     {
         return securityServiceWrapper.get().getSecuritiesRx(key);
     }

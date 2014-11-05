@@ -2,7 +2,7 @@ package com.tradehero.th.api.trade;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Deprecated
 public class OwnedTradeIdList extends DTOKeyIdList<OwnedTradeId>
@@ -15,7 +15,7 @@ public class OwnedTradeIdList extends DTOKeyIdList<OwnedTradeId>
 
     public OwnedTradeIdList(Collection<? extends TradeDTO> tradeDTOs)
     {
-        for (@NotNull TradeDTO tradeDTO : tradeDTOs)
+        for (TradeDTO tradeDTO : tradeDTOs)
         {
             add(tradeDTO.getOwnedTradeId());
         }

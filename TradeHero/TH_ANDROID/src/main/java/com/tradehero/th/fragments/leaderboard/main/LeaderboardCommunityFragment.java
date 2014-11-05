@@ -50,7 +50,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -194,7 +194,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void setCurrentUserProfileDTO(@NotNull UserProfileDTO currentUserProfileDTO)
+    protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
     }
@@ -223,12 +223,12 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     protected class LeaderboardCommunityLeaderboardDefKeyListListener implements DTOCacheNew.Listener<LeaderboardDefListKey, LeaderboardDefDTOList>
     {
-        @Override public void onDTOReceived(@NotNull LeaderboardDefListKey key, @NotNull LeaderboardDefDTOList value)
+        @Override public void onDTOReceived(@NonNull LeaderboardDefListKey key, @NonNull LeaderboardDefDTOList value)
         {
             recreateAdapter();
         }
 
-        @Override public void onErrorThrown(@NotNull LeaderboardDefListKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull LeaderboardDefListKey key, @NonNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key));
             Timber.e(error, "Error fetching the leaderboard def key list %s", key);
@@ -325,7 +325,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     }
 
     //<editor-fold desc="Navigation">
-    private void handleLeaderboardItemClicked(@NotNull LeaderboardDefDTO leaderboardDefDTO)
+    private void handleLeaderboardItemClicked(@NonNull LeaderboardDefDTO leaderboardDefDTO)
     {
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
         {
@@ -351,7 +351,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)
+    protected void pushLeaderboardListViewFragment(@NonNull LeaderboardDefDTO dto)
     {
         Bundle bundle = new Bundle(getArguments());
 

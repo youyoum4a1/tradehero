@@ -5,8 +5,8 @@ import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.billing.THOrderId;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.IOException;
 
@@ -15,13 +15,13 @@ public class THIABOrderId
         implements THOrderId
 {
     //<editor-fold desc="Constructors">
-    public THIABOrderId(@NotNull String orderId)
+    public THIABOrderId(@NonNull String orderId)
     {
         super(orderId);
     }
     //</editor-fold>
 
-    public void setDeveloperPayload(@NotNull OwnedPortfolioId ownedPortfolioId) throws IOException
+    public void setDeveloperPayload(@NonNull OwnedPortfolioId ownedPortfolioId) throws IOException
     {
         developerPayload = THJsonAdapter.getInstance().toStringBody(ownedPortfolioId);
     }

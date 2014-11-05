@@ -1,8 +1,8 @@
 package com.tradehero.th.models.number;
 
 import com.tradehero.th.utils.SecurityUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THSignedMoney extends THSignedNumber
 {
@@ -53,7 +53,7 @@ public class THSignedMoney extends THSignedNumber
     }
 
     //<editor-fold desc="Constructors">
-    protected THSignedMoney(@NotNull Builder<?> builder)
+    protected THSignedMoney(@NonNull Builder<?> builder)
     {
         super(builder);
         if (builder.currency == null)

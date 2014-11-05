@@ -5,8 +5,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
 {
@@ -16,7 +16,7 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
     public static final String TRACK_EVENT_SYMBOL = "Unusual Volumes";
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterTypeVolumeDTO(@NotNull Resources resources)
+    public TrendingFilterTypeVolumeDTO(@NonNull Resources resources)
     {
         super(resources,
                 DEFAULT_TITLE_RES_ID,
@@ -24,7 +24,7 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
                 DEFAULT_DESCRIPTION_RES_ID);
     }
 
-    public TrendingFilterTypeVolumeDTO(@NotNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
+    public TrendingFilterTypeVolumeDTO(@NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
         super(
                 DEFAULT_TITLE_RES_ID,
@@ -34,17 +34,17 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
     }
     //</editor-fold>
 
-    @Override @NotNull public TrendingFilterTypeDTO getPrevious()
+    @Override @NonNull public TrendingFilterTypeDTO getPrevious()
     {
         return new TrendingFilterTypeBasicDTO(exchange);
     }
 
-    @Override @NotNull public TrendingFilterTypeDTO getNext()
+    @Override @NonNull public TrendingFilterTypeDTO getNext()
     {
         return new TrendingFilterTypePriceDTO(exchange);
     }
 
-    @Override @NotNull public TrendingSecurityListType getSecurityListType(
+    @Override @NonNull public TrendingSecurityListType getSecurityListType(
             @Nullable String usableExchangeName,
             @Nullable Integer page,
             @Nullable Integer perPage)
@@ -52,7 +52,7 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
         return new TrendingVolumeSecurityListType(usableExchangeName, page, perPage);
     }
 
-    @Override @NotNull public String getTrackEventCategory()
+    @Override @NonNull public String getTrackEventCategory()
     {
         return TRACK_EVENT_SYMBOL;
     }

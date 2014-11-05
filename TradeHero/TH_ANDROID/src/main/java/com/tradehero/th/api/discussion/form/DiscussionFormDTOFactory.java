@@ -4,7 +4,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.news.form.NewsItemReplyDiscussionFormDTO;
 import com.tradehero.th.api.timeline.form.TimelineItemReplyCommentFormDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DiscussionFormDTOFactory
 {
@@ -13,7 +13,7 @@ public class DiscussionFormDTOFactory
         super();
     }
 
-    @NotNull public DiscussionFormDTO createEmpty(@NotNull DiscussionType discussionType)
+    @NonNull public DiscussionFormDTO createEmpty(@NonNull DiscussionType discussionType)
     {
         DiscussionFormDTO created;
         switch (discussionType)

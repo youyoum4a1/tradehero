@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TranslationKeyFactory
 {
@@ -26,7 +25,7 @@ public class TranslationKeyFactory
 
     @Nullable public TranslationKeyList createFrom(
             @Nullable AbstractDiscussionCompactDTO fromDiscussion,
-            @NotNull String toLanguage)
+            @NonNull String toLanguage)
     {
         if (fromDiscussion == null || fromDiscussion.langCode == null)
         {
@@ -38,7 +37,7 @@ public class TranslationKeyFactory
                 getTranslatableTexts(fromDiscussion));
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     protected List<String> getTranslatableTexts(@Nullable AbstractDiscussionCompactDTO fromDiscussion)
     {
         if (fromDiscussion == null)
@@ -58,7 +57,7 @@ public class TranslationKeyFactory
     }
 
     protected void addTranslatableTexts(
-            @NotNull List<String> texts, @NotNull AbstractDiscussionDTO abstractDiscussionDTO)
+            @NonNull List<String> texts, @NonNull AbstractDiscussionDTO abstractDiscussionDTO)
     {
         if (abstractDiscussionDTO.text != null)
         {
@@ -75,8 +74,8 @@ public class TranslationKeyFactory
     }
 
     protected void addTranslatableTexts(
-            @NotNull List<String> texts,
-            @NotNull DiscussionDTO discussionDTO)
+            @NonNull List<String> texts,
+            @NonNull DiscussionDTO discussionDTO)
     {
         if (discussionDTO instanceof PrivateDiscussionDTO)
         {
@@ -85,20 +84,20 @@ public class TranslationKeyFactory
     }
 
     protected void addTranslatableTexts(
-            @NotNull List<String> texts,
-            @NotNull PrivateDiscussionDTO privateDiscussionDTO)
+            @NonNull List<String> texts,
+            @NonNull PrivateDiscussionDTO privateDiscussionDTO)
     {
     }
 
     protected void addTranslatableTexts(
-            @NotNull List<String> texts,
-            @NotNull TimelineItemDTO timelineItemDTO)
+            @NonNull List<String> texts,
+            @NonNull TimelineItemDTO timelineItemDTO)
     {
     }
 
     protected void addTranslatableTexts(
-            @NotNull List<String> texts,
-            @NotNull NewsItemCompactDTO newsItemCompactDTO)
+            @NonNull List<String> texts,
+            @NonNull NewsItemCompactDTO newsItemCompactDTO)
     {
         if (newsItemCompactDTO.caption != null)
         {
@@ -119,8 +118,8 @@ public class TranslationKeyFactory
     }
 
     protected void addTranslatableTexts(
-            @NotNull List<String> texts,
-            @NotNull NewsItemDTO newsItemDTO)
+            @NonNull List<String> texts,
+            @NonNull NewsItemDTO newsItemDTO)
     {
         if (newsItemDTO.text != null)
         {
@@ -132,22 +131,20 @@ public class TranslationKeyFactory
         }
     }
 
-    @Contract("_, _, null -> null; _, _, !null -> !null")
-    public TranslationKeyList createKeys(@NotNull String fromLang, @NotNull String toLang, @Nullable Collection<String> texts)
+    public TranslationKeyList createKeys(@NonNull String fromLang, @NonNull String toLang, @Nullable Collection<String> texts)
     {
         if (texts == null)
         {
             return null;
         }
         TranslationKeyList keys = new TranslationKeyList();
-        for (@NotNull String text: texts)
+        for (String text: texts)
         {
             keys.add(new TranslationKey(fromLang, toLang, text));
         }
         return keys;
     }
 
-    @Contract("null -> false; !null -> _")
     public boolean isValidLangCode(@Nullable String langCode)
     {
         return langCode != null && !TextUtils.isEmpty(langCode) && !langCode.equals("xxx");

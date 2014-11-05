@@ -9,7 +9,7 @@ import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.amazon.BaseAmazonProductIdentifierFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonProductIdentifierFetcher
     extends BaseAmazonProductIdentifierFetcher<
@@ -21,8 +21,8 @@ public class THBaseAmazonProductIdentifierFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonProductIdentifierFetcher(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(context, purchasingService);
     }

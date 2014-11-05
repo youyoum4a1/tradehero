@@ -34,7 +34,7 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -64,7 +64,7 @@ public class DiscussionView extends FrameLayout
     @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
-    @NotNull private List<Subscription> discussionListCacheSubscriptions;
+    @NonNull private List<Subscription> discussionListCacheSubscriptions;
     protected TextView discussionStatus;
     protected DiscussionKey discussionKey;
 
@@ -480,7 +480,7 @@ public class DiscussionView extends FrameLayout
                 if (list != null)
                 {
                     DiscussionKeyList value = new DiscussionKeyList();
-                    for (@NotNull AbstractDiscussionDTO abstractDiscussionDTO : list)
+                    for (AbstractDiscussionDTO abstractDiscussionDTO : list)
                     {
                         value.add(abstractDiscussionDTO.getDiscussionKey());
                     }

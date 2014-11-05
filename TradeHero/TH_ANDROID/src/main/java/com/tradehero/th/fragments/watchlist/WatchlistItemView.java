@@ -44,8 +44,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.text.DecimalFormat;
 
@@ -187,7 +187,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         };
     }
 
-    @NotNull private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
+    @NonNull private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
     {
         return new THCallback<WatchlistPositionDTO>()
         {

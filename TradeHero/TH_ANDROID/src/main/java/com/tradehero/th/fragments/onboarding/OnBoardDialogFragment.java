@@ -46,8 +46,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,15 +71,15 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @InjectView(R.id.stock_switcher) ViewSwitcher mStockSwitcher;
 
     //exchange
-    @NotNull OnBoardPickExchangeSectorViewHolder exchangeSectorViewHolder;
+    @NonNull OnBoardPickExchangeSectorViewHolder exchangeSectorViewHolder;
 
     //hero
-    @NotNull OnBoardPickHeroViewHolder heroViewHolder;
+    @NonNull OnBoardPickHeroViewHolder heroViewHolder;
     @Nullable DTOCacheNew.Listener<SuggestHeroesListType, LeaderboardUserDTOList> leaderboardUserListCacheListener;
 
     //stock
     @Inject SecurityCompactListCacheRx securityCompactListCache;
-    @NotNull OnBoardPickStockViewHolder stockViewHolder;
+    @NonNull OnBoardPickStockViewHolder stockViewHolder;
 
     public static OnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
@@ -171,20 +171,20 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         }
     }
 
-    @NotNull public OnBoardPrefDTO getOnBoardPrefs()
+    @NonNull public OnBoardPrefDTO getOnBoardPrefs()
     {
         return exchangeSectorViewHolder.getOnBoardPrefs();
     }
 
     protected class OnBoardPickHeroLeaderboardCacheListener implements DTOCacheNew.Listener<SuggestHeroesListType, LeaderboardUserDTOList>
     {
-        @Override public void onDTOReceived(@NotNull SuggestHeroesListType key, @NotNull LeaderboardUserDTOList value)
+        @Override public void onDTOReceived(@NonNull SuggestHeroesListType key, @NonNull LeaderboardUserDTOList value)
         {
             mHeroSwitcher.setDisplayedChild(1);
             heroViewHolder.setUsers(value);
         }
 
-        @Override public void onErrorThrown(@NotNull SuggestHeroesListType key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull SuggestHeroesListType key, @NonNull Throwable error)
         {
             THToast.show(R.string.error_fetch_leaderboard_info);
         }
@@ -249,7 +249,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
-    @Override public void onSaveInstanceState(@NotNull Bundle outState)
+    @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         detachLeaderboardUserListCache();

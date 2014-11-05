@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class QuickPriceButtonSet extends LinearLayout
     implements View.OnClickListener
@@ -47,7 +47,7 @@ public class QuickPriceButtonSet extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        for (@NotNull QuickPriceButton button : findButtons())
+        for (QuickPriceButton button : findButtons())
         {
             button.setOnClickListener(this);
         }
@@ -55,19 +55,19 @@ public class QuickPriceButtonSet extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        for (@NotNull QuickPriceButton button : findButtons())
+        for (QuickPriceButton button : findButtons())
         {
             button.setOnClickListener(null);
         }
         super.onDetachedFromWindow();
     }
 
-    @NotNull public List<QuickPriceButton> findButtons()
+    @NonNull public List<QuickPriceButton> findButtons()
     {
         return findButtons(this);
     }
 
-    @NotNull protected List<QuickPriceButton> findButtons(@NotNull ViewGroup parent)
+    @NonNull protected List<QuickPriceButton> findButtons(@NonNull ViewGroup parent)
     {
         List<QuickPriceButton> found = new ArrayList<>();
         for (int i = 0; i < parent.getChildCount(); i++)
@@ -85,7 +85,7 @@ public class QuickPriceButtonSet extends LinearLayout
         return found;
     }
 
-    @Override public void onClick(@NotNull View view)
+    @Override public void onClick(@NonNull View view)
     {
         currentSelected = (QuickPriceButton) view;
         display();

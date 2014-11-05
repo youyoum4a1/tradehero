@@ -3,16 +3,16 @@ package com.tradehero.th.models.discussion;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.models.DTOProcessor;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorDiscussion implements DTOProcessor<DiscussionDTO>, Action1<DiscussionDTO>
 {
-    @NotNull private final DiscussionDTOFactory discussionDTOFactory;
+    @NonNull private final DiscussionDTOFactory discussionDTOFactory;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussion(
-            @NotNull DiscussionDTOFactory discussionDTOFactory)
+            @NonNull DiscussionDTOFactory discussionDTOFactory)
     {
         this.discussionDTOFactory = discussionDTOFactory;
     }

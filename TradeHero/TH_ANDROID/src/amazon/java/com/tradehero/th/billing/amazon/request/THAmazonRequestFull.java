@@ -8,7 +8,7 @@ import com.tradehero.th.billing.amazon.THAmazonOrderId;
 import com.tradehero.th.billing.amazon.THAmazonProductDetail;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseOrder;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THAmazonRequestFull
         extends THAmazonRequest<
@@ -22,7 +22,7 @@ public class THAmazonRequestFull
         AmazonException>
 {
     //<editor-fold desc="Constructors">
-    protected THAmazonRequestFull(@NotNull Builder<?> builder)
+    protected THAmazonRequestFull(@NonNull Builder<?> builder)
     {
         super(builder);
     }

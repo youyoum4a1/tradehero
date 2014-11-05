@@ -30,7 +30,7 @@ import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,28 +58,28 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
     protected CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
-    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    @NotNull public static ProviderId getProviderId(@NotNull Bundle args)
+    @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
 
-    public static void putCompetition(@NotNull Bundle args, @NotNull CompetitionDTO competitionDTO)
+    public static void putCompetition(@NonNull Bundle args, @NonNull CompetitionDTO competitionDTO)
     {
         putCompetitionId(args, competitionDTO.getCompetitionId());
         putLeaderboardDefKey(args, competitionDTO.leaderboard.getLeaderboardDefKey());
     }
 
-    public static void putCompetitionId(@NotNull Bundle args, @NotNull CompetitionId competitionId)
+    public static void putCompetitionId(@NonNull Bundle args, @NonNull CompetitionId competitionId)
     {
         args.putBundle(BUNDLE_KEY_COMPETITION_ID, competitionId.getArgs());
     }
 
-    @NotNull public static CompetitionId getCompetitionId(@NotNull Bundle args)
+    @NonNull public static CompetitionId getCompetitionId(@NonNull Bundle args)
     {
         return new CompetitionId(args.getBundle(BUNDLE_KEY_COMPETITION_ID));
     }
@@ -119,7 +119,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         }
     }
 
-    @Override @NotNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
+    @Override @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
                 getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_competition_mode);
@@ -240,7 +240,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         }
     }
 
-    protected void fetchCompetitionLeaderboard(@NotNull CompetitionDTO competitionDTO)
+    protected void fetchCompetitionLeaderboard(@NonNull CompetitionDTO competitionDTO)
     {
         CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
         AndroidObservable.bindFragment(

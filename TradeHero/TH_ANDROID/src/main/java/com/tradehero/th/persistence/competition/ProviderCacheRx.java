@@ -10,7 +10,7 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -19,14 +19,14 @@ public class ProviderCacheRx extends BaseFetchDTOCacheRx<ProviderId, ProviderDTO
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 4;
 
-    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NotNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
+    @NonNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NonNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderCacheRx(
-            @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull ProviderServiceWrapper providerServiceWrapper,
+            @NonNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
@@ -34,12 +34,12 @@ public class ProviderCacheRx extends BaseFetchDTOCacheRx<ProviderId, ProviderDTO
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<ProviderDTO> fetch(@NotNull final ProviderId key)
+    @Override @NonNull public Observable<ProviderDTO> fetch(@NonNull final ProviderId key)
     {
         return providerServiceWrapper.getProviderRx(key);
     }
 
-    @Override public void onNext(@NotNull ProviderId key, @NotNull ProviderDTO value)
+    @Override public void onNext(@NonNull ProviderId key, @NonNull ProviderDTO value)
     {
         warrantSpecificKnowledgeFactory.add(value);
         super.onNext(key, value);

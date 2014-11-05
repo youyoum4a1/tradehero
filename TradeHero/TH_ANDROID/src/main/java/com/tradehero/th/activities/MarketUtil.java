@@ -2,10 +2,10 @@ package com.tradehero.th.activities;
 
 import android.app.Activity;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface MarketUtil
 {
-    void showAppOnMarket(@NotNull Activity activity);
-    void sendToReviewAllOnMarket(@NotNull Activity activity);
+    void showAppOnMarket(@NonNull Activity activity);
+    void sendToReviewAllOnMarket(@NonNull Activity activity);
 }

@@ -27,8 +27,8 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.widget.MultiScrollListener;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -218,7 +218,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         return getSecurityListType(FIRST_PAGE - 1);
     }
 
-    @NotNull abstract public SecurityListType getSecurityListType(int page);
+    @NonNull abstract public SecurityListType getSecurityListType(int page);
 
     protected void showProgressSpinner(boolean flag)
     {

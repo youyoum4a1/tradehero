@@ -2,7 +2,7 @@ package org.robolectric.shadows;
 
 import android.os.AsyncTask;
 import com.tradehero.THRobolectricTestRunner;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -195,7 +195,7 @@ public class AsyncTaskTest {
 
     public class ImmediateExecutor implements Executor {
         @Override
-        public void execute(@NotNull Runnable command) {
+        public void execute(@NonNull Runnable command) {
             command.run();
         }
     }

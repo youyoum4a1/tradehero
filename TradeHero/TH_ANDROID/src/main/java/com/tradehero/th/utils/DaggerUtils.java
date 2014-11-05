@@ -1,7 +1,7 @@
 package com.tradehero.th.utils;
 
 import dagger.ObjectGraph;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 /**
  * This class is deprecated, please use HierarchyInjector instead
@@ -19,7 +19,7 @@ public class DaggerUtils
         }
     }
 
-    public static Object getObject(@NotNull Class<?> aClass)
+    public static Object getObject(@NonNull Class<?> aClass)
     {
         return objectGraph.get(aClass);
     }

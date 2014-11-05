@@ -3,7 +3,7 @@ package com.tradehero.th.api.discussion.key;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.discussion.DiscussionType;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class DiscussionKey<T extends DiscussionKey>
         implements DTOKey, Comparable<T>
@@ -15,12 +15,12 @@ abstract public class DiscussionKey<T extends DiscussionKey>
     public final Integer id;
 
     //<editor-fold desc="Constructors">
-    protected DiscussionKey(@NotNull Integer id)
+    protected DiscussionKey(@NonNull Integer id)
     {
         this.id = id;
     }
 
-    protected DiscussionKey(@NotNull Bundle args)
+    protected DiscussionKey(@NonNull Bundle args)
     {
         if (!args.containsKey(DiscussionKey.BUNDLE_KEY_ID))
         {

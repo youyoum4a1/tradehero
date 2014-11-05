@@ -24,8 +24,8 @@ import java.util.Locale;
 import java.util.SimpleTimeZone;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -48,7 +48,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     private final String applicationId;
     private int activityCode;
     private Context applicationContext;
-    @NotNull private final TokenCachingStrategy tokenCachingStrategy;
+    @NonNull private final TokenCachingStrategy tokenCachingStrategy;
     private List<String> permissions;
     private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
     private String userId;
@@ -56,9 +56,9 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     // TODO not use injection of Context as this instance is a singleton.
     // Use Provider<Activity> instead
     @Inject public FacebookAuthenticationProvider(
-            @NotNull SocialLinker socialLinker,
+            @NonNull SocialLinker socialLinker,
             Context context,
-            @NotNull TokenCachingStrategy tokenCachingStrategy,
+            @NonNull TokenCachingStrategy tokenCachingStrategy,
             @FacebookAppId String applicationId,
             @FacebookPermissions List<String> permissions)
     {
@@ -160,7 +160,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         clearCachedObservables();
     }
 
-    public void addPermission(@NotNull String permission)
+    public void addPermission(@NonNull String permission)
     {
         this.permissions.add(permission);
         clearCachedObservables();

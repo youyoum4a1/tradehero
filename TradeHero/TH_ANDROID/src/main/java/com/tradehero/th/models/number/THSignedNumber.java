@@ -3,7 +3,7 @@ package com.tradehero.th.models.number;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.base.THApp;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.text.DecimalFormat;
 
@@ -112,7 +112,7 @@ public class THSignedNumber
     }
 
     //<editor-fold desc="Constructors">
-    protected THSignedNumber(@NotNull Builder<?> builder)
+    protected THSignedNumber(@NonNull Builder<?> builder)
     {
         this.withSign = builder.withSign;
         this.signType = builder.signType;

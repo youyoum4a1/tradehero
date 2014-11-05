@@ -1,6 +1,6 @@
 package com.tradehero.common.fragment;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public interface HasSelectedItem
 {

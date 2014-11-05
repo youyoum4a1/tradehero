@@ -5,8 +5,8 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.broadcast.BroadcastData;
 import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData
@@ -63,7 +63,7 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
     }
     //</editor-fold>
 
-    @NotNull @Override public Bundle getArgs()
+    @NonNull @Override public Bundle getArgs()
     {
         Bundle b = new Bundle();
         b.putString(KEY_TEXT, text);
@@ -83,12 +83,12 @@ public class UserXPAchievementDTO implements DTO, BroadcastData
         return b;
     }
 
-    @NotNull @Override public String getBroadcastBundleKey()
+    @NonNull @Override public String getBroadcastBundleKey()
     {
         return XpModule.KEY_XP_BROADCAST;
     }
 
-    @NotNull @Override public String getBroadcastIntentActionName()
+    @NonNull @Override public String getBroadcastIntentActionName()
     {
         return XpModule.XP_INTENT_ACTION_NAME;
     }

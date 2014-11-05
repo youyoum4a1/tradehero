@@ -1,7 +1,7 @@
 package com.tradehero.th.rx.view.list;
 
 import android.widget.AbsListView;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -12,10 +12,10 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 public class OperatorStickyListHeadersListViewClick<T extends StickyListHeadersListView>
         implements Observable.OnSubscribe<ItemClickDTO>
 {
-    @NotNull private final T view;
+    @NonNull private final T view;
 
     //<editor-fold desc="Constructors">
-    public OperatorStickyListHeadersListViewClick(@NotNull T absListView)
+    public OperatorStickyListHeadersListViewClick(@NonNull T absListView)
     {
         this.view = absListView;
     }

@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.robolectric.Robolectric;
 import org.robolectric.TestLifecycleApplication;
 import org.robolectric.res.builder.RobolectricPackageManager;
@@ -51,7 +51,7 @@ public class TestTHApp extends THApp
     }
 
     // Find a better way as we plant multiple ones
-    @NotNull @Override protected Timber.Tree createTimberTree()
+    @NonNull @Override protected Timber.Tree createTimberTree()
     {
         return new SystemOutTree();
     }

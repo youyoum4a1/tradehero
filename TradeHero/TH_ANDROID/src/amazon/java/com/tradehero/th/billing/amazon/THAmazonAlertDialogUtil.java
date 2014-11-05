@@ -23,7 +23,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
@@ -33,15 +33,15 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
         THAmazonStoreProductDetailView,
         THAmazonSKUDetailAdapter>
 {
-    @NotNull protected final THAmazonPurchaseCache thAmazonPurchaseCache;
-    @NotNull protected final AmazonStoreUtils amazonStoreUtils;
+    @NonNull protected final THAmazonPurchaseCache thAmazonPurchaseCache;
+    @NonNull protected final AmazonStoreUtils amazonStoreUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonAlertDialogUtil(
-            @NotNull Analytics analytics,
-            @NotNull ActivityUtil activityUtil,
-            @NotNull THAmazonPurchaseCache thAmazonPurchaseCache,
-            @NotNull AmazonStoreUtils amazonStoreUtils)
+            @NonNull Analytics analytics,
+            @NonNull ActivityUtil activityUtil,
+            @NonNull THAmazonPurchaseCache thAmazonPurchaseCache,
+            @NonNull AmazonStoreUtils amazonStoreUtils)
     {
         super(analytics, activityUtil);
         this.thAmazonPurchaseCache = thAmazonPurchaseCache;
@@ -50,7 +50,7 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
     //</editor-fold>
 
     //<editor-fold desc="SKU related">
-    @Override protected THAmazonSKUDetailAdapter createProductDetailAdapter(@NotNull Activity activity,
+    @Override protected THAmazonSKUDetailAdapter createProductDetailAdapter(@NonNull Activity activity,
             ProductIdentifierDomain skuDomain)
     {
         return new THAmazonSKUDetailAdapter(activity, skuDomain);

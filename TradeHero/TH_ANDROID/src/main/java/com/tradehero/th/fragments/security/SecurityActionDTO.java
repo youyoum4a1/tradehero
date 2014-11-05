@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import com.tradehero.th.api.security.SecurityId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 class SecurityActionDTO
 {
@@ -11,11 +11,11 @@ class SecurityActionDTO
     static final int ACTION_ID_TRADE = 2;
 
     final int actionId;
-    @NotNull final String title;
-    @NotNull final SecurityId securityToActOn;
+    @NonNull final String title;
+    @NonNull final SecurityId securityToActOn;
 
     //<editor-fold desc="Constructors">
-    SecurityActionDTO(int actionId, @NotNull String title, @NotNull SecurityId securityToActOn)
+    SecurityActionDTO(int actionId, @NonNull String title, @NonNull SecurityId securityToActOn)
     {
         this.actionId = actionId;
         this.title = title;

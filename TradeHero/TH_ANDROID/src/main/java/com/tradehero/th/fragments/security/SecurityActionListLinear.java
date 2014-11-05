@@ -17,8 +17,8 @@ import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SecurityActionListLinear extends LinearLayout
 {
@@ -59,7 +59,7 @@ public class SecurityActionListLinear extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void setSecurityIdToActOn(@NotNull SecurityId securityIdToActOn)
+    public void setSecurityIdToActOn(@NonNull SecurityId securityIdToActOn)
     {
         adapter.clear();
         adapter.add(new SecurityActionDTO(
@@ -140,8 +140,8 @@ public class SecurityActionListLinear extends LinearLayout
     public static interface OnActionMenuClickedListener
     {
         void onCancelClicked();
-        void onAddToWatchlistRequested(@NotNull SecurityId securityId);
-        void onAddAlertRequested(@NotNull SecurityId securityId);
-        void onBuySellRequested(@NotNull SecurityId securityId);
+        void onAddToWatchlistRequested(@NonNull SecurityId securityId);
+        void onAddAlertRequested(@NonNull SecurityId securityId);
+        void onBuySellRequested(@NonNull SecurityId securityId);
     }
 }

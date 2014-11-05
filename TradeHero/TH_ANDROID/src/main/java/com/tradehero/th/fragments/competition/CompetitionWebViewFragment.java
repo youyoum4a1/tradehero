@@ -16,7 +16,7 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Routable(
         "providers-enroll/:providerId"
@@ -59,7 +59,7 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
     }
     //</editor-fold>
 
-    @Override @NotNull protected String getLoadingUrl()
+    @Override @NonNull protected String getLoadingUrl()
     {
         String loadingUrl = super.getLoadingUrl();
         if (loadingUrl == null)

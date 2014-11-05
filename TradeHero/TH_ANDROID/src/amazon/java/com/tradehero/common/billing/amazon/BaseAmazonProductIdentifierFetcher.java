@@ -6,8 +6,8 @@ import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseAmazonProductIdentifierFetcher<
@@ -32,8 +32,8 @@ abstract public class BaseAmazonProductIdentifierFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseAmazonProductIdentifierFetcher(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(context, purchasingService);
         remainingGroupIds = new LinkedList<>();

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ExchangeSpinner extends Spinner
 {
@@ -22,7 +22,7 @@ public class ExchangeSpinner extends Spinner
         super.setSelection(position);
     }
 
-    public void setSelection(@NotNull ExchangeCompactDTO exchangeCompactDTO)
+    public void setSelection(@NonNull ExchangeCompactDTO exchangeCompactDTO)
     {
         SpinnerAdapter adapter = getAdapter();
         int index = 0;

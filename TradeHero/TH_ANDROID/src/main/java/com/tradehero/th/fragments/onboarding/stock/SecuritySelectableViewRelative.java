@@ -4,12 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecuritySelectableViewRelative extends RelativeLayout
     implements DTOView<SelectableSecurityDTO>
 {
-    @NotNull SecuritySelectableViewHolder securitySelectableViewHolder;
+    @NonNull SecuritySelectableViewHolder securitySelectableViewHolder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

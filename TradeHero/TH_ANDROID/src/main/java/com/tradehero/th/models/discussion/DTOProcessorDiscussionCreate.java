@@ -7,22 +7,22 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 {
-    @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final DiscussionCacheRx discussionCache;
-    @NotNull protected final UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
+    @NonNull protected final CurrentUserId currentUserId;
+    @NonNull protected final DiscussionCacheRx discussionCache;
+    @NonNull protected final UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
     @Nullable protected final DiscussionKey stubKey;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionCreate(
-            @NotNull DiscussionDTOFactory discussionDTOFactory,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull DiscussionCacheRx discussionCache,
-            @NotNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
+            @NonNull DiscussionDTOFactory discussionDTOFactory,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull DiscussionCacheRx discussionCache,
+            @NonNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
             @Nullable DiscussionKey stubKey)
     {
         super(discussionDTOFactory);
@@ -35,7 +35,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {
-        @Nullable DiscussionDTO processed = super.process(discussionDTO);
+        DiscussionDTO processed = super.process(discussionDTO);
         if (stubKey != null)
         {
             discussionCache.invalidate(stubKey);

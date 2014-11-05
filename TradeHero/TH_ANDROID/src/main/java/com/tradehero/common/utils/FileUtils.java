@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import java.io.File;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class FileUtils
 {
@@ -42,7 +42,7 @@ public class FileUtils
      * @param uri The Uri to query.
      * @author paulburke
      */
-    public static String getPath(@NotNull final Context context, @NotNull final Uri uri)
+    public static String getPath(@NonNull final Context context, @NonNull final Uri uri)
     {
 
         // DocumentProvider

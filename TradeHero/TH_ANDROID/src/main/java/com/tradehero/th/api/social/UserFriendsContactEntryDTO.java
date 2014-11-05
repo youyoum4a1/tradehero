@@ -3,7 +3,7 @@ package com.tradehero.th.api.social;
 import android.net.Uri;
 import com.tradehero.th.R;
 import com.tradehero.th.loaders.ContactEntry;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserFriendsContactEntryDTO extends UserFriendsDTO
 {
@@ -15,7 +15,7 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
         super();
     }
 
-    public UserFriendsContactEntryDTO(@NotNull ContactEntry contactEntry)
+    public UserFriendsContactEntryDTO(@NonNull ContactEntry contactEntry)
     {
         this.name = contactEntry.getName();
         this.email = contactEntry.getEmail();
@@ -45,7 +45,7 @@ public class UserFriendsContactEntryDTO extends UserFriendsDTO
                 (email == null ? 0 : email.hashCode());
     }
 
-    @Override protected boolean equals(@NotNull UserFriendsDTO other)
+    @Override protected boolean equals(@NonNull UserFriendsDTO other)
     {
         return super.equals(other) &&
                 email == null ? other.email == null : email.equals(other.email);

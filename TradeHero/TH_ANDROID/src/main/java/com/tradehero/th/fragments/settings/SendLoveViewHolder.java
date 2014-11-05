@@ -3,15 +3,15 @@ package com.tradehero.th.fragments.settings;
 import android.app.Activity;
 import com.tradehero.th.R;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SendLoveViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final Activity activity;
+    @NonNull private final Activity activity;
 
     //<editor-fold desc="Constructors">
     @Inject public SendLoveViewHolder(
-            @NotNull Activity activity)
+            @NonNull Activity activity)
     {
         super();
         this.activity = activity;

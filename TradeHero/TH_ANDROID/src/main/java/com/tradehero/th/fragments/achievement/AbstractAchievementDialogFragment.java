@@ -66,8 +66,8 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -130,13 +130,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
 
-    @NotNull protected UserAchievementId userAchievementId;
+    @NonNull protected UserAchievementId userAchievementId;
     @Nullable protected UserAchievementDTO userAchievementDTO;
     protected int mCurrentColor = DEFAULT_FILTER_COLOR;
     private ValueAnimator colorValueAnimator;
     private ObjectAnimator btnColorAnimation;
     private ValueAnimator mAnim;
-    @NotNull private LevelDefListId mLevelDefListId = new LevelDefListId();
+    @NonNull private LevelDefListId mLevelDefListId = new LevelDefListId();
     private Callback mBadgeCallback;
 
     @Override public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -560,7 +560,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         super.onDestroyView();
     }
 
-    @Override public void onSaveInstanceState(@NotNull Bundle outState)
+    @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
         if (badge != null)
@@ -598,7 +598,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         getDialog().dismiss();
     }
 
-    @NotNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
+    @NonNull protected ValueAnimator.AnimatorUpdateListener createEarnedAnimatorUpdateListener()
     {
         return new AbstractAchievementValueAnimatorUpdateListener();
     }
@@ -612,7 +612,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
     }
 
-    @NotNull private Observer<Pair<LevelDefListId, LevelDefDTOList>> createLevelDefCacheObserver()
+    @NonNull private Observer<Pair<LevelDefListId, LevelDefDTOList>> createLevelDefCacheObserver()
     {
         return new LevelDefListObserver();
     }
@@ -651,15 +651,15 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     public static class Creator
     {
-        @NotNull UserAchievementCacheRx userAchievementCacheInner;
+        @NonNull UserAchievementCacheRx userAchievementCacheInner;
 
-        @Inject public Creator(@NotNull UserAchievementCacheRx userAchievementCacheInner)
+        @Inject public Creator(@NonNull UserAchievementCacheRx userAchievementCacheInner)
         {
             super();
             this.userAchievementCacheInner = userAchievementCacheInner;
         }
 
-        @NotNull public Observable<AbstractAchievementDialogFragment> newInstance(@NotNull UserAchievementId userAchievementId)
+        @NonNull public Observable<AbstractAchievementDialogFragment> newInstance(@NonNull UserAchievementId userAchievementId)
         {
             if (!userAchievementCacheInner.shouldShow(userAchievementId))
             {

@@ -9,7 +9,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseSamsungPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<
@@ -22,10 +22,10 @@ public class THBaseSamsungPurchaseReporterHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaseReporterHolder(
-            @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NotNull Provider<THSamsungPurchaseReporter> thSamsungPurchaseReporterProvider)
+            @NonNull Lazy<UserProfileCache> userProfileCache,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NonNull Provider<THSamsungPurchaseReporter> thSamsungPurchaseReporterProvider)
     {
         super(userProfileCache, portfolioCompactListCache, portfolioCache, thSamsungPurchaseReporterProvider);
     }

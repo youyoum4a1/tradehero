@@ -5,7 +5,7 @@ import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SendFeedbackViewHolder extends OneSettingViewHolder
 {
@@ -16,7 +16,7 @@ public class SendFeedbackViewHolder extends OneSettingViewHolder
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         if (clickablePref != null)

@@ -10,20 +10,20 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class SecurityServiceWrapperStub extends SecurityServiceWrapper
 {
     //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapperStub(
-            @NotNull SecurityService securityService,
-            @NotNull SecurityServiceAsync securityServiceAsync,
-            @NotNull SecurityServiceRx securityServiceRx,
-            @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull SecurityCompactCacheRx securityCompactCache,
-            @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache,
-            @NotNull PortfolioCacheRx portfolioCache,
-            @NotNull CurrentUserId currentUserId)
+            @NonNull SecurityService securityService,
+            @NonNull SecurityServiceAsync securityServiceAsync,
+            @NonNull SecurityServiceRx securityServiceRx,
+            @NonNull ProviderServiceWrapper providerServiceWrapper,
+            @NonNull SecurityCompactCacheRx securityCompactCache,
+            @NonNull SecurityPositionDetailCacheRx securityPositionDetailCache,
+            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull CurrentUserId currentUserId)
     {
         super(securityService, securityServiceAsync, securityServiceRx, providerServiceWrapper,
                 securityCompactCache, securityPositionDetailCache, portfolioCache,
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override public SecurityCompactDTOList getSecurities(@NotNull SecurityListType key)
+    @Override public SecurityCompactDTOList getSecurities(@NonNull SecurityListType key)
     {
         if (key instanceof ExchangeSectorSecurityListType)
         {

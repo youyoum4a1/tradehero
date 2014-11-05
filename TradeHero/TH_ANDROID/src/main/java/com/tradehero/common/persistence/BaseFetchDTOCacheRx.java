@@ -4,7 +4,7 @@ import android.util.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -13,21 +13,21 @@ import rx.subjects.BehaviorSubject;
 abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends BaseDTOCacheRx<DTOKeyType, DTOType>
 {
-    @NotNull final private Map<DTOKeyType, Subscription> cachedFetcherSubscriptions;
+    @NonNull final private Map<DTOKeyType, Subscription> cachedFetcherSubscriptions;
 
     //<editor-fold desc="Constructors">
     protected BaseFetchDTOCacheRx(int valueSize, int subjectSize, int fetcherSize,
-            @NotNull DTOCacheUtilRx dtoCacheUtilRx)
+            @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         super(valueSize, subjectSize, dtoCacheUtilRx);
         this.cachedFetcherSubscriptions = new HashMap<>();
     }
     //</editor-fold>
 
-    @NotNull abstract protected Observable<DTOType> fetch(@NotNull DTOKeyType key);
+    @NonNull abstract protected Observable<DTOType> fetch(@NonNull DTOKeyType key);
 
-    @NotNull @Override
-    protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateObservable(@NotNull final DTOKeyType key)
+    @NonNull @Override
+    protected Observable<Pair<DTOKeyType, DTOType>> getOrCreateObservable(@NonNull final DTOKeyType key)
     {
         Observable<Pair<DTOKeyType, DTOType>> cachedObservable = super.getOrCreateObservable(key);
         if (cachedFetcherSubscriptions.get(key) == null)
@@ -56,7 +56,7 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         return cachedObservable;
     }
 
-    public void onError(@NotNull DTOKeyType key, @NotNull Throwable error)
+    public void onError(@NonNull DTOKeyType key, @NonNull Throwable error)
     {
         BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = getBehavior(key);
         if (cachedSubject != null)
@@ -65,7 +65,7 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         }
     }
 
-    @Override public void invalidate(@NotNull DTOKeyType key)
+    @Override public void invalidate(@NonNull DTOKeyType key)
     {
         super.invalidate(key);
         Subscription subscription = cachedFetcherSubscriptions.remove(key);

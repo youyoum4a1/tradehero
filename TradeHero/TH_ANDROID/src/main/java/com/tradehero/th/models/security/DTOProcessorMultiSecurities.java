@@ -4,7 +4,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import java.util.Map;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import rx.functions.Action1;
 
 public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, SecurityCompactDTO>>,
@@ -23,7 +23,7 @@ public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, Se
     {
         if (value != null)
         {
-            for (@Nullable SecurityCompactDTO securityCompactDTO: value.values())
+            for (SecurityCompactDTO securityCompactDTO: value.values())
             {
                 if (securityCompactDTO != null)
                 {

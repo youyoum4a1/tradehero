@@ -5,7 +5,7 @@ import com.tradehero.common.persistence.StraightDTOCacheNew;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class ProductPurchaseCache<
         ProductIdentifierType extends ProductIdentifier,
@@ -15,7 +15,7 @@ abstract public class ProductPurchaseCache<
 {
     //<editor-fold desc="Constructors">
     public ProductPurchaseCache(int maxSize,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
     }

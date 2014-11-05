@@ -10,7 +10,7 @@ import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.utils.DaggerUtils;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -27,15 +27,15 @@ public class THBaseSamsungPurchaser
         SamsungException>
     implements THSamsungPurchaser
 {
-    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
-    @NotNull protected final StringSetPreference processingPurchaseStringSet;
+    @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
+    @NonNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaser(
-            @NotNull Context context,
+            @NonNull Context context,
             @ForSamsungBillingMode int mode,
-            @NotNull THSamsungExceptionFactory samsungExceptionFactory,
-            @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull THSamsungExceptionFactory samsungExceptionFactory,
+            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, mode);
         this.samsungExceptionFactory = samsungExceptionFactory;

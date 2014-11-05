@@ -2,7 +2,7 @@ package com.tradehero.th.api.competition;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class CompetitionDTOList extends BaseArrayList<CompetitionDTO>
     implements DTO
@@ -14,10 +14,10 @@ public class CompetitionDTOList extends BaseArrayList<CompetitionDTO>
     }
     //</editor-fold>
 
-    @NotNull public CompetitionIdList createKeys()
+    @NonNull public CompetitionIdList createKeys()
     {
         CompetitionIdList list = new CompetitionIdList();
-        for (@NotNull CompetitionDTO competitionDTO : this)
+        for (CompetitionDTO competitionDTO : this)
         {
             list.add(competitionDTO.getCompetitionId());
         }

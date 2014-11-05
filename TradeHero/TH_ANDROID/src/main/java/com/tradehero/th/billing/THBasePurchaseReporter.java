@@ -13,8 +13,8 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -32,13 +32,13 @@ abstract public class THBasePurchaseReporter<
         THProductPurchaseType,
         BillingExceptionType>
 {
-    @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final Lazy<? extends UserServiceWrapper> userServiceWrapper;
-    @NotNull protected final Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper;
-    @NotNull protected final Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper;
-    @NotNull protected final Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache;
-    @NotNull protected final Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper;
-    @NotNull protected final Lazy<? extends ProductDetailCache<
+    @NonNull protected final CurrentUserId currentUserId;
+    @NonNull protected final Lazy<? extends UserServiceWrapper> userServiceWrapper;
+    @NonNull protected final Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper;
+    @NonNull protected final Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper;
+    @NonNull protected final Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache;
+    @NonNull protected final Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper;
+    @NonNull protected final Lazy<? extends ProductDetailCache<
             ProductIdentifierType,
             THProductDetailType,
             THProductDetailTunerType>> productDetailCache;
@@ -50,13 +50,13 @@ abstract public class THBasePurchaseReporter<
 
     //<editor-fold desc="Constructors">
     protected THBasePurchaseReporter(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper,
-            @NotNull Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
-            @NotNull Lazy<? extends UserServiceWrapper> userServiceWrapper,
-            @NotNull Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NotNull Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NotNull Lazy<? extends ProductDetailCache<
+            @NonNull CurrentUserId currentUserId,
+            @NonNull Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper,
+            @NonNull Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
+            @NonNull Lazy<? extends UserServiceWrapper> userServiceWrapper,
+            @NonNull Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NonNull Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper,
+            @NonNull Lazy<? extends ProductDetailCache<
                     ProductIdentifierType,
                     THProductDetailType,
                     THProductDetailTunerType>> productDetailCache)
@@ -146,7 +146,7 @@ abstract public class THBasePurchaseReporter<
         return handled;
     }
 
-    @NotNull protected Callback<UserProfileDTO> createPurchaseReportedCallback()
+    @NonNull protected Callback<UserProfileDTO> createPurchaseReportedCallback()
     {
         return new THBasePurchaseReporterPurchaseCallback();
     }

@@ -21,7 +21,7 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DiscoveryMainFragment extends DashboardFragment
         implements ActionBar.TabListener
@@ -89,7 +89,7 @@ public class DiscoveryMainFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    private void setupTabs(@NotNull ActionBar actionBar)
+    private void setupTabs(@NonNull ActionBar actionBar)
     {
         DiscoveryTabType[] types = DiscoveryTabType.values();
         int savedSelectedTab = selectedTab;

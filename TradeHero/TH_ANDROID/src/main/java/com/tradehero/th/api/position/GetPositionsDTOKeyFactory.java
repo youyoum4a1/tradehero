@@ -9,8 +9,8 @@ import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class GetPositionsDTOKeyFactory
 {
@@ -21,7 +21,7 @@ public class GetPositionsDTOKeyFactory
     }
     //</editor-fold>
 
-    @Nullable public GetPositionsDTOKey createFrom(@NotNull Bundle args)
+    @Nullable public GetPositionsDTOKey createFrom(@NonNull Bundle args)
     {
         if (PerPagedOwnedPortfolioId.isPagedOwnedPortfolioId(args))
         {

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, PortfolioCompactDTO>
@@ -23,14 +23,14 @@ public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, Portfol
     private final Map<PortfolioId, Double> txnCostUsds;
 
     //<editor-fold desc="Constructors">
-    @Inject public PortfolioCompactCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public PortfolioCompactCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.txnCostUsds = new HashMap<>();
     }
     //</editor-fold>
 
-    @Override public void onNext(@NotNull PortfolioId key, @NotNull PortfolioCompactDTO value)
+    @Override public void onNext(@NonNull PortfolioId key, @NonNull PortfolioCompactDTO value)
     {
         PortfolioCompactDTO previous = getValue(key);
         //noinspection ConstantConditions
@@ -67,20 +67,20 @@ public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, Portfol
         super.onNext(key, value);
     }
 
-    public void onNext(@NotNull List<PortfolioCompactDTO> portfolioCompactDTOs)
+    public void onNext(@NonNull List<PortfolioCompactDTO> portfolioCompactDTOs)
     {
-        for (@NotNull PortfolioCompactDTO portfolioCompactDTO : portfolioCompactDTOs)
+        for (PortfolioCompactDTO portfolioCompactDTO : portfolioCompactDTOs)
         {
             onNext(portfolioCompactDTO.getPortfolioId(), portfolioCompactDTO);
         }
     }
 
-    public void invalidate(@NotNull UserBaseKey concernedUser)
+    public void invalidate(@NonNull UserBaseKey concernedUser)
     {
         invalidate(concernedUser, false);
     }
 
-    public void invalidate(@NotNull UserBaseKey concernedUser, boolean onlyWatchlist)
+    public void invalidate(@NonNull UserBaseKey concernedUser, boolean onlyWatchlist)
     {
         PortfolioCompactDTO cached;
         for (PortfolioId key: snapshot().keySet())

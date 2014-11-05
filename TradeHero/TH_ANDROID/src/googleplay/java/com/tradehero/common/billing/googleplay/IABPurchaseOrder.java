@@ -2,10 +2,10 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.PurchaseOrder;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface IABPurchaseOrder<IABSKUType extends IABSKU>
         extends PurchaseOrder<IABSKUType>
 {
-    @NotNull String getDeveloperPayload();
+    @NonNull String getDeveloperPayload();
 }

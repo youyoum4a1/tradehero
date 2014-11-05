@@ -34,8 +34,8 @@ import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -68,12 +68,12 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Nullable private Subscription messageHeaderFetchSubscription;
     private MessageHeaderId messageHeaderId;
 
-    public static void putCorrespondentUserBaseKey(@NotNull Bundle args, @NotNull UserBaseKey correspondentBaseKey)
+    public static void putCorrespondentUserBaseKey(@NonNull Bundle args, @NonNull UserBaseKey correspondentBaseKey)
     {
         args.putBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY, correspondentBaseKey.getArgs());
     }
 
-    @NotNull private static UserBaseKey collectCorrespondentId(@NotNull Bundle args)
+    @NonNull private static UserBaseKey collectCorrespondentId(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(CORRESPONDENT_USER_BASE_BUNDLE_KEY));
     }

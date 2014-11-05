@@ -2,7 +2,7 @@ package com.tradehero.th.api.achievement;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.QuestBonusId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class QuestBonusDTO implements DTO
 {
@@ -12,7 +12,7 @@ public class QuestBonusDTO implements DTO
     public String levelStr;
     public String bonusStr;
 
-    @NotNull public QuestBonusId getQuestBonusId()
+    @NonNull public QuestBonusId getQuestBonusId()
     {
         return new QuestBonusId(id);
     }

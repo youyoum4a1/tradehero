@@ -2,8 +2,8 @@ package com.tradehero.common.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +25,8 @@ abstract public class BaseIABPurchaseConsumerHolder<
         IABPurchaseType,
         IABException>
 {
-    @NotNull protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
-    @NotNull protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
+    @NonNull protected Map<Integer /*requestCode*/, IABPurchaseConsumerType> iabPurchaseConsumers;
+    @NonNull protected Map<Integer /*requestCode*/, IABPurchaseConsumer.OnIABConsumptionFinishedListener<
             IABSKUType,
             IABOrderIdType,
             IABPurchaseType,
@@ -88,7 +88,7 @@ abstract public class BaseIABPurchaseConsumerHolder<
         iabPurchaseConsumer.consume(requestCode, purchase);
     }
 
-    @NotNull protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>
+    @NonNull protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>
             createConsumptionFinishedListener()
     {
         return new IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>()

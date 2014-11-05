@@ -9,8 +9,8 @@ import com.tradehero.th.api.users.UserAvailabilityDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserAvailabilityCache;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 
 public class ServerValidatedUsernameText extends ServerValidatedText
@@ -135,7 +135,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         hintDefaultStatus();
     }
 
-    @NotNull protected DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> createValidatedUserNameListener()
+    @NonNull protected DTOCacheNew.Listener<DisplayNameDTO, UserAvailabilityDTO> createValidatedUserNameListener()
     {
         return new ValidatedUserNameAvailabilityListener();
     }
@@ -143,8 +143,8 @@ public class ServerValidatedUsernameText extends ServerValidatedText
     protected class ValidatedUserNameAvailabilityListener implements DTOCacheNew.HurriedListener<DisplayNameDTO, UserAvailabilityDTO>
     {
         @Override public void onPreCachedDTOReceived(
-                @NotNull DisplayNameDTO key,
-                @NotNull UserAvailabilityDTO value)
+                @NonNull DisplayNameDTO key,
+                @NonNull UserAvailabilityDTO value)
         {
             if (key.isSameName(getText().toString()))
             {
@@ -153,8 +153,8 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
 
         @Override public void onDTOReceived(
-                @NotNull DisplayNameDTO key,
-                @NotNull UserAvailabilityDTO value)
+                @NonNull DisplayNameDTO key,
+                @NonNull UserAvailabilityDTO value)
         {
             if (key.isSameName(getText().toString()))
             {
@@ -164,8 +164,8 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         }
 
         @Override public void onErrorThrown(
-                @NotNull DisplayNameDTO key,
-                @NotNull Throwable error)
+                @NonNull DisplayNameDTO key,
+                @NonNull Throwable error)
         {
             if (key.isSameName(getText().toString()))
             {

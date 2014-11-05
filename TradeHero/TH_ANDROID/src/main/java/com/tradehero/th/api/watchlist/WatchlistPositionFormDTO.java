@@ -3,7 +3,7 @@ package com.tradehero.th.api.watchlist;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class WatchlistPositionFormDTO
 {
@@ -19,7 +19,7 @@ public class WatchlistPositionFormDTO
         this.quantity = quantity;
     }
 
-    public WatchlistPositionFormDTO(@NotNull SecurityCompactDTO securityCompactDTO, int quantity)
+    public WatchlistPositionFormDTO(@NonNull SecurityCompactDTO securityCompactDTO, int quantity)
     {
         this(securityCompactDTO.id, securityCompactDTO.lastPrice, quantity);
     }

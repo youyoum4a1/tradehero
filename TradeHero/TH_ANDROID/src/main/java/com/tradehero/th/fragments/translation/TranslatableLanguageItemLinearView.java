@@ -6,13 +6,13 @@ import android.widget.LinearLayout;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TranslatableLanguageItemLinearView extends LinearLayout
     implements DTOView<LanguageDTO>
 {
-    @NotNull protected TranslatableLanguageItemViewHolder viewHolder;
+    @NonNull protected TranslatableLanguageItemViewHolder viewHolder;
 
     //<editor-fold desc="Constructors">
     public TranslatableLanguageItemLinearView(Context context)
@@ -39,7 +39,7 @@ public class TranslatableLanguageItemLinearView extends LinearLayout
     }
     //</editor-fold>
 
-    @NotNull protected TranslatableLanguageItemViewHolder createViewHolder()
+    @NonNull protected TranslatableLanguageItemViewHolder createViewHolder()
     {
         return new TranslatableLanguageItemViewHolder();
     }

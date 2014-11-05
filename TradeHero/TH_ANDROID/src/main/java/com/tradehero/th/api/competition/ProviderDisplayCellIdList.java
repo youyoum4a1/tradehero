@@ -3,14 +3,14 @@ package com.tradehero.th.api.competition;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderDisplayCellIdList extends DTOKeyIdList<ProviderDisplayCellId>
 {
-    @NotNull public Date expirationDate;
+    @NonNull public Date expirationDate;
 
     //<editor-fold desc="Constructors">
-    public ProviderDisplayCellIdList(@NotNull Date expirationDate)
+    public ProviderDisplayCellIdList(@NonNull Date expirationDate)
     {
         super();
         this.expirationDate = expirationDate;

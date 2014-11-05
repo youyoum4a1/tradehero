@@ -12,20 +12,20 @@ import com.tradehero.th.models.timeline.TimelineDTOProcessor;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class UserTimelineServiceWrapper
 {
-    @NotNull private final UserTimelineService userTimelineService;
-    @NotNull private final UserTimelineServiceRx userTimelineServiceRx;
-    @NotNull private final Provider<TimelineDTOProcessor> timelineProcessorProvider;
+    @NonNull private final UserTimelineService userTimelineService;
+    @NonNull private final UserTimelineServiceRx userTimelineServiceRx;
+    @NonNull private final Provider<TimelineDTOProcessor> timelineProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTimelineServiceWrapper(
-            @NotNull UserTimelineService userTimelineService,
-            @NotNull UserTimelineServiceRx userTimelineServiceRx,
-            @NotNull Provider<TimelineDTOProcessor> timelineProcessorProvider)
+            @NonNull UserTimelineService userTimelineService,
+            @NonNull UserTimelineServiceRx userTimelineServiceRx,
+            @NonNull Provider<TimelineDTOProcessor> timelineProcessorProvider)
     {
         super();
         this.userTimelineService = userTimelineService;
@@ -36,59 +36,59 @@ import rx.Observable;
 
     //<editor-fold desc="Get Global Timeline">
     // TODO create a proper key that contains the values max / min
-    @NotNull protected Observable<TimelineDTO> getGlobalTimelineRx(Integer maxCount, Integer maxId, Integer minId)
+    @NonNull protected Observable<TimelineDTO> getGlobalTimelineRx(Integer maxCount, Integer maxId, Integer minId)
     {
         return userTimelineServiceRx.getGlobalTimeline(maxCount, maxId, minId);
     }
 
-    @NotNull public Observable<TimelineItemDTO> getTimelineDetailRx(@NotNull TimelineItemDTOKey key)
+    @NonNull public Observable<TimelineItemDTO> getTimelineDetailRx(@NonNull TimelineItemDTOKey key)
     {
         return userTimelineServiceRx.getTimelineDetail(key.id);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    @NotNull public Observable<TimelineDTO> getDefaultTimelineRx(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+    @NonNull public Observable<TimelineDTO> getDefaultTimelineRx(@NonNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
         return userTimelineServiceRx.getTimeline(TimelineSection.Timeline, userId.key, maxCount, maxId, minId);
     }
 
     public TimelineDTO getTimelineBySection(TimelineSection section,
-            @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+            @NonNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
         return userTimelineService.getTimeline(section, userId.key, maxCount, maxId, minId);
     }
 
     public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section,
-            @NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
+            @NonNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
         return userTimelineServiceRx.getTimeline(section, userId.key, maxCount, maxId, minId)
                 .doOnNext(timelineProcessorProvider.get());
     }
 
-    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NotNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
+    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NonNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
     {
         return getTimelineBySectionRx(section, userBaseKey, rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId);
     }
     //</editor-fold>
 
     //<editor-fold desc="Share Timeline Item">
-    @NotNull public Observable<BaseResponseDTO> shareTimelineItemRx(
-            @NotNull UserBaseKey userId,
-            @NotNull TimelineItemDTOKey timelineItemId,
-            @NotNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
+    @NonNull public Observable<BaseResponseDTO> shareTimelineItemRx(
+            @NonNull UserBaseKey userId,
+            @NonNull TimelineItemDTOKey timelineItemId,
+            @NonNull TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
         return userTimelineServiceRx.shareTimelineItem(userId.key, timelineItemId.id, timelineItemShareRequestDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
-    @NotNull public Observable<BaseResponseDTO> deleteTimelineItemRx(
-            @NotNull UserBaseKey userId,
-            @NotNull TimelineItemDTOKey timelineItemId)
+    @NonNull public Observable<BaseResponseDTO> deleteTimelineItemRx(
+            @NonNull UserBaseKey userId,
+            @NonNull TimelineItemDTOKey timelineItemId)
     {
         return userTimelineServiceRx.deleteTimelineItem(userId.key, timelineItemId.id);
     }

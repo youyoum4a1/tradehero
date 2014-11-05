@@ -7,16 +7,16 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.Constants;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 
 public class SubscriberOnCompleteListener implements WebDialog.OnCompleteListener
 {
-    @NotNull private Observer<? super String> observer;
+    @NonNull private Observer<? super String> observer;
 
     //<editor-fold desc="Constructors">
-    public SubscriberOnCompleteListener(@NotNull Observer<? super String> observer)
+    public SubscriberOnCompleteListener(@NonNull Observer<? super String> observer)
     {
         this.observer = observer;
     }

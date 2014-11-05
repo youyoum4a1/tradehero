@@ -18,8 +18,8 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>
 {
@@ -100,7 +100,7 @@ public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSea
                 (userDTO.userPicture.length() > 0);
     }
 
-    @Override public void display(@NotNull UserSearchResultDTO userSearchResultDTO)
+    @Override public void display(@NonNull UserSearchResultDTO userSearchResultDTO)
     {
         this.userDTO = userSearchResultDTO;
 

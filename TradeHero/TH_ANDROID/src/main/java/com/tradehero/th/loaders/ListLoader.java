@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import java.util.LinkedList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public abstract class ListLoader<D> extends AsyncTaskLoader<List<D>>
 {
-    @NotNull protected final List<D> items;
+    @NonNull protected final List<D> items;
 
     //<editor-fold desc="Constructors">
     public ListLoader(Context context)
@@ -18,7 +18,7 @@ public abstract class ListLoader<D> extends AsyncTaskLoader<List<D>>
     }
     //</editor-fold>
 
-    @NotNull public List<D> getItems()
+    @NonNull public List<D> getItems()
     {
         return items;
     }

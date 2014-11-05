@@ -9,21 +9,21 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 
 @Singleton public class AlertPlanCheckServiceWrapper
 {
-    @NotNull protected final AlertPlanCheckService alertPlanCheckService;
-    @NotNull protected final AlertPlanCheckServiceAsync alertPlanCheckServiceAsync;
-    @NotNull protected final UserProfileCacheRx userProfileCache;
+    @NonNull protected final AlertPlanCheckService alertPlanCheckService;
+    @NonNull protected final AlertPlanCheckServiceAsync alertPlanCheckServiceAsync;
+    @NonNull protected final UserProfileCacheRx userProfileCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertPlanCheckServiceWrapper(
-            @NotNull AlertPlanCheckService alertPlanCheckService,
-            @NotNull AlertPlanCheckServiceAsync alertPlanCheckServiceAsync,
-            @NotNull UserProfileCacheRx userProfileCache)
+            @NonNull AlertPlanCheckService alertPlanCheckService,
+            @NonNull AlertPlanCheckServiceAsync alertPlanCheckServiceAsync,
+            @NonNull UserProfileCacheRx userProfileCache)
     {
         super();
         this.alertPlanCheckService = alertPlanCheckService;
@@ -33,8 +33,8 @@ import retrofit.Callback;
 
     //<editor-fold desc="Check Alert Plan Attribution">
     public AlertPlanStatusDTO checkAlertPlanAttribution(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseReportDTO)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull PurchaseReportDTO purchaseReportDTO)
     {
         AlertPlanStatusDTO received;
         received = alertPlanCheckService.checkAlertPlanAttribution(
@@ -44,9 +44,9 @@ import retrofit.Callback;
         return received;
     }
 
-    @NotNull public MiddleCallback<AlertPlanStatusDTO> checkAlertPlanAttribution(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseReportDTO,
+    @NonNull public MiddleCallback<AlertPlanStatusDTO> checkAlertPlanAttribution(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull PurchaseReportDTO purchaseReportDTO,
             @Nullable Callback<AlertPlanStatusDTO> callback)
     {
         MiddleCallback<AlertPlanStatusDTO> middleCallback = new BaseMiddleCallback<>(callback);

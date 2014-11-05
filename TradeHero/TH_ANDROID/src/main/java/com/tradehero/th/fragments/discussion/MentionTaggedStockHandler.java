@@ -11,7 +11,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class MentionTaggedStockHandler
@@ -19,15 +19,15 @@ public class MentionTaggedStockHandler
     public static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     public static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
-    @NotNull EditableUtil editableUtil;
-    @NotNull RichTextCreator parser;
+    @NonNull EditableUtil editableUtil;
+    @NonNull RichTextCreator parser;
     @Nullable EditText discussionPostContent;
     @Nullable private HasSelectedItem hasSelectedItemFragment;
 
     //<editor-fold desc="Constructors">
     @Inject public MentionTaggedStockHandler(
-            @NotNull EditableUtil editableUtil,
-            @NotNull RichTextCreator parser)
+            @NonNull EditableUtil editableUtil,
+            @NonNull RichTextCreator parser)
     {
         this.editableUtil = editableUtil;
         this.parser = parser;
@@ -71,24 +71,24 @@ public class MentionTaggedStockHandler
         }
     }
 
-    public void onMentioned(@NotNull UserSearchResultDTO userSearchResultDTO)
+    public void onMentioned(@NonNull UserSearchResultDTO userSearchResultDTO)
     {
         handleExtraText(String.format(MENTIONED_FORMAT, userSearchResultDTO.userthDisplayName, userSearchResultDTO.userId));
     }
 
-    public void onMentioned(@NotNull AllowableRecipientDTO allowableRecipientDTO)
+    public void onMentioned(@NonNull AllowableRecipientDTO allowableRecipientDTO)
     {
         handleExtraText(String.format(MENTIONED_FORMAT, allowableRecipientDTO.user.displayName, allowableRecipientDTO.user.id));
     }
 
-    public void onTagged(@NotNull SecurityCompactDTO securityCompactDTO)
+    public void onTagged(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         String exchangeSymbol = securityCompactDTO.getExchangeSymbol();
         String exchangeSymbolUrl = exchangeSymbol.replace(':', '_');
         handleExtraText(String.format(SECURITY_TAG_FORMAT, exchangeSymbol, securityCompactDTO.id, exchangeSymbolUrl));
     }
 
-    private void handleExtraText(@NotNull String extraText)
+    private void handleExtraText(@NonNull String extraText)
     {
         EditText discussionPostContentCopy = discussionPostContent;
         if (discussionPostContentCopy != null)

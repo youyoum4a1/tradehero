@@ -9,8 +9,8 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -187,7 +187,7 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
             return self();
         }
 
-        public Builder setUserToFollow(@NotNull UserBaseKey userToFollow)
+        public Builder setUserToFollow(@NonNull UserBaseKey userToFollow)
         {
             this.userToFollow = userToFollow;
             return self();
@@ -347,12 +347,12 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         private static final FollowUserAssistant.OnUserFollowedListener DEFAULT_PREMIUM_FOLLOWED_LISTENER =
                 new FollowUserAssistant.OnUserFollowedListener()
                 {
-                    @Override public void onUserFollowSuccess(@NotNull UserBaseKey userFollowed, @NotNull UserProfileDTO currentUserProfileDTO)
+                    @Override public void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO)
                     {
                         // do something by default?
                     }
 
-                    @Override public void onUserFollowFailed(@NotNull UserBaseKey userFollowed, @NotNull Throwable error)
+                    @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
                     {
                         // do something by default?
                     }

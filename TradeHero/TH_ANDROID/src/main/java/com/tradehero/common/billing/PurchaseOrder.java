@@ -1,9 +1,9 @@
 package com.tradehero.common.billing;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface PurchaseOrder<ProductIdentifierType extends ProductIdentifier>
 {
-    @NotNull ProductIdentifierType getProductIdentifier();
+    @NonNull ProductIdentifierType getProductIdentifier();
     int getQuantity();
 }

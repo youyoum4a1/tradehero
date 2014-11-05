@@ -7,22 +7,22 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
 {
-    @NotNull private final PortfolioCompactListCacheRx portfolioCompactListCache;
-    @NotNull private final PortfolioCompactCacheRx portfolioCompactCache;
-    @NotNull private final PortfolioCacheRx portfolioCache;
-    @NotNull private final OwnedPortfolioId ownedPortfolioId;
+    @NonNull private final PortfolioCompactListCacheRx portfolioCompactListCache;
+    @NonNull private final PortfolioCompactCacheRx portfolioCompactCache;
+    @NonNull private final PortfolioCacheRx portfolioCache;
+    @NonNull private final OwnedPortfolioId ownedPortfolioId;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorAddCash(@NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache,
-            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NotNull PortfolioCompactCacheRx portfolioCompactCache,
-            @NotNull PortfolioCacheRx portfolioCache,
-            @NotNull OwnedPortfolioId ownedPortfolioId)
+    public DTOProcessorAddCash(@NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
+            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull OwnedPortfolioId ownedPortfolioId)
     {
         super(userProfileCache, homeContentCache);
         this.portfolioCompactListCache = portfolioCompactListCache;
@@ -32,7 +32,7 @@ public class DTOProcessorAddCash extends DTOProcessorUpdateUserProfile
     }
     //</editor-fold>
 
-    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NonNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
         portfolioCache.invalidate(ownedPortfolioId);

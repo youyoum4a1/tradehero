@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.social.friend;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SocialTypeItemFactory
 {
@@ -14,7 +14,7 @@ public class SocialTypeItemFactory
     }
     //</editor-fold>
 
-    @NotNull public List<SocialTypeItem> getSocialTypeList()
+    @NonNull public List<SocialTypeItem> getSocialTypeList()
     {
         List<SocialTypeItem> socialList = new ArrayList<>();
 

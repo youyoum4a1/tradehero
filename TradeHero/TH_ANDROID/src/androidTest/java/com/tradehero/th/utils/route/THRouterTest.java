@@ -35,7 +35,7 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class THRouterTest
         thRouter.setContext(null);
     }
 
-    @NotNull private PortfolioCompactDTOList createCurrentUserPortfolios()
+    @NonNull private PortfolioCompactDTOList createCurrentUserPortfolios()
     {
         PortfolioCompactDTOList created = new PortfolioCompactDTOList();
         PortfolioCompactDTO defaultPortfolio = new PortfolioCompactDTO();

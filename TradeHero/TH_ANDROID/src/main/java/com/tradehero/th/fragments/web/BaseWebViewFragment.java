@@ -18,8 +18,8 @@ import com.tradehero.th.network.NetworkConstants;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseWebViewFragment extends DashboardFragment
@@ -35,7 +35,7 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
-    public static void putUrl(@NotNull Bundle args, @NotNull String url)
+    public static void putUrl(@NonNull Bundle args, @NonNull String url)
     {
         args.putString(BUNDLE_KEY_URL, url);
     }

@@ -37,23 +37,23 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class AmazonPurchasingServiceDummy extends AmazonPurchasingService
 {
-    @NotNull protected final CurrentUserId currentUserId;
+    @NonNull protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public AmazonPurchasingServiceDummy(
-            @NotNull Context appContext,
-            @NotNull CurrentUserId currentUserId)
+            @NonNull Context appContext,
+            @NonNull CurrentUserId currentUserId)
     {
         super(appContext);
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
 
-    @NotNull public RequestId getUserData(@NotNull PurchasingListener listener)
+    @NonNull public RequestId getUserData(@NonNull PurchasingListener listener)
     {
         RequestId requestId = super.getUserData(listener);
         putWaitingResponse(requestId, new UserDataResponseBuilder()
@@ -65,7 +65,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    @NotNull protected UserData getUserData()
+    @NonNull protected UserData getUserData()
     {
         return new UserDataBuilder()
                 .setUserId("amazonUserId" + currentUserId.get())
@@ -73,7 +73,7 @@ import org.jetbrains.annotations.NotNull;
                 .build();
     }
 
-    @NotNull public RequestId purchase(@NotNull String sku, @NotNull PurchasingListener listener)
+    @NonNull public RequestId purchase(@NonNull String sku, @NonNull PurchasingListener listener)
     {
         RequestId requestId = super.purchase(sku, listener);
         putWaitingResponse(requestId, new PurchaseResponseBuilder()
@@ -92,7 +92,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    @NotNull public RequestId getProductData(@NotNull Set<String> skus, @NotNull PurchasingListener listener)
+    @NonNull public RequestId getProductData(@NonNull Set<String> skus, @NonNull PurchasingListener listener)
     {
         RequestId requestId = super.getProductData(skus, listener);
         putWaitingResponse(requestId, new ProductDataResponseBuilder()
@@ -105,17 +105,17 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    @NotNull protected Map<String, Product> getProductData(@NotNull Set<String> skus)
+    @NonNull protected Map<String, Product> getProductData(@NonNull Set<String> skus)
     {
         Map<String, Product> data = new HashMap<>();
-        for (@NotNull String sku : skus)
+        for (String sku : skus)
         {
             data.put(sku, getProductData(sku));
         }
         return data;
     }
 
-    @NotNull protected Product getProductData(@NotNull String sku)
+    @NonNull protected Product getProductData(@NonNull String sku)
     {
         ProductBuilder builder = new ProductBuilder()
                 .setSku(sku)
@@ -182,7 +182,7 @@ import org.jetbrains.annotations.NotNull;
                 .build();
     }
 
-    @NotNull public RequestId getPurchaseUpdates(boolean reset, @NotNull PurchasingListener listener)
+    @NonNull public RequestId getPurchaseUpdates(boolean reset, @NonNull PurchasingListener listener)
     {
         RequestId requestId = super.getPurchaseUpdates(reset, listener);
         putWaitingResponse(requestId, new PurchaseUpdatesResponseBuilder()
@@ -196,7 +196,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    @NotNull protected List<Receipt> getReceiptList(boolean reset)
+    @NonNull protected List<Receipt> getReceiptList(boolean reset)
     {
         List<Receipt> receipts = new ArrayList<>();
         if (reset)

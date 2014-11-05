@@ -3,8 +3,8 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PerPagedLeaderboardKey extends PagedLeaderboardKey
 {
@@ -26,13 +26,13 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         this.perPage = other.perPage;
     }
 
-    public PerPagedLeaderboardKey(@NotNull Bundle args, @Nullable PerPagedLeaderboardKey defaultValues)
+    public PerPagedLeaderboardKey(@NonNull Bundle args, @Nullable PerPagedLeaderboardKey defaultValues)
     {
         super(args, defaultValues);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? (Integer) args.getInt(BUNDLE_KEY_PER_PAGE) : ((defaultValues != null) ? defaultValues.perPage : null);
     }
 
-    public PerPagedLeaderboardKey(@NotNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
+    public PerPagedLeaderboardKey(@NonNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
     {
         super(catValues, defaultValues);
         this.perPage = findPerPage(catValues, defaultValues);
@@ -44,14 +44,14 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         return super.hashCode() ^ (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equalFields(@NotNull PagedLeaderboardKey other)
+    @Override public boolean equalFields(@NonNull PagedLeaderboardKey other)
     {
         return super.equalFields(other)
                 && other instanceof PerPagedLeaderboardKey &&
                 equalFields((PerPagedLeaderboardKey) other);
     }
 
-    public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
+    public boolean equalFields(@NonNull PerPagedLeaderboardKey other)
     {
         return super.equalFields(other) &&
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
@@ -62,7 +62,7 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         return new PerPagedLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (perPage == null)
@@ -75,7 +75,7 @@ public class PerPagedLeaderboardKey extends PagedLeaderboardKey
         }
     }
 
-    public static Integer findPerPage(@NotNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
+    public static Integer findPerPage(@NonNull Set<String> catValues, @Nullable PerPagedLeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;

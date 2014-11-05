@@ -18,7 +18,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -127,7 +127,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         return dashboardNavigator;
     }
 
-    @NotNull protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
+    @NonNull protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
     {
         return new DiscussionFetchObserver();
     }

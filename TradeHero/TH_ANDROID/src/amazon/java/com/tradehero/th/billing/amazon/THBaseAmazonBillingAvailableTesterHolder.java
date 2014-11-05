@@ -4,7 +4,7 @@ import com.tradehero.common.billing.amazon.BaseAmazonBillingAvailableTesterHolde
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonBillingAvailableTesterHolder
     extends BaseAmazonBillingAvailableTesterHolder<
@@ -14,7 +14,7 @@ public class THBaseAmazonBillingAvailableTesterHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonBillingAvailableTesterHolder(
-            @NotNull Provider<THAmazonBillingAvailableTester> thAmazonBillingAvailableTesterProvider)
+            @NonNull Provider<THAmazonBillingAvailableTester> thAmazonBillingAvailableTesterProvider)
     {
         super(thAmazonBillingAvailableTesterProvider);
     }

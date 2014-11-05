@@ -4,7 +4,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class AlertCompactDTO implements DTO
 {

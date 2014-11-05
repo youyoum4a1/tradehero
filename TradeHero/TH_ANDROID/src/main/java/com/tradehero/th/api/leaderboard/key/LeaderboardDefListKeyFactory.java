@@ -2,7 +2,7 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LeaderboardDefListKeyFactory
 {
@@ -13,7 +13,7 @@ public class LeaderboardDefListKeyFactory
     }
     //</editor-fold>
 
-    public LeaderboardDefListKey create(@NotNull Bundle args)
+    public LeaderboardDefListKey create(@NonNull Bundle args)
     {
         switch (args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY))
         {

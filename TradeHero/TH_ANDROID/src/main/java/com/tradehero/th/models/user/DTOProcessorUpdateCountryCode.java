@@ -9,22 +9,22 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountryCodeDTO>
 {
-    @NotNull private final UserProfileCacheRx userProfileCache;
-    @NotNull private final ProviderListCacheRx providerListCache;
-    @NotNull private final ProviderCacheRx providerCache;
-    @NotNull private final UserBaseKey playerId;
-    @NotNull private final UpdateCountryCodeFormDTO updateCountryCodeFormDTO;
+    @NonNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final ProviderListCacheRx providerListCache;
+    @NonNull private final ProviderCacheRx providerCache;
+    @NonNull private final UserBaseKey playerId;
+    @NonNull private final UpdateCountryCodeFormDTO updateCountryCodeFormDTO;
 
     public DTOProcessorUpdateCountryCode(
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull ProviderListCacheRx providerListCache,
-            @NotNull ProviderCacheRx providerCache,
-            @NotNull UserBaseKey playerId,
-            @NotNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull ProviderListCacheRx providerListCache,
+            @NonNull ProviderCacheRx providerCache,
+            @NonNull UserBaseKey playerId,
+            @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         this.userProfileCache = userProfileCache;
         this.providerListCache = providerListCache;
@@ -33,7 +33,7 @@ public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountry
         this.updateCountryCodeFormDTO = updateCountryCodeFormDTO;
     }
 
-    @Override public UpdateCountryCodeDTO process(@NotNull UpdateCountryCodeDTO value)
+    @Override public UpdateCountryCodeDTO process(@NonNull UpdateCountryCodeDTO value)
     {
         if (value.updated)
         {

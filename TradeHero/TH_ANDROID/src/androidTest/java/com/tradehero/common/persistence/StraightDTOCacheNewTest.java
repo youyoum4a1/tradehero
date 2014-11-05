@@ -2,7 +2,7 @@ package com.tradehero.common.persistence;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class StraightDTOCacheNewTest
     {
         cache = new TestStraightDTOCacheNew<UserBaseKey, ExpirableDTO>(10)
         {
-            @NotNull @Override public ExpirableDTO fetch(@NotNull UserBaseKey key) throws Throwable
+            @NonNull @Override public ExpirableDTO fetch(@NonNull UserBaseKey key) throws Throwable
             {
                 return new ExpirableDTO();
             }
@@ -29,11 +29,11 @@ public class StraightDTOCacheNewTest
     private DTOCacheNew.Listener<UserBaseKey, ExpirableDTO> createEmptyListener()
     {
         return new DTOCacheNew.Listener<UserBaseKey, ExpirableDTO>(){
-            @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull ExpirableDTO value)
+            @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull ExpirableDTO value)
             {
             }
 
-            @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+            @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
             {
             }
         };

@@ -14,21 +14,21 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSettingViewHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public SocialConnectLinkedInSettingViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull AlertDialogUtil alertDialogUtil,
-            @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull LinkedInAuthenticationProvider socialAuthenticationProvider,
-            @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull @AuthHeader String authToken)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull AlertDialogUtil alertDialogUtil,
+            @NonNull SocialServiceWrapper socialServiceWrapper,
+            @NonNull LinkedInAuthenticationProvider socialAuthenticationProvider,
+            @NonNull UserProfileDTOUtil userProfileDTOUtil,
+            @NonNull @AuthHeader String authToken)
     {
         super(currentUserId,
                 userProfileCache,
@@ -52,7 +52,7 @@ public class SocialConnectLinkedInSettingViewHolder extends SocialConnectSetting
         return R.integer.key_settings_sharing_linked_in_order;
     }
 
-    @NotNull @Override protected SocialNetworkEnum getSocialNetworkEnum()
+    @NonNull @Override protected SocialNetworkEnum getSocialNetworkEnum()
     {
         return SocialNetworkEnum.LN;
     }

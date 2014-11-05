@@ -45,7 +45,7 @@ import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;

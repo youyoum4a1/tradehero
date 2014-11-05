@@ -4,25 +4,25 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorSecurityPositionDetailReceived
         extends DTOProcessorSecurityPositionReceived<SecurityPositionDetailDTO>
 {
     //<editor-fold desc="Description">
     public DTOProcessorSecurityPositionDetailReceived(
-            @NotNull SecurityId securityId,
-            @NotNull UserBaseKey ownerId)
+            @NonNull SecurityId securityId,
+            @NonNull UserBaseKey ownerId)
     {
         super(securityId, ownerId);
     }
     //</editor-fold>
 
-    @Override public SecurityPositionDetailDTO process(@NotNull SecurityPositionDetailDTO value)
+    @Override public SecurityPositionDetailDTO process(@NonNull SecurityPositionDetailDTO value)
     {
         if (value.providers != null)
         {
-            for (@NotNull ProviderDTO providerDTO : value.providers)
+            for (ProviderDTO providerDTO : value.providers)
             {
                 if (providerDTO.associatedPortfolio != null)
                 {

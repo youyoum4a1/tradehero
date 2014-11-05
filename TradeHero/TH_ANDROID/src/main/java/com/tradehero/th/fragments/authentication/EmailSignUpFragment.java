@@ -28,7 +28,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;

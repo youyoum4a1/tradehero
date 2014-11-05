@@ -15,7 +15,7 @@ import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class CountryAdapter extends GenericArrayAdapter<CountryLanguagePairDTO>
         implements Filterable
@@ -25,7 +25,7 @@ public class CountryAdapter extends GenericArrayAdapter<CountryLanguagePairDTO>
 
     private Filter mFilter;
 
-    public CountryAdapter(@NotNull Context context, int layoutResourceId)
+    public CountryAdapter(@NonNull Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
     }

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
 {
@@ -17,14 +17,14 @@ public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
         this.perPage = perPage;
     }
 
-    public PerPagedLeaderboardMarkUserId(@NotNull Bundle args)
+    public PerPagedLeaderboardMarkUserId(@NonNull Bundle args)
     {
         super(args);
         this.perPage = args.containsKey(BUNDLE_KEY_PER_PAGE) ? args.getInt(BUNDLE_KEY_PER_PAGE) : null;
     }
     //</editor-fold>
 
-    public static boolean isPerPagedLeaderboardMarkUserId(@NotNull Bundle args)
+    public static boolean isPerPagedLeaderboardMarkUserId(@NonNull Bundle args)
     {
         return isPagedLeaderboardMarkUserId(args)
                 && args.containsKey(BUNDLE_KEY_PER_PAGE);
@@ -42,7 +42,7 @@ public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
-    public int compareTo(@NotNull PerPagedLeaderboardMarkUserId other)
+    public int compareTo(@NonNull PerPagedLeaderboardMarkUserId other)
     {
         if (this == other)
         {
@@ -63,7 +63,7 @@ public class PerPagedLeaderboardMarkUserId extends PagedLeaderboardMarkUserId
         return perPage.compareTo(other.perPage);
     }
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (perPage == null)

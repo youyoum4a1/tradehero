@@ -2,8 +2,8 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.billing.exception.BillingException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import timber.log.Timber;
 abstract public class BaseBillingAvailableTesterHolder<BillingExceptionType extends BillingException>
     implements BillingAvailableTesterHolder<BillingExceptionType>
 {
-    @NotNull protected final Map<Integer /*requestCode*/, BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType>> parentBillingAvailableListener;
+    @NonNull protected final Map<Integer /*requestCode*/, BillingAvailableTester.OnBillingAvailableListener<BillingExceptionType>> parentBillingAvailableListener;
 
     //<editor-fold desc="Constructors">
     public BaseBillingAvailableTesterHolder()

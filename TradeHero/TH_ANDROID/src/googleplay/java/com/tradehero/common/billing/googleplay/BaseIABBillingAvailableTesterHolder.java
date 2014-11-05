@@ -4,7 +4,7 @@ import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,12 +16,12 @@ public class BaseIABBillingAvailableTesterHolder<
         IABExceptionType extends IABException>
     extends BaseBillingAvailableTesterHolder<IABExceptionType>
 {
-    @NotNull protected final Provider<IABBillingAvailableTesterType> iabBillingAvailableTesterProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, IABBillingAvailableTesterType> billingAvailableTesters;
+    @NonNull protected final Provider<IABBillingAvailableTesterType> iabBillingAvailableTesterProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, IABBillingAvailableTesterType> billingAvailableTesters;
 
     //<editor-fold desc="Constructors">
     public BaseIABBillingAvailableTesterHolder(
-            @NotNull Provider<IABBillingAvailableTesterType> iabBillingAvailableTesterProvider)
+            @NonNull Provider<IABBillingAvailableTesterType> iabBillingAvailableTesterProvider)
     {
         super();
         this.iabBillingAvailableTesterProvider = iabBillingAvailableTesterProvider;

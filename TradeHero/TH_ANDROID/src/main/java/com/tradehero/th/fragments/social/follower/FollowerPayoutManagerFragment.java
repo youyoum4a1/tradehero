@@ -27,7 +27,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -53,14 +53,14 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
 
-    public static void put(@NotNull Bundle args, @NotNull FollowerHeroRelationId followerHeroRelationId)
+    public static void put(@NonNull Bundle args, @NonNull FollowerHeroRelationId followerHeroRelationId)
     {
         args.putBundle(
                 BUNDLE_KEY_FOLLOWER_ID_BUNDLE,
                 followerHeroRelationId.getArgs());
     }
 
-    public static FollowerHeroRelationId getFollowerHeroRelationId(@NotNull Bundle args)
+    public static FollowerHeroRelationId getFollowerHeroRelationId(@NonNull Bundle args)
     {
         return new FollowerHeroRelationId(args.getBundle(BUNDLE_KEY_FOLLOWER_ID_BUNDLE));
     }

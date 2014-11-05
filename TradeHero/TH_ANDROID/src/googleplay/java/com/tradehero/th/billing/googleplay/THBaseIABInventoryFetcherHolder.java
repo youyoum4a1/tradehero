@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcherHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -15,10 +15,10 @@ public class THBaseIABInventoryFetcherHolder
         THIABInventoryFetcher>
     implements THIABInventoryFetcherHolder
 {
-    @NotNull protected final Provider<THIABInventoryFetcher> thiabInventoryFetcherProvider;
+    @NonNull protected final Provider<THIABInventoryFetcher> thiabInventoryFetcherProvider;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseIABInventoryFetcherHolder(@NotNull Provider<THIABInventoryFetcher> thiabInventoryFetcherProvider)
+    @Inject public THBaseIABInventoryFetcherHolder(@NonNull Provider<THIABInventoryFetcher> thiabInventoryFetcherProvider)
     {
         super();
         this.thiabInventoryFetcherProvider = thiabInventoryFetcherProvider;

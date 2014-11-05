@@ -2,8 +2,8 @@ package com.tradehero.common.billing.amazon;
 
 import android.content.Context;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType extends AmazonException>
     extends BaseAmazonActor
@@ -13,8 +13,8 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
 
     //<editor-fold desc="Constructors">
     public BaseAmazonBillingAvailableTester(
-            @NotNull Context appContext,
-            @NotNull AmazonPurchasingService purchasingService)
+            @NonNull Context appContext,
+            @NonNull AmazonPurchasingService purchasingService)
     {
         super(appContext, purchasingService);
     }

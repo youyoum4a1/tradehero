@@ -2,10 +2,10 @@ package com.tradehero.th.api.position;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface GetPositionsDTOKey extends DTOKey
 {
-    @NotNull Bundle getArgs();
+    @NonNull Bundle getArgs();
     boolean isValid(); // TODO remove?
 }

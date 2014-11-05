@@ -16,7 +16,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
@@ -74,7 +74,7 @@ abstract public class DashboardFragment extends BaseFragment
         }
     }
 
-    public <T extends Fragment> boolean allowNavigateTo(@NotNull Class<T> fragmentClass, Bundle args)
+    public <T extends Fragment> boolean allowNavigateTo(@NonNull Class<T> fragmentClass, Bundle args)
     {
         return true;
     }

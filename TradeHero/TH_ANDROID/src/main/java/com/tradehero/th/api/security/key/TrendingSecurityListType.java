@@ -1,7 +1,7 @@
 package com.tradehero.th.api.security.key;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TrendingSecurityListType extends SecurityListType
 {
@@ -9,7 +9,7 @@ public class TrendingSecurityListType extends SecurityListType
     @Nullable public final String exchange;
 
     //<editor-fold desc="Constructors">
-    protected TrendingSecurityListType(@NotNull TrendingSecurityListType other)
+    protected TrendingSecurityListType(@NonNull TrendingSecurityListType other)
     {
         super(other);
         this.exchange = other.exchange;
@@ -55,21 +55,21 @@ public class TrendingSecurityListType extends SecurityListType
                 (exchange == null ? 0 : exchange.hashCode());
     }
 
-    @Override protected boolean equals(@NotNull SecurityListType other)
+    @Override protected boolean equals(@NonNull SecurityListType other)
     {
         return super.equals(other)
                 && other instanceof TrendingSecurityListType
                 && equals((TrendingSecurityListType) other);
     }
 
-    protected boolean equals(@NotNull TrendingSecurityListType other)
+    protected boolean equals(@NonNull TrendingSecurityListType other)
     {
         return super.equals(other) &&
                 (exchange == null ? other.exchange == null : exchange.equals(other.exchange));
     }
 
     //<editor-fold desc="Comparable">
-    @Override public int compareTo(@NotNull SecurityListType another)
+    @Override public int compareTo(@NonNull SecurityListType another)
     {
         if (!TrendingSecurityListType.class.isInstance(another))
         {

@@ -4,7 +4,7 @@ import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class HeroDTOList extends BaseArrayList<HeroDTO>
     implements DTO
@@ -16,20 +16,20 @@ public class HeroDTOList extends BaseArrayList<HeroDTO>
     }
     //</editor-fold>
 
-    @NotNull public FollowerHeroRelationIdList createKeys(@NotNull UserBaseKey followerId)
+    @NonNull public FollowerHeroRelationIdList createKeys(@NonNull UserBaseKey followerId)
     {
         FollowerHeroRelationIdList followerHeroRelationIdList = new FollowerHeroRelationIdList();
-        for (@NotNull HeroDTO heroDTO : this)
+        for (HeroDTO heroDTO : this)
         {
             followerHeroRelationIdList.add(heroDTO.getHeroId(followerId));
         }
         return followerHeroRelationIdList;
     }
 
-    @NotNull public HeroDTOList filter(@NotNull Predicate<HeroDTO> predicate)
+    @NonNull public HeroDTOList filter(@NonNull Predicate<HeroDTO> predicate)
     {
         HeroDTOList filtered = new HeroDTOList();
-        for (@NotNull HeroDTO heroDTO : this)
+        for (HeroDTO heroDTO : this)
         {
             if (predicate.apply(heroDTO))
             {
@@ -39,17 +39,17 @@ public class HeroDTOList extends BaseArrayList<HeroDTO>
         return filtered;
     }
 
-    @NotNull public HeroDTOList getAllActiveHeroIds()
+    @NonNull public HeroDTOList getAllActiveHeroIds()
     {
         return filter(new HeroDTOActiveFreePredicateImpl(true, null));
     }
 
-    @NotNull public HeroDTOList getFreeActiveHeroIds()
+    @NonNull public HeroDTOList getFreeActiveHeroIds()
     {
         return filter(new HeroDTOActiveFreePredicateImpl(true, true));
     }
 
-    @NotNull public HeroDTOList getPremiumActiveHeroIds()
+    @NonNull public HeroDTOList getPremiumActiveHeroIds()
     {
         return filter(new HeroDTOActiveFreePredicateImpl(true, false));
     }

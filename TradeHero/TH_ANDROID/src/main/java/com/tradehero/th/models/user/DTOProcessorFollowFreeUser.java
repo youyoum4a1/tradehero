@@ -8,22 +8,22 @@ import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorFollowFreeUser extends AbstractDTOProcessorFollowUser
 {
-    @NotNull protected final AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
+    @NonNull protected final AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorFollowFreeUser(
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache,
-            @NotNull HeroListCacheRx heroListCache,
-            @NotNull GetPositionsCacheRx getPositionsCache,
-            @NotNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
-            @NotNull AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache,
-            @NotNull UserBaseKey followerId,
-            @NotNull UserBaseKey heroId)
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache,
+            @NonNull HeroListCacheRx heroListCache,
+            @NonNull GetPositionsCacheRx getPositionsCache,
+            @NonNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
+            @NonNull AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache,
+            @NonNull UserBaseKey followerId,
+            @NonNull UserBaseKey heroId)
     {
         super(userProfileCache,
                 homeContentCache,
@@ -36,7 +36,7 @@ public class DTOProcessorFollowFreeUser extends AbstractDTOProcessorFollowUser
     }
     //</editor-fold>
 
-    @Override public UserProfileDTO process(@NotNull UserProfileDTO userProfileDTO)
+    @Override public UserProfileDTO process(@NonNull UserProfileDTO userProfileDTO)
     {
         UserProfileDTO processed = super.process(userProfileDTO);
         userMessagingRelationshipCache.markIsFreeHero(heroId);

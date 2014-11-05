@@ -4,24 +4,24 @@ import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorSecurityPositionTransactionReceived extends DTOProcessorSecurityPositionReceived<SecurityPositionTransactionDTO>
 {
-    @NotNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @NonNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
 
     //<editor-fold desc="Description">
     public DTOProcessorSecurityPositionTransactionReceived(
-            @NotNull SecurityId securityId,
-            @NotNull UserBaseKey ownerId,
-            @NotNull SecurityPositionDetailCacheRx securityPositionDetailCache)
+            @NonNull SecurityId securityId,
+            @NonNull UserBaseKey ownerId,
+            @NonNull SecurityPositionDetailCacheRx securityPositionDetailCache)
     {
         super(securityId, ownerId);
         this.securityPositionDetailCache = securityPositionDetailCache;
     }
     //</editor-fold>
 
-    @Override public SecurityPositionTransactionDTO process(@NotNull SecurityPositionTransactionDTO value)
+    @Override public SecurityPositionTransactionDTO process(@NonNull SecurityPositionTransactionDTO value)
     {
         value = super.process(value);
         securityPositionDetailCache.invalidate(securityId);

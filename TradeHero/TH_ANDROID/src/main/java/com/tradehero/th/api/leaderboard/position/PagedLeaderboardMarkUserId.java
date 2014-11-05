@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PagedLeaderboardMarkUserId extends LeaderboardMarkUserId
 {
@@ -17,14 +17,14 @@ public class PagedLeaderboardMarkUserId extends LeaderboardMarkUserId
         this.page = page;
     }
 
-    public PagedLeaderboardMarkUserId(@NotNull Bundle args)
+    public PagedLeaderboardMarkUserId(@NonNull Bundle args)
     {
         super(args);
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? args.getInt(BUNDLE_KEY_PAGE) : null;
     }
     //</editor-fold>
 
-    public static boolean isPagedLeaderboardMarkUserId(@NotNull Bundle args)
+    public static boolean isPagedLeaderboardMarkUserId(@NonNull Bundle args)
     {
         return isLeaderboardMarkUserId(args)
                 && args.containsKey(BUNDLE_KEY_PAGE);
@@ -42,7 +42,7 @@ public class PagedLeaderboardMarkUserId extends LeaderboardMarkUserId
                 (page == null ? other.page == null : page.equals(other.page));
     }
 
-    public int compareTo(@NotNull PagedLeaderboardMarkUserId other)
+    public int compareTo(@NonNull PagedLeaderboardMarkUserId other)
     {
         if (this == other)
         {
@@ -63,7 +63,7 @@ public class PagedLeaderboardMarkUserId extends LeaderboardMarkUserId
         return page.compareTo(other.page);
     }
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (page == null)

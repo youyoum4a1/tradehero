@@ -19,8 +19,8 @@ import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
@@ -50,14 +50,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     @InjectView(R.id.discussion_translate_notice) @Optional protected TextView translateNotice;
     @InjectView(R.id.discussion_translate_notice_image) @Optional protected ImageView translateNoticeImage;
 
-    @Inject @NotNull protected PrettyTime prettyTime;
-    @Inject @NotNull protected SocialShareTranslationHelper socialShareHelper;
+    @Inject @NonNull protected PrettyTime prettyTime;
+    @Inject @NonNull protected SocialShareTranslationHelper socialShareHelper;
     protected final Context context;
 
     protected boolean downVote;
     @Nullable protected DiscussionDTOType discussionDTO;
     @Nullable protected DiscussionDTOType translatedDiscussionDTO;
-    protected @NotNull TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
+    protected @NonNull TranslationStatus currentTranslationStatus = TranslationStatus.ORIGINAL;
     protected TranslationResult latestTranslationResult;
     protected OnMenuClickedListener menuClickedListener;
 
@@ -68,14 +68,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
     }
     //</editor-fold>
 
-    public void onFinishInflate(@NotNull View view)
+    public void onFinishInflate(@NonNull View view)
     {
         HierarchyInjector.inject(view.getContext(), this);
         ButterKnife.inject(this, view);
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
     }
 
-    public void onAttachedToWindow(@NotNull View view)
+    public void onAttachedToWindow(@NonNull View view)
     {
         ButterKnife.inject(this, view);
         socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());

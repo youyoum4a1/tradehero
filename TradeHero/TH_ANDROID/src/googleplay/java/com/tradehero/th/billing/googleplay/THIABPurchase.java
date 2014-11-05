@@ -24,8 +24,8 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 
 import timber.log.Timber;
@@ -37,13 +37,13 @@ public class THIABPurchase
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchase(@NotNull String itemType, @NotNull String jsonPurchaseInfo, @NotNull String signature) throws JSONException
+    public THIABPurchase(@NonNull String itemType, @NonNull String jsonPurchaseInfo, @NonNull String signature) throws JSONException
     {
         super(itemType, jsonPurchaseInfo, signature);
     }
     //</editor-fold>
 
-    @Override @NotNull public GooglePlayPurchaseReportDTO getPurchaseReportDTO()
+    @Override @NonNull public GooglePlayPurchaseReportDTO getPurchaseReportDTO()
     {
         String signature = this.signature;
         // Test its length is a multiple of 4
@@ -65,17 +65,17 @@ public class THIABPurchase
         return new GooglePlayPurchaseReportDTO(this.originalJson, signature);
     }
 
-    @Override @NotNull protected IABSKU createIABSKU(@NotNull String skuString)
+    @Override @NonNull protected IABSKU createIABSKU(@NonNull String skuString)
     {
         return new IABSKU(skuString);
     }
 
-    @Override @NotNull protected THIABOrderId createIABOrderId(String orderIdString)
+    @Override @NonNull protected THIABOrderId createIABOrderId(String orderIdString)
     {
         return new THIABOrderId(orderIdString);
     }
 
-    @JsonIgnore @NotNull
+    @JsonIgnore @NonNull
     @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         return (OwnedPortfolioId) THJsonAdapter.getInstance().fromBody(developerPayload, OwnedPortfolioId.class);

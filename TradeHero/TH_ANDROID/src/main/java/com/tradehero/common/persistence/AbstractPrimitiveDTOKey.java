@@ -1,22 +1,22 @@
 package com.tradehero.common.persistence;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
-    @NotNull public T key;
+    @NonNull public T key;
 
     //<editor-fold desc="Constructors">
     public AbstractPrimitiveDTOKey() {}
 
-    public AbstractPrimitiveDTOKey(@NotNull T key)
+    public AbstractPrimitiveDTOKey(@NonNull T key)
     {
         super();
         this.key = key;
     }
 
-    public AbstractPrimitiveDTOKey(@NotNull Bundle args)
+    public AbstractPrimitiveDTOKey(@NonNull Bundle args)
     {
         super();
         key = fromKeyBundle(args.get(getBundleKey()));
@@ -60,7 +60,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
                 key.equals(other.key);
     }
 
-    @Override public int compareTo(@NotNull Object other)
+    @Override public int compareTo(@NonNull Object other)
     {
         if (other.getClass() == getClass())
         {
@@ -86,7 +86,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
 
     public abstract void putParameters(Bundle args);
 
-    @NotNull public Bundle getArgs()
+    @NonNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);

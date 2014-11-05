@@ -13,8 +13,8 @@ import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ChoiceFollowUserAssistantWithDialog
     implements OnFollowRequestedListener,
@@ -24,19 +24,19 @@ public class ChoiceFollowUserAssistantWithDialog
     @Inject protected UserProfileCache userProfileCache;
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
-    @NotNull private final Activity activity;
-    @NotNull protected final UserBaseKey heroId;
-    @NotNull protected final FollowUserAssistant followUserAssistant;
+    @NonNull private final Activity activity;
+    @NonNull protected final UserBaseKey heroId;
+    @NonNull protected final FollowUserAssistant followUserAssistant;
     @Nullable protected FollowDialogCombo followDialogCombo;
     @Nullable protected UserProfileDTO currentUserProfile;
     @Nullable protected UserBaseDTO heroBaseInfo;
 
     //<editor-fold desc="Constructors">
     public ChoiceFollowUserAssistantWithDialog(
-            @NotNull Activity activity,
-            @NotNull UserBaseKey heroId,
+            @NonNull Activity activity,
+            @NonNull UserBaseKey heroId,
             @Nullable SimpleFollowUserAssistant.OnUserFollowedListener userFollowedListener,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         super();
         this.activity = activity;
@@ -69,7 +69,7 @@ public class ChoiceFollowUserAssistantWithDialog
     }
 
     @SuppressWarnings("NullableProblems")
-    public void setHeroBaseInfo(@NotNull UserBaseDTO heroBaseInfo)
+    public void setHeroBaseInfo(@NonNull UserBaseDTO heroBaseInfo)
     {
         this.heroBaseInfo = heroBaseInfo;
     }
@@ -85,7 +85,7 @@ public class ChoiceFollowUserAssistantWithDialog
         }
     }
 
-    @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
+    @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
     {
         if (key.equals(heroId))
         {
@@ -98,7 +98,7 @@ public class ChoiceFollowUserAssistantWithDialog
         launchFollowChoice();
     }
 
-    @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+    @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
     {
         followUserAssistant.notifyFollowFailed(heroId, error);
     }
@@ -116,12 +116,12 @@ public class ChoiceFollowUserAssistantWithDialog
         }
     }
 
-    @Override public void freeFollowRequested(@NotNull UserBaseKey heroId)
+    @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
     {
         followUserAssistant.launchFreeFollow();
     }
 
-    @Override public void premiumFollowRequested(@NotNull UserBaseKey heroId)
+    @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)
     {
         followUserAssistant.launchPremiumFollow();
     }

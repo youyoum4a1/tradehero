@@ -9,17 +9,17 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 
 class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewHolder
 {
     //<editor-fold desc="Constructors">
     @Inject EmailNotificationSettingViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull UserServiceWrapper userServiceWrapper)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull UserServiceWrapper userServiceWrapper)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
     }
@@ -30,7 +30,7 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
         return R.string.key_settings_notifications_email;
     }
 
-    @Override protected void updateStatus(@NotNull UserProfileDTO userProfileDTO)
+    @Override protected void updateStatus(@NonNull UserProfileDTO userProfileDTO)
     {
         if (clickablePref != null)
         {

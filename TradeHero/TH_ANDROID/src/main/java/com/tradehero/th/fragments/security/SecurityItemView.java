@@ -25,7 +25,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
@@ -478,14 +478,14 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         }
     }
 
-    private RequestCreator picassoSetupLogoParam(@NotNull RequestCreator creator)
+    private RequestCreator picassoSetupLogoParam(@NonNull RequestCreator creator)
     {
         return creator.transform(foregroundTransformation)
                 .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
                 .centerInside();
     }
 
-    private RequestCreator picassoSetupBGParam(@NotNull RequestCreator creator)
+    private RequestCreator picassoSetupBGParam(@NonNull RequestCreator creator)
     {
         return creator.transform(backgroundTransformation)
                 .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)

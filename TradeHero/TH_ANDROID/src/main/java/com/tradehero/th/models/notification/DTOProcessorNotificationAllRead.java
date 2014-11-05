@@ -6,21 +6,21 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorNotificationAllRead implements DTOProcessor<BaseResponseDTO>,
         Action1<BaseResponseDTO>
 {
-    @NotNull private final NotificationCacheRx notificationCache;
-    @NotNull private final UserBaseKey readerId;
-    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final NotificationCacheRx notificationCache;
+    @NonNull private final UserBaseKey readerId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
 
     //<editor-fold desc="Constructors">
     public DTOProcessorNotificationAllRead(
-            @NotNull NotificationCacheRx notificationCache,
-            @NotNull UserBaseKey readerId,
-            @NotNull UserProfileCacheRx userProfileCache)
+            @NonNull NotificationCacheRx notificationCache,
+            @NonNull UserBaseKey readerId,
+            @NonNull UserProfileCacheRx userProfileCache)
     {
         this.notificationCache = notificationCache;
         this.readerId = readerId;

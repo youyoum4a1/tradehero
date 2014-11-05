@@ -9,7 +9,7 @@ import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THIABBillingRequestFull extends THIABBillingRequest<
         IABSKUListKey,
@@ -22,7 +22,7 @@ public class THIABBillingRequestFull extends THIABBillingRequest<
         IABException>
 {
     //<editor-fold desc="Constructors">
-    protected THIABBillingRequestFull(@NotNull Builder<?> builder)
+    protected THIABBillingRequestFull(@NonNull Builder<?> builder)
     {
         super(builder);
     }

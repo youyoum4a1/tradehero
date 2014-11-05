@@ -4,16 +4,16 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.models.DTOProcessor;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorTradeListReceived implements DTOProcessor<TradeDTOList>,
         Action1<TradeDTOList>
 {
-    @NotNull private final DTOProcessor<TradeDTO> tradeReceivedProcessor;
+    @NonNull private final DTOProcessor<TradeDTO> tradeReceivedProcessor;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorTradeListReceived(@NotNull OwnedPositionId ownedPositionId)
+    public DTOProcessorTradeListReceived(@NonNull OwnedPositionId ownedPositionId)
     {
         this.tradeReceivedProcessor = new DTOProcessorTradeReceived(ownedPositionId);
     }

@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
@@ -37,13 +37,13 @@ abstract public class BillingAlertDialogUtil<
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
-    @NotNull public final ActivityUtil activityUtil;
-    @NotNull private final Analytics analytics;
+    @NonNull public final ActivityUtil activityUtil;
+    @NonNull private final Analytics analytics;
 
     //<editor-fold desc="Constructors">
     public BillingAlertDialogUtil(
-            @NotNull Analytics analytics,
-            @NotNull ActivityUtil activityUtil)
+            @NonNull Analytics analytics,
+            @NonNull ActivityUtil activityUtil)
     {
         super();
         this.analytics = analytics;

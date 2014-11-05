@@ -12,7 +12,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class ContestCompetitionView extends AspectRatioImageView

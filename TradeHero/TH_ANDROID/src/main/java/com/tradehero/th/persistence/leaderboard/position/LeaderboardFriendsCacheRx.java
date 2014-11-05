@@ -8,7 +8,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.network.service.LeaderboardServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -16,17 +16,17 @@ public class LeaderboardFriendsCacheRx extends BaseFetchDTOCacheRx<LeaderboardFr
 {
     public static final int DEFAULT_MAX_SIZE = 1;
 
-    @NotNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
+    @NonNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
 
     @Inject public LeaderboardFriendsCacheRx(
-            @NotNull LeaderboardServiceWrapper leaderboardServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull LeaderboardServiceWrapper leaderboardServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
     }
 
-    @NotNull @Override protected Observable<LeaderboardFriendsDTO> fetch(@NotNull LeaderboardFriendsKey key)
+    @NonNull @Override protected Observable<LeaderboardFriendsDTO> fetch(@NonNull LeaderboardFriendsKey key)
     {
         return leaderboardServiceWrapper.getNewFriendsLeaderboardRx();
     }

@@ -7,19 +7,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SocialSharePreferenceHelperNew
 {
-    @NotNull private final SocialShareSetPreference socialShareSetPreference;
-    @NotNull private final SocialSharePreferenceDTOFactory socialSharePreferenceFactory;
-    @NotNull private HashMap<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap;
+    @NonNull private final SocialShareSetPreference socialShareSetPreference;
+    @NonNull private final SocialSharePreferenceDTOFactory socialSharePreferenceFactory;
+    @NonNull private HashMap<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharePreferenceHelperNew(
-            @NotNull SocialShareSetPreference socialShareSetPreference,
-            @NotNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory)
+            @NonNull SocialShareSetPreference socialShareSetPreference,
+            @NonNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory)
     {
         super();
         this.socialSharePreferenceFactory = socialSharePreferenceDTOFactory;
@@ -37,15 +37,15 @@ public class SocialSharePreferenceHelperNew
 
     public void load()
     {
-        for (@NotNull SocialSharePreferenceDTO socialSharePreferenceDTO : socialShareSetPreference.getSocialSharePreference())
+        for (SocialSharePreferenceDTO socialSharePreferenceDTO : socialShareSetPreference.getSocialSharePreference())
         {
             sharePreferencesMap.put(socialSharePreferenceDTO.getSocialNetworkEnum(), socialSharePreferenceDTO);
         }
     }
 
-    public boolean isShareEnabled(@NotNull SocialNetworkEnum socialNetworkEnum, boolean defaultValue)
+    public boolean isShareEnabled(@NonNull SocialNetworkEnum socialNetworkEnum, boolean defaultValue)
     {
-        @Nullable SocialSharePreferenceDTO socialSharePreferenceDTO = sharePreferencesMap.get(socialNetworkEnum);
+        SocialSharePreferenceDTO socialSharePreferenceDTO = sharePreferencesMap.get(socialNetworkEnum);
         if (socialSharePreferenceDTO != null)
         {
             return socialSharePreferenceDTO.isShareEnabled();
@@ -57,9 +57,9 @@ public class SocialSharePreferenceHelperNew
         }
     }
 
-    public void updateSocialSharePreference(@NotNull SocialNetworkEnum networkEnum, boolean isShareEnabled)
+    public void updateSocialSharePreference(@NonNull SocialNetworkEnum networkEnum, boolean isShareEnabled)
     {
-        @Nullable SocialSharePreferenceDTO socialSharePreferenceDTO = sharePreferencesMap.get(networkEnum);
+        SocialSharePreferenceDTO socialSharePreferenceDTO = sharePreferencesMap.get(networkEnum);
 
         if (socialSharePreferenceDTO != null)
         {
@@ -72,7 +72,7 @@ public class SocialSharePreferenceHelperNew
         }
     }
 
-    @NotNull public List<SocialNetworkEnum> getAllEnabledSharePreferences()
+    @NonNull public List<SocialNetworkEnum> getAllEnabledSharePreferences()
     {
         List<SocialNetworkEnum> enabled = new ArrayList<>();
         for (Map.Entry<SocialNetworkEnum, SocialSharePreferenceDTO> entry : sharePreferencesMap.entrySet())

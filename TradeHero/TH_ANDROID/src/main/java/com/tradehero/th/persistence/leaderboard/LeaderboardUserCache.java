@@ -11,21 +11,20 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton @UserCache @Deprecated
 public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId, LeaderboardUserDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @Inject public LeaderboardUserCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public LeaderboardUserCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
 
-    @Override @NotNull public LeaderboardUserDTO fetch(@NotNull LeaderboardUserId key) throws Throwable
+    @Override @NonNull public LeaderboardUserDTO fetch(@NonNull LeaderboardUserId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on LeaderboardUserCache");
     }
@@ -43,7 +42,7 @@ public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId,
         }
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public LeaderboardUserDTOList get(@Nullable List<LeaderboardUserId> leaderboardUserIds)
     {
         if (leaderboardUserIds == null)
@@ -52,14 +51,14 @@ public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId,
         }
 
         LeaderboardUserDTOList returned = new LeaderboardUserDTOList();
-        for (@NotNull LeaderboardUserId leaderboardUserId: leaderboardUserIds)
+        for (LeaderboardUserId leaderboardUserId: leaderboardUserIds)
         {
             returned.add(get(leaderboardUserId));
         }
         return returned;
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public LeaderboardUserDTOList put(@Nullable List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
@@ -67,7 +66,7 @@ public class LeaderboardUserCache extends StraightDTOCacheNew<LeaderboardUserId,
             return null;
         }
         LeaderboardUserDTOList previous = new LeaderboardUserDTOList();
-        for (@NotNull LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
+        for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
         {
             previous.add(put(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO));
         }

@@ -10,7 +10,7 @@ import com.tradehero.common.billing.amazon.exception.AmazonPurchaseCanceledExcep
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 import javax.inject.Inject;
@@ -27,15 +27,15 @@ public class THBaseAmazonPurchaser
             AmazonException>
     implements THAmazonPurchaser
 {
-    @NotNull protected final THAmazonExceptionFactory amazonExceptionFactory;
-    @NotNull protected final StringSetPreference processingPurchaseStringSet;
+    @NonNull protected final THAmazonExceptionFactory amazonExceptionFactory;
+    @NonNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaser(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService,
-            @NotNull THAmazonExceptionFactory amazonExceptionFactory,
-            @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService,
+            @NonNull THAmazonExceptionFactory amazonExceptionFactory,
+            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;

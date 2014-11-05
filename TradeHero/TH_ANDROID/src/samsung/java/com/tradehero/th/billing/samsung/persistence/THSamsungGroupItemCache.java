@@ -7,7 +7,7 @@ import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.UserCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class THSamsungGroupItemCache
         extends SamsungGroupItemCache<SamsungSKU, SamsungSKUList>
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
     public static int MAX_SIZE = 5;
 
     //<editor-fold desc="Constructors">
-    @Inject public THSamsungGroupItemCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public THSamsungGroupItemCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(MAX_SIZE, dtoCacheUtil);
     }

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TrendingFilterSpinnerIconAdapterNew
         extends ArrayDTOAdapterNew<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>
@@ -15,7 +15,7 @@ public class TrendingFilterSpinnerIconAdapterNew
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSpinnerIconAdapterNew(
-            @NotNull Context context,
+            @NonNull Context context,
             @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);

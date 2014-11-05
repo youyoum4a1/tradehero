@@ -19,7 +19,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
@@ -29,15 +29,15 @@ public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
         THSamsungStoreProductDetailView,
         THSamsungSKUDetailAdapter>
 {
-    @NotNull protected final THSamsungPurchaseCache thSamsungPurchaseCache;
-    @NotNull protected final SamsungStoreUtils samsungStoreUtils;
+    @NonNull protected final THSamsungPurchaseCache thSamsungPurchaseCache;
+    @NonNull protected final SamsungStoreUtils samsungStoreUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungAlertDialogUtil(
-            @NotNull Analytics analytics,
-            @NotNull ActivityUtil activityUtil,
-            @NotNull THSamsungPurchaseCache thSamsungPurchaseCache,
-            @NotNull SamsungStoreUtils samsungStoreUtils)
+            @NonNull Analytics analytics,
+            @NonNull ActivityUtil activityUtil,
+            @NonNull THSamsungPurchaseCache thSamsungPurchaseCache,
+            @NonNull SamsungStoreUtils samsungStoreUtils)
     {
         super(analytics, activityUtil);
         this.thSamsungPurchaseCache = thSamsungPurchaseCache;

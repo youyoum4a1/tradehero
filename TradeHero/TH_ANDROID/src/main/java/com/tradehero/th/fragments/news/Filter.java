@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 // TODO this file needs some serious cleanup
 public interface Filter
@@ -88,7 +88,7 @@ class BaseFilter implements Filter
 {
     private int currentPage = 0;
 
-    @NotNull protected final Map<Integer, PageData> dataMap = new HashMap<>();
+    @NonNull protected final Map<Integer, PageData> dataMap = new HashMap<>();
 
     //<editor-fold desc="Constructors">
     public BaseFilter()

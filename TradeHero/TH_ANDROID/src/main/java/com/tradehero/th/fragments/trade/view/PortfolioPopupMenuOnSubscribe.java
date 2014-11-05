@@ -6,21 +6,21 @@ import android.view.View;
 import android.widget.PopupMenu;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 
 public class PortfolioPopupMenuOnSubscribe implements Observable.OnSubscribe<MenuOwnedPortfolioId>
 {
-    @NotNull private final Context context;
-    @NotNull private final View anchor;
-    @NotNull private final Set<MenuOwnedPortfolioId> menuOwnedPortfolioIds;
+    @NonNull private final Context context;
+    @NonNull private final View anchor;
+    @NonNull private final Set<MenuOwnedPortfolioId> menuOwnedPortfolioIds;
 
     //<editor-fold desc="Constructors">
     public PortfolioPopupMenuOnSubscribe(
-            @NotNull Context context,
-            @NotNull View anchor,
-            @NotNull Set<MenuOwnedPortfolioId> menuOwnedPortfolioIds)
+            @NonNull Context context,
+            @NonNull View anchor,
+            @NonNull Set<MenuOwnedPortfolioId> menuOwnedPortfolioIds)
     {
         this.context = context;
         this.anchor = anchor;

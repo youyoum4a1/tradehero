@@ -4,7 +4,7 @@ import com.android.internal.util.Predicate;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.util.TestUtil;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -55,7 +55,7 @@ abstract public class AbstractServiceTestBase
                 });
     }
 
-    public boolean isServiceAsync(@NotNull Class<?> aClass)
+    public boolean isServiceAsync(@NonNull Class<?> aClass)
     {
         return aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceAsync$");
     }
@@ -73,7 +73,7 @@ abstract public class AbstractServiceTestBase
                 });
     }
 
-    public boolean isServiceWrapper(@NotNull Class<?> aClass)
+    public boolean isServiceWrapper(@NonNull Class<?> aClass)
     {
         return !aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceWrapper$");
     }
@@ -91,14 +91,14 @@ abstract public class AbstractServiceTestBase
                 });
     }
 
-    public boolean isServiceWrapperInjector(@NotNull Class<?> aClass)
+    public boolean isServiceWrapperInjector(@NonNull Class<?> aClass)
     {
         return !aClass.isInterface() && aClass.getSimpleName().matches("^.*ServiceWrapper\\$\\$InjectAdapter$");
     }
     //</editor-fold>
 
     //<editor-fold desc="Identify Methods that take Callbacks">
-    @NotNull public List<Method> getCallbackMethods(@NotNull Class<?> service)
+    @NonNull public List<Method> getCallbackMethods(@NonNull Class<?> service)
     {
         List<Method> methodsWithCallback = new ArrayList<>();
         Method [] declared = service.getDeclaredMethods();
@@ -112,7 +112,7 @@ abstract public class AbstractServiceTestBase
         return methodsWithCallback;
     }
 
-    public boolean usesCallback(@NotNull Method method)
+    public boolean usesCallback(@NonNull Method method)
     {
         Class<?>[] parameters = method.getParameterTypes();
         return parameters.length > 0 &&
@@ -121,7 +121,7 @@ abstract public class AbstractServiceTestBase
     //</editor-fold>
 
     //<editor-fold desc="List @Inject programmatically">
-    public Object obtainInjectableParameter(@NotNull Class<?> anyType)
+    public Object obtainInjectableParameter(@NonNull Class<?> anyType)
     {
         return DaggerUtils.getObject(anyType);
     }
@@ -154,8 +154,8 @@ abstract public class AbstractServiceTestBase
     }
 
     public<T> T tieCallbackMethodsToHolder(
-            @NotNull Class<T> serviceAsyncType,
-            @NotNull final CallbackHolder holder)
+            @NonNull Class<T> serviceAsyncType,
+            @NonNull final CallbackHolder holder)
             throws InvocationTargetException, IllegalAccessException
     {
         T service = mock(serviceAsyncType);

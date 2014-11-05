@@ -11,7 +11,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.filter.security.SecurityCompactDTOFilter;
 import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends SecurityCompactDTO>
         extends ArrayDTOAdapter<SecurityCompactDTOType, SecurityItemView<SecurityCompactDTOType>>
@@ -28,7 +28,7 @@ abstract public class SecurityItemViewAdapter<SecurityCompactDTOType extends Sec
     }
     //</editor-fold>
 
-    @Override public void setItems(@NotNull List<SecurityCompactDTOType> items)
+    @Override public void setItems(@NonNull List<SecurityCompactDTOType> items)
     {
         originalItems = items;
         setItemsToShow(getPredicateFilter().filter(items));

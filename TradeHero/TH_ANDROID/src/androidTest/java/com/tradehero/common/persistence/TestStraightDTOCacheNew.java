@@ -1,6 +1,6 @@
 package com.tradehero.common.persistence;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class TestStraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends StraightDTOCacheNew<DTOKeyType, DTOType>
@@ -12,12 +12,12 @@ abstract public class TestStraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType
     }
     //</editor-fold>
 
-    public boolean isCacheValueNull(@NotNull DTOKeyType key)
+    public boolean isCacheValueNull(@NonNull DTOKeyType key)
     {
         return getCacheValue(key) == null;
     }
 
-    public Integer getListenersCount(@NotNull DTOKeyType key)
+    public Integer getListenersCount(@NonNull DTOKeyType key)
     {
         CacheValue<DTOKeyType, DTOType> cacheValue = getCacheValue(key);
         if (cacheValue == null)

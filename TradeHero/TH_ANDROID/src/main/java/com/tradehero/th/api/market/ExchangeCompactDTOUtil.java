@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ExchangeCompactDTOUtil
 {
@@ -15,12 +15,12 @@ public class ExchangeCompactDTOUtil
     }
     //</editor-fold>
 
-    @NotNull public ExchangeCompactDTOList filterAndOrderForTrending(
-            @NotNull List<? extends ExchangeCompactDTO> rough,
-            @NotNull Comparator<ExchangeCompactDTO> comparator)
+    @NonNull public ExchangeCompactDTOList filterAndOrderForTrending(
+            @NonNull List<? extends ExchangeCompactDTO> rough,
+            @NonNull Comparator<ExchangeCompactDTO> comparator)
     {
         TreeSet<ExchangeCompactDTO> filtered = new TreeSet<>(comparator);
-        for (@NotNull ExchangeCompactDTO exchangeCompactDTO : rough)
+        for (ExchangeCompactDTO exchangeCompactDTO : rough)
         {
             if (exchangeCompactDTO.isIncludedInTrending)
             {

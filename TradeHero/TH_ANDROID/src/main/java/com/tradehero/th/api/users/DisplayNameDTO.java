@@ -1,15 +1,15 @@
 package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTOKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class DisplayNameDTO implements DTOKey
 {
-    @NotNull public final String displayName;
+    @NonNull public final String displayName;
 
     //<editor-fold desc="Constructors">
-    public DisplayNameDTO(@NotNull String displayName)
+    public DisplayNameDTO(@NonNull String displayName)
     {
         this.displayName = displayName;
     }

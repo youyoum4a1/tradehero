@@ -8,7 +8,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -20,9 +20,9 @@ public class AchievementCategoryListCacheRx extends BaseFetchDTOCacheRx<UserBase
 
     //<editor-fold desc="Constructors">
     @Inject public AchievementCategoryListCacheRx(
-            @NotNull AchievementServiceWrapper achievementServiceWrapper,
-            @NotNull AchievementCategoryCacheRx achievementCategoryCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull AchievementServiceWrapper achievementServiceWrapper,
+            @NonNull AchievementCategoryCacheRx achievementCategoryCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_SIZE, DEFAULT_SIZE, DEFAULT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
@@ -30,12 +30,12 @@ public class AchievementCategoryListCacheRx extends BaseFetchDTOCacheRx<UserBase
     }
     //</editor-fold>
 
-    @NotNull @Override public Observable<AchievementCategoryDTOList> fetch(@NotNull UserBaseKey key)
+    @NonNull @Override public Observable<AchievementCategoryDTOList> fetch(@NonNull UserBaseKey key)
     {
         return achievementServiceWrapper.getAchievementCategoriesRx(key);
     }
 
-    @Override public void onNext(@NotNull UserBaseKey key, @NotNull AchievementCategoryDTOList value)
+    @Override public void onNext(@NonNull UserBaseKey key, @NonNull AchievementCategoryDTOList value)
     {
         achievementCategoryCache.onNext(key, value);
         super.onNext(key, value);

@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.competition.specific.ProviderSpecificsPopulator;
 import java.io.IOException;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderDTODeserialiser extends ProviderDTODeserialiserBase<ProviderDTO>
 {
     //<editor-fold desc="Constructors">
     @Inject protected ProviderDTODeserialiser(
-            @NotNull ObjectMapper objectMapper,
-            @NotNull ProviderSpecificsPopulator providerSpecificsPopulator)
+            @NonNull ObjectMapper objectMapper,
+            @NonNull ProviderSpecificsPopulator providerSpecificsPopulator)
     {
         super(objectMapper, providerSpecificsPopulator);
     }

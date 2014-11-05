@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.Window;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -12,14 +12,14 @@ import retrofit.client.Response;
 public class RequestCallback<T> implements Callback<T>
 {
     @Nullable private ProgressDialog dialog;
-    @NotNull private Context context;
+    @NonNull private Context context;
 
-    public RequestCallback(@NotNull Context context)
+    public RequestCallback(@NonNull Context context)
     {
         this.context = context;
     }
 
-    private void showDialog(@NotNull Context context)
+    private void showDialog(@NonNull Context context)
     {
         if (dialog == null)
         {

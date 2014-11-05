@@ -4,7 +4,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantType;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class WarrantDTO extends SecurityCompactDTO
 {
@@ -21,7 +21,7 @@ public class WarrantDTO extends SecurityCompactDTO
 
     public String fallbackExternalURL;
 
-    @NotNull @Override public Integer getSecurityTypeStringResourceId()
+    @NonNull @Override public Integer getSecurityTypeStringResourceId()
     {
         return R.string.security_type_warrant;
     }

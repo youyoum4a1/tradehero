@@ -15,7 +15,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OnBoardPickHeroViewHolder
 {
@@ -25,10 +25,10 @@ public class OnBoardPickHeroViewHolder
     @InjectView(R.id.switcher_hero) ViewSwitcher switcher;
     @InjectView(R.id.heros_list) ListView heroListView;
 
-    @NotNull DTOAdapterNew<SelectableUserDTO> selectedHeroesAdapter;
+    @NonNull DTOAdapterNew<SelectableUserDTO> selectedHeroesAdapter;
 
     //<editor-fold desc="Constructors">
-    public OnBoardPickHeroViewHolder(@NotNull Context context)
+    public OnBoardPickHeroViewHolder(@NonNull Context context)
     {
         super();
         selectedHeroesAdapter = new ArrayDTOAdapterNew<SelectableUserDTO, SelectableUserViewRelative>(
@@ -49,7 +49,7 @@ public class OnBoardPickHeroViewHolder
         ButterKnife.reset(this);
     }
 
-    public void setUsers(@NotNull List<LeaderboardUserDTO> users)
+    public void setUsers(@NonNull List<LeaderboardUserDTO> users)
     {
         List<SelectableUserDTO> list = new ArrayList<>();
         for (LeaderboardUserDTO user : users)
@@ -66,14 +66,14 @@ public class OnBoardPickHeroViewHolder
 
     @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.heros_list)
-    void onItemClick(@NotNull AdapterView<?> adapterView, View view, int position, long l)
+    void onItemClick(@NonNull AdapterView<?> adapterView, View view, int position, long l)
     {
         SelectableUserDTO value = (SelectableUserDTO) adapterView.getItemAtPosition(position);
         value.selected = !value.selected;
         selectedHeroesAdapter.notifyDataSetChanged();
     }
 
-    public @NotNull LeaderboardUserDTOList getSelectedHeroes()
+    public @NonNull LeaderboardUserDTOList getSelectedHeroes()
     {
         LeaderboardUserDTOList selected = new LeaderboardUserDTOList();
         SelectableUserDTO value;

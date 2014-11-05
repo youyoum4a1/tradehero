@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class OnlineStateReceiver extends BroadcastReceiver
@@ -16,7 +16,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
 
     @Nullable private static Boolean online = null;
 
-    public static boolean isOnline(@NotNull Context context)
+    public static boolean isOnline(@NonNull Context context)
     {
         if (online == null)
         {
@@ -25,7 +25,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
         return online;
     }
 
-    @Override public void onReceive(@NotNull Context context, @NotNull Intent intent)
+    @Override public void onReceive(@NonNull Context context, @NonNull Intent intent)
     {
         online = isConnected(context);
 
@@ -33,7 +33,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
         LocalBroadcastManager.getInstance(context).sendBroadcast(online);
     }
 
-    private static boolean isConnected(@NotNull Context context)
+    private static boolean isConnected(@NonNull Context context)
     {
         ConnectivityManager connectivityManager;
         boolean connected = false;
@@ -49,7 +49,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
         return connected;
     }
 
-    public static boolean isWiFiConnected(@NotNull Context context)
+    public static boolean isWiFiConnected(@NonNull Context context)
     {
         boolean haveConnectedWifi = false;
 
@@ -66,7 +66,7 @@ public class OnlineStateReceiver extends BroadcastReceiver
         return haveConnectedWifi;
     }
 
-    public static boolean isMobileNetworkConnected(@NotNull Context context)
+    public static boolean isMobileNetworkConnected(@NonNull Context context)
     {
         boolean haveConnectedMobile = false;
 

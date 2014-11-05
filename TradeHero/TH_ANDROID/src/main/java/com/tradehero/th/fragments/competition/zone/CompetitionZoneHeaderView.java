@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.widget.list.BaseListHeaderView;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class CompetitionZoneHeaderView extends BaseListHeaderView
     implements DTOView<CompetitionZoneDTO>
@@ -27,7 +27,7 @@ public class CompetitionZoneHeaderView extends BaseListHeaderView
     }
     //</editor-fold>
 
-    @Override public void display(@NotNull CompetitionZoneDTO dto)
+    @Override public void display(@NonNull CompetitionZoneDTO dto)
     {
         setHeaderTextContent(dto.title);
     }

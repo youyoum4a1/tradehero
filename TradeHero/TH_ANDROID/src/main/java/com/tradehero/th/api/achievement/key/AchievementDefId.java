@@ -2,7 +2,7 @@ package com.tradehero.th.api.achievement.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AchievementDefId extends AbstractIntegerDTOKey
 {
@@ -14,7 +14,7 @@ public class AchievementDefId extends AbstractIntegerDTOKey
         super(key);
     }
 
-    public AchievementDefId(@NotNull Bundle args)
+    public AchievementDefId(@NonNull Bundle args)
     {
         super(args);
     }

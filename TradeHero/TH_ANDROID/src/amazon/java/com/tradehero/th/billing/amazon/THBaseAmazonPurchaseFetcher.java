@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class THBaseAmazonPurchaseFetcher
@@ -29,16 +29,16 @@ public class THBaseAmazonPurchaseFetcher
         AmazonException>
         implements THAmazonPurchaseFetcher
 {
-    @NotNull protected final THAmazonExceptionFactory amazonExceptionFactory;
-    @NotNull protected final StringSetPreference processingPurchaseStringSet;
-    @NotNull protected final List<AmazonPurchaseInProcessDTO> savedPurchasesInProcess;
+    @NonNull protected final THAmazonExceptionFactory amazonExceptionFactory;
+    @NonNull protected final StringSetPreference processingPurchaseStringSet;
+    @NonNull protected final List<AmazonPurchaseInProcessDTO> savedPurchasesInProcess;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseFetcher(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService,
-            @NotNull THAmazonExceptionFactory amazonExceptionFactory,
-            @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService,
+            @NonNull THAmazonExceptionFactory amazonExceptionFactory,
+            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;
@@ -48,17 +48,17 @@ public class THBaseAmazonPurchaseFetcher
     }
     //</editor-fold>
 
-    @NotNull @Override protected THAmazonPurchaseIncomplete createIncompletePurchase(@NotNull Receipt receipt, @NotNull UserData userData)
+    @NonNull @Override protected THAmazonPurchaseIncomplete createIncompletePurchase(@NonNull Receipt receipt, @NonNull UserData userData)
     {
         return new THAmazonPurchaseIncomplete(receipt, userData);
     }
 
-    @Override @Nullable protected AmazonException createException(@NotNull PurchaseUpdatesResponse.RequestStatus requestStatus)
+    @Override @Nullable protected AmazonException createException(@NonNull PurchaseUpdatesResponse.RequestStatus requestStatus)
     {
         return amazonExceptionFactory.create(requestStatus, "Failed to fetch purchases");
     }
 
-    @Override protected void handleReceived(@NotNull List<Receipt> receipts, @NotNull UserData userData)
+    @Override protected void handleReceived(@NonNull List<Receipt> receipts, @NonNull UserData userData)
     {
         super.handleReceived(receipts, userData);
         mergeWithSavedPurchases();

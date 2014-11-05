@@ -17,8 +17,8 @@ import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
@@ -30,7 +30,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
     public static final int ITEM_TYPE_LOADING = 6;
 
-    @NotNull private final Integer[] viewTypeToResId;
+    @NonNull private final Integer[] viewTypeToResId;
     private List<Integer> orderedTypes;
     private List<CompetitionZoneDTO> orderedItems;
 
@@ -44,7 +44,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
 
     //<editor-fold desc="Constructors">
     public CompetitionZoneListItemAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             int zoneItemLayoutResId,
             int adsResId,
             int headerResId,

@@ -12,37 +12,37 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Deprecated
 @Singleton @UserCache public class WatchlistPositionCache extends StraightCutDTOCacheNew<SecurityId, WatchlistPositionDTO, WatchlistPositionCutDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 200;
 
-    @NotNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
+    @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject public WatchlistPositionCache(
-            @NotNull Lazy<SecurityCompactCacheRx> securityCompactCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
 
-    @Override @NotNull public WatchlistPositionDTO fetch(@NotNull SecurityId key) throws Throwable
+    @Override @NonNull public WatchlistPositionDTO fetch(@NonNull SecurityId key) throws Throwable
     {
         throw new IllegalStateException("There is no fetch on WatchlistPositionCache");
     }
 
-    @NotNull @Override protected WatchlistPositionCutDTO cutValue(@NotNull SecurityId key, @NotNull WatchlistPositionDTO value)
+    @NonNull @Override protected WatchlistPositionCutDTO cutValue(@NonNull SecurityId key, @NonNull WatchlistPositionDTO value)
     {
         return new WatchlistPositionCutDTO(value, securityCompactCache.get());
     }
 
-    @Nullable @Override protected WatchlistPositionDTO inflateValue(@NotNull SecurityId key, @Nullable WatchlistPositionCutDTO cutValue)
+    @Nullable @Override protected WatchlistPositionDTO inflateValue(@NonNull SecurityId key, @Nullable WatchlistPositionCutDTO cutValue)
     {
         if (cutValue == null)
         {
@@ -51,7 +51,7 @@ import org.jetbrains.annotations.Nullable;
         return cutValue.inflate(securityCompactCache.get());
     }
 
-    @NotNull public WatchlistPositionDTOList put(@NotNull WatchlistPositionDTOList watchlistPositionDTOs)
+    @NonNull public WatchlistPositionDTOList put(@NonNull WatchlistPositionDTOList watchlistPositionDTOs)
     {
         WatchlistPositionDTOList previous = new WatchlistPositionDTOList();
         for (WatchlistPositionDTO watchlistPositionDTO : watchlistPositionDTOs)
@@ -62,7 +62,7 @@ import org.jetbrains.annotations.Nullable;
         return previous;
     }
 
-    @NotNull public WatchlistPositionDTOList get(@NotNull SecurityIdList securityIds)
+    @NonNull public WatchlistPositionDTOList get(@NonNull SecurityIdList securityIds)
     {
         WatchlistPositionDTOList cached = new WatchlistPositionDTOList();
         for (SecurityId securityId : securityIds)
@@ -72,7 +72,7 @@ import org.jetbrains.annotations.Nullable;
         return cached;
     }
 
-    public void invalidate(@NotNull UserBaseKey concernedUser)
+    public void invalidate(@NonNull UserBaseKey concernedUser)
     {
         WatchlistPositionDTO cached;
         for (SecurityId key : snapshot().keySet())

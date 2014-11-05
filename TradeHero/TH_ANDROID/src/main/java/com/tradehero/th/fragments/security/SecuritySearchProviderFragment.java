@@ -6,21 +6,21 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SecuritySearchProviderFragment extends SecuritySearchFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = SecuritySearchProviderFragment.class.getName() + ".providerId";
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
-    @NotNull protected ProviderId providerId;
+    @NonNull protected ProviderId providerId;
 
-    public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    @NotNull public static ProviderId getProviderId(@NotNull Bundle args)
+    @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
     {
         return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
     }
@@ -35,7 +35,7 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
         }
     }
 
-    @Override @NotNull public SecurityListType makePagedDtoKey(int page)
+    @Override @NonNull public SecurityListType makePagedDtoKey(int page)
     {
         return new SearchProviderSecurityListType(providerId, mSearchText, page, perPage);
 

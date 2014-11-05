@@ -4,13 +4,13 @@ import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, DTO
 {
     public final static String BUNDLE_KEY_POSITION_ID = OwnedPositionId.class.getName() + ".positionId";
 
-    @NotNull public final Integer positionId;
+    @NonNull public final Integer positionId;
 
     //<editor-fold desc="Constructors">
     public OwnedPositionId(int userId, int portfolioId, int positionId)
@@ -26,7 +26,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
     }
     //</editor-fold>
 
-    public static boolean isOwnedPositionId(@NotNull Bundle args)
+    public static boolean isOwnedPositionId(@NonNull Bundle args)
     {
         return isOwnedPortfolioId(args) &&
                 args.containsKey(BUNDLE_KEY_POSITION_ID);
@@ -37,7 +37,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return super.hashCode() ^ positionId.hashCode();
     }
 
-    @Override public boolean equals(@NotNull OwnedPortfolioId other)
+    @Override public boolean equals(@NonNull OwnedPortfolioId other)
     {
         return (other instanceof OwnedPositionId) ? equals((OwnedPositionId) other) : super.equals(other);
     }
@@ -70,7 +70,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return positionId.compareTo(other.positionId);
     }
 
-    @Override protected void putParameters(@NotNull Bundle args)
+    @Override protected void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_POSITION_ID, positionId);
@@ -81,7 +81,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         return this.positionId < 0;
     }
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         return "OwnedPositionId{" +
                 "portfolioId=" + portfolioId +

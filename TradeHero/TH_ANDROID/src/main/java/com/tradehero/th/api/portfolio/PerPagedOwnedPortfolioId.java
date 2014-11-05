@@ -1,8 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
 {
@@ -24,7 +24,7 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
     }
     //</editor-fold>
 
-    public static boolean isPerPagedOwnedPortfolioId(@NotNull Bundle args)
+    public static boolean isPerPagedOwnedPortfolioId(@NonNull Bundle args)
     {
         return isPagedOwnedPortfolioId(args)
                 && args.containsKey(BUNDLE_KEY_PER_PAGE);
@@ -42,7 +42,7 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
                 (perPage == null ? other.perPage == null : perPage.equals(other.perPage));
     }
 
-    public int compareTo(@NotNull PerPagedOwnedPortfolioId other)
+    public int compareTo(@NonNull PerPagedOwnedPortfolioId other)
     {
         if (this == other)
         {
@@ -63,7 +63,7 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
         return perPage.compareTo(other.perPage);
     }
 
-    @Override protected void putParameters(@NotNull Bundle args)
+    @Override protected void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (perPage == null)
@@ -76,7 +76,7 @@ public class PerPagedOwnedPortfolioId extends PagedOwnedPortfolioId
         }
     }
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         return String.format("[userId=%d; portfolioId=%d; page=%d; perPage=%d]", userId, portfolioId, page, perPage);
     }

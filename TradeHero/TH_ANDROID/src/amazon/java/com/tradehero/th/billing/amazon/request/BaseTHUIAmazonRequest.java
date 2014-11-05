@@ -10,8 +10,8 @@ import com.tradehero.th.billing.amazon.THAmazonProductDetail;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseOrder;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class BaseTHUIAmazonRequest
         extends BaseTHUIBillingRequest<
@@ -76,7 +76,7 @@ public class BaseTHUIAmazonRequest
 
     //<editor-fold desc="Constructors">
     protected BaseTHUIAmazonRequest(
-            @NotNull Builder<?> builder)
+            @NonNull Builder<?> builder)
     {
         super(builder);
         this.consumePurchase = builder.consumePurchase;

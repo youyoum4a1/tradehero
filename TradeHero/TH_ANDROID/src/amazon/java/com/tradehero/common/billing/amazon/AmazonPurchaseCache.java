@@ -2,7 +2,7 @@ package com.tradehero.common.billing.amazon;
 
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AmazonPurchaseCache<
             AmazonSKUType extends AmazonSKU,
@@ -15,13 +15,13 @@ public class AmazonPurchaseCache<
 {
     //<editor-fold desc="Constructors">
     public AmazonPurchaseCache(int maxSize,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 
-    @Override @NotNull public AmazonPurchaseType fetch(@NotNull AmazonOrderIdType key) throws Throwable
+    @Override @NonNull public AmazonPurchaseType fetch(@NonNull AmazonOrderIdType key) throws Throwable
     {
         throw new IllegalStateException("You cannot fetch on this cache");
     }

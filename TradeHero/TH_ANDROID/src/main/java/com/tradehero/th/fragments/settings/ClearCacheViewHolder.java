@@ -10,19 +10,19 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.ForPicasso;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ClearCacheViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final ProgressDialogUtil progressDialogUtil;
-    @NotNull private final LruCache lruCache;
+    @NonNull private final ProgressDialogUtil progressDialogUtil;
+    @NonNull private final LruCache lruCache;
     @Nullable private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ClearCacheViewHolder(
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull @ForPicasso LruCache lruCache)
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull @ForPicasso LruCache lruCache)
     {
         this.progressDialogUtil = progressDialogUtil;
         this.lruCache = lruCache;

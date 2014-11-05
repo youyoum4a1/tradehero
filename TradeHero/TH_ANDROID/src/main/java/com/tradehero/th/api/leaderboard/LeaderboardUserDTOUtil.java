@@ -6,9 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class LeaderboardUserDTOUtil
 {
@@ -18,7 +17,7 @@ public class LeaderboardUserDTOUtil
     }
     //</editor-fold>
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public Map<LeaderboardUserId, LeaderboardUserDTO> map(@Nullable List<LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
@@ -27,14 +26,14 @@ public class LeaderboardUserDTOUtil
         }
 
         Map<LeaderboardUserId, LeaderboardUserDTO> returned = new HashMap<>();
-        for (@NotNull LeaderboardUserDTO leaderboardUserDTO: leaderboardUserDTOs)
+        for (LeaderboardUserDTO leaderboardUserDTO: leaderboardUserDTOs)
         {
             returned.put(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO);
         }
         return returned;
     }
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public LeaderboardUserIdList getIds(@Nullable List<LeaderboardUserDTO> leaderboardUserDTOs)
     {
         if (leaderboardUserDTOs == null)
@@ -43,7 +42,7 @@ public class LeaderboardUserDTOUtil
         }
 
         LeaderboardUserIdList returned = new LeaderboardUserIdList();
-        for (@NotNull LeaderboardUserDTO leaderboardUserDTO: leaderboardUserDTOs)
+        for (LeaderboardUserDTO leaderboardUserDTO: leaderboardUserDTOs)
         {
             returned.add(leaderboardUserDTO.getLeaderboardUserId());
         }

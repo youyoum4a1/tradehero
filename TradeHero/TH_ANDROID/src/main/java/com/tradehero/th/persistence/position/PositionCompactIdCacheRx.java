@@ -7,7 +7,7 @@ import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionCompactId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @SystemCache
 public class PositionCompactIdCacheRx extends BaseDTOCacheRx<PositionCompactId, OwnedPositionId>
@@ -16,7 +16,7 @@ public class PositionCompactIdCacheRx extends BaseDTOCacheRx<PositionCompactId, 
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 20;
 
     //<editor-fold desc="Constructors">
-    @Inject public PositionCompactIdCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public PositionCompactIdCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
     }

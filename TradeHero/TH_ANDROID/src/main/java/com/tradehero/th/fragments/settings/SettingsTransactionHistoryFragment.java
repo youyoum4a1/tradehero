@@ -23,7 +23,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -123,14 +123,14 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
 
     protected class SettingsTransactionHistoryListListener implements DTOCacheNew.Listener<UserTransactionHistoryListType, UserTransactionHistoryDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserTransactionHistoryListType key, @NotNull UserTransactionHistoryDTOList value)
+        @Override public void onDTOReceived(@NonNull UserTransactionHistoryListType key, @NonNull UserTransactionHistoryDTOList value)
         {
             transactionListViewAdapter.setItems(value);
             transactionListViewAdapter.notifyDataSetChanged();
             progressDialog.hide();
         }
 
-        @Override public void onErrorThrown(@NotNull UserTransactionHistoryListType key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserTransactionHistoryListType key, @NonNull Throwable error)
         {
             THToast.show("Unable to fetch transaction history. Please try again later.");
             progressDialog.hide();

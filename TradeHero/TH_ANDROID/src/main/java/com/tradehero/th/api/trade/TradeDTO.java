@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class TradeDTO implements DTO
 {
@@ -38,7 +38,7 @@ public class TradeDTO implements DTO
     {
     }
 
-    @JsonIgnore @NotNull public OwnedTradeId getOwnedTradeId()
+    @JsonIgnore @NonNull public OwnedTradeId getOwnedTradeId()
     {
         return new OwnedTradeId(userId, portfolioId, positionId, id);
     }

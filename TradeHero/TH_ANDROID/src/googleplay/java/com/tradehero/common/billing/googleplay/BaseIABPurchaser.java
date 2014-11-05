@@ -15,8 +15,8 @@ import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavaila
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -42,8 +42,8 @@ abstract public class BaseIABPurchaser<
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaser(
-            @NotNull Activity activity,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory)
+            @NonNull Activity activity,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
         super(activity, iabExceptionFactory);
     }
@@ -86,7 +86,7 @@ abstract public class BaseIABPurchaser<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    @Override public void purchase(int activityRequestCode, @NotNull IABPurchaseOrderType purchaseOrder)
+    @Override public void purchase(int activityRequestCode, @NonNull IABPurchaseOrderType purchaseOrder)
     {
         checkNotPurchasing();
         purchasing = true;

@@ -4,7 +4,7 @@ import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
@@ -17,8 +17,8 @@ class LeaderboardCommunityTypeFactory
     }
     //</editor-fold>
 
-    @NotNull
-    public LeaderboardCommunityType createFrom(@NotNull LeaderboardDefDTO leaderboardDefDTO)
+    @NonNull
+    public LeaderboardCommunityType createFrom(@NonNull LeaderboardDefDTO leaderboardDefDTO)
     {
         if (leaderboardDefDTO instanceof ConnectedLeaderboardDefDTO)
         {

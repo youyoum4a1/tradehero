@@ -33,8 +33,8 @@ import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,7 +60,7 @@ public class PostCommentView extends RelativeLayout
     @InjectView(R.id.post_comment_text) EditText commentText;
 
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    @NotNull private MiddleCallbackWeakList<DiscussionDTO> postCommentMiddleCallbacks;
+    @NonNull private MiddleCallbackWeakList<DiscussionDTO> postCommentMiddleCallbacks;
 
     @Inject MessageServiceWrapper messageServiceWrapper;
     @Nullable private MessageType messageType = null;
@@ -228,7 +228,7 @@ public class PostCommentView extends RelativeLayout
                 createCommentSubmitCallback()));
     }
 
-    @NotNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
+    @NonNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
         MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
         messageCreateFormDTO.message = editableUtil.unSpanText(commentText.getText()).toString();

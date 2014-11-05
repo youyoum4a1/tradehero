@@ -8,18 +8,18 @@ import com.tradehero.th.R;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ResetHelpScreensViewHolder extends OneSettingViewHolder
 {
-    @NotNull private final BooleanPreference resetHelpScreen;
-    @NotNull private final ProgressDialogUtil progressDialogUtil;
+    @NonNull private final BooleanPreference resetHelpScreen;
+    @NonNull private final ProgressDialogUtil progressDialogUtil;
     private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ResetHelpScreensViewHolder(
-            @NotNull @ResetHelpScreens BooleanPreference resetHelpScreen,
-            @NotNull ProgressDialogUtil progressDialogUtil)
+            @NonNull @ResetHelpScreens BooleanPreference resetHelpScreen,
+            @NonNull ProgressDialogUtil progressDialogUtil)
     {
         this.resetHelpScreen = resetHelpScreen;
         this.progressDialogUtil = progressDialogUtil;

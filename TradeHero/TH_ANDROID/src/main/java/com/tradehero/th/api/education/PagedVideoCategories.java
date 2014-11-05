@@ -5,8 +5,8 @@ import android.os.Bundle;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.DTOKey;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PagedVideoCategories implements DTOKey, PagedDTOKey
 {
@@ -26,7 +26,7 @@ public class PagedVideoCategories implements DTOKey, PagedDTOKey
         this.perPage = perPage;
     }
 
-    public PagedVideoCategories(@NotNull Bundle args)
+    public PagedVideoCategories(@NonNull Bundle args)
     {
         super();
         if (args.containsKey(BUNDLE_KEY_PAGE))
@@ -60,7 +60,7 @@ public class PagedVideoCategories implements DTOKey, PagedDTOKey
                 && equalsFields((PagedVideoCategories) other);
     }
 
-    protected boolean equalsFields(@NotNull PagedVideoCategories other)
+    protected boolean equalsFields(@NonNull PagedVideoCategories other)
     {
         return (page == null ? other.page == null : page.equals(other.page))
                 && (perPage == null ? other.perPage == null : perPage.equals(other.perPage));

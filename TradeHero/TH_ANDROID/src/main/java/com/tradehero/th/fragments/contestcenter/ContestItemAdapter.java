@@ -10,7 +10,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
@@ -20,11 +20,11 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
     public static final int TYPE_VIP = 1;
     public static final int TYPE_HEADER = 2;
 
-    @NotNull @LayoutRes private Integer[] typeToResIds;
+    @NonNull @LayoutRes private Integer[] typeToResIds;
 
     //<editor-fold desc="Constructors">
     public ContestItemAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             @LayoutRes int vipViewResourceId,
             @LayoutRes int normalViewResourceId)
     {

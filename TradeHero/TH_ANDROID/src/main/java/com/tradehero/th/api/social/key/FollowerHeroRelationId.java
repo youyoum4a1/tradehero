@@ -2,8 +2,8 @@ package com.tradehero.th.api.social.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class FollowerHeroRelationId implements Comparable, DTOKey
 {
@@ -13,21 +13,21 @@ public class FollowerHeroRelationId implements Comparable, DTOKey
     @Deprecated // TODO To remove with followerName
     public final static String BUNDLE_KEY_FOLLOWER_NAME = FollowerHeroRelationId.class.getName() + ".followerName";
 
-    @NotNull public final Integer heroId;
-    @NotNull public final Integer followerId;
+    @NonNull public final Integer heroId;
+    @NonNull public final Integer followerId;
 
     @Deprecated // TODO This is ugly
     public final String followerName;
 
     //<editor-fold desc="Constructors">
-    public FollowerHeroRelationId(@NotNull final Integer heroId, @NotNull final Integer followerId)
+    public FollowerHeroRelationId(@NonNull final Integer heroId, @NonNull final Integer followerId)
     {
         this.heroId = heroId;
         this.followerId = followerId;
         this.followerName = null;
     }
 
-    public FollowerHeroRelationId(@NotNull final Integer heroId, @NotNull final Integer followerId, String followerName)
+    public FollowerHeroRelationId(@NonNull final Integer heroId, @NonNull final Integer followerId, String followerName)
     {
         this.heroId = heroId;
         this.followerId = followerId;

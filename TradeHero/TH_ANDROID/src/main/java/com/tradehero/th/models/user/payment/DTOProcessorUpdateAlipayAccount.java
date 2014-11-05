@@ -4,16 +4,16 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOProcessorUpdateAlipayAccount implements DTOProcessor<UpdateAlipayAccountDTO>
 {
-    @NotNull private final UserProfileCacheRx userProfileCache;
-    @NotNull private final UserBaseKey playerId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final UserBaseKey playerId;
 
     public DTOProcessorUpdateAlipayAccount(
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull UserBaseKey playerId)
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull UserBaseKey playerId)
     {
         this.userProfileCache = userProfileCache;
         this.playerId = playerId;

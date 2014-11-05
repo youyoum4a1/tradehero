@@ -7,18 +7,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.tradehero.th.api.competition.specific.ProviderSpecificsPopulator;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class ProviderDTODeserialiserBase<ProviderCompactDTOType extends ProviderDTO>
         extends StdDeserializer<ProviderCompactDTOType>
 {
-    @NotNull protected final ObjectMapper innerMapper;
-    @NotNull protected final ProviderSpecificsPopulator providerSpecificsPopulator;
+    @NonNull protected final ObjectMapper innerMapper;
+    @NonNull protected final ProviderSpecificsPopulator providerSpecificsPopulator;
 
     //<editor-fold desc="Constructors">
     protected ProviderDTODeserialiserBase(
-            @NotNull ObjectMapper objectMapper,
-            @NotNull ProviderSpecificsPopulator providerSpecificsPopulator)
+            @NonNull ObjectMapper objectMapper,
+            @NonNull ProviderSpecificsPopulator providerSpecificsPopulator)
     {
         super(ProviderDTO.class);
         this.innerMapper = objectMapper;

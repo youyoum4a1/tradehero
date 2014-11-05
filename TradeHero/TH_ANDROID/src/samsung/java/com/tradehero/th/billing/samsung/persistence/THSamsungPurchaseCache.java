@@ -8,7 +8,7 @@ import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.common.persistence.UserCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class THSamsungPurchaseCache
     extends SamsungPurchaseCache<
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
     public static final int MAX_SIZE = 300;
 
     //<editor-fold desc="Constructors">
-    @Inject public THSamsungPurchaseCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public THSamsungPurchaseCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(MAX_SIZE, dtoCacheUtil);
     }

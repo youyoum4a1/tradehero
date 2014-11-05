@@ -4,12 +4,12 @@ import android.content.res.Resources;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderIntent extends THIntent
 {
     //<editor-fold desc="Constructors">
-    public ProviderIntent(@NotNull Resources resources)
+    public ProviderIntent(@NonNull Resources resources)
     {
         super(resources);
     }

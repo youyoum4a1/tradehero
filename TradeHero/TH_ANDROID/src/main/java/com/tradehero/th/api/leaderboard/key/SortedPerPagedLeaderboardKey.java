@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Deprecated
 public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
@@ -36,14 +36,14 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         return super.hashCode() ^ (sortType == null ? 0 : sortType.hashCode());
     }
 
-    @Override public boolean equalFields(@NotNull PerPagedLeaderboardKey other)
+    @Override public boolean equalFields(@NonNull PerPagedLeaderboardKey other)
     {
         return super.equalFields(other)
                 && other instanceof SortedPerPagedLeaderboardKey
                 && equalFields((SortedPerPagedLeaderboardKey) other);
     }
 
-    public boolean equalFields(@NotNull SortedPerPagedLeaderboardKey other)
+    public boolean equalFields(@NonNull SortedPerPagedLeaderboardKey other)
     {
         return super.equalFields(other) &&
                 (sortType == null ? other.sortType == null : sortType.equals(other.sortType));
@@ -54,7 +54,7 @@ public class SortedPerPagedLeaderboardKey extends PerPagedLeaderboardKey
         return new SortedPerPagedLeaderboardKey(this, id, page);
     }
 
-    @Override public void putParameters(@NotNull Bundle args)
+    @Override public void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (sortType == null)

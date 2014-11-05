@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import com.tradehero.th.api.competition.AdDTO;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class CompetitionZoneAdvertisementDTO extends CompetitionZoneDTO
 {

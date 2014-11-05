@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton
 public class CurrentUserId extends IntPreference
@@ -22,12 +22,12 @@ public class CurrentUserId extends IntPreference
         this.accountManager = accountManager;
     }
 
-    @NotNull public UserBaseKey toUserBaseKey()
+    @NonNull public UserBaseKey toUserBaseKey()
     {
         return new UserBaseKey(get());
     }
 
-    @NotNull @Override public Integer get()
+    @NonNull @Override public Integer get()
     {
         Integer id = super.get();
         if (id == 0)

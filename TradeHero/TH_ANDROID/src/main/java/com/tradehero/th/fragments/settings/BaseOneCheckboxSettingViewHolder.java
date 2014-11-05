@@ -3,14 +3,14 @@ package com.tradehero.th.fragments.settings;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.annotation.StringRes;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 abstract public class BaseOneCheckboxSettingViewHolder extends BaseSettingViewHolder
 {
     @Nullable protected CheckBoxPreference clickablePref;
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         clickablePref = (CheckBoxPreference) preferenceFragment.findPreference(

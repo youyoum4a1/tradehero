@@ -3,8 +3,8 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import java.util.Iterator;
 import java.util.Set;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PagedLeaderboardKey extends LeaderboardKey
 {
@@ -27,13 +27,13 @@ public class PagedLeaderboardKey extends LeaderboardKey
         this.page = page;
     }
 
-    public PagedLeaderboardKey(@NotNull Bundle args, @Nullable PagedLeaderboardKey defaultValues)
+    public PagedLeaderboardKey(@NonNull Bundle args, @Nullable PagedLeaderboardKey defaultValues)
     {
         super(args, defaultValues);
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? (Integer) args.getInt(BUNDLE_KEY_PAGE) : ((defaultValues != null) ? defaultValues.page : null);
     }
 
-    public PagedLeaderboardKey(@NotNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
+    public PagedLeaderboardKey(@NonNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
     {
         super(catValues, defaultValues);
         this.page = findPage(catValues, defaultValues);
@@ -45,14 +45,14 @@ public class PagedLeaderboardKey extends LeaderboardKey
         return super.hashCode() ^ (page == null ? 0 : page.hashCode());
     }
 
-    @Override public boolean equalFields(@NotNull LeaderboardKey other)
+    @Override public boolean equalFields(@NonNull LeaderboardKey other)
     {
         return super.equalFields(other)
                 && other instanceof PagedLeaderboardKey
                 && equalFields((PagedLeaderboardKey) other);
     }
 
-    public boolean equalFields(@NotNull PagedLeaderboardKey other)
+    public boolean equalFields(@NonNull PagedLeaderboardKey other)
     {
         return super.equalFields(other)
                 && (page == null ? other.page == null : page.equals(other.page));
@@ -63,7 +63,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
         return new PagedLeaderboardKey(this, page);
     }
 
-    @Override protected void putParameters(@NotNull Bundle args)
+    @Override protected void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         if (page == null)
@@ -76,7 +76,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
         }
     }
 
-    public static Integer findPage(@NotNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
+    public static Integer findPage(@NonNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;

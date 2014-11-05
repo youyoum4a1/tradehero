@@ -5,7 +5,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetailTuner;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungProductDetailTuner implements THProductDetailTuner<SamsungSKU, THSamsungProductDetail>
@@ -17,7 +17,7 @@ public class THSamsungProductDetailTuner implements THProductDetailTuner<Samsung
     }
     //</editor-fold>
 
-    @Override public void fineTune(@NotNull THSamsungProductDetail productDetails)
+    @Override public void fineTune(@NonNull THSamsungProductDetail productDetails)
     {
         if (productDetails.getProductIdentifier().groupId.equals(THSamsungConstants.IAP_ITEM_GROUP_ID))
         {

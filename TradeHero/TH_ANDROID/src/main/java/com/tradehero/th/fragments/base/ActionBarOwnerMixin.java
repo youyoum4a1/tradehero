@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.th.R;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class ActionBarOwnerMixin
 {
@@ -24,7 +24,7 @@ public class ActionBarOwnerMixin
         return new ActionBarOwnerMixin(fragment);
     }
 
-    public static void putKeyShowHomeAsUp(@NotNull Bundle args, boolean showAsUp)
+    public static void putKeyShowHomeAsUp(@NonNull Bundle args, boolean showAsUp)
     {
         args.putBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, showAsUp);
     }

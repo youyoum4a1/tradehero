@@ -1,7 +1,7 @@
 package com.tradehero.th.api.i18n;
 
 import java.util.HashMap;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LanguageDTOMap extends HashMap<String, LanguageDTO>
 {
@@ -12,7 +12,7 @@ public class LanguageDTOMap extends HashMap<String, LanguageDTO>
     }
     //</editor-fold>
 
-    public void add(@NotNull LanguageDTO languageDTO)
+    public void add(@NonNull LanguageDTO languageDTO)
     {
         put(languageDTO.code, languageDTO);
     }

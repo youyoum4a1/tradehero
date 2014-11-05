@@ -49,7 +49,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -199,7 +199,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    protected void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
+    protected void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
     {
         this.securityId = securityId;
 

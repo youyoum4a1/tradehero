@@ -2,7 +2,7 @@ package com.tradehero.th.api;
 
 import com.tradehero.th.api.achievement.key.MockQuestBonusId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ValidMockerDebug
 {
@@ -17,7 +17,7 @@ public class ValidMockerDebug
     //</editor-fold>
 
     //<editor-fold desc="Create valid parameters">
-    public Object mockValidParameter(@NotNull Class<?> type)
+    public Object mockValidParameter(@NonNull Class<?> type)
     {
         if (type.equals(MockQuestBonusId.class))
         {

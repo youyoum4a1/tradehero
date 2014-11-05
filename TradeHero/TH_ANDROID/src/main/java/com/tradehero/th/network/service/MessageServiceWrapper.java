@@ -32,41 +32,41 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 
 @Singleton
 public class MessageServiceWrapper
 {
-    @NotNull private final MessageService messageService;
-    @NotNull private final MessageServiceAsync messageServiceAsync;
-    @NotNull private final MessageServiceRx messageServiceRx;
-    @NotNull private final DiscussionDTOFactory discussionDTOFactory;
-    @NotNull private final CurrentUserId currentUserId;
+    @NonNull private final MessageService messageService;
+    @NonNull private final MessageServiceAsync messageServiceAsync;
+    @NonNull private final MessageServiceRx messageServiceRx;
+    @NonNull private final DiscussionDTOFactory discussionDTOFactory;
+    @NonNull private final CurrentUserId currentUserId;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
-    @NotNull private final Lazy<MessageHeaderListCacheRx> messageHeaderListCache;
-    @NotNull private final Lazy<MessageHeaderCacheRx> messageHeaderCache;
-    @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
-    @NotNull private final Lazy<DiscussionCacheRx> discussionCache;
-    @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
-    @NotNull private final Lazy<HomeContentCacheRx> homeContentCache;
+    @NonNull private final Lazy<MessageHeaderListCacheRx> messageHeaderListCache;
+    @NonNull private final Lazy<MessageHeaderCacheRx> messageHeaderCache;
+    @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
+    @NonNull private final Lazy<DiscussionCacheRx> discussionCache;
+    @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
+    @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject MessageServiceWrapper(
-            @NotNull MessageService messageService,
-            @NotNull MessageServiceAsync messageServiceAsync,
-            @NotNull MessageServiceRx messageServiceRx,
-            @NotNull DiscussionDTOFactory discussionDTOFactory,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
-            @NotNull Lazy<MessageHeaderCacheRx> messageHeaderCache,
-            @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
-            @NotNull Lazy<DiscussionCacheRx> discussionCache,
-            @NotNull Lazy<UserProfileCacheRx> userProfileCache,
-            @NotNull Lazy<HomeContentCacheRx> homeContentCache)
+            @NonNull MessageService messageService,
+            @NonNull MessageServiceAsync messageServiceAsync,
+            @NonNull MessageServiceRx messageServiceRx,
+            @NonNull DiscussionDTOFactory discussionDTOFactory,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
+            @NonNull Lazy<MessageHeaderCacheRx> messageHeaderCache,
+            @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
+            @NonNull Lazy<DiscussionCacheRx> discussionCache,
+            @NonNull Lazy<UserProfileCacheRx> userProfileCache,
+            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.messageService = messageService;
         this.messageServiceAsync = messageServiceAsync;
@@ -236,8 +236,8 @@ public class MessageServiceWrapper
 
     //<editor-fold desc="Delete Message">
     protected DTOProcessor<BaseResponseDTO> createMessageHeaderDeletedProcessor(
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey readerId)
     {
         return new DTOProcessorMessageDeleted(
                 messageHeaderCache.get(),
@@ -249,10 +249,10 @@ public class MessageServiceWrapper
     }
 
     public MiddleCallback<BaseResponseDTO> deleteMessage(
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey senderUserId,
-            @NotNull UserBaseKey recipientUserId,
-            @NotNull UserBaseKey readerId,
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey senderUserId,
+            @NonNull UserBaseKey recipientUserId,
+            @NonNull UserBaseKey readerId,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(
@@ -267,10 +267,10 @@ public class MessageServiceWrapper
     }
 
     public Observable<BaseResponseDTO> deleteMessage(
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey senderUserId,
-            @NotNull UserBaseKey recipientUserId,
-            @NotNull UserBaseKey readerId)
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey senderUserId,
+            @NonNull UserBaseKey recipientUserId,
+            @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.deleteMessage(
                         messageHeaderId.commentId,
@@ -281,8 +281,8 @@ public class MessageServiceWrapper
 
     //<editor-fold desc="Read Message">
     protected DTOProcessor<BaseResponseDTO> createMessageHeaderReadProcessor(
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey readerId)
     {
         return new DTOProcessorMessageRead(
                 messageHeaderCache.get(),
@@ -292,12 +292,12 @@ public class MessageServiceWrapper
                 readerId);
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> readMessage(
-            @NotNull MessageHeaderId commentId,
-            @NotNull UserBaseKey senderUserId,
-            @NotNull UserBaseKey recipientUserId,
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId,
+    @NonNull public MiddleCallback<BaseResponseDTO> readMessage(
+            @NonNull MessageHeaderId commentId,
+            @NonNull UserBaseKey senderUserId,
+            @NonNull UserBaseKey recipientUserId,
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey readerId,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(
@@ -311,12 +311,12 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    @NotNull public Observable<BaseResponseDTO> readMessageRx(
-            @NotNull MessageHeaderId commentId,
-            @NotNull UserBaseKey senderUserId,
-            @NotNull UserBaseKey recipientUserId,
-            @NotNull MessageHeaderId messageHeaderId,
-            @NotNull UserBaseKey readerId)
+    @NonNull public Observable<BaseResponseDTO> readMessageRx(
+            @NonNull MessageHeaderId commentId,
+            @NonNull UserBaseKey senderUserId,
+            @NonNull UserBaseKey recipientUserId,
+            @NonNull MessageHeaderId messageHeaderId,
+            @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.readMessage(
                         commentId.commentId,
@@ -326,8 +326,8 @@ public class MessageServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Read All Message">
-    @NotNull protected DTOProcessor<BaseResponseDTO> createMessageHeaderReadAllProcessor(
-            @NotNull UserBaseKey readerId)
+    @NonNull protected DTOProcessor<BaseResponseDTO> createMessageHeaderReadAllProcessor(
+            @NonNull UserBaseKey readerId)
     {
         return new DTOProcessorAllMessagesRead(
                 messageHeaderCache.get(),
@@ -336,8 +336,8 @@ public class MessageServiceWrapper
                 readerId);
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> readAllMessage(
-            @NotNull UserBaseKey readerId,
+    @NonNull public MiddleCallback<BaseResponseDTO> readAllMessage(
+            @NonNull UserBaseKey readerId,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         MiddleCallback<BaseResponseDTO> middleCallback = new BaseMiddleCallback<>(
@@ -347,8 +347,8 @@ public class MessageServiceWrapper
         return middleCallback;
     }
 
-    @NotNull public Observable<BaseResponseDTO> readAllMessageRx(
-            @NotNull UserBaseKey readerId)
+    @NonNull public Observable<BaseResponseDTO> readAllMessageRx(
+            @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.readAllMessage();
     }

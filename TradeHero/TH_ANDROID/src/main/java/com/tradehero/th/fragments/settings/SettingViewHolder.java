@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.settings;
 
 import android.preference.Preference;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface SettingViewHolder
 {
-    void initViews(@NotNull DashboardPreferenceFragment preferenceFragment);
+    void initViews(@NonNull DashboardPreferenceFragment preferenceFragment);
     void destroyViews();
     boolean isUnread();
     Preference getPreference();

@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseIABPurchaseConsumer
         extends BaseIABPurchaseConsumer<
@@ -17,20 +17,20 @@ public class THBaseIABPurchaseConsumer
         THIABPurchase>
     implements THIABPurchaseConsumer
 {
-    @NotNull protected final THIABPurchaseCache thiabPurchaseCache;
+    @NonNull protected final THIABPurchaseCache thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABPurchaseConsumer(
-            @NotNull Context context,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
-            @NotNull THIABPurchaseCache thiabPurchaseCache)
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
+            @NonNull THIABPurchaseCache thiabPurchaseCache)
     {
         super(context, iabExceptionFactory);
         this.thiabPurchaseCache = thiabPurchaseCache;
     }
     //</editor-fold>
 
-    @Override @NotNull protected IABPurchaseCache<IABSKU, THIABOrderId, THIABPurchase> getPurchaseCache()
+    @Override @NonNull protected IABPurchaseCache<IABSKU, THIABOrderId, THIABPurchase> getPurchaseCache()
     {
         return thiabPurchaseCache;
     }

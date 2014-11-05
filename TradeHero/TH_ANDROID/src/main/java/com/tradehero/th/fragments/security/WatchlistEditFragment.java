@@ -33,8 +33,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -50,7 +50,7 @@ public class WatchlistEditFragment extends DashboardFragment
     private TextView securityDesc;
     private EditText watchPrice;
     private EditText watchQuantity;
-    @NotNull private SecurityId securityKeyId;
+    @NonNull private SecurityId securityKeyId;
     private SecurityCompactDTO securityCompactDTO;
     private TextView watchAction;
     private TextView deleteButton;
@@ -66,24 +66,24 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject ProgressDialogUtil progressDialogUtil;
 
-    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
     }
 
-    @NotNull public static SecurityId getSecurityId(@NotNull Bundle args)
+    @NonNull public static SecurityId getSecurityId(@NonNull Bundle args)
     {
         return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE));
     }
 
-    @Override public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.edit_watchlist_item_layout, container, false);
         initViews(view);
         return view;
     }
 
-    private void initViews(@NotNull View view)
+    private void initViews(@NonNull View view)
     {
         securityLogo = (ImageView) view.findViewById(R.id.edit_watchlist_item_security_logo);
         securityTitle = (TextView) view.findViewById(R.id.edit_watchlist_item_security_name);
@@ -116,7 +116,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    @NotNull private View.OnClickListener createOnWatchButtonClickedListener()
+    @NonNull private View.OnClickListener createOnWatchButtonClickedListener()
     {
         return new View.OnClickListener()
         {
@@ -183,7 +183,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    @NotNull private View.OnClickListener createOnDeleteButtonClickedListener()
+    @NonNull private View.OnClickListener createOnDeleteButtonClickedListener()
     {
         return new View.OnClickListener()
         {
@@ -251,7 +251,7 @@ public class WatchlistEditFragment extends DashboardFragment
         middleCallbackDelete = null;
     }
 
-    private void linkWith(@NotNull SecurityId securityId, boolean andDisplay)
+    private void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
     {
         this.securityKeyId = securityId;
 
@@ -293,7 +293,7 @@ public class WatchlistEditFragment extends DashboardFragment
         progressBar = null;
     }
 
-    private void querySecurity(@NotNull SecurityId securityId, final boolean andDisplay)
+    private void querySecurity(@NonNull SecurityId securityId, final boolean andDisplay)
     {
         if (progressBar != null)
         {
@@ -309,7 +309,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 .subscribe(createSecurityCompactCacheObserver());
     }
 
-    private void linkWith(@NotNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    private void linkWith(@NonNull SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
         watchAction.setEnabled(true);
@@ -360,12 +360,12 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    @NotNull protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
+    @NonNull protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
     {
         return new WatchlistEditTHCallback();
     }
 
-    @NotNull protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
+    @NonNull protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
     {
         return new WatchlistDeletedTHCallback();
     }
@@ -373,7 +373,7 @@ public class WatchlistEditFragment extends DashboardFragment
     //TODO this extends is better? maybe not alex
     protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
     {
-        @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO,
+        @Override protected void success(@NonNull WatchlistPositionDTO watchlistPositionDTO,
                 THResponse response)
         {
             if (isResumed())
@@ -394,7 +394,7 @@ public class WatchlistEditFragment extends DashboardFragment
             dismissProgress();
         }
 
-        @Override protected void success(@NotNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
+        @Override protected void success(@NonNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
         {
             if (navigator != null)
             {
@@ -411,7 +411,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    @NotNull protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
+    @NonNull protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
     {
         return new WatchlistEditSecurityCompactCacheObserver();
     }

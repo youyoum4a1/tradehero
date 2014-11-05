@@ -2,10 +2,10 @@ package com.tradehero.common.billing;
 
 import com.tradehero.common.persistence.DTO;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface ProductDetail<ProductIdentifierType extends ProductIdentifier>
         extends DTO
 {
-    @NotNull ProductIdentifierType getProductIdentifier();
+    @NonNull ProductIdentifierType getProductIdentifier();
 }

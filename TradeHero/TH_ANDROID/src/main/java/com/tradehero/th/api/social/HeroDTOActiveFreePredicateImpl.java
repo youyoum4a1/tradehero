@@ -1,7 +1,6 @@
 package com.tradehero.th.api.social;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class HeroDTOActiveFreePredicateImpl extends HeroDTOActiveFreePredicate
 {
@@ -20,7 +19,6 @@ public class HeroDTOActiveFreePredicateImpl extends HeroDTOActiveFreePredicate
         this.freeFollow = freeFollow;
     }
 
-    @Contract("null -> false; !null -> _")
     @Override public boolean apply(@Nullable HeroDTO heroDTO)
     {
         if (heroDTO == null)

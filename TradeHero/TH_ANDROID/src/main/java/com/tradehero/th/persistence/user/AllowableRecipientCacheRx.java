@@ -9,7 +9,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class AllowableRecipientCacheRx extends BaseDTOCacheRx<UserBaseKey, AllowableRecipientDTO>
@@ -17,25 +17,25 @@ public class AllowableRecipientCacheRx extends BaseDTOCacheRx<UserBaseKey, Allow
     public static final int DEFAULT_MAX_VALUE_SIZE = 300;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 3;
 
-    @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
+    @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AllowableRecipientCacheRx(
-            @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
     //</editor-fold>
 
-    @Override public void onNext(@NotNull UserBaseKey key, @NotNull AllowableRecipientDTO value)
+    @Override public void onNext(@NonNull UserBaseKey key, @NonNull AllowableRecipientDTO value)
     {
         userMessagingRelationshipCache.get().onNext(value.user.getBaseKey(), value.relationship);
         super.onNext(key, value);
     }
 
-    public void onNext(@NotNull List<AllowableRecipientDTO> allowableRecipientDTOs)
+    public void onNext(@NonNull List<AllowableRecipientDTO> allowableRecipientDTOs)
     {
         for (AllowableRecipientDTO allowableRecipientDTO : allowableRecipientDTOs)
         {

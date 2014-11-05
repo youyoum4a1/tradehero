@@ -29,7 +29,7 @@ import com.tradehero.th.persistence.education.PaginatedVideoCache;
 import com.tradehero.th.utils.StringUtils;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class VideoCategoryView extends RelativeLayout
@@ -97,7 +97,7 @@ public class VideoCategoryView extends RelativeLayout
         });
     }
 
-    private void handleItemClicked(@NotNull VideoDTO videoDTO)
+    private void handleItemClicked(@NonNull VideoDTO videoDTO)
     {
         if (!videoDTO.locked && !StringUtils.isNullOrEmpty(videoDTO.url))
         {
@@ -193,7 +193,7 @@ public class VideoCategoryView extends RelativeLayout
     private class PaginatedVideoCacheListener implements DTOCacheNew.Listener<VideoCategoryId, PaginatedVideoDTO>
     {
 
-        @Override public void onDTOReceived(@NotNull VideoCategoryId key, @NotNull PaginatedVideoDTO value)
+        @Override public void onDTOReceived(@NonNull VideoCategoryId key, @NonNull PaginatedVideoDTO value)
         {
             if (mCategoryDTO.getVideoCategoryId().equals(key))
             {
@@ -205,7 +205,7 @@ public class VideoCategoryView extends RelativeLayout
             }
         }
 
-        @Override public void onErrorThrown(@NotNull VideoCategoryId key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull VideoCategoryId key, @NonNull Throwable error)
         {
             Timber.e("error");
             hideProgressView();

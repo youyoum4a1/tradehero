@@ -4,7 +4,7 @@ import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
 import com.tradehero.th.activities.ActivityResultRequester;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface BillingInteractor<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -54,5 +54,5 @@ public interface BillingInteractor<
     int getUnusedRequestCode();
     void forgetRequestCode(int requestCode);
 
-    int run(@NotNull UIBillingRequestType uiBillingRequest);
+    int run(@NonNull UIBillingRequestType uiBillingRequest);
 }

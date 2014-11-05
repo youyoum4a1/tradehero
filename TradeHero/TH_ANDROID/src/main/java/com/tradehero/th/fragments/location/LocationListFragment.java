@@ -30,7 +30,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
@@ -189,7 +189,7 @@ public class LocationListFragment extends DashboardFragment
         updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
     }
 
-    protected void updateCountryCode(@NotNull String countryCode)
+    protected void updateCountryCode(@NonNull String countryCode)
     {
         String currentCountryCode = currentUserProfile != null ? currentUserProfile.countryCode : null;
         if (currentCountryCode != null &&

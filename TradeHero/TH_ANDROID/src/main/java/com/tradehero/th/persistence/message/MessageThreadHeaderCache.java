@@ -10,20 +10,20 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.SingleCacheMaxSize;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class MessageThreadHeaderCache extends StraightDTOCacheNew<UserBaseKey, MessageHeaderDTO>
 {
-    @NotNull private final MessageServiceWrapper messageServiceWrapper;
-    @NotNull private final MessageHeaderCacheRx messageHeaderCache;
+    @NonNull private final MessageServiceWrapper messageServiceWrapper;
+    @NonNull private final MessageHeaderCacheRx messageHeaderCache;
 
     //<editor-fold desc="Constructors">
     @Inject public MessageThreadHeaderCache(
             @SingleCacheMaxSize IntPreference maxSize,
-            @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull MessageHeaderCacheRx messageHeaderCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull MessageServiceWrapper messageServiceWrapper,
+            @NonNull MessageHeaderCacheRx messageHeaderCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize.get(), dtoCacheUtil);
         this.messageServiceWrapper = messageServiceWrapper;
@@ -31,12 +31,12 @@ public class MessageThreadHeaderCache extends StraightDTOCacheNew<UserBaseKey, M
     }
     //</editor-fold>
 
-    @Override @NotNull public MessageHeaderDTO fetch(@NotNull UserBaseKey key) throws Throwable
+    @Override @NonNull public MessageHeaderDTO fetch(@NonNull UserBaseKey key) throws Throwable
     {
         return messageServiceWrapper.getMessageThread(key);
     }
 
-    @Override public MessageHeaderDTO put(@NotNull UserBaseKey key, @NotNull MessageHeaderDTO value)
+    @Override public MessageHeaderDTO put(@NonNull UserBaseKey key, @NonNull MessageHeaderDTO value)
     {
         messageHeaderCache.onNext(value.getDTOKey(), value);
         return super.put(key, value);

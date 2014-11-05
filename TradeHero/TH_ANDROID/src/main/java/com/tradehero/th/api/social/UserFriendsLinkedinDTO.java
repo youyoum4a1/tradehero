@@ -1,13 +1,13 @@
 package com.tradehero.th.api.social;
 
 import com.tradehero.th.R;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class UserFriendsLinkedinDTO extends UserFriendsDTO
 {
     public static final String LINKEDIN_ID = "liId";
 
-    @NotNull public String liId;       // or LI id
+    @NonNull public String liId;       // or LI id
     public String liPicUrl;   // LI gives is pics (FB pics can be dynamically gen'd)
     public String liHeadline; // LI: gives current position/title?
 
@@ -17,7 +17,7 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
         super();
     }
 
-    public UserFriendsLinkedinDTO(@NotNull String liId)
+    public UserFriendsLinkedinDTO(@NonNull String liId)
     {
         this.liId = liId;
     }
@@ -43,7 +43,7 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
         return super.hashCode() ^ liId.hashCode();
     }
 
-    @Override protected boolean equals(@NotNull UserFriendsDTO other)
+    @Override protected boolean equals(@NonNull UserFriendsDTO other)
     {
         return super.equals(other) &&
                 other instanceof UserFriendsLinkedinDTO &&

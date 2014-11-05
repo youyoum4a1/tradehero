@@ -7,7 +7,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.security.SecurityItemView;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class SecuritySelectableViewHolder implements DTOView<SelectableSecurityDTO>
 {

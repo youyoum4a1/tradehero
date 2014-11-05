@@ -21,7 +21,7 @@ import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 /**
  * Refactor the code inside AlertDialogUtil

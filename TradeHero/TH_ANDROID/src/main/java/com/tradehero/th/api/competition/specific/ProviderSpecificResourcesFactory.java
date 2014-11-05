@@ -7,8 +7,7 @@ import com.tradehero.th.api.competition.specific.etoro.EToroProviderSpecificReso
 import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpecificResourcesDTO;
 import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificResourcesDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class ProviderSpecificResourcesFactory
 {
@@ -19,7 +18,7 @@ public class ProviderSpecificResourcesFactory
     }
     //</editor-fold>
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public ProviderSpecificResourcesDTO createResources(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificResourcesDTO created = null;
@@ -30,7 +29,7 @@ public class ProviderSpecificResourcesFactory
         return created;
     }
 
-    @Contract("null -> null; !null -> _") @Nullable
+    @Nullable
     public ProviderSpecificResourcesDTO createResources(@Nullable ProviderId providerId)
     {
         ProviderSpecificResourcesDTO created = null;

@@ -5,7 +5,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseSamsungPurchaserHolder
     extends BaseSamsungPurchaserHolder<
@@ -19,7 +19,7 @@ public class THBaseSamsungPurchaserHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaserHolder(
-            @NotNull Provider<THSamsungPurchaser> thSamsungPurchaserProvider)
+            @NonNull Provider<THSamsungPurchaser> thSamsungPurchaserProvider)
     {
         super(thSamsungPurchaserProvider);
     }

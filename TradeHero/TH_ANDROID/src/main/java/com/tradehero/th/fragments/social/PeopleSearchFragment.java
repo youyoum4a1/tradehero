@@ -22,8 +22,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class PeopleSearchFragment extends BaseSearchFragment<
@@ -81,7 +81,7 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         userBaseKeyListCache.get().getOrFetchAsync(key);
     }
 
-    @NotNull @Override public SearchUserListType makePagedDtoKey(int page)
+    @NonNull @Override public SearchUserListType makePagedDtoKey(int page)
     {
         return new SearchUserListType(mSearchText, page, perPage);
     }
@@ -129,13 +129,13 @@ public class PeopleSearchFragment extends BaseSearchFragment<
     protected class UserBaseKeyListCacheListener extends ListCacheListener
     {
         @Override
-        public void onDTOReceived(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)
+        public void onDTOReceived(@NonNull UserListType key, @NonNull UserSearchResultDTOList value)
         {
             super.onDTOReceived(key, value);
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
         }
 
-        @Override public void onErrorThrown(@NotNull UserListType key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserListType key, @NonNull Throwable error)
         {
             super.onErrorThrown(key, error);
             THToast.show(getString(R.string.error_fetch_people_list_info));

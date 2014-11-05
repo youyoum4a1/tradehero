@@ -2,7 +2,7 @@ package com.tradehero.th.models.share.preference;
 
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,12 +15,12 @@ public class SocialSharePreferenceDTOFactory
     }
     //</editor-fold>
 
-    @NotNull public SocialSharePreferenceDTO create(@NotNull String jsonString) throws JSONException
+    @NonNull public SocialSharePreferenceDTO create(@NonNull String jsonString) throws JSONException
     {
         return create(new JSONObject(jsonString));
     }
 
-    @NotNull public SocialSharePreferenceDTO create(@NotNull JSONObject jsonObject) throws JSONException
+    @NonNull public SocialSharePreferenceDTO create(@NonNull JSONObject jsonObject) throws JSONException
     {
         SocialNetworkEnum networkEnum = SocialNetworkEnum.valueOf(jsonObject.getString(BaseSocialSharePreferenceDTO.KEY_SOCIAL_NETWORK_ENUM));
         boolean isShareEnabled = jsonObject.getBoolean(BaseSocialSharePreferenceDTO.KEY_IS_SHARE_ENABLED);
@@ -28,7 +28,7 @@ public class SocialSharePreferenceDTOFactory
         return create(networkEnum, isShareEnabled);
     }
 
-    @NotNull public SocialSharePreferenceDTO create(SocialNetworkEnum socialNetworkEnum, boolean isShareEnabled)
+    @NonNull public SocialSharePreferenceDTO create(SocialNetworkEnum socialNetworkEnum, boolean isShareEnabled)
     {
         SocialSharePreferenceDTO socialSharePreferenceDTO;
 

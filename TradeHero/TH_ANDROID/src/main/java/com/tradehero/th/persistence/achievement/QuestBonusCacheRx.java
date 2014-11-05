@@ -8,7 +8,7 @@ import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.key.QuestBonusId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class QuestBonusCacheRx extends BaseDTOCacheRx<QuestBonusId, QuestBonusDTO>
 {
@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
     private static final int DEFAULT_SUBJECT_SIZE = 50;
 
     //<editor-fold desc="Constructors">
-    @Inject public QuestBonusCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public QuestBonusCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
     super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
 }
     //</editor-fold>
 
-    public void onNext(@NotNull QuestBonusDTOList value)
+    public void onNext(@NonNull QuestBonusDTOList value)
     {
         for (QuestBonusDTO questBonusDTO : value)
         {

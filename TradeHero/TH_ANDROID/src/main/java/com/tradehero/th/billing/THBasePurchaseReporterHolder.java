@@ -11,8 +11,8 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class THBasePurchaseReporterHolder<
@@ -31,13 +31,13 @@ abstract public class THBasePurchaseReporterHolder<
             THProductPurchaseType,
             BillingExceptionType>
 {
-    @NotNull protected final Lazy<UserProfileCache> userProfileCache;
-    @NotNull protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
-    @NotNull protected final Lazy<PortfolioCacheRx> portfolioCache;
-    @NotNull protected final Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider;
+    @NonNull protected final Lazy<UserProfileCache> userProfileCache;
+    @NonNull protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
+    @NonNull protected final Lazy<PortfolioCacheRx> portfolioCache;
+    @NonNull protected final Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider;
 
-    @NotNull protected final Map<Integer /*requestCode*/, THPurchaseReporterType> purchaseReporters;
-    @NotNull protected final Map<Integer /*requestCode*/, THPurchaseReporter.OnPurchaseReportedListener<
+    @NonNull protected final Map<Integer /*requestCode*/, THPurchaseReporterType> purchaseReporters;
+    @NonNull protected final Map<Integer /*requestCode*/, THPurchaseReporter.OnPurchaseReportedListener<
             ProductIdentifierType,
             THOrderIdType,
             THProductPurchaseType,
@@ -45,10 +45,10 @@ abstract public class THBasePurchaseReporterHolder<
 
     //<editor-fold desc="Constructors">
     public THBasePurchaseReporterHolder(
-            @NotNull Lazy<UserProfileCache> userProfileCache,
-            @NotNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NotNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NotNull Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider)
+            @NonNull Lazy<UserProfileCache> userProfileCache,
+            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
+            @NonNull Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider)
     {
         super();
         this.userProfileCache = userProfileCache;
@@ -106,7 +106,7 @@ abstract public class THBasePurchaseReporterHolder<
         purchaseReporter.reportPurchase(requestCode, purchase);
     }
 
-    @NotNull protected THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
+    @NonNull protected THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
     {
         return new THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>()
         {

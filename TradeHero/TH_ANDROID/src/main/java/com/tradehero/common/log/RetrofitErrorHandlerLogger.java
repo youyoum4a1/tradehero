@@ -15,7 +15,7 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
@@ -24,17 +24,17 @@ import timber.log.Timber;
 
 public class RetrofitErrorHandlerLogger implements ErrorHandler
 {
-    @NotNull final Lazy<RetrofitHelper> retrofitHelper;
-    @NotNull final Lazy<LocalBroadcastManager> localBroadcastManager;
-    @NotNull final Provider<Intent> upgradeIntentProvider;
-    @NotNull final Provider<Intent> socialTokenIntentProvider;
+    @NonNull final Lazy<RetrofitHelper> retrofitHelper;
+    @NonNull final Lazy<LocalBroadcastManager> localBroadcastManager;
+    @NonNull final Provider<Intent> upgradeIntentProvider;
+    @NonNull final Provider<Intent> socialTokenIntentProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public RetrofitErrorHandlerLogger(
-            @NotNull Lazy<RetrofitHelper> retrofitHelper,
-            @NotNull Lazy<LocalBroadcastManager> localBroadcastManager,
-            @NotNull @ForUpgrade Provider<Intent> upgradeIntentProvider,
-            @NotNull @ForSocialToken Provider<Intent> socialTokenIntentProvider)
+            @NonNull Lazy<RetrofitHelper> retrofitHelper,
+            @NonNull Lazy<LocalBroadcastManager> localBroadcastManager,
+            @NonNull @ForUpgrade Provider<Intent> upgradeIntentProvider,
+            @NonNull @ForSocialToken Provider<Intent> socialTokenIntentProvider)
     {
         this.retrofitHelper = retrofitHelper;
         this.localBroadcastManager = localBroadcastManager;
@@ -75,7 +75,7 @@ public class RetrofitErrorHandlerLogger implements ErrorHandler
         return retrofitError;
     }
 
-    private void handleRenewError(@NotNull Response response)
+    private void handleRenewError(@NonNull Response response)
     {
         List<Header> headers = response.getHeaders();
         Header responseCodeHeader = null;

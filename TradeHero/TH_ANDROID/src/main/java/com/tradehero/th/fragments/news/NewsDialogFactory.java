@@ -7,7 +7,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class NewsDialogFactory extends ShareDialogFactory
 {
@@ -18,7 +18,7 @@ public class NewsDialogFactory extends ShareDialogFactory
     //</editor-fold>
 
     public Dialog createNewsDialog(Context context,
-            @NotNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO,
+            @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO,
             NewsDialogLayout.OnMenuClickedListener menuClickedListener)
     {
         NewsDialogLayout contentView = (NewsDialogLayout) LayoutInflater.from(context)

@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import com.tradehero.th.inject.HierarchyInjector;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Subscription;
 import timber.log.Timber;
 
@@ -35,7 +35,7 @@ public class BaseFragment extends Fragment
         return args.getBoolean(BUNDLE_KEY_HAS_OPTION_MENU, DEFAULT_HAS_OPTION_MENU);
     }
 
-    public static void putIsOptionMenuVisible(@NotNull Bundle args, boolean optionMenuVisible)
+    public static void putIsOptionMenuVisible(@NonNull Bundle args, boolean optionMenuVisible)
     {
         args.putBoolean(BUNDLE_KEY_IS_OPTION_MENU_VISIBLE, optionMenuVisible);
     }

@@ -8,32 +8,32 @@ import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class THBaseAmazonPurchase
         extends BaseAmazonPurchase<AmazonSKU, THAmazonOrderId>
         implements THAmazonPurchase
 {
-    @NotNull private OwnedPortfolioId applicablePortfolioId;
+    @NonNull private OwnedPortfolioId applicablePortfolioId;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
     protected THBaseAmazonPurchase(
-            @NotNull PurchaseResponse purchaseResponse,
-            @NotNull OwnedPortfolioId applicablePortfolioId)
+            @NonNull PurchaseResponse purchaseResponse,
+            @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         super(purchaseResponse);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 
-    @NotNull @Override public THAmazonOrderId getOrderId()
+    @NonNull @Override public THAmazonOrderId getOrderId()
     {
         return new THAmazonOrderId(purchaseResponse.getReceipt());
     }
 
-    @NotNull @Override public AmazonSKU getProductIdentifier()
+    @NonNull @Override public AmazonSKU getProductIdentifier()
     {
         return new AmazonSKU(purchaseResponse.getReceipt().getSku());
     }
@@ -48,17 +48,17 @@ public class THBaseAmazonPurchase
         return userToFollow;
     }
 
-    @Override public void setApplicablePortfolioId(@NotNull OwnedPortfolioId applicablePortfolioId)
+    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    @NotNull @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
+    @NonNull @Override public OwnedPortfolioId getApplicableOwnedPortfolioId()
     {
         return applicablePortfolioId;
     }
 
-    @NotNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
+    @NonNull @Override public AmazonPurchaseReportDTO getPurchaseReportDTO()
     {
         return new AmazonPurchaseReportDTO(
                 purchaseResponse.getReceipt().getSku(),
@@ -66,12 +66,12 @@ public class THBaseAmazonPurchase
                 purchaseResponse.getUserData().getUserId());
     }
 
-    @NotNull public AmazonPurchaseInProcessDTO getPurchaseToSaveDTO()
+    @NonNull public AmazonPurchaseInProcessDTO getPurchaseToSaveDTO()
     {
         return new AmazonPurchaseInProcessDTO(this);
     }
 
-    public void populate(@NotNull AmazonPurchaseInProcessDTO purchaseInProcessDTO)
+    public void populate(@NonNull AmazonPurchaseInProcessDTO purchaseInProcessDTO)
     {
         if (!purchaseResponse.getReceipt().getReceiptId().equals(purchaseInProcessDTO.amazonPurchaseToken))
         {

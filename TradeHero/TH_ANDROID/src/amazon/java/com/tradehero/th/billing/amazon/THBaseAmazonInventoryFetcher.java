@@ -9,7 +9,7 @@ import com.tradehero.common.billing.amazon.BaseAmazonInventoryFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonInventoryFetcher
     extends BaseAmazonInventoryFetcher<
@@ -18,13 +18,13 @@ public class THBaseAmazonInventoryFetcher
             AmazonException>
     implements THAmazonInventoryFetcher
 {
-    @NotNull protected final THAmazonExceptionFactory amazonExceptionFactory;
+    @NonNull protected final THAmazonExceptionFactory amazonExceptionFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInventoryFetcher(
-            @NotNull Context context,
-            @NotNull AmazonPurchasingService purchasingService,
-            @NotNull THAmazonExceptionFactory amazonExceptionFactory)
+            @NonNull Context context,
+            @NonNull AmazonPurchasingService purchasingService,
+            @NonNull THAmazonExceptionFactory amazonExceptionFactory)
     {
         super(context, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;

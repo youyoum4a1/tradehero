@@ -8,8 +8,8 @@ import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import java.util.Collection;
 import java.util.Comparator;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, MessageItemViewWrapper>
 {
@@ -18,7 +18,7 @@ public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, Mess
 
     //<editor-fold desc="Constructors">
     public MessageListAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             @Nullable Collection<MessageHeaderDTO> objects,
             @LayoutRes int layoutResourceId,
             @Nullable Comparator<MessageHeaderDTO> comparator)

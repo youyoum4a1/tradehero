@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class WarrantSpecificKnowledgeFactory
 {
-    @NotNull private final Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
+    @NonNull private final Map<ProviderId, OwnedPortfolioId> warrantUsingProviders;
 
     //<editor-fold desc="Constructors">
     @Inject public WarrantSpecificKnowledgeFactory()
@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    public void add(@NotNull ProviderDTO providerDTO)
+    public void add(@NonNull ProviderDTO providerDTO)
     {
         if (providerDTO.specificKnowledge != null &&
                 providerDTO.specificKnowledge.includeProviderPortfolioOnWarrants != null &&

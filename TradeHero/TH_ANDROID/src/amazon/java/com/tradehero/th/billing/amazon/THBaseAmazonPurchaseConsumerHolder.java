@@ -4,7 +4,7 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumerHolder;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THBaseAmazonPurchaseConsumerHolder
     extends BaseAmazonPurchaseConsumerHolder<
@@ -15,7 +15,7 @@ public class THBaseAmazonPurchaseConsumerHolder
     implements THAmazonPurchaseConsumerHolder
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonPurchaseConsumerHolder(@NotNull Provider<THAmazonPurchaseConsumer> thAmazonPurchaseConsumerProvider)
+    @Inject public THBaseAmazonPurchaseConsumerHolder(@NonNull Provider<THAmazonPurchaseConsumer> thAmazonPurchaseConsumerProvider)
     {
         super(thAmazonPurchaseConsumerProvider);
     }

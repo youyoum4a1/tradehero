@@ -3,12 +3,12 @@ package com.tradehero.th.api.i18n.lang;
 import android.content.res.Resources;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LanguageChineseSimplifiedDTO extends LanguageDTO
 {
     //<editor-fold desc="Constructors">
-    public LanguageChineseSimplifiedDTO(@NotNull Resources resources)
+    public LanguageChineseSimplifiedDTO(@NonNull Resources resources)
     {
         super("zh-CHS",
                 resources.getString(R.string.translation_language_known_zh_CHS),

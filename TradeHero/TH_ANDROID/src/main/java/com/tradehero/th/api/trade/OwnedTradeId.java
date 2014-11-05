@@ -3,13 +3,13 @@ package com.tradehero.th.api.trade;
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.position.OwnedPositionId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class OwnedTradeId extends OwnedPositionId implements DTOKey
 {
     public final static String BUNDLE_KEY_TRADE_ID = OwnedTradeId.class.getName() + ".tradeId";
 
-    @NotNull public final Integer tradeId;
+    @NonNull public final Integer tradeId;
 
     //<editor-fold desc="Constructors">
     public OwnedTradeId(int userId, int portfolioId, int positionId, int tradeId)
@@ -25,7 +25,7 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
     }
     //</editor-fold>
 
-    public static boolean isOwnedTradeId(@NotNull Bundle args)
+    public static boolean isOwnedTradeId(@NonNull Bundle args)
     {
         return isOwnedPositionId(args)
                 && args.containsKey(BUNDLE_KEY_TRADE_ID);
@@ -64,13 +64,13 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return tradeId.compareTo(other.tradeId);
     }
 
-    @Override protected void putParameters(@NotNull Bundle args)
+    @Override protected void putParameters(@NonNull Bundle args)
     {
         super.putParameters(args);
         args.putInt(BUNDLE_KEY_TRADE_ID, tradeId);
     }
 
-    @Override @NotNull public String toString()
+    @Override @NonNull public String toString()
     {
         return String.format("[userId=%d; portfolioId=%d; positionId=%d; tradeId=%d]", userId, portfolioId, positionId, tradeId);
     }

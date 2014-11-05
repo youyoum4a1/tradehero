@@ -11,27 +11,26 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class LeaderboardDefCache extends StraightDTOCacheNew<LeaderboardDefKey, LeaderboardDefDTO>
 {
     private static final int DEFAULT_MAX_SIZE = 1000;
 
-    @NotNull private final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
+    @NonNull private final Lazy<LeaderboardDefListCache> leaderboardDefListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefCache(
-            @NotNull Lazy<LeaderboardDefListCache> leaderboardDefListCache,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull Lazy<LeaderboardDefListCache> leaderboardDefListCache,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardDefListCache = leaderboardDefListCache;
     }
     //</editor-fold>
 
-    @Override @NotNull public LeaderboardDefDTO fetch(@NotNull final LeaderboardDefKey key) throws Throwable
+    @Override @NonNull public LeaderboardDefDTO fetch(@NonNull final LeaderboardDefKey key) throws Throwable
     {
         leaderboardDefListCache.get().getOrFetchSync(new LeaderboardDefListKey());
         LeaderboardDefDTO found = get(key);
@@ -42,7 +41,6 @@ public class LeaderboardDefCache extends StraightDTOCacheNew<LeaderboardDefKey, 
         throw new NullPointerException("No such leaderboardDef");
     }
 
-    @Contract("null -> null; !null -> !null")
     public LeaderboardDefDTOList get(List<LeaderboardDefKey> keys)
     {
         if (keys == null)
@@ -51,16 +49,16 @@ public class LeaderboardDefCache extends StraightDTOCacheNew<LeaderboardDefKey, 
         }
 
         LeaderboardDefDTOList ret = new LeaderboardDefDTOList();
-        for (@NotNull LeaderboardDefKey key: keys)
+        for (LeaderboardDefKey key: keys)
         {
             ret.add(get(key));
         }
         return ret;
     }
 
-    public void put(@NotNull LeaderboardDefDTOList leaderboardDefDTOs)
+    public void put(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
-        for (@NotNull LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
+        for (LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
         {
             LeaderboardDefKey key = leaderboardDefDTO.getLeaderboardDefKey();
             put(key, leaderboardDefDTO);

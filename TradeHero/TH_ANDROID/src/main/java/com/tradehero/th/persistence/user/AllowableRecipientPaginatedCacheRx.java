@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -18,14 +18,14 @@ public class AllowableRecipientPaginatedCacheRx extends BaseFetchDTOCacheRx<Sear
     public static final int DEFAULT_MAX_VALUE_SIZE = 20;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
-    @NotNull private final UserServiceWrapper userServiceWrapper;
-    @NotNull private final Lazy<AllowableRecipientCacheRx> allowableRecipientCache;
+    @NonNull private final UserServiceWrapper userServiceWrapper;
+    @NonNull private final Lazy<AllowableRecipientCacheRx> allowableRecipientCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AllowableRecipientPaginatedCacheRx(
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull Lazy<AllowableRecipientCacheRx> allowableRecipientCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull Lazy<AllowableRecipientCacheRx> allowableRecipientCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
@@ -33,12 +33,12 @@ public class AllowableRecipientPaginatedCacheRx extends BaseFetchDTOCacheRx<Sear
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<PaginatedAllowableRecipientDTO> fetch(@NotNull SearchAllowableRecipientListType key)
+    @Override @NonNull protected Observable<PaginatedAllowableRecipientDTO> fetch(@NonNull SearchAllowableRecipientListType key)
     {
         return userServiceWrapper.searchAllowableRecipientsRx(key);
     }
 
-    @Override public void onNext(@NotNull SearchAllowableRecipientListType key, @NotNull PaginatedAllowableRecipientDTO value)
+    @Override public void onNext(@NonNull SearchAllowableRecipientListType key, @NonNull PaginatedAllowableRecipientDTO value)
     {
         allowableRecipientCache.get().onNext(value.getData());
         super.onNext(key, value);

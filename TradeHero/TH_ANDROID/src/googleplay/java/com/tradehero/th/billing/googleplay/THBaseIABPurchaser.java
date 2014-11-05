@@ -7,8 +7,8 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import org.json.JSONException;
 
 import javax.inject.Inject;
@@ -25,13 +25,13 @@ public class THBaseIABPurchaser
                 IABException>
     implements THIABPurchaser
 {
-    @NotNull protected final Lazy<THIABProductDetailCache> skuDetailCache;
+    @NonNull protected final Lazy<THIABProductDetailCache> skuDetailCache;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABPurchaser(
-            @NotNull Activity activity,
-            @NotNull Lazy<IABExceptionFactory> iabExceptionFactory,
-            @NotNull Lazy<THIABProductDetailCache> skuDetailCache)
+            @NonNull Activity activity,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
+            @NonNull Lazy<THIABProductDetailCache> skuDetailCache)
     {
         super(activity,
                 iabExceptionFactory);
@@ -39,7 +39,7 @@ public class THBaseIABPurchaser
     }
     //</editor-fold>
 
-    @Override @NotNull protected THIABPurchase createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException
+    @Override @NonNull protected THIABPurchase createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException
     {
         return new THIABPurchase(itemType, purchaseData, dataSignature);
     }

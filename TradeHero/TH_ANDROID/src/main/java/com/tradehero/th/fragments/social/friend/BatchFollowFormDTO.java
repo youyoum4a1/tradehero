@@ -4,12 +4,12 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class BatchFollowFormDTO
 {
-    @NotNull public List<Integer> userIds;
+    @NonNull public List<Integer> userIds;
 
     //<editor-fold desc="Constructors">
     public BatchFollowFormDTO()
@@ -19,7 +19,7 @@ public class BatchFollowFormDTO
     }
 
     public BatchFollowFormDTO(
-            @NotNull List<? extends UserFriendsDTO> userFriendsDTOs,
+            @NonNull List<? extends UserFriendsDTO> userFriendsDTOs,
             @Nullable UserFriendsDTO typeQualifier)
     {
         this();
@@ -30,7 +30,7 @@ public class BatchFollowFormDTO
     }
 
     public BatchFollowFormDTO(
-            @NotNull List<? extends UserBaseDTO> userBaseDTOs,
+            @NonNull List<? extends UserBaseDTO> userBaseDTOs,
             @Nullable UserBaseDTO typeQualifier)
     {
         this();

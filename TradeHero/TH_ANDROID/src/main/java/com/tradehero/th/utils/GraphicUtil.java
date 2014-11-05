@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class GraphicUtil implements BitmapForProfileFactory
 {
@@ -50,7 +50,7 @@ public class GraphicUtil implements BitmapForProfileFactory
      * ExifInterface.ORIENTATION_ROTATE_90, ExifInterface.ORIENTATION_NORMAL, null when unsure
      */
     @Nullable
-    public Integer getOrientationCode(@NotNull File imageFile)
+    public Integer getOrientationCode(@NonNull File imageFile)
     {
         try
         {
@@ -65,12 +65,12 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public int getRotationDegree(@NotNull String imagePath)
+    public int getRotationDegree(@NonNull String imagePath)
     {
         return getRotationDegree(new File(imagePath));
     }
 
-    public int getRotationDegree(@NotNull File imageFile)
+    public int getRotationDegree(@NonNull File imageFile)
     {
         return getRotationDegree(getOrientationCode(imageFile));
     }
@@ -98,7 +98,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     //</editor-fold>
 
     @Nullable
-    @Override public Bitmap decodeBitmapForProfile(Resources resources, @NotNull String selectedPath)
+    @Override public Bitmap decodeBitmapForProfile(Resources resources, @NonNull String selectedPath)
     {
         File imageFile = new File(selectedPath);
         BitmapFactory.Options options;
@@ -118,14 +118,14 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
 
     @Nullable
-    public Bitmap decodeFileForDisplay(@NotNull Context context, @NotNull File f)
+    public Bitmap decodeFileForDisplay(@NonNull Context context, @NonNull File f)
     {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return decodeFileWithinSize(f, metrics.widthPixels, metrics.heightPixels);
     }
 
     @Nullable
-    public Bitmap decodeFileWithinSize(@NotNull File f, int width, int height)
+    public Bitmap decodeFileWithinSize(@NonNull File f, int width, int height)
     {
         try
         {
@@ -160,7 +160,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
 
     @Nullable
-    public Bitmap decodeFileWithOrientation(@NotNull File f, int rotationDegree,
+    public Bitmap decodeFileWithOrientation(@NonNull File f, int rotationDegree,
             BitmapFactory.Options options)
     {
         try
@@ -243,7 +243,7 @@ public class GraphicUtil implements BitmapForProfileFactory
     }
 
     //<editor-fold desc="Color Filter">
-    public void applyColorFilter(@NotNull ImageView[] imageViews, int color)
+    public void applyColorFilter(@NonNull ImageView[] imageViews, int color)
     {
         for (ImageView imageView : imageViews)
         {
@@ -251,7 +251,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public void applyColorFilter(@NotNull Collection<? extends ImageView> imageViews, int color)
+    public void applyColorFilter(@NonNull Collection<? extends ImageView> imageViews, int color)
     {
         for (ImageView imageView : imageViews)
         {
@@ -259,19 +259,19 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public void applyColorFilter(@NotNull ImageView imageView, int color)
+    public void applyColorFilter(@NonNull ImageView imageView, int color)
     {
         applyColorFilter(imageView.getDrawable(), color);
     }
 
-    public void applyColorFilter(@NotNull Drawable d, int color)
+    public void applyColorFilter(@NonNull Drawable d, int color)
     {
         d.clearColorFilter();
         d.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     }
     //</editor-fold>
 
-    public StateListDrawable createStateListDrawable(@NotNull Context context, int normal)
+    public StateListDrawable createStateListDrawable(@NonNull Context context, int normal)
     {
         int pressed;
         if (isBright(normal))
@@ -285,7 +285,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return createStateListDrawable(context, normal, pressed);
     }
 
-    public StateListDrawable createStateListDrawable(@NotNull Context context, int normal, int pressed)
+    public StateListDrawable createStateListDrawable(@NonNull Context context, int normal, int pressed)
     {
         int focused;
         if (isBright(normal))
@@ -299,7 +299,7 @@ public class GraphicUtil implements BitmapForProfileFactory
         return createStateListDrawable(context, normal, pressed, focused);
     }
 
-    public StateListDrawable createStateListDrawable(@NotNull Context context, int normal, int pressed, int focused)
+    public StateListDrawable createStateListDrawable(@NonNull Context context, int normal, int pressed, int focused)
     {
         StateListDrawable states = new StateListDrawable();
         states.setExitFadeDuration(context.getResources().getInteger(android.R.integer.config_mediumAnimTime));
@@ -309,13 +309,13 @@ public class GraphicUtil implements BitmapForProfileFactory
         return states;
     }
 
-    public void setBackground(@NotNull View view, int color)
+    public void setBackground(@NonNull View view, int color)
     {
         this.setBackground(view, new ColorDrawable(color));
     }
 
     @SuppressLint("NewApi")
-    public void setBackground(@NotNull View view, Drawable drawable)
+    public void setBackground(@NonNull View view, Drawable drawable)
     {
         if (SDKUtils.isJellyBeanOrHigher())
         {

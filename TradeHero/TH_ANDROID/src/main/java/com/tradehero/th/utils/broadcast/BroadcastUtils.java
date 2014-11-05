@@ -5,22 +5,22 @@ import java.util.ArrayDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class BroadcastUtils implements BroadcastTaskNew.TaskListener
 {
-    @NotNull private final LocalBroadcastManager localBroadcastManager;
-    @NotNull private ArrayDeque<BroadcastData> broadcastQueue = new ArrayDeque<>();
-    @NotNull private final AtomicBoolean isProcessing = new AtomicBoolean(false);
+    @NonNull private final LocalBroadcastManager localBroadcastManager;
+    @NonNull private ArrayDeque<BroadcastData> broadcastQueue = new ArrayDeque<>();
+    @NonNull private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
     //<editor-fold desc="Constructors">
-    @Inject public BroadcastUtils(@NotNull LocalBroadcastManager localBroadcastManager)
+    @Inject public BroadcastUtils(@NonNull LocalBroadcastManager localBroadcastManager)
     {
         this.localBroadcastManager = localBroadcastManager;
     }
     //</editor-fold>
 
-    public BroadcastTaskNew enqueue(@NotNull BroadcastData broadcastData)
+    public BroadcastTaskNew enqueue(@NonNull BroadcastData broadcastData)
     {
         broadcastQueue.add(broadcastData);
         if (!isProcessing.get())
@@ -45,7 +45,7 @@ import org.jetbrains.annotations.NotNull;
         }
     }
 
-    private BroadcastTaskNew broadcast(@NotNull BroadcastData broadcastData)
+    private BroadcastTaskNew broadcast(@NonNull BroadcastData broadcastData)
     {
         isProcessing.set(true);
         BroadcastTaskNew task = new BroadcastTaskNew(broadcastData, localBroadcastManager, this);
@@ -53,12 +53,12 @@ import org.jetbrains.annotations.NotNull;
         return task;
     }
 
-    @Override public void onStartBroadcast(@NotNull BroadcastData broadcastData)
+    @Override public void onStartBroadcast(@NonNull BroadcastData broadcastData)
     {
         isProcessing.compareAndSet(false, true);
     }
 
-    @Override public void onFinishBroadcast(@NotNull BroadcastData broadcastData, boolean isSuccessful)
+    @Override public void onFinishBroadcast(@NonNull BroadcastData broadcastData, boolean isSuccessful)
     {
         if (!isSuccessful)
         {

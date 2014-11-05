@@ -3,13 +3,13 @@ package com.tradehero.th.api.leaderboard.competition;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class CompetitionLeaderboardId implements DTOKey
 {
-    @NotNull public final Integer providerId;
-    @NotNull public final Integer competitionId;
+    @NonNull public final Integer providerId;
+    @NonNull public final Integer competitionId;
     @Nullable public final Integer page;
     @Nullable public final Integer perPage;
 
@@ -33,12 +33,12 @@ public class CompetitionLeaderboardId implements DTOKey
     }
     //</editor-fold>
 
-    @NotNull public ProviderId getProviderId()
+    @NonNull public ProviderId getProviderId()
     {
         return new ProviderId(this.providerId);
     }
 
-    @NotNull public CompetitionId getCompetitionId()
+    @NonNull public CompetitionId getCompetitionId()
     {
         return new CompetitionId(this.competitionId);
     }

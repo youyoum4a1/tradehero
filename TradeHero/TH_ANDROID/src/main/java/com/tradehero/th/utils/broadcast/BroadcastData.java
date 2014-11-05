@@ -1,11 +1,11 @@
 package com.tradehero.th.utils.broadcast;
 
 import android.os.Bundle;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface BroadcastData
 {
-    @NotNull Bundle getArgs();
-    @NotNull String getBroadcastBundleKey();
-    @NotNull String getBroadcastIntentActionName();
+    @NonNull Bundle getArgs();
+    @NonNull String getBroadcastBundleKey();
+    @NonNull String getBroadcastIntentActionName();
 }

@@ -12,26 +12,26 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 
 public class AlertPlanServiceWrapper
 {
-    @NotNull protected final AlertPlanService alertPlanService;
-    @NotNull protected final AlertPlanServiceAsync alertPlanServiceAsync;
-    @NotNull protected final AlertPlanServiceRx alertPlanServiceRx;
-    @NotNull protected final UserProfileCacheRx userProfileCache;
-    @NotNull protected final HomeContentCacheRx homeContentCache;
+    @NonNull protected final AlertPlanService alertPlanService;
+    @NonNull protected final AlertPlanServiceAsync alertPlanServiceAsync;
+    @NonNull protected final AlertPlanServiceRx alertPlanServiceRx;
+    @NonNull protected final UserProfileCacheRx userProfileCache;
+    @NonNull protected final HomeContentCacheRx homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertPlanServiceWrapper(
-            @NotNull AlertPlanService alertPlanService,
-            @NotNull AlertPlanServiceAsync alertPlanServiceAsync,
-            @NotNull AlertPlanServiceRx alertPlanServiceRx,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull HomeContentCacheRx homeContentCache)
+            @NonNull AlertPlanService alertPlanService,
+            @NonNull AlertPlanServiceAsync alertPlanServiceAsync,
+            @NonNull AlertPlanServiceRx alertPlanServiceRx,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull HomeContentCacheRx homeContentCache)
     {
         super();
         this.alertPlanService = alertPlanService;
@@ -43,7 +43,7 @@ public class AlertPlanServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Alert Plans">
-    public Observable<AlertPlanDTOList> getAlertPlansRx(@NotNull UserBaseKey userBaseKey)
+    public Observable<AlertPlanDTOList> getAlertPlansRx(@NonNull UserBaseKey userBaseKey)
     {
         return alertPlanServiceRx.getAlertPlans(userBaseKey.key);
     }
@@ -51,8 +51,8 @@ public class AlertPlanServiceWrapper
 
     //<editor-fold desc="Subscribe to Alert Plan">
     public MiddleCallback<UserProfileDTO> subscribeToAlertPlan(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseDTO,
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull PurchaseReportDTO purchaseDTO,
             @Nullable Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createDTOProcessorUserProfile());
@@ -61,8 +61,8 @@ public class AlertPlanServiceWrapper
     }
 
     public Observable<UserProfileDTO> subscribeToAlertPlanRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull PurchaseReportDTO purchaseDTO)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull PurchaseReportDTO purchaseDTO)
     {
         return alertPlanServiceRx.subscribeToAlertPlan(userBaseKey.key, purchaseDTO);
     }
@@ -70,7 +70,7 @@ public class AlertPlanServiceWrapper
 
     //<editor-fold desc="Check Alert Plan Subscription">
     public MiddleCallback<UserProfileDTO> checkAlertPlanSubscription(
-            @NotNull UserBaseKey userBaseKey,
+            @NonNull UserBaseKey userBaseKey,
             Callback<UserProfileDTO> callback)
     {
         MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback);
@@ -79,7 +79,7 @@ public class AlertPlanServiceWrapper
     }
 
     public Observable<UserProfileDTO> checkAlertPlanSubscriptionRx(
-            @NotNull UserBaseKey userBaseKey)
+            @NonNull UserBaseKey userBaseKey)
     {
         return alertPlanServiceRx.checkAlertPlanSubscription(userBaseKey.key);
     }
@@ -87,8 +87,8 @@ public class AlertPlanServiceWrapper
 
     //<editor-fold desc="Restore Purchases">
     public Observable<UserProfileDTO> restorePurchasesRx(
-            @NotNull UserBaseKey userBaseKey,
-            @NotNull RestorePurchaseForm restorePurchaseForm)
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull RestorePurchaseForm restorePurchaseForm)
     {
         return alertPlanServiceRx.restorePurchases(userBaseKey.key, restorePurchaseForm);
     }

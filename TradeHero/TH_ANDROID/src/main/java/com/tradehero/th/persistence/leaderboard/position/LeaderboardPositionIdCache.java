@@ -7,7 +7,7 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache @Deprecated
 public class LeaderboardPositionIdCache extends StraightDTOCacheNew<LeaderboardMarkUserPositionId, OwnedLeaderboardPositionId>
@@ -15,13 +15,13 @@ public class LeaderboardPositionIdCache extends StraightDTOCacheNew<LeaderboardM
     public static final int DEFAULT_MAX_SIZE = 2000;
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardPositionIdCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public LeaderboardPositionIdCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 
-    @Override @NotNull public OwnedLeaderboardPositionId fetch(@NotNull LeaderboardMarkUserPositionId key)
+    @Override @NonNull public OwnedLeaderboardPositionId fetch(@NonNull LeaderboardMarkUserPositionId key)
     {
         throw new IllegalStateException("You should not fetch for OwnedLeaderboardPositionId");
     }

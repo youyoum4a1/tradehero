@@ -8,7 +8,7 @@ import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -21,9 +21,9 @@ public class QuestBonusListCacheRx extends BaseFetchDTOCacheRx<QuestBonusListId,
 
     //<editor-fold desc="Constructors">
     @Inject public QuestBonusListCacheRx(
-            @NotNull AchievementServiceWrapper achievementServiceWrapper,
-            @NotNull QuestBonusCacheRx questBonusCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull AchievementServiceWrapper achievementServiceWrapper,
+            @NonNull QuestBonusCacheRx questBonusCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
@@ -31,12 +31,12 @@ public class QuestBonusListCacheRx extends BaseFetchDTOCacheRx<QuestBonusListId,
     }
     //</editor-fold>
 
-    @NotNull @Override public Observable<QuestBonusDTOList> fetch(@NotNull QuestBonusListId key)
+    @NonNull @Override public Observable<QuestBonusDTOList> fetch(@NonNull QuestBonusListId key)
     {
         return achievementServiceWrapper.getQuestBonusesRx(key);
     }
 
-    @Override public void onNext(@NotNull QuestBonusListId key, @NotNull QuestBonusDTOList value)
+    @Override public void onNext(@NonNull QuestBonusListId key, @NonNull QuestBonusDTOList value)
     {
         questBonusCache.onNext(value);
     }

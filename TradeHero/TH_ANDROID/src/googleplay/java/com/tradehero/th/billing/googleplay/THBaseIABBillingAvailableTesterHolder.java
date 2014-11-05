@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -14,7 +14,7 @@ public class THBaseIABBillingAvailableTesterHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABBillingAvailableTesterHolder(
-            @NotNull Provider<THIABBillingAvailableTester> iabBillingAvailableTesterProvider)
+            @NonNull Provider<THIABBillingAvailableTester> iabBillingAvailableTesterProvider)
     {
         super(iabBillingAvailableTesterProvider);
     }

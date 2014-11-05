@@ -10,7 +10,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class LeaderboardCommunityAdapter extends ArrayAdapter<LeaderboardDefDTO>
@@ -22,7 +22,7 @@ public class LeaderboardCommunityAdapter extends ArrayAdapter<LeaderboardDefDTO>
 
     //<editor-fold desc="Constructors">
     public LeaderboardCommunityAdapter(
-            @NotNull Context context,
+            @NonNull Context context,
             int leaderboardDefViewResourceId)
     {
         super(context, 0);

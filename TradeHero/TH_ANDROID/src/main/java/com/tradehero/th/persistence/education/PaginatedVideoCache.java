@@ -8,22 +8,22 @@ import com.tradehero.th.api.education.VideoCategoryId;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton @UserCache @Deprecated
 public class PaginatedVideoCache extends StraightCutDTOCacheNew<VideoCategoryId, PaginatedVideoDTO, PaginatedVideoId>
 {
     private static final int DEFAULT_MAX_SIZE = 50;
 
-    @NotNull private final VideoCacheRx videoCache;
-    @NotNull private final VideoServiceWrapper videoServiceWrapper;
+    @NonNull private final VideoCacheRx videoCache;
+    @NonNull private final VideoServiceWrapper videoServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public PaginatedVideoCache(
-            @NotNull VideoCacheRx videoCache,
-            @NotNull VideoServiceWrapper videoServiceWrapper,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NonNull VideoCacheRx videoCache,
+            @NonNull VideoServiceWrapper videoServiceWrapper,
+            @NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.videoCache = videoCache;
@@ -31,17 +31,17 @@ public class PaginatedVideoCache extends StraightCutDTOCacheNew<VideoCategoryId,
     }
     //</editor-fold>
 
-    @NotNull @Override public PaginatedVideoDTO fetch(@NotNull VideoCategoryId key) throws Throwable
+    @NonNull @Override public PaginatedVideoDTO fetch(@NonNull VideoCategoryId key) throws Throwable
     {
         return videoServiceWrapper.getVideos(key);
     }
 
-    @NotNull @Override protected PaginatedVideoId cutValue(@NotNull VideoCategoryId key, @NotNull PaginatedVideoDTO value)
+    @NonNull @Override protected PaginatedVideoId cutValue(@NonNull VideoCategoryId key, @NonNull PaginatedVideoDTO value)
     {
         return new PaginatedVideoId(videoCache, value);
     }
 
-    @Nullable @Override protected PaginatedVideoDTO inflateValue(@NotNull VideoCategoryId key, @Nullable PaginatedVideoId cutValue)
+    @Nullable @Override protected PaginatedVideoDTO inflateValue(@NonNull VideoCategoryId key, @Nullable PaginatedVideoId cutValue)
     {
         if (cutValue == null)
         {
@@ -55,7 +55,7 @@ public class PaginatedVideoCache extends StraightCutDTOCacheNew<VideoCategoryId,
         return inflated;
     }
 
-    @Nullable @Override public PaginatedVideoDTO get(@NotNull VideoCategoryId key)
+    @Nullable @Override public PaginatedVideoDTO get(@NonNull VideoCategoryId key)
     {
         return super.get(key);
     }

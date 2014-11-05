@@ -12,8 +12,8 @@ import com.tradehero.th.api.i18n.lang.LanguageKlingonDTO;
 import com.tradehero.th.api.i18n.lang.LanguageKlingonQaakDTO;
 import com.tradehero.th.api.i18n.lang.LanguageNorwegianDTO;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Locale;
 
@@ -21,16 +21,16 @@ import javax.inject.Inject;
 
 public class LanguageDTOFactory
 {
-    @NotNull private final Context applicationContext;
+    @NonNull private final Context applicationContext;
 
     //<editor-fold desc="Constructors">
-    @Inject public LanguageDTOFactory(@NotNull Context applicationContext)
+    @Inject public LanguageDTOFactory(@NonNull Context applicationContext)
     {
         this.applicationContext = applicationContext;
     }
     //</editor-fold>
 
-    public LanguageDTO createFromCode(@NotNull String languageCode)
+    public LanguageDTO createFromCode(@NonNull String languageCode)
     {
         Locale locale = forLanguageTag(languageCode);
         if (locale != null)
@@ -47,7 +47,7 @@ public class LanguageDTOFactory
 
     @Nullable public Locale forLanguageTag(String languageCode)
     {
-        for (@NotNull Locale locale : Locale.getAvailableLocales())
+        for (Locale locale : Locale.getAvailableLocales())
         {
             if (locale.getLanguage().equals(languageCode))
             {
@@ -57,7 +57,7 @@ public class LanguageDTOFactory
         return null;
     }
 
-    @NotNull public LanguageDTOMap getHardCodedLanguages()
+    @NonNull public LanguageDTOMap getHardCodedLanguages()
     {
         LanguageDTOMap known = new LanguageDTOMap();
         known.add(new LanguageHaitianCreoleDTO(applicationContext.getResources()));

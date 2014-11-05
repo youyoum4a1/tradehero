@@ -32,7 +32,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -303,5 +303,5 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     abstract public void recreateAdapter();
 
-    @NotNull public abstract ContestCenterTabType getCCTabType();
+    @NonNull public abstract ContestCenterTabType getCCTabType();
 }

@@ -9,7 +9,7 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,17 +17,17 @@ public class SystemStatusCache extends BaseFetchDTOCacheRx<SystemStatusKey, Syst
 {
     public static final int DEFAULT_MAX_SIZE = 1;
 
-    @NotNull private final Lazy<SessionServiceWrapper> sessionService;
+    @NonNull private final Lazy<SessionServiceWrapper> sessionService;
 
     @Inject public SystemStatusCache(
-            @NotNull Lazy<SessionServiceWrapper> sessionService,
-            @NotNull DTOCacheUtilRx dtoCacheUtilRx)
+            @NonNull Lazy<SessionServiceWrapper> sessionService,
+            @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         super(DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, dtoCacheUtilRx);
         this.sessionService = sessionService;
     }
 
-    @Override @NotNull protected Observable<SystemStatusDTO> fetch(@NotNull SystemStatusKey key)
+    @Override @NonNull protected Observable<SystemStatusDTO> fetch(@NonNull SystemStatusKey key)
     {
         return sessionService.get().getSystemStatusRx();
     }

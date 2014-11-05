@@ -9,7 +9,7 @@ import com.tradehero.th.api.market.ExchangeStringId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @SystemCache
 public class ExchangeIdCacheRx extends BaseDTOCacheRx<ExchangeStringId, ExchangeIntegerId>
@@ -18,15 +18,15 @@ public class ExchangeIdCacheRx extends BaseDTOCacheRx<ExchangeStringId, Exchange
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     //<editor-fold desc="Constructors">
-    @Inject public ExchangeIdCacheRx(@NotNull DTOCacheUtilRx dtoCacheUtil)
+    @Inject public ExchangeIdCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 
-    public void onNext(@NotNull List<ExchangeCompactDTO> exchangeCompactDTOs)
+    public void onNext(@NonNull List<ExchangeCompactDTO> exchangeCompactDTOs)
     {
-        for (@NotNull ExchangeCompactDTO exchangeCompactDTO: exchangeCompactDTOs)
+        for (ExchangeCompactDTO exchangeCompactDTO: exchangeCompactDTOs)
         {
             onNext(exchangeCompactDTO.getExchangeStringId(), exchangeCompactDTO.getExchangeIntegerId());
         }

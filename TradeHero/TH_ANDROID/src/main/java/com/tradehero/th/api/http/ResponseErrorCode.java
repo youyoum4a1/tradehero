@@ -1,6 +1,6 @@
 package com.tradehero.th.api.http;
 
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public enum ResponseErrorCode

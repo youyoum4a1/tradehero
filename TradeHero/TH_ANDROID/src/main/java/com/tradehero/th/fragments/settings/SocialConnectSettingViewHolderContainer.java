@@ -7,8 +7,8 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SocialConnectSettingViewHolderContainer implements SettingViewHolder
 {
@@ -18,11 +18,11 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
 
     //<editor-fold desc="Constructors">
     @Inject public SocialConnectSettingViewHolderContainer(
-            @NotNull SocialConnectFacebookSettingViewHolder socialConnectFacebookSettingViewHolder,
-            @NotNull SocialConnectLinkedInSettingViewHolder socialConnectLinkedInSettingViewHolder,
-            @NotNull SocialConnectQQSettingViewHolder socialConnectQQSettingViewHolder,
-            @NotNull SocialConnectTwitterSettingViewHolder socialConnectTwitterSettingViewHolder,
-            @NotNull SocialConnectWeiboSettingViewHolder socialConnectWeiboSettingViewHolder)
+            @NonNull SocialConnectFacebookSettingViewHolder socialConnectFacebookSettingViewHolder,
+            @NonNull SocialConnectLinkedInSettingViewHolder socialConnectLinkedInSettingViewHolder,
+            @NonNull SocialConnectQQSettingViewHolder socialConnectQQSettingViewHolder,
+            @NonNull SocialConnectTwitterSettingViewHolder socialConnectTwitterSettingViewHolder,
+            @NonNull SocialConnectWeiboSettingViewHolder socialConnectWeiboSettingViewHolder)
     {
         settingViewHolders = Arrays.asList(
                 socialConnectFacebookSettingViewHolder,
@@ -33,7 +33,7 @@ public class SocialConnectSettingViewHolderContainer implements SettingViewHolde
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         container = (PreferenceCategory) preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_sharing_group));
         for (SocialConnectSettingViewHolder settingViewHolder : settingViewHolders)

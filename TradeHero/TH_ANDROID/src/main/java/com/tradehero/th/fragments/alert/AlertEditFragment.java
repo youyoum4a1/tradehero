@@ -10,7 +10,7 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -22,12 +22,12 @@ public class AlertEditFragment extends BaseAlertEditFragment
     protected AlertId alertId;
     @Inject protected AlertCacheRx alertCache;
 
-    public static void putAlertId(@NotNull Bundle args, @NotNull AlertId alertId)
+    public static void putAlertId(@NonNull Bundle args, @NonNull AlertId alertId)
     {
         args.putBundle(BUNDLE_KEY_ALERT_ID_BUNDLE, alertId.getArgs());
     }
 
-    @NotNull public static AlertId getAlertId(@NotNull Bundle args)
+    @NonNull public static AlertId getAlertId(@NonNull Bundle args)
     {
         return new AlertId(args.getBundle(BUNDLE_KEY_ALERT_ID_BUNDLE));
     }

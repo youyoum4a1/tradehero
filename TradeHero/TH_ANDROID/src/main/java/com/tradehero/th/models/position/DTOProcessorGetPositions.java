@@ -2,19 +2,19 @@ package com.tradehero.th.models.position;
 
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Func1;
 
 public class DTOProcessorGetPositions implements Func1<GetPositionsDTO, GetPositionsDTO>
 {
-    @NotNull private final LeaderboardMarkUserId leaderboardMarkUserId;
+    @NonNull private final LeaderboardMarkUserId leaderboardMarkUserId;
 
-    public DTOProcessorGetPositions(@NotNull LeaderboardMarkUserId leaderboardMarkUserId)
+    public DTOProcessorGetPositions(@NonNull LeaderboardMarkUserId leaderboardMarkUserId)
     {
         this.leaderboardMarkUserId = leaderboardMarkUserId;
     }
 
-    @Override public GetPositionsDTO call(@NotNull GetPositionsDTO value)
+    @Override public GetPositionsDTO call(@NonNull GetPositionsDTO value)
     {
         value.setOnInPeriod(leaderboardMarkUserId);
         return value;

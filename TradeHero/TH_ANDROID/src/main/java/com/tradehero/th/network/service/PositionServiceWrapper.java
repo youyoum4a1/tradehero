@@ -6,15 +6,15 @@ import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class PositionServiceWrapper
 {
-    @NotNull private final PositionServiceRx positionServiceRx;
+    @NonNull private final PositionServiceRx positionServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public PositionServiceWrapper(@NotNull PositionServiceRx positionServiceRx)
+    @Inject public PositionServiceWrapper(@NonNull PositionServiceRx positionServiceRx)
     {
         super();
         this.positionServiceRx = positionServiceRx;
@@ -22,7 +22,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get One User Portfolio Positions List">
-    @NotNull public Observable<GetPositionsDTO> getPositionsRx(@NotNull OwnedPortfolioId ownedPortfolioId)
+    @NonNull public Observable<GetPositionsDTO> getPositionsRx(@NonNull OwnedPortfolioId ownedPortfolioId)
     {
         Observable<GetPositionsDTO> returned;
         if (ownedPortfolioId instanceof PerPagedOwnedPortfolioId)

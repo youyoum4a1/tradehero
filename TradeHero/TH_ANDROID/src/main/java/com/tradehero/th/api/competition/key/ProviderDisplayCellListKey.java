@@ -2,20 +2,20 @@ package com.tradehero.th.api.competition.key;
 
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class ProviderDisplayCellListKey implements DTOKey
 {
-    @NotNull private final ProviderId providerId;
+    @NonNull private final ProviderId providerId;
 
     //<editor-fold desc="Constructor">
-    public ProviderDisplayCellListKey(@NotNull ProviderId providerId)
+    public ProviderDisplayCellListKey(@NonNull ProviderId providerId)
     {
         this.providerId = providerId;
     }
     //</editor-fold>
 
-    @NotNull public ProviderId getProviderId()
+    @NonNull public ProviderId getProviderId()
     {
         return providerId;
     }

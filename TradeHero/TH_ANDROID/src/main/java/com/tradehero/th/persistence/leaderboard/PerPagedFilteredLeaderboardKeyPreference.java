@@ -7,26 +7,26 @@ import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import java.util.Set;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PerPagedFilteredLeaderboardKeyPreference extends PerPagedLeaderboardKeyPreference
 {
     public PerPagedFilteredLeaderboardKeyPreference(
-            @NotNull Context context,
-            @NotNull SharedPreferences preference,
-            @NotNull String key,
-            @NotNull Set<String> defaultValue)
+            @NonNull Context context,
+            @NonNull SharedPreferences preference,
+            @NonNull String key,
+            @NonNull Set<String> defaultValue)
     {
         super(context, preference, key, defaultValue);
     }
 
-    @NotNull public PerPagedFilteredLeaderboardKey getPerPagedFilteredLeaderboardKey()
+    @NonNull public PerPagedFilteredLeaderboardKey getPerPagedFilteredLeaderboardKey()
     {
         return new PerPagedFilteredLeaderboardKey(get(), createDefaultValues());
     }
 
-    @Override @NotNull public PerPagedFilteredLeaderboardKey createDefaultValues()
+    @Override @NonNull public PerPagedFilteredLeaderboardKey createDefaultValues()
     {
         return new PerPagedFilteredLeaderboardKey(
                 Integer.MIN_VALUE,

@@ -3,7 +3,7 @@ package com.tradehero.th.utils.metrics.tapstream;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public enum TapStreamType
 {
@@ -61,16 +61,16 @@ public enum TapStreamType
     ;
 
     public final int type;
-    @NotNull public final MarketSegment marketSegment;
-    @NotNull public final PushConstants.PushProvider pushProvider;
+    @NonNull public final MarketSegment marketSegment;
+    @NonNull public final PushConstants.PushProvider pushProvider;
     public final int installResId;
     public final int openResId;
 
     //<editor-fold desc="Constructors">
     TapStreamType(
             int type,
-            @NotNull MarketSegment marketSegment,
-            @NotNull PushConstants.PushProvider pushProvider,
+            @NonNull MarketSegment marketSegment,
+            @NonNull PushConstants.PushProvider pushProvider,
             int installResId,
             int openResId)
     {

@@ -4,7 +4,7 @@ import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.SamsungConstants;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class SamsungExceptionFactory
         implements BillingExceptionFactory

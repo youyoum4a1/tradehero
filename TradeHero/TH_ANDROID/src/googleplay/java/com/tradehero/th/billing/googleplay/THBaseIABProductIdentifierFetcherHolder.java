@@ -6,7 +6,7 @@ import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -20,11 +20,11 @@ public class THBaseIABProductIdentifierFetcherHolder
         IABException>
     implements THIABProductIdentifierFetcherHolder
 {
-    @NotNull protected final Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider;
+    @NonNull protected final Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABProductIdentifierFetcherHolder(
-            @NotNull Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider
+            @NonNull Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider
     )
     {
         super();

@@ -11,8 +11,8 @@ import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,7 +27,7 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
     @Nullable Subscription securityCompactCacheSubscription;
     @Nullable SecurityCompactDTO securityCompactDTO;
 
-    public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
         args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
     }

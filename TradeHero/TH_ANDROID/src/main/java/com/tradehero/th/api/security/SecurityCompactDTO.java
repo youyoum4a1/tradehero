@@ -20,8 +20,8 @@ import com.tradehero.th.api.security.compact.UnitCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,7 +102,7 @@ public class SecurityCompactDTO implements DTO
         super();
     }
 
-    public SecurityCompactDTO(@NotNull SecurityCompactDTO other)
+    public SecurityCompactDTO(@NonNull SecurityCompactDTO other)
     {
         super();
         this.id = other.id;
@@ -145,7 +145,7 @@ public class SecurityCompactDTO implements DTO
         return null;
     }
 
-    @NotNull public String getExchangeSymbol()
+    @NonNull public String getExchangeSymbol()
     {
         return String.format(EXCHANGE_SYMBOL_FORMAT, exchange, symbol);
     }
@@ -177,12 +177,12 @@ public class SecurityCompactDTO implements DTO
         return !Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0);
     }
 
-    @NotNull public SecurityIntegerId getSecurityIntegerId()
+    @NonNull public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(id);
     }
 
-    @NotNull public SecurityId getSecurityId()
+    @NonNull public SecurityId getSecurityId()
     {
         return new SecurityId(exchange, symbol);
     }

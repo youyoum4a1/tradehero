@@ -7,20 +7,20 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class SecurityMultiFetchAssistant
 {
-    @NotNull private final SecurityIdCache securityIdCache;
-    @NotNull private final SecurityCompactCacheRx securityCompactCache;
-    @NotNull private final SecurityServiceWrapper securityServiceWrapper;
+    @NonNull private final SecurityIdCache securityIdCache;
+    @NonNull private final SecurityCompactCacheRx securityCompactCache;
+    @NonNull private final SecurityServiceWrapper securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
     public SecurityMultiFetchAssistant(
-            @NotNull SecurityIdCache securityIdCache,
-            @NotNull SecurityCompactCacheRx securityCompactCache,
-            @NotNull SecurityServiceWrapper securityServiceWrapper)
+            @NonNull SecurityIdCache securityIdCache,
+            @NonNull SecurityCompactCacheRx securityCompactCache,
+            @NonNull SecurityServiceWrapper securityServiceWrapper)
     {
         super();
         this.securityIdCache = securityIdCache;

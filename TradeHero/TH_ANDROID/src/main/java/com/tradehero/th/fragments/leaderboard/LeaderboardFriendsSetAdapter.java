@@ -14,8 +14,8 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -31,10 +31,10 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
-    @NotNull private Map<Object, Boolean> expandedStatuses;
+    @NonNull private Map<Object, Boolean> expandedStatuses;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardFriendsSetAdapter(@NotNull Context context,
+    public LeaderboardFriendsSetAdapter(@NonNull Context context,
             @LayoutRes int markedLayoutResId,
             @LayoutRes int socialLayoutResId)
     {
@@ -52,7 +52,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
     @Override public int getItemViewType(int position)
     {
-        @NotNull FriendLeaderboardUserDTO item = getItem(position);
+        FriendLeaderboardUserDTO item = getItem(position);
         if (item instanceof FriendLeaderboardMarkedUserDTO)
         {
             return VIEW_TYPE_MARK;
@@ -77,7 +77,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
         throw new IllegalStateException("Unhandled item view type " + getItemViewType(position));
     }
 
-    public void add(@NotNull LeaderboardFriendsDTO leaderboardFriendsDTO)
+    public void add(@NonNull LeaderboardFriendsDTO leaderboardFriendsDTO)
     {
         Observable.from(leaderboardFriendsDTO.leaderboard.users)
                 .observeOn(Schedulers.computation())
@@ -100,19 +100,19 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
                 });
     }
 
-    private FriendLeaderboardUserDTO createUserDTOFrom(@NotNull LeaderboardUserDTO leaderboardUserDTO)
+    private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull LeaderboardUserDTO leaderboardUserDTO)
     {
         return new SavingFriendLeaderboardMarkedUserDTO(leaderboardUserDTO);
     }
 
     private class SavingFriendLeaderboardMarkedUserDTO extends FriendLeaderboardMarkedUserDTO
     {
-        public SavingFriendLeaderboardMarkedUserDTO(@NotNull LeaderboardUserDTO leaderboardUserDTO)
+        public SavingFriendLeaderboardMarkedUserDTO(@NonNull LeaderboardUserDTO leaderboardUserDTO)
         {
             this(expandedStatuses.get(leaderboardUserDTO.getLeaderboardMarkUserId()), leaderboardUserDTO);
         }
 
-        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NotNull LeaderboardUserDTO leaderboardUserDTO)
+        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
         {
             super(expanded != null ? expanded : false, leaderboardUserDTO);
         }
@@ -124,7 +124,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
         }
     }
 
-    private FriendLeaderboardUserDTO createUserDTOFrom(@NotNull UserFriendsDTO userFriendsDTO)
+    private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull UserFriendsDTO userFriendsDTO)
     {
         return new FriendLeaderboardSocialUserDTO(userFriendsDTO);
     }
@@ -169,7 +169,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
         notifyDataSetChanged();
     }
 
-    protected void notifyFollowRequested(@NotNull UserBaseDTO userBaseDTO)
+    protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
         LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)

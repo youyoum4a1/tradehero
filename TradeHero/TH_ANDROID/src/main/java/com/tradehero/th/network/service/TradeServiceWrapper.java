@@ -8,15 +8,15 @@ import com.tradehero.th.models.trade.DTOProcessorTradeListReceived;
 import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class TradeServiceWrapper
 {
-    @NotNull private final TradeServiceRx tradeServiceRx;
+    @NonNull private final TradeServiceRx tradeServiceRx;
 
     //<editor-fold desc="Constructors">
-    @Inject public TradeServiceWrapper(@NotNull TradeServiceRx tradeServiceRx)
+    @Inject public TradeServiceWrapper(@NonNull TradeServiceRx tradeServiceRx)
     {
         super();
         this.tradeServiceRx = tradeServiceRx;
@@ -53,13 +53,13 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Trades List">
-    @NotNull private DTOProcessorTradeListReceived createTradeListReceivedProcessor(
-            @NotNull OwnedPositionId ownedPositionId)
+    @NonNull private DTOProcessorTradeListReceived createTradeListReceivedProcessor(
+            @NonNull OwnedPositionId ownedPositionId)
     {
         return new DTOProcessorTradeListReceived(ownedPositionId);
     }
 
-    @NotNull public Observable<TradeDTOList> getTradesRx(@NotNull OwnedPositionId ownedPositionId)
+    @NonNull public Observable<TradeDTOList> getTradesRx(@NonNull OwnedPositionId ownedPositionId)
     {
         basicCheck(ownedPositionId);
         return this.tradeServiceRx.getTrades(
@@ -71,13 +71,13 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get One Trade">
-    @NotNull private DTOProcessorTradeReceived createTradeReceivedProcessor(
-            @NotNull OwnedPositionId ownedPositionId)
+    @NonNull private DTOProcessorTradeReceived createTradeReceivedProcessor(
+            @NonNull OwnedPositionId ownedPositionId)
     {
         return new DTOProcessorTradeReceived(ownedPositionId);
     }
 
-    @NotNull public Observable<TradeDTO> getTradeRx(@NotNull OwnedTradeId ownedTradeId)
+    @NonNull public Observable<TradeDTO> getTradeRx(@NonNull OwnedTradeId ownedTradeId)
     {
         basicCheck(ownedTradeId);
         return this.tradeServiceRx.getTrade(

@@ -32,8 +32,8 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
@@ -46,12 +46,12 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     private static final int MAX_FACEBOOK_MESSAGE_LENGTH = 60;
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
 
-    @NotNull final CurrentUserId currentUserId;
-    @NotNull final ProgressDialogUtil dialogUtil;
-    @NotNull final SocialServiceWrapper socialServiceWrapper;
-    @NotNull private final FacebookAuthenticationProvider facebookAuthenticationProvider;
-    @NotNull final UserProfileCache userProfileCache;
-    @NotNull private final Provider<Activity> activityProvider;
+    @NonNull final CurrentUserId currentUserId;
+    @NonNull final ProgressDialogUtil dialogUtil;
+    @NonNull final SocialServiceWrapper socialServiceWrapper;
+    @NonNull private final FacebookAuthenticationProvider facebookAuthenticationProvider;
+    @NonNull final UserProfileCache userProfileCache;
+    @NonNull private final Provider<Activity> activityProvider;
 
     private ProgressDialog progressDialog;
     private UserBaseKey userBaseKey;
@@ -60,13 +60,13 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
 
     //<editor-fold desc="Constructors">
     @Inject public SocialFriendHandlerFacebook(
-            @NotNull UserServiceWrapper userServiceWrapper,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull ProgressDialogUtil dialogUtil,
-            @NotNull SocialServiceWrapper socialServiceWrapper,
-            @NotNull FacebookAuthenticationProvider facebookAuthenticationProvider,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull Provider<Activity> activityProvider)
+            @NonNull UserServiceWrapper userServiceWrapper,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull ProgressDialogUtil dialogUtil,
+            @NonNull SocialServiceWrapper socialServiceWrapper,
+            @NonNull FacebookAuthenticationProvider facebookAuthenticationProvider,
+            @NonNull UserProfileCache userProfileCache,
+            @NonNull Provider<Activity> activityProvider)
     {
         super(userServiceWrapper);
         this.currentUserId = currentUserId;
@@ -80,8 +80,8 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
 
     @Override
     public MiddleCallback<BaseResponseDTO> inviteFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull List<UserFriendsDTO> users,
+            @NonNull UserBaseKey userKey,
+            @NonNull List<UserFriendsDTO> users,
             @Nullable RequestCallback<BaseResponseDTO> callback)
     {
         this.userBaseKey = userKey;
@@ -152,7 +152,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         }
     }
 
-    private void sendRequestDialog(@NotNull Activity activity, @NotNull List<UserFriendsDTO> friendsDTOs)
+    private void sendRequestDialog(@NonNull Activity activity, @NonNull List<UserFriendsDTO> friendsDTOs)
     {
         Timber.d("sendRequestDialog");
         StringBuilder stringBuilder = new StringBuilder();
@@ -249,7 +249,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         }
     }
 
-    public Observable<Bundle> createShareRequestObservable(@NotNull final List<UserFriendsFacebookDTO> friendsDTOs)
+    public Observable<Bundle> createShareRequestObservable(@NonNull final List<UserFriendsFacebookDTO> friendsDTOs)
     {
         return createProfileSessionObservable()
                 .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<Bundle>>()
@@ -287,9 +287,9 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     }
 
     public Observable<Bundle> createShareRequestObservable(
-            @NotNull UserProfileDTO userProfileDTO,
-            @NotNull Session session,
-            @NotNull List<UserFriendsFacebookDTO> friendsDTOs)
+            @NonNull UserProfileDTO userProfileDTO,
+            @NonNull Session session,
+            @NonNull List<UserFriendsFacebookDTO> friendsDTOs)
     {
         Timber.d("sendRequestDialog");
         StringBuilder stringBuilder = new StringBuilder();

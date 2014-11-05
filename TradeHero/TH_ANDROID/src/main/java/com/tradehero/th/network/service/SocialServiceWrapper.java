@@ -11,23 +11,23 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 
 @Singleton public class SocialServiceWrapper
     implements SocialLinker
 {
-    @NotNull private final SocialService socialService;
-    @NotNull private final SocialServiceRx socialServiceRx;
-    @NotNull private final CurrentUserId currentUserId;
-    @NotNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
+    @NonNull private final SocialService socialService;
+    @NonNull private final SocialServiceRx socialServiceRx;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     @Inject public SocialServiceWrapper(
-            @NotNull SocialService socialService,
-            @NotNull SocialServiceRx socialServiceRx,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
+            @NonNull SocialService socialService,
+            @NonNull SocialServiceRx socialServiceRx,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.socialService = socialService;
         this.socialServiceRx = socialServiceRx;
@@ -36,36 +36,36 @@ import rx.functions.Func1;
     }
 
     //<editor-fold desc="Connect">
-    @NotNull public Observable<UserProfileDTO> connectRx(@NotNull UserBaseKey userBaseKey, UserFormDTO userFormDTO)
+    @NonNull public Observable<UserProfileDTO> connectRx(@NonNull UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
         return socialServiceRx.connect(userBaseKey.key, userFormDTO)
                 .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
     }
 
-    @NotNull public UserProfileDTO connect(@NotNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
+    @NonNull public UserProfileDTO connect(@NonNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
     {
         return dtoProcessorUpdateUserProfileProvider.get().process(socialService.connect(userBaseKey.key, userFormDTO));
     }
 
-    @NotNull public Func1<AuthData, UserProfileDTO> connectFunc1(@NotNull final UserBaseKey userBaseKey)
+    @NonNull public Func1<AuthData, UserProfileDTO> connectFunc1(@NonNull final UserBaseKey userBaseKey)
     {
         return accessTokenForm -> connect(userBaseKey, new AccessTokenForm(accessTokenForm));
     }
 
-    @NotNull public Observable<UserProfileDTO> connectRx(@NotNull UserBaseKey userBaseKey, AccessTokenForm accessTokenForm)
+    @NonNull public Observable<UserProfileDTO> connectRx(@NonNull UserBaseKey userBaseKey, AccessTokenForm accessTokenForm)
     {
         return socialServiceRx.connect(userBaseKey.key, accessTokenForm)
                 .map(userProfileDTO -> dtoProcessorUpdateUserProfileProvider.get().process(userProfileDTO));
     }
 
-    @Override @NotNull public Observable<UserProfileDTO> link(AccessTokenForm accessTokenForm)
+    @Override @NonNull public Observable<UserProfileDTO> link(AccessTokenForm accessTokenForm)
     {
         return connectRx(currentUserId.toUserBaseKey(), accessTokenForm);
     }
     //</editor-fold>
 
     //<editor-fold desc="Disconnect">
-    public Observable<UserProfileDTO> disconnectRx(@NotNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
+    public Observable<UserProfileDTO> disconnectRx(@NonNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return socialServiceRx.disconnect(userBaseKey.key, socialNetworkFormDTO)
                 .doOnNext(dtoProcessorUpdateUserProfileProvider.get());

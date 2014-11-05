@@ -2,8 +2,8 @@ package com.tradehero.th.api.security;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SecurityIdList extends DTOKeyIdList<SecurityId>
 {
@@ -18,7 +18,7 @@ public class SecurityIdList extends DTOKeyIdList<SecurityId>
         super(collection);
     }
 
-    public SecurityIdList(@NotNull Collection<? extends SecurityCompactDTO> compactDTOs, @Nullable SecurityCompactDTO typeQualifier)
+    public SecurityIdList(@NonNull Collection<? extends SecurityCompactDTO> compactDTOs, @Nullable SecurityCompactDTO typeQualifier)
     {
         for (SecurityCompactDTO compactDTO : compactDTOs)
         {

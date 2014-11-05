@@ -24,8 +24,8 @@ import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -49,7 +49,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Nullable protected Subscription portfolioCompactListCacheSubscription;
 
-    public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
+    public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
     {
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
@@ -175,7 +175,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     // region Following action
     // should call this method where the action takes place
     @Deprecated
-    protected final void premiumFollowUser(@NotNull UserBaseKey heroId)
+    protected final void premiumFollowUser(@NonNull UserBaseKey heroId)
     {
         detachRequestCode();
         //noinspection unchecked

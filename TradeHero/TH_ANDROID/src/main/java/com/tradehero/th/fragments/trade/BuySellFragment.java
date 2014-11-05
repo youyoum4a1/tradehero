@@ -90,8 +90,8 @@ import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -400,7 +400,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void linkWith(@NotNull final SecurityPositionDetailDTO securityPositionDetailDTO,
+    @Override public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO,
             boolean andDisplay)
     {
         super.linkWith(securityPositionDetailDTO, andDisplay);
@@ -408,7 +408,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         ProviderDTOList providerDTOs = securityPositionDetailDTO.providers;
         if (providerDTOs != null)
         {
-            for (@NotNull ProviderDTO providerDTO : providerDTOs)
+            for (ProviderDTO providerDTO : providerDTOs)
             {
                 if (providerDTO.associatedPortfolio != null)
                 {
@@ -1137,7 +1137,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                 abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
                 {
                     @Override public void onTransactionSuccessful(boolean isBuy,
-                            @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
+                            @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
                     {
                         showPrettyReviewAndInvite(isBuy);
                         pushPortfolioFragment(securityPositionTransactionDTO);
@@ -1221,7 +1221,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         buySellMiddleCallback = null;
     }
 
-    private void pushPortfolioFragment(@NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
+    private void pushPortfolioFragment(@NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
     {
         pushPortfolioFragment(new OwnedPortfolioId(
                 currentUserId.get(),
@@ -1353,12 +1353,12 @@ public class BuySellFragment extends AbstractBuySellFragment
             implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
         @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
+        public void onDTOReceived(@NonNull UserBaseKey key, @NonNull WatchlistPositionDTOList value)
         {
             linkWithWatchlist(value, true);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             Timber.e("Failed to fetch list of watch list items", error);
             THToast.show(R.string.error_fetch_portfolio_list_info);

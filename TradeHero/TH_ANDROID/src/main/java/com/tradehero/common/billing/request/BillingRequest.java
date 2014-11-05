@@ -15,8 +15,8 @@ import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -90,7 +90,7 @@ public class BillingRequest<
     public boolean manageSubscriptions;
 
     //<editor-fold desc="Constructors">
-    protected BillingRequest(@NotNull Builder<
+    protected BillingRequest(@NonNull Builder<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,

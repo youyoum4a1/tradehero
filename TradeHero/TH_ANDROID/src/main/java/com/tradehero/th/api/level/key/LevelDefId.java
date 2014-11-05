@@ -2,7 +2,7 @@ package com.tradehero.th.api.level.key;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class LevelDefId extends AbstractIntegerDTOKey
 {
@@ -13,7 +13,7 @@ public class LevelDefId extends AbstractIntegerDTOKey
         super(key);
     }
 
-    public LevelDefId(@NotNull Bundle args)
+    public LevelDefId(@NonNull Bundle args)
     {
         super(args);
     }

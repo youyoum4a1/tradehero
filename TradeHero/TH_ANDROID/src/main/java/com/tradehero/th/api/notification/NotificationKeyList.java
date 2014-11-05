@@ -2,7 +2,7 @@ package com.tradehero.th.api.notification;
 
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class NotificationKeyList extends DTOKeyIdList<NotificationKey>
 {
@@ -12,7 +12,7 @@ public class NotificationKeyList extends DTOKeyIdList<NotificationKey>
         super();
     }
 
-    public NotificationKeyList(@NotNull List<NotificationDTO> notificationDTOs)
+    public NotificationKeyList(@NonNull List<NotificationDTO> notificationDTOs)
     {
         for (NotificationDTO notificationDTO : notificationDTOs)
         {

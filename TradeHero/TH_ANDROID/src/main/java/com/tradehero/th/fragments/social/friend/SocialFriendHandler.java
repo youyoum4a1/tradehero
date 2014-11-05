@@ -11,21 +11,21 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 @Singleton public class SocialFriendHandler
 {
-    @NotNull UserServiceWrapper userServiceWrapper;
+    @NonNull UserServiceWrapper userServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public SocialFriendHandler(@NotNull UserServiceWrapper userServiceWrapper)
+    @Inject public SocialFriendHandler(@NonNull UserServiceWrapper userServiceWrapper)
     {
         this.userServiceWrapper = userServiceWrapper;
     }
     //</editor-fold>
 
-    public MiddleCallback<UserProfileDTO> followFriends(@NotNull List<UserFriendsDTO> users, @Nullable RequestCallback<UserProfileDTO> callback)
+    public MiddleCallback<UserProfileDTO> followFriends(@NonNull List<UserFriendsDTO> users, @Nullable RequestCallback<UserProfileDTO> callback)
     {
         if (callback != null)
         {
@@ -35,16 +35,16 @@ import org.jetbrains.annotations.Nullable;
     }
 
     public MiddleCallback<BaseResponseDTO> inviteFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull List<UserFriendsDTO> users,
+            @NonNull UserBaseKey userKey,
+            @NonNull List<UserFriendsDTO> users,
             @Nullable RequestCallback<BaseResponseDTO> callback)
     {
         return inviteFriends(userKey, new InviteFormUserDTO(users), callback);
     }
 
     public MiddleCallback<BaseResponseDTO> inviteFriends(
-            @NotNull UserBaseKey userKey,
-            @NotNull InviteFormDTO inviteFormDTO,
+            @NonNull UserBaseKey userKey,
+            @NonNull InviteFormDTO inviteFormDTO,
             @Nullable RequestCallback<BaseResponseDTO> callback)
     {
         if (callback != null)

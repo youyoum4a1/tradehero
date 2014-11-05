@@ -1,6 +1,6 @@
 package com.tradehero.th.api.achievement.key;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class MockQuestBonusId extends QuestBonusId
 {
@@ -10,7 +10,7 @@ public class MockQuestBonusId extends QuestBonusId
     public int xpTotal;
 
     //<editor-fold desc="Constructors">
-    public MockQuestBonusId(@NotNull Integer key, int xpEarned, int xpTotal)
+    public MockQuestBonusId(@NonNull Integer key, int xpEarned, int xpTotal)
     {
         super(key);
         this.xpEarned = xpEarned;

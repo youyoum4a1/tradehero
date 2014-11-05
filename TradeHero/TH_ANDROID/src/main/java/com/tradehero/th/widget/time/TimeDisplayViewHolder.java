@@ -14,7 +14,7 @@ import com.tradehero.common.time.TimeUnitSecondInMinute;
 import com.tradehero.th.R;
 import java.util.Date;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
@@ -23,15 +23,15 @@ public class TimeDisplayViewHolder
 {
     public static final long MAX_DAY_COUNT = 99;
 
-    @NotNull protected final Context context;
+    @NonNull protected final Context context;
     @InjectView(R.id.value_day_count) protected TextView dayCountView;
     @InjectView(R.id.value_hour_count) protected TextView hourCountView;
     @InjectView(R.id.value_minute_count) protected TextView minuteCountView;
     @InjectView(R.id.value_second_count) protected TextView secondCountView;
-    @NotNull protected final PrettyTime prettyTime;
+    @NonNull protected final PrettyTime prettyTime;
 
     //<editor-fold desc="Constructors">
-    @Inject public TimeDisplayViewHolder(@NotNull Context context, @NotNull PrettyTime prettyTime)
+    @Inject public TimeDisplayViewHolder(@NonNull Context context, @NonNull PrettyTime prettyTime)
     {
         this.context = context;
         this.prettyTime = prettyTime;

@@ -7,7 +7,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class THSamsungProductDetail
         extends BaseSamsungProductDetail<SamsungSKU>
@@ -37,7 +37,7 @@ public class THSamsungProductDetail
     }
     //</editor-fold>
 
-    @NotNull @Override public SamsungSKU getProductIdentifier()
+    @NonNull @Override public SamsungSKU getProductIdentifier()
     {
         return new SamsungSKU(samsungItemGroup.groupId, getItemId());
     }

@@ -12,20 +12,20 @@ import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {
-    @NotNull private final Context context;
-    @NotNull private CurrentUserId currentUserId;
-    @NotNull private final UserProfileCacheRx userProfileCache;
+    @NonNull private final Context context;
+    @NonNull private CurrentUserId currentUserId;
+    @NonNull private final UserProfileCacheRx userProfileCache;
     private final NotificationGroupHolder notificationGroupHolder;
 
     @Inject public NotificationOpenedHandler(
-            @NotNull Context context,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull NotificationCacheRx notificationCache,
+            @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull NotificationCacheRx notificationCache,
             NotificationGroupHolder notificationGroupHolder)
     {
         super(notificationCache);
@@ -40,7 +40,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         return PushConstants.THAction.Opened;
     }
 
-    @Override public boolean handle(@NotNull Intent intent)
+    @Override public boolean handle(@NonNull Intent intent)
     {
         super.handle(intent);
 
@@ -61,7 +61,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         return true;
     }
 
-    private void clearNotificationGroup(@NotNull Intent intent)
+    private void clearNotificationGroup(@NonNull Intent intent)
     {
         int groupId = intent.getIntExtra(PushConstants.KEY_PUSH_GROUP_ID, -1);
 
@@ -71,7 +71,7 @@ public class NotificationOpenedHandler extends PrecacheNotificationHandler
         }
     }
 
-    @NotNull private Intent createLaunchIntent(@NotNull Intent intent)
+    @NonNull private Intent createLaunchIntent(@NonNull Intent intent)
     {
         Intent launch = new Intent(Intent.ACTION_MAIN);
         launch.setClass(context, DashboardActivity.class);

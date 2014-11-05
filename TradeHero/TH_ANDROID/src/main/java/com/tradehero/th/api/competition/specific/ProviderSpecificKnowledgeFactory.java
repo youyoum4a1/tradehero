@@ -7,8 +7,7 @@ import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpec
 import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificKnowledgeDTO;
 import com.tradehero.th.api.competition.specific.sgxtockwhiz.SgxStockWhizProviderSpecificKnowledgeDTO;
 import javax.inject.Inject;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class ProviderSpecificKnowledgeFactory
 {
@@ -19,7 +18,7 @@ public class ProviderSpecificKnowledgeFactory
     }
     //</editor-fold>
 
-    @Contract("null -> null; !null -> !null") @Nullable
+    @Nullable
     public ProviderSpecificKnowledgeDTO createKnowledge(@Nullable ProviderDTO providerDTO)
     {
         ProviderSpecificKnowledgeDTO created = null;
@@ -30,7 +29,7 @@ public class ProviderSpecificKnowledgeFactory
         return created;
     }
 
-    @Contract("null -> null; !null -> _") @Nullable
+    @Nullable
     public ProviderSpecificKnowledgeDTO createKnowledge(@Nullable ProviderId providerId)
     {
         ProviderSpecificKnowledgeDTO created = null;

@@ -1,25 +1,25 @@
 package com.tradehero.th.persistence.translation;
 
 import com.tradehero.common.persistence.DTOKey;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class TranslationKey implements DTOKey
 {
-    @NotNull public final String from;
-    @NotNull public final String to;
+    @NonNull public final String from;
+    @NonNull public final String to;
     public final int textHashCode;
 
     // It does not participate to the key, but is still necessary to achieve translation
     @Nullable public String translatableText;
 
     //<editor-fold desc="Constructors">
-    public TranslationKey(@NotNull String from, @NotNull String to, @NotNull String translatableText)
+    public TranslationKey(@NonNull String from, @NonNull String to, @NonNull String translatableText)
     {
         this(from, to, translatableText.hashCode(), translatableText);
     }
 
-    public TranslationKey(@NotNull String from, @NotNull String to, int textHashCode, @Nullable String translatableText)
+    public TranslationKey(@NonNull String from, @NonNull String to, int textHashCode, @Nullable String translatableText)
     {
         this.from = from;
         this.to = to;
@@ -48,12 +48,12 @@ public class TranslationKey implements DTOKey
         return equalClass(obj) && equalFields((TranslationKey) obj);
     }
 
-    protected boolean equalClass(@NotNull Object other)
+    protected boolean equalClass(@NonNull Object other)
     {
         return other.getClass().equals(getClass());
     }
 
-    protected boolean equalFields(@NotNull TranslationKey other)
+    protected boolean equalFields(@NonNull TranslationKey other)
     {
         return from.equals(other.from) &&
                 to.equals(other.to) &&

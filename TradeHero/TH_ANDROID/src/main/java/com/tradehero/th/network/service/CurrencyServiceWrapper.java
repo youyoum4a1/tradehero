@@ -4,16 +4,16 @@ import com.tradehero.th.api.market.CurrencyDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class CurrencyServiceWrapper
 {
-    @NotNull private final CurrencyServiceRx currencyServiceRx;
+    @NonNull private final CurrencyServiceRx currencyServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public CurrencyServiceWrapper(
-            @NotNull CurrencyServiceRx currencyServiceRx)
+            @NonNull CurrencyServiceRx currencyServiceRx)
     {
         this.currencyServiceRx = currencyServiceRx;
     }

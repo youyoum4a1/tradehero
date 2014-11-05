@@ -69,8 +69,8 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
@@ -150,16 +150,16 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     public abstract Double getPriceCcy();
 
-    public static boolean canShowDialog(@NotNull QuoteDTO quoteDTO, boolean isBuy)
+    public static boolean canShowDialog(@NonNull QuoteDTO quoteDTO, boolean isBuy)
     {
         return (isBuy && quoteDTO.ask != null) ||
                 (!isBuy && quoteDTO.bid != null);
     }
 
     public static AbstractTransactionDialogFragment newInstance(
-            @NotNull SecurityId securityId,
-            @NotNull PortfolioId portfolioId,
-            @NotNull QuoteDTO quoteDTO,
+            @NonNull SecurityId securityId,
+            @NonNull PortfolioId portfolioId,
+            @NonNull QuoteDTO quoteDTO,
             boolean isBuy)
     {
         AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
@@ -185,7 +185,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         return securityId;
     }
 
-    @NotNull protected PortfolioId getPortfolioId()
+    @NonNull protected PortfolioId getPortfolioId()
     {
         if (this.portfolioId == null)
         {
@@ -603,7 +603,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         mTradeValueTextView.setText(getTradeValueText());
     }
 
-    @NotNull public abstract String getCashShareLeft();
+    @NonNull public abstract String getCashShareLeft();
 
     private void updateConfirmButton(boolean forceDisable)
     {
@@ -803,7 +803,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         return mQuantityTextWatcher;
     }
 
-    private int getTradeQuantityFrom(@NotNull String string)
+    private int getTradeQuantityFrom(@NonNull String string)
     {
         int val = 0;
         try
@@ -997,7 +997,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     public interface BuySellTransactionListener
     {
-        void onTransactionSuccessful(boolean isBuy, @NotNull SecurityPositionTransactionDTO securityPositionTransactionDTO);
+        void onTransactionSuccessful(boolean isBuy, @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO);
 
         void onTransactionFailed(boolean isBuy, THException error);
     }

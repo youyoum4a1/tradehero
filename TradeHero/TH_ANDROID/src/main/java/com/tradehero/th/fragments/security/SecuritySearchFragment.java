@@ -21,8 +21,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Subscription;
 import timber.log.Timber;
 
@@ -87,7 +87,7 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         //securityCompactListCache.get().getOrFetchAsync(key);
     }
 
-    @NotNull @Override public SecurityListType makePagedDtoKey(int page)
+    @NonNull @Override public SecurityListType makePagedDtoKey(int page)
     {
         return new SearchSecurityListType(mSearchText, page, perPage);
     }
@@ -132,13 +132,13 @@ public class SecuritySearchFragment extends BaseSearchFragment<
     private class SecurityIdListCacheListener extends ListCacheListener
     {
         @Override
-        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
+        public void onDTOReceived(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)
         {
             super.onDTOReceived(key, value);
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
         }
 
-        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull SecurityListType key, @NonNull Throwable error)
         {
             super.onErrorThrown(key, error);
             THToast.show(getString(R.string.error_fetch_security_list_info));

@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.onboarding.stock;
 
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class SelectableSecurityDTO extends SelectableDTO<SecurityCompactDTO>
 {
     //<editor-fold desc="Constructors">
-    public SelectableSecurityDTO(@NotNull SecurityCompactDTO value)
+    public SelectableSecurityDTO(@NonNull SecurityCompactDTO value)
     {
         super(value);
     }

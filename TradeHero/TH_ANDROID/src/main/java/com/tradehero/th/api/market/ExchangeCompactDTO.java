@@ -3,8 +3,8 @@ package com.tradehero.th.api.market;
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class ExchangeCompactDTO implements DTO
@@ -15,8 +15,8 @@ public class ExchangeCompactDTO implements DTO
     private static final String BUNDLE_KEY_IS_INCLUDED_IN_TRENDING = ExchangeDTO.class.getName() + ".isIncludedInTrending";
 
     public int id;
-    @NotNull public String name;
-    @NotNull public String countryCode;
+    @NonNull public String name;
+    @NonNull public String countryCode;
     public double sumMarketCap;
     @Nullable public String desc;
     public boolean isInternal;
@@ -30,8 +30,8 @@ public class ExchangeCompactDTO implements DTO
 
     public ExchangeCompactDTO(
             int id,
-            @NotNull String name,
-            @NotNull String countryCode,
+            @NonNull String name,
+            @NonNull String countryCode,
             double sumMarketCap,
             String desc,
             boolean isInternal,
@@ -49,7 +49,7 @@ public class ExchangeCompactDTO implements DTO
         this.chartDataSource = chartDataSource;
     }
 
-    public ExchangeCompactDTO(@NotNull ExchangeCompactDTO other)
+    public ExchangeCompactDTO(@NonNull ExchangeCompactDTO other)
     {
         super();
         this.id = other.id;
@@ -62,7 +62,7 @@ public class ExchangeCompactDTO implements DTO
         this.chartDataSource = other.chartDataSource;
     }
 
-    public ExchangeCompactDTO(@NotNull Bundle bundle)
+    public ExchangeCompactDTO(@NonNull Bundle bundle)
     {
         super();
         this.id = bundle.getInt(BUNDLE_KEY_ID);
@@ -138,7 +138,7 @@ public class ExchangeCompactDTO implements DTO
         return null;
     }
 
-    protected void putParameters(@NotNull Bundle args)
+    protected void putParameters(@NonNull Bundle args)
     {
         args.putInt(BUNDLE_KEY_ID, this.id);
         args.putString(BUNDLE_KEY_NAME, this.name);
@@ -146,7 +146,7 @@ public class ExchangeCompactDTO implements DTO
         args.putBoolean(BUNDLE_KEY_IS_INCLUDED_IN_TRENDING, this.isIncludedInTrending);
     }
 
-    @NotNull public Bundle getArgs()
+    @NonNull public Bundle getArgs()
     {
         Bundle args = new Bundle();
         putParameters(args);

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class THBaseSamsungPurchaseFetcher
@@ -27,16 +27,16 @@ public class THBaseSamsungPurchaseFetcher
             SamsungException>
     implements THSamsungPurchaseFetcher
 {
-    @NotNull protected final THSamsungExceptionFactory samsungExceptionFactory;
-    @NotNull protected final StringSetPreference processingPurchaseStringSet;
-    @NotNull protected final List<SamsungPurchaseInProcessDTO> savedPurchasesInProcess;
+    @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
+    @NonNull protected final StringSetPreference processingPurchaseStringSet;
+    @NonNull protected final List<SamsungPurchaseInProcessDTO> savedPurchasesInProcess;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungPurchaseFetcher(
-            @NotNull Context context,
+            @NonNull Context context,
             @ForSamsungBillingMode int mode,
-            @NotNull THSamsungExceptionFactory samsungExceptionFactory,
-            @NotNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull THSamsungExceptionFactory samsungExceptionFactory,
+            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
         super(context, mode);
         this.samsungExceptionFactory = samsungExceptionFactory;
@@ -53,7 +53,7 @@ public class THBaseSamsungPurchaseFetcher
         return knownGroupIds;
     }
 
-    @Override @NotNull protected THSamsungPurchaseIncomplete createIncompletePurchase(String groupId, InboxVo inboxVo)
+    @Override @NonNull protected THSamsungPurchaseIncomplete createIncompletePurchase(String groupId, InboxVo inboxVo)
     {
         THSamsungPurchaseIncomplete purchase = new THSamsungPurchaseIncomplete(groupId, inboxVo);
         Timber.d("Created 1 purchase %s", inboxVo.getJsonString());

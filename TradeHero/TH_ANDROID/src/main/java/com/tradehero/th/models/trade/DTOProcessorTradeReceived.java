@@ -3,16 +3,16 @@ package com.tradehero.th.models.trade;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.models.DTOProcessor;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorTradeReceived implements DTOProcessor<TradeDTO>,
         Action1<TradeDTO>
 {
-    @NotNull private final OwnedPositionId ownedPositionId;
+    @NonNull private final OwnedPositionId ownedPositionId;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorTradeReceived(@NotNull OwnedPositionId ownedPositionId)
+    public DTOProcessorTradeReceived(@NonNull OwnedPositionId ownedPositionId)
     {
         this.ownedPositionId = new OwnedPositionId(
                 ownedPositionId.userId,

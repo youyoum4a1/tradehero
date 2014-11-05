@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungBillingInteractor
@@ -53,23 +53,23 @@ public class THSamsungBillingInteractor
 {
     public static final String BUNDLE_KEY_ACTION = THSamsungBillingInteractor.class.getName() + ".action";
 
-    @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NotNull protected final HeroListCacheRx heroListCache;
-    @NotNull protected final UserService userService;
+    @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NonNull protected final HeroListCacheRx heroListCache;
+    @NonNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungBillingInteractor(
-            @NotNull Provider<Activity> activityProvider,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserProfileCacheRx userProfileCacheRx,
-            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
-            @NotNull THSamsungLogicHolder billingActor,
-            @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull HeroListCacheRx heroListCache,
-            @NotNull UserService userService)
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCache userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCacheRx,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
+            @NonNull THSamsungLogicHolder billingActor,
+            @NonNull UserProfileDTOUtil userProfileDTOUtil,
+            @NonNull HeroListCacheRx heroListCache,
+            @NonNull UserService userService)
     {
         super(
                 billingActor,
@@ -99,7 +99,7 @@ public class THSamsungBillingInteractor
     //</editor-fold>
 
     //<editor-fold desc="Request Handling">
-    @Override public int run(@NotNull THUISamsungRequest uiBillingRequest)
+    @Override public int run(@NonNull THUISamsungRequest uiBillingRequest)
     {
         // Here we disable the initial restore
         if (uiBillingRequest.getRestorePurchase() && !uiBillingRequest.getStartWithProgressDialog())
@@ -114,7 +114,7 @@ public class THSamsungBillingInteractor
     }
 
     @Override protected THSamsungRequestFull createBillingRequest(
-            @NotNull THUISamsungRequest uiBillingRequest)
+            @NonNull THUISamsungRequest uiBillingRequest)
     {
         THSamsungRequestFull.Builder<?> builder = THSamsungRequestFull.builder();
         populateBillingRequestBuilder(builder, uiBillingRequest);
@@ -122,8 +122,8 @@ public class THSamsungBillingInteractor
     }
 
     protected void populateBillingRequestBuilder(
-            @NotNull THSamsungRequestFull.Builder<?> builder,
-            @NotNull THUISamsungRequest uiBillingRequest)
+            @NonNull THSamsungRequestFull.Builder<?> builder,
+            @NonNull THUISamsungRequest uiBillingRequest)
     {
         super.populateBillingRequestBuilder(builder, uiBillingRequest);
         if (uiBillingRequest.getDomainToPresent() != null)
@@ -257,7 +257,7 @@ public class THSamsungBillingInteractor
     @Override protected void populatePurchaseBillingRequest(
             int requestCode,
             THSamsungRequestFull request,
-            @NotNull SamsungSKU productIdentifier)
+            @NonNull SamsungSKU productIdentifier)
     {
         super.populatePurchaseBillingRequest(requestCode, request, productIdentifier);
         THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
@@ -267,9 +267,9 @@ public class THSamsungBillingInteractor
         }
     }
 
-    @Override @NotNull protected THSamsungPurchaseOrder createEmptyPurchaseOrder(
-            @NotNull THUISamsungRequest uiBillingRequest,
-            @NotNull SamsungSKU productIdentifier)
+    @Override @NonNull protected THSamsungPurchaseOrder createEmptyPurchaseOrder(
+            @NonNull THUISamsungRequest uiBillingRequest,
+            @NonNull SamsungSKU productIdentifier)
     {
         return new THSamsungPurchaseOrder(productIdentifier, uiBillingRequest.getApplicablePortfolioId());
     }

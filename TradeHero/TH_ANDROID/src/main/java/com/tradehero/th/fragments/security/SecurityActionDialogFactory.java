@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class SecurityActionDialogFactory
 {
@@ -19,8 +19,8 @@ public class SecurityActionDialogFactory
      * @param menuClickedListener
      * @return
      */
-    public Dialog createSecurityActionDialog(@NotNull Context context,
-            @NotNull SecurityId securityId,
+    public Dialog createSecurityActionDialog(@NonNull Context context,
+            @NonNull SecurityId securityId,
             @Nullable SecurityActionListLinear.OnActionMenuClickedListener menuClickedListener)
     {
         SecurityActionListLinear contentView = (SecurityActionListLinear) LayoutInflater.from(context)

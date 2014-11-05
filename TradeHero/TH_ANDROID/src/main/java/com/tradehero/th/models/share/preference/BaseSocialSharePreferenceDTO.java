@@ -1,6 +1,6 @@
 package com.tradehero.th.models.share.preference;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,7 +28,7 @@ public abstract class BaseSocialSharePreferenceDTO implements SocialSharePrefere
         return (o instanceof SocialSharePreferenceDTO) && (getSocialNetworkEnum().equals(((SocialSharePreferenceDTO) o).getSocialNetworkEnum()));
     }
 
-    @Override @NotNull public JSONObject toJSONObject() throws JSONException
+    @Override @NonNull public JSONObject toJSONObject() throws JSONException
     {
         JSONObject o = new JSONObject();
         o.put(KEY_SOCIAL_NETWORK_ENUM, getSocialNetworkEnum());

@@ -11,7 +11,7 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, AlertItemView>
@@ -20,11 +20,11 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
     private static final long HEADER_ID_INACTIVE = 0;
     private static final long HEADER_ID_ACTIVE = 1;
 
-    @NotNull CurrentUserId currentUserId;
+    @NonNull CurrentUserId currentUserId;
     protected final int alertResId;
 
     //<editor-fold desc="Constructors">
-    public AlertListItemAdapter(@NotNull Context context, @NotNull CurrentUserId currentUserId, int alertResId)
+    public AlertListItemAdapter(@NonNull Context context, @NonNull CurrentUserId currentUserId, int alertResId)
     {
         super(context,
                 (lhs, rhs) -> {

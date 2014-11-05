@@ -21,7 +21,7 @@ import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -43,19 +43,19 @@ public class THIABLogicHolderFull
                 IABException>
     implements THIABLogicHolder
 {
-    @NotNull private final THIABPurchaseConsumerHolder thBaseIABPurchaseConsumerHolder;
+    @NonNull private final THIABPurchaseConsumerHolder thBaseIABPurchaseConsumerHolder;
 
     //<editor-fold desc="Constructors">
     @Inject public THIABLogicHolderFull(
-            @NotNull IABSKUListCache iabskuListCache,
-            @NotNull THIABProductDetailCache thskuDetailCache,
-            @NotNull THIABBillingAvailableTesterHolder thiabBillingAvailableTesterHolder,
-            @NotNull THIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder,
-            @NotNull THIABInventoryFetcherHolder thiabInventoryFetcherHolder,
-            @NotNull THIABPurchaseFetcherHolder thiabPurchaseFetcherHolder,
-            @NotNull THIABPurchaserHolder thiabPurchaserHolder,
-            @NotNull THIABPurchaseReporterHolder thiabPurchaseReporterHolder,
-            @NotNull THIABPurchaseConsumerHolder thiabPurchaseConsumerHolder)
+            @NonNull IABSKUListCache iabskuListCache,
+            @NonNull THIABProductDetailCache thskuDetailCache,
+            @NonNull THIABBillingAvailableTesterHolder thiabBillingAvailableTesterHolder,
+            @NonNull THIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder,
+            @NonNull THIABInventoryFetcherHolder thiabInventoryFetcherHolder,
+            @NonNull THIABPurchaseFetcherHolder thiabPurchaseFetcherHolder,
+            @NonNull THIABPurchaserHolder thiabPurchaserHolder,
+            @NonNull THIABPurchaseReporterHolder thiabPurchaseReporterHolder,
+            @NonNull THIABPurchaseConsumerHolder thiabPurchaseConsumerHolder)
     {
         super(
                 iabskuListCache,
@@ -97,7 +97,7 @@ public class THIABLogicHolderFull
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, @NotNull THIABBillingRequestFull billingRequest)
+    @Override public void registerListeners(int requestCode, @NonNull THIABBillingRequestFull billingRequest)
     {
         super.registerListeners(requestCode, billingRequest);
         registerConsumptionFinishedListener(requestCode, billingRequest.consumptionFinishedListener);

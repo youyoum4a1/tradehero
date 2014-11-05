@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchase;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AmazonPurchaseInProcessDTO extends AmazonPurchaseReportDTO
 {
@@ -14,7 +14,7 @@ public class AmazonPurchaseInProcessDTO extends AmazonPurchaseReportDTO
     @JsonProperty(USER_TO_FOLLOW_JSON_KEY)
     public UserBaseKey userToFollow;
     @JsonProperty(APPLICABLE_PORTFOLIO_JSON_KEY)
-    @NotNull public OwnedPortfolioId applicablePortfolioId;
+    @NonNull public OwnedPortfolioId applicablePortfolioId;
 
     //<editor-fold desc="Constructors">
     protected AmazonPurchaseInProcessDTO()
@@ -23,7 +23,7 @@ public class AmazonPurchaseInProcessDTO extends AmazonPurchaseReportDTO
         super();
     }
 
-    public AmazonPurchaseInProcessDTO(@NotNull THBaseAmazonPurchase amazonPurchase)
+    public AmazonPurchaseInProcessDTO(@NonNull THBaseAmazonPurchase amazonPurchase)
     {
         super(amazonPurchase);
         this.userToFollow = amazonPurchase.getUserToFollow();

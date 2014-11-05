@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Date;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
 {

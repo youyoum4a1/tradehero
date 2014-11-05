@@ -11,12 +11,12 @@ import android.os.Parcelable;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class ShortcutUtil
 {
-    public static void recreateShortcut(@NotNull Activity activity)
+    public static void recreateShortcut(@NonNull Activity activity)
     {
         try
         {
@@ -31,7 +31,7 @@ public class ShortcutUtil
         }
     }
 
-    private static void createShortcut(@NotNull Activity activity)
+    private static void createShortcut(@NonNull Activity activity)
     {
         Intent intent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
         intent.putExtra("duplicate", false);
@@ -42,7 +42,7 @@ public class ShortcutUtil
         activity.sendBroadcast(intent);
     }
 
-    private static Intent createLaunchIntent(@NotNull Activity activity)
+    private static Intent createLaunchIntent(@NonNull Activity activity)
     {
         Intent launchIntent = new Intent(Intent.ACTION_MAIN);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -51,7 +51,7 @@ public class ShortcutUtil
         return launchIntent;
     }
 
-    private static boolean isInstallShortcut(@NotNull Activity activity)
+    private static boolean isInstallShortcut(@NonNull Activity activity)
     {
         String name = activity.getString(R.string.app_name);
         boolean isInstallShortcut = false;
@@ -119,7 +119,7 @@ public class ShortcutUtil
         }
     }
 
-    private static void removeShortcut(@NotNull Context applicationContext)
+    private static void removeShortcut(@NonNull Context applicationContext)
     {
         Intent shortcutIntent = new Intent(applicationContext, AuthenticationActivity.class);
         shortcutIntent.setAction(Intent.ACTION_MAIN);

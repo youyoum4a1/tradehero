@@ -19,23 +19,23 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class NewsServiceWrapper
 {
-    @NotNull private final NewsService newsService;
-    @NotNull private final NewsServiceAsync newsServiceAsync;
-    @NotNull private final NewsServiceRx newsServiceRx;
-    @NotNull private final Provider<NewsDTOProcessor> newsDTOProcessorProvider;
+    @NonNull private final NewsService newsService;
+    @NonNull private final NewsServiceAsync newsServiceAsync;
+    @NonNull private final NewsServiceRx newsServiceRx;
+    @NonNull private final Provider<NewsDTOProcessor> newsDTOProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public NewsServiceWrapper(
-            @NotNull NewsService newsService,
-            @NotNull NewsServiceAsync newsServiceAsync,
-            @NotNull NewsServiceRx newsServiceRx,
-            @NotNull Provider<NewsDTOProcessor> newsDTOProcessorProvider)
+            @NonNull NewsService newsService,
+            @NonNull NewsServiceAsync newsServiceAsync,
+            @NonNull NewsServiceRx newsServiceRx,
+            @NonNull Provider<NewsDTOProcessor> newsDTOProcessorProvider)
     {
         this.newsService = newsService;
         this.newsServiceAsync = newsServiceAsync;

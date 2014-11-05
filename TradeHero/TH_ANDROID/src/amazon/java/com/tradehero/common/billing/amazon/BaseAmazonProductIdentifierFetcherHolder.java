@@ -6,7 +6,7 @@ import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonProductIdentifierFetcherHolder<
         AmazonSKUListKeyType extends AmazonSKUListKey,
@@ -29,12 +29,12 @@ abstract public class BaseAmazonProductIdentifierFetcherHolder<
             AmazonSKUListType,
             AmazonExceptionType>
 {
-    @NotNull protected final Provider<AmazonProductIdentifierFetcherType> amazonProductIdentifierFetcherTypeProvider;
-    @NotNull protected final Map<Integer /*requestCode*/, AmazonProductIdentifierFetcherType> skuFetchers;
+    @NonNull protected final Provider<AmazonProductIdentifierFetcherType> amazonProductIdentifierFetcherTypeProvider;
+    @NonNull protected final Map<Integer /*requestCode*/, AmazonProductIdentifierFetcherType> skuFetchers;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonProductIdentifierFetcherHolder(
-            @NotNull Provider<AmazonProductIdentifierFetcherType> amazonProductIdentifierFetcherTypeProvider)
+            @NonNull Provider<AmazonProductIdentifierFetcherType> amazonProductIdentifierFetcherTypeProvider)
     {
         super();
         this.amazonProductIdentifierFetcherTypeProvider = amazonProductIdentifierFetcherTypeProvider;

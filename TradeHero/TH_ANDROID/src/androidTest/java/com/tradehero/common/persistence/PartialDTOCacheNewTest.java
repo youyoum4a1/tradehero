@@ -2,7 +2,7 @@ package com.tradehero.common.persistence;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,7 @@ public class PartialDTOCacheNewTest
     {
         cache = new TestStraightDTOCacheNew<UserBaseKey, ExpirableDTO>(10)
         {
-            @NotNull @Override public ExpirableDTO fetch(@NotNull UserBaseKey key) throws Throwable
+            @NonNull @Override public ExpirableDTO fetch(@NonNull UserBaseKey key) throws Throwable
             {
                 return new ExpirableDTO();
             }

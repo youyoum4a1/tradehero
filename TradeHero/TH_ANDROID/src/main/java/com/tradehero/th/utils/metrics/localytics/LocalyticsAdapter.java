@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton
 public class LocalyticsAdapter
@@ -18,8 +18,8 @@ public class LocalyticsAdapter
     private final LocalyticsSession localytics;
 
     @Inject LocalyticsAdapter(
-            @NotNull Context context,
-            @NotNull @ForLocalytics String appKey)
+            @NonNull Context context,
+            @NonNull @ForLocalytics String appKey)
     {
         localytics = new LocalyticsSession(context, appKey);
         LocalyticsSession.setLoggingEnabled(Constants.RELEASE);

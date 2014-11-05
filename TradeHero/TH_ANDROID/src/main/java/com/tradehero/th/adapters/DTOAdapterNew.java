@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.api.DTOView;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class DTOAdapterNew<DTOType>
         extends ArrayAdapter<DTOType>
@@ -16,17 +16,17 @@ public class DTOAdapterNew<DTOType>
     protected static final int DEFAULT_VIEW_TYPE = 0;
 
     @LayoutRes protected int layoutResourceId;
-    @NotNull protected LayoutInflater inflater;
+    @NonNull protected LayoutInflater inflater;
 
     //<editor-fold desc="Constructors">
-    public DTOAdapterNew(@NotNull Context context, @LayoutRes int layoutResourceId)
+    public DTOAdapterNew(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
         this.layoutResourceId = layoutResourceId;
         this.inflater = LayoutInflater.from(context);
     }
 
-    public DTOAdapterNew(@NotNull Context context, int layoutResourceId, @NotNull List<DTOType> objects)
+    public DTOAdapterNew(@NonNull Context context, int layoutResourceId, @NonNull List<DTOType> objects)
     {
         super(context, layoutResourceId, objects);
         this.layoutResourceId = layoutResourceId;

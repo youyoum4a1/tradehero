@@ -14,15 +14,15 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
 {
-    @NotNull final Context context;
-    @NotNull final UserBaseDTOUtil userBaseDTOUtil;
-    @NotNull final Picasso picasso;
-    @NotNull final Transformation userImageTransformation;
+    @NonNull final Context context;
+    @NonNull final UserBaseDTOUtil userBaseDTOUtil;
+    @NonNull final Picasso picasso;
+    @NonNull final Transformation userImageTransformation;
 
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView profilePictureView;
     @InjectView(R.id.leaderboard_user_item_display_name) protected TextView displayNameView;
@@ -33,10 +33,10 @@ class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
 
     //<editor-fold desc="Constructors">
     SelectableUserViewHolder(
-            @NotNull Context context,
-            @NotNull UserBaseDTOUtil userBaseDTOUtil,
-            @NotNull Picasso picasso,
-            @NotNull Transformation userImageTransformation)
+            @NonNull Context context,
+            @NonNull UserBaseDTOUtil userBaseDTOUtil,
+            @NonNull Picasso picasso,
+            @NonNull Transformation userImageTransformation)
     {
         this.context = context;
         this.userBaseDTOUtil = userBaseDTOUtil;

@@ -2,7 +2,7 @@ package com.tradehero.th.api.discussion.form;
 
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class DiscussionFormDTO extends PublishableFormDTO
 {

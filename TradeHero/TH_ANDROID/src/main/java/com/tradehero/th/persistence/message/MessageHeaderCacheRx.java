@@ -11,39 +11,39 @@ import com.tradehero.th.persistence.SingleCacheMaxSize;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
 public class MessageHeaderCacheRx extends BaseFetchDTOCacheRx<MessageHeaderId, MessageHeaderDTO>
 {
-    @NotNull private final MessageServiceWrapper messageServiceWrapper;
+    @NonNull private final MessageServiceWrapper messageServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject public MessageHeaderCacheRx(
             @SingleCacheMaxSize IntPreference maxSize,
-            @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull MessageServiceWrapper messageServiceWrapper,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(maxSize.get(), 5, 5, dtoCacheUtil);
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>
 
-    @Override @NotNull protected Observable<MessageHeaderDTO> fetch(@NotNull MessageHeaderId key)
+    @Override @NonNull protected Observable<MessageHeaderDTO> fetch(@NonNull MessageHeaderId key)
     {
         return messageServiceWrapper.getMessageHeaderRx(key);
     }
 
-    public void onNext(@NotNull List<? extends MessageHeaderDTO> messageHeaderDTOs)
+    public void onNext(@NonNull List<? extends MessageHeaderDTO> messageHeaderDTOs)
     {
-        for (@NotNull MessageHeaderDTO messageHeaderDTO : messageHeaderDTOs)
+        for (MessageHeaderDTO messageHeaderDTO : messageHeaderDTOs)
         {
             onNext(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
         }
     }
 
-    public void setUnread(@NotNull MessageHeaderId messageHeaderId, boolean unread)
+    public void setUnread(@NonNull MessageHeaderId messageHeaderId, boolean unread)
     {
         MessageHeaderDTO messageHeaderDTO = getValue(messageHeaderId);
         if (messageHeaderDTO != null && messageHeaderDTO.unread)

@@ -3,7 +3,7 @@ package com.tradehero.th.api.translation.bing;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class BingUserTranslationSettingDTO extends UserTranslationSettingDTO
 {
@@ -17,25 +17,25 @@ public class BingUserTranslationSettingDTO extends UserTranslationSettingDTO
     }
 
     public BingUserTranslationSettingDTO(
-            @NotNull String languageCode)
+            @NonNull String languageCode)
     {
         super(languageCode);
     }
 
     public BingUserTranslationSettingDTO(
-            @NotNull String languageCode,
+            @NonNull String languageCode,
             boolean autoTranslate)
     {
         super(languageCode, autoTranslate);
     }
     //</editor-fold>
 
-    @NotNull @Override public BingUserTranslationSettingDTO cloneForLanguage(@NotNull LanguageDTO languageDTO)
+    @NonNull @Override public BingUserTranslationSettingDTO cloneForLanguage(@NonNull LanguageDTO languageDTO)
     {
         return new BingUserTranslationSettingDTO(languageDTO.code, autoTranslate);
     }
 
-    @NotNull @Override public UserTranslationSettingDTO cloneForAuto(boolean newAutoValue)
+    @NonNull @Override public UserTranslationSettingDTO cloneForAuto(boolean newAutoValue)
     {
         return new BingUserTranslationSettingDTO(languageCode, newAutoValue);
     }

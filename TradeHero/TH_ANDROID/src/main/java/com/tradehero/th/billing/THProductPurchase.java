@@ -7,8 +7,8 @@ import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public interface THProductPurchase<
         ProductIdentifierType extends ProductIdentifier,
@@ -17,6 +17,6 @@ public interface THProductPurchase<
 {
     void setUserToFollow(@Nullable UserBaseKey userToFollow);
     @Nullable UserBaseKey getUserToFollow();
-    @NotNull OwnedPortfolioId getApplicableOwnedPortfolioId();
-    @NotNull PurchaseReportDTO getPurchaseReportDTO();
+    @NonNull OwnedPortfolioId getApplicableOwnedPortfolioId();
+    @NonNull PurchaseReportDTO getPurchaseReportDTO();
 }

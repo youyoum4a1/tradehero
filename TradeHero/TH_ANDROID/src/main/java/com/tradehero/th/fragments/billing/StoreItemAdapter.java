@@ -12,7 +12,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 import java.util.HashMap;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
 {
@@ -20,7 +20,7 @@ public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
     public static final int VIEW_TYPE_LIKE_BUTTON = 1;
     public static final int VIEW_TYPE_HAS_FURTHER = 2;
 
-    @NotNull private HashMap<Integer, Integer> viewTypeToLayoutId;
+    @NonNull private HashMap<Integer, Integer> viewTypeToLayoutId;
 
     //<editor-fold desc="Constructors">
     public StoreItemAdapter(Context context)

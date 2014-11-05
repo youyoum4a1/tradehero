@@ -3,16 +3,16 @@ package com.tradehero.th.auth.facebook;
 import android.os.Bundle;
 import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 
 public class WebDialogCompleteListenerOnSubscribe implements Observable.OnSubscribe<Bundle>
 {
-    @NotNull private WebDialog webDialog;
+    @NonNull private WebDialog webDialog;
 
     //<editor-fold desc="Constructors">
-    public WebDialogCompleteListenerOnSubscribe(@NotNull WebDialog webDialog)
+    public WebDialogCompleteListenerOnSubscribe(@NonNull WebDialog webDialog)
     {
         this.webDialog = webDialog;
     }

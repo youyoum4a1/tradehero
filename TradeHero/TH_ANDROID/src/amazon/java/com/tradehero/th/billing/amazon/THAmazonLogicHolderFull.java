@@ -20,7 +20,7 @@ import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THAmazonLogicHolderFull
@@ -37,19 +37,19 @@ public class THAmazonLogicHolderFull
         AmazonException>
     implements THAmazonLogicHolder
 {
-    @NotNull private final THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder;
+    @NonNull private final THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonLogicHolderFull(
-            @NotNull AmazonSKUListCache amazonSKUListCache,
-            @NotNull THAmazonProductDetailCache thskuDetailCache,
-            @NotNull THAmazonBillingAvailableTesterHolder thAmazonBillingAvailableTesterHolder,
-            @NotNull THAmazonProductIdentifierFetcherHolder thAmazonProductIdentifierFetcherHolder,
-            @NotNull THAmazonInventoryFetcherHolder thAmazonInventoryFetcherHolder,
-            @NotNull THAmazonPurchaseFetcherHolder thAmazonPurchaseFetcherHolder,
-            @NotNull THAmazonPurchaserHolder thAmazonPurchaserHolder,
-            @NotNull THAmazonPurchaseReporterHolder thAmazonPurchaseReporterHolder,
-            @NotNull THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder)
+            @NonNull AmazonSKUListCache amazonSKUListCache,
+            @NonNull THAmazonProductDetailCache thskuDetailCache,
+            @NonNull THAmazonBillingAvailableTesterHolder thAmazonBillingAvailableTesterHolder,
+            @NonNull THAmazonProductIdentifierFetcherHolder thAmazonProductIdentifierFetcherHolder,
+            @NonNull THAmazonInventoryFetcherHolder thAmazonInventoryFetcherHolder,
+            @NonNull THAmazonPurchaseFetcherHolder thAmazonPurchaseFetcherHolder,
+            @NonNull THAmazonPurchaserHolder thAmazonPurchaserHolder,
+            @NonNull THAmazonPurchaseReporterHolder thAmazonPurchaseReporterHolder,
+            @NonNull THAmazonPurchaseConsumerHolder thAmazonPurchaseConsumerHolder)
     {
         super(
                 amazonSKUListCache,
@@ -91,7 +91,7 @@ public class THAmazonLogicHolderFull
     }
     //</editor-fold>
 
-    @Override public void registerListeners(int requestCode, @NotNull THAmazonRequestFull billingRequest)
+    @Override public void registerListeners(int requestCode, @NonNull THAmazonRequestFull billingRequest)
     {
         super.registerListeners(requestCode, billingRequest);
         registerConsumptionFinishedListener(requestCode, billingRequest.consumptionFinishedListener);

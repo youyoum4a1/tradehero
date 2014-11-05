@@ -4,22 +4,22 @@ import android.os.Bundle;
 
 import com.tradehero.common.persistence.DTOKey;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class VideoCategoryId implements DTOKey
 {
     private static final String BUNDLE_KEY_ID = VideoCategoryId.class.getName() + ".id";
 
-    @NotNull public final Integer id;
+    @NonNull public final Integer id;
 
     //<editor-fold desc="Constructors">
-    public VideoCategoryId(@NotNull Integer id)
+    public VideoCategoryId(@NonNull Integer id)
     {
         super();
         this.id = id;
     }
 
-    public VideoCategoryId(@NotNull Bundle args)
+    public VideoCategoryId(@NonNull Bundle args)
     {
         super();
         this.id = args.getInt(BUNDLE_KEY_ID);
@@ -37,7 +37,7 @@ public class VideoCategoryId implements DTOKey
                 && equalsFields((VideoCategoryId) other);
     }
 
-    protected boolean equalsFields(@NotNull VideoCategoryId other)
+    protected boolean equalsFields(@NonNull VideoCategoryId other)
     {
         return id.equals(other.id);
     }

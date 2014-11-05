@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class AchievementCategoryDTO implements DTO
 {
@@ -21,7 +21,7 @@ public class AchievementCategoryDTO implements DTO
     public List<AchievementDefDTO> achievementDefs;
 
     @JsonIgnore
-    @NotNull public AchievementCategoryId getCategoryId(@NotNull UserBaseKey userBaseKey)
+    @NonNull public AchievementCategoryId getCategoryId(@NonNull UserBaseKey userBaseKey)
     {
         return new AchievementCategoryId(userBaseKey, id);
     }

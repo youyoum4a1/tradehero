@@ -3,8 +3,8 @@ package com.tradehero.th.api.portfolio;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import java.util.Collection;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class PortfolioDTOList extends BaseArrayList<PortfolioDTO>
     implements DTO
@@ -23,7 +23,7 @@ public class PortfolioDTOList extends BaseArrayList<PortfolioDTO>
 
     @Nullable public PortfolioDTO getDefaultPortfolio()
     {
-        for (@NotNull PortfolioDTO portfolioDTO : this)
+        for (PortfolioDTO portfolioDTO : this)
         {
             if (portfolioDTO.isDefault())
             {

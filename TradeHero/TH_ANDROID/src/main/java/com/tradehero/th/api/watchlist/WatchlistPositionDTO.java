@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class WatchlistPositionDTO extends PositionDTO
 {
@@ -22,7 +22,7 @@ public class WatchlistPositionDTO extends PositionDTO
     }
     //</editor-fold>
 
-    @NotNull @Override public String getNiceCurrency()
+    @NonNull @Override public String getNiceCurrency()
     {
         if (securityDTO != null
                 && securityDTO.currencyDisplay != null

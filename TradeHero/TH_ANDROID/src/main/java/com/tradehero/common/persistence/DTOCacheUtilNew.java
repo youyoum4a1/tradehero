@@ -1,10 +1,10 @@
 package com.tradehero.common.persistence;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public interface DTOCacheUtilNew
 {
-    void addCache(@NotNull DTOCacheNew dtoCacheNew);
+    void addCache(@NonNull DTOCacheNew dtoCacheNew);
     void clearAllCaches();
     void clearSystemCaches();
     void clearUserCaches();

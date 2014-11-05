@@ -19,7 +19,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
@@ -29,15 +29,15 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         THIABStoreProductDetailView,
         THIABSKUDetailAdapter>
 {
-    @NotNull protected THIABPurchaseCache thiabPurchaseCache;
-    @NotNull protected GooglePlayUtils googlePlayUtils;
+    @NonNull protected THIABPurchaseCache thiabPurchaseCache;
+    @NonNull protected GooglePlayUtils googlePlayUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THIABAlertDialogUtil(
-            @NotNull Analytics analytics,
-            @NotNull ActivityUtil activityUtil,
-            @NotNull THIABPurchaseCache thiabPurchaseCache,
-            @NotNull GooglePlayUtils googlePlayUtils)
+            @NonNull Analytics analytics,
+            @NonNull ActivityUtil activityUtil,
+            @NonNull THIABPurchaseCache thiabPurchaseCache,
+            @NonNull GooglePlayUtils googlePlayUtils)
     {
         super(analytics, activityUtil);
         this.thiabPurchaseCache = thiabPurchaseCache;

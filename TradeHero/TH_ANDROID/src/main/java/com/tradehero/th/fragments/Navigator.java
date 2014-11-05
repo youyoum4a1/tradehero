@@ -12,8 +12,8 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>
@@ -42,22 +42,22 @@ class Navigator<ActivityType extends Activity>
     }
     //</editor-fold>
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass)
+    public <T extends Fragment> T pushFragment(@NonNull Class<T> fragmentClass)
     {
         return pushFragment(fragmentClass, new Bundle());
     }
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args)
+    public <T extends Fragment> T pushFragment(@NonNull Class<T> fragmentClass, Bundle args)
     {
         return pushFragment(fragmentClass, args, null);
     }
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable String backStackName)
+    public <T extends Fragment> T pushFragment(@NonNull Class<T> fragmentClass, Bundle args, @Nullable String backStackName)
     {
         return pushFragment(fragmentClass, args, DEFAULT_FRAGMENT_ANIMATION, backStackName, DEFAULT_SHOW_HOME_KEY_AS_UP);
     }
 
-    public <T extends Fragment> T pushFragment(@NotNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
+    public <T extends Fragment> T pushFragment(@NonNull Class<T> fragmentClass, Bundle args, @Nullable int[] anim, @Nullable String backStackName,
             boolean showHomeAsUp)
     {
         resetBackPressCount();

@@ -2,7 +2,7 @@ package com.tradehero.th.api.education;
 
 import com.tradehero.common.persistence.DTO;
 
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 public class VideoDTO implements DTO
 {
@@ -12,7 +12,7 @@ public class VideoDTO implements DTO
     public String thumbnail;
     public boolean locked;
 
-    @NotNull public VideoId getVideoId()
+    @NonNull public VideoId getVideoId()
     {
         return new VideoId(id);
     }

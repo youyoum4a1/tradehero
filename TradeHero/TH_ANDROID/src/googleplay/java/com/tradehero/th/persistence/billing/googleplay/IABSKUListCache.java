@@ -9,14 +9,14 @@ import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.UserCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class IABSKUListCache extends ProductIdentifierListCache<IABSKU, IABSKUListKey, IABSKUList>
 {
     public static final int MAX_SIZE = 5;
 
     //<editor-fold desc="Constructors">
-    @Inject public IABSKUListCache(@NotNull DTOCacheUtilNew dtoCacheUtil)
+    @Inject public IABSKUListCache(@NonNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(MAX_SIZE, dtoCacheUtil);
     }

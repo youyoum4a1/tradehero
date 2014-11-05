@@ -14,17 +14,17 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckboxSettingViewHolder
 {
-    @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final UserProfileCacheRx userProfileCache;
-    @NotNull protected final ProgressDialogUtil progressDialogUtil;
-    @NotNull protected final UserServiceWrapper userServiceWrapper;
+    @NonNull protected final CurrentUserId currentUserId;
+    @NonNull protected final UserProfileCacheRx userProfileCache;
+    @NonNull protected final ProgressDialogUtil progressDialogUtil;
+    @NonNull protected final UserServiceWrapper userServiceWrapper;
 
     protected ProgressDialog progressDialog;
     protected Subscription userProfileCacheSubscription;
@@ -32,10 +32,10 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     //<editor-fold desc="Constructors">
     protected UserProfileCheckBoxSettingViewHolder(
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCacheRx userProfileCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull UserServiceWrapper userServiceWrapper)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCacheRx userProfileCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull UserServiceWrapper userServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
@@ -44,7 +44,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     }
     //</editor-fold>
 
-    @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
+    @Override public void initViews(@NonNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
         fetchUserProfile();
@@ -110,7 +110,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
         }
     }
 
-    abstract protected void updateStatus(@NotNull UserProfileDTO userProfileDTO);
+    abstract protected void updateStatus(@NonNull UserProfileDTO userProfileDTO);
 
     protected class UserProfileUpdateCallback extends THCallback<UserProfileDTO>
     {

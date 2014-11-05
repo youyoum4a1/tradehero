@@ -8,21 +8,21 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class AlertServiceWrapper
 {
-    @NotNull private final AlertServiceRx alertServiceRx;
+    @NonNull private final AlertServiceRx alertServiceRx;
 
     @Inject public AlertServiceWrapper(
-            @NotNull AlertServiceRx alertServiceRx)
+            @NonNull AlertServiceRx alertServiceRx)
     {
         super();
         this.alertServiceRx = alertServiceRx;
     }
 
-    private void basicCheck(@NotNull UserBaseKey userBaseKey)
+    private void basicCheck(@NonNull UserBaseKey userBaseKey)
     {
         if (userBaseKey.key == null)
         {
@@ -31,14 +31,14 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Alerts">
-    public Observable<AlertCompactDTOList> getAlertsRx(@NotNull UserBaseKey userBaseKey)
+    public Observable<AlertCompactDTOList> getAlertsRx(@NonNull UserBaseKey userBaseKey)
     {
         basicCheck(userBaseKey);
         return alertServiceRx.getAlerts(userBaseKey.key);
     }
     //</editor-fold>
 
-    private void basicCheck(@NotNull AlertId alertId)
+    private void basicCheck(@NonNull AlertId alertId)
     {
         if (alertId.userId == null)
         {
@@ -51,7 +51,7 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Alert">
-    public Observable<AlertDTO> getAlertRx(@NotNull AlertId alertId)
+    public Observable<AlertDTO> getAlertRx(@NonNull AlertId alertId)
     {
         basicCheck(alertId);
         return this.alertServiceRx.getAlert(alertId.userId, alertId.alertId);
@@ -59,7 +59,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Create Alert">
-    public Observable<AlertCompactDTO> createAlertRx(@NotNull UserBaseKey userBaseKey, @NotNull AlertFormDTO alertFormDTO)
+    public Observable<AlertCompactDTO> createAlertRx(@NonNull UserBaseKey userBaseKey, @NonNull AlertFormDTO alertFormDTO)
     {
         basicCheck(userBaseKey);
         return this.alertServiceRx.createAlert(userBaseKey.key, alertFormDTO);
@@ -67,7 +67,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Update Alert">
-    public Observable<AlertCompactDTO> updateAlertRx(@NotNull AlertId alertId, @NotNull AlertFormDTO alertFormDTO)
+    public Observable<AlertCompactDTO> updateAlertRx(@NonNull AlertId alertId, @NonNull AlertFormDTO alertFormDTO)
     {
         basicCheck(alertId);
         return this.alertServiceRx.updateAlert(alertId.userId, alertId.alertId, alertFormDTO);

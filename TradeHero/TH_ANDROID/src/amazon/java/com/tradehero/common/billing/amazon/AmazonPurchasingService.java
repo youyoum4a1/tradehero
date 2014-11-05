@@ -16,18 +16,18 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 @Singleton public class AmazonPurchasingService
-    implements PurchasingListener
+        implements PurchasingListener
 {
     private static final int DEFAULT_MAP_LENGTH = 30;
 
-    @NotNull private final LruCache<RequestId, PurchasingListener> purchasingListeners;
-    @NotNull private final LruCache<RequestId, Object> waitingResponses;
+    @NonNull private final LruCache<RequestId, PurchasingListener> purchasingListeners;
+    @NonNull private final LruCache<RequestId, Object> waitingResponses;
 
     //<editor-fold desc="Constructors">
-    @Inject public AmazonPurchasingService(@NotNull Context appContext)
+    @Inject public AmazonPurchasingService(@NonNull Context appContext)
     {
         super();
         this.purchasingListeners = new LruCache<>(DEFAULT_MAP_LENGTH);
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    public void unregisterListener(@NotNull PurchasingListener listener)
+    public void unregisterListener(@NonNull PurchasingListener listener)
     {
         for (RequestId requestId : new HashSet<>(purchasingListeners.snapshot().keySet()))
         {
@@ -47,12 +47,12 @@ import org.jetbrains.annotations.NotNull;
         }
     }
 
-    public void unregisterListener(@NotNull RequestId requestId)
+    public void unregisterListener(@NonNull RequestId requestId)
     {
         purchasingListeners.remove(requestId);
     }
 
-    @NotNull public RequestId getUserData(@NotNull PurchasingListener listener)
+    @NonNull public RequestId getUserData(@NonNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.getUserData();
         purchasingListeners.put(requestId, listener);
@@ -60,7 +60,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    @NotNull public RequestId purchase(@NotNull String sku, @NotNull PurchasingListener listener)
+    @NonNull public RequestId purchase(@NonNull String sku, @NonNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.purchase(sku);
         purchasingListeners.put(requestId, listener);
@@ -68,7 +68,7 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    @NotNull public RequestId getProductData(@NotNull Set<String> skus, @NotNull PurchasingListener listener)
+    @NonNull public RequestId getProductData(@NonNull Set<String> skus, @NonNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.getProductData(skus);
         purchasingListeners.put(requestId, listener);
@@ -77,7 +77,7 @@ import org.jetbrains.annotations.NotNull;
     }
 
     // TODO implement further calling of purchases within this class
-    @NotNull public RequestId getPurchaseUpdates(boolean reset, @NotNull PurchasingListener listener)
+    @NonNull public RequestId getPurchaseUpdates(boolean reset, @NonNull PurchasingListener listener)
     {
         RequestId requestId = PurchasingService.getPurchaseUpdates(reset);
         purchasingListeners.put(requestId, listener);
@@ -85,36 +85,36 @@ import org.jetbrains.annotations.NotNull;
         return requestId;
     }
 
-    public void notifyFulfillment(@NotNull String receiptId, @NotNull FulfillmentResult fulfillmentResult)
+    public void notifyFulfillment(@NonNull String receiptId, @NonNull FulfillmentResult fulfillmentResult)
     {
         PurchasingService.notifyFulfillment(receiptId, fulfillmentResult);
     }
 
-    @Override public void onUserDataResponse(@NotNull UserDataResponse userDataResponse)
+    @Override public void onUserDataResponse(@NonNull UserDataResponse userDataResponse)
     {
         putWaitingResponse(userDataResponse.getRequestId(), userDataResponse);
         callWaitingResponses();
     }
 
-    @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
+    @Override public void onProductDataResponse(@NonNull ProductDataResponse productDataResponse)
     {
         putWaitingResponse(productDataResponse.getRequestId(), productDataResponse);
         callWaitingResponses();
     }
 
-    @Override public void onPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
+    @Override public void onPurchaseResponse(@NonNull PurchaseResponse purchaseResponse)
     {
         putWaitingResponse(purchaseResponse.getRequestId(), purchaseResponse);
         callWaitingResponses();
     }
 
-    @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
+    @Override public void onPurchaseUpdatesResponse(@NonNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
         putWaitingResponse(purchaseUpdatesResponse.getRequestId(), purchaseUpdatesResponse);
         callWaitingResponses();
     }
 
-    protected void putWaitingResponse(@NotNull RequestId requestId, @NotNull Object response)
+    protected void putWaitingResponse(@NonNull RequestId requestId, @NonNull Object response)
     {
         waitingResponses.put(requestId, response);
     }
@@ -123,7 +123,7 @@ import org.jetbrains.annotations.NotNull;
     {
         PurchasingListener listener;
         Object response;
-        for (@NotNull Map.Entry<RequestId, Object> requestEntry : new HashSet<>(waitingResponses.snapshot().entrySet()))
+        for (Map.Entry<RequestId, Object> requestEntry : new HashSet<>(waitingResponses.snapshot().entrySet()))
         {
             listener = purchasingListeners.get(requestEntry.getKey());
             response = requestEntry.getValue();

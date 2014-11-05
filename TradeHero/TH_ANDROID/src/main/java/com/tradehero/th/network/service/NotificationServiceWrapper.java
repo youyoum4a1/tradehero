@@ -15,27 +15,27 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
 
 @Singleton
 public class NotificationServiceWrapper
 {
-    @NotNull private final NotificationService notificationService;
-    @NotNull private final NotificationServiceAsync notificationServiceAsync;
-    @NotNull private final NotificationServiceRx notificationServiceRx;
-    @NotNull private final Lazy<NotificationCacheRx> notificationCache;
-    @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
+    @NonNull private final NotificationService notificationService;
+    @NonNull private final NotificationServiceAsync notificationServiceAsync;
+    @NonNull private final NotificationServiceRx notificationServiceRx;
+    @NonNull private final Lazy<NotificationCacheRx> notificationCache;
+    @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
 
     //<editor-fold desc="Constructors">
     @Inject public NotificationServiceWrapper(
-            @NotNull NotificationService notificationService,
-            @NotNull NotificationServiceAsync notificationServiceAsync,
-            @NotNull NotificationServiceRx notificationServiceRx,
-            @NotNull Lazy<NotificationCacheRx> notificationCache,
-            @NotNull Lazy<UserProfileCacheRx> userProfileCache)
+            @NonNull NotificationService notificationService,
+            @NonNull NotificationServiceAsync notificationServiceAsync,
+            @NonNull NotificationServiceRx notificationServiceRx,
+            @NonNull Lazy<NotificationCacheRx> notificationCache,
+            @NonNull Lazy<UserProfileCacheRx> userProfileCache)
     {
         this.notificationService = notificationService;
         this.notificationServiceAsync = notificationServiceAsync;
@@ -46,33 +46,33 @@ public class NotificationServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Notifications">
-    public PaginatedNotificationDTO getNotifications(@NotNull NotificationListKey notificationListKey)
+    public PaginatedNotificationDTO getNotifications(@NonNull NotificationListKey notificationListKey)
     {
         return notificationService.getNotifications(notificationListKey.toMap());
     }
 
-    public Observable<PaginatedNotificationDTO> getNotificationsRx(@NotNull NotificationListKey notificationListKey)
+    public Observable<PaginatedNotificationDTO> getNotificationsRx(@NonNull NotificationListKey notificationListKey)
     {
         return notificationServiceRx.getNotifications(notificationListKey.toMap());
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Notification Detail">
-    public NotificationDTO getNotificationDetail(@NotNull NotificationKey pushKey)
+    public NotificationDTO getNotificationDetail(@NonNull NotificationKey pushKey)
     {
         return notificationService.getNotificationDetail(pushKey.key);
     }
 
-    public Observable<NotificationDTO> getNotificationDetailRx(@NotNull NotificationKey pushKey)
+    public Observable<NotificationDTO> getNotificationDetailRx(@NonNull NotificationKey pushKey)
     {
         return notificationServiceRx.getNotificationDetail(pushKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read">
-    @NotNull private DTOProcessorNotificationRead createNotificationReadDTOProcessor(
-            @NotNull final UserBaseKey readerId,
-            @NotNull NotificationKey pushKey)
+    @NonNull private DTOProcessorNotificationRead createNotificationReadDTOProcessor(
+            @NonNull final UserBaseKey readerId,
+            @NonNull NotificationKey pushKey)
     {
         return new DTOProcessorNotificationRead(
                 pushKey,
@@ -81,9 +81,9 @@ public class NotificationServiceWrapper
                 userProfileCache.get());
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> markAsRead(
-            @NotNull final UserBaseKey readerId,
-            @NotNull NotificationKey pushKey,
+    @NonNull public MiddleCallback<BaseResponseDTO> markAsRead(
+            @NonNull final UserBaseKey readerId,
+            @NonNull NotificationKey pushKey,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         BaseMiddleCallback<BaseResponseDTO> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationReadDTOProcessor(readerId, pushKey));
@@ -92,8 +92,8 @@ public class NotificationServiceWrapper
     }
 
     public Observable<BaseResponseDTO> markAsReadRx(
-            @NotNull final UserBaseKey readerId,
-            @NotNull NotificationKey pushKey)
+            @NonNull final UserBaseKey readerId,
+            @NonNull NotificationKey pushKey)
     {
         return notificationServiceRx.markAsRead(pushKey.key)
                 .doOnNext(createNotificationReadDTOProcessor(readerId, pushKey));
@@ -101,7 +101,7 @@ public class NotificationServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read All">
-    @NotNull private DTOProcessorNotificationAllRead createNotificationAllReadDTOProcessor(@NotNull UserBaseKey readerId)
+    @NonNull private DTOProcessorNotificationAllRead createNotificationAllReadDTOProcessor(@NonNull UserBaseKey readerId)
     {
         return new DTOProcessorNotificationAllRead(
                 notificationCache.get(),
@@ -109,8 +109,8 @@ public class NotificationServiceWrapper
                 userProfileCache.get());
     }
 
-    @NotNull public MiddleCallback<BaseResponseDTO> markAsReadAll(
-            @NotNull final UserBaseKey readerId,
+    @NonNull public MiddleCallback<BaseResponseDTO> markAsReadAll(
+            @NonNull final UserBaseKey readerId,
             @Nullable Callback<BaseResponseDTO> callback)
     {
         BaseMiddleCallback<BaseResponseDTO> readMiddleCallback = new BaseMiddleCallback<>(callback, createNotificationAllReadDTOProcessor(readerId));
@@ -118,7 +118,7 @@ public class NotificationServiceWrapper
         return readMiddleCallback;
     }
 
-    public Observable<BaseResponseDTO> markAsReadAllRx(@NotNull final UserBaseKey readerId)
+    public Observable<BaseResponseDTO> markAsReadAllRx(@NonNull final UserBaseKey readerId)
     {
         return notificationServiceRx.markAsReadAll()
                 .doOnNext(createNotificationAllReadDTOProcessor(readerId));

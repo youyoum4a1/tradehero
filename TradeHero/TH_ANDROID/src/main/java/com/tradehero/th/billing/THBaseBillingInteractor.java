@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Provider;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscription;
 import rx.observers.EmptyObserver;
@@ -112,27 +112,27 @@ abstract public class THBaseBillingInteractor<
 {
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
-    @NotNull protected final Provider<Activity> activityProvider;
-    @NotNull protected final CurrentUserId currentUserId;
-    @NotNull protected final UserProfileCache userProfileCache;
-    @NotNull protected final UserProfileCacheRx userProfileCacheRx;
-    @NotNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
-    @NotNull protected final ProgressDialogUtil progressDialogUtil;
-    @NotNull protected final BillingAlertDialogUtil billingAlertDialogUtil;
+    @NonNull protected final Provider<Activity> activityProvider;
+    @NonNull protected final CurrentUserId currentUserId;
+    @NonNull protected final UserProfileCache userProfileCache;
+    @NonNull protected final UserProfileCacheRx userProfileCacheRx;
+    @NonNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
+    @NonNull protected final ProgressDialogUtil progressDialogUtil;
+    @NonNull protected final BillingAlertDialogUtil billingAlertDialogUtil;
 
     protected Subscription billingInitialSubscription;
     protected LinkedList<Integer> requestsToLaunchOnBillingInitialMilestoneComplete;
 
     //<editor-fold desc="Constructors">
     protected THBaseBillingInteractor(
-            @NotNull THBillingLogicHolderType billingLogicHolder,
-            @NotNull Provider<Activity> activityProvider,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserProfileCacheRx userProfileCacheRx,
-            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull BillingAlertDialogUtil<
+            @NonNull THBillingLogicHolderType billingLogicHolder,
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCache userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCacheRx,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull BillingAlertDialogUtil<
                     ProductIdentifierType,
                     THProductDetailType,
                     THBillingLogicHolderType,
@@ -176,7 +176,7 @@ abstract public class THBaseBillingInteractor<
     }
 
     //<editor-fold desc="Request Handling">
-    @Override public int run(@NotNull THUIBillingRequestType uiBillingRequest)
+    @Override public int run(@NonNull THUIBillingRequestType uiBillingRequest)
     {
         int requestCode = super.run(uiBillingRequest);
         if (uiBillingRequest.getStartWithProgressDialog())
@@ -196,7 +196,7 @@ abstract public class THBaseBillingInteractor<
     }
 
     protected void populateBillingRequestBuilder(
-            @NotNull THBillingRequestType.Builder<ProductIdentifierListKeyType,
+            @NonNull THBillingRequestType.Builder<ProductIdentifierListKeyType,
                     ProductIdentifierType,
                     ProductIdentifierListType,
                     THProductDetailType,
@@ -205,7 +205,7 @@ abstract public class THBaseBillingInteractor<
                     THProductPurchaseType,
                     BillingExceptionType,
                     ?> builder,
-            @NotNull THUIBillingRequestType uiBillingRequest)
+            @NonNull THUIBillingRequestType uiBillingRequest)
     {
         builder
                 .testBillingAvailable(uiBillingRequest.getTestBillingAvailable())
@@ -279,7 +279,7 @@ abstract public class THBaseBillingInteractor<
     protected void populatePurchaseBillingRequest(
             int requestCode,
             THBillingRequestType billingRequest,
-            @NotNull ProductIdentifierType productIdentifier)
+            @NonNull ProductIdentifierType productIdentifier)
     {
         THUIBillingRequestType uiBillingRequest = uiBillingRequests.get(requestCode);
         if (uiBillingRequest != null)
@@ -293,21 +293,21 @@ abstract public class THBaseBillingInteractor<
     }
 
     protected THPurchaseOrderType createPurchaseOrder(
-            @NotNull THUIBillingRequestType uiBillingRequest,
-            @NotNull ProductIdentifierType productIdentifier)
+            @NonNull THUIBillingRequestType uiBillingRequest,
+            @NonNull ProductIdentifierType productIdentifier)
     {
         THPurchaseOrderType purchaseOrder = createEmptyPurchaseOrder(uiBillingRequest, productIdentifier);
         populatePurchaseOrder(uiBillingRequest, purchaseOrder);
         return purchaseOrder;
     }
 
-    @NotNull abstract protected THPurchaseOrderType createEmptyPurchaseOrder(
-            @NotNull THUIBillingRequestType uiBillingRequest,
-            @NotNull ProductIdentifierType productIdentifier);
+    @NonNull abstract protected THPurchaseOrderType createEmptyPurchaseOrder(
+            @NonNull THUIBillingRequestType uiBillingRequest,
+            @NonNull ProductIdentifierType productIdentifier);
 
     protected void populatePurchaseOrder(
-            @NotNull THUIBillingRequestType uiBillingRequest,
-            @NotNull THPurchaseOrderType purchaseOrder)
+            @NonNull THUIBillingRequestType uiBillingRequest,
+            @NonNull THPurchaseOrderType purchaseOrder)
     {
         purchaseOrder.setUserToFollow(uiBillingRequest.getUserToPremiumFollow());
     }
@@ -362,7 +362,7 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Product Identifier Fetch">
-    @NotNull protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
+    @NonNull protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType,
             ProductIdentifierType,
             ProductIdentifierListType,

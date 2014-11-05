@@ -8,7 +8,7 @@ import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -17,14 +17,14 @@ public class HelpVideoListCacheRx extends BaseFetchDTOCacheRx<HelpVideoListKey, 
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
-    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NotNull private final HelpVideoCacheRx helpVideoCache;
+    @NonNull private final ProviderServiceWrapper providerServiceWrapper;
+    @NonNull private final HelpVideoCacheRx helpVideoCache;
 
     //<editor-fold desc="Constructors">
     @Inject public HelpVideoListCacheRx(
-            @NotNull ProviderServiceWrapper providerServiceWrapper,
-            @NotNull HelpVideoCacheRx helpVideoCache,
-            @NotNull DTOCacheUtilRx dtoCacheUtil)
+            @NonNull ProviderServiceWrapper providerServiceWrapper,
+            @NonNull HelpVideoCacheRx helpVideoCache,
+            @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
@@ -32,12 +32,12 @@ public class HelpVideoListCacheRx extends BaseFetchDTOCacheRx<HelpVideoListKey, 
     }
     //</editor-fold>
 
-    @Override @NotNull public Observable<HelpVideoDTOList> fetch(@NotNull HelpVideoListKey key)
+    @Override @NonNull public Observable<HelpVideoDTOList> fetch(@NonNull HelpVideoListKey key)
     {
         return providerServiceWrapper.getHelpVideosRx(key);
     }
 
-    @Override public void onNext(@NotNull HelpVideoListKey key, @NotNull HelpVideoDTOList value)
+    @Override public void onNext(@NonNull HelpVideoListKey key, @NonNull HelpVideoDTOList value)
     {
         super.onNext(key, value);
         helpVideoCache.onNext(value);

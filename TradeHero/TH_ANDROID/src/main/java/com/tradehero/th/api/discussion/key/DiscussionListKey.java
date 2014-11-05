@@ -6,7 +6,7 @@ import com.tradehero.th.api.Querylizable;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.HashMap;
 import java.util.Map;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 public class DiscussionListKey
         implements DTOKey, Querylizable<String>

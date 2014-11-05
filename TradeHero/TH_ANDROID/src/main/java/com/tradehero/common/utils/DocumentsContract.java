@@ -2,7 +2,7 @@ package com.tradehero.common.utils;
 
 import android.net.Uri;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 
 /**
  * This class is actually part of KitKat(19).
@@ -12,7 +12,7 @@ public class DocumentsContract
 {
     private static final String PATH_DOCUMENT = "document";
 
-    public static String getDocumentId(@NotNull Uri documentUri)
+    public static String getDocumentId(@NonNull Uri documentUri)
     {
         final List<String> paths = documentUri.getPathSegments();
         if (paths.size() < 2)
@@ -26,7 +26,7 @@ public class DocumentsContract
         return paths.get(1);
     }
 
-    public static boolean isDocumentUri(@NotNull Uri uri)
+    public static boolean isDocumentUri(@NonNull Uri uri)
     {
         final List<String> paths = uri.getPathSegments();
         if (paths.size() < 2)

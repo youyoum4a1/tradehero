@@ -43,7 +43,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
+import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 @Singleton public class THIABBillingInteractor
@@ -66,25 +66,25 @@ import timber.log.Timber;
 {
     public static final String BUNDLE_KEY_ACTION = THIABBillingInteractor.class.getName() + ".action";
 
-    @NotNull protected final THIABProductDetailCache thiabProductDetailCache;
-    @NotNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NotNull protected final HeroListCacheRx heroListCache;
-    @NotNull protected final UserService userService;
+    @NonNull protected final THIABProductDetailCache thiabProductDetailCache;
+    @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NonNull protected final HeroListCacheRx heroListCache;
+    @NonNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THIABBillingInteractor(
-            @NotNull THIABLogicHolder billingActor,
-            @NotNull Provider<Activity> activityProvider,
-            @NotNull CurrentUserId currentUserId,
-            @NotNull UserProfileCache userProfileCache,
-            @NotNull UserProfileCacheRx userProfileCacheRx,
-            @NotNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NotNull ProgressDialogUtil progressDialogUtil,
-            @NotNull THIABAlertDialogUtil thIABAlertDialogUtil,
-            @NotNull THIABProductDetailCache thiabProductDetailCache,
-            @NotNull UserProfileDTOUtil userProfileDTOUtil,
-            @NotNull HeroListCacheRx heroListCache,
-            @NotNull UserService userService)
+            @NonNull THIABLogicHolder billingActor,
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileCache userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCacheRx,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull ProgressDialogUtil progressDialogUtil,
+            @NonNull THIABAlertDialogUtil thIABAlertDialogUtil,
+            @NonNull THIABProductDetailCache thiabProductDetailCache,
+            @NonNull UserProfileDTOUtil userProfileDTOUtil,
+            @NonNull HeroListCacheRx heroListCache,
+            @NonNull UserService userService)
     {
         super(
                 billingActor,
@@ -109,7 +109,7 @@ import timber.log.Timber;
 
     //<editor-fold desc="Request Handling">
     @Override protected THIABBillingRequestFull createBillingRequest(
-            @NotNull THUIIABRequest uiBillingRequest)
+            @NonNull THUIIABRequest uiBillingRequest)
     {
         THIABBillingRequestFull.Builder<?> builder = (THIABBillingRequestFull.Builder<?>) uiBillingRequest.createEmptyBillingRequestBuilder();
         populateBillingRequestBuilder(builder, uiBillingRequest);
@@ -117,7 +117,7 @@ import timber.log.Timber;
     }
 
     @Override protected void populateBillingRequestBuilder(
-            @NotNull THBillingRequest.Builder<
+            @NonNull THBillingRequest.Builder<
                     IABSKUListKey,
                     IABSKU,
                     IABSKUList,
@@ -127,7 +127,7 @@ import timber.log.Timber;
                     THIABPurchase,
                     IABException,
                     ?> builder,
-            @NotNull THUIIABRequest uiBillingRequest)
+            @NonNull THUIIABRequest uiBillingRequest)
     {
         super.populateBillingRequestBuilder(builder, uiBillingRequest);
 
@@ -301,7 +301,7 @@ import timber.log.Timber;
     @Override protected void populatePurchaseBillingRequest(
             int requestCode,
             THIABBillingRequestFull request,
-            @NotNull IABSKU productIdentifier)
+            @NonNull IABSKU productIdentifier)
     {
         super.populatePurchaseBillingRequest(requestCode, request, productIdentifier);
         THUIBillingRequest uiBillingRequest = uiBillingRequests.get(requestCode);
@@ -313,9 +313,9 @@ import timber.log.Timber;
         }
     }
 
-    @Override @NotNull protected THIABPurchaseOrder createEmptyPurchaseOrder(
-            @NotNull THUIIABRequest uiBillingRequest,
-            @NotNull IABSKU productIdentifier)
+    @Override @NonNull protected THIABPurchaseOrder createEmptyPurchaseOrder(
+            @NonNull THUIIABRequest uiBillingRequest,
+            @NonNull IABSKU productIdentifier)
     {
         return new THIABPurchaseOrder(productIdentifier, uiBillingRequest.getApplicablePortfolioId());
     }

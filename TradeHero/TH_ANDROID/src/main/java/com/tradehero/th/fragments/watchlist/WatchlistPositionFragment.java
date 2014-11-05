@@ -42,8 +42,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
@@ -75,12 +75,12 @@ public class WatchlistPositionFragment extends DashboardFragment
     private PortfolioDTO shownPortfolioDTO;
     private WatchlistPositionDTOList watchlistPositionDTOs;
 
-    public static void putOwnedPortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
+    public static void putOwnedPortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
     {
         args.putBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    @NotNull public static OwnedPortfolioId getOwnedPortfolioId(@NotNull Bundle args)
+    @NonNull public static OwnedPortfolioId getOwnedPortfolioId(@NonNull Bundle args)
     {
         return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_SHOW_PORTFOLIO_ID_BUNDLE));
     }
@@ -361,12 +361,12 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull WatchlistPositionDTOList value)
         {
             displayWatchlist(value);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             watchlistPositionListView.onRefreshComplete();
             THToast.show(getString(R.string.error_fetch_portfolio_watchlist));
@@ -380,13 +380,13 @@ public class WatchlistPositionFragment extends DashboardFragment
 
     protected class RefreshWatchlisListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
     {
-        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
+        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull WatchlistPositionDTOList value)
         {
             watchlistPositionListView.onRefreshComplete();
             displayWatchlist(value);
         }
 
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
+        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
         {
             watchlistPositionListView.onRefreshComplete();
             if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
