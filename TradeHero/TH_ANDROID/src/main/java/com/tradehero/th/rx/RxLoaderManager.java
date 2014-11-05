@@ -1,17 +1,15 @@
 package com.tradehero.th.rx;
 
-import com.tradehero.th.api.users.UserBaseKey;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.security.auth.Subject;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
-import rx.subjects.ReplaySubject;
 
 /**
  * Mimic LoaderManager, in a reactive way
@@ -20,6 +18,7 @@ import rx.subjects.ReplaySubject;
 public class RxLoaderManager
 {
     private final Map<Object, BehaviorSubject<?>> cachedRequests = new HashMap<>();
+    private final Map<Object, Subscription> taskSubscriptions = new HashMap<>();
 
     @Inject public RxLoaderManager()
     {}
@@ -63,15 +62,21 @@ public class RxLoaderManager
         });
 
         // forward data to the return observable
-        task.subscribeOn(Schedulers.io())
+        Subscription taskSubscription = task.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cachedRequest);
+        taskSubscriptions.put(key, taskSubscription);
         return cachedRequest;
     }
 
     public final void remove(Object key)
     {
         cachedRequests.remove(key);
+        Subscription subscription = taskSubscriptions.get(key);
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 
     @SuppressWarnings("unchecked")
