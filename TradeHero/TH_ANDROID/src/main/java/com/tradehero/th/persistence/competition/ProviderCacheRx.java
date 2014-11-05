@@ -5,9 +5,8 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
-import dagger.Lazy;
+import com.tradehero.th.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,30 +16,27 @@ import rx.Observable;
 @Singleton @UserCache
 public class ProviderCacheRx extends BaseFetchDTOCacheRx<ProviderId, ProviderDTO>
 {
-    public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
+    public static final int DEFAULT_MAX_VALUE_SIZE = 50;
+    public static final int DEFAULT_MAX_SUBJECT_SIZE = 4;
 
-    @NotNull private final Lazy<ProviderListCacheRx> providerListCache;
+    @NotNull private final ProviderServiceWrapper providerServiceWrapper;
     @NotNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderCacheRx(
-            @NotNull Lazy<ProviderListCacheRx> providerListCache,
+            @NotNull ProviderServiceWrapper providerServiceWrapper,
             @NotNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory,
             @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
-        this.providerListCache = providerListCache;
+        this.providerServiceWrapper = providerServiceWrapper;
         this.warrantSpecificKnowledgeFactory = warrantSpecificKnowledgeFactory;
     }
     //</editor-fold>
 
     @Override @NotNull public Observable<ProviderDTO> fetch(@NotNull final ProviderId key)
     {
-        return providerListCache.get()
-                .get(new ProviderListKey(ProviderListKey.ALL_PROVIDERS))
-                .flatMap(providerList -> Observable.from(providerList.second))
-                .first(providerDTO -> key.key.equals(providerDTO.id));
+        return providerServiceWrapper.getProviderRx(key);
     }
 
     @Override public void onNext(@NotNull ProviderId key, @NotNull ProviderDTO value)

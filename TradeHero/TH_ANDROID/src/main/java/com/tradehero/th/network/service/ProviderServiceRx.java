@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.competition.HelpVideoDTOList;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -14,6 +15,11 @@ public interface ProviderServiceRx
     //<editor-fold desc="Get Providers">
     @GET("/providers")
     Observable<ProviderDTOList> getProviders();
+    //</editor-fold>
+
+    //<editor-fold desc="Get Provider">
+    @GET("/providers/{providerId}")
+    Observable<ProviderDTO> getProvider(@Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">

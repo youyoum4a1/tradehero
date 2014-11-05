@@ -27,13 +27,15 @@ import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            BasePurchaseManagerFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_THINTENT_BUNDLE = BasePurchaseManagerFragment.class.getName() + ".thIntent";
 
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
@@ -44,6 +46,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected THBillingInteractor userInteractor;
     @Inject protected Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
+
+    @Nullable protected Subscription portfolioCompactListCacheSubscription;
 
     public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -81,6 +85,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         detachRequestCode();
         detachPurchaseActionInteractor();
+        unsubscribe(portfolioCompactListCacheSubscription);
+        portfolioCompactListCacheSubscription = null;
         super.onStop();
     }
 
@@ -104,8 +110,10 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     private void fetchPortfolioCompactList()
     {
-        AndroidObservable.bindFragment(this, portfolioCompactListCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(portfolioCompactListCacheSubscription);
+        portfolioCompactListCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                portfolioCompactListCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createPortfolioCompactListObserver());
     }
 
@@ -172,12 +180,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         detachRequestCode();
         //noinspection unchecked
         THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
-                    .domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
-                    .applicablePortfolioId(purchaseApplicableOwnedPortfolioId)
-                    .userToPremiumFollow(heroId)
-                    .purchaseReportedListener(createPurchaseReportedListener())
-                    .doPurchase(true)
-                    .build();
+                .domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
+                .applicablePortfolioId(purchaseApplicableOwnedPortfolioId)
+                .userToPremiumFollow(heroId)
+                .purchaseReportedListener(createPurchaseReportedListener())
+                .doPurchase(true)
+                .build();
         //noinspection unchecked
         requestCode = userInteractor.run(uiRequest);
     }

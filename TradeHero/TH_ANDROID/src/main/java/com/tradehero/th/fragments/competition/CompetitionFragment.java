@@ -13,20 +13,22 @@ import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionFragment.class.getName() + ".providerId";
 
-    @InjectRoute protected ProviderId providerId;
-    protected ProviderDTO providerDTO;
-
     @Inject ProviderCacheRx providerCache;
     @Inject THRouter thRouter;
+
+    @InjectRoute protected ProviderId providerId;
+    @Nullable private Subscription providerCacheSubscription;
+    protected ProviderDTO providerDTO;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
@@ -56,10 +58,19 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
         fetchProviderDTO();
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(providerCacheSubscription);
+        providerCacheSubscription = null;
+        super.onStop();
+    }
+
     protected void fetchProviderDTO()
     {
-        AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(providerCacheSubscription);
+        providerCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                providerCache.get(this.providerId))
                 .subscribe(createProviderCacheObserver());
     }
 
@@ -95,7 +106,10 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
 
         @Override public void onError(Throwable e)
         {
-            THToast.show(getString(R.string.error_fetch_provider_info));
+            if (providerDTO == null)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_info));
+            }
             Timber.e("Error fetching the provider info", e);
         }
     }

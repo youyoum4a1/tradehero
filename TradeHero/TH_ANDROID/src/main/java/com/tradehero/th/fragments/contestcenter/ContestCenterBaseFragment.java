@@ -29,12 +29,12 @@ import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import dagger.Lazy;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -42,14 +42,15 @@ import timber.log.Timber;
 
 public abstract class ContestCenterBaseFragment extends DashboardFragment
 {
-    @Inject Lazy<ProviderListCacheRx> providerListCache;
-    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
+    @Inject ProviderListCacheRx providerListCache;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
 
     @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
     @InjectView(android.R.id.list) StickyListHeadersListView contestListView;
 
+    protected Subscription providerListCacheSubscription;
     public ContestItemAdapter contestListAdapter;
     @IdRes private int currentDisplayedChildLayoutId;
     public ProviderDTOList providerDTOs;
@@ -166,7 +167,8 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     private void fetchProviderIdList()
     {
-        AndroidObservable.bindFragment(this, providerListCache.get().get(new ProviderListKey()))
+        unsubscribe(providerListCacheSubscription);
+        providerListCacheSubscription = AndroidObservable.bindFragment(this, providerListCache.get(new ProviderListKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createProviderIdListObserver());
     }
@@ -192,6 +194,8 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        unsubscribe(providerListCacheSubscription);
+        providerListCacheSubscription = null;
         ButterKnife.reset(this);
         super.onDestroyView();
     }

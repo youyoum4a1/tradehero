@@ -16,7 +16,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
-import com.tradehero.th.models.provider.DTOProcessorProviderCompactReceived;
+import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -42,14 +42,14 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    private DTOProcessor<ProviderDTO> createProcessorProviderCompactReceived()
+    private DTOProcessor<ProviderDTO> createProcessorProviderReceived()
     {
-        return new DTOProcessorProviderCompactReceived(currentUserId);
+        return new DTOProcessorProviderReceived(currentUserId);
     }
 
     private DTOProcessor<ProviderDTOList> createProcessorProviderCompactListReceived()
     {
-        return new DTOProcessorProviderCompactListReceived(createProcessorProviderCompactReceived());
+        return new DTOProcessorProviderCompactListReceived(createProcessorProviderReceived());
     }
 
     @NotNull public ProviderDTOList getProviders()
@@ -75,7 +75,20 @@ import rx.Observable;
                     }
                 });
     }
+
     //</editor-fold>
+
+    @NotNull public Observable<ProviderDTO> getProviderRx(@NotNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getProvider(providerId.key)
+                .doOnNext(providerDTO -> {
+                    PortfolioCompactDTO associatedPortfolio = providerDTO.associatedPortfolio;
+                    if (associatedPortfolio != null)
+                    {
+                        associatedPortfolio.userId = currentUserId.get();
+                    }
+                });
+    }
 
     //<editor-fold desc="Get Provider Securities">
     public SecurityCompactDTOList getProviderSecurities(@NotNull ProviderSecurityListType key)

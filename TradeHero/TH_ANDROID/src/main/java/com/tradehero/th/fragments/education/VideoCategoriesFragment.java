@@ -2,10 +2,9 @@ package com.tradehero.th.fragments.education;
 
 import android.app.ActionBar;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuInflater;
-import com.special.residemenu.ResideMenu;
+import android.view.View;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.education.PagedVideoCategories;
@@ -13,12 +12,10 @@ import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
 import com.tradehero.th.fragments.BasePagedListFragment;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.persistence.education.PaginatedVideoCategoryCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 

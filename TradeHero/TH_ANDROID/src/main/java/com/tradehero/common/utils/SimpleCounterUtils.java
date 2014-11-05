@@ -1,6 +1,7 @@
 package com.tradehero.common.utils;
 
 import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 public class SimpleCounterUtils
 {
@@ -17,6 +18,7 @@ public class SimpleCounterUtils
     public void increment()
     {
         currentCount++;
+        Timber.d("CounterUtils %d", currentCount);
         check();
     }
 

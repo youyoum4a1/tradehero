@@ -7,12 +7,12 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import org.jetbrains.annotations.NotNull;
 
-public class DTOProcessorProviderCompactReceived implements DTOProcessor<ProviderDTO>
+public class DTOProcessorProviderReceived implements DTOProcessor<ProviderDTO>
 {
     @NotNull private final DTOProcessor<PortfolioCompactDTO> portfolioCompactProcessor;
 
     //<editor-fold desc="Constructors">
-    public DTOProcessorProviderCompactReceived(@NotNull CurrentUserId currentUserId)
+    public DTOProcessorProviderReceived(@NotNull CurrentUserId currentUserId)
     {
         this.portfolioCompactProcessor = new DTOProcessorPortfolioReceived<>(currentUserId.toUserBaseKey());
     }
