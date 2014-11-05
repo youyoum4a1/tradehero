@@ -13,7 +13,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -30,16 +29,18 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
+import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -49,8 +50,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private static final String CORRESPONDENT_USER_BASE_BUNDLE_KEY =
             AbstractPrivateMessageFragment.class.getName() + ".correspondentUserBaseKey";
 
-    @Inject protected MessageHeaderCache messageHeaderCache;
-    @Inject protected MessageHeaderListCache messageHeaderListCache;
+    @Inject protected MessageHeaderCacheRx messageHeaderCache;
+    @Inject protected MessageHeaderListCacheRx messageHeaderListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected Picasso picasso;
     @Inject protected UserProfileCacheRx userProfileCache;
@@ -64,7 +65,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
-    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
+    @Nullable private Subscription messageHeaderFetchSubscription;
     private MessageHeaderId messageHeaderId;
 
     public static void putCorrespondentUserBaseKey(@NotNull Bundle args, @NotNull UserBaseKey correspondentBaseKey)
@@ -80,7 +81,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        messageHeaderFetchListener = createMessageHeaderCacheListener();
         correspondentId = collectCorrespondentId(getArguments());
     }
 
@@ -163,14 +163,15 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
     @Override public void onDestroyView()
     {
-        detachMessageHeaderFetchTask();
+        unsubscribe(messageHeaderFetchSubscription);
+        messageHeaderFetchSubscription = null;
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        messageHeaderFetchListener = null;
+        messageHeaderFetchSubscription = null;
         super.onDestroy();
     }
 
@@ -184,14 +185,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
     {
         this.messageHeaderId = messageHeaderId;
-        detachMessageHeaderFetchTask();
-        messageHeaderCache.register(messageHeaderId, messageHeaderFetchListener);
-        messageHeaderCache.getOrFetchAsync(messageHeaderId, false);
-    }
-
-    private void detachMessageHeaderFetchTask()
-    {
-        messageHeaderCache.unregister(messageHeaderFetchListener);
+        unsubscribe(messageHeaderFetchSubscription);
+        messageHeaderFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                messageHeaderCache.get(messageHeaderId))
+                .subscribe(createMessageHeaderCacheObserver());
     }
 
     protected void refresh()
@@ -202,7 +200,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
             if (messageHeaderId != null)
             {
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.getValue(messageHeaderId);
                 if (messageHeaderDTO != null)
                 {
                     reportMessageRead(messageHeaderDTO);
@@ -292,31 +290,34 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         }
     }
 
-    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderCacheListener()
+    private Observer<Pair<MessageHeaderId, MessageHeaderDTO>> createMessageHeaderCacheObserver()
     {
-        return new MessageHeaderFetchListener();
+        return new MessageHeaderFetchObserver();
     }
 
-    private class MessageHeaderFetchListener
-            implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
+    private class MessageHeaderFetchObserver
+            implements Observer<Pair<MessageHeaderId, MessageHeaderDTO>>
     {
-        @Override
-        public void onDTOReceived(@NotNull MessageHeaderId key, @NotNull MessageHeaderDTO value)
+        @Override public void onNext(Pair<MessageHeaderId, MessageHeaderDTO> pair)
         {
-            Timber.d("MessageHeaderDTO=%s", value);
-            setActionBarTitle(value.title);
-            setActionBarSubtitle(value.subTitle);
-            if (value.unread)
+            Timber.d("MessageHeaderDTO=%s", pair.second);
+            setActionBarTitle(pair.second.title);
+            setActionBarSubtitle(pair.second.subTitle);
+            if (pair.second.unread)
             {
-                reportMessageRead(value);
+                reportMessageRead(pair.second);
             }
         }
 
-        @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            if (error instanceof RetrofitError)
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (e instanceof RetrofitError)
             {
-                THToast.show(new THException(error));
+                THToast.show(new THException(e));
             }
         }
     }

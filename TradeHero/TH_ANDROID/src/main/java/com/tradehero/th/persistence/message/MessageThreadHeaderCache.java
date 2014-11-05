@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 public class MessageThreadHeaderCache extends StraightDTOCacheNew<UserBaseKey, MessageHeaderDTO>
 {
     @NotNull private final MessageServiceWrapper messageServiceWrapper;
-    @NotNull private final MessageHeaderCache messageHeaderCache;
+    @NotNull private final MessageHeaderCacheRx messageHeaderCache;
 
     //<editor-fold desc="Constructors">
     @Inject public MessageThreadHeaderCache(
             @SingleCacheMaxSize IntPreference maxSize,
             @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull MessageHeaderCache messageHeaderCache,
+            @NotNull MessageHeaderCacheRx messageHeaderCache,
             @NotNull DTOCacheUtilNew dtoCacheUtil)
     {
         super(maxSize.get(), dtoCacheUtil);
@@ -38,7 +38,7 @@ public class MessageThreadHeaderCache extends StraightDTOCacheNew<UserBaseKey, M
 
     @Override public MessageHeaderDTO put(@NotNull UserBaseKey key, @NotNull MessageHeaderDTO value)
     {
-        messageHeaderCache.put(value.getDTOKey(), value);
+        messageHeaderCache.onNext(value.getDTOKey(), value);
         return super.put(key, value);
     }
 }

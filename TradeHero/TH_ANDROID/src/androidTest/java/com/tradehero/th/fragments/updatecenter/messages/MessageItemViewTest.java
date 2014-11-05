@@ -9,7 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
+import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import java.io.IOException;
 import javax.inject.Inject;
 import org.junit.After;
@@ -25,7 +25,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class MessageItemViewTest
 {
     @Inject @ForApp ObjectMapper objectMapper;
-    @Inject MessageHeaderCache messageHeaderCache;
+    @Inject MessageHeaderCacheRx messageHeaderCache;
     private MessageItemView messageItemView;
     private MessageHeaderDTO messageHeaderDTO;
 
@@ -47,7 +47,7 @@ public class MessageItemViewTest
 
     @Test public void testUnreadShowsFlag()
     {
-        messageHeaderCache.put(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
+        messageHeaderCache.onNext(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
         messageItemView.display(messageHeaderDTO);
         assertThat(messageItemView.mUnreadFlag.getVisibility()).isEqualTo(View.VISIBLE);
     }
@@ -55,7 +55,7 @@ public class MessageItemViewTest
     @Test public void testReadHidesFlag()
     {
         messageHeaderDTO.unread = false;
-        messageHeaderCache.put(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
+        messageHeaderCache.onNext(messageHeaderDTO.getDTOKey(), messageHeaderDTO);
         messageItemView.display(messageHeaderDTO);
         assertThat(messageItemView.mUnreadFlag.getVisibility()).isEqualTo(View.GONE);
     }

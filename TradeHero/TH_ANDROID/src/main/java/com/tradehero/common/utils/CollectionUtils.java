@@ -62,4 +62,16 @@ public class CollectionUtils
         }
         return null;
     }
+
+    public static <T> boolean contains(Collection<T> collection, Predicate<T> predicate)
+    {
+        for (T element: collection)
+        {
+            if (predicate.apply(element))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

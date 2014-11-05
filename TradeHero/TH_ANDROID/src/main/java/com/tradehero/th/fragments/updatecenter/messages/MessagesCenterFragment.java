@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,10 +47,11 @@ import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +59,9 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -66,7 +71,7 @@ public class MessagesCenterFragment extends DashboardFragment
         PullToRefreshBase.OnRefreshListener2<SwipeListView>,
         ResideMenu.OnMenuListener
 {
-    @Inject Lazy<MessageHeaderListCache> messageListCache;
+    @Inject Lazy<MessageHeaderListCacheRx> messageListCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<DiscussionListCacheRx> discussionListCache;
     @Inject Lazy<DiscussionCacheRx> discussionCache;
@@ -74,8 +79,7 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
-    @Nullable private DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> fetchMessageListListener;
-    @Nullable private DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> fetchMessageRefreshListListener;
+    @NotNull private List<Subscription> fetchMessageRefreshListSubscriptions;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
     @Nullable private MessageHeaderDTOList alreadyFetched;
     private MessagesView messagesView;
@@ -92,8 +96,7 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         middleCallbackList = new MiddleCallbackWeakList<>();
-        fetchMessageListListener = createMessageHeaderIdListCacheListener();
-        fetchMessageRefreshListListener = createRefreshMessageHeaderIdListCacheListener();
+        fetchMessageRefreshListSubscriptions = new ArrayList<>();
         registerMessageReceiver();
         Timber.d("onCreate hasCode %d", this.hashCode());
     }
@@ -132,12 +135,12 @@ public class MessagesCenterFragment extends DashboardFragment
         super.onResume();
 
         registerMessageReceiver();
-        if(messagesView != null && messagesView.readAllLayout != null)
+        if (messagesView != null && messagesView.readAllLayout != null)
         {
             messagesView.readAllLayout.setTranslationY(dashboardTabHost.get().getTranslationY());
         }
         dashboardTabHost.get().setOnTranslate((x, y) -> {
-            if(messagesView != null && messagesView.readAllLayout != null)
+            if (messagesView != null && messagesView.readAllLayout != null)
             {
                 messagesView.readAllLayout.setTranslationY(y);
             }
@@ -202,8 +205,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         //we set a message unread when click the item, so don't remove callback at the moment and do it in onDestroy.
         //unsetMiddleCallback();
-        detachFetchMessageTask();
-        detachFetchMessageRefreshTask();
+        detachFetchMessageList();
         SwipeListView swipeListView = messagesView.getListView();
         swipeListView.setSwipeListViewListener(null);
         swipeListView.setOnScrollListener(null);
@@ -223,8 +225,6 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         alreadyFetched = null;
         nextMoreRecentMessageListKey = null;
-        fetchMessageListListener = null;
-        fetchMessageRefreshListListener = null;
         unsetMiddleCallback();
         unregisterMessageReceiver();
 
@@ -238,21 +238,21 @@ public class MessagesCenterFragment extends DashboardFragment
                 getResources().getString(R.string.sure_to_delete_message),
                 getResources().getString(android.R.string.cancel),
                 getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(@NotNull DialogInterface dialog, int which)
-            {
-                if (which == DialogInterface.BUTTON_POSITIVE)
                 {
-                    dialog.dismiss();
-                    removeMessageIfNecessary(position);
+                    @Override
+                    public void onClick(@NotNull DialogInterface dialog, int which)
+                    {
+                        if (which == DialogInterface.BUTTON_POSITIVE)
+                        {
+                            dialog.dismiss();
+                            removeMessageIfNecessary(position);
+                        }
+                        else if (which == DialogInterface.BUTTON_NEGATIVE)
+                        {
+                            dialog.dismiss();
+                        }
+                    }
                 }
-                else if (which == DialogInterface.BUTTON_NEGATIVE)
-                {
-                    dialog.dismiss();
-                }
-            }
-        }
         );
     }
 
@@ -355,15 +355,18 @@ public class MessagesCenterFragment extends DashboardFragment
                     new MessageListKey(MessageListKey.FIRST_PAGE);
         }
         setReadAllLayoutClickListener();
-
-
     }
 
     private void getOrFetchMessages()
     {
-        detachFetchMessageTask();
-        messageListCache.get().register(nextMoreRecentMessageListKey, fetchMessageListListener);
-        messageListCache.get().getOrFetchAsync(nextMoreRecentMessageListKey, false);
+        if (nextMoreRecentMessageListKey != null)
+        {
+            fetchMessageRefreshListSubscriptions.add(
+                    AndroidObservable.bindFragment(
+                            this,
+                            messageListCache.get().get(nextMoreRecentMessageListKey))
+                            .subscribe(createMessageHeaderIdListCacheObserver()));
+        }
     }
 
     private void refreshContent()
@@ -379,9 +382,11 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListKey messageListKey =
                 new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
-        detachFetchMessageRefreshTask();
-        messageListCache.get().register(messageListKey, fetchMessageRefreshListListener);
-        messageListCache.get().getOrFetchAsync(messageListKey, true);
+        fetchMessageRefreshListSubscriptions.add(
+                AndroidObservable.bindFragment(
+                        this,
+                        messageListCache.get().get(messageListKey))
+                        .subscribe(createMessageHeaderIdListCacheObserver()));
     }
 
     private void loadNextMessages()
@@ -417,14 +422,13 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void detachFetchMessageTask()
+    private void detachFetchMessageList()
     {
-        messageListCache.get().unregister(fetchMessageListListener);
-    }
-
-    private void detachFetchMessageRefreshTask()
-    {
-        messageListCache.get().unregister(fetchMessageRefreshListListener);
+        for (Subscription subscription : fetchMessageRefreshListSubscriptions)
+        {
+            unsubscribe(subscription);
+        }
+        fetchMessageRefreshListSubscriptions.clear();
     }
 
     private void appendMessagesList(List<MessageHeaderDTO> messageHeaderDTOs)
@@ -561,34 +565,16 @@ public class MessagesCenterFragment extends DashboardFragment
         messagesView.showLoadingView(onlyShowLoadingView);
     }
 
-    @NotNull protected DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> createMessageHeaderIdListCacheListener()
+    @NotNull protected Observer<Pair<MessageListKey, ReadablePaginatedMessageHeaderDTO>> createMessageHeaderIdListCacheObserver()
     {
-        return new MessageFetchListener();
+        return new MessageFetchObserver();
     }
 
-    class MessageFetchListener implements DTOCacheNew.HurriedListener<MessageListKey, ReadablePaginatedMessageHeaderDTO>
+    class MessageFetchObserver implements Observer<Pair<MessageListKey, ReadablePaginatedMessageHeaderDTO>>
     {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull MessageListKey key,
-                @NotNull ReadablePaginatedMessageHeaderDTO value)
+        @Override public void onNext(Pair<MessageListKey, ReadablePaginatedMessageHeaderDTO> pair)
         {
-            if (value.getData().size() == 0)
-            {
-                hasMorePage = false;
-            }
-            if (getView() == null)
-            {
-                return;
-            }
-            displayContent(value.getData());
-        }
-
-        @Override
-        public void onDTOReceived(
-                @NotNull MessageListKey key,
-                @NotNull ReadablePaginatedMessageHeaderDTO value)
-        {
-            if (value.getData().size() == 0)
+            if (pair.second.getData().size() == 0)
             {
                 hasMorePage = false;
             }
@@ -597,13 +583,14 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 return;
             }
-            displayContent(value.getData());
-            //TODO how to invalidate the old data ..
+            displayContent(pair.second.getData());
         }
 
-        @Override public void onErrorThrown(
-                @NotNull MessageListKey key,
-                @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             hasMorePage = true;
             decreasePageNumber();

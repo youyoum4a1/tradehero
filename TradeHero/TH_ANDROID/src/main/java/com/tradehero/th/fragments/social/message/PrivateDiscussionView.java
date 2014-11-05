@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -29,9 +28,10 @@ import com.tradehero.th.fragments.discussion.PostCommentView;
 import com.tradehero.th.fragments.discussion.PrivateDiscussionSetAdapter;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
+import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
@@ -41,7 +41,7 @@ public class PrivateDiscussionView extends DiscussionView
 {
     @Inject CurrentUserId currentUserId;
     @Inject DiscussionCacheRx discussionCache;
-    @Inject protected MessageHeaderCache messageHeaderCache;
+    @Inject protected MessageHeaderCacheRx messageHeaderCache;
     @Inject protected MessageHeaderDTOFactory messageHeaderDTOFactory;
     @Inject protected MessageDiscussionListKeyFactory messageDiscussionListKeyFactory;
     private MessageHeaderDTO messageHeaderDTO;
@@ -52,7 +52,7 @@ public class PrivateDiscussionView extends DiscussionView
     protected MessageType messageType;
     private UserBaseKey recipient;
     private boolean hasAddedHeader = false;
-    private DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> messageHeaderFetchListener;
+    @Nullable private Subscription messageHeaderFetchSubscription;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -82,17 +82,12 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        messageHeaderFetchListener = createMessageHeaderListener();
         setLoaded();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        if (messageHeaderFetchListener == null)
-        {
-            messageHeaderFetchListener = createMessageHeaderListener();
-        }
         setRecipientOnPostCommentView();
     }
 
@@ -100,7 +95,7 @@ public class PrivateDiscussionView extends DiscussionView
     {
         detachDiscussionFetchTask();
         detachMessageHeaderFetchTask();
-        messageHeaderFetchListener = null;
+        messageHeaderFetchSubscription = null;
         discussionFetchSubscription = null;
         super.onDetachedFromWindow();
     }
@@ -146,7 +141,7 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         MessageHeaderId messageHeaderId = new MessageHeaderUserId(discussionKey.id, recipient);
-        this.messageHeaderDTO = messageHeaderCache.get(messageHeaderId);
+        this.messageHeaderDTO = messageHeaderCache.getValue(messageHeaderId);
         super.linkWith(discussionKey, andDisplay);
 
         if (messageHeaderDTO != null)
@@ -156,14 +151,20 @@ public class PrivateDiscussionView extends DiscussionView
         else
         {
             detachMessageHeaderFetchTask();
-            messageHeaderCache.register(messageHeaderId, messageHeaderFetchListener);
-            messageHeaderCache.getOrFetchAsync(messageHeaderId, false);
+            messageHeaderFetchSubscription = messageHeaderCache.get(messageHeaderId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createMessageHeaderObserver());
         }
     }
 
     private void detachMessageHeaderFetchTask()
     {
-        messageHeaderCache.unregister(messageHeaderFetchListener);
+        Subscription copy = messageHeaderFetchSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        messageHeaderFetchSubscription = null;
     }
 
     private void fetchDiscussion(DiscussionKey discussionKey)
@@ -239,7 +240,7 @@ public class PrivateDiscussionView extends DiscussionView
 
     protected void putMessageHeaderStub(DiscussionDTO from)
     {
-        messageHeaderCache.put(new MessageHeaderId(from.id),
+        messageHeaderCache.onNext(new MessageHeaderId(from.id),
                 createStub(from));
     }
 
@@ -331,25 +332,29 @@ public class PrivateDiscussionView extends DiscussionView
         }
     }
 
-    protected DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO> createMessageHeaderListener()
+    protected Observer<Pair<MessageHeaderId, MessageHeaderDTO>> createMessageHeaderObserver()
     {
-        return new MessageHeaderFetchListener();
+        return new MessageHeaderFetchObserver();
     }
 
-    private class MessageHeaderFetchListener implements DTOCacheNew.Listener<MessageHeaderId, MessageHeaderDTO>
+    private class MessageHeaderFetchObserver implements Observer<Pair<MessageHeaderId, MessageHeaderDTO>>
     {
-        @Override public void onDTOReceived(@NotNull MessageHeaderId key, @NotNull MessageHeaderDTO value)
+        @Override public void onNext(Pair<MessageHeaderId, MessageHeaderDTO> pair)
         {
-            setRecipient(new UserBaseKey(value.recipientUserId));
+            setRecipient(new UserBaseKey(pair.second.recipientUserId));
             linkWith(discussionKey, true);
             refresh();
         }
 
-        @Override public void onErrorThrown(@NotNull MessageHeaderId key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            if (error instanceof RetrofitError)
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (e instanceof RetrofitError)
             {
-                THToast.show(new THException(error));
+                THToast.show(new THException(e));
             }
         }
     }

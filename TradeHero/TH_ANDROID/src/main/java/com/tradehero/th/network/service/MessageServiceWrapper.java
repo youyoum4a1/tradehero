@@ -25,8 +25,8 @@ import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.message.MessageHeaderCache;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
+import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -47,8 +47,8 @@ public class MessageServiceWrapper
     @NotNull private final CurrentUserId currentUserId;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
-    @NotNull private final Lazy<MessageHeaderListCache> messageHeaderListCache;
-    @NotNull private final Lazy<MessageHeaderCache> messageHeaderCache;
+    @NotNull private final Lazy<MessageHeaderListCacheRx> messageHeaderListCache;
+    @NotNull private final Lazy<MessageHeaderCacheRx> messageHeaderCache;
     @NotNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NotNull private final Lazy<DiscussionCacheRx> discussionCache;
     @NotNull private final Lazy<UserProfileCacheRx> userProfileCache;
@@ -61,8 +61,8 @@ public class MessageServiceWrapper
             @NotNull MessageServiceRx messageServiceRx,
             @NotNull DiscussionDTOFactory discussionDTOFactory,
             @NotNull CurrentUserId currentUserId,
-            @NotNull Lazy<MessageHeaderListCache> messageHeaderListCache,
-            @NotNull Lazy<MessageHeaderCache> messageHeaderCache,
+            @NotNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
+            @NotNull Lazy<MessageHeaderCacheRx> messageHeaderCache,
             @NotNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NotNull Lazy<DiscussionCacheRx> discussionCache,
             @NotNull Lazy<UserProfileCacheRx> userProfileCache,

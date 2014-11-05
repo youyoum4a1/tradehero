@@ -1,9 +1,10 @@
 package com.tradehero.th.persistence.message;
 
-import com.tradehero.common.persistence.DTOCacheUtilNew;
-import com.tradehero.common.persistence.StraightCutDTOCacheNew;
+import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.discussion.key.MessageListKey;
@@ -18,59 +19,36 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observable;
 
 @Singleton @UserCache
-public class MessageHeaderListCache extends StraightCutDTOCacheNew<
-        MessageListKey,
-        ReadablePaginatedMessageHeaderDTO,
-        ReadablePaginatedMessageHeaderId>
+public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey, ReadablePaginatedMessageHeaderDTO>
 {
-    @NotNull final private MessageHeaderCache messageHeaderCache;
+    @NotNull final private MessageHeaderCacheRx messageHeaderCache;
     @NotNull final private MessageServiceWrapper messageServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    @Inject public MessageHeaderListCache(
+    @Inject public MessageHeaderListCacheRx(
             @ListCacheMaxSize IntPreference maxSize,
-            @NotNull MessageHeaderCache messageHeaderCache,
+            @NotNull MessageHeaderCacheRx messageHeaderCache,
             @NotNull MessageServiceWrapper messageServiceWrapper,
-            @NotNull DTOCacheUtilNew dtoCacheUtil)
+            @NotNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize.get(), dtoCacheUtil);
+        super(maxSize.get(), 5, 5, dtoCacheUtil);
         this.messageHeaderCache = messageHeaderCache;
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>
 
-    @Override @NotNull public ReadablePaginatedMessageHeaderDTO fetch(@NotNull MessageListKey key) throws Throwable
+    @Override @NotNull protected Observable<ReadablePaginatedMessageHeaderDTO> fetch(@NotNull MessageListKey key)
     {
-        return messageServiceWrapper.getMessageHeaders(key);
+        return messageServiceWrapper.getMessageHeadersRx(key);
     }
 
-    @NotNull @Override protected ReadablePaginatedMessageHeaderId cutValue(
-            @NotNull MessageListKey key,
-            @NotNull ReadablePaginatedMessageHeaderDTO value)
+    @Override public void onNext(@NotNull MessageListKey key, @NotNull ReadablePaginatedMessageHeaderDTO value)
     {
-        messageHeaderCache.put(value.getData());
-        return new ReadablePaginatedMessageHeaderId(value);
-    }
-
-    @Nullable @Override protected ReadablePaginatedMessageHeaderDTO inflateValue(
-            @NotNull MessageListKey key,
-            @Nullable ReadablePaginatedMessageHeaderId cutValue)
-    {
-        if (cutValue == null)
-        {
-            return null;
-        }
-        ReadablePaginatedMessageHeaderDTO value = new ReadablePaginatedMessageHeaderDTO(
-                cutValue.expirationDate,
-                cutValue.getPagination(),
-                messageHeaderCache.get(cutValue.getData()));
-        if (value.hasNullItem())
-        {
-            return null;
-        }
-        return value;
+        messageHeaderCache.onNext(value.getData());
+        super.onNext(key, value);
     }
 
     public void invalidateWithRecipient(@Nullable UserBaseKey userBaseKey)
@@ -91,11 +69,11 @@ public class MessageHeaderListCache extends StraightCutDTOCacheNew<
      */
     public void invalidateKeysThatList(@NotNull MessageHeaderId messageHeaderId)
     {
-        PartialCutCacheValue castedCacheValue;
-        for (Map.Entry<MessageListKey, CacheValue<MessageListKey, ReadablePaginatedMessageHeaderDTO>> entry : new HashMap<>(snapshot()).entrySet())
+        for (Map.Entry<MessageListKey, ReadablePaginatedMessageHeaderDTO> entry : new HashMap<>(snapshot()).entrySet())
         {
-            castedCacheValue = (PartialCutCacheValue) entry.getValue();
-            if (castedCacheValue.getShrunkValue() != null && castedCacheValue.getShrunkValue().getData().contains(messageHeaderId))
+            if (CollectionUtils.contains(
+                    entry.getValue().getData(),
+                    value -> value.getDTOKey().equals(messageHeaderId)))
             {
                 invalidateSameListing(entry.getKey());
             }

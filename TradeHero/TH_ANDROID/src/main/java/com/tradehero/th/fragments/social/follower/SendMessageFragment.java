@@ -37,7 +37,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.message.MessageHeaderListCache;
+import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
@@ -82,7 +82,7 @@ public class SendMessageFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<FollowerSummaryCacheRx> followerSummaryCache;
-    @Inject Lazy<MessageHeaderListCache> messageListCache;
+    @Inject Lazy<MessageHeaderListCacheRx> messageListCache;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
