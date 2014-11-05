@@ -6,7 +6,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Gallery;
@@ -14,7 +17,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
+import butterknife.OnItemClick;
+import butterknife.OnItemSelected;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.education.PagedVideoCategoryId;
@@ -25,11 +29,14 @@ import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.education.PaginatedVideoCache;
+import com.tradehero.th.persistence.education.PaginatedVideoCacheRx;
 import com.tradehero.th.utils.StringUtils;
+import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class VideoCategoryView extends RelativeLayout
@@ -44,57 +51,60 @@ public class VideoCategoryView extends RelativeLayout
     @InjectView(android.R.id.progress) View progress;
     private final VideoAdapter galleryAdapter;
 
-    @Inject PaginatedVideoCache paginatedVideoCache;
+    @Inject PaginatedVideoCacheRx paginatedVideoCache;
     @Inject DashboardNavigator navigator;
 
-    private final DTOCacheNew.Listener<VideoCategoryId, PaginatedVideoDTO> cacheListener;
+    @Nullable private Subscription paginatedVideoCacheSubscription;
 
     private VideoCategoryDTO mCategoryDTO;
 
     private int page = FIRST_PAGE;
     private int perPage = DEFAULT_PER_PAGE;
 
+    //<editor-fold desc="Constructors">
     public VideoCategoryView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
-        galleryAdapter = new VideoAdapter(getContext(), R.layout.video_view);
-        cacheListener = new PaginatedVideoCacheListener();
+        galleryAdapter = new VideoAdapter(
+                getContext(),
+                new Comparator<VideoDTO>()
+                {
+                    @Override public int compare(@NonNull VideoDTO lhs, @NonNull VideoDTO rhs)
+                    {
+                        return lhs.getVideoId().compareTo(rhs.getVideoId());
+                    }
+                },
+                R.layout.video_view);
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-
         gallery.setAdapter(galleryAdapter);
+    }
 
-        gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemSelected(value = R.id.video_gallery, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        if (mCategoryDTO != null)
         {
-            @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                if (mCategoryDTO != null)
-                {
-                    mCategoryDTO.currentPosition = i;
-                }
-            }
+            mCategoryDTO.currentPosition = i;
+        }
+    }
 
-            @Override public void onNothingSelected(AdapterView<?> adapterView)
-            {
-
-            }
-        });
-        gallery.setOnItemClickListener(new AdapterView.OnItemClickListener()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemClick(R.id.video_gallery)
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        if (gallery.getSelectedItemPosition() == i)
         {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                if (gallery.getSelectedItemPosition() == i)
-                {
-                    VideoDTO videoDTO = galleryAdapter.getItem(i);
-                    handleItemClicked(videoDTO);
-                }
-            }
-        });
+            VideoDTO videoDTO = galleryAdapter.getItem(i);
+            handleItemClicked(videoDTO);
+        }
     }
 
     private void handleItemClicked(@NonNull VideoDTO videoDTO)
@@ -118,7 +128,7 @@ public class VideoCategoryView extends RelativeLayout
         }
     }
 
-    @Override public void display(VideoCategoryDTO dto)
+    @Override public void display(@NonNull VideoCategoryDTO dto)
     {
         this.mCategoryDTO = dto;
         textName.setText(dto.name);
@@ -136,7 +146,7 @@ public class VideoCategoryView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachListener();
+        detachVideoListCacheSubscription();
         super.onDetachedFromWindow();
     }
 
@@ -145,14 +155,21 @@ public class VideoCategoryView extends RelativeLayout
         if (mCategoryDTO != null)
         {
             int id = mCategoryDTO.getVideoCategoryId().id;
-            paginatedVideoCache.register(new PagedVideoCategoryId(id, page, perPage), cacheListener);
-            paginatedVideoCache.getOrFetchAsync(new PagedVideoCategoryId(id, page, perPage));
+            detachVideoListCacheSubscription();
+            paginatedVideoCacheSubscription = paginatedVideoCache.get(new PagedVideoCategoryId(id, page, perPage))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new PaginatedVideoCacheObserver());
         }
     }
 
-    private void detachListener()
+    private void detachVideoListCacheSubscription()
     {
-        paginatedVideoCache.unregister(cacheListener);
+        Subscription copy = paginatedVideoCacheSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        paginatedVideoCacheSubscription = null;
     }
 
     private void restorePosition(VideoCategoryDTO videoCategoryDTO)
@@ -190,22 +207,25 @@ public class VideoCategoryView extends RelativeLayout
         progress.setVisibility(View.GONE);
     }
 
-    private class PaginatedVideoCacheListener implements DTOCacheNew.Listener<VideoCategoryId, PaginatedVideoDTO>
+    private class PaginatedVideoCacheObserver implements Observer<Pair<VideoCategoryId, PaginatedVideoDTO>>
     {
-
-        @Override public void onDTOReceived(@NonNull VideoCategoryId key, @NonNull PaginatedVideoDTO value)
+        @Override public void onNext(Pair<VideoCategoryId, PaginatedVideoDTO> pair)
         {
-            if (mCategoryDTO.getVideoCategoryId().equals(key))
+            if (mCategoryDTO.getVideoCategoryId().equals(pair.first))
             {
                 hideEmptyView();
                 hideProgressView();
-                galleryAdapter.addAll(value.getData());
+                galleryAdapter.appendHead(pair.second.getData());
                 galleryAdapter.notifyDataSetChanged();
                 restorePosition(mCategoryDTO);
             }
         }
 
-        @Override public void onErrorThrown(@NonNull VideoCategoryId key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             Timber.e("error");
             hideProgressView();
