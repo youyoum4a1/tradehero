@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_large"
+        android:maxLength="32"
         android:singleLine="true"
         android:hint="@string/login_account_hint"
         android:textColorHint="#bfbfbf"
