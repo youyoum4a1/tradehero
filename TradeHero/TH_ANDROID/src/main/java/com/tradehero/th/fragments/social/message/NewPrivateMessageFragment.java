@@ -1,31 +1,27 @@
 package com.tradehero.th.fragments.social.message;
 
-import android.os.Bundle;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
+import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
 {
     protected boolean isFresh = true;
 
-    @Inject protected MessageThreadHeaderCache messageThreadHeaderCache;
-    @Nullable protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
-    }
+    @Inject protected MessageThreadHeaderCacheRx messageThreadHeaderCache;
+    @Nullable protected Subscription messageThreadHeaderFetchSubscription;
 
     @Override public void onResume()
     {
@@ -35,26 +31,18 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
 
     @Override public void onDestroyView()
     {
-        detachMessageThreadHeaderFetchTask();
+        unsubscribe(messageThreadHeaderFetchSubscription);
+        messageThreadHeaderFetchSubscription = null;
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        messageThreadHeaderFetchListener = null;
-        super.onDestroy();
-    }
-
-    protected void detachMessageThreadHeaderFetchTask()
-    {
-        messageThreadHeaderCache.unregister(messageThreadHeaderFetchListener);
     }
 
     protected void fetchMessageThreadHeader()
     {
-        detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderCache.register(correspondentId, messageThreadHeaderFetchListener);
-        messageThreadHeaderCache.getOrFetchAsync(correspondentId);
+        unsubscribe(messageThreadHeaderFetchSubscription);
+        messageThreadHeaderFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                messageThreadHeaderCache.get(correspondentId))
+                .subscribe(createMessageThreadHeaderCacheObserver());
     }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)
@@ -68,30 +56,34 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    @NonNull protected Observer<Pair<UserBaseKey, MessageHeaderDTO>> createMessageThreadHeaderCacheObserver()
     {
-        return new NewPrivateMessageFragmentThreadHeaderCacheListener();
+        return new NewPrivateMessageFragmentThreadHeaderCacheObserver();
     }
 
-    protected class NewPrivateMessageFragmentThreadHeaderCacheListener
-            implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
+    protected class NewPrivateMessageFragmentThreadHeaderCacheObserver
+            implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>
     {
-        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull MessageHeaderDTO value)
+        @Override public void onNext(Pair<UserBaseKey, MessageHeaderDTO> pair)
         {
             if (getDiscussionKey() == null)
             {
-                linkWith(discussionKeyFactory.create(value), true);
+                linkWith(discussionKeyFactory.create(pair.second), true);
             }
         }
 
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
         {
-            if (!(error instanceof RetrofitError) ||
-                    ((RetrofitError) error).getResponse() == null ||
-                    ((RetrofitError) error).getResponse().getStatus() != 404)
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (!(e instanceof RetrofitError) ||
+                    ((RetrofitError) e).getResponse() == null ||
+                    ((RetrofitError) e).getResponse().getStatus() != 404)
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
-                Timber.e(error, "Error while getting message thread");
+                Timber.e(e, "Error while getting message thread");
             }
             // Otherwise there is just no existing thread
         }

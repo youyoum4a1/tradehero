@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +18,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.InjectRoute;
@@ -57,7 +58,7 @@ import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.message.MessageThreadHeaderCache;
+import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -65,13 +66,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -110,7 +106,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
-    @Inject MessageThreadHeaderCache messageThreadHeaderCache;
+    @Inject MessageThreadHeaderCacheRx messageThreadHeaderCache;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
     @Inject UserBaseDTOUtil userBaseDTOUtil;
@@ -127,7 +123,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription followerSummaryCacheSubscription;
     @Nullable private Subscription userProfileCacheSubscription;
     @Nullable private Subscription portfolioSubscription;
-    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> messageThreadHeaderFetchListener;
+    @Nullable protected Subscription messageThreadHeaderFetchSubscription;
     protected FollowDialogCombo followDialogCombo;
     protected MessageHeaderDTO messageThreadHeaderDTO;
     protected UserProfileDTO shownProfile;
@@ -161,7 +157,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             shownUserBaseKey = currentUserId.toUserBaseKey();
         }
-        messageThreadHeaderFetchListener = createMessageThreadHeaderCacheListener();
         mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
         mainTimelineAdapter.setCurrentTabType(currentTab);
 
@@ -400,7 +395,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onStop()
     {
         detachFreeFollowMiddleCallback();
-        detachMessageThreadHeaderFetchTask();
+        unsubscribe(messageThreadHeaderFetchSubscription);
+        messageThreadHeaderFetchSubscription = null;
         detachFollowDialogCombo();
         detachChoiceFollowAssistant();
 
@@ -432,7 +428,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         mainTimelineAdapter = null;
-        messageThreadHeaderFetchListener = null;
+        messageThreadHeaderFetchSubscription = null;
         super.onDestroy();
     }
 
@@ -443,11 +439,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             freeFollowMiddleCallback.setPrimaryCallback(null);
         }
         freeFollowMiddleCallback = null;
-    }
-
-    private void detachMessageThreadHeaderFetchTask()
-    {
-        messageThreadHeaderCache.unregister(messageThreadHeaderFetchListener);
     }
 
     protected void detachFollowDialogCombo()
@@ -472,9 +463,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void fetchMessageThreadHeader()
     {
-        detachMessageThreadHeaderFetchTask();
-        messageThreadHeaderCache.register(shownUserBaseKey, messageThreadHeaderFetchListener);
-        messageThreadHeaderCache.getOrFetchAsync(shownUserBaseKey);
+        unsubscribe(messageThreadHeaderFetchSubscription);
+        messageThreadHeaderFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                messageThreadHeaderCache.get(shownUserBaseKey))
+                .subscribe(createMessageThreadHeaderCacheObserver());
     }
 
     //<editor-fold desc="Display methods">
@@ -879,26 +872,30 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO> createMessageThreadHeaderCacheListener()
+    @NonNull protected Observer<Pair<UserBaseKey, MessageHeaderDTO>> createMessageThreadHeaderCacheObserver()
     {
-        return new TimelineMessageThreadHeaderCacheListener();
+        return new TimelineMessageThreadHeaderCacheObserver();
     }
 
-    protected class TimelineMessageThreadHeaderCacheListener implements DTOCacheNew.Listener<UserBaseKey, MessageHeaderDTO>
+    protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>
     {
-        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull MessageHeaderDTO value)
+        @Override public void onNext(Pair<UserBaseKey, MessageHeaderDTO> pair)
         {
-            linkWithMessageThread(value, true);
+            linkWithMessageThread(pair.second, true);
         }
 
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
         {
-            if (!(error instanceof RetrofitError) ||
-                    (((RetrofitError) error).getResponse() != null &&
-                            ((RetrofitError) error).getResponse().getStatus() != 404))
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (!(e instanceof RetrofitError) ||
+                    (((RetrofitError) e).getResponse() != null &&
+                            ((RetrofitError) e).getResponse().getStatus() != 404))
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
-                Timber.e(error, "Error while getting message thread");
+                Timber.e(e, "Error while getting message thread");
             }
             else
             {
