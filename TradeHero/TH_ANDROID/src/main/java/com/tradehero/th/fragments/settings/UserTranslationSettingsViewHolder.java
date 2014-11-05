@@ -4,8 +4,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.support.v4.preference.PreferenceFragment;
+import android.util.Pair;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
@@ -13,21 +13,24 @@ import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import java.io.IOException;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
 {
     @NotNull private final LanguageDTOFactory languageDTOFactory;
     @NotNull private final UserTranslationSettingPreference userTranslationSettingPreference;
-    @NotNull private final TranslationTokenCache translationTokenCache;
-    @Nullable private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
+    @NotNull private final TranslationTokenCacheRx translationTokenCache;
+    @Nullable private Subscription translationTokenCacheSubscription;
     @Nullable protected UserTranslationSettingDTO userTranslationSettingDTO;
 
     @Nullable protected PreferenceCategory translationContainer;
@@ -38,7 +41,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
     @Inject public UserTranslationSettingsViewHolder(
             @NotNull LanguageDTOFactory languageDTOFactory,
             @NotNull UserTranslationSettingPreference userTranslationSettingPreference,
-            @NotNull TranslationTokenCache translationTokenCache)
+            @NotNull TranslationTokenCacheRx translationTokenCache)
     {
         this.languageDTOFactory = languageDTOFactory;
         this.userTranslationSettingPreference = userTranslationSettingPreference;
@@ -49,9 +52,9 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
     @Override public void initViews(@NotNull DashboardPreferenceFragment preferenceFragment)
     {
         super.initViews(preferenceFragment);
-        translationTokenListener = createTranslationTokenListener();
 
-        translationContainer = (PreferenceCategory) preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_translations_container));
+        translationContainer =
+                (PreferenceCategory) preferenceFragment.findPreference(preferenceFragment.getString(R.string.key_settings_translations_container));
         translationContainer.setEnabled(false);
 
         translationPreferredLang =
@@ -99,7 +102,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
         }
         translationPreferredLang = null;
         translationContainer = null;
-        translationTokenListener = null;
+        translationTokenCacheSubscription = null;
         super.destroyViews();
     }
 
@@ -107,30 +110,40 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
     {
         detachTranslationTokenCache();
         TranslationTokenKey key = new TranslationTokenKey();
-        translationTokenCache.register(key, translationTokenListener);
-        translationTokenCache.getOrFetchAsync(key);
+        translationTokenCacheSubscription = translationTokenCache.get(key)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createTranslationTokenObserver());
     }
 
     protected void detachTranslationTokenCache()
     {
-        translationTokenCache.unregister(translationTokenListener);
-    }
-
-    protected DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> createTranslationTokenListener()
-    {
-        return new SettingsTranslationTokenListener();
-    }
-
-    protected class SettingsTranslationTokenListener implements DTOCacheNew.Listener<TranslationTokenKey, TranslationToken>
-    {
-        @Override public void onDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        Subscription copy = translationTokenCacheSubscription;
+        if (copy != null)
         {
-            linkWith(value);
+            copy.unsubscribe();
+        }
+        translationTokenCacheSubscription = null;
+    }
+
+    protected Observer<Pair<TranslationTokenKey, TranslationToken>> createTranslationTokenObserver()
+    {
+        return new SettingsTranslationTokenObserver();
+    }
+
+    protected class SettingsTranslationTokenObserver implements Observer<Pair<TranslationTokenKey, TranslationToken>>
+    {
+        @Override public void onNext(Pair<TranslationTokenKey, TranslationToken> pair)
+        {
+            linkWith(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull TranslationTokenKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            Timber.e("Failed", error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Failed", e);
         }
     }
 
@@ -139,8 +152,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
         try
         {
             linkWith(userTranslationSettingPreference.getOfSameTypeOrDefault(token));
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Timber.e(e, "Failed to get translation setting");
         }
@@ -186,8 +198,7 @@ public class UserTranslationSettingsViewHolder extends BaseSettingViewHolder
             try
             {
                 userTranslationSettingPreference.addOrReplaceSettingDTO(userTranslationSettingDTO);
-            }
-            catch (JsonProcessingException e)
+            } catch (JsonProcessingException e)
             {
                 THToast.show(R.string.translation_error_saving_preference);
                 e.printStackTrace();

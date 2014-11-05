@@ -7,7 +7,7 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import org.junit.After;
@@ -24,7 +24,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class TranslatableLanguageListFragmentTest
 {
     @Inject Context context;
-    @Inject TranslationTokenCache translationTokenCache;
+    @Inject TranslationTokenCacheRx translationTokenCache;
     @Inject DashboardNavigator dashboardNavigator;
     private TranslatableLanguageListFragment listFragment;
 
@@ -54,7 +54,7 @@ public class TranslatableLanguageListFragmentTest
 
     @Test public void shouldPopulateAdapterOnStartupWhenHasValidToken() throws InterruptedException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         listFragment = dashboardNavigator.pushFragment(TranslatableLanguageListFragment.class);
 
         runBgUiTasks(3);

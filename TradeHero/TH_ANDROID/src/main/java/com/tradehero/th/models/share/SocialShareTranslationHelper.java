@@ -2,7 +2,7 @@ package com.tradehero.th.models.share;
 
 import android.app.Activity;
 import android.content.Context;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.util.Pair;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
 import com.tradehero.th.api.translation.TranslationResult;
@@ -12,11 +12,11 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsDialogFactory;
 import com.tradehero.th.fragments.news.NewsDialogLayout;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.persistence.translation.TranslationCache;
+import com.tradehero.th.persistence.translation.TranslationCacheRx;
 import com.tradehero.th.persistence.translation.TranslationKey;
 import com.tradehero.th.persistence.translation.TranslationKeyFactory;
 import com.tradehero.th.persistence.translation.TranslationKeyList;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -25,17 +25,20 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SocialShareTranslationHelper extends SocialShareHelper
 {
     @NotNull protected final TranslationKeyFactory translationKeyFactory;
     @NotNull protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
-    @NotNull protected final TranslationTokenCache translationTokenCache;
-    @NotNull protected final TranslationCache translationCache;
+    @NotNull protected final TranslationTokenCacheRx translationTokenCache;
+    @NotNull protected final TranslationCacheRx translationCache;
     @NotNull protected final UserTranslationSettingPreference userTranslationSettingPreference;
 
-    protected DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> translationTokenListener;
+    protected Subscription translationTokenSubscription;
     protected TranslationToken translationToken;
     protected UserTranslationSettingDTO userTranslationSettingDTO;
     @Nullable private AbstractDiscussionCompactDTO toTranslate;
@@ -52,8 +55,8 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             @NotNull Provider<SocialSharer> socialSharerProvider,
             @NotNull TranslationKeyFactory translationKeyFactory,
             @NotNull AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
-            @NotNull TranslationTokenCache translationTokenCache,
-            @NotNull TranslationCache translationCache,
+            @NotNull TranslationTokenCacheRx translationTokenCache,
+            @NotNull TranslationCacheRx translationCache,
             @NotNull UserTranslationSettingPreference userTranslationSettingPreference)
     {
         super(applicationContext, activityProvider, navigatorProvider, newsDialogFactory, alertDialogUtil, socialSharerProvider);
@@ -62,7 +65,6 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         this.translationTokenCache = translationTokenCache;
         this.translationCache = translationCache;
         this.userTranslationSettingPreference = userTranslationSettingPreference;
-        translationTokenListener = createTranslationTokenListener();
         fetchTranslationToken();
     }
     //</editor-fold>
@@ -71,7 +73,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     {
         detachTranslationTokenCache();
         setMenuClickedListener(null);
-        translationTokenListener = null;
+        translationTokenSubscription = null;
         super.onDetach();
     }
 
@@ -199,8 +201,9 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             {
                 for (TranslationKey key : new TranslationKeyList(remainingKeys))
                 {
-                    translationCache.register(key, createTranslationCacheListener());
-                    translationCache.getOrFetchAsync(key);
+                    translationCache.get(key).
+                            observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(createTranslationCacheObserver(key));
                 }
             }
         }
@@ -214,24 +217,35 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
-    @NotNull protected DTOCacheNew.Listener<TranslationKey, TranslationResult> createTranslationCacheListener()
+    @NotNull protected Observer<Pair<TranslationKey, TranslationResult>> createTranslationCacheObserver(@NotNull TranslationKey key)
     {
-        return new SocialShareTranslationHelperTranslationCacheListener();
+        return new SocialShareTranslationHelperTranslationCacheObserver(key);
     }
 
-    protected class SocialShareTranslationHelperTranslationCacheListener implements DTOCacheNew.Listener<TranslationKey, TranslationResult>
+    protected class SocialShareTranslationHelperTranslationCacheObserver implements Observer<Pair<TranslationKey, TranslationResult>>
     {
-        @Override public void onDTOReceived(@NotNull TranslationKey key, @NotNull TranslationResult value)
+        @NotNull private TranslationKey key;
+
+        public SocialShareTranslationHelperTranslationCacheObserver(@NotNull TranslationKey key)
         {
-            notifyTranslatedOneAttribute(toTranslate, value);
-            abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, value);
+            this.key = key;
+        }
+
+        @Override public void onNext(Pair<TranslationKey, TranslationResult> pair)
+        {
+            notifyTranslatedOneAttribute(toTranslate, pair.second);
+            abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, pair.second);
             remainingKeys.remove(key);
             notifyAllDoneIfPossible();
         }
 
-        @Override public void onErrorThrown(@NotNull TranslationKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
         {
-            notifyTranslateFailed(toTranslate, error);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            notifyTranslateFailed(toTranslate, e);
             remainingKeys.remove(key);
             notifyAllDoneIfPossible();
         }
@@ -240,8 +254,11 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     public interface OnMenuClickedListener extends SocialShareHelper.OnMenuClickedListener
     {
         void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate);
+
         void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate, TranslationResult translationResult);
+
         void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate, AbstractDiscussionCompactDTO translated);
+
         void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate, Throwable error);
     }
 
@@ -249,35 +266,40 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     {
         detachTranslationTokenCache();
         TranslationTokenKey key = new TranslationTokenKey();
-        translationTokenCache.register(key, translationTokenListener);
-        translationTokenCache.getOrFetchAsync(key);
+        translationTokenSubscription = translationTokenCache.get(key)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createTranslationTokenObserver());
     }
 
     protected void detachTranslationTokenCache()
     {
-        translationTokenCache.unregister(translationTokenListener);
+        Subscription copy = translationTokenSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        translationTokenSubscription = null;
     }
 
-    protected DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> createTranslationTokenListener()
+    protected Observer<Pair<TranslationTokenKey, TranslationToken>> createTranslationTokenObserver()
     {
-        return new SettingsTranslationTokenListener();
+        return new SettingsTranslationTokenObserver();
     }
 
-    protected class SettingsTranslationTokenListener implements DTOCacheNew.HurriedListener<TranslationTokenKey, TranslationToken>
+    protected class SettingsTranslationTokenObserver implements Observer<Pair<TranslationTokenKey, TranslationToken>>
     {
-        @Override public void onPreCachedDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        @Override public void onNext(Pair<TranslationTokenKey, TranslationToken> pair)
         {
-            onDTOReceived(key, value);
+            linkWith(pair.second);
         }
 
-        @Override public void onDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        @Override public void onCompleted()
         {
-            linkWith(value);
         }
 
-        @Override public void onErrorThrown(@NotNull TranslationTokenKey key, @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
-            Timber.e("Failed", error);
+            Timber.e("Failed", e);
         }
     }
 
@@ -287,8 +309,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         try
         {
             linkWith(userTranslationSettingPreference.getOfSameTypeOrDefault(token));
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Timber.e(e, "Failed to get translation preferences");
         }

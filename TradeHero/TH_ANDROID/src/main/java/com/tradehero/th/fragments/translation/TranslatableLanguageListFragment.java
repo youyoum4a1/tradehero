@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.translation;
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
@@ -19,23 +19,26 @@ import com.tradehero.th.api.translation.TranslatableLanguageDTOFactoryFactory;
 import com.tradehero.th.api.translation.TranslationToken;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class TranslatableLanguageListFragment extends DashboardFragment
 {
-    @Inject TranslationTokenCache translationTokenCache;
+    @Inject TranslationTokenCacheRx translationTokenCache;
     @Inject TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
     private UserTranslationSettingDTO currentSettings;
     private TranslatableLanguageItemAdapter itemAdapter;
-    private DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> tokenFetchListener;
+    private Subscription tokenFetchSubscription;
     @InjectView(android.R.id.list) ListView listView;
     @InjectView(android.R.id.empty) View emptyView;
 
@@ -43,7 +46,6 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         itemAdapter = createAdapter();
-        tokenFetchListener = createTokenFetchListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -69,7 +71,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachTokenCache();
+        unsubscribe(tokenFetchSubscription);
         listView.setEmptyView(null);
         listView.setOnScrollListener(null);
         ButterKnife.reset(this);
@@ -78,7 +80,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        tokenFetchListener = null;
+        tokenFetchSubscription = null;
         itemAdapter = null;
         super.onDestroy();
     }
@@ -90,30 +92,30 @@ public class TranslatableLanguageListFragment extends DashboardFragment
 
     protected void fetchToken()
     {
-        detachTokenCache();
-        TranslationTokenKey key = new TranslationTokenKey();
-        translationTokenCache.register(key, tokenFetchListener);
-        translationTokenCache.getOrFetchAsync(key);
+        unsubscribe(tokenFetchSubscription);
+        tokenFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                translationTokenCache.get(new TranslationTokenKey()))
+                .subscribe(createTokenFetchObserver());
     }
 
-    protected void detachTokenCache()
+    protected Observer<Pair<TranslationTokenKey, TranslationToken>> createTokenFetchObserver()
     {
-        translationTokenCache.unregister(tokenFetchListener);
+        return new TranslatableLanguageListFragmentTokenFetchObserver();
     }
 
-    protected DTOCacheNew.Listener<TranslationTokenKey, TranslationToken> createTokenFetchListener()
+    protected class TranslatableLanguageListFragmentTokenFetchObserver implements Observer<Pair<TranslationTokenKey, TranslationToken>>
     {
-        return new TranslatableLanguageListFragmentTokenFetchListener();
-    }
-
-    protected class TranslatableLanguageListFragmentTokenFetchListener implements DTOCacheNew.Listener<TranslationTokenKey, TranslationToken>
-    {
-        @Override public void onDTOReceived(@NotNull TranslationTokenKey key, @NotNull TranslationToken value)
+        @Override public void onNext(Pair<TranslationTokenKey, TranslationToken> pair)
         {
-            handleTranslationTokenReceived(value);
+            handleTranslationTokenReceived(pair.second);
         }
 
-        @Override public void onErrorThrown(@NotNull TranslationTokenKey key, @NotNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_incomplete_info_message);
         }
@@ -124,8 +126,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         try
         {
             currentSettings = userTranslationSettingPreference.getOfSameTypeOrDefault(translationToken);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             currentSettings = null;
             Timber.e(e, "Failed to pull preference %s", translationToken.getClass());
@@ -160,8 +161,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
             try
             {
                 userTranslationSettingPreference.addOrReplaceSettingDTO(newSettings.cloneForLanguage(languageDTO));
-            }
-            catch (JsonProcessingException e)
+            } catch (JsonProcessingException e)
             {
                 THToast.show(R.string.translation_error_saving_preference);
                 Timber.e(e, "Failed saving preference %s", languageDTO);

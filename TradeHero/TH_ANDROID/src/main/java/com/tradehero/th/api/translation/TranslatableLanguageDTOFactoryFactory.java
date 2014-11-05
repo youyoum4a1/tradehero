@@ -2,23 +2,24 @@ package com.tradehero.th.api.translation;
 
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import rx.Observable;
 import timber.log.Timber;
 
 public class TranslatableLanguageDTOFactoryFactory
 {
-    @NotNull private final Lazy<TranslationTokenCache> translationTokenCacheLazy;
+    @NotNull private final Lazy<TranslationTokenCacheRx> translationTokenCacheLazy;
     @NotNull private final Provider<BingLanguageDTOFactory> bingLanguageDTOFactoryProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public TranslatableLanguageDTOFactoryFactory(
-            @NotNull Lazy<TranslationTokenCache> translationTokenCacheLazy,
+            @NotNull Lazy<TranslationTokenCacheRx> translationTokenCacheLazy,
             @NotNull Provider<BingLanguageDTOFactory> bingLanguageDTOFactoryProvider)
     {
         this.translationTokenCacheLazy = translationTokenCacheLazy;
@@ -26,10 +27,10 @@ public class TranslatableLanguageDTOFactoryFactory
     }
     //</editor-fold>
 
-    @Nullable public TranslatableLanguageDTOFactory create()
+    @NotNull public Observable<TranslatableLanguageDTOFactory> create()
     {
-        TranslationToken token = translationTokenCacheLazy.get().get(new TranslationTokenKey());
-        return token != null ? create(token) : null;
+        return translationTokenCacheLazy.get().get(new TranslationTokenKey())
+                .map(pair -> create(pair.second));
     }
 
     @Nullable public TranslatableLanguageDTOFactory create(@NotNull TranslationToken type)

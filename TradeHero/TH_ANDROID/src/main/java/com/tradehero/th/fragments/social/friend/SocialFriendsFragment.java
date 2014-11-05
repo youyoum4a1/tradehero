@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.friend;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -28,7 +28,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.social.friend.FriendsListCache;
+import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
@@ -42,6 +42,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public abstract class SocialFriendsFragment extends DashboardFragment
@@ -49,7 +52,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 {
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
-    @Inject FriendsListCache friendsListCache;
+    @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
@@ -67,16 +70,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     private FriendsListKey friendsListKey;
     protected UserFriendsDTOList friendDTOList;
     protected SocialFriendListItemDTOList listedSocialItems;
-    @Nullable private DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> friendsListCacheListener;
+    @Nullable private Subscription friendsListCacheSubscription;
     protected SocialFriendsAdapter socialFriendsListAdapter;
     private final int MAX_TEXT_LENGTH = 140;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        this.friendsListCacheListener = createFriendsFetchListener();
-    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -103,14 +99,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-        detachFriendsListCache();
-        friendsListCache.register(friendsListKey, friendsListCacheListener);
-        friendsListCache.getOrFetchAsync(friendsListKey);
+        unsubscribe(friendsListCacheSubscription);
+        friendsListCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                friendsListCache.get(friendsListKey))
+                .subscribe(createFriendsFetchObserver());
     }
 
     @Override public void onStop()
     {
-        detachFriendsListCache();
+        unsubscribe(friendsListCacheSubscription);
+        friendsListCacheSubscription = null;
         detachFollowFriendsMiddleCallback();
         detachInviteFriendsMiddleCallback();
         super.onStop();
@@ -118,7 +117,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        this.friendsListCacheListener = null;
+        this.friendsListCacheSubscription = null;
         super.onDestroy();
     }
 
@@ -126,11 +125,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         friendsRootView.listView.setOnScrollListener(null);
         super.onDestroyView();
-    }
-
-    protected void detachFriendsListCache()
-    {
-        friendsListCache.unregister(friendsListCacheListener);
     }
 
     protected void detachFollowFriendsMiddleCallback()
@@ -198,7 +192,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         createFriendHandler();
         detachInviteFriendsMiddleCallback();
-        inviteFriendsMiddleCallback = socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+        inviteFriendsMiddleCallback =
+                socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
     }
 
     protected String getWeiboInviteMessage()
@@ -546,9 +541,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
     }
 
-    @NotNull protected DTOCacheNew.Listener<FriendsListKey, UserFriendsDTOList> createFriendsFetchListener()
+    @NotNull protected Observer<Pair<FriendsListKey, UserFriendsDTOList>> createFriendsFetchObserver()
     {
-        return new FriendFetchListener();
+        return new FriendFetchObserver();
     }
 
     class SearchChangeListener implements TextWatcher
@@ -696,25 +691,18 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    class FriendFetchListener implements DTOCacheNew.HurriedListener<FriendsListKey, UserFriendsDTOList>
+    class FriendFetchObserver implements Observer<Pair<FriendsListKey, UserFriendsDTOList>>
     {
-        @Override public void onPreCachedDTOReceived(
-                @NotNull FriendsListKey key,
-                @NotNull UserFriendsDTOList value)
+        @Override public void onNext(Pair<FriendsListKey, UserFriendsDTOList> pair)
         {
-            onDTOReceived(key, value);
+            displayContentView(pair.second);
         }
 
-        @Override public void onDTOReceived(
-                @NotNull FriendsListKey key,
-                @NotNull UserFriendsDTOList value)
+        @Override public void onCompleted()
         {
-            displayContentView(value);
         }
 
-        @Override public void onErrorThrown(
-                @NotNull FriendsListKey key,
-                @NotNull Throwable error)
+        @Override public void onError(Throwable e)
         {
             if (hasListData())
             {

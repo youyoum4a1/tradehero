@@ -6,7 +6,7 @@ import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import org.junit.After;
@@ -20,7 +20,7 @@ import static org.junit.Assume.assumeTrue;
 @RunWith(THRobolectricTestRunner.class)
 public class TranslatableLanguageDTOFactoryFactoryTest
 {
-    @Inject TranslationTokenCache translationTokenCache;
+    @Inject TranslationTokenCacheRx translationTokenCache;
     @Inject TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
 
     @Before public void setUp()
@@ -89,30 +89,30 @@ public class TranslatableLanguageDTOFactoryFactoryTest
     //<editor-fold desc="Blind create, with different cache situations">
     @Test public void nullFactoryIfNoTokenInCache()
     {
-        assertThat(translatableLanguageDTOFactoryFactory.create())
+        assertThat(translatableLanguageDTOFactoryFactory.create().toBlocking().first())
                 .isNull();
     }
 
     @Test public void nullFactoryIfUnknownTokenInCache()
     {
-        translationTokenCache.put(new TranslationTokenKey(), new FakeToken());
-        assertThat(translatableLanguageDTOFactoryFactory.create())
+        translationTokenCache.onNext(new TranslationTokenKey(), new FakeToken());
+        assertThat(translatableLanguageDTOFactoryFactory.create().toBlocking().first())
                 .isNull();
     }
 
     @Test public void nullFactoryIfInvalidBingTokenInCache()
     {
         BingTranslationToken translationToken = new BingTranslationToken("", "", "0", "");
-        translationTokenCache.put(new TranslationTokenKey(), translationToken);
-        assertThat(translatableLanguageDTOFactoryFactory.create())
+        translationTokenCache.onNext(new TranslationTokenKey(), translationToken);
+        assertThat(translatableLanguageDTOFactoryFactory.create().toBlocking().first())
                 .isNull();
     }
 
     @Test public void bingFactoryIfValidBingTokenInCache()
     {
         BingTranslationToken translationToken = new BingTranslationToken("", "", "2000", "");
-        translationTokenCache.put(new TranslationTokenKey(), translationToken);
-        assertThat(translatableLanguageDTOFactoryFactory.create())
+        translationTokenCache.onNext(new TranslationTokenKey(), translationToken);
+        assertThat(translatableLanguageDTOFactoryFactory.create().toBlocking().first())
                 .isExactlyInstanceOf(BingLanguageDTOFactory.class);
     }
     //</editor-fold>

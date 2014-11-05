@@ -7,7 +7,6 @@ import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.CallbackWrapper;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
@@ -20,12 +19,12 @@ import timber.log.Timber;
 
 @Singleton public class TranslationServiceWrapper
 {
-    @NotNull private final TranslationTokenCache translationTokenCache;
+    @NotNull private final TranslationTokenCacheRx translationTokenCache;
     @NotNull private final TranslationTokenCacheRx translationTokenCacheRx;
     @NotNull private final TranslationServiceBingWrapper translationServiceBingWrapper;
 
     @Inject public TranslationServiceWrapper(
-            @NotNull TranslationTokenCache translationTokenCache,
+            @NotNull TranslationTokenCacheRx translationTokenCache,
             @NotNull TranslationTokenCacheRx translationTokenCacheRx,
             @NotNull TranslationServiceBingWrapper translationServiceBingWrapper)
     {
@@ -34,9 +33,10 @@ import timber.log.Timber;
         this.translationServiceBingWrapper = translationServiceBingWrapper;
     }
 
+    @Deprecated
     public TranslationResult translate(String from, String to, String text)
     {
-        TranslationToken token = translationTokenCache.getValid(new TranslationTokenKey());
+        TranslationToken token = translationTokenCache.get(new TranslationTokenKey()).toBlocking().first().second;
 
         if (token instanceof BingTranslationToken)
         {
@@ -48,11 +48,10 @@ import timber.log.Timber;
 
     public MiddleCallback<TranslationResult> translate(String from, String to, String text, Callback<TranslationResult> callback)
     {
-        MiddleCallback<TranslationResult> middleCallback = new BaseMiddleCallback<>(callback);
+        final MiddleCallback<TranslationResult> middleCallback = new BaseMiddleCallback<>(callback);
         TranslationTokenKey key = new TranslationTokenKey();
-        translationTokenCache.register(key,
-                new TranslationServiceWrapperTokenListener(from, to, text, middleCallback));
-        translationTokenCache.getOrFetchAsync(key);
+        translationTokenCache.get(key)
+                .map(pair -> translate(pair.second, from, to, text, middleCallback));
         return middleCallback;
     }
 

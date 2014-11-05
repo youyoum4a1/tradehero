@@ -45,7 +45,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -81,7 +81,7 @@ import rx.observers.EmptyObserver;
     protected final Lazy<ProviderListCacheRx> providerListCache;
     protected final Lazy<QuestBonusListCacheRx> questBonusListCacheLazy;
     protected final Lazy<SecurityCompactListCacheRx> securityCompactListCache;
-    protected final Lazy<TranslationTokenCache> translationTokenCache;
+    protected final Lazy<TranslationTokenCacheRx> translationTokenCache;
     protected final Lazy<UserProfileCacheRx> userProfileCache;
     protected final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     protected final Lazy<UserWatchlistPositionCache> userWatchlistPositionCache;
@@ -116,7 +116,7 @@ import rx.observers.EmptyObserver;
             Lazy<ProviderCacheRx> providerCache,
             Lazy<ProviderListCacheRx> providerListCache,
             Lazy<SecurityCompactListCacheRx> securityCompactListCache,
-            Lazy<TranslationTokenCache> translationTokenCache,
+            Lazy<TranslationTokenCacheRx> translationTokenCache,
             Lazy<UserProfileCacheRx> userProfileCache,
             Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCache> userWatchlistPositionCache,
@@ -351,7 +351,7 @@ import rx.observers.EmptyObserver;
 
     public void preFetchTranslationToken()
     {
-        translationTokenCache.get().getOrFetchAsync(new TranslationTokenKey());
+        translationTokenCache.get().get(new TranslationTokenKey());
     }
 
     public void preFetchLeaderboardDefs()

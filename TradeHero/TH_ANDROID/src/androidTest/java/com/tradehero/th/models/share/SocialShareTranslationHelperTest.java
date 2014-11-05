@@ -7,7 +7,7 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import java.io.IOException;
@@ -23,7 +23,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class SocialShareTranslationHelperTest
 {
-    @Inject TranslationTokenCache translationTokenCache;
+    @Inject TranslationTokenCacheRx translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
     @Inject Provider<SocialShareTranslationHelper> translationHelperProvider;
     private SocialShareTranslationHelper translationHelper;
@@ -47,11 +47,11 @@ public class SocialShareTranslationHelperTest
     @Test public void correctLifecycle()
     {
         translationHelper = translationHelperProvider.get();
-        assertThat(translationHelper.translationTokenListener).isNotNull();
+        assertThat(translationHelper.translationTokenSubscription).isNotNull();
 
         translationHelper.onDetach();
 
-        assertThat(translationHelper.translationTokenListener).isNull();
+        assertThat(translationHelper.translationTokenSubscription).isNull();
         assertThat(translationHelper.menuClickedListener).isNull();
     }
     //</editor-fold>
@@ -107,7 +107,7 @@ public class SocialShareTranslationHelperTest
 
     @Test public void canTranslateWhenTranslationToken()
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         assertThat(translationTokenCache.get(new TranslationTokenKey())).isNotNull();
         AbstractDiscussionCompactDTO discussion = new NewsItemCompactDTO();
         discussion.langCode = "fr";
@@ -130,7 +130,7 @@ public class SocialShareTranslationHelperTest
 
     @Test public void targetLanguageWhenHasPref() throws IOException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
         assertThat(translationTokenCache.get(new TranslationTokenKey())).isNotNull();
         assertThat(userTranslationSettingPreference.getSettingDTOs().size()).isEqualTo(1);
@@ -152,7 +152,7 @@ public class SocialShareTranslationHelperTest
 
     @Test public void autoTranslateFalseWhenPrefSaysSo() throws JsonProcessingException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
         translationHelper = translationHelperProvider.get();
 
@@ -161,7 +161,7 @@ public class SocialShareTranslationHelperTest
 
     @Test public void autoTranslateTrueWhenPrefSaysSo() throws JsonProcessingException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", true));
         translationHelper = translationHelperProvider.get();
 

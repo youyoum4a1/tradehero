@@ -10,7 +10,7 @@ import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
-import com.tradehero.th.persistence.translation.TranslationTokenCache;
+import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class UserTranslationSettingsViewHolderTest
 {
-    @Inject TranslationTokenCache translationTokenCache;
+    @Inject TranslationTokenCacheRx translationTokenCache;
     @Inject UserTranslationSettingPreference userTranslationSettingPreference;
     @Inject DashboardNavigator dashboardNavigator;
     private SettingsFragment settingsFragment;
@@ -95,7 +95,7 @@ public class UserTranslationSettingsViewHolderTest
     @Ignore("Don't do thread.sleep")
     @Test public void enabledIfHasCache() throws InterruptedException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
 
         Thread.sleep(200); // TODO remove this HACK
@@ -111,7 +111,7 @@ public class UserTranslationSettingsViewHolderTest
     @Ignore("Don't do thread.sleep")
     @Test public void autoIsCheckedIfPrefTrue() throws JsonProcessingException, InterruptedException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("en", true));
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
@@ -126,7 +126,7 @@ public class UserTranslationSettingsViewHolderTest
 
     @Test public void autoIsNotCheckedIfPrefFalse() throws JsonProcessingException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("en", false));
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
@@ -142,7 +142,7 @@ public class UserTranslationSettingsViewHolderTest
     //<editor-fold desc="Preferred language label">
     @Test public void preferredPicksLanguage() throws JsonProcessingException, InterruptedException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
@@ -158,7 +158,7 @@ public class UserTranslationSettingsViewHolderTest
     //<editor-fold desc="Preferred language click">
     @Test public void clickPreferredPushesListFragment() throws JsonProcessingException
     {
-        translationTokenCache.put(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
+        translationTokenCache.onNext(new TranslationTokenKey(), new BingTranslationToken("", "", "2000", ""));
         userTranslationSettingPreference.addOrReplaceSettingDTO(new BingUserTranslationSettingDTO("fr", false));
 
         settingsFragment = dashboardNavigator.pushFragment(SettingsFragment.class);
