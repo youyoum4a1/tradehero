@@ -14,12 +14,12 @@ import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import rx.functions.Func1;
 
-public class QuoteDTOUtil implements Func1<Response, QuoteDTO>
+public class RawQuoteParser implements Func1<Response, QuoteDTO>
 {
     @NotNull private Converter converter;
 
     //<editor-fold desc="Constructors">
-    @Inject public QuoteDTOUtil(@NotNull Converter converter)
+    @Inject public RawQuoteParser(@NotNull Converter converter)
     {
         this.converter = converter;
     }

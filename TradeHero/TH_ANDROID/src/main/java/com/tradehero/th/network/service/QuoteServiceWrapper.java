@@ -2,36 +2,33 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.quote.QuoteDTOUtil;
+import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.converter.ConversionException;
 import rx.Observable;
-import rx.functions.Func1;
 
 @Singleton public class QuoteServiceWrapper
 {
     @NotNull private final QuoteServiceRx quoteServiceRx;
     @NotNull private final QuoteServiceAsync quoteServiceAsync;
-    @NotNull private final QuoteDTOUtil quoteDTOUtil;
+    @NotNull private final RawQuoteParser rawQuoteParser;
 
     //<editor-fold desc="Constructors">
     @Inject public QuoteServiceWrapper(
             @NotNull QuoteServiceAsync quoteServiceAsync,
             @NotNull QuoteServiceRx quoteServiceRx,
-            @NotNull QuoteDTOUtil quoteDTOUtil)
+            @NotNull RawQuoteParser rawQuoteParser)
     {
         super();
         this.quoteServiceAsync = quoteServiceAsync;
         this.quoteServiceRx = quoteServiceRx;
-        this.quoteDTOUtil = quoteDTOUtil;
+        this.rawQuoteParser = rawQuoteParser;
     }
     //</editor-fold>
 
@@ -67,7 +64,7 @@ import rx.functions.Func1;
         return this.quoteServiceRx.getRawQuote(
                 UrlEncoderHelper.transform(securityId.getExchange()),
                 UrlEncoderHelper.transform(securityId.getSecuritySymbol()))
-                .map(quoteDTOUtil);
+                .map(rawQuoteParser);
     }
 
     @NotNull public Observable<Response> getRawQuoteRx(@NotNull SecurityId securityId)
