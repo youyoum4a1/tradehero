@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.subjects.BehaviorSubject;
-import timber.log.Timber;
 
 public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheRx<DTOKeyType, DTOType>
@@ -50,19 +48,12 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
             {
                 cachedSubject = BehaviorSubject.create();
             }
+            final RefCounter counter = new RefCounter(); // HACK This helps the cachedSubject act as a refCount.
             cachedObservable = cachedSubject
+                    .doOnSubscribe(counter::plusOne)
                     .doOnUnsubscribe(() -> {
-                        cachedObservables.remove(key);
-                        cachedSubjects.remove(key);
-                    })
-                    .publish()
-                    .refCount()
-                    .doOnError(new Action1<Throwable>()
-                    {
-                        @Override public void call(Throwable throwable)
-                        {
-                            Timber.e(throwable, "error");
-                        }
+                        counter.minusOne();
+                        removeConditional(key, counter, cachedSubject);
                     });
             cachedSubjects.put(key, cachedSubject);
             cachedObservables.put(key, cachedObservable);
@@ -150,8 +141,46 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
     }
 
+    /**
+     * Removes the observable and cached subject when the counter is 0
+     * @param key
+     * @param counter
+     * @param cachedSubject
+     */
+    private void removeConditional(
+            @NotNull DTOKeyType key,
+            @NotNull RefCounter counter,
+            @NotNull BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject)
+    {
+        if (counter.get() == 0 && cachedSubjects.get(key) == cachedSubject)
+        {
+            cachedObservables.remove(key);
+            cachedSubjects.remove(key);
+        }
+    }
+
     @NotNull protected Map<DTOKeyType, DTOType> snapshot()
     {
         return cachedValues.snapshot();
+    }
+
+    private static class RefCounter
+    {
+        private int subscriberCount = 0;
+
+        synchronized void plusOne()
+        {
+            subscriberCount++;
+        }
+
+        synchronized void minusOne()
+        {
+            subscriberCount--;
+        }
+
+        synchronized int get()
+        {
+            return subscriberCount;
+        }
     }
 }
