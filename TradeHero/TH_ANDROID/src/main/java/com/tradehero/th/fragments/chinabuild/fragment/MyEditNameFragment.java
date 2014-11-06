@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.chinabuild.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 public class MyEditNameFragment extends DashboardFragment implements View.OnClickListener
@@ -91,6 +93,15 @@ public class MyEditNameFragment extends DashboardFragment implements View.OnClic
 
     @Override public void onClickHeadLeft()
     {
+        String displayNameStr = mName.getText().toString();
+        if(TextUtils.isEmpty(displayNameStr)){
+            popCurrentFragment();
+            return;
+        }
+        if(displayNameStr.contains(" ")){
+            THToast.show(R.string.sign_in_display_name_no_blank);
+            return;
+        }
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {

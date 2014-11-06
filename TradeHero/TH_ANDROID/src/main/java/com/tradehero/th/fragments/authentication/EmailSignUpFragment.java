@@ -345,6 +345,11 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
 
     @Override
     public boolean areFieldsValid() {
+        String displayNameStr = mDisplayName.getText().toString();
+        if(displayNameStr.contains(" ")){
+            THToast.show(R.string.sign_in_display_name_no_blank);
+            return false;
+        }
         return true;
     }
 

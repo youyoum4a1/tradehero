@@ -27,6 +27,7 @@
         android:maxLength="32"
         android:singleLine="true"
         android:hint="@string/login_account_hint"
+        android:inputType=""
         android:textColorHint="#bfbfbf"
         android:background="@color/white"/>
   </LinearLayout>

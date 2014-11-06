@@ -436,5 +436,9 @@
   <string name="photo_no_sdcard">No Secure Digital Memory Card</string>
   <!-- Photo-->
 
+  <!--Sign in & Sign up -->
+  <string name="sign_in_display_name_no_blank">Display Name No Blank Space</string>
+  <!--Sign in & Sign up -->
+
   <string name="please_to_reply">评论一下吧...</string>
 </resources>
