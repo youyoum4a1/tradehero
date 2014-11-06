@@ -1,32 +1,35 @@
 package com.tradehero.th.fragments.social;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.fragments.BaseSearchFragment;
+import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
 import com.tradehero.th.fragments.trending.SearchPeopleItemView;
-import com.tradehero.th.persistence.user.UserBaseKeyListCache;
+import com.tradehero.th.persistence.user.UserBaseKeyListCacheRx;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import rx.Observer;
 import timber.log.Timber;
 
-public class PeopleSearchFragment extends BaseSearchFragment<
+public class PeopleSearchFragment extends BaseSearchRxFragment<
         UserListType,
         UserSearchResultDTO,
         UserSearchResultDTOList,
@@ -34,7 +37,9 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         SearchPeopleItemView>
         implements HasSelectedItem
 {
-    @Inject Lazy<UserBaseKeyListCache> userBaseKeyListCache;
+    @Inject UserBaseKeyListCacheRx userBaseKeyListCache;
+    @Inject protected Analytics analytics;
+    @Inject THRouter thRouter;
 
     protected void initViews(View view)
     {
@@ -66,19 +71,9 @@ public class PeopleSearchFragment extends BaseSearchFragment<
                 R.layout.search_people_item);
     }
 
-    @Override protected void unregisterCache(DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener)
+    @Override protected DTOCacheRx<UserListType, UserSearchResultDTOList> getCache()
     {
-        userBaseKeyListCache.get().unregister(listener);
-    }
-
-    @Override protected void registerCache(UserListType key, DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> listener)
-    {
-        userBaseKeyListCache.get().register(key, listener);
-    }
-
-    @Override protected void requestCache(UserListType key)
-    {
-        userBaseKeyListCache.get().getOrFetchAsync(key);
+        return userBaseKeyListCache;
     }
 
     @NonNull @Override public SearchUserListType makePagedDtoKey(int page)
@@ -121,23 +116,27 @@ public class PeopleSearchFragment extends BaseSearchFragment<
         }
     }
 
-    private DTOCacheNew.Listener<UserListType, UserSearchResultDTOList> createUserBaseKeyListCacheListener()
+    @Override protected Observer<Pair<UserListType, UserSearchResultDTOList>> createListCacheObserver(@NonNull UserListType key)
     {
-        return new UserBaseKeyListCacheListener();
+        return new UserBaseKeyListCacheObserver(key);
     }
 
-    protected class UserBaseKeyListCacheListener extends ListCacheListener
+    protected class UserBaseKeyListCacheObserver extends ListCacheObserver
     {
-        @Override
-        public void onDTOReceived(@NonNull UserListType key, @NonNull UserSearchResultDTOList value)
+        protected UserBaseKeyListCacheObserver(@NonNull UserListType key)
         {
-            super.onDTOReceived(key, value);
+            super(key);
+        }
+
+        @Override public void onNext(Pair<UserListType, UserSearchResultDTOList> pair)
+        {
+            super.onNext(pair);
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
         }
 
-        @Override public void onErrorThrown(@NonNull UserListType key, @NonNull Throwable error)
+        @Override public void onError(Throwable error)
         {
-            super.onErrorThrown(key, error);
+            super.onError(error);
             THToast.show(getString(R.string.error_fetch_people_list_info));
             Timber.e("Error fetching the list of securities " + key, error);
         }

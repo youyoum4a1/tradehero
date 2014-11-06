@@ -1,9 +1,6 @@
 package com.tradehero.th.api.users;
 
-import com.tradehero.common.api.PagedDTOKey;
-
 public class SearchUserListType extends UserListType
-    implements PagedDTOKey
 {
     //<editor-fold desc="Fields">
     public final String searchString;

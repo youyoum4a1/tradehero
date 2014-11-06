@@ -17,7 +17,6 @@ import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
@@ -339,7 +338,7 @@ abstract public class BasePagedListRxFragment<
     protected class ListCacheObserver
             implements Observer<Pair<PagedDTOKeyType, ContainerDTOType>>
     {
-        @NonNull private final PagedDTOKeyType key;
+        @NonNull protected final PagedDTOKeyType key;
 
         protected ListCacheObserver(@NonNull PagedDTOKeyType key)
         {
@@ -361,8 +360,6 @@ abstract public class BasePagedListRxFragment<
         {
             pagedSubscriptions.remove(key.getPage());
             nearEndScrollListener.lowerEndFlag();
-            THToast.show(getString(R.string.error_fetch_people_list_info));
-            Timber.e("Error fetching the list of securities " + key, error);
         }
     }
 
