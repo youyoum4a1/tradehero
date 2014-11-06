@@ -3,11 +3,15 @@ package com.tradehero.th.billing;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.billing.ProductDetailCache;
+import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifierListCache;
+import com.tradehero.common.billing.ProductIdentifierListCacheRx;
 import com.tradehero.common.billing.ProductPurchaseCache;
+import com.tradehero.common.billing.ProductPurchaseCacheRx;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCache;
+import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCacheRx;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.samsung.ForSamsungBillingMode;
@@ -16,9 +20,12 @@ import com.tradehero.th.billing.samsung.THSamsungConstants;
 import com.tradehero.th.billing.samsung.THSamsungSecurityAlertKnowledge;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
+import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
+import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCacheRx;
 import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
+import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheRx;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
@@ -56,6 +63,26 @@ public class BillingModule
     }
 
     @Provides @Singleton SamsungPurchaseCache provideSamsungPurchaseCache(THSamsungPurchaseCache purchaseCache)
+    {
+        return purchaseCache;
+    }
+
+    @Provides @Singleton ProductIdentifierListCacheRx provideProductIdentifierListCacheRx(SamsungSKUListCacheRx samsungSKUListCache)
+    {
+        return samsungSKUListCache;
+    }
+
+    @Provides @Singleton ProductDetailCacheRx provideProductDetailCacheRx(THSamsungProductDetailCacheRx productDetailCache)
+    {
+        return productDetailCache;
+    }
+
+    @Provides @Singleton ProductPurchaseCacheRx provideProductPurchaseCacheRx(SamsungPurchaseCacheRx purchaseCache)
+    {
+        return purchaseCache;
+    }
+
+    @Provides @Singleton SamsungPurchaseCacheRx provideSamsungPurchaseCacheRx(THSamsungPurchaseCacheRx purchaseCache)
     {
         return purchaseCache;
     }
