@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 public class TrendingFilterTypePriceDTO extends TrendingFilterTypeDTO
 {
     public static final int DEFAULT_TITLE_RES_ID = R.string.trending_filter_price_title;
-    public static final int DEFAULT_ICON_RES_ID = R.drawable.ic_trending_price;
+    public static final int DEFAULT_ICON_RES_ID = R.drawable.launcher;
     public static final int DEFAULT_DESCRIPTION_RES_ID = R.string.trending_filter_price_description;
     public static final String TRACK_EVENT_SYMBOL = "Price Action";
 

@@ -86,7 +86,6 @@
         android:scaleType="centerInside"
         android:visibility="visible"
         android:background="@drawable/basic_transparent_selector"
-        android:src="@drawable/market_sleep_grey"
         />
 
     <RelativeLayout

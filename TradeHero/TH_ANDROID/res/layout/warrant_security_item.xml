@@ -217,7 +217,6 @@
       android:paddingRight="8dp"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      android:src="@drawable/market_sleep_grey"
         android:visibility="gone"
       />
 

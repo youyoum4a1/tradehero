@@ -76,7 +76,6 @@
           android:layout_marginTop="2dp"
           android:contentDescription="@null"
           android:scaleType="fitCenter"
-          android:src="@drawable/market_sleep_grey"
           />
 
     </LinearLayout>
