@@ -19,30 +19,15 @@
   <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
-  <!--<uses-permission android:name="android.permission.READ_CONTACTS"/>-->
   <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
   <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"/>
 
-  <!--&lt;!&ndash; Google Play Store &ndash;&gt;-->
-  <!--<uses-permission android:name="com.android.vending.BILLING"/>-->
-
-  <!--&lt;!&ndash; Samsung IAP &ndash;&gt;-->
-  <!--<uses-permission android:name="com.sec.android.iap.permission.BILLING"/>-->
-
-  <!--tap stream-->
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
-  <!-- BEGIN push notification permission -->
   <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
   <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-  <!--<permission-->
-  <!--android:name="com.tradehero.th.permission.C2D_MESSAGE"-->
-  <!--android:protectionLevel="signature"/>-->
-  <!--<uses-permission android:name="com.tradehero.th.permission.C2D_MESSAGE"/>-->
-
-  <!-- his permission is only necessary if your app has multiple processes -->
   <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
   <!--Baidu push-->
@@ -100,7 +85,6 @@
         android:theme="@style/AppBaseTheme.NoActionBar2"
         android:screenOrientation="portrait"/>
 
-    <!--android:theme="@style/AppBaseTheme.NoActionBarTrans"-->
     <activity
         android:name="com.tradehero.th.activities.MainActivity"
         android:windowSoftInputMode="adjustResize"
@@ -109,7 +93,6 @@
         />
 
 
-    <!--<android:theme="@style/TradeHero.Dashboard" />-->
     <activity
         android:name="com.tradehero.th.activities.DashboardActivity"
         android:screenOrientation="portrait"
@@ -121,9 +104,6 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
 
-        <!--<action android:name="com.android.vending.billing.IN_APP_NOTIFY" />-->
-        <!--<action android:name="com.android.vending.billing.RESPONSE_CODE" />-->
-        <!--<action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />-->
 
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending" android:pathPattern=".*"/>
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community" android:pathPattern=".*"/>
@@ -136,17 +116,12 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_web" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
-
-    <!--<activity-->
-    <!--android:name="com.facebook.LoginActivity"-->
-    <!--android:label="@string/app_name"-->
-    <!--android:theme="@android:style/Theme.Translucent.NoTitleBar"/>-->
-
+<!--
     <activity
         android:name="com.tradehero.th.activities.StockChartActivity"
         android:screenOrientation="sensorLandscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-
+-->
     <activity
         android:name="com.tradehero.th.activities.WeiboAuthAcitivity"
         android:windowSoftInputMode="adjustResize"
@@ -179,7 +154,8 @@
         android:screenOrientation="portrait"
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
     </activity>
-    <!-- Samsung IAP -->
+
+    <!-- Samsung IAP
     <activity
         android:name="com.sec.android.iap.lib.activity.InboxActivity"
         android:theme="@style/Theme.Empty"
@@ -192,46 +168,13 @@
         android:name="com.sec.android.iap.lib.activity.ItemActivity"
         android:theme="@style/Theme.Empty"
         android:configChanges="orientation|screenSize"/>
+    -->
 
-    <!-- GCM -->
-    <!-- REQUIRED for Urban Airship GCM-->
-    <!--<receiver android:name="com.urbanairship.CoreReceiver"/>-->
-    <!--<receiver-->
-    <!--android:name="com.urbanairship.push.GCMPushReceiver"-->
-    <!--android:permission="com.google.android.c2dm.permission.SEND">-->
-    <!--<intent-filter>-->
-    <!--<action android:name="com.google.android.c2dm.intent.RECEIVE"/>-->
-    <!--<action android:name="com.google.android.c2dm.intent.REGISTRATION"/>-->
 
-    <!--&lt;!&ndash; MODIFICATION REQUIRED - Use your package name as the category &ndash;&gt;-->
-    <!--<category android:name="com.tradehero.th"/>-->
-    <!--</intent-filter>-->
-    <!--&lt;!&ndash; REQUIRED for detecting when the application is upgraded so it can request a new GCM ID &ndash;&gt;-->
-    <!--<intent-filter>-->
-    <!--<action android:name="android.intent.action.PACKAGE_REPLACED"/>-->
-    <!--<data android:scheme="package"/>-->
-    <!--</intent-filter>-->
-    <!--</receiver>-->
 
-    <!--<service-->
-    <!--android:name="com.urbanairship.push.PushService"-->
-    <!--android:label="Push Notification Service"/>-->
-    <!--<service-->
-    <!--android:name="com.urbanairship.analytics.EventService"-->
-    <!--android:label="Event Service"/>-->
 
-    <!--<provider-->
-    <!--android:name="com.urbanairship.UrbanAirshipProvider"-->
-    <!--android:authorities="com.tradehero.th.urbanairship.provider"-->
-    <!--android:exported="false"-->
-    <!--android:multiprocess="true"/>-->
 
-    <!-- OPTIONAL (for segments support) -->
-    <!--<service android:name="com.urbanairship.location.LocationService" android:label="Segments Service"/>-->
 
-    <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
-    <!-- Replace the receiver below with your package and class name -->
-    <!--<receiver android:name=".models.push.urbanairship.UrbanAirshipIntentReceiver"/>-->
     <receiver android:name="com.tradehero.th.models.push.baidu.BaiduIntentReceiver">
       <intent-filter>
         <action android:name="com.tradehero.th.ACTION_NOTIFICATION_CLICKED"/>

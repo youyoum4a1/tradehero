@@ -8,7 +8,7 @@ public class EToroProviderSpecificResourcesDTO extends ProviderSpecificResources
     public EToroProviderSpecificResourcesDTO()
     {
         super();
-        tradeNowBtnImageResId = R.drawable.btn_etoro_tradenow;
+        //tradeNowBtnImageResId = R.drawable.btn_etoro_tradenow;
         //mainCompetitionFragmentTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
         //helpVideoListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_help_video_title;
         //helpVideoLinkBackgroundResId = R.drawable.btn_provider_3_macquarie;

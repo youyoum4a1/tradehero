@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -32,11 +31,12 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -51,7 +51,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
     private ChartDTO chartDTO;
     @Nullable private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
-    @InjectView(R.id.close) @Optional protected Button mCloseButton;
+    //@InjectView(R.id.close) @Optional protected Button mCloseButton;
 
     @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
 
@@ -155,16 +155,16 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         }
         this.timeSpanButtonSet = timeSpanButtonSetTemp;
 
-        if (mCloseButton != null)
-        {
-            mCloseButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View v)
-                {
-                    getActivity().finish();
-                }
-            });
-        }
+//        if (mCloseButton != null)
+//        {
+//            mCloseButton.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override public void onClick(View v)
+//                {
+//                    getActivity().finish();
+//                }
+//            });
+//        }
 
         chartImageCallback = new AspectRatioImageViewCallback(chartImage)
         {
@@ -215,11 +215,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
             rootView.removeCallbacks(chooseChartImageSizeTask);
             chooseChartImageSizeTask = null;
         }
-        if (mCloseButton != null)
-        {
-            mCloseButton.setOnClickListener(null);
-            mCloseButton = null;
-        }
+//        if (mCloseButton != null)
+//        {
+//            mCloseButton.setOnClickListener(null);
+//            mCloseButton = null;
+//        }
         chartImageCallback = null;
         ButterKnife.reset(this);
         super.onDestroyView();

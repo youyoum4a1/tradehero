@@ -5,8 +5,7 @@ import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
 public class Constants
 {
     // build constants
-    // TODO fix
-    public static final boolean RELEASE = true; // !BuildConfig.DEBUG;
+    public static final boolean RELEASE = true;
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
@@ -20,14 +19,6 @@ public class Constants
 
     public static final int LEADERBOARD_MARK_USER_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
 
-    public static final String FACEBOOK_PROFILE_PICTURE = "http://graph.facebook.com/%s/picture?type=large";
-
-    // TestFlightApp
-    public static final boolean TEST_FLIGHT_ENABLED = true;
-    public static final String TEST_FLIGHT_TOKEN = "a8a266bb-500c-4cdf-a5b0-f9c5bd6ad995";
-    public static final boolean TEST_FLIGHT_REPORT_CHECKPOINT = true;
-    public static final boolean TEST_FLIGHT_REPORT_LOG = true;
-
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
@@ -37,7 +28,6 @@ public class Constants
     public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
     // Request Header
-    public static final String ACCEPT_ENCODING = "Accept-Encoding";
     public static final String ACCEPT_ENCODING_GZIP = "gzip";
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
     public static final String AUTHORIZATION = "Authorization";
@@ -60,8 +50,6 @@ public class Constants
     // GCM
     public static final String GCM_STAGING_SENDER = "927417497470";
 
-    // TODO remove when automated build.
-    // 0 for international, 100 offical, 101 test. It is here to help with build multiple version
     private static final int VERSION = 101;
 
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
