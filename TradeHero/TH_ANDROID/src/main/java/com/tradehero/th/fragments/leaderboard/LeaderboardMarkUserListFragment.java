@@ -42,15 +42,16 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
-import java.util.Date;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.Date;
+import java.util.List;
 
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
@@ -382,13 +383,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                         (PerPagedFilteredLeaderboardKey) currentLeaderboardKey);
                 filterIcon.setIcon(
                         areEqual ?
-                                R.drawable.ic_action_icn_actionbar_filteroff :
-                                R.drawable.ic_action_icn_actionbar_filteron
+                                R.drawable.launcher :
+                                R.drawable.launcher
                 );
             }
             else
             {
-                filterIcon.setIcon(R.drawable.ic_action_icn_actionbar_filteroff);
+                filterIcon.setIcon(R.drawable.launcher);
             }
         }
     }

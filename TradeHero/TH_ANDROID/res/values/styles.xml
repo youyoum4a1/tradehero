@@ -190,7 +190,6 @@
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.OverflowButtonStyle" parent="Widget.Sherlock.Light.ActionButton.Overflow">
-    <item name="android:src">@drawable/ic_action_core_overflow</item>
   </style>
 
   <style name="TradeHero.Dashboard.ActionBar.WidgetStyle" parent="Widget">
@@ -216,7 +215,6 @@
     <item name="android:textSize">@dimen/text_header</item>
     <item name="android:textColor">@color/white</item>
     <item name="android:textStyle">bold</item>
-    <item name="android:drawableLeft">@drawable/icn_info_normal_small</item>
   </style>
 
   <style name="TH.VoteView" parent="TH.DiscussionActionButtons.Text">

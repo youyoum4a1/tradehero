@@ -11,9 +11,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.utils.DeviceUtil;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 import static butterknife.ButterKnife.findById;
 
@@ -32,7 +33,7 @@ public class AppContainerImpl implements AppContainer
         this.activity = activity;
         activity.setContentView(R.layout.dashboard_with_bottom_bar);
 
-        resideMenu.setBackground(R.drawable.parallax_bg);
+        resideMenu.setBackground(R.drawable.launcher);
         resideMenu.attachTo((ViewGroup) activity.getWindow().getDecorView());
 
         // hAcK to make the menu works while waiting for a injectable navigator

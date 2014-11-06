@@ -67,7 +67,6 @@
       android:id="@+id/translatable_tick_is_current"
       android:layout_width="@dimen/small_icon_w_h"
       android:layout_height="@dimen/small_icon_w_h"
-      android:src="@drawable/ic_tick_green"
       android:layout_gravity="center_vertical"
       android:visibility="gone"
       android:contentDescription="@null"/>

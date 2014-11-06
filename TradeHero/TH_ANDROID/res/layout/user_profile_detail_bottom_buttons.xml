@@ -30,7 +30,6 @@
           android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
-          android:drawableTop="@drawable/icn_followers"
           tools:text="0"
           />
 
@@ -64,7 +63,6 @@
           android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
-          android:drawableTop="@drawable/icn_heroes"
           tools:text="1"
           />
 
@@ -99,7 +97,6 @@
           android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
           android:drawablePadding="@dimen/timeline_bottom_button_drawable_adjustment"
-          android:drawableTop="@drawable/icn_trades"
           tools:text="56"
           />
 
@@ -133,7 +130,6 @@
           android:textColor="@color/black"
           android:textSize="@dimen/text_xlarge"
           android:textStyle="bold"
-          android:drawableTop="@drawable/icn_exchanges"
           tools:text="2"
           />
 
@@ -156,7 +152,6 @@
         android:layout_width="@dimen/medium_logo_w_h"
         android:layout_height="@dimen/medium_logo_w_h"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_action_action_about"
         android:contentDescription="@null"
         />
 

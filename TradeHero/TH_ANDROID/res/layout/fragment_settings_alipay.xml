@@ -33,11 +33,7 @@
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
-        android:drawableLeft="@drawable/accounts_glyph_email_default"
-        app:invalidDrawable="@drawable/accounts_glyph_email_error"
-        app:validDrawable="@drawable/accounts_glyph_email_ok"
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        app:validDrawableRight="@drawable/tick_green"
 
         app:minTextLength="1"
         app:validatePattern="@string/regex_email_validator"

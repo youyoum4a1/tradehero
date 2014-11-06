@@ -23,7 +23,6 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/upgrade_alerts"
         android:background="@null"
         android:contentDescription="@null"
         />

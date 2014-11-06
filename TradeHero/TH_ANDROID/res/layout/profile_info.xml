@@ -22,8 +22,6 @@
         style="@style/TradeHero.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/warning_red"
-        app:validDrawableRight="@drawable/tick_green"
 
         app:minTextLength="1"
         app:validatePattern="@string/regex_email_validator"
@@ -47,8 +45,6 @@
         style="@style/TradeHero.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/warning_red"
-        app:validDrawableRight="@drawable/tick_green"
 
         app:minTextLength="6"
         app:delayValidationByMilliSec="1000"
@@ -68,8 +64,6 @@
         style="@style/TradeHero.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/warning_red"
-        app:validDrawableRight="@drawable/tick_green"
 
         app:matchWith="@id/authentication_sign_up_password"
         app:delayValidationByMilliSec="1000"
@@ -96,8 +90,6 @@
           style="@style/TradeHero.Authentication.EditText"
 
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
-          app:invalidDrawableRight="@drawable/warning_red"
-          app:validDrawableRight="@drawable/tick_green"
 
           app:minTextLength="1"
           app:delayValidationByMilliSec="500"

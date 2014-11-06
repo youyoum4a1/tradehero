@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 public class ResetPortfolioTileView extends ImageView
@@ -46,7 +47,7 @@ public class ResetPortfolioTileView extends ImageView
 
         // no nid to clean on detach, coz this view's content will never change
         picasso.get()
-                .load(R.drawable.tile_trending_reset_portfolio)
+                .load(R.drawable.launcher)
                 .placeholder(R.drawable.white_rounded_background_xml)
                 .transform(backgroundTransformation)
                 .fit()

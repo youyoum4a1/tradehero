@@ -33,8 +33,7 @@
         android:layout_marginRight="10dp"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:src="@drawable/sort_community"/>
+        android:scaleType="centerInside"/>
 
     <ImageView
         android:id="@+id/user_photo"

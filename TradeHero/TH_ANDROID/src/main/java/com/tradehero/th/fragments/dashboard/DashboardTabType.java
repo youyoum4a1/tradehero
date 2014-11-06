@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,31 +24,31 @@ public enum DashboardTabType
             R.color.transparent, MeTimelineFragment.class),
     HOME(R.layout.tab_indicator_holo,
             R.string.dashboard_home, R.string.dashboard_home_key,
-            R.drawable.icn_menu_home, HomeFragment.class),
+            R.drawable.launcher, HomeFragment.class),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
-            R.drawable.icn_menu_trending, TrendingFragment.class),
+            R.drawable.launcher, TrendingFragment.class),
     COMMUNITY(R.layout.tab_indicator_holo,
             R.string.dashboard_community, R.string.dashboard_community_key,
-            R.drawable.icn_menu_leaderboards, LeaderboardCommunityFragment.class),
+            R.drawable.launcher, LeaderboardCommunityFragment.class),
     UPDATE_CENTER(R.layout.update_center_selector,
             R.string.dashboard_message_center, R.string.dashboard_message_center_key,
             R.color.transparent, UpdateCenterFragment.class),
     REFERRAL(R.layout.tab_indicator_holo,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
-            R.drawable.icn_menu_referral, FriendsInvitationFragment.class),
+            R.drawable.launcher, FriendsInvitationFragment.class),
     CONTEST_CENTER(R.layout.tab_indicator_holo,
             R.string.dashboard_contest_center, R.string.dashboard_contest_center_key,
-            R.drawable.icn_menu_contest_center, ContestCenterFragment.class),
+            R.drawable.launcher, ContestCenterFragment.class),
     STORE(R.layout.tab_indicator_holo,
             R.string.dashboard_store, R.string.dashboard_store_key,
-            R.drawable.icn_menu_store, StoreScreenFragment.class),
+            R.drawable.launcher, StoreScreenFragment.class),
     SETTING(R.layout.tab_indicator_holo,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
-            R.drawable.icn_menu_settings, SettingsFragment.class),
+            R.drawable.launcher, SettingsFragment.class),
     ADMIN_SETTINGS(R.layout.tab_indicator_holo,
             R.string.dashboard_admin_settings, R.string.dashboard_admin_settings_key,
-            R.drawable.icn_menu_settings, AdminSettingsFragment.class);
+            R.drawable.launcher, AdminSettingsFragment.class);
 
     private static final int DEFAULT_VIEW_LAYOUT_ID = R.layout.tab_indicator_holo;
 

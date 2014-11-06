@@ -17,13 +17,11 @@
 
         <item
             android:id="@+id/search_stock"
-            android:title="@string/search_stock_spinner_stock"
-            android:icon="@drawable/graph"/>
+            android:title="@string/search_stock_spinner_stock"/>
 
         <item
             android:id="@+id/search_people"
-            android:title="@string/search_stock_spinner_people"
-            android:icon="@drawable/sort_community"/>
+            android:title="@string/search_stock_spinner_people"/>
 
       </group>
 

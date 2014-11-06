@@ -5,7 +5,6 @@
 
   <header
       android:title="@string/settings_primary_faq"
-      android:icon="@drawable/settings_faq"
       android:fragment="com.tradehero.th.fragments.web.WebViewFragment">
 
     <extra

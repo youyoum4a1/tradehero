@@ -14,7 +14,6 @@
       android:layout_height="match_parent"
       android:background="@drawable/timed_header_left_bg"
       android:scaleType="fitCenter"
-      android:src="@drawable/ic_device_access_time"
       />
 
   <LinearLayout

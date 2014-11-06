@@ -41,7 +41,6 @@
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
           android:layout_alignParentTop="true"
-          android:src="@drawable/icn_watchlist_active"
           android:contentDescription="@null"
           android:visibility="gone"
           tools:visibility="visible"

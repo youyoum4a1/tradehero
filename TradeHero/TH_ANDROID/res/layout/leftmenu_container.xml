@@ -72,7 +72,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_trending"
             android:contentDescription="Trending icon"
         />
 
@@ -107,7 +106,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_community"
             android:contentDescription="Community icon"
         />
 
@@ -142,7 +140,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_portfolio"
             android:contentDescription="Portfolio icon"
         />
 
@@ -177,7 +174,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/icn_store"
             android:contentDescription="Storefront icon"
         />
 

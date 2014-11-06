@@ -11,8 +11,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.base.NavigatorActivity;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class DashboardPreferenceFragment extends PreferenceFragment
 {
@@ -52,7 +53,7 @@ public class DashboardPreferenceFragment extends PreferenceFragment
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
                     | ActionBar.DISPLAY_SHOW_HOME
                     | ActionBar.DISPLAY_USE_LOGO);
-            actionBar.setLogo(R.drawable.icn_actionbar_hamburger);
+            actionBar.setLogo(R.drawable.launcher);
         }
         actionBar.setHomeButtonEnabled(true);
     }

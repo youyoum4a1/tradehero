@@ -60,7 +60,6 @@
       android:layout_below="@id/alert_status"
       android:layout_alignParentBottom="true"
       android:paddingLeft="5dp"
-      android:src="@drawable/buy_stock"
       android:contentDescription="@null"
       />
 

@@ -18,7 +18,6 @@
         style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icn_comment"
         android:text="0"
         tools:text="200"
         />
@@ -29,7 +28,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:src="@drawable/icn_actions_share"
         android:contentDescription="@null"/>
 
     <TextView

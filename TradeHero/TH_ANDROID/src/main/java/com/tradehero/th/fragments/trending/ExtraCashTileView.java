@@ -9,6 +9,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 public class ExtraCashTileView extends ImageView
@@ -45,7 +46,7 @@ public class ExtraCashTileView extends ImageView
 
         // no need to clean on detach, coz this view's content will never change
         picasso.get()
-                .load(R.drawable.tile_trending_low_cash)
+                .load(R.drawable.launcher)
                 .placeholder(R.drawable.white_rounded_background_xml)
                 .transform(backgroundTransformation)
                 .fit()

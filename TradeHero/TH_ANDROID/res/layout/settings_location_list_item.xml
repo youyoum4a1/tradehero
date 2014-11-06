@@ -52,7 +52,6 @@
       android:layout_height="@dimen/small_icon_w_h"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
-      android:src="@drawable/ic_tick_green"
       android:visibility="gone"
       android:contentDescription="@null"/>
 

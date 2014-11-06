@@ -23,7 +23,6 @@
       android:hint="@string/authentication_twitter_email"
       android:layout_marginBottom="5dip"
       android:inputType="textEmailAddress"
-      android:drawableLeft="@drawable/accounts_glyph_email_default"
       style="@style/TradeHero.Authentication.EditText"/>
 
   <Button

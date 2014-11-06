@@ -33,7 +33,7 @@ public class CommentActionView extends CompoundButton
         if (oldValue != checked)
         {
             // mutate to preserve the original drawable. This works when the icon is black over transparent.
-            Drawable drawableLeft = getResources().getDrawable(R.drawable.icn_actions_comment).mutate();
+            Drawable drawableLeft = getResources().getDrawable(R.drawable.launcher).mutate();
             if (checked)
             {
                 drawableLeft.setColorFilter(getResources().getColor(R.color.timeline_action_button_text_color_pressed), PorterDuff.Mode.SRC_ATOP);

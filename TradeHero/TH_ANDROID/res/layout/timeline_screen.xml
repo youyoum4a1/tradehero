@@ -61,7 +61,6 @@
           android:text="@string/follow"
           android:textSize="@dimen/text_medium"
           android:textColor="@color/white"
-          android:drawableLeft="@drawable/icn_star_white"
           android:visibility="gone"/>
 
       <Button
@@ -76,7 +75,6 @@
           android:text="@string/message"
           android:textSize="@dimen/text_medium"
           android:textColor="@color/white"
-          android:drawableLeft="@drawable/icn_message_white"
           android:visibility="gone"/>
 
     </LinearLayout>

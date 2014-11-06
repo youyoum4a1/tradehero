@@ -9,7 +9,6 @@
   <Button
       android:id="@+id/btn_facebook_signin"
       style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_fb_normal"
       android:background="@drawable/btn_background_social_facebook"
       android:text="@string/facebook_register"
       />
@@ -33,7 +32,6 @@
   <Button
       android:id="@+id/btn_qq_signin"
       style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_qq_normal"
       android:background="@drawable/btn_background_social_qq"
       android:text="@string/qq_register"
       />
@@ -41,7 +39,6 @@
   <Button
       android:id="@+id/btn_linkedin_signin"
       style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_linkedin_normal"
       android:background="@drawable/btn_background_social_linkedin"
       android:text="@string/linkedin_register"
       />
@@ -49,7 +46,6 @@
   <Button
       android:id="@+id/authentication_email_sign_up_link"
       style="@style/TradeHero.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_email_noti"
       android:background="@drawable/btn_background_email"
       android:text="@string/email_register"
       android:textColor="@color/black"
