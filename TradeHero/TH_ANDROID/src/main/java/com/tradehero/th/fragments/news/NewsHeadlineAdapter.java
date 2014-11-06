@@ -3,15 +3,15 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.view.LayoutInflater;
-import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
+import org.jetbrains.annotations.Nullable;
+import timber.log.Timber;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear>
 {
@@ -34,7 +34,6 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHea
         Integer[] backgroundResArray = null;
         try
         {
-            array = context.getResources().obtainTypedArray(R.array.news_item_background_list);
             int len = array.length();
             backgroundResArray = new Integer[len];
             for (int i = 0; i < len; i++)

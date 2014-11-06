@@ -28,15 +28,16 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.text.SimpleDateFormat;
+
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>
 {
     public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
-    public static final int RES_ID_INACTIVE = R.drawable.buyscreen_info;
-    public static final int RES_ID_CROSS_RED = R.drawable.cross_red;
+    public static final int RES_ID_INACTIVE = R.drawable.image_icon_validation_valid;
+    public static final int RES_ID_CROSS_RED = R.drawable.image_icon_validation_valid;
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.hero_title) TextView title;

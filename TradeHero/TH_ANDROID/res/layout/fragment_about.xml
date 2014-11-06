@@ -72,7 +72,6 @@
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/icn_about_vkey"
           android:contentDescription="@null"
           />
     </LinearLayout>
@@ -94,7 +93,6 @@
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/icn_about_repustate"
           android:contentDescription="@null"
           />
     </LinearLayout>
@@ -117,7 +115,6 @@
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/icn_about_heckyl"
           android:contentDescription="@null"
           />
     </LinearLayout>

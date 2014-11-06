@@ -86,7 +86,6 @@
     <Preference
         android:key="@string/key_settings_location"
         android:title="@string/settings_location"
-        android:icon="@drawable/location_settings"
         />
 
     <Preference
@@ -141,7 +140,6 @@
     <CheckBoxPreference
         android:key="@string/key_settings_translations_auto_translate"
         android:title="@string/settings_translations_auto_translate"
-        android:icon="@drawable/default_translation"
       />
 
   </PreferenceCategory>

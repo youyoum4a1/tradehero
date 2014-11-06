@@ -9,7 +9,7 @@ public class Constants
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
-    public static final boolean DOGFOOD_BUILD = true;
+    public static final boolean DOGFOOD_BUILD = false;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -46,9 +46,6 @@ public class Constants
     // Localytics
     public static final String LOCALYTICS_APP_KEY_RELEASE = "10a8a8e1d386d096bfe1641-8b2cc16e-5b52-11e4-a386-005cf8cbabd8";
     public static final String LOCALYTICS_APP_KEY_DEBUG =   "8f24cffb81cc32757a011bd-a6396038-58f6-11e4-a5f7-009c5fda0a25";
-
-    // GCM
-    public static final String GCM_STAGING_SENDER = "927417497470";
 
     private static final int VERSION = 101;
 

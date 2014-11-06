@@ -39,7 +39,6 @@
         android:layout_width="@dimen/medium_logo_w_h"
         android:layout_height="@dimen/medium_logo_w_h"
         android:layout_marginLeft="8dp"
-        android:src="@drawable/add_alert_default"
         android:contentDescription="@null"
         android:scaleType="centerInside"
         android:background="@drawable/basic_transparent_selector"

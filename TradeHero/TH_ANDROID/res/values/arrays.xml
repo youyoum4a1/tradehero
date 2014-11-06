@@ -59,32 +59,6 @@
     <item>Sathya Prakash|The Imp</item>
   </string-array>
 
-  <array name="news_item_background_list">
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-       <item>@drawable/bg</item>
-   </array>
 
   <string-array name="share_to">
     <item>@string/wechat</item>

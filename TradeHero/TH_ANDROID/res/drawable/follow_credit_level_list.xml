@@ -7,7 +7,6 @@
   <item
       android:id="@+id/credit_layer_1"
       android:maxLevel="9"
-      android:drawable="@drawable/credit_1"
       android:top="0dp"
       android:right="0dp"
       android:bottom="0dp"
@@ -17,7 +16,6 @@
   <item
       android:id="@+id/credit_layer_2"
       android:maxLevel="19"
-      android:drawable="@drawable/credit_5"
       android:top="0dp"
       android:right="0dp"
       android:bottom="0dp"
@@ -27,7 +25,6 @@
   <item
       android:id="@+id/credit_layer_3"
       android:maxLevel="10000"
-      android:drawable="@drawable/credit_10"
       android:top="0dp"
       android:right="0dp"
       android:bottom="0dp"

@@ -9,8 +9,8 @@ public class PhillipMacquarieProviderSpecificResourcesDTO extends ProviderSpecif
     {
         super();
         //mainCompetitionFragmentTitleResId = R.string.competition_macquarie_warrant_hero_main_title;
-        notJoinedBannerImageResId = R.drawable.lb_phillip_macquarie_large_notjoined;
-        joinedBannerImageResId = R.drawable.lb_phillip_macquarie_large_joined;
+        notJoinedBannerImageResId = R.drawable.btn_phillip_macquarie_tradenow;
+        joinedBannerImageResId = R.drawable.btn_phillip_macquarie_tradenow;
         tradeNowBtnImageResId = R.drawable.btn_phillip_macquarie_tradenow;
         //helpVideoListFragmentTitleResId = R.string.competition_macquarie_warrant_hero_help_video_title;
         helpVideoLinkBackgroundResId = R.drawable.btn_provider_22_phillip_macquarie;

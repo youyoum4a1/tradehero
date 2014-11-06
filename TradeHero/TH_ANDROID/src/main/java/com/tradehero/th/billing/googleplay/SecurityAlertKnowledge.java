@@ -3,6 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -20,19 +21,19 @@ import javax.inject.Singleton;
         }
         else if (count <= 2)
         {
-            return R.drawable.buy_alerts_2;
+            return R.drawable.default_image;
         }
         else if (count <= 5)
         {
-            return R.drawable.buy_alerts_5;
+            return R.drawable.default_image;
         }
         else if (count <= 7)
         {
-            return R.drawable.alerts_7;
+            return R.drawable.default_image;
         }
         else if (count >= IABConstants.ALERT_PLAN_UNLIMITED)
         {
-            return R.drawable.buy_alerts_infinite;
+            return R.drawable.default_image;
         }
         else
         {
