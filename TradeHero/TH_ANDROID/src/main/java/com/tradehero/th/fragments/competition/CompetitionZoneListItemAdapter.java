@@ -4,7 +4,11 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
+<<<<<<< HEAD
 import com.tradehero.th.R;
+=======
+
+>>>>>>> 1 build config and first version; need data from server
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -14,21 +18,37 @@ import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsV
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+<<<<<<< HEAD
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+=======
+>>>>>>> 1 build config and first version; need data from server
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
     public static final int ITEM_TYPE_ADS = 0;
     public static final int ITEM_TYPE_HEADER = 1;
+<<<<<<< HEAD
     public static final int ITEM_TYPE_PORTFOLIO = 2;
     public static final int ITEM_TYPE_ZONE_ITEM = 3;
     public static final int ITEM_TYPE_LEADERBOARD = 4;
     public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
     public static final int ITEM_TYPE_LOADING = 6;
+=======
+    public static final int ITEM_TYPE_PRIZE_POOL = 2;
+    public static final int ITEM_TYPE_PORTFOLIO = 3;
+    public static final int ITEM_TYPE_ZONE_ITEM = 4;
+    public static final int ITEM_TYPE_LEADERBOARD = 5;
+    public static final int ITEM_TYPE_LEGAL_MENTIONS = 6;
+>>>>>>> 1 build config and first version; need data from server
 
     @NonNull private final Integer[] viewTypeToResId;
     private List<Integer> orderedTypes;
@@ -48,6 +68,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
             int zoneItemLayoutResId,
             int adsResId,
             int headerResId,
+            int prizeResId,
             int portfolioResId,
             int leaderboardResId,
             int legalResId)
@@ -57,6 +78,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.viewTypeToResId = new Integer[7];
         this.viewTypeToResId[ITEM_TYPE_ADS] = adsResId;
         this.viewTypeToResId[ITEM_TYPE_HEADER] = headerResId;
+        this.viewTypeToResId[ITEM_TYPE_PRIZE_POOL] = prizeResId;
         this.viewTypeToResId[ITEM_TYPE_PORTFOLIO] = portfolioResId;
         this.viewTypeToResId[ITEM_TYPE_ZONE_ITEM] = layoutResourceId;
         this.viewTypeToResId[ITEM_TYPE_LEADERBOARD] = leaderboardResId;

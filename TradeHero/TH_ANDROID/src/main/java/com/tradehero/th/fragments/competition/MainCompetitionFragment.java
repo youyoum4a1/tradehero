@@ -16,10 +16,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -61,8 +58,17 @@ import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
-import dagger.Lazy;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+import dagger.Lazy;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -210,6 +216,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_item,
                 R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
+                R.layout.competition_zone_prize_pool,
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
@@ -294,6 +301,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected void linkWith(CompetitionDTOList competitionDTOs1, boolean andDisplay)
     {
+        Timber.d("lyl CompetitionDTOList.size="+competitionDTOs1.size());
         this.competitionDTOs = competitionDTOs1;
         competitionZoneListItemAdapter.setCompetitionDTOs(competitionDTOs1);
         if (andDisplay)

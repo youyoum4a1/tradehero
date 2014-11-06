@@ -6,7 +6,7 @@ buildscript {
   dependencies {
     classpath 'com.android.tools.build:gradle:0.14.2'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-    classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
+    classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
     classpath 'me.tatarka:gradle-retrolambda:2.4.0'
   }
@@ -70,7 +70,7 @@ android {
   compileSdkVersion 20
 
   buildToolsVersion "20.0.0"
-  //useOldManifestMerger=true
+  useOldManifestMerger=true
 
   dexOptions {
     // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
@@ -102,15 +102,15 @@ android {
 
   buildTypes {
     debug {
-      minifyEnabled "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
+        runProguard "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
       proguardFile 'proguard/proguard-android-fast.txt'
       //zipAlign true
       // versionNameSuffix interferes with the version the server receives
-      applicationIdSuffix '.dev'
-      versionNameSuffix '-dev'
+//      applicationIdSuffix '.dev'
+//      versionNameSuffix '-dev'
     }
     release {
-      minifyEnabled true
+        runProguard true
       proguardFile 'proguard/proguard-android.txt'
       shrinkResources false
       signingConfig signingConfigs.release

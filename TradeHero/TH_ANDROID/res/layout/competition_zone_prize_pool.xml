@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="afterDescendants"
+    >
+
+    <TextView
+        android:id="@+id/competition_legal_rules"
+        style="@style/TH.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:maxLines="1"
+        android:background="@drawable/basic_white_selector"
+        android:text="@string/provider_competition_rules_title"
+        android:paddingBottom="@dimen/provider_legal_vertical_padding"
+        android:paddingTop="@dimen/provider_legal_vertical_padding"
+        android:paddingLeft="@dimen/provider_legal_horizontal_padding"
+        android:paddingRight="@dimen/provider_legal_horizontal_padding"
+        android:drawableRight="@drawable/settings_forward_light"
+        />
+
+    <TextView
+        android:id="@+id/competition_legal_terms"
+        style="@style/TH.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/competition_legal_rules"
+        android:text="@string/provider_competition_terms_title"
+        android:background="@drawable/basic_white_selector"
+        android:paddingBottom="@dimen/provider_legal_vertical_padding"
+        android:paddingTop="@dimen/provider_legal_vertical_padding"
+        android:paddingLeft="@dimen/provider_legal_horizontal_padding"
+        android:paddingRight="@dimen/provider_legal_horizontal_padding"
+        android:layout_marginTop="1dp"
+        android:drawableRight="@drawable/settings_forward_light"
+        android:visibility="gone"
+        />
+
+</com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView>
