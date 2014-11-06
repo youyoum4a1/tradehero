@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.amazon.AmazonConstants;
 import com.tradehero.common.billing.amazon.AmazonSKU;
@@ -18,25 +19,19 @@ import com.tradehero.common.billing.amazon.exception.AmazonPurchaseCanceledExcep
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
+import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
 import com.tradehero.th.billing.amazon.request.THUIAmazonRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.social.HeroListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THBaseAmazonInteractor
@@ -58,35 +53,23 @@ public class THBaseAmazonInteractor
     implements THAmazonInteractor
 {
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NonNull protected final HeroListCacheRx heroListCache;
-    @NonNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInteractor(
             @NonNull Provider<Activity> activityProvider,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileCache userProfileCache,
-            @NonNull UserProfileCacheRx userProfileCacheRx,
-            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THAmazonAlertDialogUtil thAmazonAlertDialogUtil,
+            @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull THAmazonLogicHolder billingActor,
-            @NonNull UserProfileDTOUtil userProfileDTOUtil,
-            @NonNull HeroListCacheRx heroListCache,
-            @NonNull UserService userService)
+            @NonNull UserProfileDTOUtil userProfileDTOUtil)
     {
         super(
                 billingActor,
                 activityProvider,
-                currentUserId,
-                userProfileCache,
-                userProfileCacheRx,
-                portfolioCompactListCache,
                 progressDialogUtil,
-                thAmazonAlertDialogUtil);
+                thAmazonAlertDialogUtil,
+                billingRequisitePreparer);
         this.userProfileDTOUtil = userProfileDTOUtil;
-        this.heroListCache = heroListCache;
-        this.userService = userService;
     }
     //</editor-fold>
 

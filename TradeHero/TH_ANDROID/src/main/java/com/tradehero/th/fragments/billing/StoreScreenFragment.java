@@ -75,19 +75,20 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store, container, false);
+        return inflater.inflate(R.layout.fragment_store, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         initViews(view);
-        return view;
     }
 
     @Override protected void initViews(View view)
     {
-        if (listView != null)
-        {
-            listView.setAdapter(storeItemAdapter);
-            listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        }
+        listView.setAdapter(storeItemAdapter);
+        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -135,10 +136,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        if(listView != null)
-        {
-            listView.setOnScrollListener(null);
-        }
+        listView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -233,6 +231,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.store_option_list)
     protected void onStoreListItemClick(AdapterView<?> adapterView, View view, int position, long l)
     {

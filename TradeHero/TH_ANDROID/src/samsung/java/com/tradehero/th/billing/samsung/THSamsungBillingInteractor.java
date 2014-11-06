@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungSKU;
@@ -12,25 +13,19 @@ import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.billing.samsung.exception.SamsungPaymentCancelledException;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
+import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
 import com.tradehero.th.billing.samsung.request.THUISamsungRequest;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
-import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.social.HeroListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungBillingInteractor
@@ -54,35 +49,23 @@ public class THSamsungBillingInteractor
     public static final String BUNDLE_KEY_ACTION = THSamsungBillingInteractor.class.getName() + ".action";
 
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NonNull protected final HeroListCacheRx heroListCache;
-    @NonNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungBillingInteractor(
             @NonNull Provider<Activity> activityProvider,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileCache userProfileCache,
-            @NonNull UserProfileCacheRx userProfileCacheRx,
-            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THSamsungAlertDialogUtil thSamsungAlertDialogUtil,
+            @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull THSamsungLogicHolder billingActor,
-            @NonNull UserProfileDTOUtil userProfileDTOUtil,
-            @NonNull HeroListCacheRx heroListCache,
-            @NonNull UserService userService)
+            @NonNull UserProfileDTOUtil userProfileDTOUtil)
     {
         super(
                 billingActor,
                 activityProvider,
-                currentUserId,
-                userProfileCache,
-                userProfileCacheRx,
-                portfolioCompactListCache,
                 progressDialogUtil,
-                thSamsungAlertDialogUtil);
+                thSamsungAlertDialogUtil,
+                billingRequisitePreparer);
         this.userProfileDTOUtil = userProfileDTOUtil;
-        this.heroListCache = heroListCache;
-        this.userService = userService;
     }
     //</editor-fold>
 

@@ -120,6 +120,7 @@ android {
   productFlavors {
     googleplay {
       flavorDimension "marketSegment"
+      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
     }
     china {
       flavorDimension "marketSegment"
