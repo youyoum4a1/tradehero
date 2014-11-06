@@ -94,7 +94,7 @@ public class UserFriendsListAdapter extends BaseAdapter
                     .error(R.drawable.superman_facebook)
                     .into(holder.imgUserHead);
 
-            holder.imgUserName.setText(item.displayName);
+            holder.imgUserName.setText(item.getDisplayName());
 
             double roi = 0;
             if (item instanceof UserFollowerDTO)

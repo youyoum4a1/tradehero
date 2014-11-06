@@ -96,7 +96,7 @@ public class NewsDialogLayout extends ShareDialogLayout
         else if (discussionToShare instanceof DiscussionDTO)
         {
             return String.format("%s: %s",
-                    ((DiscussionDTO) discussionToShare).user.displayName,
+                    ((DiscussionDTO) discussionToShare).user.getDisplayName(),
                     ((DiscussionDTO) discussionToShare).text);
         }
         else if (discussionToShare instanceof AbstractDiscussionDTO)

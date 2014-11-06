@@ -119,7 +119,7 @@ public class UserProfileResideMenuItem extends LinearLayout
 
             if (userProfileDTO != null)
             {
-                userDisplayName.setText(userProfileDTO.displayName);
+                userDisplayName.setText(userProfileDTO.getDisplayName());
 
                 if (userProfileDTO.portfolio.roiSinceInception == null)
                 {

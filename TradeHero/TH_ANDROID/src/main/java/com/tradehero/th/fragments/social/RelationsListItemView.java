@@ -184,7 +184,7 @@ public class RelationsListItemView extends RelativeLayout
         {
             if (allowableRecipientDTO != null && allowableRecipientDTO.user != null)
             {
-                name.setText(allowableRecipientDTO.user.displayName);
+                name.setText(allowableRecipientDTO.user.getDisplayName());
             }
             else
             {

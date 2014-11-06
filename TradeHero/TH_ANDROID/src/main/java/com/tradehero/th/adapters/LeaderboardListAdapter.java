@@ -127,7 +127,7 @@ public class LeaderboardListAdapter extends BaseAdapter
                     .error(R.drawable.superman_facebook)
                     .into(holder.imgUserHead);
 
-            holder.imgUserName.setText(item.displayName);
+            holder.imgUserName.setText(item.getDisplayName());
 
             if (leaderboardType == LeaderboardDefKeyKnowledge.DAYS_ROI)
             {//显示 PerROI

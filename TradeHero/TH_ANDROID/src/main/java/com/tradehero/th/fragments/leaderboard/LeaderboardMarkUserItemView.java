@@ -272,7 +272,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     {
         displayRankingColor(userBaseDTO);
 
-        lbmuDisplayName.setText(userBaseDTO.displayName);
+        lbmuDisplayName.setText(userBaseDTO.getDisplayName());
 
         loadDefaultUserImage();
         if (userBaseDTO.picture != null)

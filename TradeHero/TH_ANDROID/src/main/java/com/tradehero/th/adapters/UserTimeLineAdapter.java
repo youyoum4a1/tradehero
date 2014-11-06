@@ -316,7 +316,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             {
                 if (item.getUser() != null)
                 {
-                    holder.tvUserTLName.setText(item.getUser().displayName);
+                    holder.tvUserTLName.setText(item.getUser().getDisplayName());
                     picasso.load(item.getUser().picture)
                             .placeholder(R.drawable.superman_facebook)
                             .error(R.drawable.superman_facebook)

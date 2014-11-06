@@ -306,7 +306,7 @@ public class DiscussSendFragment extends DashboardFragment
 
         if (extraInput instanceof UserProfileCompactDTO)
         {
-            extraText = String.format(MENTIONED_FORMAT, ((UserProfileCompactDTO) extraInput).displayName, ((UserProfileCompactDTO) extraInput).id);
+            extraText = String.format(MENTIONED_FORMAT, ((UserProfileCompactDTO) extraInput).getDisplayName(), ((UserProfileCompactDTO) extraInput).id);
         }
 
         if (extraInput instanceof UserCompetitionDTO)

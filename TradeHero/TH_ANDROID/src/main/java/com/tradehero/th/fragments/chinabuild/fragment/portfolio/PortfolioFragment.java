@@ -546,8 +546,7 @@ public class PortfolioFragment extends DashboardFragment
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
         //startLoadding();
-        getDataFromNormalUser();
-
+        //getDataFromNormalUser();
         //getPositionDirectly(showUserBaseKey);
 
         if (adapter != null && adapter.getCount() == 0)
@@ -711,6 +710,7 @@ public class PortfolioFragment extends DashboardFragment
             alertDialogUtilLazy.get().dismissProgressDialog();
             userProfileCache.get().put(userProfileDTO.getBaseKey(), userProfileDTO);
             fetchSimplePage(true);
+            getDataFromNormalUser();
         }
 
         @Override public void failure(RetrofitError retrofitError)

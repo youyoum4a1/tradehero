@@ -1733,7 +1733,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             }
             else if (dto instanceof DiscussionDTO)
             {
-                tvUserTLName.setText(((DiscussionDTO) dto).user.displayName);
+                tvUserTLName.setText(((DiscussionDTO) dto).user.getDisplayName());
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
                 picasso.load(((DiscussionDTO) dto).user.picture)
                         .placeholder(R.drawable.superman_facebook)

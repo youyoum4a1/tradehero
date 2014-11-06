@@ -871,7 +871,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         if (value == null) return;
         mUserProfileDTO = value;
-        tvUserName.setText(value.displayName);
+        tvUserName.setText(value.getDisplayName());
 
         picasso.get()
                 .load(value.picture)

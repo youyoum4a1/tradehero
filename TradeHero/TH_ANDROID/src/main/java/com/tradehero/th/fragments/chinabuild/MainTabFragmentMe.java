@@ -165,7 +165,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
             }
             else
             {
-                tvMeName.setText(user.displayName);
+                tvMeName.setText(user.getDisplayName());
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
             tvAllHero.setText(String.valueOf(user.getAllHeroCount()));

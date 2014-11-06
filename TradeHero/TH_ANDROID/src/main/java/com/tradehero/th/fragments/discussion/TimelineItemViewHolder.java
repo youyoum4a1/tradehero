@@ -76,7 +76,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
             UserProfileCompactDTO userProfileCompactDTO = discussionDTO.getUser();
             if (userProfileCompactDTO != null)
             {
-                return userProfileCompactDTO.displayName;
+                return userProfileCompactDTO.getDisplayName();
             }
         }
         return null;
