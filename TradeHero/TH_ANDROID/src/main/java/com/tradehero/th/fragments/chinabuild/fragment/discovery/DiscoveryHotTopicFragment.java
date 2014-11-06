@@ -43,6 +43,8 @@ public class DiscoveryHotTopicFragment extends DashboardFragment
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
 
+    private int PERPAGE = 20;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -132,14 +134,14 @@ public class DiscoveryHotTopicFragment extends DashboardFragment
     {
         detachTimeLineMiddleCallback();
         maxID = -1;
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineHotTopic(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineHotTopic(currentUserId.toUserBaseKey(), PERPAGE, -1, maxID, new TimeLineCallback());
     }
 
     public void fetchTimeLineMore()
     {
         detachTimeLineMiddleCallback();
         maxID = adapter.getMaxID();
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineHotTopic(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineHotTopic(currentUserId.toUserBaseKey(), PERPAGE, maxID, -1, new TimeLineCallback());
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>

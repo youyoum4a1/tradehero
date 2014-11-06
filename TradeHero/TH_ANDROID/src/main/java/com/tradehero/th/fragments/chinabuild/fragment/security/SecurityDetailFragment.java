@@ -243,7 +243,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.tvTLPraise) TextView tvTLPraise;
     @InjectView(R.id.tvTLComment) TextView tvTLComment;
     @InjectView(R.id.tvTLShare) TextView tvTLShare;
-    @InjectView(R.id.ic_info_buy_sale_btns)LinearLayout bottomBarLL;
+    @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout bottomBarLL;
 
     @Inject public Lazy<PrettyTime> prettyTime;
     AbstractDiscussionCompactDTO dtoDiscuss;
@@ -322,7 +322,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (!isInWatchList)
         {
             addSecurityToWatchList();
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_ADDWATCH));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_ADDWATCH));
         }
         else
         {
@@ -363,7 +363,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                         {
                             //取消关注
                             handleButtonDeleteClicked();
-                            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CANCELWATCH));
+                            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,
+                                    AnalyticsConstants.BUTTON_STOCK_DETAIL_CANCELWATCH));
                         }
                     }
                 });
@@ -393,9 +394,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void setBuySaleButtonVisable(boolean isCanSale)
     {
-        llBuySaleButtons.setVisibility(View.VISIBLE);
-        llSecurityBuy.setVisibility(View.VISIBLE);
-        llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
+        if (llBuySaleButtons != null && llSecurityBuy != null && llSecuritySale != null)
+        {
+            llBuySaleButtons.setVisibility(View.VISIBLE);
+            llSecurityBuy.setVisibility(View.VISIBLE);
+            llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
+        }
     }
 
     @Override protected void initViews(View view)
@@ -482,7 +486,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         fetchWatchlist();
         super.onResume();
 
-        if(THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY)){
+        if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_BUY))
+        {
             showGuideView();
         }
     }
@@ -838,12 +843,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
             pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
 
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
         }
         else
         {//快来抢沙发
             enterDiscussSend();
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
         }
     }
 
@@ -869,33 +874,37 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (view.getId() == R.id.btnTabChart0)
         {
             setChartView(0);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
         }
         else if (view.getId() == R.id.btnTabChart1)
         {
             setChartView(1);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
         }
         else if (view.getId() == R.id.btnTabChart2)
         {
             setChartView(2);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
         }
         else if (view.getId() == R.id.btnTabChart3)
         {
             setChartView(3);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
         }
         else if (view.getId() == R.id.btnTabDiscuss)
         {
             setDiscussOrNewsView(0);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
         }
 
         else if (view.getId() == R.id.btnTabNews)
         {
             setDiscussOrNewsView(1);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
         }
     }
 
@@ -996,11 +1005,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
                 tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
 
-                if(securityCompactDTO.getPriceDifferent().startsWith("-")||securityCompactDTO.getPriceDifferent().startsWith("0.00"))
-                {tvSecurityDetailNumHead.setVisibility(View.GONE);}
+                if (securityCompactDTO.getPriceDifferent().startsWith("-") || securityCompactDTO.getPriceDifferent().startsWith("0.00"))
+                {
+                    tvSecurityDetailNumHead.setVisibility(View.GONE);
+                }
                 else
-                {tvSecurityDetailNumHead.setVisibility(View.INVISIBLE);}
-
+                {
+                    tvSecurityDetailNumHead.setVisibility(View.INVISIBLE);
+                }
 
                 if (securityCompactDTO.high != null)
                 {
@@ -1042,20 +1054,21 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public void onClickItems(View view)
     {
         int id = view.getId();
-        if (id == R.id.llSecurityBuy )
+        if (id == R.id.llSecurityBuy)
         {
             enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_BUY));
         }
-        else if( id == R.id.llSecuritySale)
+        else if (id == R.id.llSecuritySale)
         {
             enterBuySale(id == R.id.llSecurityBuy);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_SALE));
         }
         else if (id == R.id.llSecurityDiscuss)
         {
             enterDiscussSend();
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_OPER_DISCUSS));
         }
     }
 
@@ -1081,7 +1094,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         if (portfolioCompactDTO == null)
         {
             Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
-            if(isFromCompetition)
+            if (isFromCompetition)
             {
                 showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
             }
@@ -1109,7 +1122,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             THToast.show("你所购买的股票已涨停");
         }
-        else if(type == ERROR_NO_COMPETITION_PROTFOLIO)
+        else if (type == ERROR_NO_COMPETITION_PROTFOLIO)
         {
             THToast.show("请先报名参加比赛");
         }
@@ -1223,7 +1236,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             linkWith((SecurityCompactDTO) null, andDisplay);
             linkWith((PositionDTOCompactList) null, andDisplay);
         }
-
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
@@ -1242,7 +1254,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             throw new IllegalArgumentException("This security compact is not for " + this.securityId);
         }
         this.securityCompactDTO = securityCompactDTO;
-
     }
 
     public void linkWith(final UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -1562,7 +1573,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
     {
-        if(dto!=null)
+        if (dto != null)
         {
             Bundle bundle = new Bundle();
             bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
@@ -1573,20 +1584,19 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})
     public void onOperaterClicked(View view)
     {
-        if (view.getId() == R.id.llDisscurssOrNews )
+        if (view.getId() == R.id.llDisscurssOrNews)
         {
             enterTimeLineDetail(getAbstractDiscussionCompactDTO());
-
         }
-        else if(view.getId() == R.id.tvUserTLContent)
+        else if (view.getId() == R.id.tvUserTLContent)
         {
-            if(tvUserTLContent instanceof MarkdownTextView)
+            if (tvUserTLContent instanceof MarkdownTextView)
             {
-                if(!((MarkdownTextView) tvUserTLContent).isClicked)
+                if (!((MarkdownTextView) tvUserTLContent).isClicked)
                 {
                     enterTimeLineDetail(getAbstractDiscussionCompactDTO());
                 }
-                ((MarkdownTextView)view).isClicked = false;
+                ((MarkdownTextView) view).isClicked = false;
             }
         }
         else if (view.getId() == R.id.imgSecurityTLUserHeader)
@@ -1621,7 +1631,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 strShare = (((DiscussionDTO) dto).text);
             }
 
-            if(securityName!=null && securityId.getDisplayName()!=null)
+            if (securityName != null && securityId.getDisplayName() != null)
             {
                 strShare = securityName + "(" + securityId.getDisplayName() + ")  " + strShare;
             }
@@ -1826,17 +1836,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    private void showGuideView(){
+    private void showGuideView()
+    {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 int width = llSecurityBuy.getWidth();
                 int height = llSecurityBuy.getHeight();
-                int radius = llSecurityBuy.getHeight()/2;
-                int position_y = (int)bottomBarLL.getY() + height/2;
-                int position_x = (int)bottomBarLL.getX() + width/2;
-                ((DashboardActivity)getActivity()).showGuideView(position_x, position_y, radius, GuideView.TYPE_GUIDE_STOCK_BUG);
+                int radius = llSecurityBuy.getHeight() / 2;
+                int position_y = (int) bottomBarLL.getY() + height / 2;
+                int position_x = (int) bottomBarLL.getX() + width / 2;
+                ((DashboardActivity) getActivity()).showGuideView(position_x, position_y, radius, GuideView.TYPE_GUIDE_STOCK_BUG);
             }
         }, 500);
     }
