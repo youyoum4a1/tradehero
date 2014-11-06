@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -20,15 +22,12 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.loaders.PagedDTOCacheLoaderNew;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.widget.MultiScrollListener;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 {
@@ -40,14 +39,14 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     @InjectView(R.id.progress) ProgressBar mProgressSpinner;
     @InjectView(R.id.filter_text) @Optional EditText filterText;
-    @InjectView(R.id.trending_gridview) AbsListView securityListView;
+    @InjectView(R.id.listview) AbsListView securityListView;
 
     protected TextWatcher filterTextWatcher;
     protected FlagNearEdgeScrollListener listViewScrollListener;
     protected GestureDetector listViewGesture;
 
     protected int perPage = DEFAULT_PER_PAGE;
-    protected SecurityItemViewAdapter<SecurityCompactDTO> securityItemViewAdapter;
+    protected SecurityItemViewAdapter securityItemViewAdapter;
     protected int firstVisiblePosition = 0;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -73,11 +72,11 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         // TODO ListView should not have to care about whether its ListAdapter is wrapped or not
         if (adapter instanceof WrapperListAdapter)
         {
-            securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) ((WrapperListAdapter) adapter).getWrappedAdapter();
+            securityItemViewAdapter = (SecurityItemViewAdapter) ((WrapperListAdapter) adapter).getWrappedAdapter();
         }
         else
         {
-            securityItemViewAdapter = (SecurityItemViewAdapter<SecurityCompactDTO>) adapter;
+            securityItemViewAdapter = (SecurityItemViewAdapter) adapter;
         }
 
         securityListView.setOnItemClickListener(createOnItemClickListener());

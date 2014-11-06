@@ -32,7 +32,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         SecurityCompactDTO,
         SecurityCompactDTOList,
         SecurityCompactDTOList,
-        SecurityItemView<SecurityCompactDTO>>
+        SecurityItemView>
         implements HasSelectedItem
 {
     @Inject SecurityCompactListCacheRx securityCompactListCache;
@@ -61,9 +61,9 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return selectedItem;
     }
 
-    @Override protected SecurityItemViewAdapterNew<SecurityCompactDTO> createItemViewAdapter()
+    @Override protected SecurityItemViewAdapterNew createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew<>(
+        return new SecurityItemViewAdapterNew(
                 getActivity(),
                 R.layout.search_security_item);
     }

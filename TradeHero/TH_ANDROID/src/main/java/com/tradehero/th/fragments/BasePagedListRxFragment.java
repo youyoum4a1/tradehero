@@ -7,8 +7,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -46,7 +46,7 @@ abstract public class BasePagedListRxFragment<
     public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
     @InjectView(R.id.search_empty_container) protected View emptyContainer;
-    @InjectView(R.id.listview) protected ListView listView;
+    @InjectView(R.id.listview) protected AbsListView listView;
     @InjectView(R.id.progress) protected ProgressBar mProgress;
 
     protected int perPage = DEFAULT_PER_PAGE;

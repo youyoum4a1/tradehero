@@ -81,6 +81,7 @@ public class XpToast extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
+        ButterKnife.inject(this);
         if (!isInEditMode())
         {
             userLevelProgressBar.setUserLevelProgressBarLevelUpListener(this);
@@ -98,6 +99,7 @@ public class XpToast extends RelativeLayout
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
         userLevelProgressBar.setUserLevelProgressBarListener(null);
         isLevelDefError = false;
+        ButterKnife.inject(this);
         super.onDetachedFromWindow();
     }
 

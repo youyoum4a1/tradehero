@@ -195,7 +195,7 @@ public class TrendingFragment extends SecurityListFragment
     @Override protected ListAdapter createSecurityItemViewAdapter()
     {
         SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter =
-                new SimpleSecurityItemViewAdapter(getActivity(), getActivity().getLayoutInflater(), R.layout.trending_security_item);
+                new SimpleSecurityItemViewAdapter(getActivity(), R.layout.trending_security_item);
 
         //return simpleSecurityItemViewAdapter;
         // use above adapter to disable extra tile on the trending screen

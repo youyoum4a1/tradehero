@@ -1,19 +1,18 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import javax.inject.Inject;
 
-public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter<SecurityCompactDTO>
+public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
 {
     protected final Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<SecurityCompactDTO> securityCompactPredicateFilter;
 
     //<editor-fold desc="Constructors">
-    public SimpleSecurityItemViewAdapter(Context context, LayoutInflater inflater, int layoutResourceId)
+    public SimpleSecurityItemViewAdapter(Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
         filterToUse = new SecurityItemFilter(securityCompactPredicateFilter);

@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 
-public class WarrantSecurityItemView extends SecurityItemView<SecurityCompactDTO>
+public class WarrantSecurityItemView extends SecurityItemView
 {
     protected TextView combinedStrikePriceType;
     protected TextView strikePrice;
