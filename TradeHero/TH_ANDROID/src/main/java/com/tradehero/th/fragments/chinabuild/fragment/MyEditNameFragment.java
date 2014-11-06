@@ -56,7 +56,7 @@ public class MyEditNameFragment extends DashboardFragment implements View.OnClic
         UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
-            mName.setText(userProfileDTO.displayName);
+            mName.setText(userProfileDTO.getDisplayName());
         }
         return view;
     }

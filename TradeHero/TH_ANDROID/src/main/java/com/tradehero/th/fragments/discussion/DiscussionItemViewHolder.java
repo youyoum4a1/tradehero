@@ -38,7 +38,7 @@ public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>
     {
         if (discussionDTO != null && discussionDTO.user != null)
         {
-            return discussionDTO.user.displayName;
+            return discussionDTO.user.getDisplayName();
         }
         return null;
     }

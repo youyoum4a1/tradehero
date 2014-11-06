@@ -31,7 +31,7 @@ public class UserBaseDTOUtil
                 return getFirstLastName(context, userBaseDTO);
             }
 
-            return userBaseDTO.displayName;
+            return userBaseDTO.getDisplayName();
         }
 
         return context.getString(R.string.na);
@@ -42,7 +42,7 @@ public class UserBaseDTOUtil
     {
         if (userBaseDTO != null)
         {
-            return userBaseDTO.displayName;
+            return userBaseDTO.getDisplayName();
         }
 
         return context.getString(R.string.na);

@@ -226,7 +226,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         {
             if (usernameTextView != null)
             {
-                usernameTextView.setText(userProfileDTO.displayName);
+                usernameTextView.setText(userProfileDTO.getDisplayName());
             }
 
             if (this.userImageView != null)

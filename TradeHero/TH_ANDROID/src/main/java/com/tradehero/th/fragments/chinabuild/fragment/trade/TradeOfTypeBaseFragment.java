@@ -77,7 +77,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
     }
 
     @Override
@@ -342,7 +342,8 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         if (key.getPage() == PagedLeaderboardKey.FIRST_PAGE)
         {
             currentPage = 0;
-            adapterSecurity = new SecurityListAdapter(getActivity(), list, getTradeType());
+            //adapterSecurity = new SecurityListAdapter(getActivity(), list, getTradeType());
+            adapterSecurity.setSecurityList(list);
             listSecurity.setAdapter(adapterSecurity);
         }
         else

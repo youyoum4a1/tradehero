@@ -286,7 +286,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             AbstractDiscussionCompactDTO dto = adapter.getItem(position);
             if (dto instanceof DiscussionDTO)
             {
-                String displayName = ((DiscussionDTO) dto).user.displayName;
+                String displayName = ((DiscussionDTO) dto).user.getDisplayName();
                 int id = ((DiscussionDTO) dto).userId;
                 String strHint = "回复 " + displayName + ":";
                 if(edtSend!=null)
@@ -444,7 +444,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
             else if (dto instanceof DiscussionDTO)
             {
-                tvUserTLName.setText(((DiscussionDTO) dto).user.displayName);
+                tvUserTLName.setText(((DiscussionDTO) dto).user.getDisplayName());
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((DiscussionDTO) dto).createdAtUtc));
                 tvUserTLContent.setText(((DiscussionDTO) dto).text);
                 picasso.load(((DiscussionDTO) dto).user.picture)
@@ -455,7 +455,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             else if (dto instanceof TimelineItemDTO)
             {
                 tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(((TimelineItemDTO) dto).createdAtUtc));
-                tvUserTLName.setText(((TimelineItemDTO) dto).user.displayName);
+                tvUserTLName.setText(((TimelineItemDTO) dto).user.getDisplayName());
                 tvUserTLContent.setText(((TimelineItemDTO) dto).text);
                 picasso.load(((TimelineItemDTO) dto).user.picture)
                         .placeholder(R.drawable.superman_facebook)

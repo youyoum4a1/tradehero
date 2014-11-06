@@ -46,8 +46,7 @@ public class UserBaseDTO extends ExtendedDTO
             try
             {
                 return Country.valueOf(countryCode);
-            }
-            catch (IllegalArgumentException e)
+            } catch (IllegalArgumentException e)
             {
                 Timber.e(e, "Failed to get Country.%s", countryCode);
             }
@@ -70,11 +69,19 @@ public class UserBaseDTO extends ExtendedDTO
         try
         {
             return THJsonAdapter.getInstance().toStringBody(this);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
             return "Failed to json";
         }
+    }
+
+    public String getDisplayName()
+    {
+        if(displayName!=null)
+        {
+            return displayName.trim();
+        }
+        return "";
     }
 }

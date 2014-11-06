@@ -613,7 +613,7 @@ public class UserMainPage extends DashboardFragment
                 picasso.load(user.picture).placeholder(R.drawable.superman_facebook).fit().error(R.drawable.superman_facebook)
                         .centerInside().into(imgMeHead);
             }
-            tvMeName.setText(user.displayName);
+            tvMeName.setText(user.getDisplayName());
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
             tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
         }

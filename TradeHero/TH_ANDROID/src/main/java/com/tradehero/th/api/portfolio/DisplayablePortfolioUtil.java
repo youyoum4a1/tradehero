@@ -24,7 +24,7 @@ public class DisplayablePortfolioUtil
                 displayablePortfolioDTO.userBaseDTO != null &&
                 !currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey()))
         {
-            return displayablePortfolioDTO.userBaseDTO.displayName;
+            return displayablePortfolioDTO.userBaseDTO.getDisplayName();
         }
 
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)

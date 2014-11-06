@@ -183,7 +183,7 @@ public class UserProfileCompactViewHolder
         {
             if (userProfileDTO != null)
             {
-                displayName.setText(userProfileDTO.displayName);
+                displayName.setText(userProfileDTO.getDisplayName());
             }
             else
             {

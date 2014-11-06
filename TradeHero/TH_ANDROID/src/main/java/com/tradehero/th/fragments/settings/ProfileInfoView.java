@@ -319,8 +319,8 @@ public class ProfileInfoView extends LinearLayout
         this.userProfileDTO = userProfileDTO;
         firstName.setText(userProfileDTO.firstName);
         lastName.setText(userProfileDTO.lastName);
-        displayName.setText(userProfileDTO.displayName);
-        displayName.setOriginalUsernameValue(userProfileDTO.displayName);
+        displayName.setText(userProfileDTO.getDisplayName());
+        displayName.setOriginalUsernameValue(userProfileDTO.getDisplayName());
         referralCode.setText(userProfileDTO.inviteCode);
         if (userProfileDTO.inviteCode != null)
         {

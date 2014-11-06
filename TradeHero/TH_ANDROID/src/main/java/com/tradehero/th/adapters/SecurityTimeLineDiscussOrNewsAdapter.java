@@ -187,7 +187,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                 else if (item instanceof DiscussionDTO)
                 {
                     holder.tvUserTLContent.setText(((DiscussionDTO) item).text);
-                    holder.tvUserTLName.setText(((DiscussionDTO) item).user.displayName);
+                    holder.tvUserTLName.setText(((DiscussionDTO) item).user.getDisplayName());
                     holder.imgSecurityTLUserHeader.setVisibility(View.VISIBLE);
                     picasso.get()
                             .load(((DiscussionDTO) item).user.picture)
