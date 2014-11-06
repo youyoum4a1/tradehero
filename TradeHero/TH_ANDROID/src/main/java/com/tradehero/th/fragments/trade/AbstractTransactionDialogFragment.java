@@ -495,13 +495,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     protected void linkWith(PortfolioCompactDTOList value, boolean andDisplay)
     {
         this.portfolioCompactDTOs = value;
-        portfolioCompactDTO = value.findFirstWhere(new Predicate<PortfolioCompactDTO>()
-        {
-            @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
-            {
-                return portfolioCompactDTO.getPortfolioId().equals(getPortfolioId());
-            }
-        });
+        portfolioCompactDTO = value.findFirstWhere(portfolioCompactDTO1 -> portfolioCompactDTO1.getPortfolioId().equals(getPortfolioId()));
         if (andDisplay)
         {
             updateTransactionDialog();
@@ -686,13 +680,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                 shareForTransaction(SocialNetworkEnum.TW),
                 shareForTransaction(SocialNetworkEnum.LN),
                 shareForTransaction(SocialNetworkEnum.WB),
-                //shareLocation ? null : null, // TODO implement location
-                //shareLocation ? null : null,
-                //shareLocation ? null : null,
                 null,
                 null,
                 null,
-                //sharePublic,
                 false,
                 unSpannedComment != null ? unSpannedComment.toString() : null,
                 quoteDTO.rawResponse,
@@ -862,32 +852,28 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
     {
-        return new QuickPriceButtonSet.OnQuickPriceButtonSelectedListener()
-        {
-            @Override public void onQuickPriceButtonSelected(double priceSelected)
+        return priceSelected -> {
+            if (quoteDTO == null)
             {
-                if (quoteDTO == null)
+                // Nothing to do
+            }
+            else
+            {
+                Double priceRefCcy = getPriceCcy();
+                if (priceRefCcy == null || priceRefCcy == 0)
                 {
                     // Nothing to do
                 }
                 else
                 {
-                    Double priceRefCcy = getPriceCcy();
-                    if (priceRefCcy == null || priceRefCcy == 0)
-                    {
-                        // Nothing to do
-                    }
-                    else
-                    {
-                        linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
-                    }
+                    linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
                 }
-
-                Integer selectedQuantity = mTransactionQuantity;
-                mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
-                updateTransactionDialog();
-                mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
             }
+
+            Integer selectedQuantity = mTransactionQuantity;
+            mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
+            updateTransactionDialog();
+            mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
         };
     }
 

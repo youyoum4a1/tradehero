@@ -63,36 +63,9 @@ public class TimelineHeaderButtonView extends LinearLayout
         this.clickListener = clickListener;
     }
 
-    protected OnTouchListener createBtnTouchListener(final TimelineFragment.TabType tabType)
-    {
-        return new OnTouchListener()
-        {
-            @Override public boolean onTouch(View view, MotionEvent motionEvent)
-            {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP)
-                {
-                    changeButtonLook(tabType);
-                    notifyClicked(tabType);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        };
-    }
-
     protected OnClickListener createBtnClickListener(final TimelineFragment.TabType tabType)
     {
-        return new OnClickListener()
-        {
-            @Override public void onClick(View view)
-            {
-                //changeButtonLook(tabType);
-                notifyClicked(tabType);
-            }
-        };
+        return view -> notifyClicked(tabType);
     }
 
     protected void notifyClicked(TimelineFragment.TabType tabType)

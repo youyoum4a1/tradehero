@@ -120,13 +120,7 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
         TimelineHeaderButtonView castedView = (TimelineHeaderButtonView) convertView;
         castedView.changeButtonLook(currentTabType);
-        castedView.setTimelineProfileClickListener(new TimelineProfileClickListener()
-        {
-            @Override public void onBtnClicked(@NonNull TimelineFragment.TabType tabType)
-            {
-                notifyProfileClickListener(tabType);
-            }
-        });
+        castedView.setTimelineProfileClickListener(tabType -> notifyProfileClickListener(tabType));
 
         return convertView;
     }

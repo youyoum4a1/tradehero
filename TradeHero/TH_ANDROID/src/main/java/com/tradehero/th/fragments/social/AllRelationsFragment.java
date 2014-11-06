@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -176,7 +175,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         @Override public void onNext(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
         {
-            //mRelationsList = userProfileCompactCache.get(value.getData());
             mRelationsList = pair.second.getData();
             alertDialogUtilLazy.get().dismissProgressDialog();
             mRelationsListItemAdapter.addAll(mRelationsList);
@@ -251,14 +249,9 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                         isEmpty = false;
                         mRelationsListItemAdapter.updateItem(userFollowed, pair.second);
                         adapterViewUtils.get()
-                                .updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class, new Predicate<AllowableRecipientDTO>()
-                                {
-                                    @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)
-                                    {
-                                        return allowableRecipientDTO != null
-                                                && allowableRecipientDTO.user.getBaseKey().equals(userFollowed);
-                                    }
-                                });
+                                .updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class,
+                                        allowableRecipientDTO -> allowableRecipientDTO != null
+                                                && allowableRecipientDTO.user.getBaseKey().equals(userFollowed));
                     }
                 });
     }

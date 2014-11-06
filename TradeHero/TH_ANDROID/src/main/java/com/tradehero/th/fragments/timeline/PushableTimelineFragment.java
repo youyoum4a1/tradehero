@@ -41,13 +41,6 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         Boolean isFollowing = isPurchaserFollowingUserShown();
         updateBottomButton();
-
-        //MenuItem settingsButton = menu.findItem(R.id.menu_settings);
-        //if (settingsButton != null)
-        //{
-        //    settingsButton.setVisible(false);
-        //}
-
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -57,7 +50,6 @@ public class PushableTimelineFragment extends TimelineFragment
         if (andDisplay)
         {
             displayActionBarTitle();
-            //displayFollowButton();
         }
     }
 
@@ -83,17 +75,6 @@ public class PushableTimelineFragment extends TimelineFragment
             }
         }
         return null;
-    }
-
-    private void handleInfoButtonPressed()
-    {
-        heroAlertDialogUtil.popAlertFollowHero(getActivity(), new DialogInterface.OnClickListener()
-        {
-            @Override public void onClick(DialogInterface dialog, int which)
-            {
-                premiumFollowUser(shownUserBaseKey);
-            }
-        });
     }
 
     @Override public <T extends Fragment> boolean allowNavigateTo(@NonNull Class<T> fragmentClass, Bundle args)

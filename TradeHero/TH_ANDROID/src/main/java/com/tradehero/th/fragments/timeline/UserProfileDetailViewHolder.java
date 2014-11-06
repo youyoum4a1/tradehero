@@ -90,25 +90,21 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     protected void loadBgPicture()
     {
-        displayTopViewBackgroundRunnable = new Runnable()
-        {
-            @Override public void run()
+        displayTopViewBackgroundRunnable = () -> {
+            if (userProfileDTO != null &&
+                    profileTop != null &&
+                    profileTop.getWidth() > 0 &&
+                    profileTop.getHeight() > 0 &&
+                    topBackgroundTarget != null)
             {
-                if (userProfileDTO != null &&
-                        profileTop != null &&
-                        profileTop.getWidth() > 0 &&
-                        profileTop.getHeight() > 0 &&
-                        topBackgroundTarget != null)
+                loadDefaultBG();
+                if (userProfileDTO.picture != null)
                 {
-                    loadDefaultBG();
-                    if (userProfileDTO.picture != null)
-                    {
-                        picasso.load(userProfileDTO.picture)
-                                .transform(peopleBackgroundTransformation)
-                                .resize(profileTop.getWidth(), profileTop.getHeight())
-                                .centerCrop()
-                                .into(topBackgroundTarget);
-                    }
+                    picasso.load(userProfileDTO.picture)
+                            .transform(peopleBackgroundTransformation)
+                            .resize(profileTop.getWidth(), profileTop.getHeight())
+                            .centerCrop()
+                            .into(topBackgroundTarget);
                 }
             }
         };

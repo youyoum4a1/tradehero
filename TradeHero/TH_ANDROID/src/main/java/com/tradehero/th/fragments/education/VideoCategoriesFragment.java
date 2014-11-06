@@ -20,7 +20,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 
 public class VideoCategoriesFragment extends BasePagedListRxFragment<
-        PagedVideoCategories, // But it also needs to be a PagedDTOKey
+        PagedVideoCategories,
         VideoCategoryDTO,
         VideoCategoryDTOList,
         PaginatedVideoCategoryDTO,

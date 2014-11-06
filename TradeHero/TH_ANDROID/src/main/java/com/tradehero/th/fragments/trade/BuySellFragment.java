@@ -292,13 +292,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             abstractTransactionDialogFragment.getDialog().show();
         }
 
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                mBuySellBtnContainer.setTranslationY(y);
-            }
-        });
+        dashboardTabHost.get().setOnTranslate((x, y) -> mBuySellBtnContainer.setTranslationY(y));
     }
 
     @Override public void onPause()
@@ -840,13 +834,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         View rootView = getView();
         if (rootView != null)
         {
-            rootView.postDelayed(new Runnable()
-            {
-                @Override public void run()
-                {
-                    loadStockBgLogo();
-                }
-            }, MS_DELAY_FOR_BG_IMAGE);
+            rootView.postDelayed(() -> loadStockBgLogo(), MS_DELAY_FOR_BG_IMAGE);
         }
     }
 
@@ -917,8 +905,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     protected void resizeBackground(RequestCreator requestCreator, ImageView imageView,
             Callback callback)
     {
-        //int width = mInfoFrame.getWidth();
-        //int height = mInfoFrame.getHeight();
         int width = mStockBgLogo.getWidth();
         int height = mStockBgLogo.getHeight();
         if (width > 0 && height > 0)

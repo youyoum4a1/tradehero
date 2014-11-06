@@ -13,8 +13,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 
-public class SocialFriendsListView extends RelativeLayout {
-
+public class SocialFriendsListView extends RelativeLayout
+{
     @InjectView(R.id.content_wrapper)
     View contentWrapper;
     @InjectView(R.id.social_friends_list)
@@ -35,21 +35,25 @@ public class SocialFriendsListView extends RelativeLayout {
     private OnClickListener onClickListener;
 
     //<editor-fold desc="Constructors">
-    public SocialFriendsListView(Context context) {
+    public SocialFriendsListView(Context context)
+    {
         super(context);
     }
 
-    public SocialFriendsListView(Context context, AttributeSet attrs) {
+    public SocialFriendsListView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
-    public SocialFriendsListView(Context context, AttributeSet attrs, int defStyle) {
+    public SocialFriendsListView(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
     }
     //</editor-fold>
 
     @Override
-    protected void onFinishInflate() {
+    protected void onFinishInflate()
+    {
         super.onFinishInflate();
         ButterKnife.inject(this);
         listView.setEmptyView(emptyView);
@@ -75,9 +79,9 @@ public class SocialFriendsListView extends RelativeLayout {
 
     public void setInviteAllViewText(String strInvite)
     {
-        if(inviteAllView!=null)
+        if (inviteAllView != null)
         {
-            ((TextView)inviteAllView).setText(strInvite);
+            ((TextView) inviteAllView).setText(strInvite);
         }
     }
 
@@ -106,30 +110,36 @@ public class SocialFriendsListView extends RelativeLayout {
         this.onClickListener = l;
     }
 
-    public void showErrorView() {
+    public void showErrorView()
+    {
         showOnlyThis(errorView);
     }
 
-    public void showContentView() {
+    public void showContentView()
+    {
         showOnlyThis(contentWrapper);
     }
 
-    public void showLoadingView() {
+    public void showLoadingView()
+    {
         showOnlyThis(progressBar);
     }
 
-    public void showEmptyView() {
+    public void showEmptyView()
+    {
         showOnlyThis(emptyView);
     }
 
-    private void showOnlyThis(View view) {
+    private void showOnlyThis(View view)
+    {
         changeViewVisibility(contentWrapper, view == contentWrapper);
         changeViewVisibility(errorView, view == errorView);
         changeViewVisibility(progressBar, view == progressBar);
         changeViewVisibility(emptyView, view == emptyView);
     }
 
-    private void changeViewVisibility(View view, boolean visible) {
+    private void changeViewVisibility(View view, boolean visible)
+    {
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }

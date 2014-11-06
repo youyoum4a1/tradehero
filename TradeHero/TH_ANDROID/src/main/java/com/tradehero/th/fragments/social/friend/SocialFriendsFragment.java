@@ -577,19 +577,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
-        //Invite Success will not disappear the friend in Invie
-        //if (friendDTOList != null && usersToInvite != null)
-        //{
-        //    for (UserFriendsDTO userFriendsDTO:usersToInvite)
-        //    {
-        //        boolean removed = friendDTOList.remove(userFriendsDTO);
-        //        Timber.d("handleInviteSuccess remove: %s, result: %s",userFriendsDTO,removed);
-        //    }
-        //}
-        //
-        //socialFriendsListAdapter.clear();
-        //socialFriendsListAdapter.addAll(friendDTOList);
-        //// TODO
         THToast.show(R.string.invite_friend_request_sent);
         checkUserType();
     }
@@ -719,13 +706,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                friendsRootView.inviteFollowAllContainer.setTranslationY(y);
-            }
-        });
+        dashboardTabHost.get().setOnTranslate((x, y) -> friendsRootView.inviteFollowAllContainer.setTranslationY(y));
     }
 
     @Override public void onPause()

@@ -346,13 +346,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setOnRefreshListener(mainTimelineAdapter);
         timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
-        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                onMainItemClick(adapterView, view, i, l);
-            }
-        });
+        timelineListView.setOnItemClickListener(this::onMainItemClick);
 
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
         {
@@ -367,13 +361,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchUserProfile(false);
         fetchMessageThreadHeader();
 
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                btnContainer.setTranslationY(y);
-            }
-        });
+        dashboardTabHost.get().setOnTranslate((x, y) -> btnContainer.setTranslationY(y));
     }
 
     @Override public void onPause()
@@ -539,7 +527,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (shownProfile != null)
         {
-            if (shownProfile.id == currentUserId.get().intValue())
+            if (shownProfile.id == currentUserId.get())
             {
                 setActionBarTitle(getString(R.string.me));
             }
@@ -686,30 +674,20 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             mFollowButton.setText(R.string.following_premium);
         }
         mFollowButton.setVisibility(View.VISIBLE);
-        mFollowButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                handleFollowRequested(shownProfile);
-            }
-        });
+        mFollowButton.setOnClickListener(v -> handleFollowRequested(shownProfile));
         mSendMsgButton.setVisibility(View.VISIBLE);
-        mSendMsgButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
+        mSendMsgButton.setOnClickListener(v -> {
+            if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
+                    || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
             {
-                if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
-                        || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
-                {
-                    detachFollowDialogCombo();
-                    followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
-                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
-                            createFollowForMessageRequestedListener());
-                }
-                else
-                {
-                    pushPrivateMessageFragment();
-                }
+                detachFollowDialogCombo();
+                followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
+                        UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
+                        createFollowForMessageRequestedListener());
+            }
+            else
+            {
+                pushPrivateMessageFragment();
             }
         });
     }
@@ -787,13 +765,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected TimelineProfileClickListener createTimelineProfileClickListener()
     {
-        return new TimelineProfileClickListener()
-        {
-            @Override public void onBtnClicked(@NonNull TabType tabType)
-            {
-                display(tabType);
-            }
-        };
+        return this::display;
     }
 
     public class FreeUserFollowedCallback implements Callback<UserProfileDTO>
@@ -896,10 +868,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             {
                 THToast.show(R.string.error_fetch_message_thread_header);
                 Timber.e(e, "Error while getting message thread");
-            }
-            else
-            {
-                // There is just no existing thread
             }
         }
     }

@@ -74,7 +74,7 @@ public class UserProfileCompactViewHolder
     {
         if (mEdit != null)
         {
-            if (userProfileDTO != null && userProfileDTO.id == currentUserId.get().intValue())
+            if (userProfileDTO != null && userProfileDTO.id == currentUserId.get())
             {
                 mEdit.setVisibility(View.VISIBLE);
             }
