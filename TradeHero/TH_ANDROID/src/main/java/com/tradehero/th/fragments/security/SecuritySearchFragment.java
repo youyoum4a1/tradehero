@@ -1,10 +1,13 @@
 package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -13,20 +16,18 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.fragments.BaseSearchFragment;
+import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
+import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import rx.Subscription;
+import rx.Observer;
 import timber.log.Timber;
 
-public class SecuritySearchFragment extends BaseSearchFragment<
+public class SecuritySearchFragment extends BaseSearchRxFragment<
         SecurityListType,
         SecurityCompactDTO,
         SecurityCompactDTOList,
@@ -34,8 +35,8 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         SecurityItemView<SecurityCompactDTO>>
         implements HasSelectedItem
 {
-    @Inject Lazy<SecurityCompactListCacheRx> securityCompactListCache;
-    private Subscription stockSearchSubscription;
+    @Inject SecurityCompactListCacheRx securityCompactListCache;
+    @Inject Analytics analytics;
 
     protected void initViews(View view)
     {
@@ -67,24 +68,9 @@ public class SecuritySearchFragment extends BaseSearchFragment<
                 R.layout.search_security_item);
     }
 
-    @Override protected void unregisterCache(DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener)
+    @Override protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
     {
-        Subscription subscriptionCopy = stockSearchSubscription;
-        if (subscriptionCopy != null)
-        {
-            subscriptionCopy.unsubscribe();
-        }
-        stockSearchSubscription = null;
-    }
-
-    @Override protected void registerCache(SecurityListType key, DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> listener)
-    {
-        //securityCompactListCache.get().register(key, listener);
-    }
-
-    @Override protected void requestCache(SecurityListType key)
-    {
-        //securityCompactListCache.get().getOrFetchAsync(key);
+        return securityCompactListCache;
     }
 
     @NonNull @Override public SecurityListType makePagedDtoKey(int page)
@@ -124,23 +110,27 @@ public class SecuritySearchFragment extends BaseSearchFragment<
         navigator.get().pushFragment(BuySellFragment.class, args);
     }
 
-    private DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityIdListCacheListener()
+    @Override protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)
     {
-        return new SecurityIdListCacheListener();
+        return new SecurityIdListCacheObserver(key);
     }
 
-    private class SecurityIdListCacheListener extends ListCacheListener
+    protected class SecurityIdListCacheObserver extends ListCacheObserver
     {
-        @Override
-        public void onDTOReceived(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)
+        protected SecurityIdListCacheObserver(@NonNull SecurityListType key)
         {
-            super.onDTOReceived(key, value);
+            super(key);
+        }
+
+        @Override public void onNext(Pair<SecurityListType, SecurityCompactDTOList> pair)
+        {
+            super.onNext(pair);
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
         }
 
-        @Override public void onErrorThrown(@NonNull SecurityListType key, @NonNull Throwable error)
+        @Override public void onError(Throwable error)
         {
-            super.onErrorThrown(key, error);
+            super.onError(error);
             THToast.show(getString(R.string.error_fetch_security_list_info));
             Timber.e("Error fetching the list of securities " + key, error);
         }

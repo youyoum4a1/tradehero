@@ -38,7 +38,7 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
         implements HasSelectedItem
 {
     @Inject UserBaseKeyListCacheRx userBaseKeyListCache;
-    @Inject protected Analytics analytics;
+    @Inject Analytics analytics;
     @Inject THRouter thRouter;
 
     protected void initViews(View view)
