@@ -43,7 +43,6 @@ import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class NewsHeadlineFragment extends Fragment
 {
@@ -151,11 +150,8 @@ public class NewsHeadlineFragment extends Fragment
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
 
         Observable<NewsItemListKey> newsItemListKeyObservable = createNewsItemListKeyObservable()
-                .share() // convert to hot observable coz activateNewsListView can be call more than once
-                .distinctUntilChanged(NewsItemListKey::hashCode)
-                .doOnNext(i -> Timber.d("next: " + i + "=" + i.hashCode()))
-                .doOnSubscribe(() -> Timber.d("subscribed:" + newsItemListKey))
-                .doOnUnsubscribe(() -> Timber.d("unsubscribed:" + newsItemListKey));
+                .share() // convert to hot observable coz replaceNewsItemListView can be call more than once
+                .distinctUntilChanged(NewsItemListKey::hashCode);
 
         newsSubject = PublishSubject.create();
         newsSubject.subscribe(new EmptyObserver<List<NewsItemDTOKey>>()
@@ -176,7 +172,11 @@ public class NewsHeadlineFragment extends Fragment
                         .map(NewsItemCompactDTO::getDiscussionKey)
                         .toList());
 
-        activateNewsListView(newsItemListKey);
+        activateNewsItemListView();
+    }
+
+    private void activateNewsItemListView()
+    {
         progressBar.setVisibility(View.VISIBLE);
         newsSubscription = rxLoaderManager.create(newsItemListKey, paginatedNewsItemListKeyObservable)
                 .subscribeOn(Schedulers.io())
@@ -184,18 +184,13 @@ public class NewsHeadlineFragment extends Fragment
                 .subscribe(newsSubject);
     }
 
-    protected void activateNewsListView(NewsItemListKey newKey)
+    protected final void replaceNewsItemListView(NewsItemListKey newKey)
     {
         if (!newsItemListKey.equals(newKey))
         {
             NewsItemListKey oldKey = newsItemListKey;
             newsItemListKey = newKey;
-
-            progressBar.setVisibility(View.VISIBLE);
-            newsSubscription = rxLoaderManager.create(newsItemListKey, paginatedNewsItemListKeyObservable)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(newsSubject);
+            activateNewsItemListView();
             rxLoaderManager.remove(oldKey);
         }
     }
@@ -228,7 +223,7 @@ public class NewsHeadlineFragment extends Fragment
                 });
     }
 
-    public void setScrollListener(AbsListView.OnScrollListener scrollListener)
+    public final void setScrollListener(AbsListView.OnScrollListener scrollListener)
     {
         this.scrollListener = scrollListener;
     }

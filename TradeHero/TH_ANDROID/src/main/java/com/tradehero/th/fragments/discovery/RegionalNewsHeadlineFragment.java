@@ -49,7 +49,7 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::activateNewsListView);
+                .doOnNext(this::replaceNewsItemListView);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
