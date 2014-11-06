@@ -5,9 +5,6 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 
-/**
- * Created by thonguyen on 23/10/14.
- */
 public class PaginationObservable
 {
     /**
