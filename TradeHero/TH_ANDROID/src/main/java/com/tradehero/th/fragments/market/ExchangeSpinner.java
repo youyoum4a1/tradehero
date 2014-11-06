@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.market;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import android.support.annotation.NonNull;
 
 public class ExchangeSpinner extends Spinner
 {
@@ -16,11 +16,6 @@ public class ExchangeSpinner extends Spinner
         super(context, attrs);
     }
     //</editor-fold>
-
-    @Override public void setSelection(int position)
-    {
-        super.setSelection(position);
-    }
 
     public void setSelection(@NonNull ExchangeCompactDTO exchangeCompactDTO)
     {

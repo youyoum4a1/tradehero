@@ -94,9 +94,14 @@ abstract public class BasePagedListRxFragment<
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
-        listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get()));
+        listView.setOnScrollListener(createListViewScrollListener());
         listView.setEmptyView(emptyContainer);
         listView.setAdapter(itemViewAdapter);
+    }
+
+    @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
+    {
+        return new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get());
     }
 
     abstract protected int getFragmentLayoutResId();
@@ -377,12 +382,6 @@ abstract public class BasePagedListRxFragment<
             {
                 itemViewAdapter.clear();
             }
-        }
-        else if (canMakePagedDtoKey())
-        {
-            // Prefetch next
-            PagedDTOKeyType pagedKey = makePagedDtoKey(key.getPage() + 1);
-            getCache().get(pagedKey);
         }
     }
 }

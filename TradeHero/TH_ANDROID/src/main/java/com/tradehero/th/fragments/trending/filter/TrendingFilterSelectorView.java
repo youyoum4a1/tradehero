@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -19,10 +21,13 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class TrendingFilterSelectorView extends RelativeLayout
 {
+    @Inject Analytics analytics;
+
     @InjectView(R.id.previous_filter) public ImageButton mPrevious;
     @InjectView(R.id.next_filter) public ImageButton mNext;
     @InjectView(R.id.title) public TextView mTitle;
@@ -31,9 +36,9 @@ public class TrendingFilterSelectorView extends RelativeLayout
     @InjectView(R.id.exchange_selection) public ExchangeSpinner mExchangeSelection;
     private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
+    private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    @Inject Analytics analytics;
-    private OnFilterTypeChangedListener changedListener;
+    @NonNull private BehaviorSubject<TrendingFilterTypeDTO> trendingTypeBehavior;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterSelectorView(Context context, AttributeSet attrs)
@@ -41,6 +46,11 @@ public class TrendingFilterSelectorView extends RelativeLayout
         super(context, attrs);
         HierarchyInjector.inject(this);
         trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
+        trendingTypeBehavior = BehaviorSubject.create(trendingFilterTypeDTO);
+        mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
+                getContext(),
+                R.layout.trending_filter_spinner_item);
+        mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
     }
     //</editor-fold>
 
@@ -54,6 +64,11 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
+        mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
+        if (exchangeCompactSpinnerDTOs != null)
+        {
+            mExchangeSelectionAdapter.addAll(exchangeCompactSpinnerDTOs);
+        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -62,105 +77,58 @@ public class TrendingFilterSelectorView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    public void onDestroy()
+    @NonNull public Observable<TrendingFilterTypeDTO> getObservableFilter()
     {
-        if (mExchangeSelection != null)
-        {
-            mExchangeSelection.setOnItemSelectedListener(null);
-            mExchangeSelection.setAdapter(null);
-        }
-        mExchangeSelection = null;
+        return trendingTypeBehavior.asObservable();
     }
 
     public void setUpExchangeSpinner(@NonNull ExchangeCompactSpinnerDTOList items)
     {
-        ExchangeSpinner exchangeSelection = mExchangeSelection;
-        if (exchangeSelection != null)
-        {
-            mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
-                    getContext(),
-                    R.layout.trending_filter_spinner_item);
-            mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
-            mExchangeSelectionAdapter.addAll(items);
-            exchangeSelection.setAdapter(mExchangeSelectionAdapter);
-            exchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
-            exchangeSelection.setOnItemSelectedListener(createTrendingFilterSelectorViewSpinnerListener());
-        }
+        exchangeCompactSpinnerDTOs = items;
+        mExchangeSelectionAdapter.addAll(items);
+        mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
     }
 
     public void apply(@NonNull TrendingFilterTypeDTO typeDTO)
     {
         this.trendingFilterTypeDTO = typeDTO;
-        if (mTitle != null)
-        {
-            mTitle.setText(typeDTO.titleResId);
-        }
-
-        if (mTitleIcon != null)
-        {
-            mTitleIcon.setImageResource(typeDTO.titleIconResId);
-        }
-
-        if (mDescription != null)
-        {
-            mDescription.setText(typeDTO.descriptionResId);
-        }
+        mTitle.setText(typeDTO.titleResId);
+        mTitleIcon.setImageResource(typeDTO.titleIconResId);
+        mDescription.setText(typeDTO.descriptionResId);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.previous_filter)
     protected void handlePreviousClicked(View view)
     {
         apply(trendingFilterTypeDTO.getPrevious());
-        notifyListenerChanged();
+        notifyObserver();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_filter)
     protected void handleNextClicked(View view)
     {
         apply(trendingFilterTypeDTO.getNext());
-        notifyListenerChanged();
+        notifyObserver();
     }
 
-    public void setChangedListener(OnFilterTypeChangedListener listener)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemSelected(value = R.id.exchange_selection, callback = OnItemSelected.Callback.ITEM_SELECTED)
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
     {
-        this.changedListener = listener;
+        trendingFilterTypeDTO.exchange = (ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i);
+        notifyObserver();
     }
 
-    private void notifyListenerChanged()
+    private void notifyObserver()
     {
         trackChangeEvent(trendingFilterTypeDTO);
-        if (changedListener != null)
-        {
-            changedListener.onFilterTypeChanged(trendingFilterTypeDTO);
-        }
+        trendingTypeBehavior.onNext(trendingFilterTypeDTO);
     }
 
     private void trackChangeEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
         analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
-    }
-
-    protected AdapterView.OnItemSelectedListener createTrendingFilterSelectorViewSpinnerListener()
-    {
-        return new TrendingFilterSelectorViewSpinnerListener();
-    }
-
-    protected class TrendingFilterSelectorViewSpinnerListener implements AdapterView.OnItemSelectedListener
-    {
-        @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
-        {
-            trendingFilterTypeDTO.exchange = (ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i);
-            notifyListenerChanged();
-        }
-
-        @Override public void onNothingSelected(AdapterView<?> adapterView)
-        {
-            // Nothing to do
-        }
-    }
-
-    public static interface OnFilterTypeChangedListener
-    {
-        void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO);
     }
 }

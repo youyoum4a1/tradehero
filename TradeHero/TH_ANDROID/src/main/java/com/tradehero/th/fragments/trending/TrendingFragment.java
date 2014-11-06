@@ -8,8 +8,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.InjectView;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
@@ -54,6 +57,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
+import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -96,7 +100,6 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     {
         super.onViewCreated(view, savedInstanceState);
         this.filterSelectorView.apply(this.trendingFilterTypeDTO);
-        this.filterSelectorView.setChangedListener(createTrendingFilterChangedListener());
         this.listView.setAdapter(wrapperAdapter);
     }
 
@@ -104,6 +107,9 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     {
         super.onStart();
         subscriptions = new SubscriptionList();
+        subscriptions.add(AndroidObservable.bindFragment(this,
+                this.filterSelectorView.getObservableFilter())
+                .subscribe(createTrendingFilterChangedObserver()));
         fetchExchangeList();
         fetchUserProfile();
         fetchProviderList();
@@ -142,16 +148,27 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
-        filterSelectorView.setChangedListener(null);
-        super.onDestroyView();
-    }
-
     @Override public void onDestroy()
     {
         wrapperAdapter = null;
         super.onDestroy();
+    }
+
+    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    {
+        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_security_item)
+        {
+            @Override public void notifyDataSetChanged()
+            {
+                wrapperAdapter.notifyDataSetChanged();
+                super.notifyDataSetChanged();
+            }
+        };
+    }
+
+    @NonNull protected ExtraTileAdapter createSecurityItemViewAdapter()
+    {
+        return new ExtraTileAdapter(getActivity(), itemViewAdapter);
     }
 
     @Override protected int getFragmentLayoutResId()
@@ -159,14 +176,13 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         return R.layout.fragment_trending;
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
-        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_security_item);
-    }
-
-    @NonNull protected ExtraTileAdapter createSecurityItemViewAdapter()
-    {
-        return new ExtraTileAdapter(getActivity(), itemViewAdapter);
+        int trendingFilterHeight = (int) getResources().getDimension(R.dimen.trending_filter_view_pager_height);
+        QuickReturnListViewOnScrollListener filterQuickReturnScrollListener =
+                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, filterSelectorView,
+                        -trendingFilterHeight, null, 0);
+        return new MultiScrollListener(super.createListViewScrollListener(), filterQuickReturnScrollListener);
     }
 
     private void fetchExchangeList()
@@ -292,21 +308,16 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         }
     }
 
-    protected TrendingFilterSelectorView.OnFilterTypeChangedListener createTrendingFilterChangedListener()
+    protected Observer<TrendingFilterTypeDTO> createTrendingFilterChangedObserver()
     {
-        return new TrendingOnFilterTypeChangedListener();
+        return new TrendingOnFilterTypeChangedObserver();
     }
 
-    protected class TrendingOnFilterTypeChangedListener implements TrendingFilterSelectorView.OnFilterTypeChangedListener
+    protected class TrendingOnFilterTypeChangedObserver extends EmptyObserver<TrendingFilterTypeDTO>
     {
-        @Override public void onFilterTypeChanged(TrendingFilterTypeDTO trendingFilterTypeDTO)
+        @Override public void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
         {
             Timber.d("Filter onFilterTypeChanged");
-            if (trendingFilterTypeDTO == null)
-            {
-                Timber.e(new IllegalArgumentException("onFilterTypeChanged trendingFilterTypeDTO cannot be null"),
-                        "onFilterTypeChanged trendingFilterTypeDTO cannot be null");
-            }
             TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
             // TODO
             scheduleRequestData();
@@ -364,14 +375,11 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     private void setUpFilterSelectorView()
     {
         setDefaultExchange();
-        if (filterSelectorView != null)
+        if (exchangeCompactSpinnerDTOs != null)
         {
-            if (exchangeCompactSpinnerDTOs != null)
-            {
-                filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
-            }
-            filterSelectorView.apply(trendingFilterTypeDTO);
+            filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
         }
+        filterSelectorView.apply(trendingFilterTypeDTO);
     }
 
     private void setDefaultExchange()
