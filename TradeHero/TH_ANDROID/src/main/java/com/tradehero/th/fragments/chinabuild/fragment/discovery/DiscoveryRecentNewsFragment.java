@@ -81,6 +81,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
     @Inject Analytics analytics;
 
+    private int PERPAGE = 20;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -292,14 +294,14 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     {
         detachTimeLineMiddleCallback();
         maxID = -1;
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), 10, -1, maxID, new TimeLineCallback());
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, -1, maxID, new TimeLineCallback());
     }
 
     public void fetchTimeLineMore()
     {
         detachTimeLineMiddleCallback();
         maxID = adapter.getMaxID();
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), 10, maxID, -1, new TimeLineCallback());
+        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, maxID, -1, new TimeLineCallback());
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>
