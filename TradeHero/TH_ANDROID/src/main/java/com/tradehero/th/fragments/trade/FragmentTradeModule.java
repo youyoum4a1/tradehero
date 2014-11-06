@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import com.tradehero.th.fragments.trade.quote.FreshQuoteHolder;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import dagger.Module;
 
