@@ -12,4 +12,5 @@ public class TradeOfRisePercentFragment extends TradeOfTypeBaseFragment
     {
         return TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT;
     }
+
 }

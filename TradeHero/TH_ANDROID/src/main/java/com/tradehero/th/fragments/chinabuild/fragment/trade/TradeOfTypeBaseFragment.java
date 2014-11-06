@@ -88,8 +88,9 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         View view = getRootView(inflater, container);
         ButterKnife.inject(this, view);
         //exchangeListTypeCacheListener = createExchangeListTypeFetchListener();
-        securityListTypeCacheListener = createSecurityListFetchListener();
         spinnerSelectListener = createSpinnerItemSelectListener();
+        securityListTypeCacheListener = createSecurityListFetchListener();
+        listSecurity.setAdapter(adapterSecurity);
         initView();
 
         if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
@@ -134,7 +135,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             {
                 Timber.d("下拉刷新");
                 //fetchSecurityList(currentPosition);
-                fetchSecurityList(currentPosition,true);
+                fetchSecurityList(currentPosition, true);
             }
 
             @Override
@@ -168,7 +169,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         securityCompactListCache.get().getOrFetchAsync(key, true);
     }
 
-    private void fetchSecurityList(int position,boolean force)
+    private void fetchSecurityList(int position, boolean force)
     {
         currentPosition = position;
         strExchangeName = "";
@@ -185,10 +186,10 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     private void showLoadingProgress()
     {
-        if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
-        {
-            return;
-        }
+        //if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
+        //{
+        //    return;
+        //}
         Handler handler = new Handler();
         handler.post(new Runnable()
         {
@@ -205,10 +206,10 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     private void dismissLoadingProgress()
     {
-        if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
-        {
-            return;
-        }
+        //if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
+        //{
+        //    return;
+        //}
         Handler handler = new Handler();
         handler.post(new Runnable()
         {
@@ -293,7 +294,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l)
             {
-                if(view !=null)
+                if (view != null)
                 {
                     TextView selectedTV = (TextView) view.findViewById(R.id.tvSpinnerItemName);
                     selectedTV.setTextColor(tradehero_blue);
@@ -383,6 +384,8 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         spinnerExchange.setAdapter(spinnerIconAdapter);
         spinnerExchange.setOnItemSelectedListener(spinnerSelectListener);
         spinnerExchange.setSelection(DEFAULT_POSITION);
+
+
     }
 
     private void getExchangSecurity(int position)
@@ -395,8 +398,21 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         {
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
+
         showLoadingProgress();
-        fetchSecurityList(position,true);
+        fetchSecurityList(position, true);
+
+
+        Timber.d("WINDYLOG: fetchSecurityList " + getTradeType());
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        if(listSecurity != null)
+        {
+            listSecurity.onRefreshComplete();
+        }
     }
 
     @Override
@@ -414,16 +430,21 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected void showGuideView(){
-        if(!THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_DETAIL)){
+    protected void showGuideView()
+    {
+        if (!THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_STOCK_DETAIL))
+        {
             return;
         }
-        if(getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD){
-            if (adapterSecurity == null) {
+        if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
+        {
+            if (adapterSecurity == null)
+            {
                 return;
             }
-            if (adapterSecurity.getCount() > 0) {
-                ((MainActivity)getActivity()).showGuideView(MainActivity.GUIDE_TYPE_STOCK_DETAIL);
+            if (adapterSecurity.getCount() > 0)
+            {
+                ((MainActivity) getActivity()).showGuideView(MainActivity.GUIDE_TYPE_STOCK_DETAIL);
             }
         }
     }
