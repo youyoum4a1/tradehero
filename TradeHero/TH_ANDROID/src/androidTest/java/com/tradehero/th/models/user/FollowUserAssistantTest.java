@@ -9,23 +9,18 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.persistence.user.UserProfileCache;
-
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import javax.inject.Inject;
-
 import retrofit.RetrofitError;
 
 import static com.tradehero.THRobolectric.runBgUiTasks;
@@ -163,8 +158,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
         assistant.launchPremiumFollow();
 
-        verify(userProfileCache, times(1)).register(currentUserId.toUserBaseKey(), assistant);
-        verify(userProfileCache, times(1)).getOrFetchAsync(currentUserId.toUserBaseKey());
+        verify(userProfileCache, times(1)).get(currentUserId.toUserBaseKey());
     }
 
     @Test public void callingErrorFromCacheNotifiesListener()
@@ -185,7 +179,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
     {
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
-        userProfileCache = mock(UserProfileCache.class);
+        userProfileCache = mock(UserProfileCacheRx.class);
         //noinspection ThrowableInstanceNeverThrown
         final Throwable expected = new IllegalArgumentException();
         makeProfileCacheThrow(expected);
@@ -202,7 +196,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         // Prepare cache
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
         // Prepare user service
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
@@ -217,7 +211,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare user service
         RetrofitError expected = mock(RetrofitError.class);
@@ -235,7 +229,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(1d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare user service
         UserProfileDTO expected = mockMyProfileWithCC(0d);
@@ -253,7 +247,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myProfile = mockMyProfileWithCC(0d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
@@ -276,7 +270,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final BillingException billingException = mock(BillingException.class);
@@ -290,7 +284,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, null, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
@@ -311,7 +305,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
@@ -334,7 +328,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant = new OpenFollowUserAssistant(THApp.context(), heroId, listener, applicablePortfolioId);
         // Prepare cache
         UserProfileDTO myInitialProfile = mockMyProfileWithCC(0d);
-        userProfileCache.put(currentUserId.toUserBaseKey(), myInitialProfile);
+        userProfileCache.onNext(currentUserId.toUserBaseKey(), myInitialProfile);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
         // Prepare interactor
         final UserProfileDTO myProfileAfterPurchase = mockMyProfileWithCC(1d);
