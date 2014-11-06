@@ -3,6 +3,7 @@ package com.tradehero.th.api.translation;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import android.support.annotation.NonNull;
@@ -20,7 +21,7 @@ import android.support.annotation.Nullable;
 public class UserTranslationSettingDTO implements DTO
 {
     public static final String DEFAULT_LANGUAGE_CODE = "en";
-    public static final boolean DEFAULT_AUTO_TRANSLATE = true;
+    public static final boolean DEFAULT_AUTO_TRANSLATE = !BuildConfig.DEBUG;
 
     @NonNull public final String languageCode;
     public final boolean autoTranslate;
