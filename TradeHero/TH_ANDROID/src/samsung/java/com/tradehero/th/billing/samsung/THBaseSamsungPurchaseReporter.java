@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.utils.IOUtils;
@@ -12,12 +13,11 @@ import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
+import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
 import java.io.IOException;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -39,7 +39,7 @@ public class THBaseSamsungPurchaseReporter
             @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NonNull Lazy<THSamsungProductDetailCache> skuDetailCache)
+            @NonNull Lazy<THSamsungProductDetailCacheRx> skuDetailCache)
     {
         super(
                 currentUserId,
@@ -58,7 +58,7 @@ public class THBaseSamsungPurchaseReporter
         this.purchase = purchase;
 
         // TODO do something when info is not available
-        productDetail = productDetailCache.get().get(purchase.getProductIdentifier());
+        productDetail = productDetailCache.get().getValue(purchase.getProductIdentifier());
         if (productDetail == null)
         {
             notifyListenerReportFailed(new SamsungMissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));

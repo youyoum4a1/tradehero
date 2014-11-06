@@ -2,6 +2,7 @@ package com.tradehero.th.billing.amazon;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonPurchaseConsumer;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
@@ -15,12 +16,11 @@ import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.THProductDetailDomainPredicate;
 import com.tradehero.th.billing.amazon.request.THAmazonRequest;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
-import com.tradehero.th.persistence.billing.AmazonSKUListCache;
-import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
+import com.tradehero.th.persistence.billing.AmazonSKUListCacheRx;
+import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THAmazonLogicHolderFull
@@ -41,8 +41,8 @@ public class THAmazonLogicHolderFull
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonLogicHolderFull(
-            @NonNull AmazonSKUListCache amazonSKUListCache,
-            @NonNull THAmazonProductDetailCache thskuDetailCache,
+            @NonNull AmazonSKUListCacheRx amazonSKUListCache,
+            @NonNull THAmazonProductDetailCacheRx thskuDetailCache,
             @NonNull THAmazonBillingAvailableTesterHolder thAmazonBillingAvailableTesterHolder,
             @NonNull THAmazonProductIdentifierFetcherHolder thAmazonProductIdentifierFetcherHolder,
             @NonNull THAmazonInventoryFetcherHolder thAmazonInventoryFetcherHolder,
@@ -99,7 +99,7 @@ public class THAmazonLogicHolderFull
 
     @Override public List<THAmazonProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        List<THAmazonProductDetail> details = productDetailCache.get(THBaseAmazonProductIdentifierFetcher.getAllSkus());
+        List<THAmazonProductDetail> details = productDetailCache.getValues(THBaseAmazonProductIdentifierFetcher.getAllSkus());
         if (details == null)
         {
             return null;

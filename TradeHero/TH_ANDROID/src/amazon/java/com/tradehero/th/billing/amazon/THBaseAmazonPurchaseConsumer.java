@@ -1,14 +1,14 @@
 package com.tradehero.th.billing.amazon;
 
 import android.content.Context;
-import com.tradehero.common.billing.amazon.AmazonPurchaseCache;
+import android.support.annotation.NonNull;
+import com.tradehero.common.billing.amazon.AmazonPurchaseCacheRx;
 import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumer;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
-import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
+import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class THBaseAmazonPurchaseConsumer
         extends BaseAmazonPurchaseConsumer<
@@ -18,23 +18,23 @@ public class THBaseAmazonPurchaseConsumer
     implements THAmazonPurchaseConsumer
 {
     @NonNull protected final THAmazonExceptionFactory thAmazonExceptionFactory;
-    @NonNull protected final THAmazonPurchaseCache thiabPurchaseCache;
+    @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseConsumer(
             @NonNull Context appContext,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
-            @NonNull THAmazonPurchaseCache thAmazonPurchaseCache)
+            @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache)
     {
         super(appContext, purchasingService);
         this.thAmazonExceptionFactory = amazonExceptionFactory;
-        this.thiabPurchaseCache = thAmazonPurchaseCache;
+        this.thAmazonPurchaseCache = thAmazonPurchaseCache;
     }
     //</editor-fold>
 
-    @Override @NonNull protected AmazonPurchaseCache<AmazonSKU, THAmazonOrderId, THAmazonPurchase> getPurchaseCache()
+    @Override @NonNull protected AmazonPurchaseCacheRx<AmazonSKU, THAmazonOrderId, THAmazonPurchase> getPurchaseCache()
     {
-        return thiabPurchaseCache;
+        return thAmazonPurchaseCache;
     }
 }

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -13,13 +14,12 @@ import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
-import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
@@ -29,14 +29,14 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
         THIABStoreProductDetailView,
         THIABSKUDetailAdapter>
 {
-    @NonNull protected THIABPurchaseCache thiabPurchaseCache;
+    @NonNull protected THIABPurchaseCacheRx thiabPurchaseCache;
     @NonNull protected GooglePlayUtils googlePlayUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THIABAlertDialogUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil,
-            @NonNull THIABPurchaseCache thiabPurchaseCache,
+            @NonNull THIABPurchaseCacheRx thiabPurchaseCache,
             @NonNull GooglePlayUtils googlePlayUtils)
     {
         super(analytics, activityUtil);

@@ -1,11 +1,11 @@
 package com.tradehero.common.billing.amazon;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.ProductType;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 abstract public class BaseAmazonPurchaseConsumer<
             AmazonSKUType extends AmazonSKU,
@@ -43,7 +43,7 @@ abstract public class BaseAmazonPurchaseConsumer<
         super.onDestroy();
     }
 
-    @NonNull abstract protected AmazonPurchaseCache<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType> getPurchaseCache();
+    @NonNull abstract protected AmazonPurchaseCacheRx<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType> getPurchaseCache();
 
     public boolean isConsuming()
     {

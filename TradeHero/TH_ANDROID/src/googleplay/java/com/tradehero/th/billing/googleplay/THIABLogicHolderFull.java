@@ -2,7 +2,7 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Intent;
 import android.content.res.Resources;
-
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
@@ -18,15 +18,10 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.THProductDetailDomainPredicate;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListCache;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
-
-import android.support.annotation.NonNull;
-
+import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import timber.log.Timber;
 
 public class THIABLogicHolderFull
@@ -47,8 +42,8 @@ public class THIABLogicHolderFull
 
     //<editor-fold desc="Constructors">
     @Inject public THIABLogicHolderFull(
-            @NonNull IABSKUListCache iabskuListCache,
-            @NonNull THIABProductDetailCache thskuDetailCache,
+            @NonNull IABSKUListCacheRx iabskuListCache,
+            @NonNull THIABProductDetailCacheRx thskuDetailCache,
             @NonNull THIABBillingAvailableTesterHolder thiabBillingAvailableTesterHolder,
             @NonNull THIABProductIdentifierFetcherHolder thBaseIABProductIdentifierFetcherHolder,
             @NonNull THIABInventoryFetcherHolder thiabInventoryFetcherHolder,
@@ -105,7 +100,7 @@ public class THIABLogicHolderFull
 
     @Override public List<THIABProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        List<THIABProductDetail> details = productDetailCache.get(getAllSkus());
+        List<THIABProductDetail> details = productDetailCache.getValues(getAllSkus());
         if (details == null)
         {
             return null;
@@ -115,8 +110,8 @@ public class THIABLogicHolderFull
 
     protected BaseIABSKUList<IABSKU> getAllSkus()
     {
-        BaseIABSKUList<IABSKU> mixed = productIdentifierCache.get(IABSKUListKey.getInApp());
-        BaseIABSKUList<IABSKU> subs = productIdentifierCache.get(IABSKUListKey.getSubs());
+        BaseIABSKUList<IABSKU> mixed = productIdentifierCache.getValue(IABSKUListKey.getInApp());
+        BaseIABSKUList<IABSKU> subs = productIdentifierCache.getValue(IABSKUListKey.getSubs());
         if (subs != null)
         {
             mixed.addAll(subs);

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.amazon.AmazonSKU;
@@ -17,13 +18,12 @@ import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
-import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
+import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
@@ -33,14 +33,14 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
         THAmazonStoreProductDetailView,
         THAmazonSKUDetailAdapter>
 {
-    @NonNull protected final THAmazonPurchaseCache thAmazonPurchaseCache;
+    @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
     @NonNull protected final AmazonStoreUtils amazonStoreUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THAmazonAlertDialogUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil,
-            @NonNull THAmazonPurchaseCache thAmazonPurchaseCache,
+            @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache,
             @NonNull AmazonStoreUtils amazonStoreUtils)
     {
         super(analytics, activityUtil);

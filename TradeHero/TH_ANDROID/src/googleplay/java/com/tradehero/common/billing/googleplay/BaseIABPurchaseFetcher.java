@@ -4,19 +4,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
-import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
+import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
 import com.tradehero.th.base.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -31,7 +31,7 @@ abstract public class BaseIABPurchaseFetcher<
         IABPurchaseType,
         IABException>
 {
-    @NonNull protected final IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache;
+    @NonNull protected final IABPurchaseCacheRx<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache;
 
     protected int requestCode;
     protected boolean fetching;
@@ -42,7 +42,7 @@ abstract public class BaseIABPurchaseFetcher<
     public BaseIABPurchaseFetcher(
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
-            @NonNull IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
+            @NonNull IABPurchaseCacheRx<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
     {
         super(context, iabExceptionFactory);
         this.purchaseCache = purchaseCache;
@@ -136,7 +136,7 @@ abstract public class BaseIABPurchaseFetcher<
             ArrayList<IABPurchaseType> subscriptionAll = queryPurchases(IABConstants.ITEM_TYPE_SUBS);
             list.addAll(subscriptionAll);
         }
-        purchaseCache.put(list);
+        purchaseCache.onNext(list);
         return list;
     }
 

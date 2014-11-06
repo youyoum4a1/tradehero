@@ -3,14 +3,14 @@ package com.tradehero.common.billing.googleplay;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCache;
+import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
 import dagger.Lazy;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaseConsumer<
@@ -49,7 +49,7 @@ abstract public class BaseIABPurchaseConsumer<
         super.onDestroy();
     }
 
-    @NonNull abstract protected IABPurchaseCache<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
+    @NonNull abstract protected IABPurchaseCacheRx<IABSKUType, IABOrderIdType, IABPurchaseType> getPurchaseCache();
 
     public boolean isConsuming()
     {

@@ -5,13 +5,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCache;
+import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
@@ -19,7 +20,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
@@ -29,14 +29,14 @@ public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
         THSamsungStoreProductDetailView,
         THSamsungSKUDetailAdapter>
 {
-    @NonNull protected final THSamsungPurchaseCache thSamsungPurchaseCache;
+    @NonNull protected final THSamsungPurchaseCacheRx thSamsungPurchaseCache;
     @NonNull protected final SamsungStoreUtils samsungStoreUtils;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungAlertDialogUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil,
-            @NonNull THSamsungPurchaseCache thSamsungPurchaseCache,
+            @NonNull THSamsungPurchaseCacheRx thSamsungPurchaseCache,
             @NonNull SamsungStoreUtils samsungStoreUtils)
     {
         super(analytics, activityUtil);

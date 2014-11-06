@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
@@ -32,7 +33,7 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.network.service.UserService;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -43,7 +44,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 @Singleton public class THIABBillingInteractor
@@ -66,7 +66,7 @@ import timber.log.Timber;
 {
     public static final String BUNDLE_KEY_ACTION = THIABBillingInteractor.class.getName() + ".action";
 
-    @NonNull protected final THIABProductDetailCache thiabProductDetailCache;
+    @NonNull protected final THIABProductDetailCacheRx thiabProductDetailCache;
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NonNull protected final HeroListCacheRx heroListCache;
     @NonNull protected final UserService userService;
@@ -81,7 +81,7 @@ import timber.log.Timber;
             @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THIABAlertDialogUtil thIABAlertDialogUtil,
-            @NonNull THIABProductDetailCache thiabProductDetailCache,
+            @NonNull THIABProductDetailCacheRx thiabProductDetailCache,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull HeroListCacheRx heroListCache,
             @NonNull UserService userService)
@@ -356,7 +356,7 @@ import timber.log.Timber;
                 {
                     dialog = billingAlertDialogUtil.popSKUAlreadyOwned(
                             currentContext,
-                            thiabProductDetailCache.get(purchaseOrder.getProductIdentifier()),
+                            thiabProductDetailCache.getValue(purchaseOrder.getProductIdentifier()),
                             restoreClickListener);
                 }
                 else if (exception instanceof IABSendIntentException)

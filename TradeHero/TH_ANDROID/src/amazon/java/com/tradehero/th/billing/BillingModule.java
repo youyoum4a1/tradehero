@@ -2,13 +2,9 @@ package com.tradehero.th.billing;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.common.billing.ProductDetailCache;
 import com.tradehero.common.billing.ProductDetailCacheRx;
-import com.tradehero.common.billing.ProductIdentifierListCache;
 import com.tradehero.common.billing.ProductIdentifierListCacheRx;
-import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.billing.ProductPurchaseCacheRx;
-import com.tradehero.common.billing.amazon.AmazonPurchaseCache;
 import com.tradehero.common.billing.amazon.AmazonPurchaseCacheRx;
 import com.tradehero.common.billing.amazon.exception.AmazonExceptionFactory;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
@@ -18,11 +14,8 @@ import com.tradehero.th.billing.amazon.THAmazonSecurityAlertKnowledge;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import com.tradehero.th.billing.amazon.request.THAmazonRequestFull;
 import com.tradehero.th.billing.request.THBillingRequest;
-import com.tradehero.th.persistence.billing.AmazonSKUListCache;
 import com.tradehero.th.persistence.billing.AmazonSKUListCacheRx;
-import com.tradehero.th.persistence.billing.THAmazonProductDetailCache;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
-import com.tradehero.th.persistence.billing.THAmazonPurchaseCache;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import dagger.Module;
 import dagger.Provides;
@@ -39,26 +32,6 @@ public class BillingModule
     public static final String PREF_PROCESSING_PURCHASES = "AMAZON_PROCESSING_PURCHASES";
 
     //<editor-fold desc="Caches">
-    @Provides @Singleton ProductIdentifierListCache provideProductIdentifierListCache(AmazonSKUListCache amazonSkuListCache)
-    {
-        return amazonSkuListCache;
-    }
-
-    @Provides @Singleton ProductDetailCache provideProductDetailCache(THAmazonProductDetailCache productDetailCache)
-    {
-        return productDetailCache;
-    }
-
-    @Provides @Singleton ProductPurchaseCache provideProductPurchaseCache(AmazonPurchaseCache purchaseCache)
-    {
-        return purchaseCache;
-    }
-
-    @Provides @Singleton AmazonPurchaseCache provideIABPurchaseCache(THAmazonPurchaseCache purchaseCache)
-    {
-        return purchaseCache;
-    }
-
     @Provides @Singleton ProductIdentifierListCacheRx provideProductIdentifierListCacheRx(AmazonSKUListCacheRx amazonSkuListCache)
     {
         return amazonSkuListCache;

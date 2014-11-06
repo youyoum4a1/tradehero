@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -11,11 +12,10 @@ import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCache;
+import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -37,7 +37,7 @@ public class THBaseIABPurchaseReporter
             @NonNull Lazy<UserServiceWrapper> userServiceWrapper,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NonNull Lazy<THIABProductDetailCache> skuDetailCache)
+            @NonNull Lazy<THIABProductDetailCacheRx> skuDetailCache)
     {
         super(
                 currentUserId,
@@ -56,7 +56,7 @@ public class THBaseIABPurchaseReporter
         this.purchase = purchase;
 
         // TODO do something when info is not available
-        productDetail = productDetailCache.get().get(purchase.getProductIdentifier());
+        productDetail = productDetailCache.get().getValue(purchase.getProductIdentifier());
         if (productDetail == null)
         {
             notifyListenerReportFailed(new IABMissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));

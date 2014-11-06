@@ -1,17 +1,14 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.billing.request.BillingRequest;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
+import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.BillingRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import timber.log.Timber;
 
 abstract public class BaseBillingLogicHolder<
@@ -46,8 +43,8 @@ abstract public class BaseBillingLogicHolder<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
-    @NonNull protected final ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache;
-    @NonNull protected final ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache;
+    @NonNull protected final ProductIdentifierListCacheRx<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache;
+    @NonNull protected final ProductDetailCacheRx<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache;
     @NonNull protected final BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder;
     @NonNull protected final ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder;
     @NonNull protected final BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder;
@@ -58,8 +55,8 @@ abstract public class BaseBillingLogicHolder<
 
     //<editor-fold desc="Constructors">
     public BaseBillingLogicHolder(
-            @NonNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
-            @NonNull ProductDetailCache<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache,
+            @NonNull ProductIdentifierListCacheRx<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
+            @NonNull ProductDetailCacheRx<ProductIdentifierType, ProductDetailType, ProductTunerType> productDetailCache,
             @NonNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
             @NonNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
             @NonNull BillingInventoryFetcherHolder<ProductIdentifierType, ProductDetailType, BillingExceptionType> inventoryFetcherHolder,
@@ -258,7 +255,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void handleProductIdentifierFetchedSuccess(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
-        productIdentifierCache.put(availableProductIdentifiers);
+        productIdentifierCache.onNext(availableProductIdentifiers);
         notifyProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         prepareRequestForNextRunAfterProductIdentifierFetchedSuccess(requestCode, availableProductIdentifiers);
         runInternal(requestCode);
@@ -297,7 +294,7 @@ abstract public class BaseBillingLogicHolder<
 
     protected void handleInventoryFetchedSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, ProductDetailType> inventory)
     {
-        productDetailCache.put(inventory);
+        productDetailCache.onNext(inventory);
         notifyInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
         prepareRequestForNextRunAfterInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
         runInternal(requestCode);

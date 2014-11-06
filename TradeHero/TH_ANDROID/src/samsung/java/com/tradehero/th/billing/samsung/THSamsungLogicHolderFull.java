@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
@@ -15,14 +16,13 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBaseBillingLogicHolder;
 import com.tradehero.th.billing.THProductDetailDomainPredicate;
-import com.tradehero.th.billing.samsung.persistence.THSamsungGroupItemCache;
+import com.tradehero.th.billing.samsung.persistence.THSamsungGroupItemCacheRx;
 import com.tradehero.th.billing.samsung.request.THSamsungRequestFull;
-import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCache;
-import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCache;
+import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCacheRx;
+import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheRx;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THSamsungLogicHolderFull
@@ -39,20 +39,20 @@ public class THSamsungLogicHolderFull
         SamsungException>
     implements THSamsungLogicHolder
 {
-    @NonNull protected final THSamsungGroupItemCache groupItemCache;
+    @NonNull protected final THSamsungGroupItemCacheRx groupItemCache;
     @NonNull protected final Handler uiHandler;
 
     //<editor-fold desc="Constructors">
     @Inject public THSamsungLogicHolderFull(
-            @NonNull SamsungSKUListCache samsungSKUListCache,
-            @NonNull THSamsungProductDetailCache thskuDetailCache,
+            @NonNull SamsungSKUListCacheRx samsungSKUListCache,
+            @NonNull THSamsungProductDetailCacheRx thskuDetailCache,
             @NonNull THSamsungBillingAvailableTesterHolder thSamsungBillingAvailableTesterHolder,
             @NonNull THSamsungProductIdentifierFetcherHolder thSamsungProductIdentifierFetcherHolder,
             @NonNull THSamsungInventoryFetcherHolder thSamsungInventoryFetcherHolder,
             @NonNull THSamsungPurchaseFetcherHolder thSamsungPurchaseFetcherHolder,
             @NonNull THSamsungPurchaserHolder thSamsungPurchaserHolder,
             @NonNull THSamsungPurchaseReporterHolder thSamsungPurchaseReporterHolder,
-            @NonNull THSamsungGroupItemCache groupItemCache)
+            @NonNull THSamsungGroupItemCacheRx groupItemCache)
     {
         super(
                 samsungSKUListCache,
@@ -75,7 +75,7 @@ public class THSamsungLogicHolderFull
 
     @Override public List<THSamsungProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        List<THSamsungProductDetail> details = productDetailCache.get(getAllSkus());
+        List<THSamsungProductDetail> details = productDetailCache.getValues(getAllSkus());
         if (details == null)
         {
             return null;
@@ -87,7 +87,7 @@ public class THSamsungLogicHolderFull
 
     protected BaseSamsungSKUList<SamsungSKU> getAllSkus()
     {
-        return productIdentifierCache.get(SamsungSKUListKey.getAllKey());
+        return productIdentifierCache.getValue(SamsungSKUListKey.getAllKey());
     }
 
     //<editor-fold desc="Run Logic">
@@ -153,7 +153,7 @@ public class THSamsungLogicHolderFull
      */
     @Override public void launchInventoryFetchSequence(final int requestCode, final List<SamsungSKU> allIds)
     {
-        List<SamsungSKU> groupValues = allIds == null ? groupItemCache.get(THSamsungConstants.getItemGroupId()) : null;
+        List<SamsungSKU> groupValues = allIds == null ? groupItemCache.getValue(THSamsungConstants.getItemGroupId()) : null;
         boolean allIn = true;
         if (groupValues != null)
         {
@@ -270,10 +270,10 @@ public class THSamsungLogicHolderFull
     //<editor-fold desc="Fetch Inventory">
     @Override protected void handleInventoryFetchedSuccess(int requestCode, List<SamsungSKU> productIdentifiers, Map<SamsungSKU, THSamsungProductDetail> inventory)
     {
-        groupItemCache.add(productIdentifiers);
+        groupItemCache.onNext(productIdentifiers);
         if (inventory != null)
         {
-            groupItemCache.add(inventory.keySet());
+            groupItemCache.onNext(inventory.keySet());
         }
         super.handleInventoryFetchedSuccess(requestCode, productIdentifiers, inventory);
     }

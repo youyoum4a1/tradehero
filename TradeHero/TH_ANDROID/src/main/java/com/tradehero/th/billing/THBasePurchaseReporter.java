@@ -1,6 +1,8 @@
 package com.tradehero.th.billing;
 
-import com.tradehero.common.billing.ProductDetailCache;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
@@ -13,8 +15,6 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,10 +38,10 @@ abstract public class THBasePurchaseReporter<
     @NonNull protected final Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper;
     @NonNull protected final Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache;
     @NonNull protected final Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper;
-    @NonNull protected final Lazy<? extends ProductDetailCache<
-            ProductIdentifierType,
-            THProductDetailType,
-            THProductDetailTunerType>> productDetailCache;
+    @NonNull protected final Lazy<? extends ProductDetailCacheRx<
+                ProductIdentifierType,
+                THProductDetailType,
+                THProductDetailTunerType>> productDetailCache;
 
     protected int requestCode;
     protected THProductPurchaseType purchase;
@@ -56,7 +56,7 @@ abstract public class THBasePurchaseReporter<
             @NonNull Lazy<? extends UserServiceWrapper> userServiceWrapper,
             @NonNull Lazy<? extends PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<? extends PortfolioServiceWrapper> portfolioServiceWrapper,
-            @NonNull Lazy<? extends ProductDetailCache<
+            @NonNull Lazy<? extends ProductDetailCacheRx<
                     ProductIdentifierType,
                     THProductDetailType,
                     THProductDetailTunerType>> productDetailCache)

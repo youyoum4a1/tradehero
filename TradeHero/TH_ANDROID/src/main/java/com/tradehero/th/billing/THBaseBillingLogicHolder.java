@@ -1,21 +1,20 @@
 package com.tradehero.th.billing;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingLogicHolder;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTesterHolder;
 import com.tradehero.common.billing.BillingInventoryFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaserHolder;
-import com.tradehero.common.billing.ProductDetailCache;
+import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcherHolder;
-import com.tradehero.common.billing.ProductIdentifierListCache;
+import com.tradehero.common.billing.ProductIdentifierListCacheRx;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
-
-import android.support.annotation.NonNull;
 
 abstract public class THBaseBillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -65,8 +64,8 @@ abstract public class THBaseBillingLogicHolder<
 
     //<editor-fold desc="Constructors">
     public THBaseBillingLogicHolder(
-            @NonNull ProductIdentifierListCache<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
-            @NonNull ProductDetailCache<ProductIdentifierType, THProductDetailType, THProductTunerType> productDetailCache,
+            @NonNull ProductIdentifierListCacheRx<ProductIdentifierType, ProductIdentifierListKeyType, ProductIdentifierListType> productIdentifierCache,
+            @NonNull ProductDetailCacheRx<ProductIdentifierType, THProductDetailType, THProductTunerType> productDetailCache,
             @NonNull BillingAvailableTesterHolder<BillingExceptionType> billingAvailableTesterHolder,
             @NonNull ProductIdentifierFetcherHolder<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetcherHolder,
             @NonNull BillingInventoryFetcherHolder<ProductIdentifierType, THProductDetailType, BillingExceptionType> inventoryFetcherHolder,
