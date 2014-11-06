@@ -57,12 +57,12 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
         return R.layout.fragment_video_categories;
     }
 
-    @Override protected VideoCategoriesAdapter createItemViewAdapter()
+    @Override @NonNull protected VideoCategoriesAdapter createItemViewAdapter()
     {
         return new VideoCategoriesAdapter(getActivity(), R.layout.video_category_item_view);
     }
 
-    @Override protected DTOCacheRx<PagedVideoCategories, PaginatedVideoCategoryDTO> getCache()
+    @Override @NonNull protected DTOCacheRx<PagedVideoCategories, PaginatedVideoCategoryDTO> getCache()
     {
         return paginatedVideoCategoryCache;
     }

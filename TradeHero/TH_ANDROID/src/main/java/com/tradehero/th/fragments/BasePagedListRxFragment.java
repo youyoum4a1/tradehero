@@ -122,7 +122,6 @@ abstract public class BasePagedListRxFragment<
         unsubscribeListCache();
 
         listView.setOnScrollListener(null);
-        listView = null;
         nearEndScrollListener = null;
 
         View rootView = getView();
@@ -158,7 +157,7 @@ abstract public class BasePagedListRxFragment<
         updateVisibilities();
     }
 
-    abstract protected PagedArrayDTOAdapterNew<DTOType, ViewType> createItemViewAdapter();
+    @NonNull abstract protected PagedArrayDTOAdapterNew<DTOType, ViewType> createItemViewAdapter();
 
     protected void loadAdapterWithAvailableData()
     {
@@ -229,7 +228,7 @@ abstract public class BasePagedListRxFragment<
         return pagedSubscriptions.containsKey(page);
     }
 
-    abstract protected DTOCacheRx<PagedDTOKeyType, ContainerDTOType> getCache();
+    @NonNull abstract protected DTOCacheRx<PagedDTOKeyType, ContainerDTOType> getCache();
 
     protected void unsubscribeListCache()
     {
@@ -330,7 +329,7 @@ abstract public class BasePagedListRxFragment<
         this.selectedItem = clicked;
     }
 
-    protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NonNull PagedDTOKeyType key)
+    @NonNull protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NonNull PagedDTOKeyType key)
     {
         return new ListCacheObserver(key);
     }

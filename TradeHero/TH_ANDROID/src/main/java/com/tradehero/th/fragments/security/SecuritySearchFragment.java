@@ -61,14 +61,14 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return selectedItem;
     }
 
-    @Override protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
     {
         return new SecurityItemViewAdapterNew(
                 getActivity(),
                 R.layout.search_security_item);
     }
 
-    @Override protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
+    @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
     {
         return securityCompactListCache;
     }
@@ -110,7 +110,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         navigator.get().pushFragment(BuySellFragment.class, args);
     }
 
-    @Override protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)
+    @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)
     {
         return new SecurityIdListCacheObserver(key);
     }

@@ -64,14 +64,14 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
         return selectedItem;
     }
 
-    @Override protected PeopleItemViewAdapter createItemViewAdapter()
+    @Override @NonNull protected PeopleItemViewAdapter createItemViewAdapter()
     {
         return new PeopleItemViewAdapter(
                 getActivity(),
                 R.layout.search_people_item);
     }
 
-    @Override protected DTOCacheRx<UserListType, UserSearchResultDTOList> getCache()
+    @Override @NonNull protected DTOCacheRx<UserListType, UserSearchResultDTOList> getCache()
     {
         return userBaseKeyListCache;
     }
@@ -116,7 +116,7 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
         }
     }
 
-    @Override protected Observer<Pair<UserListType, UserSearchResultDTOList>> createListCacheObserver(@NonNull UserListType key)
+    @Override @NonNull protected Observer<Pair<UserListType, UserSearchResultDTOList>> createListCacheObserver(@NonNull UserListType key)
     {
         return new UserBaseKeyListCacheObserver(key);
     }

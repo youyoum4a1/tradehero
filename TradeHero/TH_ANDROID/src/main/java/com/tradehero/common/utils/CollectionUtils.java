@@ -1,5 +1,7 @@
 package com.tradehero.common.utils;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +11,7 @@ import rx.functions.Action1;
 
 public class CollectionUtils
 {
-    public static <T> List<T> filter(Collection<T> target, Predicate<T> predicate)
+    @NonNull public static <T> List<T> filter(@NonNull Collection<T> target, @NonNull Predicate<T> predicate)
     {
         List<T> result = new ArrayList<>();
         for (T element: target)
@@ -22,7 +24,7 @@ public class CollectionUtils
         return result;
     }
 
-    public static <T> Collection<T> inPlaceFilter(Collection<T> c, Predicate<T> p)
+    @NonNull public static <T> Collection<T> inPlaceFilter(@NonNull Collection<T> c, @NonNull Predicate<T> p)
     {
         Iterator<T> it = c.iterator();
         while (it.hasNext())
@@ -35,7 +37,7 @@ public class CollectionUtils
         return c;
     }
 
-    public static <T> void apply(Collection<T> collection, Action1<T> action)
+    public static <T> void apply(@NonNull Collection<T> collection, @NonNull Action1<T> action)
     {
         for (T element: collection)
         {
@@ -43,7 +45,7 @@ public class CollectionUtils
         }
     }
 
-    public static <T> void apply(T[] collection, Action1<T> action)
+    public static <T> void apply(@NonNull T[] collection, @NonNull Action1<T> action)
     {
         for (T element: collection)
         {
@@ -51,7 +53,7 @@ public class CollectionUtils
         }
     }
 
-    public static <T> T first(Collection<T> collection, Predicate<T> predicate)
+    @Nullable public static <T> T first(@NonNull Collection<T> collection, @NonNull Predicate<T> predicate)
     {
         for (T element: collection)
         {
@@ -63,7 +65,7 @@ public class CollectionUtils
         return null;
     }
 
-    public static <T> boolean contains(Collection<T> collection, Predicate<T> predicate)
+    public static <T> boolean contains(@NonNull Collection<T> collection, @NonNull Predicate<T> predicate)
     {
         for (T element: collection)
         {
