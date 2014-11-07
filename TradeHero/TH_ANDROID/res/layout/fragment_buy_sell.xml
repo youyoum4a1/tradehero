@@ -156,6 +156,7 @@
           android:id="@+id/btn_add_watch_list"
           style="@style/TH.Btn_BuySell_Action"
           android:text="@string/watchlist_add_title"
+          android:enabled="false"
           />
 
     </LinearLayout>
