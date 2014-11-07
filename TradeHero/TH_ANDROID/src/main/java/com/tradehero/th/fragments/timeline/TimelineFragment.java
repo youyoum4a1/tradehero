@@ -19,7 +19,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -113,7 +112,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @InjectView(R.id.timeline_list_view) PullToRefreshStickyListHeadersListView timelineListView;
-    @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
     @InjectView(R.id.follow_message_container) ViewGroup btnContainer;
@@ -124,6 +122,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription userProfileCacheSubscription;
     @Nullable private Subscription portfolioSubscription;
     @Nullable protected Subscription messageThreadHeaderFetchSubscription;
+
     protected FollowDialogCombo followDialogCombo;
     protected MessageHeaderDTO messageThreadHeaderDTO;
     protected UserProfileDTO shownProfile;
@@ -432,10 +431,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected void updateView()
     {
-        if (timelineScreen != null)
-        {
-            timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view_container);
-        }
         if (userProfileView != null)
         {
             userProfileView.display(shownProfile);
