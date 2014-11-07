@@ -26,18 +26,15 @@ import rx.Observable;
 
 @Singleton public class LeaderboardServiceWrapper
 {
-    @NonNull private final LeaderboardService leaderboardService;
     @NonNull private final LeaderboardServiceRx leaderboardServiceRx;
     @NonNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardServiceWrapper(
-            @NonNull LeaderboardService leaderboardService,
             @NonNull LeaderboardServiceRx leaderboardServiceRx,
             @NonNull LeaderboardDefDTOFactory leaderboardDefDTOFactory)
     {
         super();
-        this.leaderboardService = leaderboardService;
         this.leaderboardServiceRx = leaderboardServiceRx;
         this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
@@ -54,12 +51,6 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Leaderboard Definitions">
-    @Deprecated
-    @NonNull public LeaderboardDefDTOList getLeaderboardDefinitions()
-    {
-        return createProcessorLeaderboardDefDTOList().process(leaderboardService.getLeaderboardDefinitions());
-    }
-
     @NonNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
@@ -76,63 +67,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
-    @Deprecated
-    public LeaderboardDTO getLeaderboard(@NonNull LeaderboardKey leaderboardKey)
-    {
-        if (leaderboardKey instanceof UserOnLeaderboardKey)
-        {
-            return leaderboardService.getUserOnLeaderboard(
-                    leaderboardKey.id,
-                    ((UserOnLeaderboardKey) leaderboardKey).userBaseKey.key,
-                    null);
-        }
-        else if (leaderboardKey instanceof SortedPerPagedLeaderboardKey)
-        {
-            SortedPerPagedLeaderboardKey sortedPerPagedLeaderboardKey = (SortedPerPagedLeaderboardKey) leaderboardKey;
-            return leaderboardService.getLeaderboard(
-                    sortedPerPagedLeaderboardKey.id,
-                    sortedPerPagedLeaderboardKey.page,
-                    sortedPerPagedLeaderboardKey.perPage,
-                    sortedPerPagedLeaderboardKey.sortType);
-        }
-        else if (leaderboardKey instanceof PerPagedFilteredLeaderboardKey)
-        {
-            PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
-            return leaderboardService.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.id,
-                    perPagedFilteredLeaderboardKey.winRatio,
-                    perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
-
-                    // HACK https://www.pivotaltracker.com/story/show/73042972
-                    Math.max(1, perPagedFilteredLeaderboardKey.averageHoldingDays),
-
-                    perPagedFilteredLeaderboardKey.minSharpeRatio,
-                    perPagedFilteredLeaderboardKey.minConsistency == null ? null : 1 / perPagedFilteredLeaderboardKey.minConsistency,
-                    perPagedFilteredLeaderboardKey.page,
-                    perPagedFilteredLeaderboardKey.perPage);
-        }
-        else if (leaderboardKey instanceof FriendsPerPagedLeaderboardKey)
-        {
-            return leaderboardService.getNewFriendsLeaderboard().leaderboard;
-        }
-        else if (leaderboardKey instanceof PerPagedLeaderboardKey)
-        {
-            PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
-            return leaderboardService.getLeaderboard(
-                    perPagedLeaderboardKey.id,
-                    perPagedLeaderboardKey.page,
-                    perPagedLeaderboardKey.perPage);
-        }
-        else if (leaderboardKey instanceof PagedLeaderboardKey)
-        {
-            PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
-            return leaderboardService.getLeaderboard(
-                    pagedLeaderboardKey.id,
-                    pagedLeaderboardKey.page,
-                    null);
-        }
-        return leaderboardService.getLeaderboard(leaderboardKey.id, null, null);
-    }
-
     public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
     {
         if (leaderboardKey instanceof UserOnLeaderboardKey)
@@ -197,40 +131,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
-    public GetPositionsDTO getPositionsForLeaderboardMarkUser(
-            @NonNull LeaderboardMarkUserId key)
-    {
-        GetPositionsDTO received;
-        if (key instanceof PerPagedLeaderboardMarkUserId)
-        {
-            PerPagedLeaderboardMarkUserId perPagedLeaderboardMarkUserId = (PerPagedLeaderboardMarkUserId) key;
-            received = leaderboardService.getPositionsForLeaderboardMarkUser(
-                    perPagedLeaderboardMarkUserId.key,
-                    perPagedLeaderboardMarkUserId.page,
-                    perPagedLeaderboardMarkUserId.perPage);
-        }
-        else if (key instanceof PagedLeaderboardMarkUserId)
-        {
-            PagedLeaderboardMarkUserId pagedLeaderboardMarkUserId = (PagedLeaderboardMarkUserId) key;
-            received = leaderboardService.getPositionsForLeaderboardMarkUser(
-                    pagedLeaderboardMarkUserId.key,
-                    pagedLeaderboardMarkUserId.page,
-                    null);
-        }
-        else
-        {
-            received = leaderboardService.getPositionsForLeaderboardMarkUser(
-                    key.key,
-                    null,
-                    null);
-        }
-        if (received != null)
-        {
-            received.setOnInPeriod(key);
-        }
-        return received;
-    }
-
     public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
             @NonNull LeaderboardMarkUserId key)
     {

@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.follower;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Gravity;
@@ -35,7 +36,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
@@ -47,16 +47,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class SendMessageFragment extends DashboardFragment
@@ -73,7 +68,7 @@ public class SendMessageFragment extends DashboardFragment
     private Dialog progressDialog;
     /** Dialog to change different type of follower */
     private Dialog chooseDialog;
-    protected List<WeakReference<MiddleCallback<DiscussionDTO>>> middleCallbackSendMessages;
+    @NonNull protected SubscriptionList sendMessageSubscriptions;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
     @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
@@ -99,7 +94,7 @@ public class SendMessageFragment extends DashboardFragment
         this.discussionType = DiscussionType.fromValue(discussionTypeValue);
         int messageTypeInt = args.getInt(SendMessageFragment.KEY_MESSAGE_TYPE);
         messageType = MessageType.fromId(messageTypeInt);
-        middleCallbackSendMessages = new ArrayList<>();
+        sendMessageSubscriptions = new SubscriptionList();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.MessageComposer_Show));
@@ -172,21 +167,8 @@ public class SendMessageFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachSendMessageCallbacks();
+        sendMessageSubscriptions.unsubscribe();
         super.onDestroyView();
-    }
-
-    private void detachSendMessageCallbacks()
-    {
-        for (WeakReference<MiddleCallback<DiscussionDTO>> weakMiddleCallback : middleCallbackSendMessages)
-        {
-            MiddleCallback<DiscussionDTO> middleCallback = weakMiddleCallback.get();
-            if (middleCallback != null)
-            {
-                middleCallback.setPrimaryCallback(null);
-            }
-        }
-        middleCallbackSendMessages.clear();
     }
 
     @Override public void onDestroy()
@@ -292,11 +274,11 @@ public class SendMessageFragment extends DashboardFragment
                         getString(R.string.broadcast_message_waiting),
                         getString(R.string.broadcast_message_sending_hint));
 
-        middleCallbackSendMessages.add(
-                new WeakReference<>(
-                        messageServiceWrapper.get().createMessage(
-                                createMessageForm(text),
-                                createSendMessageDiscussionCallback())));
+        sendMessageSubscriptions.add(
+                messageServiceWrapper.get().createMessageRx(
+                        createMessageForm(text))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createSendMessageDiscussionObserver()));
     }
 
     private MessageCreateFormDTO createMessageForm(String messageText)
@@ -431,20 +413,14 @@ public class SendMessageFragment extends DashboardFragment
         navigator.get().popFragment();
     }
 
-    protected Callback<DiscussionDTO> createSendMessageDiscussionCallback()
+    protected Observer<DiscussionDTO> createSendMessageDiscussionObserver()
     {
-        return new SendMessageDiscussionCallback();
+        return new SendMessageDiscussionObserver();
     }
 
-    private class SendMessageDiscussionCallback implements Callback<DiscussionDTO>
+    private class SendMessageDiscussionObserver implements Observer<DiscussionDTO>
     {
-        @Override public void failure(RetrofitError error)
-        {
-            dismissDialog(progressDialog);
-            THToast.show(getString(R.string.broadcast_error));
-        }
-
-        @Override public void success(DiscussionDTO discussionDTO, Response response2)
+        @Override public void onNext(DiscussionDTO discussionDTO)
         {
             dismissDialog(progressDialog);
             invalidateMessageCache();
@@ -452,6 +428,16 @@ public class SendMessageFragment extends DashboardFragment
             analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
             //TODO close me?
             closeMe();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            dismissDialog(progressDialog);
+            THToast.show(getString(R.string.broadcast_error));
         }
     }
 }

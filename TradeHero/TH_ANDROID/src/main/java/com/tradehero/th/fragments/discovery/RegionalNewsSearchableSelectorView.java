@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,7 +31,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
@@ -37,9 +38,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,7 +46,10 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 {
     @InjectView(R.id.news_region_selector) TextView mRegionSelector;
     @InjectView(R.id.country_filter_text_box) InstantAutoCompleteTextView mCountryFilter;
-    @OnFocusChange(R.id.country_filter_text_box) void handleCountryFilterFocusChanged(boolean hasFocus)
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnFocusChange(R.id.country_filter_text_box)
+    void handleCountryFilterFocusChanged(boolean hasFocus)
     {
         if (hasFocus)
         {
@@ -58,9 +59,10 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     }
 
     @InjectView(R.id.discovery_news_carousel_spinner_wrapper) BetterViewAnimator mRegionSelectorWrapper;
-    private UserProfileDTO userProfileDTO;
 
-    @OnClick(R.id.news_region_selector) void handleRegionSelectorClick()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.news_region_selector)
+    void handleRegionSelectorClick()
     {
         int currentDisplayedChild = mRegionSelectorWrapper.getDisplayedChildLayoutId();
         if (currentDisplayedChild == mRegionSelector.getId())
@@ -74,6 +76,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 
     @Inject UserProfileCacheRx userProfileCache;
     private Subscription userProfileSubscription;
+    private UserProfileDTO userProfileDTO;
     @Inject CurrentUserId currentUserId;
     @Inject NewsServiceWrapper mNewsServiceWrapper;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
@@ -83,7 +86,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     private String mCountryName;
 
     private CountryAdapter mCountryAdapter;
-    private MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> mCountryLanguageFetchMiddleCallback;
+    @Nullable private Subscription mCountryLanguageFetchSubscription;
 
     //<editor-fold desc="Constructors">
     public RegionalNewsSearchableSelectorView(Context context, AttributeSet attrs)
@@ -120,16 +123,15 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
                 }
             }
         });
-        mCountryFilter.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                CountryLanguagePairDTO countryLanguagePair = (CountryLanguagePairDTO) parent.getItemAtPosition(position);
-                mRegionSelector.setText(countryLanguagePair.name);
-                cancelSearch();
-                sendRegionalNewsChangedEvent(countryLanguagePair);
-            }
-        });
+        mCountryFilter.setOnItemClickListener(this::onCountryFilterItemClick);
+    }
+
+    public void onCountryFilterItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        CountryLanguagePairDTO countryLanguagePair = (CountryLanguagePairDTO) parent.getItemAtPosition(position);
+        mRegionSelector.setText(countryLanguagePair.name);
+        cancelSearch();
+        sendRegionalNewsChangedEvent(countryLanguagePair);
     }
 
     private void sendRegionalNewsChangedEvent(CountryLanguagePairDTO countryLanguagePair)
@@ -160,24 +162,21 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        if (mCountryLanguageFetchMiddleCallback != null)
-        {
-            mCountryLanguageFetchMiddleCallback.setPrimaryCallback(null);
-        }
-        detachUserProfileFetchTask();
+        detachCountrySubscription();
+        detachUserProfileSubscription();
         super.onDetachedFromWindow();
     }
 
     private void fetchAndSetUserRegional()
     {
         UserBaseKey currentUserBaseKey = currentUserId.toUserBaseKey();
-        detachUserProfileFetchTask();
+        detachUserProfileSubscription();
         userProfileSubscription = userProfileCache.get(currentUserBaseKey)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UserProfileFetchObserver());
     }
 
-    private void detachUserProfileFetchTask()
+    private void detachUserProfileSubscription()
     {
         Subscription copy = userProfileSubscription;
         if (copy != null)
@@ -185,6 +184,16 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
             copy.unsubscribe();
         }
         userProfileSubscription = null;
+    }
+
+    private void detachCountrySubscription()
+    {
+        Subscription copy = mCountryLanguageFetchSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        mCountryLanguageFetchSubscription = null;
     }
 
     //<editor-fold desc="Save & Restore view state">
@@ -232,7 +241,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
             countryName = parcel.readString();
         }
 
-        @Override public void writeToParcel(Parcel dest, int flags)
+        @Override public void writeToParcel(@NonNull Parcel dest, int flags)
         {
             super.writeToParcel(dest, flags);
             dest.writeString(languageCode);
@@ -272,23 +281,30 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
         }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean display)
+    private void linkWith(UserProfileDTO userProfileDTO, @SuppressWarnings("UnusedParameters") boolean display)
     {
         this.userProfileDTO = userProfileDTO;
 
-        mCountryLanguageFetchMiddleCallback = mNewsServiceWrapper.getCountryLanguagePairs(new CountryLanguageFetchCallback());
+        detachCountrySubscription();
+        mCountryLanguageFetchSubscription = mNewsServiceWrapper.getCountryLanguagePairsRx()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CountryLanguageFetchObserver());
     }
 
-    private class CountryLanguageFetchCallback implements Callback<PaginatedDTO<CountryLanguagePairDTO>>
+    private class CountryLanguageFetchObserver implements Observer<PaginatedDTO<CountryLanguagePairDTO>>
     {
-        @Override public void success(PaginatedDTO<CountryLanguagePairDTO> countryLanguagePairDTOPaginatedDTO, Response response)
+        @Override public void onNext(PaginatedDTO<CountryLanguagePairDTO> countryLanguagePairDTOPaginatedDTO)
         {
             linkWith(countryLanguagePairDTOPaginatedDTO.getData(), true);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onCompleted()
         {
-            THToast.show(new THException(retrofitError));
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
         }
     }
 
@@ -304,10 +320,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
             {
                 CountryLanguagePairDTO singleCountryLanguagePair = userCountryLanguagePairs.iterator().next();
                 mCountryName = singleCountryLanguagePair.name;
-                if (andDisplay)
-                {
-                    mRegionSelector.setText(mCountryName);
-                }
+                mRegionSelector.setText(mCountryName);
             }
         }
     }

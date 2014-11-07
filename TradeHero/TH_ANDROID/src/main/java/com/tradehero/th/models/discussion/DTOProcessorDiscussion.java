@@ -1,12 +1,11 @@
 package com.tradehero.th.models.discussion;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
-import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
-import rx.functions.Action1;
+import com.tradehero.th.models.ThroughDTOProcessor;
 
-public class DTOProcessorDiscussion implements DTOProcessor<DiscussionDTO>, Action1<DiscussionDTO>
+public class DTOProcessorDiscussion extends ThroughDTOProcessor<DiscussionDTO>
 {
     @NonNull private final DiscussionDTOFactory discussionDTOFactory;
 
@@ -21,10 +20,5 @@ public class DTOProcessorDiscussion implements DTOProcessor<DiscussionDTO>, Acti
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {
         return discussionDTOFactory.createChildClass(discussionDTO);
-    }
-
-    @Override public void call(DiscussionDTO discussionDTO)
-    {
-        process(discussionDTO);
     }
 }

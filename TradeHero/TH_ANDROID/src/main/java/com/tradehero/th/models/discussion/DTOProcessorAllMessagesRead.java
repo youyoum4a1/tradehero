@@ -1,16 +1,16 @@
 package com.tradehero.th.models.discussion;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
-public class DTOProcessorAllMessagesRead implements DTOProcessor<BaseResponseDTO>
+public class DTOProcessorAllMessagesRead extends ThroughDTOProcessor<BaseResponseDTO>
 {
     @NonNull private final MessageHeaderCacheRx messageHeaderCache;
     @NonNull private final UserProfileCacheRx userProfileCache;

@@ -1,16 +1,14 @@
 package com.tradehero.th.models.notification;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
-import rx.functions.Action1;
 
-public class DTOProcessorNotificationAllRead implements DTOProcessor<BaseResponseDTO>,
-        Action1<BaseResponseDTO>
+public class DTOProcessorNotificationAllRead extends ThroughDTOProcessor<BaseResponseDTO>
 {
     @NonNull private final NotificationCacheRx notificationCache;
     @NonNull private final UserBaseKey readerId;
@@ -38,10 +36,5 @@ public class DTOProcessorNotificationAllRead implements DTOProcessor<BaseRespons
         userProfileCache.get(readerId);
         notificationCache.invalidateAll();
         return value;
-    }
-
-    @Override public void call(BaseResponseDTO baseResponseDTO)
-    {
-        process(baseResponseDTO);
     }
 }
