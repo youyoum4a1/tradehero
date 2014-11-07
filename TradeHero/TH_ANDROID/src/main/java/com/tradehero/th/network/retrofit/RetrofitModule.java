@@ -36,7 +36,6 @@ import com.tradehero.th.network.service.DiscussionService;
 import com.tradehero.th.network.service.HomeService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MessageService;
-import com.tradehero.th.network.service.NewsService;
 import com.tradehero.th.network.service.NotificationService;
 import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.ProviderService;
@@ -106,11 +105,6 @@ public class RetrofitModule
     @Provides @Singleton MessageService provideMessageService(RestAdapter adapter)
     {
         return adapter.create(MessageService.class);
-    }
-
-    @Provides @Singleton NewsService provideNewServiceSync(RestAdapter adapter)
-    {
-        return adapter.create(NewsService.class);
     }
 
     @Provides @Singleton NotificationService provideNotificationService(RestAdapter adapter)

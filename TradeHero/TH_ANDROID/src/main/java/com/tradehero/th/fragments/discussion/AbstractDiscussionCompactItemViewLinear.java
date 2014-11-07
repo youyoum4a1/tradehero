@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.LinearLayout;
@@ -18,7 +19,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -86,16 +86,23 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
     @Override public void display(T discussionKey)
     {
         this.discussionKey = discussionKey;
-
-        fetchDiscussionDetail();
-    }
-
-    public void refresh()
-    {
         fetchDiscussionDetail();
     }
 
     private void fetchDiscussionDetail()
+    {
+        AbstractDiscussionCompactDTO value = discussionCache.getValue(discussionKey);
+        if (value != null)
+        {
+            linkWith(value, true);
+        }
+        else
+        {
+            refresh();
+        }
+    }
+
+    public void refresh()
     {
         detachFetchDiscussionTask();
         discussionFetchSubscription = discussionCache.get(discussionKey)

@@ -39,7 +39,6 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
     @Override public void display(NewsItemDTOKey discussionKey)
     {
         super.display(discussionKey);
-        linkWith(discussionCache.getValue(discussionKey), true);
         viewHolder.discussionActionButtonsView.setCommentCountVisible(View.GONE);
     }
 

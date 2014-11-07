@@ -25,19 +25,16 @@ import rx.Observable;
 
 @Singleton public class NewsServiceWrapper
 {
-    @NonNull private final NewsService newsService;
     @NonNull private final NewsServiceAsync newsServiceAsync;
     @NonNull private final NewsServiceRx newsServiceRx;
     @NonNull private final Provider<NewsDTOProcessor> newsDTOProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public NewsServiceWrapper(
-            @NonNull NewsService newsService,
             @NonNull NewsServiceAsync newsServiceAsync,
             @NonNull NewsServiceRx newsServiceRx,
             @NonNull Provider<NewsDTOProcessor> newsDTOProcessorProvider)
     {
-        this.newsService = newsService;
         this.newsServiceAsync = newsServiceAsync;
         this.newsServiceRx = newsServiceRx;
         this.newsDTOProcessorProvider = newsDTOProcessorProvider;
@@ -125,11 +122,6 @@ import rx.Observable;
     private Observable<PaginatedDTO<NewsItemCompactDTO>> getGlobalNewsRx(NewsItemListGlobalKey key)
     {
         return newsServiceRx.getGlobal(key.page, key.perPage);
-    }
-
-    public NewsItemDTO getSecurityNewsDetail(DiscussionKey discussionKey)
-    {
-        return newsService.getNewsDetails(discussionKey.id);
     }
 
     public Observable<NewsItemDTO> getSecurityNewsDetailRx(DiscussionKey discussionKey)
