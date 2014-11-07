@@ -110,10 +110,10 @@
   <string name="referral_dollars_claimed">已成功提交邀请码</string>
 
   <string name="mark_as_all_read">全部已读</string>
-  <string name="guide_screen_login">登陆</string>
+  <string name="guide_screen_login">登录</string>
   <string name="guide_screen_try">马上体验</string>
   <string name="or">或者</string>
-  <string name="login_with_offical_account">使用官方账号登陆</string>
+  <string name="login_with_offical_account">使用官方账号登录</string>
   <string name="login_account">账号：</string>
   <string name="login_password">密码：</string>
   <string name="login_account_hint">手机号或邮箱</string>

@@ -9,7 +9,7 @@ public class Constants
 
     public static final boolean USE_BETA_HOME_PAGE = true;
 
-    public static final boolean DOGFOOD_BUILD = true;
+    public static final boolean DOGFOOD_BUILD = false;
 
     public static final boolean PICASSO_DEBUG = !RELEASE;
 
@@ -22,8 +22,10 @@ public class Constants
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
     // generic and easy to switch between endpoint (prod, dev, test server) as much as possible.
+
     public static final String BASE_STATIC_CONTENT_URL = "https://www.tradehero.mobi/";
     public static final String PRIVACY_TERMS_OF_SERVICE = "http://cn.tradehero.mobi/privacy";
+
     public static final String PRIVACY_TERMS_OF_USE = BASE_STATIC_CONTENT_URL + "terms";
     public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
