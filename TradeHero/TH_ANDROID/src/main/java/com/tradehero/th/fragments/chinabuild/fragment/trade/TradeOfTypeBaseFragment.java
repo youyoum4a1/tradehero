@@ -5,7 +5,11 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -35,10 +39,9 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 public class TradeOfTypeBaseFragment extends DashboardFragment
 {
@@ -378,9 +381,9 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         spinnerExchange.setAdapter(spinnerIconAdapter);
         spinnerExchange.setOnItemSelectedListener(spinnerSelectListener);
         spinnerExchange.setSelection(DEFAULT_POSITION);
-
-
     }
+
+    private int currentSelection = -1;
 
     private void getExchangSecurity(int position)
     {
@@ -393,9 +396,12 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_RISE_PARTIES));
         }
 
-        showLoadingProgress();
-        fetchSecurityList(position, true);
-
+        if (adapterSecurity != null && adapterSecurity.getCount() == 0 || currentSelection != position)
+        {
+            showLoadingProgress();
+            fetchSecurityList(position, true);
+            currentSelection = position;
+        }
 
         Timber.d("WINDYLOG: fetchSecurityList " + getTradeType());
     }
@@ -403,7 +409,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @Override public void onPause()
     {
         super.onPause();
-        if(listSecurity != null)
+        if (listSecurity != null)
         {
             listSecurity.onRefreshComplete();
         }
