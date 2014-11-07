@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -28,11 +27,13 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragmen
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
    股神或者粉丝列表显示
@@ -54,7 +55,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     @Inject protected HeroManagerInfoFetcher heroInfoFetcher;
     @InjectView(R.id.listFriends) SecurityListView listView;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_users) TradeHeroProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     protected UserProfileCompactDTO selectedItem;
@@ -89,7 +90,8 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_users);
+            progressBar.startLoading();
         }
         else
         {
@@ -309,6 +311,9 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         {
             listView.onRefreshComplete();
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+            if(progressBar != null){
+                progressBar.stopLoading();
+            }
         }
     }
 

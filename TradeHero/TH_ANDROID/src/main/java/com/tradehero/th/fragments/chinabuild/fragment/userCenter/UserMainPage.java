@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,13 +54,15 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-16.
@@ -102,7 +103,7 @@ public class UserMainPage extends DashboardFragment
 
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_user_main_page) TradeHeroProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
@@ -174,7 +175,8 @@ public class UserMainPage extends DashboardFragment
 
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_user_main_page);
+            progressBar.startLoading();
         }
         else
         {
@@ -705,6 +707,9 @@ public class UserMainPage extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
             listTimeLine.onRefreshComplete();
+            if(progressBar != null){
+                progressBar.stopLoading();
+            }
         }
     }
 
