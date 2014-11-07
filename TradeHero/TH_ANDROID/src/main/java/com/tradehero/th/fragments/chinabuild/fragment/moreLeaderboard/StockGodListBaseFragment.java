@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -35,6 +34,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -49,7 +49,7 @@ public class StockGodListBaseFragment extends DashboardFragment
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
 
     @InjectView(R.id.listBang) SecurityListView listBang;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_heros) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
@@ -96,7 +96,8 @@ public class StockGodListBaseFragment extends DashboardFragment
 
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_heros);
+            progressBar.startLoading();
         }
         else
         {
@@ -272,6 +273,7 @@ public class StockGodListBaseFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listBang);
             listBang.onRefreshComplete();
+            progressBar.stopLoading();
         }
     }
 

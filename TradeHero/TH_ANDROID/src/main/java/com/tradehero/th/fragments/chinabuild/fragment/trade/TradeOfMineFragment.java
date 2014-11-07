@@ -5,14 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -59,13 +52,15 @@ import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     交易－我的交易
@@ -90,7 +85,7 @@ public class TradeOfMineFragment extends DashboardFragment
     @InjectView(R.id.tvWatchListItemDynamicAmount) TextView tvItemDynamicAmount;
     @InjectView(R.id.tvWatchListItemCash) TextView tvItemCash;
 
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_trade_mine) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeMyPositionList) SecurityListView listView;
     @InjectView(R.id.llEmpty) LinearLayout llEmpty;
@@ -141,7 +136,8 @@ public class TradeOfMineFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_trade_mine);
+            progressBar.startLoading();
         }
         else
         {
@@ -440,6 +436,7 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             listView.onRefreshComplete();
             fetchSimplePage(false);
+            progressBar.stopLoading();
         }
     }
 

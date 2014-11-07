@@ -8,12 +8,13 @@
     android:layout_height="match_parent"
     >
 
-  <ProgressBar
-      android:id="@android:id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      />
+    <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar_competition"
+            android:layout_width="61dp"
+            android:layout_height="58dp"
+            android:layout_gravity="center"
+            android:background="@drawable/logo"
+    />
 
   <se.emilsjolander.stickylistheaders.StickyListHeadersListView
       android:id="@android:id/list"

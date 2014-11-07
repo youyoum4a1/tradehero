@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -46,12 +45,14 @@ import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /*
 最新动态
@@ -70,14 +71,12 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
 
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_discovery)TradeHeroProgressBar progressBar;
 
     private UserTimeLineAdapter adapter;
 
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
-
-    private boolean isSharing = false;
 
     @Inject Analytics analytics;
 
@@ -108,7 +107,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         if (adapter.getCount() == 0)
         {
             fetchTimeLine();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_discovery);
+            progressBar.startLoading();
         }
         else
         {
@@ -331,6 +331,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         {
             listTimeLine.onRefreshComplete();
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
+            progressBar.stopLoading();
         }
     }
 }

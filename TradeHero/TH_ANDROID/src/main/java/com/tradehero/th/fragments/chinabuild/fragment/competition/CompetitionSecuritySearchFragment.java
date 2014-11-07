@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,10 +35,12 @@ import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-9. 搜索比赛专属股票列表页面
@@ -59,7 +60,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
-    @InjectView(R.id.progressbar_competition_security_search)ProgressBar pbSearch;
+    @InjectView(R.id.progressbar_competition_security_search)TradeHeroProgressBar pbSearch;
     @InjectView(R.id.textview_security_searchresult) TextView tvResult;
 
 
@@ -407,6 +408,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
             @Override
             public void run() {
                 if (pbSearch != null) {
+                    pbSearch.startLoading();
                     pbSearch.setVisibility(View.VISIBLE);
                 }
             }
@@ -419,6 +421,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
             @Override
             public void run() {
                 if (pbSearch != null&&pbSearch.getVisibility()==View.VISIBLE) {
+                    pbSearch.stopLoading();
                     pbSearch.setVisibility(View.GONE);
                 }
             }

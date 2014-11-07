@@ -44,7 +44,7 @@
                    android:visibility="gone"
                    android:scaleType="fitCenter"
                    android:src="@drawable/recommend_download_failed"/>
-        <ProgressBar
+        <com.tradehero.th.widget.TradeHeroProgressBar
                 android:id="@+id/progressbar_recommend_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

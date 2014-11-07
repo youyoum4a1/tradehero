@@ -7,7 +7,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,6 +31,7 @@ import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +55,7 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_competition)TradeHeroProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     @InjectView(R.id.listCompetitions) SecurityListView listCompetitions;//比赛列表
@@ -94,7 +98,8 @@ public class CompetitionBaseFragment extends DashboardFragment
 
         if (adapterList.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_competition);
+            progressBar.startLoading();
         }
         else
         {
@@ -538,6 +543,7 @@ public class CompetitionBaseFragment extends DashboardFragment
                 {
                     listCompetitions.onRefreshComplete();
                 }
+                progressBar.stopLoading();
             } catch (Exception e)
             {
             }

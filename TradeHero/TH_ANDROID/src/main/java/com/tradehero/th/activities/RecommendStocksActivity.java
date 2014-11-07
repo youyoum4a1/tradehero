@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.app.SherlockActivity;
@@ -23,6 +26,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -43,7 +47,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
     @InjectView(R.id.tvHeadRight0)TextView tvHeadRight;
     @InjectView(R.id.tvHeadMiddleMain)TextView tvHeadMiddleMain;
     @InjectView(R.id.pulltorefreshlistview_recommend_stock_hero)PullToRefreshListView recommendPRLV;
-    @InjectView(R.id.progressbar_recommend_loading)ProgressBar loadingPB;
+    @InjectView(R.id.progressbar_recommend_loading)TradeHeroProgressBar loadingPB;
     @InjectView(R.id.imageview_recommend_download_failed)ImageView downloadFailedIV;
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
@@ -209,6 +213,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             @Override
             public void run() {
                 loadingPB.setVisibility(View.VISIBLE);
+                loadingPB.startLoading();
             }
         });
     }
@@ -219,6 +224,7 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             @Override
             public void run() {
                 loadingPB.setVisibility(View.GONE);
+                loadingPB.stopLoading();
             }
         });
     }
