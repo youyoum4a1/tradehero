@@ -306,7 +306,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         ButterKnife.inject(this, view);
         initView();
         updateHeadView(true);
-        hideActionBar();
+        //hideActionBar();
         return view;
     }
 
@@ -394,12 +394,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void setBuySaleButtonVisable(boolean isCanSale)
     {
-        if (llBuySaleButtons != null && llSecurityBuy != null && llSecuritySale != null)
-        {
-            llBuySaleButtons.setVisibility(View.VISIBLE);
-            llSecurityBuy.setVisibility(View.VISIBLE);
-            llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
-        }
+            try{
+                llBuySaleButtons.setVisibility(View.VISIBLE);
+                llSecurityBuy.setVisibility(View.VISIBLE);
+                llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
+            }catch (Exception e)
+            {
+               Timber.d("setBuySaleButtonVisable error "+ e.toString());
+            }
     }
 
     @Override protected void initViews(View view)
@@ -774,11 +776,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
-        this.portfolioCompactDTO = portfolioCompactDTO;
-        clampBuyQuantity(andDisplay);
-        clampSellQuantity(andDisplay);
+        if(getActivity()!=null)
+        {
+            this.portfolioCompactDTO = portfolioCompactDTO;
+            clampBuyQuantity(andDisplay);
+            clampSellQuantity(andDisplay);
 
-        setInitialBuySaleQuantityIfCan();
+            setInitialBuySaleQuantityIfCan();
+        }
     }
 
     protected void clampSellQuantity(boolean andDisplay)

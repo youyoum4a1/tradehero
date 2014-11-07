@@ -221,8 +221,11 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     private void noFoundCompetition()
     {
-        //THToast.show("没有找到比赛");
-        popCurrentFragment();
+        if(getActivity() != null)
+        {
+            THToast.show("没有找到该比赛");
+            popCurrentFragment();
+        }
     }
 
     private void initView()
@@ -529,6 +532,11 @@ public class CompetitionDetailFragment extends DashboardFragment
     public void toPlayCompetition()
     {
         Timber.d("去比赛");
+        if(userCompetitionDTO==null)
+        {
+            THToast.show("没有找到比赛");
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
@@ -572,7 +580,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
             }
-            //noFoundCompetition();
+            noFoundCompetition();
         }
 
         private void onFinish()

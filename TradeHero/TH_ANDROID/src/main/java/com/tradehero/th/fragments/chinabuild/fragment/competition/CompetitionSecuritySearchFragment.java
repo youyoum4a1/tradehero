@@ -105,8 +105,11 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         ButterKnife.inject(this, view);
         initView();
         hideActionBar();
-        fetchSecurityList();
-        showLoadingProgress();
+        if(adapterSecurity!=null && adapterSecurity.getCount() == 0)
+        {
+            fetchSecurityList();
+            showLoadingProgress();
+        }
         return view;
     }
 
