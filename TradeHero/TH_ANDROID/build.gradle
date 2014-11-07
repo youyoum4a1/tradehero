@@ -275,10 +275,7 @@ dependencies {
     exclude group: 'com.android.support', module: 'support-v4'
   }
   releaseCompile 'com.android.support:support-v4:19.1.0'
-  debugCompile('com.android.support:support-v13:21.0.0'){
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-  debugCompile 'com.android.support:support-v4:19.1.0_cut-SNAPSHOT4'
+  debugCompile('com.android.support:support-v13:21.0.0')
   //debugCompile 'com.android.support:support-v4:19.1.0_cut_port-SNAPSHOT1'
   provided 'proguard:annotations:4.6'
   compile('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {

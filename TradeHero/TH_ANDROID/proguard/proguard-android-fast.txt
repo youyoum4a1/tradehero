@@ -103,6 +103,7 @@
 -dontwarn **.VisibleForTesting
 -dontwarn com.tradehero.th.api.i18n.**
 -dontwarn com.tradehero.route.**
+-dontwarn com.tradehero.metrics.**
 -dontwarn com.handmark.**
 -dontwarn org.apache.**
 -dontwarn twitter4j.**
@@ -113,6 +114,7 @@
 -dontwarn com.baidu.**
 -dontwarn com.bea.**
 -dontwarn org.simpleframework.xml.**
+-dontwarn rx.internal.**
 
 -dontwarn com.urbanairship.richpush.RichPushMessageJavaScript
 
