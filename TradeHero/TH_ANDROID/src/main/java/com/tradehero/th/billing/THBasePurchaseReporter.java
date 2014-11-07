@@ -15,9 +15,10 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 abstract public class THBasePurchaseReporter<
         ProductIdentifierType extends ProductIdentifier,
@@ -97,26 +98,29 @@ abstract public class THBasePurchaseReporter<
         {
             case DOMAIN_RESET_PORTFOLIO:
                 handled = true;
-                portfolioServiceWrapper.get().resetPortfolio(
+                portfolioServiceWrapper.get().resetPortfolioRx(
                         purchase.getApplicableOwnedPortfolioId(),
-                        purchase.getPurchaseReportDTO(),
-                        createPurchaseReportedCallback());
+                        purchase.getPurchaseReportDTO())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createPurchaseReportedObserver());
                 break;
 
             case DOMAIN_VIRTUAL_DOLLAR:
                 handled = true;
-                portfolioServiceWrapper.get().addCash(
+                portfolioServiceWrapper.get().addCashRx(
                         purchase.getApplicableOwnedPortfolioId(),
-                        purchase.getPurchaseReportDTO(),
-                        createPurchaseReportedCallback());
+                        purchase.getPurchaseReportDTO())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createPurchaseReportedObserver());
                 break;
 
             case DOMAIN_STOCK_ALERTS:
                 handled = true;
-                alertPlanServiceWrapper.get().subscribeToAlertPlan(
+                alertPlanServiceWrapper.get().subscribeToAlertPlanRx(
                         purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
-                        purchase.getPurchaseReportDTO(),
-                        createAlertPlanPurchaseCallback());
+                        purchase.getPurchaseReportDTO())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createAlertPlanPurchaseObserver());
                 break;
 
             case DOMAIN_FOLLOW_CREDITS:
@@ -124,10 +128,11 @@ abstract public class THBasePurchaseReporter<
                 if (purchase.getUserToFollow() != null)
                 {
                     // TODO remove when ok https://www.pivotaltracker.com/story/show/77362688
-                    userServiceWrapper.get().addCredit(
+                    userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
-                            purchase.getPurchaseReportDTO(),
-                            tempCreatePurchaseReportedCreditBeforeFollowCallback());
+                            purchase.getPurchaseReportDTO())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(tempCreatePurchaseReportedCreditBeforeFollowObserver());
                     //userServiceWrapper.get().follow( // TODO put back when ok https://www.pivotaltracker.com/story/show/77362688
                     //        purchase.getUserToFollow(),
                     //        purchase.getPurchaseReportDTO(),
@@ -135,10 +140,11 @@ abstract public class THBasePurchaseReporter<
                 }
                 else
                 {
-                    userServiceWrapper.get().addCredit(
+                    userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
-                            purchase.getPurchaseReportDTO(),
-                            createPurchaseReportedCallback());
+                            purchase.getPurchaseReportDTO())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(createPurchaseReportedObserver());
                 }
                 break;
         }
@@ -146,25 +152,28 @@ abstract public class THBasePurchaseReporter<
         return handled;
     }
 
-    @NonNull protected Callback<UserProfileDTO> createPurchaseReportedCallback()
+    @NonNull protected Observer<UserProfileDTO> createPurchaseReportedObserver()
     {
-        return new THBasePurchaseReporterPurchaseCallback();
+        return new THBasePurchaseReporterPurchaseObserver();
     }
 
-    protected class THBasePurchaseReporterPurchaseCallback implements Callback<UserProfileDTO>
+    protected class THBasePurchaseReporterPurchaseObserver extends EmptyObserver<UserProfileDTO>
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            handleCallbackSuccess(userProfileDTO, response);
+            handleCallbackSuccess(userProfileDTO);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            handleCallbackFailed(retrofitError);
+            if (e instanceof RetrofitError)
+            {
+                handleCallbackFailed((RetrofitError) e);
+            }
         }
     }
 
-    protected void handleCallbackSuccess(UserProfileDTO userProfileDTO, @SuppressWarnings("UnusedParameters") Response response)
+    protected void handleCallbackSuccess(UserProfileDTO userProfileDTO)
     {
         notifyListenerSuccess(userProfileDTO);
     }
@@ -190,60 +199,62 @@ abstract public class THBasePurchaseReporter<
     }
 
     @Deprecated // Remove when this is ok https://www.pivotaltracker.com/story/show/77362688
-    protected Callback<UserProfileDTO> tempCreatePurchaseReportedCreditBeforeFollowCallback()
+    protected Observer<UserProfileDTO> tempCreatePurchaseReportedCreditBeforeFollowObserver()
     {
-        return new TempTHBasePurchaseReportedCreditBeforeFollowCallback();
+        return new TempTHBasePurchaseReportedCreditBeforeFollowObserver();
     }
 
     @Deprecated // Remove when this is ok https://www.pivotaltracker.com/story/show/77362688
-    protected class TempTHBasePurchaseReportedCreditBeforeFollowCallback
-        extends THBasePurchaseReporterPurchaseCallback
+    protected class TempTHBasePurchaseReportedCreditBeforeFollowObserver
+        extends THBasePurchaseReporterPurchaseObserver
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            userServiceWrapper.get().follow(
-                    purchase.getUserToFollow(),
-                    createPurchaseReportedCallback());
+            userServiceWrapper.get().followRx(
+                    purchase.getUserToFollow())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createPurchaseReportedObserver());
         }
     }
 
-    protected Callback<UserProfileDTO> createAlertPlanPurchaseCallback()
+    protected Observer<UserProfileDTO> createAlertPlanPurchaseObserver()
     {
-        return new THBasePurchaseReporterAlertPlanPurchaseCallback();
+        return new THBasePurchaseReporterAlertPlanPurchaseObserver();
     }
 
-    protected class THBasePurchaseReporterAlertPlanPurchaseCallback extends THBasePurchaseReporterPurchaseCallback
+    protected class THBasePurchaseReporterAlertPlanPurchaseObserver extends THBasePurchaseReporterPurchaseObserver
     {
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            checkAlertPlanAttribution(retrofitError);
+            checkAlertPlanAttribution((RetrofitError) e);
         }
     }
 
     protected void checkAlertPlanAttribution(RetrofitError retrofitErrorFromReport)
     {
-        alertPlanCheckServiceWrapper.get().checkAlertPlanAttribution(
+        alertPlanCheckServiceWrapper.get().checkAlertPlanAttributionRx(
                 purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
-                purchase.getPurchaseReportDTO(),
-                new THBasePurchaseReporterAlertPlanStatusCallback(retrofitErrorFromReport));
+                purchase.getPurchaseReportDTO())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new THBasePurchaseReporterAlertPlanStatusObserver(retrofitErrorFromReport));
     }
 
-    protected class THBasePurchaseReporterAlertPlanStatusCallback implements Callback<AlertPlanStatusDTO>
+    protected class THBasePurchaseReporterAlertPlanStatusObserver extends EmptyObserver<AlertPlanStatusDTO>
     {
         protected final RetrofitError errorFromReport;
 
-        public THBasePurchaseReporterAlertPlanStatusCallback(RetrofitError errorFromReport)
+        public THBasePurchaseReporterAlertPlanStatusObserver(RetrofitError errorFromReport)
         {
             super();
             this.errorFromReport = errorFromReport;
         }
 
-        @Override public void success(AlertPlanStatusDTO alertPlanStatusDTO, Response response)
+        @Override public void onNext(AlertPlanStatusDTO args)
         {
-            handleCallbackStatusSuccess(alertPlanStatusDTO, response, errorFromReport);
+            handleCallbackStatusSuccess(args, errorFromReport);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
             // We report on the previous error as this means it was valid
             handleCallbackFailed(errorFromReport);
@@ -252,7 +263,6 @@ abstract public class THBasePurchaseReporter<
 
     protected void handleCallbackStatusSuccess(
             AlertPlanStatusDTO alertPlanStatusDTO,
-            @SuppressWarnings("UnusedParameters") Response response,
             RetrofitError errorFromReport)
     {
         OwnedPortfolioId portfolioId = purchase.getApplicableOwnedPortfolioId();
@@ -263,7 +273,9 @@ abstract public class THBasePurchaseReporter<
         }
         else
         {
-            alertPlanServiceWrapper.get().checkAlertPlanSubscription(portfolioId.getUserBaseKey(), createPurchaseReportedCallback());
+            alertPlanServiceWrapper.get().checkAlertPlanSubscriptionRx(portfolioId.getUserBaseKey())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createPurchaseReportedObserver());
         }
     }
 }

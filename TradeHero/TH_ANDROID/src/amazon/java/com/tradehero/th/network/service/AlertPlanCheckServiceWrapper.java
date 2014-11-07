@@ -1,59 +1,35 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
+import rx.Observable;
 
 @Singleton public class AlertPlanCheckServiceWrapper
 {
-    @NonNull protected final AlertPlanCheckService alertPlanCheckService;
-    @NonNull protected final AlertPlanCheckServiceAsync alertPlanCheckServiceAsync;
-    @NonNull protected final UserProfileCacheRx userProfileCache;
+    @NonNull protected final AlertPlanCheckServiceRx alertPlanCheckServiceRx;
 
     //<editor-fold desc="Constructors">
     @Inject public AlertPlanCheckServiceWrapper(
-            @NonNull AlertPlanCheckService alertPlanCheckService,
-            @NonNull AlertPlanCheckServiceAsync alertPlanCheckServiceAsync,
-            @NonNull UserProfileCacheRx userProfileCache)
+            @NonNull AlertPlanCheckServiceRx alertPlanCheckServiceRx)
     {
         super();
-        this.alertPlanCheckService = alertPlanCheckService;
-        this.alertPlanCheckServiceAsync = alertPlanCheckServiceAsync;
-        this.userProfileCache = userProfileCache;
+        this.alertPlanCheckServiceRx = alertPlanCheckServiceRx;
     }
 
     //<editor-fold desc="Check Alert Plan Attribution">
-    public AlertPlanStatusDTO checkAlertPlanAttribution(
+    public Observable<AlertPlanStatusDTO> checkAlertPlanAttributionRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull PurchaseReportDTO purchaseReportDTO)
     {
-        return alertPlanCheckService.checkAlertPlanAttribution(
+        return alertPlanCheckServiceRx.checkAlertPlanAttribution(
                 userBaseKey.getUserId(),
                 ((AmazonPurchaseReportDTO) purchaseReportDTO).amazonPurchaseToken,
                 ((AmazonPurchaseReportDTO) purchaseReportDTO).amazonUserId);
-    }
-
-    @NonNull public MiddleCallback<AlertPlanStatusDTO> checkAlertPlanAttribution(
-            @NonNull UserBaseKey userBaseKey,
-            @NonNull PurchaseReportDTO purchaseReportDTO,
-            @Nullable Callback<AlertPlanStatusDTO> callback)
-    {
-        MiddleCallback<AlertPlanStatusDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        alertPlanCheckServiceAsync.checkAlertPlanAttribution(
-                userBaseKey.getUserId(),
-                ((AmazonPurchaseReportDTO) purchaseReportDTO).amazonPurchaseToken,
-                ((AmazonPurchaseReportDTO) purchaseReportDTO).amazonUserId,
-                middleCallback);
-        return middleCallback;
     }
     //</editor-fold>
 }

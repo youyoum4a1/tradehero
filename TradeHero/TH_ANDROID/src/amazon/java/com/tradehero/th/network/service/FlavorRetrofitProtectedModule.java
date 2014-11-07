@@ -14,9 +14,9 @@ import retrofit.RestAdapter;
 public class FlavorRetrofitProtectedModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton AlertPlanCheckServiceAsync provideAlertPlanCheckServiceAsync(RestAdapter adapter)
+    @Provides @Singleton AlertPlanCheckServiceRx provideAlertPlanCheckServiceRx(RestAdapter adapter)
     {
-        return adapter.create(AlertPlanCheckServiceAsync.class);
+        return adapter.create(AlertPlanCheckServiceRx.class);
     }
     //</editor-fold>
 }

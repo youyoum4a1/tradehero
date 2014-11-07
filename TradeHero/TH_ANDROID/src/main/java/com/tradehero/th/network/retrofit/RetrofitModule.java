@@ -31,7 +31,6 @@ import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.PortfolioService;
 import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.RetrofitProtectedModule;
 import com.tradehero.th.network.service.SecurityService;
@@ -79,11 +78,6 @@ public class RetrofitModule
     @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
     {
         return adapter.create(AlertPlanService.class);
-    }
-
-    @Provides @Singleton PortfolioService providePortfolioService(RestAdapter adapter)
-    {
-        return adapter.create(PortfolioService.class);
     }
 
     @Provides @Singleton ProviderService provideProviderService(RestAdapter adapter)

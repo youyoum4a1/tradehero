@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -11,8 +13,6 @@ import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorAddCash;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
@@ -21,15 +21,10 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class PortfolioServiceWrapper
 {
-    @NonNull private final PortfolioService portfolioService;
-    @NonNull private final PortfolioServiceAsync portfolioServiceAsync;
     @NonNull private final PortfolioServiceRx portfolioServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
@@ -39,8 +34,6 @@ import rx.Observable;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioServiceWrapper(
-            @NonNull PortfolioService portfolioService,
-            @NonNull PortfolioServiceAsync portfolioServiceAsync,
             @NonNull PortfolioServiceRx portfolioServiceRx,
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
@@ -49,8 +42,6 @@ import rx.Observable;
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         super();
-        this.portfolioService = portfolioService;
-        this.portfolioServiceAsync = portfolioServiceAsync;
         this.portfolioServiceRx = portfolioServiceRx;
         this.userProfileCache = userProfileCache;
         this.portfolioCompactListCache = portfolioCompactListCache;
@@ -111,17 +102,6 @@ import rx.Observable;
         return this.portfolioServiceRx.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
                 .doOnNext(createUpdateProfileProcessor());
     }
-
-    @Deprecated
-    @NonNull public MiddleCallback<UserProfileDTO> resetPortfolio(
-            @NonNull OwnedPortfolioId ownedPortfolioId,
-            PurchaseReportDTO purchaseDTO,
-            @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
-        this.portfolioServiceAsync.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseDTO, middleCallback);
-        return middleCallback;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
@@ -141,16 +121,6 @@ import rx.Observable;
     {
         return this.portfolioServiceRx.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
                 .doOnNext(createAddCashProcessor(ownedPortfolioId));
-    }
-
-    @NonNull public MiddleCallback<UserProfileDTO> addCash(
-            @NonNull OwnedPortfolioId ownedPortfolioId,
-            PurchaseReportDTO purchaseReportDTO,
-            @Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createAddCashProcessor(ownedPortfolioId));
-        this.portfolioServiceAsync.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO, middleCallback);
-        return middleCallback;
     }
     //</editor-fold>
 

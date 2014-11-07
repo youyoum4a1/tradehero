@@ -82,11 +82,6 @@ public class RetrofitProtectedModule
         return adapter.create(NotificationServiceRx.class);
     }
 
-    @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(PortfolioServiceAsync.class);
-    }
-
     @Provides @Singleton PortfolioServiceRx providePortfolioServiceRx(RestAdapter adapter)
     {
         return adapter.create(PortfolioServiceRx.class);
