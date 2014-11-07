@@ -37,7 +37,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
         </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
-        <ProgressBar android:id="@+id/progressbar_hothold" android:layout_width="wrap_content"
+        <com.tradehero.th.widget.TradeHeroProgressBar android:id="@+id/progressbar_hothold" android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      style="@android:style/Widget.ProgressBar.Inverse"
                      android:layout_centerInParent="true"

@@ -5,12 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -38,17 +33,18 @@ import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class TradeOfTypeBaseFragment extends DashboardFragment
 {
     @Inject Lazy<ExchangeCompactListCache> exchangeCompactListCache;
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
 
-    //public DTOCacheNew.Listener<ExchangeListType, ExchangeCompactDTOList> exchangeListTypeCacheListener;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
 
     public SpinnerExchangeIconAdapter spinnerIconAdapter;
@@ -57,7 +53,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @InjectView(R.id.llSpinner) LinearLayout llSpinner;
     @InjectView(R.id.spinnerExchange) Spinner spinnerExchange;
     @InjectView(R.id.listSecurity) SecurityListView listSecurity;
-    @InjectView(R.id.progressbar_hothold) ProgressBar pbHotHold;
+    @InjectView(R.id.progressbar_hothold) TradeHeroProgressBar pbHotHold;
 
     private SecurityListAdapter adapterSecurity;
 
