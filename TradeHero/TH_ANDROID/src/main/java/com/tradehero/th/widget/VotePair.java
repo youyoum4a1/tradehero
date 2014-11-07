@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,14 +17,13 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class VotePair extends LinearLayout
@@ -34,7 +34,7 @@ public class VotePair extends LinearLayout
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject Provider<NetworkInfo> networkInfoProvider;
 
-    private MiddleCallback<DiscussionDTO> voteCallback;
+    @Nullable private Subscription voteSubscription;
     private AbstractDiscussionCompactDTO discussionDTO;
     private boolean downVote = false;
 
@@ -100,11 +100,11 @@ public class VotePair extends LinearLayout
 
     protected void detachVoteMiddleCallback()
     {
-        if (voteCallback != null)
+        if (voteSubscription != null)
         {
-            voteCallback.setPrimaryCallback(null);
+            voteSubscription.unsubscribe();
         }
-        voteCallback = null;
+        voteSubscription = null;
     }
 
     @SuppressWarnings("UnusedDeclaration") @OnClick({
@@ -151,20 +151,20 @@ public class VotePair extends LinearLayout
         }
     }
 
-    protected class VoteCallback implements Callback<DiscussionDTO>
+    protected class VoteObserver implements Observer<DiscussionDTO>
     {
         private final AbstractDiscussionCompactDTO discussionDTO;
         private final VoteDirection targetVoteDirection;
 
         //<editor-fold desc="Constructors">
-        public VoteCallback(VoteDirection voteDirection)
+        public VoteObserver(VoteDirection voteDirection)
         {
             this.discussionDTO = VotePair.this.discussionDTO;
             this.targetVoteDirection = voteDirection;
         }
         //</editor-fold>
 
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        @Override public void onNext(DiscussionDTO discussionDTO)
         {
             if (this.discussionDTO == null || VotePair.this.discussionDTO == null)
             {
@@ -208,7 +208,11 @@ public class VotePair extends LinearLayout
             }
         }
 
-        @Override public void failure(RetrofitError error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             Timber.e("VoteCallback Failure");
         }
@@ -227,7 +231,9 @@ public class VotePair extends LinearLayout
                 discussionDTO.id,
                 voteDirection);
         detachVoteMiddleCallback();
-        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new VoteCallback(voteDirection));
+        voteSubscription = discussionServiceWrapper.get().voteRx(discussionVoteKey)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new VoteObserver(voteDirection));
     }
 
     public boolean hasDownVote()

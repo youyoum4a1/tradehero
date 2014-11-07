@@ -31,8 +31,6 @@ import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.AlertPlanService;
-import com.tradehero.th.network.service.DiscussionService;
-import com.tradehero.th.network.service.HomeService;
 import com.tradehero.th.network.service.LeaderboardService;
 import com.tradehero.th.network.service.MessageService;
 import com.tradehero.th.network.service.NotificationService;
@@ -84,11 +82,6 @@ public class RetrofitModule
     @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
     {
         return adapter.create(AlertPlanService.class);
-    }
-
-    @Provides @Singleton DiscussionService provideDiscussionServiceSync(RestAdapter adapter)
-    {
-        return adapter.create(DiscussionService.class);
     }
 
     @Provides @Singleton LeaderboardService provideLeaderboardService(RestAdapter adapter)
@@ -161,14 +154,6 @@ public class RetrofitModule
     @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)
     {
         return adapter.create(WatchlistService.class);
-    }
-
-    @Provides @Singleton HomeService provideHomeService(RestAdapter.Builder builder, RequestHeaders requestHeaders)
-    {
-        return builder.setEndpoint(NetworkConstants.getEndPointInUse())
-                .setRequestInterceptor(requestHeaders)
-                .build()
-                .create(HomeService.class);
     }
     //</editor-fold>
 

@@ -47,11 +47,6 @@ public class RetrofitProtectedModule
         return adapter.create(CurrencyServiceRx.class);
     }
 
-    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(DiscussionServiceAsync.class);
-    }
-
     @Provides @Singleton DiscussionServiceRx provideDiscussionServiceRx(RestAdapter adapter)
     {
         return adapter.create(DiscussionServiceRx.class);

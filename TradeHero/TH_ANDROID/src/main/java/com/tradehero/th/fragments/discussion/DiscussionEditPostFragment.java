@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.discussion;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -32,7 +34,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
@@ -41,13 +42,9 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
@@ -68,7 +65,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
 
     private DiscussionDTO discussionDTO;
-    private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
+    private Subscription discussionEditSubscription;
     private ProgressDialog progressDialog;
     protected MenuItem postMenuButton;
     private TextWatcher discussionEditTextWatcher;
@@ -156,7 +153,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         setActionBarSubtitle(null);
-        unsetDiscussionEditMiddleCallback();
+        unsubscribe(discussionEditSubscription);
+        discussionEditSubscription = null;
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
         discussionPostContent.removeTextChangedListener(discussionEditTextWatcher);
@@ -175,7 +173,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        unsetDiscussionEditMiddleCallback();
+        unsubscribe(discussionEditSubscription);
+        discussionEditSubscription = null;
     }
 
     private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
@@ -203,9 +202,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionPostActionButtonsView.populate(discussionFormDTO);
             discussionPostActionButtonsView.onPostDiscussion();
 
-            unsetDiscussionEditMiddleCallback();
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
-            discussionEditMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new SecurityDiscussionEditCallback());
+            unsubscribe(discussionEditSubscription);
+            discussionEditSubscription = AndroidObservable.bindFragment(
+                    this,
+                    discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
+                    .subscribe(new SecurityDiscussionEditCallback());
         }
     }
 
@@ -236,15 +238,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
             return discussionKey.getType();
         }
         return null;
-    }
-
-    private void unsetDiscussionEditMiddleCallback()
-    {
-        if (discussionEditMiddleCallback != null)
-        {
-            discussionEditMiddleCallback.setPrimaryCallback(null);
-        }
-        discussionEditMiddleCallback = null;
     }
 
     private boolean validateNotEmptyText()
@@ -302,7 +295,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         if (andDisplay)
         {
             setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            if(getActivity() != null)
+            if (getActivity() != null)
             {
                 getActivity().invalidateOptionsMenu();
             }
@@ -314,9 +307,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
         return isPosted;
     }
 
-    private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO>
+    private class SecurityDiscussionEditCallback implements Observer<DiscussionDTO>
     {
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        @Override public void onNext(DiscussionDTO discussionDTO)
         {
             onFinish();
 
@@ -333,11 +326,15 @@ public class DiscussionEditPostFragment extends DashboardFragment
             navigator.get().popFragment();
         }
 
-        @Override public void failure(RetrofitError error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             onFinish();
 
-            THToast.show(new THException(error));
+            THToast.show(new THException(e));
         }
 
         private void onFinish()

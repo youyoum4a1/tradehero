@@ -17,40 +17,41 @@ import java.util.Map;
 import javax.inject.Inject;
 import retrofit.http.Body;
 import retrofit.http.Path;
+import rx.Observable;
 
-public class DiscussionServiceStub implements DiscussionService
+public class DiscussionServiceRxStub implements DiscussionServiceRx
 {
     public static final int DEFAULT_MAX_COUNT = 5;
 
     private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    @Inject public DiscussionServiceStub(CurrentUserId currentUserId)
+    @Inject public DiscussionServiceRxStub(CurrentUserId currentUserId)
     {
         super();
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
 
-    @Override public DiscussionDTO getComment(int commentId)
+    @Override public Observable<DiscussionDTO> getComment(int commentId)
     {
         DiscussionDTO discussionDTO = new DiscussionDTO();
         discussionDTO.id = commentId;
         discussionDTO.text = "discussion " + commentId;
         discussionDTO.userId = (commentId % 2 == 0) ? currentUserId.toUserBaseKey().key : 23;
-        return discussionDTO;
+        return Observable.just(discussionDTO);
     }
 
-    @Override public PaginatedDTO<DiscussionDTO> getDiscussions(
+    @Override public Observable<PaginatedDTO<DiscussionDTO>> getDiscussions(
             DiscussionType inReplyToType,
             int inReplyToId,
             Integer page,
             Integer perPage)
     {
-        return null;
+        return Observable.empty();
     }
 
-    @Override public PaginatedDTO<DiscussionDTO> getDiscussions(
+    @Override public Observable<PaginatedDTO<DiscussionDTO>> getDiscussions(
             DiscussionType inReplyToType,
             int inReplyToId,
             Map<String, Object> options)
@@ -70,10 +71,10 @@ public class DiscussionServiceStub implements DiscussionService
 
         paginatedDTO.setData(discussionDTOs);
 
-        return paginatedDTO;
+        return Observable.just(paginatedDTO);
     }
 
-    @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
+    @Override public Observable<PaginatedDTO<DiscussionDTO>> getMessageThread(
             DiscussionType inReplyToType, int inReplyToId,
             int senderUserId, int recipientUserId,
             Integer maxCount, Integer maxId, Integer minId)
@@ -91,14 +92,14 @@ public class DiscussionServiceStub implements DiscussionService
         }
         else
         {
-            throw new IllegalArgumentException("Cannot find such stuff");
+            return Observable.error(new IllegalArgumentException("Cannot find such stuff"));
         }
         rangedDTO.setData(data);
         RangeSequenceDTO sequenceDTO = new RangeSequenceDTO();
         sequenceDTO.prev = new RangeDTO(maxCount, minId - 1, null);
         sequenceDTO.next = new RangeDTO(maxCount, null, maxId + 1);
         //rangedDTO.setSequenceDTO(sequenceDTO);
-        return rangedDTO;
+        return Observable.just(rangedDTO);
     }
 
     private int addFromAboveDown(DiscussionDTOList data, int maxCount, int maxId, Integer minId)
@@ -120,37 +121,37 @@ public class DiscussionServiceStub implements DiscussionService
         return minId;
     }
 
-    @Override public PaginatedDTO<DiscussionDTO> getMessageThread(
+    @Override public Observable<PaginatedDTO<DiscussionDTO>> getMessageThread(
             DiscussionType inReplyToType,
             int inReplyToId,
             Map<String, Object> options)
     {
-        return null;
+        return Observable.empty();
     }
 
-    @Override public DiscussionDTO createDiscussion(DiscussionFormDTO discussionFormDTO)
+    @Override public Observable<DiscussionDTO> createDiscussion(DiscussionFormDTO discussionFormDTO)
     {
-        return null;
+        return Observable.empty();
     }
 
-    @Override public DiscussionDTO vote(
+    @Override public Observable<DiscussionDTO> vote(
             DiscussionType inReplyToType,
             int inReplyToId,
             VoteDirection direction)
     {
-        return null;
+        return Observable.empty();
     }
 
-    @Override public BaseResponseDTO share(
+    @Override public Observable<BaseResponseDTO> share(
             DiscussionType inReplyToType,
             int inReplyToId,
             TimelineItemShareRequestDTO timelineItemShareRequestDTO)
     {
-        return null;
+        return Observable.empty();
     }
 
-    @Override public DiscussionDTO postToTimeline(@Path("userId") int userId, @Body DiscussionFormDTO discussionFormDTO)
+    @Override public Observable<DiscussionDTO> postToTimeline(@Path("userId") int userId, @Body DiscussionFormDTO discussionFormDTO)
     {
-        return null;
+        return Observable.empty();
     }
 }

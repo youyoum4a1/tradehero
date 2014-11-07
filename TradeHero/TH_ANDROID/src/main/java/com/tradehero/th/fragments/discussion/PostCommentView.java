@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
@@ -28,28 +30,22 @@ import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 
 /**
- * A layout that often will be included in {@link com.tradehero.th.fragments.discussion.DiscussionView},
- * consists of a TextView for input discussion comment and a submit button.
- *
- *
+ * A layout that often will be included in {@link com.tradehero.th.fragments.discussion.DiscussionView}, consists of a TextView for input discussion
+ * comment and a submit button.
  */
 public class PostCommentView extends RelativeLayout
 {
     /**
-     * If false, then we wait for a return from the server before adding the discussion.
-     * If true, we add it right away.
+     * If false, then we wait for a return from the server before adding the discussion. If true, we add it right away.
      */
     public static final boolean USE_QUICK_STUB_DISCUSSION = true;
     private boolean keypadIsShowing;
@@ -59,8 +55,7 @@ public class PostCommentView extends RelativeLayout
     @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
     @InjectView(R.id.post_comment_text) EditText commentText;
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    @NonNull private MiddleCallbackWeakList<DiscussionDTO> postCommentMiddleCallbacks;
+    @NonNull private SubscriptionList postCommentSubscriptions;
 
     @Inject MessageServiceWrapper messageServiceWrapper;
     @Nullable private MessageType messageType = null;
@@ -98,7 +93,7 @@ public class PostCommentView extends RelativeLayout
 
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
-        postCommentMiddleCallbacks = new MiddleCallbackWeakList<>();
+        postCommentSubscriptions = new SubscriptionList();
         keypadIsShowing = false;
     }
 
@@ -114,7 +109,7 @@ public class PostCommentView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        postCommentMiddleCallbacks.detach();
+        postCommentSubscriptions.unsubscribe();
         resetView();
         commentText.setOnFocusChangeListener(null);
         commentPostedListener = null;
@@ -188,10 +183,10 @@ public class PostCommentView extends RelativeLayout
     {
         DiscussionFormDTO discussionFormDTO = buildCommentFormDTO();
         setPosting();
-        postCommentMiddleCallbacks.add(
-                discussionServiceWrapper.createDiscussion(
-                discussionFormDTO,
-                createCommentSubmitCallback()));
+        postCommentSubscriptions.add(
+                discussionServiceWrapper.createDiscussionRx(discussionFormDTO)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createCommentSubmitObserver()));
     }
 
     protected DiscussionFormDTO buildCommentFormDTO()
@@ -223,9 +218,10 @@ public class PostCommentView extends RelativeLayout
     {
         MessageCreateFormDTO messageCreateFormDTO = buildMessageCreateFormDTO();
         setPosting();
-        postCommentMiddleCallbacks.add(
-                messageServiceWrapper.createMessage(messageCreateFormDTO,
-                createCommentSubmitCallback()));
+        postCommentSubscriptions.add(
+                messageServiceWrapper.createMessageRx(messageCreateFormDTO)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createCommentSubmitObserver()));
     }
 
     @NonNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
@@ -323,23 +319,27 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    protected Callback<DiscussionDTO> createCommentSubmitCallback()
+    protected Observer<DiscussionDTO> createCommentSubmitObserver()
     {
-        return new CommentSubmitCallback();
+        return new CommentSubmitObserver();
     }
 
-    protected class CommentSubmitCallback implements Callback<DiscussionDTO>
+    protected class CommentSubmitObserver implements Observer<DiscussionDTO>
     {
-        @Override public void success(DiscussionDTO discussionDTO, Response response)
+        @Override public void onNext(DiscussionDTO discussionDTO)
         {
             handleCommentPosted(discussionDTO);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             setPosted();
-            THToast.show(new THException(retrofitError));
-            notifyCommentPostFailed(retrofitError);
+            THToast.show(new THException(e));
+            notifyCommentPostFailed((Exception) e);
         }
     }
 
