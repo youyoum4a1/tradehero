@@ -436,7 +436,9 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             listView.onRefreshComplete();
             fetchSimplePage(false);
-            progressBar.stopLoading();
+            if(progressBar!=null){
+                progressBar.stopLoading();
+            }
         }
     }
 

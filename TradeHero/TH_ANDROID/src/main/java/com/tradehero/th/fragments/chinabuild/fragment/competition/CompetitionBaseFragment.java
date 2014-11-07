@@ -185,31 +185,6 @@ public class CompetitionBaseFragment extends DashboardFragment
             });
         }
 
-        //for (int i = 0; i < sizeVip; i++)
-        //{
-        //    View view = layoutInflater.inflate(R.layout.competition_adv_item, null);
-        //    ImageView imgCompetitionAdv = (ImageView) view.findViewById(R.id.imgCompetitionAdv);
-        //    picasso.get()
-        //            .load(userCompetitionVipDTOs.get(i).bannerUrl)
-        //            .placeholder(R.drawable.default_image)
-        //            .error(R.drawable.default_image)
-        //            .into(imgCompetitionAdv);
-        //    views.add(view);
-        //    view.setOnClickListener(new View.OnClickListener()
-        //    {
-        //        @Override public void onClick(View view)
-        //        {
-        //            try{
-        //                int position = pager.getCurrentItem();
-        //                gotoCompetitionDetailFragment(userCompetitionVipDTOs.get(position));
-        //            }catch (Exception e)
-        //            {
-        //
-        //            }
-        //        }
-        //    });
-        //}
-
         pager.setAdapter(pageAdapter);
         indicator.setViewPager(pager);
 
@@ -543,7 +518,9 @@ public class CompetitionBaseFragment extends DashboardFragment
                 {
                     listCompetitions.onRefreshComplete();
                 }
-                progressBar.stopLoading();
+                if(progressBar!=null){
+                    progressBar.stopLoading();
+                }
             } catch (Exception e)
             {
             }

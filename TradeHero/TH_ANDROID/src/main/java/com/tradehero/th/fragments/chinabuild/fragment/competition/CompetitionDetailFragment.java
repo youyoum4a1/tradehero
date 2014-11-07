@@ -76,6 +76,7 @@ import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import timber.log.Timber;
 
 /**
@@ -139,7 +140,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvLeaderboardTime) TextView tvLeaderboardTime;
     @InjectView(R.id.btnCollegeSelect) Button btnCollegeSelect;
 
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_competition_detail) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.rlRankAll) RelativeLayout rlRankAll;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
@@ -207,7 +208,8 @@ public class CompetitionDetailFragment extends DashboardFragment
 
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_competition_detail);
+            progressBar.startLoading();
         }
         else
         {
@@ -588,6 +590,9 @@ public class CompetitionDetailFragment extends DashboardFragment
             if (mTransactionDialog != null)
             {
                 mTransactionDialog.dismiss();
+            }
+            if(progressBar!=null){
+                progressBar.stopLoading();
             }
         }
     }

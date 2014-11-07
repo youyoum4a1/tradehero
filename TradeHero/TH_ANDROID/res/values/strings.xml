@@ -415,7 +415,8 @@
   <string name="login_continuous_share">这酸爽，哥已经玩%1$s天了</string>
 
   <string name="download_tradehero_android_app_on_wechat">http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th</string>
-  <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string>
+  <string name="download_tradehero_android_app_on_weibo">http://cn.tradehero.mobi/shr/assets.html?userId=313529</string>
+  <!--  <string name="download_tradehero_android_app_on_weibo">http://tradehero.b0.upaiyun.com/th_android.apk</string> -->
   <string name="target_user_millionaire_page">http://cn.tradehero.mobi/shr/assets.html?userId=313529</string>
 
   <!-- Recommend Items (Stock & Hero)-->
