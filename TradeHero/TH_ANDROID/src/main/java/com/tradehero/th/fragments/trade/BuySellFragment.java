@@ -65,6 +65,7 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
+import com.tradehero.th.fragments.trade.quote.FreshQuoteInfo;
 import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -932,12 +933,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
-    @Override protected void prepareFreshQuoteHolder()
-    {
-        super.prepareFreshQuoteHolder();
-        freshQuoteHolder.identifier = "BuySellFragment";
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_add_trigger)
     protected void handleBtnAddTriggerClicked()
@@ -1260,9 +1255,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
     //</editor-fold>
 
-    @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
+    @Override protected Observer<FreshQuoteInfo> createFreshQuoteObserver()
     {
-        return new BuySellFreshQuoteListener();
+        return new BuySellFreshQuoteObserver();
     }
 
     @Override public int getTutorialLayout()
@@ -1301,15 +1296,20 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
+    protected class BuySellFreshQuoteObserver extends AbstractBuySellFreshQuoteObserver
     {
-        @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
+        @Override public void onNext(FreshQuoteInfo freshQuoteInfo)
         {
-            if (mQuoteRefreshProgressBar != null)
+            super.onNext(freshQuoteInfo);
+            if (freshQuoteInfo.milliSecToRefresh != null)
             {
                 mQuoteRefreshProgressBar.setProgress(
-                        (int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
+                        (int) (freshQuoteInfo.milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
             }
+        }
+
+        @Override public void onCompleted()
+        {
         }
     }
 

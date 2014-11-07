@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +25,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.trade.quote.FreshQuoteHolder;
+import com.tradehero.th.fragments.trade.quote.FreshQuoteInfo;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -32,8 +36,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -73,6 +75,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected UserProfileDTO userProfileDTO;
 
     protected FreshQuoteHolder freshQuoteHolder;
+    @Nullable Subscription quoteSubscription;
     @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
 
@@ -102,6 +105,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onCreate(savedInstanceState);
         collectFromParameters(getArguments());
         collectFromParameters(savedInstanceState);
+        freshQuoteHolder = new FreshQuoteHolder(getActivity(), securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -114,6 +118,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         if (args != null)
         {
+            securityId = getSecurityId(getArguments());
+
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             if (args.containsKey(BUNDLE_KEY_QUANTITY_BUY))
             {
@@ -132,11 +138,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        quoteSubscription = AndroidObservable.bindFragment(
+                this,
+                freshQuoteHolder.startObs())
+                .subscribe(createFreshQuoteObserver());
+    }
+
     @Override protected void initViews(View view)
     {
-        // Prevent reuse of previous values when changing securities
-        securityCompactDTO = null;
-        quoteDTO = null;
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -183,7 +195,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onSaveInstanceState(outState);
 
         detachSecurityPositionDetailSubscription();
-        destroyFreshQuoteHolder();
 
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         if (mBuyQuantity != null)
@@ -198,21 +209,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onDestroyView()
     {
+        unsubscribe(quoteSubscription);
+        quoteSubscription = null;
         detachSecurityCompactSubscription();
         detachSecurityPositionDetailSubscription();
-        destroyFreshQuoteHolder();
         querying = false;
 
         super.onDestroyView();
     }
 
-    protected void destroyFreshQuoteHolder()
+    @Override public void onDestroy()
     {
-        if (freshQuoteHolder != null)
-        {
-            freshQuoteHolder.destroy();
-        }
         freshQuoteHolder = null;
+        super.onDestroy();
     }
 
     protected void detachSecurityCompactSubscription()
@@ -331,7 +340,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             return;
         }
 
-        prepareFreshQuoteHolder();
         requestCompactDetail();
         requestPositionDetail();
 
@@ -442,14 +450,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return Math.min(candidate, maxSellable);
     }
 
-    protected void prepareFreshQuoteHolder()
-    {
-        destroyFreshQuoteHolder();
-        freshQuoteHolder = new FreshQuoteHolder(getActivity(), securityId, MILLISEC_QUOTE_REFRESH, MILLISEC_QUOTE_COUNTDOWN_PRECISION);
-        freshQuoteHolder.setListener(createFreshQuoteListener());
-        freshQuoteHolder.start();
-    }
-
     abstract public void display();
 
     protected void notifyOnceMarketClosed()
@@ -466,20 +466,23 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         alertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 
-    abstract protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener();
+    abstract protected Observer<FreshQuoteInfo> createFreshQuoteObserver();
 
-    abstract protected class AbstractBuySellFreshQuoteListener implements FreshQuoteHolder.FreshQuoteListener
+    abstract protected class AbstractBuySellFreshQuoteObserver implements Observer<FreshQuoteInfo>
     {
-        @Override abstract public void onMilliSecToRefreshQuote(long milliSecToRefresh);
-
-        @Override public void onIsRefreshing(boolean refreshing)
+        @Override public void onNext(FreshQuoteInfo freshQuoteInfo)
         {
-            setRefreshingQuote(refreshing);
+            setRefreshingQuote(freshQuoteInfo.isRefreshing);
+            if (freshQuoteInfo.freshQuote != null)
+            {
+                linkWith(freshQuoteInfo.freshQuote, true);
+            }
         }
 
-        @Override public void onFreshQuote(QuoteDTO quoteDTO)
+        @Override public void onError(Throwable e)
         {
-            linkWith(quoteDTO, true);
+            Timber.e(e, "Failed fetching quote");
+            THToast.show(R.string.error_fetch_quote);
         }
     }
 
