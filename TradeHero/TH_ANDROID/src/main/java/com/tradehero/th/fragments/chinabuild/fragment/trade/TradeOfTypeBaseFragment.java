@@ -53,7 +53,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @InjectView(R.id.llSpinner) LinearLayout llSpinner;
     @InjectView(R.id.spinnerExchange) Spinner spinnerExchange;
     @InjectView(R.id.listSecurity) SecurityListView listSecurity;
-    @InjectView(R.id.progressbar_hothold) TradeHeroProgressBar pbHotHold;
+    @InjectView(R.id.tradeheroprogressbar_hothold) TradeHeroProgressBar pbHotHold;
 
     private SecurityListAdapter adapterSecurity;
 
@@ -186,10 +186,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     private void showLoadingProgress()
     {
-        //if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
-        //{
-        //    return;
-        //}
         Handler handler = new Handler();
         handler.post(new Runnable()
         {
@@ -199,6 +195,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
                 if (pbHotHold != null)
                 {
                     pbHotHold.setVisibility(View.VISIBLE);
+                    pbHotHold.startLoading();
                 }
             }
         });
@@ -206,10 +203,6 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
     private void dismissLoadingProgress()
     {
-        //if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
-        //{
-        //    return;
-        //}
         Handler handler = new Handler();
         handler.post(new Runnable()
         {
@@ -218,6 +211,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             {
                 if (pbHotHold != null && pbHotHold.getVisibility() == View.VISIBLE)
                 {
+                    pbHotHold.stopLoading();
                     pbHotHold.setVisibility(View.GONE);
                 }
             }
