@@ -1,31 +1,16 @@
 package com.tradehero.th.utils.metrics.events;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AnalyticsEvent
+public abstract class AnalyticsEvent extends com.tradehero.metrics.AnalyticsEvent
 {
-    private final String name;
-    private final Map<String, String> attributes;
-
     public AnalyticsEvent(String name)
     {
-        this(name, new HashMap<String, String>());
+        super(name);
     }
 
     public AnalyticsEvent(String name, Map<String, String> attributes)
     {
-        this.name = name;
-        this.attributes = attributes;
-    }
-
-    public final String getName()
-    {
-        return name;
-    }
-
-    public Map<String, String> getAttributes()
-    {
-        return attributes;
+        super(name, attributes);
     }
 }
