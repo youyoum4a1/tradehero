@@ -17,11 +17,12 @@ import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.persistence.notification.NotificationCache;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Expect notificationDTO with specified id is already there somewhere in the notificationCache
@@ -129,7 +130,8 @@ public class CommonNotificationBuilder implements THNotificationBuilder
             notification = style.build();
         }
 
-        notification.contentIntent = PendingIntent.getBroadcast(context, notificationDTO.pushId, composeIntent(notificationDTO), 0);
+        //notification.contentIntent = PendingIntent.getBroadcast(context, notificationDTO.pushId, composeIntent(notificationDTO), 0);
+        notification.contentIntent = PendingIntent.getActivity(context, 0, context.getPackageManager().getLaunchIntentForPackage("com.tradehero.th"), PendingIntent.FLAG_UPDATE_CURRENT);
         return notification;
     }
 
