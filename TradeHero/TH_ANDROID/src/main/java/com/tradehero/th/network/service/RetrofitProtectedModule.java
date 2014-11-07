@@ -97,11 +97,6 @@ public class RetrofitProtectedModule
         return adapter.create(ProviderServiceRx.class);
     }
 
-    @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(QuoteServiceAsync.class);
-    }
-
     @Provides @Singleton QuoteServiceRx provideQuoteServiceRx(RestAdapter adapter)
     {
         return adapter.create(QuoteServiceRx.class);
