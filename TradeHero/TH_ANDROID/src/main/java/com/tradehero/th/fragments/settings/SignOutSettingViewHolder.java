@@ -7,24 +7,24 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
@@ -34,7 +34,7 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
     @NonNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
     @NonNull private final AccountManager accountManager;
     @Nullable private ProgressDialog progressDialog;
-    @Nullable private MiddleCallback<UserProfileDTO> logoutCallback;
+    @Nullable private Subscription logoutSubscription;
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
@@ -126,40 +126,31 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             progressDialog.setCanceledOnTouchOutside(true);
         }
 
-        detachLogoutCallback();
-        logoutCallback = sessionServiceWrapper.logout(createSignOutCallback(preferenceFragment.getActivity()));
+        unsubscribe(logoutSubscription);
+        logoutSubscription = sessionServiceWrapper.logoutRx()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createSignOutObserver(preferenceFragment.getActivity()));
     }
 
-    protected void detachLogoutCallback()
+    private Observer<UserProfileDTO> createSignOutObserver(final Activity activity)
     {
-        MiddleCallback<UserProfileDTO> logoutCallbackCopy = logoutCallback;
-        if (logoutCallbackCopy != null)
-        {
-            logoutCallbackCopy.setPrimaryCallback(null);
-        }
-        logoutCallback = null;
+        return new SignOutObserver(activity);
     }
 
-    private Callback<UserProfileDTO> createSignOutCallback(final Activity activity)
-    {
-        return new SignOutCallback(activity);
-    }
-
-    protected class SignOutCallback implements Callback<UserProfileDTO>
+    protected class SignOutObserver extends EmptyObserver<UserProfileDTO>
     {
         @NonNull private final Activity activity;
 
         //<editor-fold desc="Constructors">
-        public SignOutCallback(@NonNull Activity activity)
+        public SignOutObserver(@NonNull Activity activity)
         {
             this.activity = activity;
         }
         //</editor-fold>
 
-        @Override
-        public void success(UserProfileDTO o, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry: authenticationProviderMap.entrySet())
+            for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
             {
                 if (authHeader.startsWith(entry.getKey().getAuthHeader()))
                 {
@@ -170,7 +161,7 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
             if (accounts != null)
             {
-                for (Account account: accounts)
+                for (Account account : accounts)
                 {
                     accountManager.removeAccount(account, null, null);
                 }
@@ -179,14 +170,13 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             dismissProgressDialog();
         }
 
-        @Override public void failure(RetrofitError error)
+        @Override public void onError(Throwable e)
         {
             ProgressDialog progressDialogCopy = progressDialog;
             if (progressDialogCopy != null)
             {
                 progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
                 progressDialog.setMessage("");
-
             }
             PreferenceFragment preferenceFragmentCopy = preferenceFragment;
             if (preferenceFragmentCopy != null)

@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.system.SystemStatusDTO;
@@ -13,8 +14,6 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
@@ -23,9 +22,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -33,8 +29,6 @@ import timber.log.Timber;
 @Singleton public class SessionServiceWrapper
 {
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final SessionService sessionService;
-    @NonNull private final SessionServiceAsync sessionServiceAsync;
     @NonNull private final SessionServiceRx sessionServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
@@ -46,8 +40,6 @@ import timber.log.Timber;
     //<editor-fold desc="Constructors">
     @Inject public SessionServiceWrapper(
             @NonNull CurrentUserId currentUserId,
-            @NonNull SessionService sessionService,
-            @NonNull SessionServiceAsync sessionServiceAsync,
             @NonNull SessionServiceRx sessionServiceRx,
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
@@ -57,8 +49,6 @@ import timber.log.Timber;
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.currentUserId = currentUserId;
-        this.sessionService = sessionService;
-        this.sessionServiceAsync = sessionServiceAsync;
         this.sessionServiceRx = sessionServiceRx;
         this.userProfileCache = userProfileCache;
         this.dtoCacheUtil = dtoCacheUtil;
@@ -109,28 +99,11 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Login">
-    @NonNull public UserLoginDTO login(
-            @NonNull String authorization,
-            @NonNull LoginSignUpFormDTO loginFormDTO)
-    {
-        return createUserLoginProcessor().process(sessionService.login(authorization, loginFormDTO));
-    }
-
     @NonNull public Observable<UserLoginDTO> loginRx(
             @NonNull String authorization,
             @NonNull LoginSignUpFormDTO loginFormDTO)
     {
         return sessionServiceRx.login(authorization, loginFormDTO);
-    }
-
-    @NonNull public MiddleCallback<UserLoginDTO> login(
-            @NonNull String authorization,
-            @NonNull LoginSignUpFormDTO loginFormDTO,
-            @Nullable Callback<UserLoginDTO> callback)
-    {
-        MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
-        sessionServiceAsync.login(authorization, loginFormDTO, middleCallback);
-        return middleCallback;
     }
     //</editor-fold>
 
@@ -152,18 +125,6 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Logout">
-    @NonNull public UserProfileDTO logout()
-    {
-        return createLogoutProcessor().process(sessionService.logout());
-    }
-
-    @NonNull public MiddleCallback<UserProfileDTO> logout(@Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createLogoutProcessor());
-        sessionServiceAsync.logout(middleCallback);
-        return middleCallback;
-    }
-
     @NonNull public Observable<UserProfileDTO> logoutRx()
     {
         return sessionServiceRx.logout()
@@ -172,13 +133,6 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
-    @NonNull public MiddleCallback<UserProfileDTO> updateDevice(@Nullable Callback<UserProfileDTO> callback)
-    {
-        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateDeviceProcessor());
-        sessionServiceAsync.updateDevice(savedPushDeviceIdentifier.get(), middleCallback);
-        return middleCallback;
-    }
-
     @NonNull public Observable<UserProfileDTO> updateDeviceRx()
     {
         return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get());
@@ -186,11 +140,6 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Update Authorization Tokens">
-    @NonNull public BaseResponseDTO updateAuthorizationTokens(@NonNull LoginSignUpFormDTO userFormDTO)
-    {
-        return sessionService.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO);
-    }
-
     @NonNull public Observable<BaseResponseDTO> updateAuthorizationTokensRx(@NonNull LoginSignUpFormDTO userFormDTO)
     {
         return sessionServiceRx.updateAuthorizationTokens(userFormDTO.authData.getTHToken(), userFormDTO);

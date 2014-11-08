@@ -12,7 +12,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -30,16 +29,11 @@ import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.AlertPlanService;
 import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.RetrofitProtectedModule;
 import com.tradehero.th.network.service.SecurityService;
-import com.tradehero.th.network.service.SessionService;
 import com.tradehero.th.network.service.SocialLinker;
-import com.tradehero.th.network.service.SocialService;
 import com.tradehero.th.network.service.SocialServiceWrapper;
-import com.tradehero.th.network.service.TranslationServiceBing;
-import com.tradehero.th.network.service.TranslationTokenService;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.network.service.VideoService;
@@ -75,11 +69,6 @@ import timber.log.Timber;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton AlertPlanService provideAlertPlanService(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanService.class);
-    }
-
     @Provides @Singleton ProviderService provideProviderService(RestAdapter adapter)
     {
         return adapter.create(ProviderService.class);
@@ -88,28 +77,6 @@ public class RetrofitModule
     @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
     {
         return adapter.create(SecurityService.class);
-    }
-
-    @Provides @Singleton SessionService provideSessionService(RestAdapter adapter)
-    {
-        return adapter.create(SessionService.class);
-    }
-
-    @Provides @Singleton SocialService provideSocialService(RestAdapter adapter)
-    {
-        return adapter.create(SocialService.class);
-    }
-
-    @Provides @Singleton TranslationServiceBing provideBingTranslationService(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
-                .build().create(TranslationServiceBing.class);
-    }
-
-    @Provides @Singleton TranslationTokenService provideTranslationTokenService(RestAdapter adapter)
-    {
-        return adapter.create(TranslationTokenService.class);
     }
 
     @Provides @Singleton UserService provideUserService(RestAdapter adapter)

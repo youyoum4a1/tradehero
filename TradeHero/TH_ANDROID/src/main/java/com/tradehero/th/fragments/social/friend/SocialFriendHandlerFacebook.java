@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
@@ -11,12 +13,12 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.facebook.ObservableWebDialog;
@@ -32,8 +34,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
@@ -279,7 +279,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                         return Observable.combineLatest(
                                 facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
                                         .observeOn(Schedulers.io())
-                                        .map(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
+                                        .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
                                 Observable.just(Session.getActiveSession()),
                                 new MakePairFunc2<UserProfileDTO, Session>());
                     }

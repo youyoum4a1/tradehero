@@ -22,11 +22,6 @@ public class RetrofitProtectedModule
         return adapter.create(AchievementServiceRx.class);
     }
 
-    @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanServiceAsync.class);
-    }
-
     @Provides @Singleton AlertPlanServiceRx provideAlertPlanServiceRx(RestAdapter adapter)
     {
         return adapter.create(AlertPlanServiceRx.class);
@@ -112,11 +107,6 @@ public class RetrofitProtectedModule
         return adapter.create(SecurityServiceRx.class);
     }
 
-    @Provides @Singleton SessionServiceAsync provideSessionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(SessionServiceAsync.class);
-    }
-
     @Provides @Singleton SessionServiceRx provideSessionServiceRx(RestAdapter adapter)
     {
         return adapter.create(SessionServiceRx.class);
@@ -132,23 +122,11 @@ public class RetrofitProtectedModule
         return adapter.create(TradeServiceRx.class);
     }
 
-    @Provides @Singleton TranslationServiceBingAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
-                .build().create(TranslationServiceBingAsync.class);
-    }
-
     @Provides @Singleton TranslationServiceBingRx provideBingTranslationServiceRx(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .setConverter(new CustomXmlConverter())
                 .build().create(TranslationServiceBingRx.class);
-    }
-
-    @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(TranslationTokenServiceAsync.class);
     }
 
     @Provides @Singleton TranslationTokenServiceRx provideTranslationTokenServiceRx(RestAdapter adapter)

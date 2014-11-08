@@ -30,7 +30,7 @@ abstract public class BaseSettingViewHolder implements SettingViewHolder
         return null;
     }
 
-    protected void detachSubscription(@Nullable Subscription subscription)
+    protected void unsubscribe(@Nullable Subscription subscription)
     {
         if (subscription != null)
         {

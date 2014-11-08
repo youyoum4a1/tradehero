@@ -136,7 +136,7 @@ abstract public class THBasePurchaseReporter<
                     //userServiceWrapper.get().follow( // TODO put back when ok https://www.pivotaltracker.com/story/show/77362688
                     //        purchase.getUserToFollow(),
                     //        purchase.getPurchaseReportDTO(),
-                    //        createPurchaseReportedCallback());
+                    //        createPurchaseReportedObserver());
                 }
                 else
                 {

@@ -52,7 +52,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     @Override public void destroyViews()
     {
-        detachSubscription(userProfileCacheSubscription);
+        unsubscribe(userProfileCacheSubscription);
         userProfileCacheSubscription = null;
         detachMiddleCallback();
         dismissProgress();
@@ -81,7 +81,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     protected void fetchUserProfile()
     {
-        detachSubscription(userProfileCacheSubscription);
+        unsubscribe(userProfileCacheSubscription);
         userProfileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());
