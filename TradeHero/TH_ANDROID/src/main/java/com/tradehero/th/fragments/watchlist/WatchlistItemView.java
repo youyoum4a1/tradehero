@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.watchlist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
@@ -15,7 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.utils.THToast;
@@ -31,29 +34,20 @@ import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import java.text.DecimalFormat;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import java.text.DecimalFormat;
+import javax.inject.Inject;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistPositionDTO>
@@ -76,7 +70,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @InjectView(R.id.position_watchlist_more) protected Button moreButton;
 
     @Nullable private WatchlistPositionDTO watchlistPositionDTO;
-    private MiddleCallbackWeakList<WatchlistPositionDTO> middleCallbackWatchlistDeletes;
+    @NonNull private SubscriptionList subscriptions;
 
     private PopupMenu morePopupMenu;
 
@@ -107,7 +101,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        middleCallbackWatchlistDeletes = new MiddleCallbackWeakList<>();
+        subscriptions = new SubscriptionList();
     }
 
     @Override protected void onAttachedToWindow()
@@ -187,15 +181,15 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         };
     }
 
-    @NonNull private THCallback<WatchlistPositionDTO> createWatchlistDeletionCallback()
+    @NonNull private Observer<WatchlistPositionDTO> createWatchlistDeletionObserver()
     {
-        return new THCallback<WatchlistPositionDTO>()
+        return new EmptyObserver<WatchlistPositionDTO>()
         {
             // Make a copy here to sever links back to the origin class.
             final private Context contextCopy = WatchlistItemView.this.getContext();
             final private WatchlistPositionDTO watchlistPositionDTOCopy = WatchlistItemView.this.watchlistPositionDTO;
 
-            @Override protected void success(WatchlistPositionDTO watchlistPositionDTO, THResponse thResponse)
+            @Override public void onNext(WatchlistPositionDTO args)
             {
                 if (watchlistPositionDTO != null)
                 {
@@ -207,12 +201,12 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                 }
             }
 
-            @Override protected void failure(THException ex)
+            @Override public void onError(Throwable e)
             {
                 setEnabledSwipeButtons(true);
                 if (watchlistPositionDTOCopy != null)
                 {
-                    Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, ex);
+                    Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, e);
                 }
             }
         };
@@ -237,7 +231,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             morePopupMenu.setOnMenuItemClickListener(null);
         }
 
-        middleCallbackWatchlistDeletes.detach();
+        subscriptions.unsubscribe();
     }
 
     @Override public void display(WatchlistPositionDTO watchlistPosition)
@@ -479,9 +473,10 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         // not to show dialog but request deletion in background
         if (watchlistPositionDTO != null)
         {
-            middleCallbackWatchlistDeletes.add(watchlistServiceWrapper.get().deleteWatchlist(
-                    watchlistPositionDTO,
-                    createWatchlistDeletionCallback()));
+            subscriptions.add(watchlistServiceWrapper.get().deleteWatchlistRx(
+                    watchlistPositionDTO)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createWatchlistDeletionObserver()));
         }
     }
 

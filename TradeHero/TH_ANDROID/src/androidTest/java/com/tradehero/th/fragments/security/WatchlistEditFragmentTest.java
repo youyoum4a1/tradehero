@@ -99,7 +99,7 @@ public class WatchlistEditFragmentTest
         watchlistFragment.watchlistServiceWrapper = mock(WatchlistServiceWrapper.class);
 
         // TODO conditionally return different answers, mimic for different results from server side, following one is in ideal condition
-        when(watchlistFragment.watchlistServiceWrapper.createWatchlistEntry(any(WatchlistPositionFormDTO.class), any(Callback.class)))
+        when(watchlistFragment.watchlistServiceWrapper.createWatchlistEntryRx(any(WatchlistPositionFormDTO.class), any(Callback.class)))
                 .thenAnswer(new Answer<Void>()
                 {
                     @Override public Void answer(InvocationOnMock invocation) throws Throwable

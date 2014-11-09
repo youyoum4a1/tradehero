@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -37,7 +39,6 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
@@ -50,11 +51,7 @@ import java.util.Map;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
@@ -86,7 +83,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @NonNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
     private Runnable searchTask;
-    private MiddleCallback<UserFriendsDTOList> searchCallback;
+    @Nullable private Subscription searchSubscription;
     @Nullable AlertDialog socialLinkingDialog;
 
     private static final String KEY_BUNDLE = "key_bundle";
@@ -137,7 +134,8 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachSearchTask();
+        unsubscribe(searchSubscription);
+        searchSubscription= null;
         super.onStop();
     }
 
@@ -290,14 +288,6 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
     }
 
-    private void detachSearchTask()
-    {
-        if (searchCallback != null)
-        {
-            searchCallback.setPrimaryCallback(null);
-        }
-    }
-
     private void dismissSocialLinkDialog()
     {
         if (socialLinkingDialog != null && socialLinkingDialog.isShowing())
@@ -357,9 +347,11 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void searchSocialFriends()
     {
-        detachSearchTask();
+        unsubscribe(searchSubscription);
         String query = searchTextView.getText().toString();
-        searchCallback = userServiceWrapper.searchSocialFriends(currentUserId.toUserBaseKey(), null, query, new SearchFriendsCallback());
+        searchSubscription = userServiceWrapper.searchSocialFriendsRx(currentUserId.toUserBaseKey(), null, query)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SearchFriendsObserver());
     }
 
     private void pushSocialInvitationFragment(SocialNetworkEnum socialNetwork)
@@ -430,7 +422,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     protected void handleFollowUsers(UserFriendsDTO userToFollow)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
-        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
+        socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver(usersToFollow));
     }
 
     // TODO via which social network to invite user?
@@ -439,12 +431,12 @@ public class FriendsInvitationFragment extends DashboardFragment
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
         if (userToInvite instanceof UserFriendsLinkedinDTO || userToInvite instanceof UserFriendsTwitterDTO)
         {
-            socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+            socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendObserver(usersToInvite));
         }
         else if (userToInvite instanceof UserFriendsFacebookDTO)
         {
             //TODO do invite on the client side.
-            socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendCallback(usersToInvite));
+            socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendObserver(usersToInvite));
         }
         else
         {
@@ -475,64 +467,47 @@ public class FriendsInvitationFragment extends DashboardFragment
         socialFriendsAdapter.addAll(socialFriendListItemDTOs);
     }
 
-    class FollowFriendCallback extends RequestCallback<UserProfileDTO>
+    class FollowFriendObserver extends RequestObserver<UserProfileDTO>
     {
         final List<UserFriendsDTO> usersToFollow;
 
         //<editor-fold desc="Constructors">
-        private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
+        private FollowFriendObserver(List<UserFriendsDTO> usersToFollow)
         {
             super(getActivity());
             this.usersToFollow = usersToFollow;
         }
         //</editor-fold>
 
-        @Override
-        public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            super.success(userProfileDTO, response);
-            if (response.getStatus() == 200 || response.getStatus() == 204)
-            {
-                handleFollowSuccess(usersToFollow);
-            }
-            else
-            {
-                THToast.show(R.string.follow_friend_request_error);
-            }
+            super.onNext(userProfileDTO);
+            handleFollowSuccess(usersToFollow);
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            super.failure(retrofitError);
+            super.onError(e);
             THToast.show(R.string.follow_friend_request_error);
         }
     }
 
-    class InviteFriendCallback extends RequestCallback<BaseResponseDTO>
+    class InviteFriendObserver extends RequestObserver<BaseResponseDTO>
     {
         final List<UserFriendsDTO> usersToInvite;
 
         //<editor-fold desc="Constructors">
-        private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
+        private InviteFriendObserver(List<UserFriendsDTO> usersToInvite)
         {
             super(getActivity());
             this.usersToInvite = usersToInvite;
         }
         //</editor-fold>
 
-        @Override
-        public void success(BaseResponseDTO data, Response response)
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
-            super.success(data, response);
-            if (response.getStatus() == 200 || response.getStatus() == 204)
-            {
-                handleInviteSuccess(usersToInvite);
-            }
-            else
-            {
-                THToast.show(R.string.invite_friend_request_error);
-            }
+            super.onNext(baseResponseDTO);
+            handleInviteSuccess(usersToInvite);
         }
 
         @Override
@@ -541,10 +516,9 @@ public class FriendsInvitationFragment extends DashboardFragment
             handleInviteSuccess(usersToInvite);
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            super.failure(retrofitError);
+            super.onError(e);
             // TODO
             THToast.show(R.string.invite_friend_request_error);
         }
@@ -557,19 +531,17 @@ public class FriendsInvitationFragment extends DashboardFragment
         return new UserFriendsDTOList(hashSet);
     }
 
-    class SearchFriendsCallback implements Callback<UserFriendsDTOList>
+    class SearchFriendsObserver extends EmptyObserver<UserFriendsDTOList>
     {
-        @Override
-        public void success(@NonNull UserFriendsDTOList userFriendsDTOs, Response response)
+        @Override public void onNext(UserFriendsDTOList args)
         {
             FriendsInvitationFragment.this.userFriendsDTOs = filterTheDuplicated(userFriendsDTOs);
             bindSearchData();
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            Timber.e(retrofitError, "SearchFriendsCallback error");
+            Timber.e(e, "SearchFriendsCallback error");
             // TODO need to tell user.
             showSocialTypeList();
         }

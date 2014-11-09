@@ -51,6 +51,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
@@ -292,8 +293,9 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         LeaderboardUserDTOList heroesList = heroViewHolder.getSelectedHeroes();
         if (!heroesList.isEmpty())
         {
-            userServiceWrapper.followBatchFree(
-                    new BatchFollowFormDTO(heroesList, new UserBaseDTO()), null);
+            userServiceWrapper.followBatchFreeRx(
+                    new BatchFollowFormDTO(heroesList, new UserBaseDTO()))
+                    .subscribe(new EmptyObserver<>());
         }
     }
 
@@ -303,8 +305,9 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         SecurityCompactDTOList stocksList = stockViewHolder.getSelectedStocks();
         if (!stocksList.isEmpty())
         {
-            watchlistServiceWrapper.batchCreate(
-                    new SecurityIntegerIdListForm(stocksList, null), null);
+            watchlistServiceWrapper.batchCreateRx(
+                    new SecurityIntegerIdListForm(stocksList, null))
+                    .subscribe(new EmptyObserver<>());
         }
     }
 

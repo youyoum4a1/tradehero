@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,10 +18,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -30,8 +28,10 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class SettingsPayPalFragment extends DashboardFragment
@@ -41,7 +41,7 @@ public class SettingsPayPalFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    private MiddleCallback<UpdatePayPalEmailDTO> middleCallbackUpdatePayPalEmail;
+    @Nullable private Subscription updatePayPalEmailSubscription;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
@@ -76,7 +76,8 @@ public class SettingsPayPalFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachMiddleCallbackUpdatePayPalEmail();
+        unsubscribe(updatePayPalEmailSubscription);
+        updatePayPalEmailSubscription = null;
         if (paypalEmailText != null)
         {
             paypalEmailText.setOnTouchListener(null);
@@ -88,15 +89,6 @@ public class SettingsPayPalFragment extends DashboardFragment
             submitButton = null;
         }
         super.onDestroyView();
-    }
-
-    private void detachMiddleCallbackUpdatePayPalEmail()
-    {
-        if (middleCallbackUpdatePayPalEmail != null)
-        {
-            middleCallbackUpdatePayPalEmail.setPrimaryCallback(null);
-        }
-        middleCallbackUpdatePayPalEmail = null;
     }
 
     private void setupSubmitButton()
@@ -112,18 +104,19 @@ public class SettingsPayPalFragment extends DashboardFragment
                         R.string.authentication_connecting_tradehero_only);
                 UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
                 emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-                detachMiddleCallbackUpdatePayPalEmail();
-                middleCallbackUpdatePayPalEmail = userServiceWrapper.updatePayPalEmail(currentUserId.toUserBaseKey(), emailDTO, createUpdatePayPalCallback());
+                unsubscribe(updatePayPalEmailSubscription);
+                updatePayPalEmailSubscription = userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createUpdatePayPalObserver());
             }
         });
     }
 
-    private THCallback<UpdatePayPalEmailDTO> createUpdatePayPalCallback()
+    private Observer<UpdatePayPalEmailDTO> createUpdatePayPalObserver()
     {
-        return new THCallback<UpdatePayPalEmailDTO>()
+        return new EmptyObserver<UpdatePayPalEmailDTO>()
         {
-            @Override
-            protected void success(UpdatePayPalEmailDTO updatePayPalEmailDTO, THResponse thResponse)
+            @Override public void onNext(UpdatePayPalEmailDTO args)
             {
                 if (!isDetached())
                 {
@@ -133,12 +126,11 @@ public class SettingsPayPalFragment extends DashboardFragment
                 }
             }
 
-            @Override
-            protected void failure(THException ex)
+            @Override public void onError(Throwable e)
             {
                 if (!isDetached())
                 {
-                    THToast.show(ex.getMessage());
+                    THToast.show(new THException(e));
                     progressDialog.hide();
                 }
             }

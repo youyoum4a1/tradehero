@@ -56,7 +56,6 @@ import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
@@ -68,12 +67,12 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -129,7 +128,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected UserProfileDTO shownProfile;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private MainTimelineAdapter mainTimelineAdapter;
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    @Nullable private Subscription freeFollowSubscription;
     private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
     private UserProfileView userProfileView;
     private View loadingView;
@@ -180,9 +179,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return new TimelineFollowForMessageRequestedListener();
     }
 
-    protected Callback<UserProfileDTO> createFreeFollowForMessageCallback()
+    protected Observer<UserProfileDTO> createFreeFollowForMessageObserver()
     {
-        return new FreeUserFollowedForMessageCallback();
+        return new FreeUserFollowedForMessageObserver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -382,7 +381,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
-        detachFreeFollowMiddleCallback();
+        unsubscribe(freeFollowSubscription);
+        freeFollowSubscription= null;
         unsubscribe(messageThreadHeaderFetchSubscription);
         messageThreadHeaderFetchSubscription = null;
         detachFollowDialogCombo();
@@ -418,15 +418,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mainTimelineAdapter = null;
         messageThreadHeaderFetchSubscription = null;
         super.onDestroy();
-    }
-
-    private void detachFreeFollowMiddleCallback()
-    {
-        if (freeFollowMiddleCallback != null)
-        {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
-        }
-        freeFollowMiddleCallback = null;
     }
 
     protected void detachFollowDialogCombo()
@@ -755,12 +746,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return 0;
     }
 
-    protected void freeFollow(@NonNull UserBaseKey heroId, @Nullable Callback<UserProfileDTO> followCallback)
+    protected void freeFollow(@NonNull UserBaseKey heroId, @Nullable Observer<UserProfileDTO> followCallback)
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
-        detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get().freeFollow(heroId, followCallback);
+        unsubscribe(freeFollowSubscription);
+        freeFollowSubscription = userServiceWrapperLazy.get().freeFollowRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(followCallback);
     }
 
     protected TimelineProfileClickListener createTimelineProfileClickListener()
@@ -768,27 +760,27 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return this::display;
     }
 
-    public class FreeUserFollowedCallback implements Callback<UserProfileDTO>
+    public class FreeUserFollowedObserver extends EmptyObserver<UserProfileDTO>
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
             updateBottomButton();
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Profile));
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(e));
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }
 
-    public class FreeUserFollowedForMessageCallback extends FreeUserFollowedCallback
+    public class FreeUserFollowedForMessageObserver extends FreeUserFollowedObserver
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            super.success(userProfileDTO, response);
+            super.onNext(userProfileDTO);
             pushPrivateMessageFragment();
         }
     }
@@ -797,7 +789,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
         {
-            freeFollow(heroId, createFreeFollowForMessageCallback());
+            freeFollow(heroId, createFreeFollowForMessageObserver());
         }
 
         @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)

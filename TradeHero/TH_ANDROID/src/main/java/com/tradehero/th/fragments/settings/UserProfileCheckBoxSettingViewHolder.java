@@ -1,23 +1,22 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckboxSettingViewHolder
 {
@@ -28,6 +27,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     protected ProgressDialog progressDialog;
     protected Subscription userProfileCacheSubscription;
+    @Deprecated
     protected MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
 
     //<editor-fold desc="Constructors">
@@ -69,6 +69,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
         progressDialog = null;
     }
 
+    @Deprecated
     protected void detachMiddleCallback()
     {
         MiddleCallback<UserProfileDTO> middleCallbackCopy = middleCallbackUpdateUserProfile;
@@ -112,21 +113,18 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 
     abstract protected void updateStatus(@NonNull UserProfileDTO userProfileDTO);
 
-    protected class UserProfileUpdateCallback extends THCallback<UserProfileDTO>
+    protected class UserProfileUpdateObserver extends EmptyObserver<UserProfileDTO>
     {
-        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
-        {
-            updateStatus(userProfileDTO);
-        }
-
-        @Override protected void failure(THException ex)
-        {
-            THToast.show(ex);
-        }
-
-        @Override protected void finish()
+        @Override public void onNext(UserProfileDTO args)
         {
             dismissProgress();
+            updateStatus(args);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            dismissProgress();
+            THToast.show(new THException(e));
         }
     }
 }

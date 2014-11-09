@@ -108,7 +108,8 @@ public class AdView extends RelativeLayout
                 try
                 {
                     bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
-                } catch (StringIndexOutOfBoundsException e)
+                }
+                catch (StringIndexOutOfBoundsException e)
                 {
                     Timber.e(e, "When getting %s", adDTO.bannerImageUrl);
                 }
@@ -149,9 +150,10 @@ public class AdView extends RelativeLayout
                     BatchAnalyticsEventForm batchAnalyticsEventForm = new BatchAnalyticsEventForm();
                     batchAnalyticsEventForm.events = new ArrayList<>();
                     batchAnalyticsEventForm.events.add(analyticsEventForm);
-                    userServiceWrapper.sendAnalytics(batchAnalyticsEventForm);
+                    userServiceWrapper.sendAnalyticsRx(batchAnalyticsEventForm)
+                            .subscribe();
                 }
-                catch (Exception e)
+                catch (Throwable e)
                 {
                     THToast.show(e.getMessage());
                     e.printStackTrace();

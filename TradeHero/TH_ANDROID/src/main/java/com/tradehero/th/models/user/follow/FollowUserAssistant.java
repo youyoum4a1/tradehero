@@ -1,9 +1,11 @@
 package com.tradehero.th.models.user.follow;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -14,20 +16,23 @@ import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class FollowUserAssistant extends SimpleFollowUserAssistant
-        implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
 {
-    @Inject protected UserProfileCache userProfileCache;
+    @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
     @Inject protected THBillingInteractor billingInteractor;
 
+    @Nullable private Subscription profileCacheSubscription;
     protected UserProfileDTO currentUserProfile;
     @NonNull protected final OwnedPortfolioId applicablePortfolioId;
     @Nullable protected Integer requestCode;
@@ -47,25 +52,44 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
     @Override public void onDestroy()
     {
         haveInteractorForget();
-        userProfileCache.unregister(this);
+        unsubscribe(profileCacheSubscription);
+        profileCacheSubscription = null;
         super.onDestroy();
+    }
+
+    protected void unsubscribe(@Nullable Subscription subscription)
+    {
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 
     @Override public void launchPremiumFollow()
     {
-        userProfileCache.register(currentUserId.toUserBaseKey(), this);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        unsubscribe(profileCacheSubscription);
+        profileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProfileCacheObserver());
     }
 
-    @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
     {
-        this.currentUserProfile = value;
-        checkBalanceAndFollow();
+        return new ProfileCacheObserver();
     }
 
-    @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+    protected class ProfileCacheObserver extends EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>
     {
-        notifyFollowFailed(heroId, error);
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
+        {
+            currentUserProfile = args.second;
+            checkBalanceAndFollow();
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            notifyFollowFailed(heroId, e);
+        }
     }
 
     protected void checkBalanceAndFollow()

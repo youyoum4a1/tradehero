@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.home;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,12 +28,11 @@ import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.social.friend.RequestCallback;
+import com.tradehero.th.fragments.social.friend.RequestObserver;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -42,10 +43,10 @@ import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable({
@@ -79,7 +80,7 @@ public final class HomeFragment extends BaseWebViewFragment
     protected SocialFriendHandler socialFriendHandler;
     private ProgressDialog progressDialog;
     private UserFriendsDTO userFriendsDTO;
-    private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
+    @Nullable private Subscription inviteSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -211,10 +212,12 @@ public final class HomeFragment extends BaseWebViewFragment
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
-            detachMiddleCallbackInvite();
-            middleCallbackInvite = userServiceWrapperLazy.get()
-                    .inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm,
-                            new TrackShareCallback());
+            unsubscribe(inviteSubscription);
+            inviteSubscription = AndroidObservable.bindFragment(
+                    this,
+                    userServiceWrapperLazy.get()
+                            .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
+                    .subscribe(new TrackShareObserver());
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
@@ -260,32 +263,25 @@ public final class HomeFragment extends BaseWebViewFragment
         InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
         inviteFriendForm.add(userDto);
         getProgressDialog().show();
-        detachMiddleCallbackInvite();
-        middleCallbackInvite = userServiceWrapperLazy.get()
-                .inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm,
-                        new TrackShareCallback());
+        unsubscribe(inviteSubscription);
+        inviteSubscription = AndroidObservable.bindFragment(
+                this,
+                userServiceWrapperLazy.get()
+                        .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
+                .subscribe(new TrackShareObserver());
     }
 
-    private void detachMiddleCallbackInvite()
+    private class TrackShareObserver extends EmptyObserver<BaseResponseDTO>
     {
-        if (middleCallbackInvite != null)
-        {
-            middleCallbackInvite.setPrimaryCallback(null);
-        }
-        middleCallbackInvite = null;
-    }
-
-    private class TrackShareCallback implements retrofit.Callback<BaseResponseDTO>
-    {
-        @Override public void success(BaseResponseDTO response, Response response2)
+        @Override public void onNext(BaseResponseDTO args)
         {
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(e));
             getProgressDialog().hide();
         }
     }
@@ -307,7 +303,7 @@ public final class HomeFragment extends BaseWebViewFragment
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback());
+        socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver());
     }
 
     protected void createFriendHandler()
@@ -318,32 +314,24 @@ public final class HomeFragment extends BaseWebViewFragment
         }
     }
 
-    class FollowFriendCallback extends RequestCallback<UserProfileDTO>
+    class FollowFriendObserver extends RequestObserver<UserProfileDTO>
     {
-        private FollowFriendCallback()
+        private FollowFriendObserver()
         {
             super(getActivity());
         }
 
-        @Override
-        public void success(@NonNull UserProfileDTO userProfileDTO, @NonNull Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            super.success(userProfileDTO, response);
-            if (response.getStatus() == 200 || response.getStatus() == 204)
-            {
-                // TODO
-                handleFollowSuccess();
-                userProfileCacheLazy.get().onNext(userProfileDTO.getBaseKey(), userProfileDTO);
-
-                return;
-            }
-            handleFollowError();
+            super.onNext(userProfileDTO);
+            // TODO
+            handleFollowSuccess();
+            userProfileCacheLazy.get().onNext(userProfileDTO.getBaseKey(), userProfileDTO);
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            super.failure(retrofitError);
+            super.onError(e);
             handleFollowError();
         }
     }

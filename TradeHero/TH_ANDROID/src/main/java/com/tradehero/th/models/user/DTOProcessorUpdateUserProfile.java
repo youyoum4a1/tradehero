@@ -1,15 +1,13 @@
 package com.tradehero.th.models.user;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import rx.functions.Action1;
 
-public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDTO>
-    , Action1<UserProfileDTO>
+public class DTOProcessorUpdateUserProfile extends ThroughDTOProcessor<UserProfileDTO>
 {
     @NonNull protected final UserProfileCacheRx userProfileCache;
     @NonNull protected final HomeContentCacheRx homeContentCache;
@@ -35,10 +33,5 @@ public class DTOProcessorUpdateUserProfile implements DTOProcessor<UserProfileDT
         }
         userProfileCache.onNext(userProfileDTO.getBaseKey(), userProfileDTO);
         return userProfileDTO;
-    }
-
-    @Override public void call(@NonNull UserProfileDTO userProfileDTO)
-    {
-        process(userProfileDTO);
     }
 }

@@ -4,15 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import rx.functions.Action1;
 import timber.log.Timber;
 
-public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositionDTO>,
-        Action1<WatchlistPositionDTO>
+public class DTOProcessorWatchlistUpdate extends ThroughDTOProcessor<WatchlistPositionDTO>
 {
     @NonNull protected final UserBaseKey concernedUser;
     @NonNull protected final WatchlistPositionCacheRx watchlistPositionCache;
@@ -48,10 +46,5 @@ public class DTOProcessorWatchlistUpdate implements DTOProcessor<WatchlistPositi
             Timber.e(new NullPointerException("watchlist or security null " + watchlistPositionDTO), "");
         }
         return watchlistPositionDTO;
-    }
-
-    @Override public void call(WatchlistPositionDTO watchlistPositionDTO)
-    {
-        process(watchlistPositionDTO);
     }
 }

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,10 +18,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -30,8 +28,10 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 public class SettingsAlipayFragment extends DashboardFragment
 {
@@ -42,7 +42,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     private Button submitButton;
 
-    private MiddleCallback<UpdateAlipayAccountDTO> middleCallbackUpdateAlipayAccount;
+    @Nullable private Subscription updateAlipayAccountSubscription;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
@@ -77,7 +77,8 @@ public class SettingsAlipayFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachMiddleCallbackUpdateAlipayAccount();
+        unsubscribe(updateAlipayAccountSubscription);
+        updateAlipayAccountSubscription = null;
         if (alipayAccountText != null)
         {
             alipayAccountText.setOnTouchListener(null);
@@ -101,15 +102,6 @@ public class SettingsAlipayFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    private void detachMiddleCallbackUpdateAlipayAccount()
-    {
-        if (middleCallbackUpdateAlipayAccount != null)
-        {
-            middleCallbackUpdateAlipayAccount.setPrimaryCallback(null);
-        }
-        middleCallbackUpdateAlipayAccount = null;
-    }
-
     private void setupSubmitButton()
     {
         submitButton = (Button) view.findViewById(R.id.settings_alipay_update_button);
@@ -125,19 +117,20 @@ public class SettingsAlipayFragment extends DashboardFragment
                 accountDTO.newAlipayAccount = alipayAccountText.getText().toString();
                 accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
                 accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
-                detachMiddleCallbackUpdateAlipayAccount();
-                middleCallbackUpdateAlipayAccount = userServiceWrapper.updateAlipayAccount(
-                        currentUserId.toUserBaseKey(), accountDTO, createUpdatePayPalCallback());
+                unsubscribe(updateAlipayAccountSubscription);
+                updateAlipayAccountSubscription = userServiceWrapper.updateAlipayAccountRx(
+                        currentUserId.toUserBaseKey(), accountDTO)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createUpdatePayPalObserver());
             }
         });
     }
 
-    private THCallback<UpdateAlipayAccountDTO> createUpdatePayPalCallback()
+    private Observer<UpdateAlipayAccountDTO> createUpdatePayPalObserver()
     {
-        return new THCallback<UpdateAlipayAccountDTO>()
+        return new EmptyObserver<UpdateAlipayAccountDTO>()
         {
-            @Override
-            protected void success(UpdateAlipayAccountDTO updateAlipayEmailDTO, THResponse thResponse)
+            @Override public void onNext(UpdateAlipayAccountDTO args)
             {
                 if (!isDetached())
                 {
@@ -147,12 +140,11 @@ public class SettingsAlipayFragment extends DashboardFragment
                 }
             }
 
-            @Override
-            protected void failure(THException ex)
+            @Override public void onError(Throwable e)
             {
                 if (!isDetached())
                 {
-                    THToast.show(ex.getMessage());
+                    THToast.show(new THException(e));
                     progressDialog.hide();
                 }
             }

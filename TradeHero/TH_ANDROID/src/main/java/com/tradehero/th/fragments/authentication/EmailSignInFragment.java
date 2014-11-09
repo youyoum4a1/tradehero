@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.authentication;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -20,10 +21,7 @@ import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -36,11 +34,11 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ValidatedPasswordText;
-import com.tradehero.th.widget.ValidatedText;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -109,7 +107,7 @@ public class EmailSignInFragment extends Fragment
                 }).create().show();
     }
 
-    protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
+    @Nullable protected Subscription forgotPasswordSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -217,18 +215,19 @@ public class EmailSignInFragment extends Fragment
     {
         validationSubscription.unsubscribe();
         validationSubscription = null;
-        detachMiddleCallbackForgotPassword();
+        unsubscribeForgotPassword();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    protected void detachMiddleCallbackForgotPassword()
+    protected void unsubscribeForgotPassword()
     {
-        if (middleCallbackForgotPassword != null)
+        Subscription copy = forgotPasswordSubscription;
+        if (copy != null)
         {
-            middleCallbackForgotPassword.setPrimaryCallback(null);
+            copy.unsubscribe();
         }
-        middleCallbackForgotPassword = null;
+        forgotPasswordSubscription = null;
     }
 
     private void doForgotPassword(String email)
@@ -241,28 +240,26 @@ public class EmailSignInFragment extends Fragment
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);
 
-        detachMiddleCallbackForgotPassword();
-        middleCallbackForgotPassword = userServiceWrapper
-                .forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
+        unsubscribeForgotPassword();
+        forgotPasswordSubscription = userServiceWrapper.forgotPasswordRx(forgotPasswordFormDTO)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createForgotPasswordObserver());
     }
 
-    private THCallback<ForgotPasswordDTO> createForgotPasswordCallback()
+    private Observer<ForgotPasswordDTO> createForgotPasswordObserver()
     {
-        return new THCallback<ForgotPasswordDTO>()
+        return new EmptyObserver<ForgotPasswordDTO>()
         {
-            @Override protected void success(ForgotPasswordDTO forgotPasswordDTO, THResponse thResponse)
+            @Override public void onNext(ForgotPasswordDTO args)
             {
+                mProgressDialog.dismiss();
                 THToast.show(R.string.authentication_thank_you_message_email);
             }
 
-            @Override public void failure(THException ex)
-            {
-                THToast.show(ex);
-            }
-
-            @Override protected void finish()
+            @Override public void onError(Throwable e)
             {
                 mProgressDialog.dismiss();
+                THToast.show(new THException(e));
             }
         };
     }

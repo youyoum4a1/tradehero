@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
@@ -13,14 +15,14 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 public class InvitedCodeViewHolder
 {
@@ -36,7 +38,7 @@ public class InvitedCodeViewHolder
     @Nullable private UserProfileDTO userProfileDTO;
 
     @Nullable private Callback<BaseResponseDTO> parentCallback;
-    @Nullable private MiddleCallback<BaseResponseDTO> middleCallbackUpdateInviteCode;
+    @Nullable private Subscription updateInviteCodeSubscription;
 
     //<editor-fold desc="Constructors">
     @Inject public InvitedCodeViewHolder(
@@ -56,18 +58,17 @@ public class InvitedCodeViewHolder
 
     public void detachView()
     {
-        detachMiddleCallbackUpdateInvite();
+        unsubscribe(updateInviteCodeSubscription);
+        updateInviteCodeSubscription = null;
         ButterKnife.reset(this);
     }
 
-    private void detachMiddleCallbackUpdateInvite()
+    private void unsubscribe(@Nullable Subscription subscription)
     {
-        MiddleCallback<BaseResponseDTO> middleCallbackCopy = middleCallbackUpdateInviteCode;
-        if (middleCallbackCopy != null)
+        if (subscription != null)
         {
-            middleCallbackCopy.setPrimaryCallback(null);
+            subscription.unsubscribe();
         }
-        middleCallbackUpdateInviteCode = null;
     }
 
     public void setUserProfile(@NonNull UserProfileDTO userProfile)
@@ -89,12 +90,12 @@ public class InvitedCodeViewHolder
         this.parentCallback = parentCallback;
     }
 
-    protected void notifyParentCallbackSuccess(BaseResponseDTO response, Response response2)
+    protected void notifyParentCallbackSuccess(BaseResponseDTO response)
     {
         Callback<BaseResponseDTO> callbackCopy = parentCallback;
         if (callbackCopy != null)
         {
-            callbackCopy.success(response, response2);
+            callbackCopy.success(response, null);
         }
     }
 
@@ -112,27 +113,29 @@ public class InvitedCodeViewHolder
     public void submitInviteCode()
     {
         viewSwitcher.setDisplayedChild(VIEW_SUBMITTING);
-        detachMiddleCallbackUpdateInvite();
+        unsubscribe(updateInviteCodeSubscription);
         UpdateReferralCodeDTO formDTO = new UpdateReferralCodeDTO(inviteCode.getText().toString());
-        middleCallbackUpdateInviteCode = userServiceWrapper.updateReferralCode(currentUserId.toUserBaseKey(), formDTO, createUpdateInviteCallback());
+        updateInviteCodeSubscription = userServiceWrapper.updateReferralCodeRx(currentUserId.toUserBaseKey(), formDTO)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUpdateInviteObserver());
     }
 
-    protected Callback<BaseResponseDTO> createUpdateInviteCallback()
+    protected Observer<BaseResponseDTO> createUpdateInviteObserver()
     {
-        return new InviteCodeUpdateInviteCallback();
+        return new InviteCodeUpdateInviteObserver();
     }
 
-    protected class InviteCodeUpdateInviteCallback implements Callback<BaseResponseDTO>
+    protected class InviteCodeUpdateInviteObserver extends EmptyObserver<BaseResponseDTO>
     {
-        @Override public void success(BaseResponseDTO response, Response response2)
+        @Override public void onNext(BaseResponseDTO args)
         {
             showSubmitDone();
-            notifyParentCallbackSuccess(response, response2);
+            notifyParentCallbackSuccess(args);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THException exception = new THException(retrofitError);
+            THException exception = new THException(e);
             String message = exception.getMessage();
             if (message != null && message.contains("Already invited"))
             {
@@ -143,7 +146,7 @@ public class InvitedCodeViewHolder
                 THToast.show(exception);
                 viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
             }
-            notifyParentCallbackFailure(retrofitError);
+            notifyParentCallbackFailure((RetrofitError) e);
         }
     }
 

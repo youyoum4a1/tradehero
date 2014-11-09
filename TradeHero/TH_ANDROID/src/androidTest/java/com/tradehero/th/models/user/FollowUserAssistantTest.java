@@ -203,7 +203,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
-        verify(userServiceWrapper, times(1)).follow(heroId, assistant);
+        verify(userServiceWrapper, times(1)).followRx(heroId, assistant);
     }
 
     @Test public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
@@ -296,7 +296,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
-        verify(userServiceWrapper, times(1)).follow(heroId, assistant);
+        verify(userServiceWrapper, times(1)).followRx(heroId, assistant);
     }
 
     // This is very long but here to test that no listener /callback is lost in the process

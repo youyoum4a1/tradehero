@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,7 +35,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
@@ -45,11 +45,10 @@ import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.Nullable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class LeaderboardFriendsItemView extends RelativeLayout
@@ -64,7 +63,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_following) @Optional View lbmuFollowingUser;
 
     @Nullable private UserFriendsDTO userFriendsDTO;
-    private MiddleCallback<BaseResponseDTO> middleCallbackInvite;
+    @Nullable private Subscription inviteSubscription;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfileDTO;
     @Inject CurrentUserId currentUserId;
@@ -107,11 +106,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     {
         avatar.setOnClickListener(null);
         inviteBtn.setOnClickListener(null);
-        detachMiddleCallbackInvite();
-        if (facebookInvitationSubscription != null)
-        {
-            facebookInvitationSubscription.unsubscribe();
-        }
+        detachInviteSubscription();
+        detachFacebookSubscription();
         super.onDetachedFromWindow();
     }
 
@@ -262,15 +258,17 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();
             inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
-            detachMiddleCallbackInvite();
-            middleCallbackInvite = userServiceWrapperLazy.get()
-                    .inviteFriends(currentUserId.toUserBaseKey(), inviteFriendForm,
-                            new TrackShareCallback());
+            detachInviteSubscription();
+            inviteSubscription = userServiceWrapperLazy.get()
+                    .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new TrackShareObserver());
         }
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
             analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
-            socialFriendHandlerFacebookLazy.get()
+            detachFacebookSubscription();
+            facebookInvitationSubscription = socialFriendHandlerFacebookLazy.get()
                     .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO))
                     .subscribe(new Observer<Bundle>()
                     {
@@ -306,26 +304,37 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    private void detachMiddleCallbackInvite()
+    private void detachInviteSubscription()
     {
-        if (middleCallbackInvite != null)
+        Subscription copy = inviteSubscription;
+        if (copy != null)
         {
-            middleCallbackInvite.setPrimaryCallback(null);
+            copy.unsubscribe();
         }
-        middleCallbackInvite = null;
+        inviteSubscription = null;
     }
 
-    private class TrackShareCallback implements retrofit.Callback<BaseResponseDTO>
+    private void detachFacebookSubscription()
     {
-        @Override public void success(BaseResponseDTO response, Response response2)
+        Subscription copy = facebookInvitationSubscription;
+        if (copy != null)
+        {
+            copy.unsubscribe();
+        }
+        facebookInvitationSubscription = null;
+    }
+
+    private class TrackShareObserver extends EmptyObserver<BaseResponseDTO>
+    {
+        @Override public void onNext(BaseResponseDTO args)
         {
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(e));
             getProgressDialog().hide();
         }
     }

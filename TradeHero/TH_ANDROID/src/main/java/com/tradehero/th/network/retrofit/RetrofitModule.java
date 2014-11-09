@@ -36,8 +36,6 @@ import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
-import com.tradehero.th.network.service.VideoService;
-import com.tradehero.th.network.service.WatchlistService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
 import dagger.Lazy;
@@ -87,16 +85,6 @@ public class RetrofitModule
     @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
     {
         return adapter.create(UserTimelineService.class);
-    }
-
-    @Provides @Singleton VideoService provideVideoService(RestAdapter adapter)
-    {
-        return adapter.create(VideoService.class);
-    }
-
-    @Provides @Singleton WatchlistService provideWatchlistService(RestAdapter adapter)
-    {
-        return adapter.create(WatchlistService.class);
     }
     //</editor-fold>
 

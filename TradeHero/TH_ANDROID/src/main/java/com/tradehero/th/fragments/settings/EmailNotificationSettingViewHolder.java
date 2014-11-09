@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
@@ -9,11 +11,14 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import retrofit.Callback;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewHolder
 {
+    @Nullable private Subscription changeStatusSubscription;
+
     //<editor-fold desc="Constructors">
     @Inject EmailNotificationSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
@@ -24,6 +29,13 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
     }
     //</editor-fold>
+
+    @Override public void destroyViews()
+    {
+        unsubscribe(changeStatusSubscription);
+        changeStatusSubscription = null;
+        super.destroyViews();
+    }
 
     @StringRes @Override protected int getStringKeyResId()
     {
@@ -46,17 +58,18 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
             progressDialog = progressDialogUtil.show(preferenceFragmentCopy.getActivity(),
                     R.string.settings_notifications_email_alert_title,
                     R.string.settings_notifications_email_alert_message);
-            detachMiddleCallback();
-            middleCallbackUpdateUserProfile =
-                    userServiceWrapper.updateProfilePropertyEmailNotifications(
-                            currentUserId.toUserBaseKey(), enable,
-                            createUserProfileCallback());
+            unsubscribe(changeStatusSubscription);
+            changeStatusSubscription =
+                    userServiceWrapper.updateProfilePropertyEmailNotificationsRx(
+                            currentUserId.toUserBaseKey(), enable)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(createUserProfileObserver());
         }
         return false;
     }
 
-    protected Callback<UserProfileDTO> createUserProfileCallback()
+    protected Observer<UserProfileDTO> createUserProfileObserver()
     {
-        return new UserProfileUpdateCallback();
+        return new UserProfileUpdateObserver();
     }
 }

@@ -122,7 +122,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
         ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollow();
 
-        verify(userServiceWrapper, times(1)).follow(heroId, assistant);
+        verify(userServiceWrapper, times(1)).followRx(heroId, assistant);
     }
     //</editor-fold>
 

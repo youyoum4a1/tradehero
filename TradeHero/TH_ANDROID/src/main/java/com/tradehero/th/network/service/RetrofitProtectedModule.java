@@ -138,10 +138,6 @@ public class RetrofitProtectedModule
     {
         return adapter.create(UserServiceRx.class);
     }
-    @Provides @Singleton UserServiceAsync provideUserServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(UserServiceAsync.class);
-    }
 
     @Provides @Singleton UserTimelineMarkerServiceRx provideUserTimelineMarkerServiceRx(RestAdapter adapter)
     {
@@ -158,19 +154,9 @@ public class RetrofitProtectedModule
         return adapter.create(VideoServiceRx.class);
     }
 
-    @Provides @Singleton WatchlistServiceAsync provideWatchlistServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(WatchlistServiceAsync.class);
-    }
-
     @Provides @Singleton WatchlistServiceRx provideWatchlistServiceRx(RestAdapter adapter)
     {
         return adapter.create(WatchlistServiceRx.class);
-    }
-
-    @Provides @Singleton WeChatServiceAsync provideWeChatServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(WeChatServiceAsync.class);
     }
 
     @Provides @Singleton WeChatServiceRx provideWeChatServiceRx(RestAdapter adapter)

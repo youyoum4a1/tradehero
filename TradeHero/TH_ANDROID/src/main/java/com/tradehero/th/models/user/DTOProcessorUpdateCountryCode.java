@@ -1,17 +1,17 @@
 package com.tradehero.th.models.user;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
 
-public class DTOProcessorUpdateCountryCode implements DTOProcessor<UpdateCountryCodeDTO>
+public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCountryCodeDTO>
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final ProviderListCacheRx providerListCache;
