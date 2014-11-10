@@ -6,9 +6,6 @@ import com.tradehero.th.fragments.social.hero.FragmentSocialHeroModule;
 import com.tradehero.th.fragments.social.message.FragmentSocialMessageModule;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         includes = {
                 FragmentSocialFollowerModule.class,

@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
@@ -27,7 +29,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
@@ -38,10 +39,6 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -59,8 +56,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
-    @Nullable protected MiddleCallback<UserProfileDTO> followFriendsMiddleCallback;
-    @Nullable protected MiddleCallback<BaseResponseDTO> inviteFriendsMiddleCallback;
+    @Nullable protected Subscription followFriendsSubscription;
+    @Nullable protected Subscription inviteFriendsSubscription;
 
     protected EditText edtMessageInvite;
     protected TextView tvMessageCount;
@@ -110,8 +107,10 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         unsubscribe(friendsListCacheSubscription);
         friendsListCacheSubscription = null;
-        detachFollowFriendsMiddleCallback();
-        detachInviteFriendsMiddleCallback();
+        unsubscribe(followFriendsSubscription);
+        followFriendsSubscription = null;
+        unsubscribe(inviteFriendsSubscription);
+        inviteFriendsSubscription = null;
         super.onStop();
     }
 
@@ -125,24 +124,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         friendsRootView.listView.setOnScrollListener(null);
         super.onDestroyView();
-    }
-
-    protected void detachFollowFriendsMiddleCallback()
-    {
-        MiddleCallback<UserProfileDTO> middleCallbackCopy = followFriendsMiddleCallback;
-        if (middleCallbackCopy != null)
-        {
-            middleCallbackCopy.setPrimaryCallback(null);
-        }
-    }
-
-    protected void detachInviteFriendsMiddleCallback()
-    {
-        MiddleCallback<BaseResponseDTO> middleCallbackCopy = inviteFriendsMiddleCallback;
-        if (middleCallbackCopy != null)
-        {
-            middleCallbackCopy.setPrimaryCallback(null);
-        }
     }
 
     @Override
@@ -183,17 +164,17 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        detachFollowFriendsMiddleCallback();
-        followFriendsMiddleCallback = socialFriendHandler.followFriends(usersToFollow, new FollowFriendCallback(usersToFollow));
+        unsubscribe(followFriendsSubscription);
+        followFriendsSubscription = socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver(usersToFollow));
     }
 
     // TODO subclass like FacebookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
     protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        detachInviteFriendsMiddleCallback();
-        inviteFriendsMiddleCallback =
-                socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteCallback(usersToInvite));
+        unsubscribe(inviteFriendsSubscription);
+        inviteFriendsSubscription =
+                socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteObserver(usersToInvite));
     }
 
     protected String getWeiboInviteMessage()
@@ -255,9 +236,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    protected RequestCallback<BaseResponseDTO> createInviteCallback(List<UserFriendsDTO> usersToInvite)
+    protected RequestObserver<BaseResponseDTO> createInviteObserver(List<UserFriendsDTO> usersToInvite)
     {
-        return new InviteFriendCallback(usersToInvite);
+        return new InviteFriendObserver(usersToInvite);
     }
 
     protected void createFriendHandler()
@@ -617,63 +598,50 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         THToast.show(R.string.invite_friend_request_error);
     }
 
-    class FollowFriendCallback extends RequestCallback<UserProfileDTO>
+    class FollowFriendObserver extends RequestObserver<UserProfileDTO>
     {
         final List<UserFriendsDTO> usersToFollow;
 
-        private FollowFriendCallback(List<UserFriendsDTO> usersToFollow)
+        private FollowFriendObserver(List<UserFriendsDTO> usersToFollow)
         {
             super(getActivity());
             this.usersToFollow = usersToFollow;
         }
 
-        @Override
-        public void success(@NonNull UserProfileDTO userProfileDTO, @NonNull Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            super.success(userProfileDTO, response);
-            if (response.getStatus() == 200 || response.getStatus() == 204)
-            {
-                // TODO
-                handleFollowSuccess(usersToFollow);
-                userProfileCache.onNext(userProfileDTO.getBaseKey(), userProfileDTO);
-                return;
-            }
-            handleFollowError();
+            super.onNext(userProfileDTO);
+            handleFollowSuccess(usersToFollow);
+            userProfileCache.onNext(userProfileDTO.getBaseKey(), userProfileDTO);
+            return;
         }
 
-        @Override
-        public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            super.failure(retrofitError);
+            super.onError(e);
             handleFollowError();
         }
     }
 
-    class InviteFriendCallback extends RequestCallback<BaseResponseDTO>
+    class InviteFriendObserver extends RequestObserver<BaseResponseDTO>
     {
         List<UserFriendsDTO> usersToInvite;
 
-        private InviteFriendCallback(List<UserFriendsDTO> usersToInvite)
+        private InviteFriendObserver(List<UserFriendsDTO> usersToInvite)
         {
             super(getActivity());
             this.usersToInvite = usersToInvite;
         }
 
-        @Override
-        public void success(BaseResponseDTO data, @NonNull Response response)
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
-            super.success(data, response);
-            if (response.getStatus() == 200 || response.getStatus() == 204)
-            {
-                handleInviteSuccess(usersToInvite);
-                return;
-            }
-            handleInviteError();
+            super.onNext(baseResponseDTO);
+            handleInviteSuccess(usersToInvite);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            super.failure(retrofitError);
+            super.onError(e);
             handleInviteError();
         }
     }

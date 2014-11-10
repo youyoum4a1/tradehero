@@ -2,31 +2,25 @@ package com.tradehero.th.fragments.dashboard;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
-import com.tradehero.th.fragments.education.VideoCategoriesFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
-import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.utils.Constants;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public enum RootFragmentType
 {

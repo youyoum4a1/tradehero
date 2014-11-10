@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.social.friend;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
@@ -11,19 +13,18 @@ import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.facebook.ObservableWebDialog;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -32,11 +33,10 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -56,7 +56,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     private ProgressDialog progressDialog;
     private UserBaseKey userBaseKey;
     private List<UserFriendsDTO> users;
-    RequestCallback<BaseResponseDTO> callback;
+    RequestObserver<BaseResponseDTO> observer;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialFriendHandlerFacebook(
@@ -79,14 +79,14 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     //</editor-fold>
 
     @Override
-    public MiddleCallback<BaseResponseDTO> inviteFriends(
+    public Subscription inviteFriends(
             @NonNull UserBaseKey userKey,
             @NonNull List<UserFriendsDTO> users,
-            @Nullable RequestCallback<BaseResponseDTO> callback)
+            @Nullable RequestObserver<BaseResponseDTO> observer)
     {
         this.userBaseKey = userKey;
         this.users = users;
-        this.callback = callback;
+        this.observer = observer;
 
         //Session session = getFacebookSession();
         Session session = Session.getActiveSession();
@@ -198,7 +198,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                                 }
                                 else
                                 {
-                                    handleError();
+                                    handleError(error);
                                 }
                             }
                             else
@@ -226,15 +226,15 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         THToast.show(R.string.invite_friend_request_canceled);
     }
 
-    private void handleError()
+    private void handleError(@NonNull Throwable error)
     {
         Timber.d("handleError");
         //THToast.show(R.string.invite_friend_request_error);
 
-        if (callback != null)
+        if (observer != null)
         {
             // TODO
-            callback.failure(null);
+            observer.onError(error);
         }
     }
 
@@ -242,23 +242,17 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     {
         Timber.d("handleSuccess");
         //THToast.show(R.string.invite_friend_request_sent);
-        if (callback != null)
+        if (observer != null)
         {
             //TODO
-            callback.success();
+            observer.success();
         }
     }
 
     public Observable<Bundle> createShareRequestObservable(@NonNull final List<UserFriendsFacebookDTO> friendsDTOs)
     {
         return createProfileSessionObservable()
-                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<Bundle>>()
-                {
-                    @Override public Observable<Bundle> call(Pair<UserProfileDTO, Session> pair)
-                    {
-                        return createShareRequestObservable(pair.first, pair.second, friendsDTOs);
-                    }
-                });
+                .flatMap(pair -> createShareRequestObservable(pair.first, pair.second, friendsDTOs));
     }
 
     public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
@@ -279,7 +273,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                         return Observable.combineLatest(
                                 facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
                                         .observeOn(Schedulers.io())
-                                        .map(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
+                                        .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
                                 Observable.just(Session.getActiveSession()),
                                 new MakePairFunc2<UserProfileDTO, Session>());
                     }

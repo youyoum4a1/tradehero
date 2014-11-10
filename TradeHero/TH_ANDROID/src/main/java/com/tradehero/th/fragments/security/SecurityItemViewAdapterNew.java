@@ -4,8 +4,8 @@ import android.content.Context;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
-public class SecurityItemViewAdapterNew<SecurityCompactDTOType extends SecurityCompactDTO>
-        extends PagedArrayDTOAdapterNew<SecurityCompactDTOType, SecurityItemView<SecurityCompactDTOType>>
+public class SecurityItemViewAdapterNew
+        extends PagedArrayDTOAdapterNew<SecurityCompactDTO, SecurityItemView>
 {
     //<editor-fold desc="Constructors">
     public SecurityItemViewAdapterNew(Context context, int layoutResourceId)

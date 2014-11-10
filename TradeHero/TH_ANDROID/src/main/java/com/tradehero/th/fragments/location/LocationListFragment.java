@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.location;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,24 +26,22 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class LocationListFragment extends DashboardFragment
 {
     private LocationAdapter mListAdapter;
-    private MiddleCallback<UpdateCountryCodeDTO> middleCallback;
+    @Nullable private Subscription updateCountryCodeSubscription;
     private ProgressDialog progressDialog;
     protected UserProfileDTO currentUserProfile;
 
@@ -92,7 +92,8 @@ public class LocationListFragment extends DashboardFragment
 
     @Override public void onStop()
     {
-        detachMiddleCallback();
+        unsubscribe(updateCountryCodeSubscription);
+        updateCountryCodeSubscription = null;
         super.onStop();
     }
 
@@ -118,15 +119,6 @@ public class LocationListFragment extends DashboardFragment
             mListAdapter = null;
         }
         super.onDestroy();
-    }
-
-    private void detachMiddleCallback()
-    {
-        if (middleCallback != null)
-        {
-            middleCallback.setPrimaryCallback(null);
-        }
-        middleCallback = null;
     }
 
     protected void fetchUserProfile()
@@ -201,21 +193,25 @@ public class LocationListFragment extends DashboardFragment
         }
 
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
-        detachMiddleCallback();
-        middleCallback = userServiceWrapperLazy.get().updateCountryCode(
-                currentUserId.toUserBaseKey(), updateCountryCodeFormDTO, new UpdateCountryCodeCallback());
+        unsubscribe(updateCountryCodeSubscription);
+        updateCountryCodeSubscription = AndroidObservable.bindFragment(
+                this,
+                userServiceWrapperLazy.get().updateCountryCodeRx(
+                currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UpdateCountryCodeObserver());
     }
 
-    private class UpdateCountryCodeCallback implements retrofit.Callback<UpdateCountryCodeDTO>
+    private class UpdateCountryCodeObserver extends EmptyObserver<UpdateCountryCodeDTO>
     {
-        @Override public void success(UpdateCountryCodeDTO updateCountryCodeDTO, Response response2)
+        @Override public void onNext(UpdateCountryCodeDTO args)
         {
             backToSettings();
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(e));
             getProgressDialog().hide();
         }
     }

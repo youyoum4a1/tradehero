@@ -1,8 +1,8 @@
 package com.tradehero.th.api.users;
 
-import com.tradehero.common.persistence.DTOKey;
+import com.tradehero.common.api.PagedDTOKey;
 
-abstract public class UserListType implements Comparable<UserListType>, DTOKey
+abstract public class UserListType implements Comparable<UserListType>, PagedDTOKey
 {
     @Override abstract public int hashCode();
 

@@ -27,7 +27,7 @@ abstract public class AbstractServiceTestBase
     public ArrayList<Class<?>> getAllServices()
     {
         return TestUtil.getClassesForPackage(
-                AlertPlanService.class.getPackage(),
+                AlertPlanServiceRx.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
                     @Override public boolean apply(Class<?> aClass)
@@ -45,7 +45,7 @@ abstract public class AbstractServiceTestBase
     public ArrayList<Class<?>> getAllServiceAsyncs()
     {
         return TestUtil.getClassesForPackage(
-                AlertPlanService.class.getPackage(),
+                AlertPlanServiceRx.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
                     @Override public boolean apply(Class<?> aClass)
@@ -63,7 +63,7 @@ abstract public class AbstractServiceTestBase
     public ArrayList<Class<?>> getAllServiceWrappers()
     {
         return TestUtil.getClassesForPackage(
-                AlertPlanService.class.getPackage(),
+                AlertPlanServiceRx.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
                     @Override public boolean apply(Class<?> aClass)
@@ -81,7 +81,7 @@ abstract public class AbstractServiceTestBase
     public ArrayList<Class<?>> getAllServiceWrapperInjectors()
     {
         return TestUtil.getClassesForPackage(
-                AlertPlanService.class.getPackage(),
+                AlertPlanServiceRx.class.getPackage(),
                 new Predicate<Class<?>>()
                 {
                     @Override public boolean apply(Class<?> aClass)

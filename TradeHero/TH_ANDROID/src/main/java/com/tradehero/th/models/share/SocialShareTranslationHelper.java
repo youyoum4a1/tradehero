@@ -2,6 +2,8 @@ package com.tradehero.th.models.share;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
@@ -23,8 +25,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -65,7 +65,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         this.translationTokenCache = translationTokenCache;
         this.translationCache = translationCache;
         this.userTranslationSettingPreference = userTranslationSettingPreference;
-        fetchTranslationToken();
+        softFetchTranslationToken();
     }
     //</editor-fold>
 
@@ -199,11 +199,20 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             }
             else
             {
+                TranslationResult result;
                 for (TranslationKey key : new TranslationKeyList(remainingKeys))
                 {
-                    translationCache.get(key).
-                            observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(createTranslationCacheObserver(key));
+                    result = translationCache.getValue(key);
+                    if (result != null)
+                    {
+                        handleTranslation(key, result);
+                    }
+                    else
+                    {
+                        translationCache.get(key).
+                                observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(createTranslationCacheObserver(key));
+                    }
                 }
             }
         }
@@ -233,10 +242,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
 
         @Override public void onNext(Pair<TranslationKey, TranslationResult> pair)
         {
-            notifyTranslatedOneAttribute(toTranslate, pair.second);
-            abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, pair.second);
-            remainingKeys.remove(key);
-            notifyAllDoneIfPossible();
+            handleTranslation(key, pair.second);
         }
 
         @Override public void onCompleted()
@@ -251,6 +257,14 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         }
     }
 
+    protected void handleTranslation(@NonNull TranslationKey key, @NonNull TranslationResult result)
+    {
+        notifyTranslatedOneAttribute(toTranslate, result);
+        abstractDiscussionCompactDTOFactory.populateTranslation(translated, key, result);
+        remainingKeys.remove(key);
+        notifyAllDoneIfPossible();
+    }
+
     public interface OnMenuClickedListener extends SocialShareHelper.OnMenuClickedListener
     {
         void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate);
@@ -262,13 +276,21 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate, Throwable error);
     }
 
-    protected void fetchTranslationToken()
+    protected void softFetchTranslationToken()
     {
-        detachTranslationTokenCache();
         TranslationTokenKey key = new TranslationTokenKey();
-        translationTokenSubscription = translationTokenCache.get(key)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createTranslationTokenObserver());
+        TranslationToken token = translationTokenCache.getValue(key);
+        if (token != null)
+        {
+            translationToken = token;
+        }
+        else
+        {
+            detachTranslationTokenCache();
+            translationTokenSubscription = translationTokenCache.get(key)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createTranslationTokenObserver());
+        }
     }
 
     protected void detachTranslationTokenCache()

@@ -1,6 +1,8 @@
 package com.tradehero.th.models.user.follow;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -9,13 +11,10 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
-public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
+public class SimpleFollowUserAssistant extends EmptyObserver<UserProfileDTO>
 {
     @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
@@ -51,19 +50,25 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
     public void launchUnFollow()
     {
         showProgress(R.string.manage_heroes_unfollow_progress_message);
-        userServiceWrapper.unfollow(heroId, this);
+        userServiceWrapper.unfollowRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
     }
 
     public void launchFreeFollow()
     {
         showProgress(R.string.following_this_hero);
-        userServiceWrapper.freeFollow(heroId, this);
+        userServiceWrapper.freeFollowRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
     }
 
     protected void launchPremiumFollow()
     {
         showProgress(R.string.following_this_hero);
-        userServiceWrapper.follow(heroId, this);
+        userServiceWrapper.followRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
     }
 
     protected void showProgress(int contentResId)
@@ -73,16 +78,16 @@ public class SimpleFollowUserAssistant implements Callback<UserProfileDTO>
                 context.getString(contentResId));
     }
 
-    @Override public void success(UserProfileDTO userProfileDTO, Response response)
+    @Override public void onNext(UserProfileDTO userProfileDTO)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
         notifyFollowSuccess(heroId, userProfileDTO);
     }
 
-    @Override public void failure(RetrofitError error)
+    @Override public void onError(Throwable e)
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
-        notifyFollowFailed(heroId, error);
+        notifyFollowFailed(heroId, e);
     }
 
     protected void notifyFollowSuccess(

@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,7 +24,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.FollowDialogCombo;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.metrics.Analytics;
@@ -32,9 +33,9 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
@@ -53,7 +54,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
-    private MiddleCallback<UserProfileDTO> freeFollowMiddleCallback;
+    @Nullable private Subscription freeFollowMiddleSubscription;
     private UserProfileDTO userProfileDTO;
     private WeakReference<OnFollowRequestedListener> followRequestedListenerWeak = new WeakReference<>(null);
     private WeakReference<OnTimelineRequestedListener> timelineRequestedListenerWeak = new WeakReference<>(null);
@@ -142,9 +143,10 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
-        freeFollowMiddleCallback =
-                userServiceWrapperLazy.get()
-                        .freeFollow(heroId, new FreeFollowCallback());
+        freeFollowMiddleSubscription =
+                userServiceWrapperLazy.get().freeFollowRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new FreeFollowObserver());
     }
 
     protected void follow(@NonNull UserBaseKey heroId)
@@ -157,11 +159,12 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private void detachFreeFollowMiddleCallback()
     {
-        if (freeFollowMiddleCallback != null)
+        Subscription copy = freeFollowMiddleSubscription;
+        if (copy != null)
         {
-            freeFollowMiddleCallback.setPrimaryCallback(null);
+            copy.unsubscribe();
         }
-        freeFollowMiddleCallback = null;
+        freeFollowMiddleSubscription = null;
     }
 
     protected void detachFollowDialogCombo()
@@ -174,9 +177,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         followDialogCombo = null;
     }
 
-    public class FreeFollowCallback implements retrofit.Callback<UserProfileDTO>
+    public class FreeFollowObserver extends EmptyObserver<UserProfileDTO>
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
             configureFollowItemsVisibility();
@@ -184,9 +187,9 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(e));
             heroAlertDialogUtilLazy.get().dismissProgressDialog();
         }
     }

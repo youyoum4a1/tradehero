@@ -1,17 +1,16 @@
 package com.tradehero.th.fragments.onboarding.stock;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.security.SecurityItemView;
-import android.support.annotation.Nullable;
 
 public class SecuritySelectableViewHolder implements DTOView<SelectableSecurityDTO>
 {
-    @InjectView(R.id.security_view) protected SecurityItemView<SecurityCompactDTO> securityView;
+    @InjectView(R.id.security_view) protected SecurityItemView securityView;
     @InjectView(R.id.tick_selected) protected View tickSelectedView;
 
     @Nullable protected SelectableSecurityDTO selectableDTO;

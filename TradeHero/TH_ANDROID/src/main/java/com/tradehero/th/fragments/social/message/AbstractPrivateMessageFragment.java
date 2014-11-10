@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.message;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,15 +36,13 @@ import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
@@ -66,6 +66,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @InjectView(R.id.post_comment_text) protected EditText messageToSend;
 
     @Nullable private Subscription messageHeaderFetchSubscription;
+    @NonNull private SubscriptionList subscriptionList;
     private MessageHeaderId messageHeaderId;
 
     public static void putCorrespondentUserBaseKey(@NonNull Bundle args, @NonNull UserBaseKey correspondentBaseKey)
@@ -82,6 +83,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.onCreate(savedInstanceState);
         correspondentId = collectCorrespondentId(getArguments());
+        subscriptionList = new SubscriptionList();
     }
 
     protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
@@ -165,6 +167,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         unsubscribe(messageHeaderFetchSubscription);
         messageHeaderFetchSubscription = null;
+        subscriptionList.unsubscribe();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -256,35 +259,30 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void reportMessageRead(MessageHeaderDTO messageHeaderDTO)
     {
         messageHeaderCache.setUnread(messageHeaderDTO.getDTOKey(), false);
-        messageServiceWrapper.get().readMessage(
+        subscriptionList.add(messageServiceWrapper.get().readMessageRx(
                 messageHeaderDTO.getDTOKey(),
                 messageHeaderDTO.getSenderId(),
                 messageHeaderDTO.getRecipientId(),
                 messageHeaderDTO.getDTOKey(),
-                currentUserId.toUserBaseKey(),
-                createMessageAsReadCallback(messageHeaderDTO.getDTOKey()));
+                currentUserId.toUserBaseKey())
+                .subscribe(createMessageAsReadCallback(messageHeaderDTO.getDTOKey())));
     }
 
-    private Callback<BaseResponseDTO> createMessageAsReadCallback(MessageHeaderId messageHeaderId)
+    private Observer<BaseResponseDTO> createMessageAsReadCallback(MessageHeaderId messageHeaderId)
     {
-        return new MessageMarkAsReadCallback(messageHeaderId);
+        return new MessageMarkAsReadObserver(messageHeaderId);
     }
 
-    private class MessageMarkAsReadCallback implements Callback<BaseResponseDTO>
+    private class MessageMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
     {
         private final MessageHeaderId messageHeaderId;
 
-        public MessageMarkAsReadCallback(MessageHeaderId messageHeaderId)
+        public MessageMarkAsReadObserver(MessageHeaderId messageHeaderId)
         {
             this.messageHeaderId = messageHeaderId;
         }
 
-        @Override public void success(BaseResponseDTO response, Response response2)
-        {
-            // Nothing to do
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
             Timber.d("Report failure for Message: %s", messageHeaderId);
         }

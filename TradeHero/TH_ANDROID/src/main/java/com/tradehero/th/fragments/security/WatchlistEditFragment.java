@@ -20,10 +20,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
@@ -35,10 +32,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import retrofit.Callback;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
@@ -56,8 +54,8 @@ public class WatchlistEditFragment extends DashboardFragment
     private TextView deleteButton;
     @Nullable private ProgressDialog progressBar;
 
-    @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackUpdate;
-    @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
+    @Nullable private Subscription updateSubscription;
+    @Nullable private Subscription deleteSubscription;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
@@ -143,19 +141,23 @@ public class WatchlistEditFragment extends DashboardFragment
             WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
 
             WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().getValue(securityCompactDTO.getSecurityId());
-            detachMiddleCallbackUpdate();
+            unsubscribe(updateSubscription);
             if (existingWatchlistPosition != null)
             {
-                middleCallbackUpdate = watchlistServiceWrapper.updateWatchlistEntry(
+                updateSubscription = AndroidObservable.bindFragment(
+                        this,
+                        watchlistServiceWrapper.updateWatchlistEntryRx(
                         existingWatchlistPosition.getPositionCompactId(),
-                        watchPositionItemForm,
-                        createWatchlistUpdateCallback());
+                        watchPositionItemForm))
+                        .subscribe(createWatchlistUpdateObserver());
             }
             else
             {
-                middleCallbackUpdate = watchlistServiceWrapper.createWatchlistEntry(
-                        watchPositionItemForm,
-                        createWatchlistUpdateCallback());
+                updateSubscription = AndroidObservable.bindFragment(
+                        this,
+                        watchlistServiceWrapper.createWatchlistEntryRx(
+                        watchPositionItemForm))
+                        .subscribe(createWatchlistUpdateObserver());
             }
         }
         catch (NumberFormatException ex)
@@ -201,8 +203,11 @@ public class WatchlistEditFragment extends DashboardFragment
         if (watchlistPositionDTO != null)
         {
             showProgressBar();
-            detachMiddleCallbackDelete();
-            middleCallbackDelete = watchlistServiceWrapper.deleteWatchlist(watchlistPositionDTO.getPositionCompactId(), createWatchlistDeleteCallback());
+            unsubscribe(deleteSubscription);
+            deleteSubscription = AndroidObservable.bindFragment(
+                    this,
+                    watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
+                    .subscribe(createWatchlistDeleteObserver());
         }
         else
         {
@@ -220,35 +225,21 @@ public class WatchlistEditFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        detachMiddleCallbackUpdate();
-        detachMiddleCallbackDelete();
+        unsubscribe(updateSubscription);
+        updateSubscription = null;
+        unsubscribe(deleteSubscription);
+        deleteSubscription = null;
         dismissProgress();
         super.onDestroyView();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
-        detachMiddleCallbackUpdate();
-        detachMiddleCallbackDelete();
+        unsubscribe(updateSubscription);
+        updateSubscription = null;
+        unsubscribe(deleteSubscription);
+        deleteSubscription = null;
         super.onSaveInstanceState(outState);
-    }
-
-    protected void detachMiddleCallbackUpdate()
-    {
-        if (middleCallbackUpdate != null)
-        {
-            middleCallbackUpdate.setPrimaryCallback(null);
-        }
-        middleCallbackUpdate = null;
-    }
-
-    protected void detachMiddleCallbackDelete()
-    {
-        if (middleCallbackDelete != null)
-        {
-            middleCallbackDelete.setPrimaryCallback(null);
-        }
-        middleCallbackDelete = null;
     }
 
     private void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
@@ -360,21 +351,20 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    @NonNull protected Callback<WatchlistPositionDTO> createWatchlistUpdateCallback()
+    @NonNull protected Observer<WatchlistPositionDTO> createWatchlistUpdateObserver()
     {
-        return new WatchlistEditTHCallback();
+        return new WatchlistEditTHObserver();
     }
 
-    @NonNull protected Callback<WatchlistPositionDTO> createWatchlistDeleteCallback()
+    @NonNull protected Observer<WatchlistPositionDTO> createWatchlistDeleteObserver()
     {
-        return new WatchlistDeletedTHCallback();
+        return new WatchlistDeletedTHObserver();
     }
 
     //TODO this extends is better? maybe not alex
-    protected class WatchlistDeletedTHCallback extends WatchlistEditTHCallback
+    protected class WatchlistDeletedTHObserver extends WatchlistEditTHObserver
     {
-        @Override protected void success(@NonNull WatchlistPositionDTO watchlistPositionDTO,
-                THResponse response)
+        @Override public void onNext(WatchlistPositionDTO args)
         {
             if (isResumed())
             {
@@ -387,14 +377,9 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    protected class WatchlistEditTHCallback extends THCallback<WatchlistPositionDTO>
+    protected class WatchlistEditTHObserver extends EmptyObserver<WatchlistPositionDTO>
     {
-        @Override protected void finish()
-        {
-            dismissProgress();
-        }
-
-        @Override protected void success(@NonNull WatchlistPositionDTO watchlistPositionDTO, THResponse response)
+        @Override public void onNext(WatchlistPositionDTO args)
         {
             if (navigator != null)
             {
@@ -403,10 +388,10 @@ public class WatchlistEditFragment extends DashboardFragment
             dismissProgress();
         }
 
-        @Override protected void failure(THException ex)
+        @Override public void onError(Throwable e)
         {
-            Timber.e(ex, "Failed to update watchlist position");
-            THToast.show(ex);
+            Timber.e(e, "Failed to update watchlist position");
+            THToast.show(new THException(e));
             dismissProgress();
         }
     }

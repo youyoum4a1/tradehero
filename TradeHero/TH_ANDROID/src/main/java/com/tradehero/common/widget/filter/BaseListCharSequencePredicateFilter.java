@@ -25,12 +25,12 @@ public class BaseListCharSequencePredicateFilter<T> implements ListCharSequenceP
         this.predicate.setCharSequence(charSequence);
     }
 
-    @Override public List<T> filter(List<T> unfiltered)
+    @Override public List<T> filter(List<? extends T> unfiltered)
     {
         return filter(unfiltered, predicate);
     }
 
-    @Override public List<T> filter(List<T> unfiltered, CharSequencePredicate<? super T> predicate)
+    @Override public List<T> filter(List<? extends T> unfiltered, CharSequencePredicate<? super T> predicate)
     {
         if (unfiltered == null)
         {
@@ -39,7 +39,7 @@ public class BaseListCharSequencePredicateFilter<T> implements ListCharSequenceP
 
         if (predicate == null || predicate.getCharSequence() == null || predicate.getCharSequence().length() == 0)
         {
-            return unfiltered;
+            return new ArrayList<>(unfiltered);
         }
 
         ArrayList<T> filtered = new ArrayList<>();

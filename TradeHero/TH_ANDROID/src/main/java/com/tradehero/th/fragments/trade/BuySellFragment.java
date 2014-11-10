@@ -26,6 +26,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnPageChange;
 import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -43,7 +44,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -73,7 +73,6 @@ import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -100,8 +99,7 @@ import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
 public class BuySellFragment extends AbstractBuySellFragment
-        implements ViewPager.OnPageChangeListener,
-        WithTutorial
+        implements WithTutorial
 {
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
     private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
@@ -151,16 +149,16 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
 
     @Nullable protected Subscription userWatchlistPositionCacheSubscription;
+    @Nullable protected WatchlistPositionDTOList watchedList;
+    @Nullable protected Subscription portfolioCacheSubscription;
 
-    private Bundle desiredArguments;
-
-    protected WatchlistPositionDTOList watchedList;
-
+    private Animation progressAnimation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
     private int selectedPageIndex;
-    private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
     private BroadcastReceiver chartImageButtonClickReceiver;
+    @Nullable private Subscription quoteTimerSubscription;
 
+    @Nullable private Subscription alertCompactListCacheSubscription;
     @Nullable private Map<SecurityId, AlertId> mappedAlerts;
 
     @Inject Analytics analytics;
@@ -173,29 +171,21 @@ public class BuySellFragment extends AbstractBuySellFragment
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
     }
 
-    @Override protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
-    {
-        return new BuySellPortfolioCompactListObserver();
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        super.onCreateView(inflater, container, savedInstanceState);
-
-        if (desiredArguments == null)
-        {
-            desiredArguments = getArguments();
-        }
         if (savedInstanceState != null)
         {
             selectedPageIndex = savedInstanceState.getInt(BUNDLE_KEY_SELECTED_PAGE_INDEX);
         }
 
-        View view = inflater.inflate(R.layout.fragment_buy_sell, container, false);
+        return inflater.inflate(R.layout.fragment_buy_sell, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        resideMenu.addIgnoredView(mBottomViewPager);
-        return view;
     }
 
     @Override protected void initViews(View view)
@@ -203,29 +193,29 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.initViews(view);
         ButterKnife.inject(this, view);
 
-        if (mQuoteRefreshProgressBar != null)
-        {
-            mQuoteRefreshProgressBar.setMax(
-                    (int) (MILLISEC_QUOTE_REFRESH / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-            mQuoteRefreshProgressBar.setProgress(mQuoteRefreshProgressBar.getMax());
-        }
-
-        if (bottomViewPagerAdapter == null)
-        {
-            bottomViewPagerAdapter =
-                    new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
-        }
-        if (mBottomViewPager != null)
-        {
-            mBottomViewPager.setAdapter(bottomViewPagerAdapter);
-            mBottomViewPager.setOnPageChangeListener(this);
-        }
+        bottomViewPagerAdapter =
+                new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
+        mBottomViewPager.setAdapter(bottomViewPagerAdapter);
 
         mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
-        selectPage(selectedPageIndex);
+        onPageSelected(selectedPageIndex);
 
         mBuySellBtnContainer.setVisibility(View.GONE);
+        resideMenu.addIgnoredView(mBottomViewPager);
+
+        progressAnimation = new Animation()
+        {
+            @Override protected void applyTransformation(float interpolatedTime, android.view.animation.Transformation t)
+            {
+                super.applyTransformation(interpolatedTime, t);
+                mQuoteRefreshProgressBar.setProgress((int) (MILLISEC_QUOTE_REFRESH * (1 - interpolatedTime)));
+            }
+        };
+        progressAnimation.setDuration(MILLISEC_QUOTE_REFRESH);
+        mQuoteRefreshProgressBar.setMax((int) MILLISEC_QUOTE_REFRESH);
+        mQuoteRefreshProgressBar.setProgress((int) MILLISEC_QUOTE_REFRESH);
+        mQuoteRefreshProgressBar.setAnimation(progressAnimation);
     }
 
     //<editor-fold desc="ActionBar">
@@ -264,27 +254,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                         new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
         mBottomViewPager.setCurrentItem(selectedPageIndex);
-        AndroidObservable.bindFragment(
-                this,
-                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
-                .subscribe(new Observer<Map<SecurityId, AlertId>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                        displayTriggerButton();
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        Timber.e(e, "There was an error getting the alert ids");
-                        displayTriggerButton();
-                    }
-
-                    @Override public void onNext(Map<SecurityId, AlertId> securityIdAlertIdMap)
-                    {
-                        mappedAlerts = securityIdAlertIdMap;
-                    }
-                });
 
         if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
         {
@@ -293,6 +262,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
 
         dashboardTabHost.get().setOnTranslate((x, y) -> mBuySellBtnContainer.setTranslationY(y));
+        fetchAlertCompactList();
+        fetchWatchlist();
     }
 
     @Override public void onPause()
@@ -308,10 +279,17 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         unsubscribe(userWatchlistPositionCacheSubscription);
         userWatchlistPositionCacheSubscription = null;
-        detachBuySellMiddleCallback();
+        unsubscribe(quoteTimerSubscription);
+        quoteTimerSubscription = null;
+        unsubscribe(portfolioCacheSubscription);
+        portfolioCacheSubscription = null;
+        unsubscribe(alertCompactListCacheSubscription);
+        alertCompactListCacheSubscription = null;
         detachPortfolioMenuSubscription();
         detachBuySellDialog();
 
+        mQuoteRefreshProgressBar.clearAnimation();
+        progressAnimation = null;
         bottomViewPagerAdapter = null;
 
         resideMenu.removeIgnoredView(mBottomViewPager);
@@ -326,7 +304,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         progressDialogUtil.dismiss(getActivity());
         unsubscribe(userWatchlistPositionCacheSubscription);
         userWatchlistPositionCacheSubscription = null;
-        detachBuySellMiddleCallback();
+        unsubscribe(quoteTimerSubscription);
+        quoteTimerSubscription = null;
+        unsubscribe(portfolioCacheSubscription);
+        portfolioCacheSubscription = null;
+        unsubscribe(alertCompactListCacheSubscription);
+        alertCompactListCacheSubscription = null;
         detachPortfolioMenuSubscription();
         detachBuySellDialog();
 
@@ -356,16 +339,30 @@ public class BuySellFragment extends AbstractBuySellFragment
         abstractTransactionDialogFragment = null;
     }
 
-    @Override public void linkWith(SecurityId securityId, boolean andDisplay)
+    public void fetchAlertCompactList()
     {
-        super.linkWith(securityId, andDisplay);
+        unsubscribe(alertCompactListCacheSubscription);
+        alertCompactListCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
+                .subscribe(new Observer<Map<SecurityId, AlertId>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                        displayTriggerButton();
+                    }
 
-        fetchWatchlist();
+                    @Override public void onError(Throwable e)
+                    {
+                        Timber.e(e, "There was an error getting the alert ids");
+                        displayTriggerButton();
+                    }
 
-        if (andDisplay)
-        {
-            displayWatchlistButton();
-        }
+                    @Override public void onNext(Map<SecurityId, AlertId> securityIdAlertIdMap)
+                    {
+                        mappedAlerts = securityIdAlertIdMap;
+                    }
+                });
     }
 
     public void fetchWatchlist()
@@ -375,6 +372,39 @@ public class BuySellFragment extends AbstractBuySellFragment
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserWatchlistCacheObserver());
+    }
+
+    @NonNull protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()
+    {
+        return new BuySellUserWatchlistCacheObserver();
+    }
+
+    protected class BuySellUserWatchlistCacheObserver
+            implements Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>
+    {
+        @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
+        {
+            linkWith(pair.second, true);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            Timber.e("Failed to fetch list of watch list items", e);
+            THToast.show(R.string.error_fetch_portfolio_list_info);
+        }
+    }
+
+    protected void linkWith(WatchlistPositionDTOList watchedList, boolean andDisplay)
+    {
+        this.watchedList = watchedList;
+        if (andDisplay)
+        {
+            displayWatchlistButton();
+        }
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -422,24 +452,11 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override
-    public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
-    {
-        super.linkWith(positionDTOCompacts, andDisplay);
-        if (andDisplay)
-        {
-
-        }
-    }
-
     @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
         super.linkWith(userProfileDTO, andDisplay);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        if (andDisplay)
-        {
-        }
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
@@ -454,65 +471,8 @@ public class BuySellFragment extends AbstractBuySellFragment
             displayBuySellContainer();
             displayBuySellSwitch();
         }
-    }
 
-    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
-            boolean andDisplay)
-    {
-        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
-        if (purchaseApplicablePortfolioId != null)
-        {
-            purchaseApplicableOwnedPortfolioId = purchaseApplicablePortfolioId;
-            AndroidObservable.bindFragment(
-                    this,
-                    portfolioCache.get(purchaseApplicablePortfolioId))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Pair<OwnedPortfolioId, PortfolioDTO>>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                        }
-
-                        @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
-                        {
-                            linkWith(pair.second, andDisplay);
-                        }
-                    });
-        }
-        else
-        {
-            linkWith((PortfolioCompactDTO) null, andDisplay);
-        }
-        if (andDisplay)
-        {
-            displayBuySellSwitch();
-        }
-    }
-
-    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
-    {
-        super.linkWith(portfolioCompactDTO, andDisplay);
-        clampBuyQuantity(andDisplay);
-        clampSellQuantity(andDisplay);
-        if (andDisplay)
-        {
-            // TODO max purchasable shares
-            displayBuySellPrice();
-            conditionalDisplayPortfolioChanged();
-        }
-    }
-
-    protected void linkWithWatchlist(WatchlistPositionDTOList watchedList, boolean andDisplay)
-    {
-        this.watchedList = watchedList;
-        if (andDisplay)
-        {
-            displayWatchlistButton();
-        }
+        mQuoteRefreshProgressBar.startAnimation(progressAnimation);
     }
 
     protected void setInitialBuyQuantityIfCan()
@@ -540,6 +500,53 @@ public class BuySellFragment extends AbstractBuySellFragment
                     setTransactionTypeBuy(true);
                 }
             }
+        }
+    }
+
+    @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId,
+            boolean andDisplay)
+    {
+        super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
+        if (purchaseApplicablePortfolioId != null)
+        {
+            fetchPortfolio(purchaseApplicablePortfolioId);
+        }
+        else
+        {
+            linkWith((PortfolioCompactDTO) null, andDisplay);
+        }
+        if (andDisplay)
+        {
+            displayBuySellSwitch();
+        }
+    }
+
+    protected void fetchPortfolio(OwnedPortfolioId purchaseApplicablePortfolioId)
+    {
+        unsubscribe(portfolioMenuSubscription);
+        portfolioCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                portfolioCache.get(purchaseApplicablePortfolioId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new EmptyObserver<Pair<OwnedPortfolioId, PortfolioDTO>>()
+                {
+                    @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                    {
+                        linkWith(pair.second, true);
+                    }
+                });
+    }
+
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(portfolioCompactDTO, andDisplay);
+        clampBuyQuantity(andDisplay);
+        clampSellQuantity(andDisplay);
+        if (andDisplay)
+        {
+            // TODO max purchasable shares
+            displayBuySellPrice();
+            conditionalDisplayPortfolioChanged();
         }
     }
 
@@ -932,12 +939,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
-    @Override protected void prepareFreshQuoteHolder()
-    {
-        super.prepareFreshQuoteHolder();
-        freshQuoteHolder.identifier = "BuySellFragment";
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_add_trigger)
     protected void handleBtnAddTriggerClicked()
@@ -1059,50 +1060,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     }
 
     //<editor-fold desc="Interface Creators">
-    private Callback createLogoReadyCallback()
-    {
-        return new Callback()
-        {
-            @Override public void onError()
-            {
-                loadBg();
-            }
-
-            @Override public void onSuccess()
-            {
-                loadBg();
-            }
-
-            public void loadBg()
-            {
-                if (mStockBgLogo != null && BuySellFragment.isUrlOk(
-                        (String) mStockBgLogo.getTag(R.string.image_url)))
-                {
-                    Timber.i("Loading Bg for %s", mStockBgLogo.getTag(R.string.image_url));
-                    picasso.load((String) mStockBgLogo.getTag(R.string.image_url))
-                            .placeholder(R.drawable.default_image)
-                            .error(R.drawable.default_image)
-                            .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
-                            .centerInside()
-                            .transform(foregroundTransformation)
-                            .into(mStockBgLogo);
-                }
-                else if (mStockBgLogo != null && securityCompactDTO != null)
-                {
-                    int logoId = securityCompactDTO.getExchangeLogoId();
-                    if (logoId != 0)
-                    {
-                        picasso.load(logoId)
-                                .resize(mStockBgLogo.getWidth(), mStockBgLogo.getHeight())
-                                .centerCrop()
-                                .transform(foregroundTransformation)
-                                .into(mStockBgLogo);
-                    }
-                }
-            }
-        };
-    }
-
     public void showBuySellDialog()
     {
         if (quoteDTO != null
@@ -1195,15 +1152,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    private void detachBuySellMiddleCallback()
-    {
-        if (buySellMiddleCallback != null)
-        {
-            buySellMiddleCallback.setPrimaryCallback(null);
-        }
-        buySellMiddleCallback = null;
-    }
-
     private void pushPortfolioFragment(@NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
     {
         pushPortfolioFragment(new OwnedPortfolioId(
@@ -1236,6 +1184,17 @@ public class BuySellFragment extends AbstractBuySellFragment
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, securityId));
     }
 
+    private BroadcastReceiver createImageButtonClickBroadcastReceiver()
+    {
+        return new BroadcastReceiver()
+        {
+            @Override public void onReceive(Context context, Intent intent)
+            {
+                pushStockInfoFragmentIn();
+            }
+        };
+    }
+
     private void pushStockInfoFragmentIn()
     {
         Bundle args = new Bundle();
@@ -1247,44 +1206,16 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         navigator.get().pushFragment(StockInfoFragment.class, args);
     }
-
-    private BroadcastReceiver createImageButtonClickBroadcastReceiver()
-    {
-        return new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                pushStockInfoFragmentIn();
-            }
-        };
-    }
     //</editor-fold>
-
-    @Override protected FreshQuoteHolder.FreshQuoteListener createFreshQuoteListener()
-    {
-        return new BuySellFreshQuoteListener();
-    }
 
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_buy_sell;
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
-    {
-    }
-
-    @Override public void onPageSelected(int position)
-    {
-        selectPage(position);
-    }
-
-    @Override public void onPageScrollStateChanged(int state)
-    {
-    }
-
-    public void selectPage(int position)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnPageChange(value = R.id.trade_bottom_pager, callback = OnPageChange.Callback.PAGE_SELECTED)
+    public void onPageSelected(int position)
     {
         selectedPageIndex = position;
         mInfoTextView.setSelected(position == 0);
@@ -1301,16 +1232,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected class BuySellFreshQuoteListener extends AbstractBuySellFreshQuoteListener
+    @Override @NonNull protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
     {
-        @Override public void onMilliSecToRefreshQuote(long milliSecToRefresh)
-        {
-            if (mQuoteRefreshProgressBar != null)
-            {
-                mQuoteRefreshProgressBar.setProgress(
-                        (int) (milliSecToRefresh / MILLISEC_QUOTE_COUNTDOWN_PRECISION));
-            }
-        }
+        return new BuySellPortfolioCompactListObserver();
     }
 
     protected class BuySellPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
@@ -1324,30 +1248,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
             }
             setInitialSellQuantityIfCan();
-        }
-    }
-
-    protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()
-    {
-        return new BuySellUserWatchlistCacheObserver();
-    }
-
-    protected class BuySellUserWatchlistCacheObserver
-            implements Observer<Pair<UserBaseKey, WatchlistPositionDTOList>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
-        {
-            linkWithWatchlist(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e("Failed to fetch list of watch list items", e);
-            THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 }

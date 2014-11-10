@@ -12,19 +12,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import timber.log.Timber;
 
-public class MessageServiceStub implements MessageService
+public class MessageServiceRxStub implements MessageServiceRx
 {
     //<editor-fold desc="Constructors">
-    @Inject public MessageServiceStub()
+    @Inject public MessageServiceRxStub()
     {
         super();
     }
     //</editor-fold>
 
     @Override
-    public ReadablePaginatedMessageHeaderDTO getMessageHeaders(Integer page, Integer perPage)
+    public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(Integer page, Integer perPage)
     {
         Timber.d("Returning stub messages");
         ReadablePaginatedMessageHeaderDTO paginatedDTO = new ReadablePaginatedMessageHeaderDTO();
@@ -40,10 +41,10 @@ public class MessageServiceStub implements MessageService
         PaginationInfoDTO paginationInfoDTO = new PaginationInfoDTO();
         paginatedDTO.setPagination(paginationInfoDTO);
 
-        return paginatedDTO;
+        return Observable.just(paginatedDTO);
     }
 
-    @Override public ReadablePaginatedMessageHeaderDTO getMessageHeaders(
+    @Override public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeaders(
             String discussionType,
             Integer senderId,
             Integer page,
@@ -53,17 +54,17 @@ public class MessageServiceStub implements MessageService
         List<MessageHeaderDTO> data = new ArrayList<>();
         data.add(createMessageHeaderNeerajToOscarAguilar());
         paginatedDTO.setData(data);
-        return paginatedDTO;
+        return Observable.just(paginatedDTO);
     }
 
-    @Override public MessageHeaderDTO getMessageHeader(int commentId, Integer referencedUserId)
+    @Override public Observable<MessageHeaderDTO> getMessageHeader(int commentId, Integer referencedUserId)
     {
-        return createMessageHeader(commentId, referencedUserId, new Date());
+        return Observable.just(createMessageHeader(commentId, referencedUserId, new Date()));
     }
 
-    @Override public MessageHeaderDTO getMessageThread(int correspondentId)
+    @Override public Observable<MessageHeaderDTO> getMessageThread(int correspondentId)
     {
-        return null;
+        return Observable.empty();
     }
 
     private MessageHeaderDTO createMessageHeaderNeerajToOscarAguilar()
@@ -83,30 +84,30 @@ public class MessageServiceStub implements MessageService
         return new MessageHeaderDTO("title-" + commentId + "-" + page, "subtitle-" + commentId, "text-" + commentId, date, true);
     }
 
-    @Override public UserMessagingRelationshipDTO getMessagingRelationgshipStatus(int recipientUserId)
+    @Override public Observable<UserMessagingRelationshipDTO> getMessagingRelationgshipStatus(int recipientUserId)
     {
         UserMessagingRelationshipDTO statusDTO = new UserMessagingRelationshipDTO();
-        return statusDTO;
+        return Observable.just(statusDTO);
     }
 
-    @Override public DiscussionDTO createMessage(MessageCreateFormDTO form)
+    @Override public Observable<DiscussionDTO> createMessage(MessageCreateFormDTO form)
     {
         throw new IllegalArgumentException("Implement it");
     }
 
-    @Override public BaseResponseDTO deleteMessage(int commentId, int senderUserId,
+    @Override public Observable<BaseResponseDTO> deleteMessage(int commentId, int senderUserId,
             int recipientUserId)
     {
         throw new RuntimeException("Not implemented");
     }
 
-    @Override public BaseResponseDTO readMessage(int commentId, int senderUserId,
+    @Override public Observable<BaseResponseDTO> readMessage(int commentId, int senderUserId,
             int recipientUserId)
     {
         throw new RuntimeException("Not implemented");
     }
 
-    @Override public BaseResponseDTO readAllMessage()
+    @Override public Observable<BaseResponseDTO> readAllMessage()
     {
         throw new RuntimeException("Not implemented");
     }

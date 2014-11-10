@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
@@ -12,9 +14,9 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewHolder
 {
@@ -22,6 +24,8 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
 
     @Nullable protected CheckBoxPreference pushNotificationSound;
     @Nullable protected CheckBoxPreference pushNotificationVibrate;
+
+    @Nullable private Subscription updatePropertySubscription;
 
     //<editor-fold desc="Constructors">
     @Inject public PushNotificationSettingViewHolder(
@@ -72,6 +76,13 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         }
     }
 
+    @Override public void destroyViews()
+    {
+        unsubscribe(updatePropertySubscription);
+        updatePropertySubscription = null;
+        super.destroyViews();
+    }
+
     @StringRes @Override protected int getStringKeyResId()
     {
         return R.string.key_settings_notifications_push;
@@ -111,16 +122,17 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
             progressDialog = progressDialogUtil.show(preferenceFragmentCopy.getActivity(),
                     R.string.settings_notifications_push_alert_title,
                     R.string.settings_notifications_push_alert_message);
-            detachMiddleCallback();
-            middleCallbackUpdateUserProfile = userServiceWrapper.updateProfilePropertyPushNotifications(
-                    currentUserId.toUserBaseKey(), enable,
-                    createUserProfileCallback());
+            unsubscribe(updatePropertySubscription);
+            updatePropertySubscription = userServiceWrapper.updateProfilePropertyPushNotificationsRx(
+                    currentUserId.toUserBaseKey(), enable)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createUserProfileObserver());
         }
         return false;
     }
 
-    protected Callback<UserProfileDTO> createUserProfileCallback()
+    protected Observer<UserProfileDTO> createUserProfileObserver()
     {
-        return new UserProfileUpdateCallback();
+        return new UserProfileUpdateObserver();
     }
 }

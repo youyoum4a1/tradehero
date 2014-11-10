@@ -1,13 +1,11 @@
 package com.tradehero.th.api.users;
 
-import com.tradehero.common.api.PagedDTOKey;
-import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.SectorId;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.api.market.ExchangeIntegerId;
+import com.tradehero.th.api.market.SectorId;
 
 public class SuggestHeroesListType extends UserListType
-        implements PagedDTOKey
 {
     //<editor-fold desc="Fields">
     @Nullable public final ExchangeIntegerId exchangeId;

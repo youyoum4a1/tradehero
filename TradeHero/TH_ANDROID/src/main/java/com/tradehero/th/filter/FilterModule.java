@@ -9,7 +9,6 @@ import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.filter.security.SecurityCompactPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.SecurityIdPaddedSymbolCIPredicate;
 import com.tradehero.th.filter.security.WarrantPaddedSymbolOrUnderlyingCIPredicate;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -19,7 +18,6 @@ import dagger.Provides;
                 },
         injects =
                 {
-                        com.tradehero.th.fragments.competition.macquarie.MacquarieWarrantItemViewAdapter.class,
                         com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter.class,
                 },
         complete = false,

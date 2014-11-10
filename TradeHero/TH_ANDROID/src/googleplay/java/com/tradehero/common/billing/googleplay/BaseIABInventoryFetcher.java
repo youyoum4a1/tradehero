@@ -9,7 +9,7 @@ import com.tradehero.common.billing.googleplay.exception.IABBadResponseException
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.BuildConfig;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -199,7 +199,10 @@ abstract public class BaseIABInventoryFetcher<
         else
         {
             Bundle querySkus = getQuerySKUBundle();
-            Bundle productDetails = billingServiceCopy.getSkuDetails(TARGET_BILLING_API_VERSION3, THApp.context().getPackageName(), itemType.key,
+            Bundle productDetails = billingServiceCopy.getSkuDetails(
+                    TARGET_BILLING_API_VERSION3,
+                    BuildConfig.GOOGLE_PLAY_PACKAGE_NAME,
+                    itemType.key,
                     querySkus);
             if (!productDetails.containsKey(IABConstants.RESPONSE_GET_SKU_DETAILS_LIST))
             {

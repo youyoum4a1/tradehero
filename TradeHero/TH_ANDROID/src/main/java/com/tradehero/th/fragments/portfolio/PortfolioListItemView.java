@@ -160,6 +160,7 @@ public class PortfolioListItemView extends RelativeLayout
         this.displayablePortfolioDTO = displayablePortfolioDTO;
 
         fetchCurrentUserProfile();
+        fetchAdditional();
 
         if (andDisplay)
         {
@@ -337,7 +338,6 @@ public class PortfolioListItemView extends RelativeLayout
         @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
             currentUserProfileDTO = pair.second;
-            fetchAdditional();
         }
 
         @Override public void onCompleted()

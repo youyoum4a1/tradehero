@@ -18,7 +18,7 @@ abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends Se
     }
     //</editor-fold>
 
-    protected FilterResults performFiltering(CharSequence charSequence, List<SecurityCompactDTOType> items)
+    protected FilterResults performFiltering(CharSequence charSequence, List<? extends SecurityCompactDTOType> items)
     {
         securityCompactDTOPredicateFilter.setCharSequence(charSequence);
         SecurityFilterResults results = new SecurityFilterResults<SecurityCompactDTOType>();

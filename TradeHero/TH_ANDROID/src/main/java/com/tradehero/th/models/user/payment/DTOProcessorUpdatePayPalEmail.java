@@ -1,12 +1,12 @@
 package com.tradehero.th.models.user.payment;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
 
-public class DTOProcessorUpdatePayPalEmail implements DTOProcessor<UpdatePayPalEmailDTO>
+public class DTOProcessorUpdatePayPalEmail extends ThroughDTOProcessor<UpdatePayPalEmailDTO>
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final UserBaseKey userBaseKey;

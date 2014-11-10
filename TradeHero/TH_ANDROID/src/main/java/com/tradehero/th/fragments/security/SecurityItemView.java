@@ -4,12 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
@@ -18,25 +21,17 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
-
-import android.support.annotation.NonNull;
-
+import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
 import timber.log.Timber;
 
-public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
-        extends RelativeLayout
-        implements DTOView<SecurityCompactDTOType>
+public class SecurityItemView extends RelativeLayout
+        implements DTOView<SecurityCompactDTO>
 {
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
@@ -57,7 +52,7 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
     @InjectView(R.id.date) @Optional TextView date;
     @InjectView(R.id.sec_type) @Optional TextView securityType;
 
-    protected SecurityCompactDTOType securityCompactDTO;
+    protected SecurityCompactDTO securityCompactDTO;
     private Target myLogoImageTarget;
     private Target myBgImageTarget;
 
@@ -165,12 +160,12 @@ public class SecurityItemView<SecurityCompactDTOType extends SecurityCompactDTO>
         return (url != null) && (!url.isEmpty());
     }
 
-    @Override public void display(final SecurityCompactDTOType securityCompactDTO)
+    @Override public void display(final SecurityCompactDTO securityCompactDTO)
     {
         linkWith(securityCompactDTO, true);
     }
 
-    public void linkWith(SecurityCompactDTOType securityCompactDTO, boolean andDisplay)
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
 

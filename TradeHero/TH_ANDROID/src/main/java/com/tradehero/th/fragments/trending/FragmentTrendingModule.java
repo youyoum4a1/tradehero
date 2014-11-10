@@ -3,9 +3,6 @@ package com.tradehero.th.fragments.trending;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
                 TrendingFragment.class,

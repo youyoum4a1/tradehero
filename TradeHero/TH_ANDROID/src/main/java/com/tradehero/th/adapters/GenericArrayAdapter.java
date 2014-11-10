@@ -2,17 +2,14 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import java.util.Collections;
 import java.util.List;
-import android.support.annotation.NonNull;
 
-/**
- * Created by thonguyen on 29/10/14.
- */
 public abstract class GenericArrayAdapter<T> extends BaseAdapter
 {
     @NonNull protected List<T> items = Collections.emptyList();

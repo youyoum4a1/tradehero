@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,7 +57,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
         if (mNewsDetailReference != null)
         {
             simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(
-                    context, LayoutInflater.from(context), R.layout.trending_security_item);
+                    context, R.layout.trending_security_item);
             mNewsDetailReference.setAdapter(simpleSecurityItemViewAdapter);
             mNewsDetailReference.setOnItemClickListener(createSecurityItemClickListener());
         }

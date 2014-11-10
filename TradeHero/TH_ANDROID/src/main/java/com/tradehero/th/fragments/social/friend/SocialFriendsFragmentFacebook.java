@@ -1,14 +1,14 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
@@ -49,23 +49,23 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
     }
 
     @Override
-    protected RequestCallback<BaseResponseDTO> createInviteCallback(List<UserFriendsDTO> usersToInvite)
+    protected RequestObserver<BaseResponseDTO> createInviteObserver(List<UserFriendsDTO> usersToInvite)
     {
-        return new FacebookInviteFriendCallback(usersToInvite);
+        return new FacebookInviteFriendObserver(usersToInvite);
     }
 
-    class FacebookInviteFriendCallback extends FacebookRequestCallback
+    class FacebookInviteFriendObserver extends FacebookRequestObserver
     {
         final List<UserFriendsDTO> usersToInvite;
 
         //<editor-fold desc="Constructors">
-        public FacebookInviteFriendCallback(@NonNull Context context, List<UserFriendsDTO> usersToInvite)
+        public FacebookInviteFriendObserver(@NonNull Context context, List<UserFriendsDTO> usersToInvite)
         {
             super(context);
             this.usersToInvite = usersToInvite;
         }
 
-        private FacebookInviteFriendCallback(List<UserFriendsDTO> usersToInvite)
+        private FacebookInviteFriendObserver(List<UserFriendsDTO> usersToInvite)
         {
             this(getActivity(), usersToInvite);
         }

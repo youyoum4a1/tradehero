@@ -48,7 +48,7 @@ import rx.Observable;
         return new DTOProcessorProviderReceived(currentUserId);
     }
 
-    private DTOProcessor<ProviderDTOList> createProcessorProviderCompactListReceived()
+    private DTOProcessorProviderCompactListReceived createProcessorProviderCompactListReceived()
     {
         return new DTOProcessorProviderCompactListReceived(createProcessorProviderReceived());
     }
@@ -178,19 +178,9 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Display Cells">
-    public ProviderDisplayCellDTOList getDisplayCells(@NonNull ProviderDisplayCellListKey providerDisplayCellListKey)
-    {
-        return this.getDisplayCells(providerDisplayCellListKey.getProviderId());
-    }
-
     public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderDisplayCellListKey providerDisplayCellListKey)
     {
         return this.getDisplayCellsRx(providerDisplayCellListKey.getProviderId());
-    }
-
-    public ProviderDisplayCellDTOList getDisplayCells(@NonNull ProviderId providerId)
-    {
-        return this.providerService.getDisplayCells(providerId.key);
     }
 
     public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderId providerId)

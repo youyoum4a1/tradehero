@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.billing.ProductDetail;
@@ -15,7 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
-import android.support.annotation.NonNull;
 
 abstract public class ProductDetailAdapter<
         ProductIdentifierType extends ProductIdentifier,

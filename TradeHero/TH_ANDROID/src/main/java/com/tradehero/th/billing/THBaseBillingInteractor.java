@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.billing.BaseBillingInteractor;
 import com.tradehero.common.billing.BaseProductIdentifierList;
@@ -16,27 +17,21 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.exception.BillingException;
-import com.tradehero.common.milestone.Milestone;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
-import rx.observers.EmptyObserver;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class THBaseBillingInteractor<
@@ -113,45 +108,39 @@ abstract public class THBaseBillingInteractor<
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
     @NonNull protected final Provider<Activity> activityProvider;
-    @NonNull protected final CurrentUserId currentUserId;
-    @NonNull protected final UserProfileCache userProfileCache;
-    @NonNull protected final UserProfileCacheRx userProfileCacheRx;
-    @NonNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
     @NonNull protected final ProgressDialogUtil progressDialogUtil;
     @NonNull protected final BillingAlertDialogUtil billingAlertDialogUtil;
+    @NonNull protected final THBillingRequisitePreparer billingRequisitePreparer;
 
     protected Subscription billingInitialSubscription;
     protected LinkedList<Integer> requestsToLaunchOnBillingInitialMilestoneComplete;
+    protected UserProfileDTO userProfileDTO;
+    protected PortfolioCompactDTOList portfolioCompactDTOs;
 
     //<editor-fold desc="Constructors">
     protected THBaseBillingInteractor(
             @NonNull THBillingLogicHolderType billingLogicHolder,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileCache userProfileCache,
-            @NonNull UserProfileCacheRx userProfileCacheRx,
-            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull BillingAlertDialogUtil<
                     ProductIdentifierType,
                     THProductDetailType,
                     THBillingLogicHolderType,
                     ProductDetailViewType,
-                    ProductDetailAdapterType> billingAlertDialogUtil)
+                    ProductDetailAdapterType> billingAlertDialogUtil,
+            @NonNull THBillingRequisitePreparer billingRequisitePreparer)
     {
         super(billingLogicHolder);
         this.activityProvider = activityProvider;
-        this.currentUserId = currentUserId;
-        this.userProfileCache = userProfileCache;
-        this.userProfileCacheRx = userProfileCacheRx;
-        this.portfolioCompactListCache = portfolioCompactListCache;
         this.progressDialogUtil = progressDialogUtil;
         this.billingAlertDialogUtil = billingAlertDialogUtil;
+        this.billingRequisitePreparer = billingRequisitePreparer;
 
         requestsToLaunchOnBillingInitialMilestoneComplete = new LinkedList<>();
 
-        billingInitialSubscription = createInitialObservable()
-                .subscribe(new EmptyObserver<>());
+        billingInitialSubscription = billingRequisitePreparer.getRequisiteObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new THBaseBillingInteractorShowProductDetailCompleteObserver());
     }
     //</editor-fold>
 
@@ -167,14 +156,6 @@ abstract public class THBaseBillingInteractor<
     }
     //</editor-fold>
 
-    protected Observable<Pair<UserProfileDTO, PortfolioCompactDTOList>> createInitialObservable()
-    {
-        return Observable.combineLatest(
-                userProfileCacheRx.get(currentUserId.toUserBaseKey()),
-                portfolioCompactListCache.get(currentUserId.toUserBaseKey()),
-                (pair1, pair2) -> Pair.create(pair1.second, pair2.second));
-    }
-
     //<editor-fold desc="Request Handling">
     @Override public int run(@NonNull THUIBillingRequestType uiBillingRequest)
     {
@@ -184,6 +165,7 @@ abstract public class THBaseBillingInteractor<
             popInitialProgressDialog(uiBillingRequest);
         }
         requestsToLaunchOnBillingInitialMilestoneComplete.addLast(requestCode);
+        billingRequisitePreparer.getNext();
         return requestCode;
     }
 
@@ -743,14 +725,21 @@ abstract public class THBaseBillingInteractor<
     }
     //</editor-fold>
 
-    protected class THBaseBillingInteractorShowProductDetailCompleteListener implements Milestone.OnCompleteListener
+    protected class THBaseBillingInteractorShowProductDetailCompleteObserver
+            implements Observer<Pair<UserProfileDTO, PortfolioCompactDTOList>>
     {
-        @Override public void onComplete(Milestone milestone)
+        @Override public void onNext(Pair<UserProfileDTO, PortfolioCompactDTOList> pair)
         {
+            userProfileDTO = pair.first;
+            portfolioCompactDTOs = pair.second;
             runWaitingRequests();
         }
 
-        @Override public void onFailed(Milestone milestone, Throwable throwable)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             // TODO
         }

@@ -1,15 +1,15 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.THBasePurchaseReporterHolder;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 public class THBaseIABPurchaseReporterHolder
     extends THBasePurchaseReporterHolder<
@@ -22,7 +22,7 @@ public class THBaseIABPurchaseReporterHolder
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABPurchaseReporterHolder(
-            @NonNull Lazy<UserProfileCache> userProfileCache,
+            @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull Provider<THIABPurchaseReporter> thiabPurchaseReporterProvider)

@@ -18,18 +18,15 @@ import rx.functions.Func1;
 @Singleton public class SocialServiceWrapper
     implements SocialLinker
 {
-    @NonNull private final SocialService socialService;
     @NonNull private final SocialServiceRx socialServiceRx;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     @Inject public SocialServiceWrapper(
-            @NonNull SocialService socialService,
             @NonNull SocialServiceRx socialServiceRx,
             @NonNull CurrentUserId currentUserId,
             @NonNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
-        this.socialService = socialService;
         this.socialServiceRx = socialServiceRx;
         this.currentUserId = currentUserId;
         this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
@@ -42,14 +39,9 @@ import rx.functions.Func1;
                 .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
     }
 
-    @NonNull public UserProfileDTO connect(@NonNull UserBaseKey userBaseKey, AccessTokenForm userFormDTO)
+    @NonNull public Func1<AuthData, Observable<UserProfileDTO>> connectFunc1(@NonNull final UserBaseKey userBaseKey)
     {
-        return dtoProcessorUpdateUserProfileProvider.get().process(socialService.connect(userBaseKey.key, userFormDTO));
-    }
-
-    @NonNull public Func1<AuthData, UserProfileDTO> connectFunc1(@NonNull final UserBaseKey userBaseKey)
-    {
-        return accessTokenForm -> connect(userBaseKey, new AccessTokenForm(accessTokenForm));
+        return accessTokenForm -> connectRx(userBaseKey, new AccessTokenForm(accessTokenForm));
     }
 
     @NonNull public Observable<UserProfileDTO> connectRx(@NonNull UserBaseKey userBaseKey, AccessTokenForm accessTokenForm)

@@ -1,11 +1,7 @@
 package com.tradehero.th.network.retrofit;
 
-import com.tradehero.th.network.service.AlertPlanCheckService;
 import com.tradehero.th.network.service.FlavorRetrofitProtectedModule;
 import dagger.Module;
-import dagger.Provides;
-import javax.inject.Singleton;
-import retrofit.RestAdapter;
 
 @Module(
         includes = {
@@ -19,9 +15,5 @@ import retrofit.RestAdapter;
 public class FlavorRetrofitModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton AlertPlanCheckService provideAlertPlanCheckService(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanCheckService.class);
-    }
     //</editor-fold>
 }

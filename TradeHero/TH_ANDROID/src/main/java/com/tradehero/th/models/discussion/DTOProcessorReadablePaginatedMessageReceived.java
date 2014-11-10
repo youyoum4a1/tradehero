@@ -1,18 +1,18 @@
 package com.tradehero.th.models.discussion;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class DTOProcessorReadablePaginatedMessageReceived<
         MessageHeaderDTOType extends MessageHeaderDTO,
         ReadableType extends ReadablePaginatedDTO<MessageHeaderDTOType>>
-     implements DTOProcessor<ReadableType>
+     extends ThroughDTOProcessor<ReadableType>
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
     @Nullable private final UserBaseKey readerUserId;

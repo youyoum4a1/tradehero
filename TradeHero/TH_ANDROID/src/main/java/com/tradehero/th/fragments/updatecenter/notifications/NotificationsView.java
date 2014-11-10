@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.updatecenter.notifications;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -33,22 +34,17 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCacheRx;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class NotificationsView extends BetterViewAnimator
@@ -69,8 +65,7 @@ public class NotificationsView extends BetterViewAnimator
     private boolean loading;
     private int nextPageDelta;
 
-    @NonNull private MiddleCallbackWeakList<BaseResponseDTO> middleCallbacks;
-    @NonNull private List<Subscription> notificationListFetchSubscriptions;
+    @NonNull private SubscriptionList subscriptionList;
     private NotificationListKey notificationListKey;
     private NotificationListAdapter notificationListAdapter;
     private PullToRefreshBase.OnRefreshListener<ListView> notificationPullToRefreshListener;
@@ -92,8 +87,7 @@ public class NotificationsView extends BetterViewAnimator
 
     protected void init()
     {
-        middleCallbacks = new MiddleCallbackWeakList<>();
-        notificationListFetchSubscriptions = new ArrayList<>();
+        subscriptionList = new SubscriptionList();
     }
     //</editor-fold>
 
@@ -152,15 +146,9 @@ public class NotificationsView extends BetterViewAnimator
         notificationPullToRefreshListener = new NotificationRefreshRequestListener();
     }
 
-    private void unsetMiddleCallback()
-    {
-        middleCallbacks.detach();
-    }
-
     @Override protected void onDetachedFromWindow()
     {
-        detachNotificationListFetchSubscriptions();
-        unsetMiddleCallback();
+        subscriptionList.unsubscribe();
 
         notificationListAdapter = null;
         notificationList.setAdapter(null);
@@ -189,7 +177,7 @@ public class NotificationsView extends BetterViewAnimator
         if (nextPageDelta >= 0)
         {
             paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
-            notificationListFetchSubscriptions.add(notificationListCache.get()
+            subscriptionList.add(notificationListCache.get()
                     .get(paginatedNotificationListKey)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(createNotificationFetchObserver()));
@@ -221,22 +209,12 @@ public class NotificationsView extends BetterViewAnimator
 
     private void refresh()
     {
-        detachNotificationListFetchSubscriptions();
         PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
-        notificationListFetchSubscriptions.add(notificationListCache.get()
+        subscriptionList.add(notificationListCache.get()
                 .get(firstPage)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createNotificationFetchObserver()));
         requestUpdateTabCounter();
-    }
-
-    private void detachNotificationListFetchSubscriptions()
-    {
-        for (Subscription subscription : notificationListFetchSubscriptions)
-        {
-            subscription.unsubscribe();
-        }
-        notificationListFetchSubscriptions.clear();
     }
 
     private class NotificationListOnScrollListener implements AbsListView.OnScrollListener
@@ -262,19 +240,21 @@ public class NotificationsView extends BetterViewAnimator
 
     protected void reportNotificationRead(int pushId)
     {
-        middleCallbacks.add(
-                notificationServiceWrapper.markAsRead(
+        subscriptionList.add(
+                notificationServiceWrapper.markAsReadRx(
                         currentUserId.toUserBaseKey(),
-                        new NotificationKey(pushId),
-                        createMarkNotificationAsReadCallback()));
+                        new NotificationKey(pushId))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createMarkNotificationAsReadObserver()));
     }
 
     protected void reportNotificationReadAll()
     {
-        middleCallbacks.add(
-                notificationServiceWrapper.markAsReadAll(
-                        currentUserId.toUserBaseKey(),
-                        createMarkNotificationAsReadAllCallback()));
+        subscriptionList.add(
+                notificationServiceWrapper.markAsReadAllRx(
+                        currentUserId.toUserBaseKey())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createMarkNotificationAsReadAllObserver()));
     }
 
     protected Observer<Pair<NotificationListKey, PaginatedNotificationDTO>> createNotificationFetchObserver()
@@ -361,14 +341,14 @@ public class NotificationsView extends BetterViewAnimator
         }
     }
 
-    protected Callback<BaseResponseDTO> createMarkNotificationAsReadCallback()
+    protected Observer<BaseResponseDTO> createMarkNotificationAsReadObserver()
     {
-        return new NotificationMarkAsReadCallback();
+        return new NotificationMarkAsReadObserver();
     }
 
-    protected class NotificationMarkAsReadCallback implements Callback<BaseResponseDTO>
+    protected class NotificationMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
     {
-        @Override public void success(BaseResponseDTO response, Response response2)
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
             if (notificationListAdapter != null)
             {
@@ -376,30 +356,21 @@ public class NotificationsView extends BetterViewAnimator
             }
             requestUpdateTabCounter();
         }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-        }
     }
 
-    protected Callback<BaseResponseDTO> createMarkNotificationAsReadAllCallback()
+    protected Observer<BaseResponseDTO> createMarkNotificationAsReadAllObserver()
     {
-        return new NotificationMarkAsReadAllCallback();
+        return new NotificationMarkAsReadAllObserver();
     }
 
-    protected class NotificationMarkAsReadAllCallback implements Callback<BaseResponseDTO>
+    protected class NotificationMarkAsReadAllObserver extends EmptyObserver<BaseResponseDTO>
     {
-        @Override public void success(BaseResponseDTO response, Response response2)
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
             Timber.d("NotificationMarkAsReadAllCallback success");
             setAllNotificationRead();
             setReadAllLayoutVisible();
             requestUpdateTabCounter();
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-            Timber.d("NotificationMarkAsReadAllCallback failure");
         }
     }
 

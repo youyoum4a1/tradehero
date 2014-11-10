@@ -145,7 +145,7 @@ public class SignInOrUpFragment extends Fragment
                                 {
                                     try
                                     {
-                                        sessionServiceWrapper.updateAuthorizationTokens(loginSignUpFormDTO);
+                                        sessionServiceWrapper.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
                                         return true;
                                     }
                                     catch (Exception ignored)

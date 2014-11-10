@@ -5,12 +5,11 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
-
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import rx.Observer;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -50,8 +49,8 @@ abstract public class FollowUserAssistantTestBase
             @Override public Object answer(InvocationOnMock invocation) throws Throwable
             {
                 //noinspection unchecked
-                Callback<UserProfileDTO> callback = new BaseMiddleCallback<>((Callback<UserProfileDTO>) invocation.getArguments()[1]);
-                callback.failure(expected);
+                Observer<UserProfileDTO> callback = new BaseMiddleCallback<>((Observer<UserProfileDTO>) invocation.getArguments()[1]);
+                callback.onError(expected);
                 return callback;
             }
         };
@@ -63,28 +62,28 @@ abstract public class FollowUserAssistantTestBase
             SimpleFollowUserAssistant assistant,
             RetrofitError expected)
     {
-        when(userServiceWrapper.unfollow(heroId, assistant)).then(createFailUserServiceAnswer(expected));
+        when(userServiceWrapper.unfollowRx(heroId, assistant)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessUnfollow(
             SimpleFollowUserAssistant assistant,
             UserProfileDTO expected)
     {
-        when(userServiceWrapper.unfollow(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
+        when(userServiceWrapper.unfollowRx(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForFailFollow(
             SimpleFollowUserAssistant assistant,
             RetrofitError expected)
     {
-        when(userServiceWrapper.follow(heroId, assistant)).then(createFailUserServiceAnswer(expected));
+        when(userServiceWrapper.followRx(heroId, assistant)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessFollow(
             SimpleFollowUserAssistant assistant,
             UserProfileDTO expected)
     {
-        when(userServiceWrapper.follow(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
+        when(userServiceWrapper.followRx(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
     }
     //</editor-fold>
 }

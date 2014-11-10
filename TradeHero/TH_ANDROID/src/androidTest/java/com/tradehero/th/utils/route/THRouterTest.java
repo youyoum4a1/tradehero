@@ -2,6 +2,7 @@ package com.tradehero.th.utils.route;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.webkit.WebView;
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
@@ -35,7 +36,6 @@ import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenter
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

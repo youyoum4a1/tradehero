@@ -1,19 +1,18 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
-import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
-interface AlertPlanCheckServiceAsync
+public interface AlertPlanCheckServiceRx
 {
     @Deprecated // TODO set in server
     @GET("/users/{userId}/alertPlans/checkSamsung")
-    void checkAlertPlanAttribution(
+    Observable<AlertPlanStatusDTO> checkAlertPlanAttribution(
             @Path("userId") int userId,
             @Query("paymentId") String paymentId,
-            @Query("productCode") String productCode,
-            Callback<AlertPlanStatusDTO> callback);
+            @Query("productCode") String productCode);
     //</editor-fold>
 }

@@ -1,14 +1,14 @@
 package com.tradehero.th.models.user;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
 
-public class DTOProcessorUpdateReferralCode implements DTOProcessor<BaseResponseDTO>
+public class DTOProcessorUpdateReferralCode extends ThroughDTOProcessor<BaseResponseDTO>
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final UpdateReferralCodeDTO updateReferralCodeDTO;

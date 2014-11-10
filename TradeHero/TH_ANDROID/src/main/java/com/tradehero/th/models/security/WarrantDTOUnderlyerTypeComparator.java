@@ -1,5 +1,6 @@
 package com.tradehero.th.models.security;
 
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import java.util.Comparator;
 import javax.inject.Inject;
@@ -18,7 +19,7 @@ import javax.inject.Singleton;
  * underlyingName null type null
  * null
  */
-@Singleton public class WarrantDTOUnderlyerTypeComparator implements Comparator<WarrantDTO>
+@Singleton public class WarrantDTOUnderlyerTypeComparator implements Comparator<SecurityCompactDTO>
 {
     private final WarrantDTOUnderlyerComparator underlyerComparator;
     private final WarrantDTOTypeComparator typeComparator;
@@ -29,10 +30,22 @@ import javax.inject.Singleton;
         this.typeComparator = typeComparator;
     }
 
-    @Override public int compare(WarrantDTO lhs, WarrantDTO rhs)
+    @Override public int compare(SecurityCompactDTO lhs, SecurityCompactDTO rhs)
     {
-        int underlyerComparison = underlyerComparator.compare(lhs, rhs);
+        if (!(lhs instanceof WarrantDTO) && rhs instanceof WarrantDTO)
+        {
+            return 1;
+        }
+        if (!(rhs instanceof WarrantDTO) && lhs instanceof WarrantDTO)
+        {
+            return -1;
+        }
+        if (!(rhs instanceof WarrantDTO))
+        {
+            return 0;
+        }
+        int underlyerComparison = underlyerComparator.compare((WarrantDTO) lhs, (WarrantDTO) rhs);
 
-        return underlyerComparison != 0 ? underlyerComparison : typeComparator.compare(lhs, rhs);
+        return underlyerComparison != 0 ? underlyerComparison : typeComparator.compare((WarrantDTO) lhs, (WarrantDTO) rhs);
     }
 }

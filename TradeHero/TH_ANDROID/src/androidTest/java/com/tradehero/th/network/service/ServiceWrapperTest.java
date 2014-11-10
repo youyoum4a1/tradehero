@@ -1,28 +1,20 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.ValidMocker;
-import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-
-import android.support.annotation.NonNull;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import retrofit.Callback;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import timber.log.Timber;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 @RunWith(THRobolectricTestRunner.class)
 public class ServiceWrapperTest extends AbstractServiceTestBase
@@ -66,7 +58,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
             throws InvocationTargetException, IllegalAccessException
     {
         CallbackHolder holder = new CallbackHolder();
-        AlertPlanServiceAsync mockedAsync = tieCallbackMethodsToHolder(AlertPlanServiceAsync.class, holder);
+        AlertPlanServiceRx mockedAsync = tieCallbackMethodsToHolder(AlertPlanServiceRx.class, holder);
         replaceServiceAsync(alertPlanServiceWrapper, mockedAsync);
 
         //MiddleCallback<List<AlertPlanDTO>> middleCallback = alertPlanServiceWrapper.getAlertPlans(new UserBaseKey(1), mock(Callback.class));

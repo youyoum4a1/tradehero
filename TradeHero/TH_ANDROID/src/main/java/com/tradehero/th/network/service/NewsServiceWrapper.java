@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
@@ -14,42 +15,25 @@ import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
 import com.tradehero.th.api.news.key.NewsItemListSocialKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.models.discussion.NewsDTOProcessor;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class NewsServiceWrapper
 {
-    @NonNull private final NewsService newsService;
-    @NonNull private final NewsServiceAsync newsServiceAsync;
     @NonNull private final NewsServiceRx newsServiceRx;
     @NonNull private final Provider<NewsDTOProcessor> newsDTOProcessorProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public NewsServiceWrapper(
-            @NonNull NewsService newsService,
-            @NonNull NewsServiceAsync newsServiceAsync,
             @NonNull NewsServiceRx newsServiceRx,
             @NonNull Provider<NewsDTOProcessor> newsDTOProcessorProvider)
     {
-        this.newsService = newsService;
-        this.newsServiceAsync = newsServiceAsync;
         this.newsServiceRx = newsServiceRx;
         this.newsDTOProcessorProvider = newsDTOProcessorProvider;
     }
     //</editor-fold>
-
-    public MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairs(Callback<PaginatedDTO<CountryLanguagePairDTO>> callback)
-    {
-        MiddleCallback<PaginatedDTO<CountryLanguagePairDTO>> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getCountryLanguagePairs(middleCallback);
-        return middleCallback;
-    }
 
     public Observable<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairsRx()
     {
@@ -125,11 +109,6 @@ import rx.Observable;
     private Observable<PaginatedDTO<NewsItemCompactDTO>> getGlobalNewsRx(NewsItemListGlobalKey key)
     {
         return newsServiceRx.getGlobal(key.page, key.perPage);
-    }
-
-    public NewsItemDTO getSecurityNewsDetail(DiscussionKey discussionKey)
-    {
-        return newsService.getNewsDetails(discussionKey.id);
     }
 
     public Observable<NewsItemDTO> getSecurityNewsDetailRx(DiscussionKey discussionKey)

@@ -7,8 +7,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -17,7 +17,6 @@ import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
@@ -47,7 +46,7 @@ abstract public class BasePagedListRxFragment<
     public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
 
     @InjectView(R.id.search_empty_container) protected View emptyContainer;
-    @InjectView(R.id.listview) protected ListView listView;
+    @InjectView(R.id.listview) protected AbsListView listView;
     @InjectView(R.id.progress) protected ProgressBar mProgress;
 
     protected int perPage = DEFAULT_PER_PAGE;
@@ -95,9 +94,14 @@ abstract public class BasePagedListRxFragment<
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
-        listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get()));
+        listView.setOnScrollListener(createListViewScrollListener());
         listView.setEmptyView(emptyContainer);
         listView.setAdapter(itemViewAdapter);
+    }
+
+    @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
+    {
+        return new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get());
     }
 
     abstract protected int getFragmentLayoutResId();
@@ -123,7 +127,6 @@ abstract public class BasePagedListRxFragment<
         unsubscribeListCache();
 
         listView.setOnScrollListener(null);
-        listView = null;
         nearEndScrollListener = null;
 
         View rootView = getView();
@@ -159,7 +162,7 @@ abstract public class BasePagedListRxFragment<
         updateVisibilities();
     }
 
-    abstract protected PagedArrayDTOAdapterNew<DTOType, ViewType> createItemViewAdapter();
+    @NonNull abstract protected PagedArrayDTOAdapterNew<DTOType, ViewType> createItemViewAdapter();
 
     protected void loadAdapterWithAvailableData()
     {
@@ -230,7 +233,7 @@ abstract public class BasePagedListRxFragment<
         return pagedSubscriptions.containsKey(page);
     }
 
-    abstract protected DTOCacheRx<PagedDTOKeyType, ContainerDTOType> getCache();
+    @NonNull abstract protected DTOCacheRx<PagedDTOKeyType, ContainerDTOType> getCache();
 
     protected void unsubscribeListCache()
     {
@@ -331,7 +334,7 @@ abstract public class BasePagedListRxFragment<
         this.selectedItem = clicked;
     }
 
-    protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NonNull PagedDTOKeyType key)
+    @NonNull protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NonNull PagedDTOKeyType key)
     {
         return new ListCacheObserver(key);
     }
@@ -339,7 +342,7 @@ abstract public class BasePagedListRxFragment<
     protected class ListCacheObserver
             implements Observer<Pair<PagedDTOKeyType, ContainerDTOType>>
     {
-        @NonNull private final PagedDTOKeyType key;
+        @NonNull protected final PagedDTOKeyType key;
 
         protected ListCacheObserver(@NonNull PagedDTOKeyType key)
         {
@@ -361,8 +364,6 @@ abstract public class BasePagedListRxFragment<
         {
             pagedSubscriptions.remove(key.getPage());
             nearEndScrollListener.lowerEndFlag();
-            THToast.show(getString(R.string.error_fetch_people_list_info));
-            Timber.e("Error fetching the list of securities " + key, error);
         }
     }
 
@@ -381,12 +382,6 @@ abstract public class BasePagedListRxFragment<
             {
                 itemViewAdapter.clear();
             }
-        }
-        else if (canMakePagedDtoKey())
-        {
-            // Prefetch next
-            PagedDTOKeyType pagedKey = makePagedDtoKey(key.getPage() + 1);
-            getCache().get(pagedKey);
         }
     }
 }

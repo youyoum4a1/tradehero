@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SecuritySearchProviderFragment extends SecuritySearchFragment
 {
@@ -38,6 +38,5 @@ public class SecuritySearchProviderFragment extends SecuritySearchFragment
     @Override @NonNull public SecurityListType makePagedDtoKey(int page)
     {
         return new SearchProviderSecurityListType(providerId, mSearchText, page, perPage);
-
     }
 }

@@ -3,7 +3,9 @@ package com.tradehero.th.network.share;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -16,21 +18,18 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.wxapi.WXEntryActivity;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
 {
     @NonNull private final Activity activity;
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final UserProfileCache userProfileCache;
+    @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
     @NonNull private final SocialShareVerifier socialShareVerifier;
 
@@ -42,7 +41,7 @@ public class SocialSharerImpl implements SocialSharer
     @Inject public SocialSharerImpl(
             @NonNull Activity activity,
             @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileCache userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCache,
             @NonNull DiscussionServiceWrapper discussionServiceWrapper,
             @NonNull SocialShareVerifier socialShareVerifier)
     {
@@ -126,8 +125,7 @@ public class SocialSharerImpl implements SocialSharer
                         shareWaitingDTO();
                         break;
                 }
-            }
-            catch (IllegalStateException e)
+            } catch (IllegalStateException e)
             {
                 notifySharedFailedListener(waitingSocialShareFormDTO, e);
             }
@@ -156,12 +154,13 @@ public class SocialSharerImpl implements SocialSharer
 
     public void share(TimelineItemShareFormDTO timelineItemShareFormDTO)
     {
-        // We do not save the MiddleCallback because the intermediation is already
+        // We do not save the Subscription because the intermediation is already
         // handled by the OnSharedListener
-        discussionServiceWrapper.share(
+        discussionServiceWrapper.shareRx(
                 timelineItemShareFormDTO.discussionListKey,
-                timelineItemShareFormDTO.timelineItemShareRequestDTO,
-                createDiscussionCallback(timelineItemShareFormDTO));
+                timelineItemShareFormDTO.timelineItemShareRequestDTO)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createDiscussionObserver(timelineItemShareFormDTO));
     }
 
     public void share(@NonNull WeChatDTO weChatDTO)
@@ -176,54 +175,63 @@ public class SocialSharerImpl implements SocialSharer
         return intent;
     }
 
-    protected Callback<BaseResponseDTO> createDiscussionCallback(SocialShareFormDTO shareFormDTO)
+    protected Observer<BaseResponseDTO> createDiscussionObserver(SocialShareFormDTO shareFormDTO)
     {
-        return new SocialSharerImplDiscussionCallback(shareFormDTO);
+        return new SocialSharerImplDiscussionObserver(shareFormDTO);
     }
 
-    protected class SocialSharerImplDiscussionCallback implements Callback<BaseResponseDTO>
+    protected class SocialSharerImplDiscussionObserver implements Observer<BaseResponseDTO>
     {
         private final SocialShareFormDTO shareFormDTO;
 
-        public SocialSharerImplDiscussionCallback(SocialShareFormDTO shareFormDTO)
+        public SocialSharerImplDiscussionObserver(SocialShareFormDTO shareFormDTO)
         {
             this.shareFormDTO = shareFormDTO;
         }
 
-        @Override public void success(BaseResponseDTO responseDTO, Response response)
+        @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
-            notifySharedListener(shareFormDTO, new BaseResponseSocialShareResultDTO(responseDTO));
+            notifySharedListener(shareFormDTO, new BaseResponseSocialShareResultDTO(baseResponseDTO));
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onCompleted()
         {
-            notifySharedFailedListener(shareFormDTO, retrofitError);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            notifySharedFailedListener(shareFormDTO, e);
         }
     }
 
     //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
-        // Here we do not care about keeping the task because the listener already provides
+        // Here we do not care about keeping the subscription because the listener already provides
         // the intermediation
-        userProfileCache.register(currentUserId.toUserBaseKey(), createProfileListener());
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        userProfileCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProfileObserver());
     }
 
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createProfileListener()
+    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileObserver()
     {
-        return new SocialSharerUserProfileListener();
+        return new SocialSharerUserProfileObserver();
     }
 
-    protected class SocialSharerUserProfileListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+    protected class SocialSharerUserProfileObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            currentUserProfile = value;
+            currentUserProfile = pair.second;
             shareWaitingDTOIfCan();
         }
 
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_user_profile);
         }

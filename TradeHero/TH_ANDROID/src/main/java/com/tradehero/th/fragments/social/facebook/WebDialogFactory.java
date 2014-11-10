@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.social.facebook;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
 import com.tradehero.th.R;
@@ -15,7 +16,6 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -90,7 +90,7 @@ public class WebDialogFactory
                     }
                 })
                 .observeOn(Schedulers.io())
-                .map(socialServiceWrapperLazy.get().connectFunc1(currentUserId.toUserBaseKey()));
+                .flatMap(socialServiceWrapperLazy.get().connectFunc1(currentUserId.toUserBaseKey()));
     }
 
     public Func1<UserProfileDTO, Observable<String>> createDefaultWebDialogObservable(

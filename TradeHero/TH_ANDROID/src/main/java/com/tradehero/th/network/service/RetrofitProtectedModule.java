@@ -22,11 +22,6 @@ public class RetrofitProtectedModule
         return adapter.create(AchievementServiceRx.class);
     }
 
-    @Provides @Singleton AlertPlanServiceAsync provideAlertPlanServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(AlertPlanServiceAsync.class);
-    }
-
     @Provides @Singleton AlertPlanServiceRx provideAlertPlanServiceRx(RestAdapter adapter)
     {
         return adapter.create(AlertPlanServiceRx.class);
@@ -37,11 +32,6 @@ public class RetrofitProtectedModule
         return adapter.create(AlertServiceRx.class);
     }
 
-    @Provides @Singleton CompetitionServiceAsync provideCompetitionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(CompetitionServiceAsync.class);
-    }
-
     @Provides @Singleton CompetitionServiceRx provideCompetitionServiceRx(RestAdapter adapter)
     {
         return adapter.create(CompetitionServiceRx.class);
@@ -50,11 +40,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton CurrencyServiceRx provideCurrencyServiceRx(RestAdapter adapter)
     {
         return adapter.create(CurrencyServiceRx.class);
-    }
-
-    @Provides @Singleton DiscussionServiceAsync provideDiscussionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(DiscussionServiceAsync.class);
     }
 
     @Provides @Singleton DiscussionServiceRx provideDiscussionServiceRx(RestAdapter adapter)
@@ -77,38 +62,19 @@ public class RetrofitProtectedModule
         return adapter.create(MarketServiceRx.class);
     }
 
-    @Provides @Singleton MessageServiceAsync provideMessageServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(MessageServiceAsync.class);
-    }
-
     @Provides @Singleton MessageServiceRx provideMessageServiceRx(RestAdapter adapter)
     {
         return adapter.create(MessageServiceRx.class);
     }
 
-    @Provides @Singleton NewsServiceAsync provideNewsServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(NewsServiceAsync.class);
-    }
     @Provides @Singleton NewsServiceRx provideNewsServiceRx(RestAdapter adapter)
     {
         return adapter.create(NewsServiceRx.class);
     }
 
-    @Provides @Singleton NotificationServiceAsync provideNotificationServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(NotificationServiceAsync.class);
-    }
-
     @Provides @Singleton NotificationServiceRx provideNotificationServiceRx(RestAdapter adapter)
     {
         return adapter.create(NotificationServiceRx.class);
-    }
-
-    @Provides @Singleton PortfolioServiceAsync providePortfolioServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(PortfolioServiceAsync.class);
     }
 
     @Provides @Singleton PortfolioServiceRx providePortfolioServiceRx(RestAdapter adapter)
@@ -126,11 +92,6 @@ public class RetrofitProtectedModule
         return adapter.create(ProviderServiceRx.class);
     }
 
-    @Provides @Singleton QuoteServiceAsync provideQuoteServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(QuoteServiceAsync.class);
-    }
-
     @Provides @Singleton QuoteServiceRx provideQuoteServiceRx(RestAdapter adapter)
     {
         return adapter.create(QuoteServiceRx.class);
@@ -144,11 +105,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton SecurityServiceRx provideSecurityServiceRx(RestAdapter adapter)
     {
         return adapter.create(SecurityServiceRx.class);
-    }
-
-    @Provides @Singleton SessionServiceAsync provideSessionServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(SessionServiceAsync.class);
     }
 
     @Provides @Singleton SessionServiceRx provideSessionServiceRx(RestAdapter adapter)
@@ -166,23 +122,11 @@ public class RetrofitProtectedModule
         return adapter.create(TradeServiceRx.class);
     }
 
-    @Provides @Singleton TranslationServiceBingAsync provideBingTranslationServiceAsync(RestAdapter.Builder builder)
-    {
-        return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
-                .setConverter(new CustomXmlConverter())
-                .build().create(TranslationServiceBingAsync.class);
-    }
-
     @Provides @Singleton TranslationServiceBingRx provideBingTranslationServiceRx(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.BING_TRANSLATION_ENDPOINT)
                 .setConverter(new CustomXmlConverter())
                 .build().create(TranslationServiceBingRx.class);
-    }
-
-    @Provides @Singleton TranslationTokenServiceAsync provideTranslationTokenServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(TranslationTokenServiceAsync.class);
     }
 
     @Provides @Singleton TranslationTokenServiceRx provideTranslationTokenServiceRx(RestAdapter adapter)
@@ -193,10 +137,6 @@ public class RetrofitProtectedModule
     @Provides @Singleton UserServiceRx provideUserServiceRx(RestAdapter adapter)
     {
         return adapter.create(UserServiceRx.class);
-    }
-    @Provides @Singleton UserServiceAsync provideUserServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(UserServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineMarkerServiceRx provideUserTimelineMarkerServiceRx(RestAdapter adapter)
@@ -214,19 +154,9 @@ public class RetrofitProtectedModule
         return adapter.create(VideoServiceRx.class);
     }
 
-    @Provides @Singleton WatchlistServiceAsync provideWatchlistServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(WatchlistServiceAsync.class);
-    }
-
     @Provides @Singleton WatchlistServiceRx provideWatchlistServiceRx(RestAdapter adapter)
     {
         return adapter.create(WatchlistServiceRx.class);
-    }
-
-    @Provides @Singleton WeChatServiceAsync provideWeChatServiceAsync(RestAdapter adapter)
-    {
-        return adapter.create(WeChatServiceAsync.class);
     }
 
     @Provides @Singleton WeChatServiceRx provideWeChatServiceRx(RestAdapter adapter)

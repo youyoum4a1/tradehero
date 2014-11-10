@@ -39,13 +39,13 @@ public class PayPalSettingViewHolder extends OneSettingViewHolder
 
     @Override public void destroyViews()
     {
-        detachSubscription(userProfileCacheSubscription);
+        unsubscribe(userProfileCacheSubscription);
         super.destroyViews();
     }
 
     protected void fetchUserProfile()
     {
-        detachSubscription(userProfileCacheSubscription);
+        unsubscribe(userProfileCacheSubscription);
         userProfileCacheSubscription = this.userProfileCache.get(currentUserId.toUserBaseKey())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());

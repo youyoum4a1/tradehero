@@ -23,21 +23,16 @@ import com.tradehero.common.billing.googleplay.exception.IABSendIntentException;
 import com.tradehero.common.billing.googleplay.exception.IABUserCancelledException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractor;
+import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
 import com.tradehero.th.billing.googleplay.request.THUIIABRequest;
 import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.social.HeroListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import java.util.Map;
@@ -68,37 +63,25 @@ import timber.log.Timber;
 
     @NonNull protected final THIABProductDetailCacheRx thiabProductDetailCache;
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
-    @NonNull protected final HeroListCacheRx heroListCache;
-    @NonNull protected final UserService userService;
 
     //<editor-fold desc="Constructors">
     @Inject public THIABBillingInteractor(
             @NonNull THIABLogicHolder billingActor,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileCache userProfileCache,
-            @NonNull UserProfileCacheRx userProfileCacheRx,
-            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THIABAlertDialogUtil thIABAlertDialogUtil,
+            @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull THIABProductDetailCacheRx thiabProductDetailCache,
-            @NonNull UserProfileDTOUtil userProfileDTOUtil,
-            @NonNull HeroListCacheRx heroListCache,
-            @NonNull UserService userService)
+            @NonNull UserProfileDTOUtil userProfileDTOUtil)
     {
         super(
                 billingActor,
                 activityProvider,
-                currentUserId,
-                userProfileCache,
-                userProfileCacheRx,
-                portfolioCompactListCache,
                 progressDialogUtil,
-                thIABAlertDialogUtil);
+                thIABAlertDialogUtil,
+                billingRequisitePreparer);
         this.thiabProductDetailCache = thiabProductDetailCache;
         this.userProfileDTOUtil = userProfileDTOUtil;
-        this.heroListCache = heroListCache;
-        this.userService = userService;
     }
     //</editor-fold>
 

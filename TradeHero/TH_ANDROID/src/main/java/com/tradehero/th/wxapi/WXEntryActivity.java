@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.AbsListView;
@@ -34,7 +36,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
@@ -46,10 +47,9 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
@@ -63,7 +63,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private Injector newInjector;
     private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
-    private MiddleCallback<TrackShareDTO> trackShareMiddleCallback;
+    @Nullable private Subscription trackShareSubscription;
 
     @Inject CurrentUserId currentUserId;
     @Inject IWXAPI mWeChatApi;
@@ -201,7 +201,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
         weChatReq.transaction = String.valueOf(System.currentTimeMillis());
         //not sure for transaction, maybe identify id?
-        if(weChatDTO.type==WeChatMessageType.Invite)
+        if (weChatDTO.type == WeChatMessageType.Invite)
         {
             weChatReq.scene = SendMessageToWX.Req.WXSceneSession;
         }
@@ -260,38 +260,39 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         weChatTrackShareFormDTO.msg = WECHAT_SHARE_NEWS_KEY + weChatDTO.id;
         weChatTrackShareFormDTO.type = WECHAT_SHARE_TYPE_VALUE;
 
-        detachTrackShareMiddleCallback();
-        trackShareMiddleCallback =
-                weChatServiceWrapper.trackShare(currentUserId.toUserBaseKey(), weChatTrackShareFormDTO,
-                        new TrackShareCallback());
+        detachTrackShareSubscription();
+        trackShareSubscription = AndroidObservable.bindActivity(
+                this,
+                weChatServiceWrapper.trackShareRx(currentUserId.toUserBaseKey(), weChatTrackShareFormDTO))
+                .subscribe(new TrackShareObserver());
     }
 
-    private void detachTrackShareMiddleCallback()
+    private void detachTrackShareSubscription()
     {
-        if (trackShareMiddleCallback != null)
+        Subscription copy = trackShareSubscription;
+        if (copy != null)
         {
-            trackShareMiddleCallback.setPrimaryCallback(null);
+            copy.unsubscribe();
         }
-        trackShareMiddleCallback = null;
+        trackShareSubscription = null;
     }
 
     @Override protected void onDestroy()
     {
-        detachTrackShareMiddleCallback();
+        detachTrackShareSubscription();
         super.onDestroy();
     }
 
-    private class TrackShareCallback implements Callback<TrackShareDTO>
+    private class TrackShareObserver extends EmptyObserver<TrackShareDTO>
     {
-        @Override public void success(TrackShareDTO response, Response response2)
+        @Override public void onNext(TrackShareDTO args)
         {
-            // do nothing for now
             finish();
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(retrofitError));
+            THToast.show(new THException(e));
             finish();
         }
     }

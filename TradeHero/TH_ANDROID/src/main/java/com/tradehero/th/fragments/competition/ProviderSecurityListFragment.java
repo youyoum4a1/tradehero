@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
+import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -31,7 +33,6 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -46,7 +47,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     protected ProviderDTO providerDTO;
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
-    @Inject SecurityItemViewAdapterFactory securityItemViewAdapterFactory;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
@@ -192,7 +192,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override protected ListAdapter createSecurityItemViewAdapter()
     {
-        return securityItemViewAdapterFactory.create(getActivity(), providerId);
+        return new SimpleSecurityItemViewAdapter(
+                getActivity(),
+                R.layout.trending_security_item);
     }
 
     @Override public int getSecurityIdListLoaderId()

@@ -1,18 +1,18 @@
 package com.tradehero.th.billing;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class THBasePurchaseReporterHolder<
@@ -31,7 +31,7 @@ abstract public class THBasePurchaseReporterHolder<
             THProductPurchaseType,
             BillingExceptionType>
 {
-    @NonNull protected final Lazy<UserProfileCache> userProfileCache;
+    @NonNull protected final Lazy<UserProfileCacheRx> userProfileCache;
     @NonNull protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
     @NonNull protected final Lazy<PortfolioCacheRx> portfolioCache;
     @NonNull protected final Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider;
@@ -45,7 +45,7 @@ abstract public class THBasePurchaseReporterHolder<
 
     //<editor-fold desc="Constructors">
     public THBasePurchaseReporterHolder(
-            @NonNull Lazy<UserProfileCache> userProfileCache,
+            @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider)
@@ -128,16 +128,16 @@ abstract public class THBasePurchaseReporterHolder<
 
         if (updatedUserPortfolio != null)
         {
-            userProfileCache.get().put(updatedUserPortfolio.getBaseKey(), updatedUserPortfolio);
+            userProfileCache.get().get(updatedUserPortfolio.getBaseKey());
         }
 
         OwnedPortfolioId applicablePortfolioId = reportedPurchase.getApplicableOwnedPortfolioId();
         if (applicablePortfolioId != null)
         {
-            portfolioCompactListCache.get().invalidate(applicablePortfolioId.getUserBaseKey());
+            portfolioCompactListCache.get().get(applicablePortfolioId.getUserBaseKey());
             // TODO put back when #68094144 is fixed
             //getPortfolioCompactCache().invalidate(applicablePortfolioId.getPortfolioIdKey());
-            portfolioCache.get().invalidate(applicablePortfolioId);
+            portfolioCache.get().get(applicablePortfolioId);
         }
 
         THPurchaseReporter.OnPurchaseReportedListener<

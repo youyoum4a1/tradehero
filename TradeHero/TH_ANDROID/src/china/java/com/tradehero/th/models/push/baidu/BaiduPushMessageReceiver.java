@@ -19,12 +19,12 @@ import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
 import javax.inject.Inject;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedString;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
@@ -99,7 +99,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         if (baiduPushMessageDTO != null)
         {
-            if(baiduPushMessageDTO.getDiscussionType() != null)
+            if (baiduPushMessageDTO.getDiscussionType() != null)
             {
                 switch (baiduPushMessageDTO.getDiscussionType())
                 {
@@ -125,7 +125,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         }
     }
 
-    public void updateDeviceIdentifier(String appId,String userId, String channelId)
+    public void updateDeviceIdentifier(String appId, String userId, String channelId)
     {
         if (currentUserId == null)
         {
@@ -140,7 +140,9 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
 
         BaiduDeviceMode deviceMode = new BaiduDeviceMode(channelId, userId, appId);
         savedPushDeviceIdentifier.set(deviceMode.token);
-        sessionServiceWrapper.updateDevice(new UpdateDeviceIdentifierCallback());
+        sessionServiceWrapper.updateDeviceRx()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new UpdateDeviceIdentifierObserver());
     }
 
     public void setPushDeviceIdentifierSentFlag(boolean bind)
@@ -148,17 +150,17 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         pushDeviceIdentifierSentFlag.set(bind);
     }
 
-    class UpdateDeviceIdentifierCallback implements Callback<UserProfileDTO>
+    class UpdateDeviceIdentifierObserver extends EmptyObserver<UserProfileDTO>
     {
-        @Override public void success(UserProfileDTO userProfileDTO, Response response)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
             Timber.d("UpdateDeviceIdentifierCallback send success");
             setPushDeviceIdentifierSentFlag(true);
         }
 
-        @Override public void failure(RetrofitError error)
+        @Override public void onError(Throwable e)
         {
-            Timber.e(error,"UpdateDeviceIdentifierCallback send failure");
+            Timber.e((RetrofitError) e, "UpdateDeviceIdentifierCallback send failure");
             setPushDeviceIdentifierSentFlag(false);
         }
     }
