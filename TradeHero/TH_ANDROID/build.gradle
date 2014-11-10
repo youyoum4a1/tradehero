@@ -316,7 +316,7 @@ dependencies {
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'io.reactivex:rxandroid:0.21.0'
   //compile 'io.reactivex:rxjava-joins:0.21.0'
-  compile 'com.jakewharton.timber:timber:2.2.2'
+  compile 'com.jakewharton.timber:timber:2.5.0'
   compile 'com.urbanairship:urbanairship-lib:3.2.1'
   compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
