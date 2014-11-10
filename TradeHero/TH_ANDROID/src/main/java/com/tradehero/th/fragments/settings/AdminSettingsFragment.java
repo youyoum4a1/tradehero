@@ -27,6 +27,7 @@ import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.ForTypographyFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
+import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -49,6 +50,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_ACHIEVEMENT_TEST_SCREEN = "show_achievement_test_screen";
     private static final CharSequence KEY_XP_TEST_SCREEN = "show_xp_test_screen";
     private static final CharSequence KEY_TYPOGRAPHY_SCREEN = "show_typography_examples";
+    private static final CharSequence KEY_PRESEASON = "show_preseason_dialog";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -174,6 +176,14 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         showTypography.setEnabled(typographyFragmentClassProvider.get() != null);
         showTypography.setOnPreferenceClickListener(preference -> {
             navigator.get().pushFragment(typographyFragmentClassProvider.get());
+            return true;
+        });
+
+        Preference showPreseason = findPreference(KEY_PRESEASON);
+        showPreseason.setOnPreferenceClickListener(preference -> {
+
+            CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance();
+            dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
             return true;
         });
     }
