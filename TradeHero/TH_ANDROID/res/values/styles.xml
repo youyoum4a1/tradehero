@@ -456,16 +456,13 @@
   </style>
 
   <style name="TH.Achievement.Pulse">
-    <item name="android:layout_width">@dimen/achievement_pulse_circle_w_h</item>
-    <item name="android:layout_height">@dimen/achievement_pulse_circle_w_h</item>
-    <item name="android:src">@drawable/white_circle</item>
-    <item name="android:scaleType">fitCenter</item>
     <item name="android:layout_centerHorizontal">true</item>
     <item name="android:layout_alignParentTop">true</item>
     <item name="android:layout_marginTop">@dimen/achievement_pulse_circle_margin_top</item>
     <item name="android:contentDescription">@null</item>
     <item name="android:layerType">hardware</item>
     <item name="android:drawingCacheQuality">low</item>
+    <item name="android:visibility">gone</item>
   </style>
 
   <style name="TH.Achievement.Indicator"

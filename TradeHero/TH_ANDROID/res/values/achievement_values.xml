@@ -12,8 +12,10 @@
   <color name="achievement_dialog_bg">@color/white</color>
   <dimen name="achievement_badge_w_h">120dp</dimen>
   <dimen name="achievement_badge_margin_top">50dp</dimen>
-  <dimen name="achievement_pulse_circle_w_h">50dp</dimen>
-  <dimen name="achievement_pulse_circle_margin_top">85dp</dimen>
+  <dimen name="achievement_pulse_circle_w_h">160dp</dimen>
+  <dimen name="achievement_pulse_circle_margin_top">30dp</dimen>
+  <dimen name="achievement_starburst_circle_w_h">50dp</dimen>
+  <dimen name="achievement_starburst_circle_margin_top">85dp</dimen>
   <dimen name="achievement_title_margin_top">20dp</dimen>
   <dimen name="achievement_description_margin_top">10dp</dimen>
   <dimen name="achievement_more_description_margin_top">5dp</dimen>
@@ -21,7 +23,9 @@
   <dimen name="achievement_progress_container_height">70dp</dimen>
   <dimen name="achievement_dollar_xp_earned_horizontal_margin">10dp</dimen>
   <dimen name="achievement_dollar_xp_earned_vertical_margin">13dp</dimen>
+  <dimen name="achievement_pulse_ring_size">4dp</dimen>
 
+  <integer name="achievement_pulse_ring_num">4</integer>
   <integer name="achievement_earned_duration">1000</integer>
 
   <integer name="achievement_level_up_start_duration">100</integer>

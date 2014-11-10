@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/achievement_dialog_width"
     android:layout_height="wrap_content"
     android:padding="@dimen/achievement_dialog_padding"
@@ -18,25 +18,26 @@
       android:layout_centerHorizontal="true"
       style="@style/TH.Achievement.Header"/>
 
-  <ImageView
-      android:id="@+id/achievement_pulse"
-      style="@style/TH.Achievement.Pulse"/>
-
-  <ImageView
-      android:id="@+id/achievement_pulse2"
-      style="@style/TH.Achievement.Pulse"/>
-
-  <ImageView
-      android:id="@+id/achievement_pulse3"
-      style="@style/TH.Achievement.Pulse"/>
+  <com.tradehero.common.widget.PulsatingRing
+      android:id="@+id/achievement_pulsating"
+      android:layout_height="@dimen/achievement_pulse_circle_w_h"
+      android:layout_width="@dimen/achievement_pulse_circle_w_h"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentTop="true"
+      android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
+      app:ringNum="@integer/achievement_pulse_ring_num"
+      app:ringDuration="@integer/achievement_pulse_duration"
+      app:ringWidth="@dimen/achievement_pulse_ring_size"
+      app:ringColor="@color/black"
+      app:ringMinRadian="24dp"/>
 
   <ImageView
       android:id="@+id/achievement_starburst"
-      android:layout_width="@dimen/achievement_pulse_circle_w_h"
-      android:layout_height="@dimen/achievement_pulse_circle_w_h"
+      android:layout_width="@dimen/achievement_starburst_circle_w_h"
+      android:layout_height="@dimen/achievement_starburst_circle_w_h"
       android:src="@drawable/achievement_background"
       android:layout_alignParentTop="true"
-      android:layout_marginTop="@dimen/achievement_pulse_circle_margin_top"
+      android:layout_marginTop="@dimen/achievement_starburst_circle_margin_top"
       android:layout_centerHorizontal="true"
       android:alpha="0.1"
       android:contentDescription="@null"/>

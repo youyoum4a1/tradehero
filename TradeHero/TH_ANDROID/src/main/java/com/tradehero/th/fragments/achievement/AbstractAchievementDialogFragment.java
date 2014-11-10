@@ -12,6 +12,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -37,6 +38,7 @@ import com.chrisbanes.colorfinder.ColorUtils;
 import com.chrisbanes.colorfinder.DominantColorCalculator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.widget.PulsatingRing;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
@@ -100,9 +102,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @InjectView(R.id.achievement_more_description) TextView moreDescription;
     @InjectView(R.id.achievement_badge) ImageView badge;
 
-    @InjectView(R.id.achievement_pulse) ImageView pulseEffect;
-    @InjectView(R.id.achievement_pulse2) ImageView pulseEffect2;
-    @InjectView(R.id.achievement_pulse3) ImageView pulseEffect3;
+    @InjectView(R.id.achievement_pulsating) PulsatingRing pulsatingRing;
     @InjectView(R.id.achievement_starburst) ImageView starBurst;
 
     @InjectView(R.id.user_level_progress_xp_earned) TextView xpEarned;
@@ -112,9 +112,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     @InjectViews({
             R.id.btn_achievement_dismiss,
-            R.id.achievement_pulse,
-            R.id.achievement_pulse2,
-            R.id.achievement_pulse3,
             R.id.achievement_starburst})
     ImageView[] imagesToColorFilter;
 
@@ -240,6 +237,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void setColor(int color)
     {
+        pulsatingRing.setColorFilter(color, PorterDuff.Mode.SRC_IN);
         graphicUtil.applyColorFilter(imagesToColorFilter, color);
         title.setTextColor(color);
     }
@@ -356,7 +354,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void playRotatingAnimation()
     {
-        displayPulse();
         displayStarburst();
     }
 
@@ -386,27 +383,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             PropertyValuesHolder xp = PropertyValuesHolder.ofInt(PROPERTY_XP_EARNED, 0, userAchievementDTOCopy.xpEarned);
             propertyValuesHolders.add(xp);
         }
-    }
-
-    private void displayPulse()
-    {
-        setDrawingCacheEnabled(pulseEffect, pulseEffect2, pulseEffect3);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        Animator animator = AnimatorInflater.loadAnimator(getActivity(), R.animator.achievement_pulse);
-        Animator animator1 = animator.clone();
-        Animator animator2 = animator.clone();
-
-        animator.setTarget(pulseEffect);
-        animator1.setTarget(pulseEffect2);
-        animator2.setTarget(pulseEffect3);
-
-        animator1.setStartDelay(getResources().getInteger(R.integer.achievement_pulse_delay));
-        animator2.setStartDelay(getResources().getInteger(R.integer.achievement_pulse_delay2));
-
-        animatorSet.playTogether(animator, animator1, animator2);
-        animatorSet.start();
     }
 
     private void setDrawingCacheEnabled(View... views)

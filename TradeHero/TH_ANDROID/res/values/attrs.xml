@@ -131,4 +131,16 @@
     </attr>
   </declare-styleable>
 
+  <declare-styleable name="PulsatingRing">
+    <attr name="ringWidth"
+        format="dimension" />
+    <attr name="ringColor"
+        format="color" />
+    <attr name="ringNum"
+        format="integer" />
+    <attr name="ringDuration"
+        format="integer" />
+    <attr name="ringMinRadian"
+        format="dimension" />
+  </declare-styleable>
 </resources>
