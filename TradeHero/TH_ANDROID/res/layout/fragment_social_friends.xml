@@ -14,7 +14,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical"
-      android:visibility="gone"
+      android:visibility="visible"
 
       >
     <EditText
@@ -40,17 +40,18 @@
           android:orientation="horizontal"
           android:layout_alignParentBottom="true"
           android:paddingTop="@dimen/common_margin_10"
-          android:paddingBottom="5dp"
+          android:paddingBottom="10dp"
           android:paddingLeft="@dimen/common_margin_10"
           android:paddingRight="@dimen/common_margin_10"
           android:background="@drawable/buy_sell_action_buttons_background"
           android:visibility="visible"
           >
+        <TextView android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="0dp"/>
         <TextView
             android:id="@+id/social_follow_all" android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/follow_all"
-            android:layout_weight="1"
+            android:layout_weight="4"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             style="@style/TH.Btn_Invite_Action"
@@ -60,13 +61,13 @@
         <TextView
             android:id="@+id/social_invite_all"
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:text="@string/invite_all"
-            android:layout_weight="1"
+            android:text="@string/invite"
+            android:layout_weight="4"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             style="@style/TH.Btn_Invite_Action"
-            android:background="@drawable/basic_red_selector_round_corner"
-            android:layout_marginLeft="15dp"/>
+            android:background="@drawable/basic_red_selector_round_corner"/>
+         <TextView android:layout_weight="1" android:layout_height="wrap_content" android:layout_width="0dp"/>
       </LinearLayout>
     </RelativeLayout>
 

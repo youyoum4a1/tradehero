@@ -301,8 +301,8 @@
   <string name="or">or</string>
   <string name="position_hold_days">%d天</string>
   <string name="competition_joined_invite">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！</string>
-  <string name="friends_can_be_invite">%s 个好友可邀请</string>
-  <string name="friends_can_be_follow">%s 个好友可关注</string>
+  <string name="friends_can_be_invite">%s friends</string>
+  <string name="friends_can_be_follow">%s friends</string>
   <string name="weibo_message_text_limit">[%d/140]</string>
   <string name="weibo_message_length_error">不能超过140字</string>
   <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s 更有额外奖励哦！</string>

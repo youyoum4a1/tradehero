@@ -28,17 +28,18 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.friend.FriendsListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeSet;
 
 public abstract class SocialFriendsFragment extends DashboardFragment
         implements SocialFriendUserView.OnElementClickListener, View.OnClickListener
@@ -134,13 +135,13 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     public void setInviteAllViewCountText(int count)
     {
-        if (count > 0)
-        {
+        if (count > 0) {
             friendsRootView.setInviteAllViewText(getString(R.string.invite) + "(" + count + ")");
+            friendsRootView.setInviteAllViewEnable(true);
         }
-        else
-        {
+        if (count <= 0) {
             friendsRootView.setInviteAllViewText(getString(R.string.invite));
+            friendsRootView.setInviteAllViewEnable(false);
         }
     }
 
@@ -336,8 +337,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     private void initView()
     {
         searchEdit.addTextChangedListener(new SearchChangeListener());
+
+        friendsRootView.setInviteAllViewText(getString(R.string.invite));
+        friendsRootView.setInviteAllViewEnable(false);
+
         friendsRootView.setFollowAllViewVisible(canFollow());
-        friendsRootView.setInviteAllViewVisible(canInviteAll());
         friendsRootView.setFollowOrInivteActionClickListener(this);
         displayLoadingView();
 
@@ -415,13 +419,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
         if (!canFollow() || !hasUserToFollow)
         {
-            //friendsRootView.setFollowAllViewEnable(false);
             friendsRootView.setFollowAllViewVisible(false);
         }
 
         if (!canInviteAll() || !hasUserToInvite)
         {
-            //friendsRootView.setInviteAllViewEnable(false);
             friendsRootView.setInviteAllViewVisible(false);
         }
     }
@@ -543,19 +545,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
-        //Invite Success will not disappear the friend in Invie
-        //if (friendDTOList != null && usersToInvite != null)
-        //{
-        //    for (UserFriendsDTO userFriendsDTO:usersToInvite)
-        //    {
-        //        boolean removed = friendDTOList.remove(userFriendsDTO);
-        //        Timber.d("handleInviteSuccess remove: %s, result: %s",userFriendsDTO,removed);
-        //    }
-        //}
-        //
-        //socialFriendsListAdapter.clear();
-        //socialFriendsListAdapter.addAll(friendDTOList);
-        //// TODO
         THToast.show(R.string.invite_friend_request_sent);
         checkUserType();
     }
