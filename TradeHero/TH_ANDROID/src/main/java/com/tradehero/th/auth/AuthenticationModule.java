@@ -5,7 +5,6 @@ import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
-import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
 import dagger.Module;
 import dagger.Provides;
@@ -25,8 +24,8 @@ public class AuthenticationModule
             FacebookAuthenticationProvider facebookAuthenticationProvider,
             TwitterAuthenticationProvider twitterAuthenticationProvider,
             LinkedInAuthenticationProvider linkedInAuthenticationProvider,
-            WeiboAuthenticationProvider weiboAuthenticationProvider,
-            QQAuthenticationProvider qqAuthenticationProvider
+            WeiboAuthenticationProvider weiboAuthenticationProvider
+            //QQAuthenticationProvider qqAuthenticationProvider
     )
     {
         Map<SocialNetworkEnum, AuthenticationProvider> enumToUtilMap = new HashMap<>();
@@ -34,7 +33,7 @@ public class AuthenticationModule
         enumToUtilMap.put(SocialNetworkEnum.TW, twitterAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.LN, linkedInAuthenticationProvider);
         enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider);
-        enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider);
+        //enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider);
         return Collections.unmodifiableMap(enumToUtilMap);
     }
 

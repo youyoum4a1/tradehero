@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.support.annotation.IntegerRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -13,8 +14,8 @@ import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SocialConnectWeiboSettingViewHolder extends SocialConnectSettingViewHolder
 {
@@ -26,7 +27,7 @@ public class SocialConnectWeiboSettingViewHolder extends SocialConnectSettingVie
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull AlertDialogUtil alertDialogUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
-            @NonNull WeiboAuthenticationProvider socialAuthenticationProvider,
+            @NonNull Lazy<WeiboAuthenticationProvider> socialAuthenticationProvider,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull @AuthHeader String authToken)
     {

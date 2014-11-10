@@ -13,6 +13,7 @@ import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import dagger.Lazy;
 import javax.inject.Inject;
 import android.support.annotation.NonNull;
 
@@ -26,7 +27,7 @@ public class SocialConnectQQSettingViewHolder extends SocialConnectSettingViewHo
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull AlertDialogUtil alertDialogUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
-            @NonNull QQAuthenticationProvider socialAuthenticationProvider,
+            @NonNull Lazy<QQAuthenticationProvider> socialAuthenticationProvider,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull @AuthHeader String authToken)
     {
