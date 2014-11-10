@@ -4,13 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 
 public class SocialFriendsListView extends RelativeLayout {
 
@@ -22,8 +22,8 @@ public class SocialFriendsListView extends RelativeLayout {
     View followAllView;
     @InjectView(R.id.social_invite_all)
     View inviteAllView;
-    @InjectView(android.R.id.progress)
-    ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_invite_friends)
+    TradeHeroProgressBar progressBar;
     @InjectView(android.R.id.empty)
     TextView emptyView;
     @InjectView(R.id.error)
@@ -104,18 +104,28 @@ public class SocialFriendsListView extends RelativeLayout {
     }
 
     public void showErrorView() {
+        if(progressBar!=null){
+            progressBar.stopLoading();
+        }
         showOnlyThis(errorView);
     }
 
     public void showContentView() {
+        if(progressBar!=null){
+            progressBar.stopLoading();
+        }
         showOnlyThis(contentWrapper);
     }
 
     public void showLoadingView() {
         showOnlyThis(progressBar);
+        progressBar.startLoading();
     }
 
     public void showEmptyView() {
+        if(progressBar!=null){
+            progressBar.stopLoading();
+        }
         showOnlyThis(emptyView);
     }
 

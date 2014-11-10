@@ -96,10 +96,12 @@
       android:text="@string/message_fetch_error"
       android:visibility="gone"/>
 
-  <ProgressBar
-      android:id="@android:id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:visibility="gone"/>
+    <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar_invite_friends"
+            android:layout_width="61dp"
+            android:layout_height="58dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/logo"
+            android:visibility="gone"
+            />
 </com.tradehero.th.fragments.social.friend.SocialFriendsListView>
