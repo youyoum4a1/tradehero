@@ -169,13 +169,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected void displayTitle()
     {
-        if (providerDTO != null
-                && providerDTO.specificResources != null
-                && providerDTO.specificResources.securityListFragmentTitleResId > 0)
-        {
-            setActionBarTitle(providerDTO.specificResources.securityListFragmentTitleResId);
-        }
-        else if (providerDTO != null)
+        if (providerDTO != null)
         {
             setActionBarTitle(providerDTO.name);
         }

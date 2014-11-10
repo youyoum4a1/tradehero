@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:contentDescription="@null"
     android:minHeight="@dimen/list_item_min_height"
+    android:src="@drawable/lb_competitions_bg"
     app:dominantMeasurement="width"
     app:aspectRatioEnabled="false"
-    tools:src="@drawable/salesforce"
     />

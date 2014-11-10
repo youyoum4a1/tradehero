@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,10 +32,9 @@ import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
@@ -47,15 +48,18 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     @Inject CompetitionLeaderboardCacheRx competitionLeaderboardCache;
     @Inject CompetitionDTOUtil competitionDTOUtil;
 
+    @Nullable private Subscription providerSubscription;
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
 
+    @Nullable private Subscription competitionSubscription;
     protected CompetitionId competitionId;
     protected CompetitionDTO competitionDTO;
 
     protected THIntentPassedListener webViewTHIntentPassedListener;
     protected WebViewFragment webViewFragment;
     protected CompetitionLeaderboardMarkUserListAdapter competitionAdapter;
+    @Nullable private Subscription competitionLeaderboardSubscription;
     protected CompetitionLeaderboardDTO competitionLeaderboardDTO;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
@@ -170,6 +174,17 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         fetchCompetition();
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(providerSubscription);
+        providerSubscription = null;
+        unsubscribe(competitionSubscription);
+        competitionSubscription = null;
+        unsubscribe(competitionLeaderboardSubscription);
+        competitionLeaderboardSubscription = null;
+        super.onStop();
+    }
+
     @Override public void onDestroy()
     {
         this.webViewTHIntentPassedListener = null;
@@ -178,10 +193,10 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchProvider()
     {
-        AndroidObservable.bindFragment(
+        unsubscribe(providerSubscription);
+        providerSubscription = AndroidObservable.bindFragment(
                 this,
                 providerCache.get(providerId))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createProviderObserver());
     }
 
@@ -210,10 +225,10 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchCompetition()
     {
-        AndroidObservable.bindFragment(
+        unsubscribe(competitionSubscription);
+        competitionSubscription = AndroidObservable.bindFragment(
                 this,
                 competitionCache.get(competitionId))
-                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(pair -> fetchCompetitionLeaderboard(pair.second))
                 .subscribe(createCompetitionObserver());
     }
@@ -242,11 +257,11 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchCompetitionLeaderboard(@NonNull CompetitionDTO competitionDTO)
     {
+        unsubscribe(competitionLeaderboardSubscription);
         CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
-        AndroidObservable.bindFragment(
+        competitionLeaderboardSubscription = AndroidObservable.bindFragment(
                 this,
                 competitionLeaderboardCache.get(key))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createCompetitionLeaderboardObserver());
     }
 

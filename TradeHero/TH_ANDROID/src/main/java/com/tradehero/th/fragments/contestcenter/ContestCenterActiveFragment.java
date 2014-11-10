@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 
 public class ContestCenterActiveFragment extends ContestCenterBaseFragment
 {
-    @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @Override public void recreateAdapter()
     {

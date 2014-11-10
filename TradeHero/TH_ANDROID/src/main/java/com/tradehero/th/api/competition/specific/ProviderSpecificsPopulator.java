@@ -1,22 +1,20 @@
 package com.tradehero.th.api.competition.specific;
 
-import com.tradehero.th.api.competition.ProviderDTO;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.api.competition.ProviderDTO;
+import javax.inject.Inject;
 
+@Deprecated
 public class ProviderSpecificsPopulator
 {
     @NonNull protected final ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory;
-    @NonNull protected final ProviderSpecificResourcesFactory providerSpecificResourcesFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderSpecificsPopulator(
-            @NonNull ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory,
-            @NonNull ProviderSpecificResourcesFactory providerSpecificResourcesFactory)
+            @NonNull ProviderSpecificKnowledgeFactory providerSpecificKnowledgeFactory)
     {
         this.providerSpecificKnowledgeFactory = providerSpecificKnowledgeFactory;
-        this.providerSpecificResourcesFactory = providerSpecificResourcesFactory;
     }
     //</editor-fold>
 
@@ -24,7 +22,6 @@ public class ProviderSpecificsPopulator
     {
         if (providerDTO != null)
         {
-            providerDTO.specificResources = providerSpecificResourcesFactory.createResources(providerDTO);
             providerDTO.specificKnowledge = providerSpecificKnowledgeFactory.createKnowledge(providerDTO);
         }
     }

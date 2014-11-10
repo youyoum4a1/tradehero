@@ -2,6 +2,7 @@ package com.tradehero.th.api.competition.specific;
 
 import android.support.annotation.Nullable;
 
+@Deprecated
 public class ProviderSpecificKnowledgeDTO
 {
     @Nullable public Boolean includeProviderPortfolioOnWarrants;

@@ -2,11 +2,9 @@ package com.tradehero.th.api.provider;
 
 import com.tradehero.th.api.BaseApiTestClass;
 import com.tradehero.th.api.competition.ProviderDTO;
-
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
+import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -35,8 +33,6 @@ abstract public class ProviderDTODeserialiserTestBase<ProviderCompactDTOType ext
     protected ProviderCompactDTOType baseTestSetSpecifics() throws IOException
     {
         ProviderCompactDTOType converted = readValue(providerDTOBody1Stream);
-        assertThat(converted.specificResources).isNotNull();
-        assertThat(converted.specificResources.helpVideoLinkBackgroundResId).isGreaterThan(1);
         assertThat(converted.specificKnowledge).isNotNull();
         assertThat(converted.specificKnowledge.includeProviderPortfolioOnWarrants).isTrue();
         return converted;
