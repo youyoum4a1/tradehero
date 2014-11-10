@@ -250,6 +250,7 @@ dependencies {
   // Helper here http://gradleplease.appspot.com
   compile fileTree(dir: 'libs', include: ['*.jar'])
   chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
+  chinaCompile fileTree(dir: 'libs/china', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
   compile(project(':ResideMenu')) {
     exclude group: 'com.android.support', module: 'support-v4'
