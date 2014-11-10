@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
@@ -76,21 +75,9 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
                         .setTitle(R.string.settings_misc_sign_out_are_you_sure)
                         .setCancelable(true)
                         .setNegativeButton(R.string.settings_misc_sign_out_no,
-                                new DialogInterface.OnClickListener()
-                                {
-                                    public void onClick(DialogInterface dialog, int id)
-                                    {
-                                        dialog.cancel();
-                                    }
-                                })
+                                (dialog, id) -> dialog.cancel())
                         .setPositiveButton(R.string.settings_misc_sign_out_yes,
-                                new DialogInterface.OnClickListener()
-                                {
-                                    @Override public void onClick(DialogInterface dialogInterface, int i)
-                                    {
-                                        effectSignOut();
-                                    }
-                                });
+                                (dialogInterface, i) -> effectSignOut());
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
@@ -129,25 +116,16 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         unsubscribe(logoutSubscription);
         logoutSubscription = sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createSignOutObserver(preferenceFragment.getActivity()));
+                .subscribe(createSignOutObserver());
     }
 
-    private Observer<UserProfileDTO> createSignOutObserver(final Activity activity)
+    private Observer<UserProfileDTO> createSignOutObserver()
     {
-        return new SignOutObserver(activity);
+        return new SignOutObserver();
     }
 
     protected class SignOutObserver extends EmptyObserver<UserProfileDTO>
     {
-        @NonNull private final Activity activity;
-
-        //<editor-fold desc="Constructors">
-        public SignOutObserver(@NonNull Activity activity)
-        {
-            this.activity = activity;
-        }
-        //</editor-fold>
-
         @Override public void onNext(UserProfileDTO userProfileDTO)
         {
             for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
@@ -181,13 +159,7 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             PreferenceFragment preferenceFragmentCopy = preferenceFragment;
             if (preferenceFragmentCopy != null)
             {
-                preferenceFragmentCopy.getView().postDelayed(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        dismissProgressDialog();
-                    }
-                }, 3000);
+                preferenceFragmentCopy.getView().postDelayed(SignOutSettingViewHolder.this::dismissProgressDialog, 3000);
             }
         }
     }

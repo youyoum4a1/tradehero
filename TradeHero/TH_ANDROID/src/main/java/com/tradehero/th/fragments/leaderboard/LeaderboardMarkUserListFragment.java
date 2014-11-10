@@ -308,7 +308,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
-        this.userOnLeaderboardCacheSubscription = null;
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
         getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);

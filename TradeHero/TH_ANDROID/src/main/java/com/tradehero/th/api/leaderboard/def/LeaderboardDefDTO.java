@@ -150,12 +150,12 @@ public class LeaderboardDefDTO implements DTO
         return toUtcRestricted != null ? toUtcRestricted.toString() : null;
     }
 
-    public Boolean isWithinUtcRestricted()
+    @NonNull public Boolean isWithinUtcRestricted()
     {
         return isWithinUtcRestricted(new Date());
     }
 
-    public Boolean isWithinUtcRestricted(Date now)
+    @NonNull public Boolean isWithinUtcRestricted(@NonNull Date now)
     {
         return (fromUtcRestricted == null || now.equals(fromUtcRestricted) || now.after(fromUtcRestricted)) &&
                 (toUtcRestricted == null || now.equals(toUtcRestricted) || now.before(toUtcRestricted));

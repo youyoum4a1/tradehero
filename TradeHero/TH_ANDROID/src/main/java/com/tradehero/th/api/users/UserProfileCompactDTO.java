@@ -13,4 +13,18 @@ public class UserProfileCompactDTO extends UserBaseDTO
     public UserProfileCompactDTO()
     {
     }
+
+    @Override public String toString()
+    {
+        return "UserProfileCompactDTO{" +
+                super.toString() +
+                ", largePicture='" + largePicture + '\'' +
+                ", fbLinked=" + fbLinked +
+                ", liLinked=" + liLinked +
+                ", qqLinked=" + qqLinked +
+                ", thLinked=" + thLinked +
+                ", twLinked=" + twLinked +
+                ", wbLinked=" + wbLinked +
+                '}';
+    }
 }

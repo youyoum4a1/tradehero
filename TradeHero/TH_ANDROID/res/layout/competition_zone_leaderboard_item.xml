@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,6 +14,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
       android:src="@drawable/settings_forward_light"
       android:scaleType="fitCenter"
@@ -24,6 +26,7 @@
       android:layout_width="@dimen/medium_logo_w_h"
       android:layout_height="@dimen/medium_logo_w_h"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
       android:scaleType="fitCenter"
       tools:src="@drawable/icn_portfolio_pressed"
@@ -36,7 +39,9 @@
       android:layout_centerVertical="true"
       android:orientation="vertical"
       android:layout_toRightOf="@id/icn_competition_zone"
+      android:layout_toEndOf="@id/icn_competition_zone"
       android:layout_toLeftOf="@+id/competition_roi"
+      android:layout_toStartOf="@+id/competition_roi"
       android:layout_marginLeft="@dimen/margin_small"
       android:layout_marginStart="@dimen/margin_small"
       >
@@ -66,6 +71,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@+id/hint_open_competition_zone"
+      android:layout_toStartOf="@+id/hint_open_competition_zone"
       android:layout_centerVertical="true"
       android:layout_margin="@dimen/margin_xsmall"
       style="@style/TH.UserROI"
