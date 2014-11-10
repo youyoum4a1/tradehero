@@ -32,13 +32,14 @@ import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-9. UGC 比赛创建页
@@ -52,16 +53,13 @@ public class CompetitionCreateFragment extends DashboardFragment
     @InjectView(R.id.edtCreateCompetitionName) EditText edtCompetitionName;
     @InjectView(R.id.edtCreateCompetitionIntro) EditText edtCompetitionIntro;
     @InjectView(R.id.spCreateCompetitionPeriod) Spinner spCompetitionPerid;
-    //@InjectView(R.id.spCreateCompetitionExchange) Spinner spinnerExchange;
     @InjectView(R.id.cbCreateCompetitionInvite) CheckBox cbCompetitionInvite;
 
     @InjectView(R.id.cbExchangeCH) CheckBox cbExchangeCH;
     @InjectView(R.id.cbExchangeHK) CheckBox cbExchangeHK;
     @InjectView(R.id.cbExchangeAM) CheckBox cbExchangeAM;
 
-    public SpinnerExchangeIconAdapter spinnerIconAdapter;
     public SpinnerExchangeIconAdapter spinnerIconAdapterPeriod;
-    private ExchangeCompactDTOList exchangeCompactDTOs;
 
     @Inject Lazy<CompetitionCache> competitionCacheLazy;
     private Callback<UserCompetitionDTO> callbackcreatUGC;
@@ -71,6 +69,7 @@ public class CompetitionCreateFragment extends DashboardFragment
     public static final int CREATE_COMPETITION_ERROR_TITLE = 1;
     public static final int CREATE_COMPETITION_ERROR_INTRO = 2;
     public static final int CREATE_COMPETITION_ERROR_EXCHANGE = 3;
+    public static final int CREATE_COMPETITION_ERROR_TITLE_SPECIAL_CHAR = 4;
 
     private ProgressDialog mTransactionDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
@@ -101,10 +100,8 @@ public class CompetitionCreateFragment extends DashboardFragment
     @Override
     public void onClickHeadRight0()
     {
-        Timber.d("点击提交");
         if (validCompetition() == CREATE_COMPETITION_SUCCESS)
         {
-            Timber.d("创建比赛条件满足");
             createUGC();
         }
         else
@@ -131,7 +128,6 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     public int[] getExchangeIds()
     {
-        //return CompetitionUtils.Exchanges[CompetitionUtils.EXCHANGE_CHINA];
         return CompetitionUtils.getExchanges(cbExchangeCH.isChecked(), cbExchangeHK.isChecked(), cbExchangeAM.isChecked());
     }
 
@@ -141,14 +137,22 @@ public class CompetitionCreateFragment extends DashboardFragment
         if (ERROR == CREATE_COMPETITION_ERROR_TITLE)
         {
             THToast.show("请输入大于4个字符的比赛名称");
+            return;
         }
-        else if (ERROR == CREATE_COMPETITION_ERROR_INTRO)
+        if (ERROR == CREATE_COMPETITION_ERROR_TITLE_SPECIAL_CHAR)
+        {
+            THToast.show("比赛名称不能包含特殊字符");
+            return;
+        }
+        if (ERROR == CREATE_COMPETITION_ERROR_INTRO)
         {
             THToast.show("请输入大于4个字符的比赛介绍");
+            return;
         }
-        else if (ERROR == CREATE_COMPETITION_ERROR_EXCHANGE)
+        if (ERROR == CREATE_COMPETITION_ERROR_EXCHANGE)
         {
             THToast.show("您还未选择交易所");
+            return;
         }
     }
 
@@ -205,15 +209,11 @@ public class CompetitionCreateFragment extends DashboardFragment
     {
         @Override public void onDTOReceived(@NotNull ExchangeListType key, @NotNull ExchangeCompactDTOList value)
         {
-            Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
-            //linkWith(value, true);
-            //initSpinnerView(value);
         }
 
         @Override public void onErrorThrown(@NotNull ExchangeListType key, @NotNull Throwable error)
         {
             THToast.show(getString(R.string.error_fetch_exchange_list));
-            Timber.e("Error fetching the list of exchanges %s", key, error);
         }
     }
 
@@ -239,34 +239,21 @@ public class CompetitionCreateFragment extends DashboardFragment
         }
     }
 
-    //private void initSpinnerView(ExchangeCompactDTOList value)
-    //{
-    //    exchangeCompactDTOs = value;
-    //    int sizeList = value.size();
-    //    String[] strExchangeList = new String[sizeList + 1];
-    //    int[] countryList = new int[sizeList + 1];
-    //    strExchangeList[0] = "全部交易所";
-    //    countryList[0] = R.drawable.default_image;
-    //    for (int i = 1; i < sizeList + 1; i++)
-    //    {
-    //        strExchangeList[i] = value.get(i - 1).desc;
-    //        countryList[i] = value.get(i - 1).getCountryCodeFlagResId();
-    //    }
-    //    spinnerIconAdapter = new SpinnerExchangeIconAdapter(getActivity(), strExchangeList, countryList);
-    //    spinnerExchange.setAdapter(spinnerIconAdapter);
-    //}
-
     public int validCompetition()
     {
         if (edtCompetitionName != null && edtCompetitionName.length() < 4)
         {
             return CREATE_COMPETITION_ERROR_TITLE;
         }
-        else if (edtCompetitionIntro != null && edtCompetitionIntro.length() < 4)
+        String inputStr = edtCompetitionName.getText().toString();
+        if(StringUtils.containSpecialChars(inputStr)){
+            return CREATE_COMPETITION_ERROR_TITLE_SPECIAL_CHAR;
+        }
+        if (edtCompetitionIntro != null && edtCompetitionIntro.length() < 4)
         {
             return CREATE_COMPETITION_ERROR_INTRO;
         }
-        else if ((!cbExchangeAM.isChecked()) && (!cbExchangeHK.isChecked()) && (!cbExchangeCH.isChecked()))
+        if ((!cbExchangeAM.isChecked()) && (!cbExchangeHK.isChecked()) && (!cbExchangeCH.isChecked()))
         {
             return CREATE_COMPETITION_ERROR_EXCHANGE;
         }
@@ -336,10 +323,6 @@ public class CompetitionCreateFragment extends DashboardFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
             THException thException = new THException(retrofitError);
             THToast.show(thException);
         }

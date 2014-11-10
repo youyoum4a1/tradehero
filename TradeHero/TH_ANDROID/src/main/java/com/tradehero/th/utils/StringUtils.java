@@ -1,6 +1,10 @@
 package com.tradehero.th.utils;
 
+import android.text.TextUtils;
+
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtils
 {
@@ -55,4 +59,15 @@ public class StringUtils
     {
         return str == null || str.trim().isEmpty();
     }
+
+    public static boolean containSpecialChars(String inputStr){
+        if(TextUtils.isEmpty(inputStr)){
+            return true;
+        }
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(inputStr);
+        return m.find();
+    }
+
 }
