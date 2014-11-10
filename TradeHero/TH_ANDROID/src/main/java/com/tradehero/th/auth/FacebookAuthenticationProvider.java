@@ -43,15 +43,11 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     public static final String EXPIRATION_DATE_KEY = "expiration_date";
 
     private Facebook facebook;
-    private Session session;
     private SessionDefaultAudience defaultAudience;
     private final String applicationId;
     private int activityCode;
-    private Context applicationContext;
     @NonNull private final TokenCachingStrategy tokenCachingStrategy;
     private List<String> permissions;
-    private THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
-    private String userId;
 
     // TODO not use injection of Context as this instance is a singleton.
     // Use Provider<Activity> instead
@@ -71,10 +67,6 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         this.permissions = permissions;
 
         this.applicationId = applicationId;
-        if (context != null)
-        {
-            this.applicationContext = context.getApplicationContext();
-        }
 
         if (applicationId != null)
         {
@@ -92,56 +84,9 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         }
     }
 
-    @Override public synchronized void cancel()
-    {
-        handleCancel();
-    }
-
-    public int getActivityCode()
-    {
-        return this.activityCode;
-    }
-
     public Facebook getFacebook()
     {
         return this.facebook;
-    }
-
-    public Session getSession()
-    {
-        return this.session;
-    }
-
-    private void handleCancel()
-    {
-        if (this.currentOperationCallback == null)
-        {
-            return;
-        }
-        try
-        {
-            this.currentOperationCallback.onCancel();
-        }
-        finally
-        {
-            this.currentOperationCallback = null;
-        }
-    }
-
-    private void handleError(Throwable error)
-    {
-        if (this.currentOperationCallback == null)
-        {
-            return;
-        }
-        try
-        {
-            this.currentOperationCallback.onError(error);
-        }
-        finally
-        {
-            this.currentOperationCallback = null;
-        }
     }
 
     public synchronized void setActivity(Activity activity)
