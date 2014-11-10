@@ -16,7 +16,7 @@ import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.utils.ActivityUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;

@@ -14,7 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ShortcutUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;

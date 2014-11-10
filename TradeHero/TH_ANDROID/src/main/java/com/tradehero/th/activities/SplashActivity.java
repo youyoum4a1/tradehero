@@ -14,7 +14,7 @@ import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;

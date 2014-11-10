@@ -106,7 +106,7 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.level.ForXP;
 import com.tradehero.th.utils.level.XpModule;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
 import dagger.Lazy;

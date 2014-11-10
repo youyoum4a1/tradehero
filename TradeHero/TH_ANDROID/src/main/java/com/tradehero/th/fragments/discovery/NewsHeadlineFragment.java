@@ -167,8 +167,7 @@ public class NewsHeadlineFragment extends Fragment
         paginatedNewsItemListKeyObservable = PaginationObservable.createFromRange(newsItemListKeyObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
                 key -> newsServiceWrapper.getNewsRx(key)
                         .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                        .map(PaginatedDTO::getData)
-                        .flatMap(Observable::from)
+                        .flatMapIterable(PaginatedDTO::getData)
                         .map(NewsItemCompactDTO::getDiscussionKey)
                         .toList());
 

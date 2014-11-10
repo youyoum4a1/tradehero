@@ -250,6 +250,8 @@ dependencies {
   // Helper here http://gradleplease.appspot.com
   compile fileTree(dir: 'libs', include: ['*.jar'])
   chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
+  chinaCompile fileTree(dir: 'libs/china', include: ['*.jar'])
+  releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
   compile(project(':ResideMenu')) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
@@ -274,9 +276,7 @@ dependencies {
   samsungCompile(fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
-  releaseCompile 'com.android.support:support-v4:19.1.0'
-  debugCompile 'com.android.support:support-v4:19.1.0_cut-SNAPSHOT4'
-  //debugCompile 'com.android.support:support-v4:19.1.0_cut_port-SNAPSHOT1'
+  compile('com.android.support:support-v13:21.0.0')
   provided 'proguard:annotations:4.6'
   compile('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
     exclude group: 'commons-codec', module: 'android'
@@ -312,6 +312,7 @@ dependencies {
     exclude module: 'xpp3'
     exclude group: 'com.squareup.retrofit', module: 'retrofit'
   }
+  compile 'com.tradehero:metrics:1.0-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'io.reactivex:rxandroid:0.21.0'
@@ -331,8 +332,8 @@ dependencies {
     exclude group: 'org.apache.httpcomponents', module: 'httpcore'
     exclude group: 'org.apache.httpcomponents', module: 'httpclient'
   }
-  compile 'org.twitter4j:twitter4j-core:3.0+'
-  compile('com.localytics.android:library:2.70.0') {
+
+  releaseCompile('com.localytics.android:library:2.70.0') {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'

@@ -14,7 +14,7 @@ import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Comparator;
 import java.util.HashMap;
