@@ -567,6 +567,7 @@ public class DashboardActivity extends BaseActivity
         AndroidObservable.bindActivity(this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
+                .first()
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)

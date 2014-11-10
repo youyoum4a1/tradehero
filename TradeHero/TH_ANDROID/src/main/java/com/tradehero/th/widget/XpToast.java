@@ -96,8 +96,11 @@ public class XpToast extends RelativeLayout
     {
         mLevelDefListCacheSubscription.unsubscribe();
         mLevelDefListCacheSubscription = null;
-        userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
-        userLevelProgressBar.setUserLevelProgressBarListener(null);
+        if (userLevelProgressBar != null)
+        {
+            userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
+            userLevelProgressBar.setUserLevelProgressBarListener(null);
+        }
         isLevelDefError = false;
         ButterKnife.inject(this);
         super.onDetachedFromWindow();
