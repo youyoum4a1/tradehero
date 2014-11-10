@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -62,6 +65,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         discoveryDiscussionAdapter = new DiscoveryDiscussionAdapter(getActivity(), R.layout.timeline_item_view);
         timelineSubscriptions = new ArrayList<>();
     }
@@ -71,6 +75,17 @@ public class DiscoveryDiscussionFragment extends Fragment
         View view = inflater.inflate(R.layout.discovery_discussion, container, false);
         initView(view);
         return view;
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_create_post_discussion, menu);
+        MenuItem postMenuButton = menu.findItem(R.id.discussion_edit_post);
+        if (postMenuButton != null)
+        {
+            postMenuButton.setVisible(true);
+        }
     }
 
     private void initView(View view)

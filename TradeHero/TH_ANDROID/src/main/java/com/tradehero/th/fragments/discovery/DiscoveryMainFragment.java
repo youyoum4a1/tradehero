@@ -28,7 +28,6 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
-    private MenuItem postMenuButton;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -47,8 +46,6 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_create_post_discussion, menu);
-        postMenuButton = menu.findItem(R.id.discussion_edit_post);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
