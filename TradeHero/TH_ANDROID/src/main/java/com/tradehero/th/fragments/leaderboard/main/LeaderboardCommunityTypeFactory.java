@@ -28,10 +28,6 @@ class LeaderboardCommunityTypeFactory
         {
             return LeaderboardCommunityType.DrillDown;
         }
-        if (leaderboardDefDTO.isTimeRestrictedLeaderboard())
-        {
-            return LeaderboardCommunityType.TimeRestricted;
-        }
-        return LeaderboardCommunityType.SkillAndCountry;
+        return LeaderboardCommunityType.TimeRestricted;
     }
 }

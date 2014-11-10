@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
@@ -10,6 +11,7 @@ import timber.log.Timber;
 
 class CommunityPageDTOFactory
 {
+    private static final boolean ENABLE_COUNTRY_LEADERBOARD_DEF = false;
     @NonNull private final LeaderboardDefListCacheRx leaderboardDefListCache;
     @NonNull private final MainLeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
 
@@ -23,7 +25,7 @@ class CommunityPageDTOFactory
     }
     //</editor-fold>
 
-    @NonNull public LeaderboardDefDTOList collectFromCaches(@android.support.annotation.Nullable String countryCode)
+    @NonNull public LeaderboardDefDTOList collectFromCaches(@Nullable String countryCode)
     {
         LeaderboardDefDTOList collected = new LeaderboardDefDTOList();
         LeaderboardDefListKey key;
@@ -39,7 +41,7 @@ class CommunityPageDTOFactory
                 {
                     collected.addAll(cached);
                 }
-                if (countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey()))
+                if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey()))
                 {
                     collected.addAll(collectForCountryCodeFromCaches(countryCode));
                 }
