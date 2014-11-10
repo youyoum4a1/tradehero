@@ -13,9 +13,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.ArrayList;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 public class NotificationListAdapter extends BaseAdapter
 {
@@ -106,6 +107,7 @@ public class NotificationListAdapter extends BaseAdapter
                 holder.tvNotificationTimer = (TextView) convertView.findViewById(R.id.tvNotificationTimer);
                 holder.imgNotificationIsRead = (ImageView) convertView.findViewById(R.id.imgNotificationIsRead);
                 holder.tvNotificationContent = (TextView) convertView.findViewById(R.id.tvNotificationContent);
+                holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
                 convertView.setTag(holder);
             }
             else
@@ -148,6 +150,7 @@ public class NotificationListAdapter extends BaseAdapter
         public TextView tvNotificationTimer = null;
         public ImageView imgNotificationIsRead = null;
         public TextView tvNotificationContent = null;
+        public TextView tvNotificationUser = null;
     }
 
     public static interface NotificationClickListener
