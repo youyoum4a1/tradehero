@@ -111,7 +111,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
         assistant.launchUnFollow();
 
-        verify(userServiceWrapper, times(1)).unfollow(heroId, assistant);
+        verify(userServiceWrapper, times(1)).unfollowRx(heroId);
     }
 
     @Test public void followCallsService()
@@ -122,7 +122,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 
         ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollow();
 
-        verify(userServiceWrapper, times(1)).followRx(heroId, assistant);
+        verify(userServiceWrapper, times(1)).followRx(heroId);
     }
     //</editor-fold>
 

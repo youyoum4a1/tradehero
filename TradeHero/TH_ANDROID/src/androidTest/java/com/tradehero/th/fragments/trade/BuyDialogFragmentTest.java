@@ -332,7 +332,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         assertThat(btnLinkedIn.isChecked()).isEqualTo(false);
         assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(false);
 
-        UserProfileDTO newUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        UserProfileDTO newUserProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
         newUserProfileDTO.liLinked = true;
 
         // Now we use Observable

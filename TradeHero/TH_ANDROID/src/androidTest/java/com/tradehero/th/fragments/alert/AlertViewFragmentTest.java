@@ -91,11 +91,11 @@ public class AlertViewFragmentTest
 
         runBgUiTasks(3);
 
-        assertThat(alertViewFragment.alertUpdateMiddleCallback).isNull();
+        assertThat(alertViewFragment.updateAlertSubscription).isNull();
 
         assertThat(alertViewFragment.alertToggle).isNotNull();
         alertViewFragment.alertToggle.performClick();
 
-        assertThat(alertViewFragment.alertUpdateMiddleCallback).isNotNull();
+        assertThat(alertViewFragment.updateAlertSubscription).isNotNull();
     }
 }

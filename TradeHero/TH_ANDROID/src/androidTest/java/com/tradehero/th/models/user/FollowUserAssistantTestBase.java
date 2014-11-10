@@ -3,13 +3,11 @@ package com.tradehero.th.models.user;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import rx.Observer;
+import rx.Observable;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,10 +32,7 @@ abstract public class FollowUserAssistantTestBase
         {
             @Override public Object answer(InvocationOnMock invocation) throws Throwable
             {
-                //noinspection unchecked
-                Callback<UserProfileDTO> callback = new BaseMiddleCallback<>((Callback<UserProfileDTO>) invocation.getArguments()[1]);
-                callback.success(expected, null);
-                return callback;
+                return Observable.just(expected);
             }
         };
     }
@@ -48,10 +43,7 @@ abstract public class FollowUserAssistantTestBase
         {
             @Override public Object answer(InvocationOnMock invocation) throws Throwable
             {
-                //noinspection unchecked
-                Observer<UserProfileDTO> callback = new BaseMiddleCallback<>((Observer<UserProfileDTO>) invocation.getArguments()[1]);
-                callback.onError(expected);
-                return callback;
+                return Observable.error(expected);
             }
         };
     }
@@ -62,28 +54,28 @@ abstract public class FollowUserAssistantTestBase
             SimpleFollowUserAssistant assistant,
             RetrofitError expected)
     {
-        when(userServiceWrapper.unfollowRx(heroId, assistant)).then(createFailUserServiceAnswer(expected));
+        when(userServiceWrapper.unfollowRx(heroId)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessUnfollow(
             SimpleFollowUserAssistant assistant,
             UserProfileDTO expected)
     {
-        when(userServiceWrapper.unfollowRx(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
+        when(userServiceWrapper.unfollowRx(heroId)).then(createSuccessUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForFailFollow(
             SimpleFollowUserAssistant assistant,
             RetrofitError expected)
     {
-        when(userServiceWrapper.followRx(heroId, assistant)).then(createFailUserServiceAnswer(expected));
+        when(userServiceWrapper.followRx(heroId)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessFollow(
             SimpleFollowUserAssistant assistant,
             UserProfileDTO expected)
     {
-        when(userServiceWrapper.followRx(heroId, assistant)).then(createSuccessUserServiceAnswer(expected));
+        when(userServiceWrapper.followRx(heroId)).then(createSuccessUserServiceAnswer(expected));
     }
     //</editor-fold>
 }

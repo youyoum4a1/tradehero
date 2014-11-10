@@ -28,7 +28,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.util.ActivityController;
-import retrofit.Callback;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -99,7 +98,7 @@ public class WatchlistEditFragmentTest
         watchlistFragment.watchlistServiceWrapper = mock(WatchlistServiceWrapper.class);
 
         // TODO conditionally return different answers, mimic for different results from server side, following one is in ideal condition
-        when(watchlistFragment.watchlistServiceWrapper.createWatchlistEntryRx(any(WatchlistPositionFormDTO.class), any(Callback.class)))
+        when(watchlistFragment.watchlistServiceWrapper.createWatchlistEntryRx(any(WatchlistPositionFormDTO.class)))
                 .thenAnswer(new Answer<Void>()
                 {
                     @Override public Void answer(InvocationOnMock invocation) throws Throwable

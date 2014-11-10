@@ -1,9 +1,7 @@
 package com.tradehero.th.persistence.security;
 
-import android.util.Pair;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
@@ -32,8 +30,7 @@ public class SecurityCompactListCacheTest
     @Test public void basicAll_1_10NotEqualOthers()
     {
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 1, 10))).isNull();
-        securityCompactListCache.onNext(,
-                new Pair<SecurityListType, SecurityCompactDTOList>(new TrendingBasicSecurityListType(null, 1, 10), new SecurityCompactDTOList()), );
+        securityCompactListCache.onNext(new TrendingBasicSecurityListType(null, 1, 10), new SecurityCompactDTOList());
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 1, 10))).isNotNull();
 
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 2, 10))).isNull();
@@ -50,8 +47,7 @@ public class SecurityCompactListCacheTest
     @Test public void basicAll_4_10NotEqualOthers()
     {
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 4, 10))).isNull();
-        securityCompactListCache.onNext(,
-                new Pair<SecurityListType, SecurityCompactDTOList>(new TrendingBasicSecurityListType(null, 4, 10), new SecurityCompactDTOList()), );
+        securityCompactListCache.onNext(new TrendingBasicSecurityListType(null, 4, 10), new SecurityCompactDTOList());
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 4, 10))).isNotNull();
 
         assertThat(securityCompactListCache.get(new TrendingBasicSecurityListType(null, 5, 10))).isNull();
