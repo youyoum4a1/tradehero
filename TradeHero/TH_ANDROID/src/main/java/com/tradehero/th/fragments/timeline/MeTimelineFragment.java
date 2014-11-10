@@ -6,6 +6,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -14,9 +15,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 
 @Routable({
@@ -26,7 +24,6 @@ public class MeTimelineFragment extends TimelineFragment
         implements WithTutorial, View.OnClickListener
 {
     @Inject protected CurrentUserId currentUserId;
-    @Inject Analytics analytics;
     @Inject DTOCacheUtilImpl dtoCacheUtil;
 
     private TextView updateCenterCountTextView;
@@ -40,7 +37,6 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Me));
         dtoCacheUtil.initialPrefetches();
     }
 

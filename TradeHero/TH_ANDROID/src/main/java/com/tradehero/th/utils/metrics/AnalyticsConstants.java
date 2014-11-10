@@ -6,11 +6,15 @@ public class AnalyticsConstants
     public static final String TabBar_Me = "TabBar/Me";
     public static final String TabBar_Trade = "TabBar/Trade";
     public static final String TabBar_Trending = "TabBar/Trending";
+    public static final String TabBar_Discovery = "TabBar/Discovery";
     public static final String TabBar_Community = "TabBar/Community";
+    public static final String TabBar_ContestCenter = "TabBar/ContestCenter";
     public static final String TabBar_Academy = "TabBar/Academy";
     public static final String TabBar_Portfolio = "TabBar/Portfolio";
     public static final String TabBar_Store = "TabBar/Store";
     public static final String TabBar_Settings = "TabBar/Settings";
+    public static final String TabBar_AdminSettings = "TabBar/AdminSettings";
+    public static final String TabBar_Divider = "TabBar/Divider";
     public static final String SignUp = "SignUp"; //User tap sign up on the landing
     public static final String SignUp_Tap = "SignUp/Tap"; //User tap sign up on the landing
     public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
@@ -129,4 +133,8 @@ public class AnalyticsConstants
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
 
+    //Attribute
+    public static final String ClickedFrom = "ClickedFrom";//
+    public static final String Bottom = "Bottom";//
+    public static final String Side = "Side";//
 }
