@@ -47,7 +47,8 @@
   <color name="notification_text_color">@color/white</color>
 
   <color name="message_button_blue">#6e96fa</color>
-  <color name="message_button_blue_pressed">#ffa6befa</color>
+  <!-- <color name="message_button_blue_pressed">#ffa6befa</color> -->
+  <color name="message_button_blue_pressed">#eeeeef</color>
   <color name="message_button_blue_overlay">#0d6cfb</color>
 
   <color name="light_green_selector">#a0dc50</color>
