@@ -8,14 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -31,18 +24,10 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.*;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -69,16 +54,18 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.InputTools;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
@@ -114,7 +101,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
 
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_timeline_detail) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.rlAllView) RelativeLayout rlAllView;
 
@@ -183,7 +170,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
         if (dataDto == null)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_timeline_detail);
+            progressBar.startLoading();
         }
         else
         {
@@ -413,6 +401,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         public void OnFinish()
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlAllView);
+            progressBar.stopLoading();
         }
     }
 

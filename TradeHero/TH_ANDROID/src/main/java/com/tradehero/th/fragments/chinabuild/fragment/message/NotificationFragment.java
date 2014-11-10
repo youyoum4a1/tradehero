@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -18,11 +17,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.NotificationListAdapter;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.notification.NotificationListKey;
-import com.tradehero.th.api.notification.PaginatedNotificationDTO;
-import com.tradehero.th.api.notification.PaginatedNotificationListKey;
+import com.tradehero.th.api.notification.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -31,14 +26,16 @@ import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 
 /*
@@ -46,7 +43,7 @@ import timber.log.Timber;
  */
 public class NotificationFragment extends DashboardFragment
 {
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_notifications)TradeHeroProgressBar progressBar;
     @InjectView(R.id.listNotification) SecurityListView listView;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
@@ -100,7 +97,8 @@ public class NotificationFragment extends DashboardFragment
         initView();
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_notifications);
+            progressBar.startLoading();
             resetPage();
             refresh();
         }
@@ -215,14 +213,6 @@ public class NotificationFragment extends DashboardFragment
         {
 
             onFinish();
-            //if (value != null)
-            //{
-            //    //TODO right?
-            //    if(value.getData().isEmpty())
-            //    {
-            //        listView.onRefreshComplete();
-            //    }
-            //}
             initListData(value, key);
         }
 
@@ -236,6 +226,7 @@ public class NotificationFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listNotification);
             listView.onRefreshComplete();
+            progressBar.stopLoading();
         }
     }
 
