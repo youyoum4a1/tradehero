@@ -60,7 +60,6 @@ public class NotificationFragment extends DashboardFragment
     private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> notificationListFetchListener;
     private DTOCacheNew.Listener<NotificationListKey, PaginatedNotificationDTO> notificationListRefreshListener;
     private NotificationListKey notificationListKey;
-    private PullToRefreshBase.OnRefreshListener<ListView> notificationPullToRefreshListener;
 
     private NotificationListAdapter adapter;
 
@@ -247,7 +246,6 @@ public class NotificationFragment extends DashboardFragment
         {
             onFinish();
             Timber.e("NotificationRefreshListener onErrorThrown");
-            //THToast.show(new THException(error));
         }
 
         private void onFinish()

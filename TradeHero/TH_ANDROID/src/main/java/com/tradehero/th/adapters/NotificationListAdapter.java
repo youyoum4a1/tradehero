@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -106,7 +107,7 @@ public class NotificationListAdapter extends BaseAdapter
                 holder.imgNotificationHeader = (ImageView) convertView.findViewById(R.id.imgNotificationHeader);
                 holder.tvNotificationTimer = (TextView) convertView.findViewById(R.id.tvNotificationTimer);
                 holder.imgNotificationIsRead = (ImageView) convertView.findViewById(R.id.imgNotificationIsRead);
-                holder.tvNotificationContent = (TextView) convertView.findViewById(R.id.tvNotificationContent);
+                holder.tvNotificationContent = (MarkdownTextView) convertView.findViewById(R.id.tvNotificationContent);
                 holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
                 convertView.setTag(holder);
             }
@@ -149,7 +150,7 @@ public class NotificationListAdapter extends BaseAdapter
         public ImageView imgNotificationHeader = null;
         public TextView tvNotificationTimer = null;
         public ImageView imgNotificationIsRead = null;
-        public TextView tvNotificationContent = null;
+        public MarkdownTextView tvNotificationContent = null;
         public TextView tvNotificationUser = null;
     }
 

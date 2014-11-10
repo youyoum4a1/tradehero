@@ -60,7 +60,7 @@
                     android:background="@drawable/icon_bg_count"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"/>
-            <TextView
+            <com.tradehero.th.widget.MarkdownTextView
                     android:id="@+id/tvNotificationContent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
