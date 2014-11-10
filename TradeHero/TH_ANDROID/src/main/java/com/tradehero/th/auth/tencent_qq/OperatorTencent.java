@@ -10,7 +10,7 @@ import rx.Observable;
 import rx.Subscriber;
 import timber.log.Timber;
 
-public class OperatorTencent implements Observable.OnSubscribe<QQAppAuthData>
+class OperatorTencent implements Observable.OnSubscribe<QQAppAuthData>
 {
     @NonNull private final Tencent mTencent;
     @NonNull private final Activity activity;

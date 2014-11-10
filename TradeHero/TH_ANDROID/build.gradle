@@ -250,11 +250,15 @@ dependencies {
   // Helper here http://gradleplease.appspot.com
   compile fileTree(dir: 'libs', include: ['*.jar'])
   chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
-  chinaCompile fileTree(dir: 'libs/china', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
   compile(project(':ResideMenu')) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
+
+  // for qq
+  debugProvided fileTree(dir: 'libs/qq', include: ['*.jar'])
+  releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
+
   samsungCompile project(':samsung_iap')
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'

@@ -17,6 +17,8 @@ import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static com.tradehero.th.utils.Constants.TENCENT_APP_ID;
+
 @Singleton
 public class QQAuthenticationProvider extends SocialAuthenticationProvider
 {
@@ -27,12 +29,11 @@ public class QQAuthenticationProvider extends SocialAuthenticationProvider
     //<editor-fold desc="Constructors">
     @Inject public QQAuthenticationProvider(
             @NonNull SocialLinker socialLinker,
-            @NonNull Context context,
-            @NonNull Tencent tencent)
+            @NonNull Context context)
     {
         super(socialLinker);
         this.context = context;
-        this.tencent = tencent;
+        this.tencent = Tencent.createInstance(TENCENT_APP_ID, context);
     }
     //</editor-fold>
 

@@ -5,7 +5,10 @@ import com.facebook.SharedPreferencesTokenCachingStrategy;
 import com.facebook.TokenCachingStrategy;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
+import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
+import com.tradehero.th.utils.Constants;
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Collections;
@@ -21,19 +24,22 @@ public class AuthenticationModule
 {
     /** TODO waiting for dagger to have map injection feature, it would make following method nicer */
     @Provides @Singleton @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeToSocialProviderMap(
-            FacebookAuthenticationProvider facebookAuthenticationProvider,
-            TwitterAuthenticationProvider twitterAuthenticationProvider,
-            LinkedInAuthenticationProvider linkedInAuthenticationProvider,
-            WeiboAuthenticationProvider weiboAuthenticationProvider
-            //QQAuthenticationProvider qqAuthenticationProvider
+            Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider,
+            Lazy<TwitterAuthenticationProvider> twitterAuthenticationProvider,
+            Lazy<LinkedInAuthenticationProvider> linkedInAuthenticationProvider,
+            Lazy<WeiboAuthenticationProvider> weiboAuthenticationProvider,
+            Lazy<QQAuthenticationProvider> qqAuthenticationProvider
     )
     {
         Map<SocialNetworkEnum, AuthenticationProvider> enumToUtilMap = new HashMap<>();
-        enumToUtilMap.put(SocialNetworkEnum.FB, facebookAuthenticationProvider);
-        enumToUtilMap.put(SocialNetworkEnum.TW, twitterAuthenticationProvider);
-        enumToUtilMap.put(SocialNetworkEnum.LN, linkedInAuthenticationProvider);
-        enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider);
-        //enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider);
+        enumToUtilMap.put(SocialNetworkEnum.FB, facebookAuthenticationProvider.get());
+        enumToUtilMap.put(SocialNetworkEnum.TW, twitterAuthenticationProvider.get());
+        enumToUtilMap.put(SocialNetworkEnum.LN, linkedInAuthenticationProvider.get());
+        enumToUtilMap.put(SocialNetworkEnum.WB, weiboAuthenticationProvider.get());
+        if (Constants.RELEASE)
+        {
+            enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider.get());
+        }
         return Collections.unmodifiableMap(enumToUtilMap);
     }
 
