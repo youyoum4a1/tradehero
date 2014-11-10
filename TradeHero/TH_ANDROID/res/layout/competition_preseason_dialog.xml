@@ -16,9 +16,10 @@
 
     <ImageView
         android:id="@+id/preseason_title_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="192dp"
+        android:layout_height="48dp"
         android:layout_margin="@dimen/margin_small"
+        android:scaleType="fitCenter"
         tools:src="@drawable/upgrade_alerts_pressed"
         />
 

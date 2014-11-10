@@ -20,6 +20,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -182,7 +183,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         Preference showPreseason = findPreference(KEY_PRESEASON);
         showPreseason.setOnPreferenceClickListener(preference -> {
 
-            CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance();
+            CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(new ProviderId(24));
             dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
             return true;
         });
