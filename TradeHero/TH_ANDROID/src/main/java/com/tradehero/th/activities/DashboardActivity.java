@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.AbsListView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -111,9 +109,6 @@ import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
-import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -122,6 +117,11 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -250,12 +250,14 @@ public class DashboardActivity extends BaseActivity
     {
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
+        dashboardTabHost.setAnalytics(analytics);
         dashboardTabHost.setOnTabChangedListener(tabId -> {
             RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
             navigator.goToTab(selectedFragmentType);
         });
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
-        navigator.addDashboardFragmentWatcher(analyticsReporter.get());
+        //this is not work, we need separate bottom and side, in below this always bottom
+//        navigator.addDashboardFragmentWatcher(analyticsReporter.get());
     }
 
     private void initBroadcastReceivers()

@@ -7,7 +7,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
-
+@Deprecated
 public class NavigationAnalyticsReporter implements DashboardNavigator.DashboardFragmentWatcher
 {
     private final Analytics analytics;
