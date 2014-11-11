@@ -255,6 +255,7 @@ public class DashboardActivity extends BaseActivity
             navigator.goToTab(selectedFragmentType);
         });
         navigator.addDashboardFragmentWatcher(analyticsReporter.get());
+        navigator.addDashboardFragmentWatcher(dashboardTabHost);
     }
 
     private void initBroadcastReceivers()

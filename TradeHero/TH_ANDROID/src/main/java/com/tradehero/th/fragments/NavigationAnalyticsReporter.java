@@ -21,20 +21,6 @@ public class NavigationAnalyticsReporter implements DashboardNavigator.Dashboard
 
     @Override public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
     {
-        reportAnalytics(fragmentClass);
-
-        dashboardTabHost.showTabBar();
-        for (RootFragmentType rootFragmentType: RootFragmentType.forBottomBar())
-        {
-            if (rootFragmentType.fragmentClass == fragmentClass)
-            {
-                dashboardTabHost.setCurrentTabByTag(rootFragmentType.toString());
-                return;
-            }
-        }
-    }
-
-    private <T extends Fragment> void reportAnalytics(Class<T> fragmentClass) {
         if (RootFragmentType.values()[dashboardTabHost.getCurrentTab()].fragmentClass == fragmentClass)
         {
             analytics.fireEvent(new SingleAttributeEvent(

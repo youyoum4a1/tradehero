@@ -1,6 +1,9 @@
 package com.tradehero.th.fragments;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,7 +14,7 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.widget.THTabView;
 import java.util.Collection;
 
-public class DashboardTabHost extends TabHost
+public class DashboardTabHost extends TabHost implements DashboardNavigator.DashboardFragmentWatcher
 {
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
     private final Collection<RootFragmentType> slideFragmentTypes = RootFragmentType.forResideMenu();
@@ -61,7 +64,7 @@ public class DashboardTabHost extends TabHost
         }
     }
 
-    public void showTabBar()
+    private void showTabBar()
     {
         if (getVisibility() != View.VISIBLE || getTranslationY() > 0.0)
         {
@@ -94,6 +97,22 @@ public class DashboardTabHost extends TabHost
     public void setOnTranslate(OnTranslateListener onTranslateListener)
     {
         this.onTranslateListener = onTranslateListener;
+    }
+
+    @Override
+    public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
+    {
+        showTabBar();
+        for (RootFragmentType rootFragmentType: bottomBarFragmentTypes)
+        {
+            if (rootFragmentType.fragmentClass == fragmentClass)
+            {
+                setCurrentTabByTag(rootFragmentType.toString());
+                return;
+            }
+        }
+        // none of the bottom bar fragment, hide me
+        //hideTabBar();
     }
 
     private class DummyTabContentFactory implements TabContentFactory
