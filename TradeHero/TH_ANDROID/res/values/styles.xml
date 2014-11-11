@@ -606,4 +606,10 @@
     <item name="android:scaleType">fitCenter</item>
     <item name="android:background">@drawable/basic_transparent_selector</item>
   </style>
+
+  <style name="TH.ReferralButtons" parent="TH.Button.Inverse">
+    <item name="android:minWidth">@dimen/button_min_width</item>
+    <item name="android:paddingRight">@dimen/margin_small</item>
+    <item name="android:paddingLeft">@dimen/margin_small</item>
+  </style>
 </resources>
