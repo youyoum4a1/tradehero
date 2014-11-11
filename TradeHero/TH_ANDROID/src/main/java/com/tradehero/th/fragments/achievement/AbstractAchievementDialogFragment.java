@@ -1,9 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
@@ -668,7 +666,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     protected class ShareAchievementListener implements SocialSharer.OnSharedListener
     {
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO, List<SocialNetworkEnum> toConnect)
         {
             throw new IllegalStateException("It should have been taken care of at the network button press");
         }

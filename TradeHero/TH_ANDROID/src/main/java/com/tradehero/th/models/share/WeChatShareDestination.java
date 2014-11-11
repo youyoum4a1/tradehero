@@ -1,5 +1,6 @@
 package com.tradehero.th.models.share;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 
@@ -16,7 +17,7 @@ public class WeChatShareDestination extends BaseShareDestination
         return R.integer.social_destination_id_wechat;
     }
 
-    @Override public SocialNetworkEnum getSocialNetworkEnum()
+    @Override @NonNull public SocialNetworkEnum getSocialNetworkEnum()
     {
         return SocialNetworkEnum.WECHAT;
     }

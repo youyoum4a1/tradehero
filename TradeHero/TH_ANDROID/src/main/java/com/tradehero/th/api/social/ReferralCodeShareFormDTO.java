@@ -3,9 +3,10 @@ package com.tradehero.th.api.social;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class ReferralCodeShareFormDTO implements SocialShareFormDTO
+public class ReferralCodeShareFormDTO implements SocialShareFormDTO, HasSocialNetworkEnumList
 {
     @NonNull public final List<SocialNetworkEnum> networks;
 
@@ -20,4 +21,9 @@ public class ReferralCodeShareFormDTO implements SocialShareFormDTO
         this.networks = networks;
     }
     //</editor-fold>
+
+    @NonNull @Override public List<SocialNetworkEnum> getSocialNetworkEnumList()
+    {
+        return Collections.unmodifiableList(networks);
+    }
 }

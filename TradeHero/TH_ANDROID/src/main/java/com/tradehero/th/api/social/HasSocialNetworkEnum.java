@@ -1,6 +1,8 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.Nullable;
+
 public interface HasSocialNetworkEnum
 {
-    SocialNetworkEnum getSocialNetworkEnum();
+    @Nullable SocialNetworkEnum getSocialNetworkEnum();
 }

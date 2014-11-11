@@ -76,7 +76,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Share Referral Code">
-    @NonNull public Observable<UserProfileDTO> shareRx(
+    @NonNull public Observable<UserProfileDTO> shareReferralCodeRx(
             @NonNull ReferralCodeShareFormDTO reqFormDTO)
     {
         return socialServiceRx.share(reqFormDTO)

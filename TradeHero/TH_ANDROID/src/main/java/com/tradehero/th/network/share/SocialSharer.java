@@ -1,8 +1,10 @@
 package com.tradehero.th.network.share;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
-import android.support.annotation.NonNull;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import java.util.List;
 
 public interface SocialSharer
 {
@@ -11,7 +13,7 @@ public interface SocialSharer
 
     public static interface OnSharedListener
     {
-        void onConnectRequired(SocialShareFormDTO shareFormDTO);
+        void onConnectRequired(SocialShareFormDTO shareFormDTO, List<SocialNetworkEnum> toConnect);
         void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO);
         void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable);
     }

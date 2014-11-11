@@ -11,6 +11,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -18,6 +19,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -206,7 +208,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         {
         }
 
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO, List<SocialNetworkEnum> toConnect)
         {
         }
 
