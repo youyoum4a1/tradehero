@@ -14,28 +14,29 @@
       android:layout_height="match_parent"
       >
 
-    <com.handmark.pulltorefresh.library.PullToRefreshSwipeListView
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/message_list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="@dimen/message_center_vertical_margin"
-        android:paddingBottom="@dimen/clickable_element_min_dimen"
-        swipe:swipeFrontView="@id/swipelist_frontview"
-        swipe:swipeBackView="@id/swipelist_backview"
-        swipe:swipeCloseAllItemsWhenMoveList="true"
-        swipe:swipeMode="left"
-        swipe:swipeDrawableChecked="@drawable/ic_info"
-        swipe:swipeOffsetLeft="250dp"
-        swipe:swipeDrawableUnchecked="@drawable/ic_info"
-        android:listSelector="#00000000"
-        ptr:ptrMode="pullFromStart"
-        ptr:ptrScrollingWhileRefreshingEnabled="true"
-        ptr:ptrListViewExtrasEnabled="false"
-        android:fadingEdge="none"
-        android:scrollbars="none"
-        />
+        android:layout_height="match_parent">
+      <com.fortysevendeg.swipelistview.SwipeListView
+          android:id="@+id/message_list"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:clipToPadding="false"
+          android:paddingTop="@dimen/message_center_vertical_margin"
+          android:paddingBottom="@dimen/clickable_element_min_dimen"
+          swipe:swipeFrontView="@id/swipelist_frontview"
+          swipe:swipeBackView="@id/swipelist_backview"
+          swipe:swipeCloseAllItemsWhenMoveList="true"
+          swipe:swipeMode="left"
+          swipe:swipeDrawableChecked="@drawable/ic_info"
+          swipe:swipeOffsetLeft="250dp"
+          swipe:swipeDrawableUnchecked="@drawable/ic_info"
+          android:listSelector="#00000000"
+          android:fadingEdge="none"
+          android:scrollbars="none"
+          />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/readAllLayout"

@@ -17,9 +17,7 @@ import android.widget.AbsListView;
 import butterknife.ButterKnife;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.special.residemenu.ResideMenu;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
@@ -63,7 +61,6 @@ import timber.log.Timber;
 public class MessagesCenterFragment extends DashboardFragment
         implements
         MessageItemViewWrapper.OnElementClickedListener,
-        PullToRefreshBase.OnRefreshListener2<SwipeListView>,
         ResideMenu.OnMenuListener
 {
     @Inject Lazy<MessageHeaderListCacheRx> messageListCache;
@@ -158,7 +155,7 @@ public class MessagesCenterFragment extends DashboardFragment
                     {
                         Timber.d("onReceive message doRefreshContent");
                         if (messagesView != null
-                                && messagesView.pullToRefreshSwipeListView.isRefreshing())
+                                && messagesView.swipeRefreshLayout.isRefreshing())
                         {
                             //the better way is to start service to refresh at the background
                             if (messageListCache != null && messageListCache.get() != null)
@@ -255,20 +252,11 @@ public class MessagesCenterFragment extends DashboardFragment
         removeMessageOnServer(messageHeaderDTO);
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<SwipeListView> refreshView)
-    {
-        doRefreshContent();
-    }
-
-    @Override public void onPullUpToRefresh(PullToRefreshBase<SwipeListView> refreshView)
-    {
-    }
-
     private void onRefreshCompleted()
     {
-        if (messagesView != null && messagesView.pullToRefreshSwipeListView != null)
+        if (messagesView != null && messagesView.swipeRefreshLayout != null)
         {
-            messagesView.pullToRefreshSwipeListView.onRefreshComplete();
+            messagesView.swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -336,7 +324,7 @@ public class MessagesCenterFragment extends DashboardFragment
         this.swipeListener = new SwipeListener();
         listView.setSwipeListViewListener(swipeListener);
 
-        messagesView.pullToRefreshSwipeListView.setOnRefreshListener(this);
+        messagesView.swipeRefreshLayout.setOnRefreshListener(this::doRefreshContent);
 
         if (nextMoreRecentMessageListKey == null)
         {
@@ -368,8 +356,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         discussionCache.get().invalidateAll();
         discussionListCache.get().invalidateAll();
-        MessageListKey messageListKey =
-                new MessageListKey(MessageListKey.FIRST_PAGE);
+        MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
         listSubscriptions.add(
                 AndroidObservable.bindFragment(
@@ -522,15 +509,6 @@ public class MessagesCenterFragment extends DashboardFragment
         setReadAllLayoutVisable();
     }
 
-    private void resetContent(List<MessageHeaderDTO> value)
-    {
-        messagesView.showListView();
-        resetMessagesList(value);
-        resetSavedPage(value);
-        setReadAllLayoutVisable();
-        Timber.d("resetContent");
-    }
-
     private void displayErrorView()
     {
         messagesView.showErrorView();
@@ -565,61 +543,24 @@ public class MessagesCenterFragment extends DashboardFragment
                 return;
             }
             displayContent(pair.second.getData());
+            onRefreshCompleted();
         }
 
         @Override public void onCompleted()
         {
+            onRefreshCompleted();
         }
 
         @Override public void onError(Throwable e)
         {
             hasMorePage = true;
+            onRefreshCompleted();
             decreasePageNumber();
 
             if (getView() == null)
             {
                 return;
             }
-            if (getListAdapter() != null && getListAdapter().getCount() > 0)
-            {
-                //when already fetch the data,do not show error view
-                hideLoadingView();
-            }
-            else
-            {
-                displayErrorView();
-            }
-        }
-    }
-
-    @NonNull protected DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO> createRefreshMessageHeaderIdListCacheListener()
-    {
-        return new RefreshMessageFetchListener();
-    }
-
-    class RefreshMessageFetchListener
-            implements DTOCacheNew.Listener<MessageListKey, ReadablePaginatedMessageHeaderDTO>
-    {
-        @Override
-        public void onDTOReceived(@NonNull MessageListKey key, @NonNull ReadablePaginatedMessageHeaderDTO value)
-        {
-            requestUpdateTabCounter();
-            hasMorePage = (value.getData().size() > 0);
-            resetPageNumber();
-            if (getView() == null)
-            {
-                return;
-            }
-            resetContent(value.getData());
-            onRefreshCompleted();
-            //TODO how to invalidate the old data ..
-        }
-
-        @Override public void onErrorThrown(@NonNull MessageListKey key, @NonNull Throwable error)
-        {
-            hasMorePage = true;
-            onRefreshCompleted();
-            Timber.e("refresh onErrorThrown", error);
             if (getListAdapter() != null && getListAdapter().getCount() > 0)
             {
                 //when already fetch the data,do not show error view

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -9,13 +10,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.fortysevendeg.swipelistview.SwipeListView;
-import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
 import com.tradehero.th.R;
 
 public class MessagesView extends RelativeLayout
 {
-    @InjectView(R.id.message_list) PullToRefreshSwipeListView
-            pullToRefreshSwipeListView;
+    @InjectView(R.id.message_list) SwipeListView swipeListView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
@@ -43,7 +43,7 @@ public class MessagesView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-        pullToRefreshSwipeListView.setEmptyView(emptyView);
+        swipeListView.setEmptyView(emptyView);
     }
 
     public void showErrorView()
@@ -69,13 +69,13 @@ public class MessagesView extends RelativeLayout
         showOnlyThis(progressBar);
         if (!onlyShowLoadingView)
         {
-            changeViewVisibility(pullToRefreshSwipeListView, true);
+            changeViewVisibility(swipeListView, true);
         }
     }
 
     public SwipeListView getListView()
     {
-        return pullToRefreshSwipeListView.getRefreshableView();
+        return swipeListView;
     }
 
     private void showOnlyThis(View view)
