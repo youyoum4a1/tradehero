@@ -133,12 +133,18 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void showLoadingDialog()
     {
-        viewFlipper.setDisplayedChild(LOADING_VIEW_INDEX);
+        if(viewFlipper.getDisplayedChild() != LOADING_VIEW_INDEX)
+        {
+            viewFlipper.setDisplayedChild(LOADING_VIEW_INDEX);
+        }
     }
 
     private void showContent()
     {
-        viewFlipper.setDisplayedChild(CONTENT_VIEW_INDEX);
+        if(viewFlipper.getDisplayedChild() != CONTENT_VIEW_INDEX)
+        {
+            viewFlipper.setDisplayedChild(CONTENT_VIEW_INDEX);
+        }
     }
 
     private void linkAndInitViews(ProviderDTO providerDTO)
