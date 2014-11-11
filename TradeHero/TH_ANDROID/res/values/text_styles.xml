@@ -165,6 +165,10 @@
     <item name="android:textColor">@color/text_primary_accented</item>
   </style>
 
+  <style name="TH.Button.Accented.Inverse" parent="TH.Button.Inverse">
+    <item name="android:background">@color/text_primary_accented</item>
+  </style>
+
   <style name="TH.Button.Small.Accented" parent="TH.Button.Small">
     <item name="android:textColor">@color/text_primary_accented</item>
   </style>

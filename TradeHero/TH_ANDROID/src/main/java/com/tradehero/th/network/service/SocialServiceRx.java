@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import retrofit.http.Body;
@@ -29,4 +30,8 @@ interface SocialServiceRx
             @Path("userId") int userId,
             @Body SocialNetworkFormDTO socialNetworkFormDTO);
     //</editor-fold>
+
+    @POST("/users/share/referralcode")
+    Observable<UserProfileDTO> share(
+            @Body ReferralCodeShareFormDTO reqFormDTO);
 }

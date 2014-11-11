@@ -28,4 +28,15 @@
     <item>@integer/social_destination_id_weibo</item>
   </integer-array>
 
+  <string name="invite_code_title">Claim your virtual dollars!</string>
+  <string name="invite_code_message">If you were referred by a friend, enter the referral code here and get free 10,000 virtual dollars.</string>
+  <string name="settings_referral_code_message">This is your own referral code. Share it with your friends and get FREE Tradehero Dollars when they sign up !
+  </string>
+  <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
+
+  <string name="referral_code_copy_clipboard">Copy</string>
+  <string name="referral_code_share_network">Share</string>
+  <string name="referral_code_sharing_to_networks">Sharing your referral code to social network(s)</string>
+  <string name="error_share_referral_code_on_network">Sharing on social network(s) failed</string>
+
 </resources>
