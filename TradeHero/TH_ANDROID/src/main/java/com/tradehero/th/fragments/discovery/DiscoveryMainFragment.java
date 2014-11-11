@@ -12,24 +12,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import com.astuetz.PagerSlidingTabStrip;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
-import dagger.Lazy;
 import javax.inject.Inject;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 
 public class DiscoveryMainFragment extends DashboardFragment
 {
     @Inject Lazy<DashboardNavigator> navigator;
-
-    private DiscoveryPagerAdapter discoveryPagerAdapter;
+    @Inject Analytics analytics;
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) PagerSlidingTabStrip pagerSlidingTabStrip;
+
+    private DiscoveryPagerAdapter discoveryPagerAdapter;
+    private long beginTime;
+    private int oldPageItem;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -49,6 +55,26 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         tabViewPager.setAdapter(discoveryPagerAdapter);
         pagerSlidingTabStrip.setViewPager(tabViewPager);
+        beginTime = System.currentTimeMillis();
+        oldPageItem = 0;
+        tabViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                reportAnalytics();
+                beginTime = System.currentTimeMillis();
+                oldPageItem = i;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -73,9 +99,45 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        reportAnalytics();
         tabViewPager.setAdapter(null);
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    private void reportAnalytics()
+    {
+        long duration = (System.currentTimeMillis()-beginTime)/1000;
+        String s = AnalyticsConstants.Time10M;
+        if (duration <= 10)
+        {
+            s = AnalyticsConstants.Time1T10S;
+        }
+        else if (duration <= 30)
+        {
+            s = AnalyticsConstants.Time11T30S;
+        }
+        else if (duration <= 60)
+        {
+            s = AnalyticsConstants.Time31T60S;
+        }
+        else if (duration <= 180)
+        {
+            s = AnalyticsConstants.Time1T3M;
+        }
+        else if (duration <= 600)
+        {
+            s = AnalyticsConstants.Time3T10M;
+        }
+        if (oldPageItem == 0){
+            analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverNewsViewed,
+                    AnalyticsConstants.TimeOnScreen, s));
+        }
+        else if (oldPageItem == 1)
+        {
+            analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverDiscussionsViewed,
+                    AnalyticsConstants.TimeOnScreen, s));
+        }
     }
 
     @Override public void onDestroy()

@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
@@ -33,6 +31,8 @@ import com.tradehero.th.widget.MultiScrollListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -41,7 +41,6 @@ import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
-
 import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
@@ -148,7 +147,6 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     @Override public void onDestroyView()
     {
-        super.onDestroyView();
         mTimelineListView.setOnLastItemVisibleListener(null);
         for (Subscription subscription : timelineSubscriptions)
         {
@@ -156,6 +154,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         }
         timelineSubscriptions.clear();
         rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
+        super.onDestroyView();
     }
 
     @Override public void onAttach(Activity activity)
