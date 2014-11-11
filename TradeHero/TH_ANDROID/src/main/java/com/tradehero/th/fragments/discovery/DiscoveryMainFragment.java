@@ -74,7 +74,6 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         tabViewPager.setAdapter(null);
-        pagerSlidingTabStrip.setViewPager(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
