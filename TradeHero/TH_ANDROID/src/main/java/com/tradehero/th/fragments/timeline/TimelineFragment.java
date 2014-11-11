@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.timeline;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,10 +16,10 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -59,7 +60,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -72,6 +72,7 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -110,7 +111,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
-    @InjectView(R.id.timeline_list_view) PullToRefreshStickyListHeadersListView timelineListView;
+    @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
     @InjectView(R.id.follow_message_container) ViewGroup btnContainer;
@@ -191,7 +193,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             //TODO now only one view, userProfileView useless, need cancel, alex
 
             userProfileView.setProfileClickedListener(this);
-            timelineListView.getRefreshableView().addHeaderView(userProfileView);
+            timelineListView.addHeaderView(userProfileView);
         }
 
         if (loadingView != null)
@@ -267,9 +269,25 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 });
         mainTimelineAdapter.getTimelineLoader().loadNext();
 
-        timelineListView.setOnRefreshListener(mainTimelineAdapter);
         timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        timelineListView.setOnLastItemVisibleListener(new TimelineLastItemVisibleListener());
+        swipeRefreshContainer.setOnRefreshListener(() -> {
+            switch(currentTab)
+            {
+                case TIMELINE:
+                    mainTimelineAdapter.getTimelineLoader().loadNext();
+                    break;
+
+                case STATS:
+                case PORTFOLIO_LIST:
+                    fetchPortfolioList();
+                    fetchUserProfile();
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType " + currentTab);
+            }
+        });
+        //timelineListView.setOnLastItemVisibleListener(new TimelineLastItemVisibleListener());
         timelineListView.setOnItemClickListener(this::onMainItemClick);
 
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
@@ -279,7 +297,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (cancelRefreshingOnResume)
         {
-            timelineListView.onRefreshComplete();
+            swipeRefreshContainer.setRefreshing(false);
             cancelRefreshingOnResume = false;
         }
         fetchUserProfile();
@@ -297,9 +315,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         dashboardTabHost.get().setOnTranslate(null);
         mainTimelineAdapter.setProfileClickListener(null);
         mainTimelineAdapter.setOnLoadFinishedListener(null);
-        timelineListView.setOnRefreshListener((MainTimelineAdapter) null);
         timelineListView.setOnScrollListener(null);
-        timelineListView.setOnLastItemVisibleListener(null);
+        swipeRefreshContainer.setOnRefreshListener(null);
         timelineListView.setOnItemClickListener(null);
         super.onPause();
     }
@@ -519,7 +536,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void onLoadFinished()
     {
-        timelineListView.onRefreshComplete();
+        swipeRefreshContainer.setRefreshing(false);
         loadingView.setVisibility(View.GONE);
         cancelRefreshingOnResume = true;
     }
