@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.news;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,14 +15,13 @@ import android.widget.ViewSwitcher;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class NewsDialogLayout extends ShareDialogLayout
 {
@@ -74,44 +75,45 @@ public class NewsDialogLayout extends ShareDialogLayout
 
     protected String getTitleString()
     {
-        if (discussionToShare instanceof NewsItemCompactDTO)
+        if (whatToShare instanceof NewsItemDTO)
         {
-            return ((NewsItemCompactDTO) discussionToShare).title;
+            return ((NewsItemDTO) whatToShare).title;
         }
-        else if (discussionToShare instanceof NewsItemDTO)
+        else if (whatToShare instanceof NewsItemCompactDTO)
         {
-            return ((NewsItemDTO) discussionToShare).title;
+            return ((NewsItemCompactDTO) whatToShare).title;
         }
-        else if (discussionToShare instanceof DiscussionDTO)
+        else if (whatToShare instanceof DiscussionDTO)
         {
             return String.format("%s: %s",
-                    ((DiscussionDTO) discussionToShare).user.displayName,
-                    ((DiscussionDTO) discussionToShare).text);
+                    ((DiscussionDTO) whatToShare).user.displayName,
+                    ((DiscussionDTO) whatToShare).text);
         }
-        else if (discussionToShare instanceof AbstractDiscussionDTO)
+        else if (whatToShare instanceof AbstractDiscussionDTO)
         {
-            return ((AbstractDiscussionDTO) discussionToShare).text;
+            return ((AbstractDiscussionDTO) whatToShare).text;
         }
         return getContext().getString(R.string.na);
     }
 
     protected String getDescriptionString()
     {
-        if (discussionToShare instanceof NewsItemCompactDTO)
+        if (whatToShare instanceof NewsItemDTO)
         {
-            return ((NewsItemCompactDTO) discussionToShare).description;
+            return ((NewsItemDTO) whatToShare).description;
         }
-        else if (discussionToShare instanceof NewsItemDTO)
+        else if (whatToShare instanceof NewsItemCompactDTO)
         {
-            return ((NewsItemDTO) discussionToShare).description;
+            return ((NewsItemCompactDTO) whatToShare).description;
         }
-        else if (discussionToShare instanceof AbstractDiscussionDTO)
+        else if (whatToShare instanceof AbstractDiscussionDTO)
         {
             return "";
         }
         return getContext().getString(R.string.na);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.news_action_back)
     protected void showFirstOptions()
     {
@@ -127,6 +129,7 @@ public class NewsDialogLayout extends ShareDialogLayout
         titleSwitcher.setDisplayedChild(SHARE_MENU_ID);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.news_action_list_sharing_translation)
     protected void onOptionItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
@@ -150,9 +153,13 @@ public class NewsDialogLayout extends ShareDialogLayout
         }
     }
 
-    @Override public void setDiscussionToShare(@NonNull AbstractDiscussionCompactDTO discussionToShare)
+    @Override public void setWhatToShare(@NonNull DTO discussionToShare)
     {
-        super.setDiscussionToShare(discussionToShare);
+        super.setWhatToShare(discussionToShare);
+        if (!(discussionToShare instanceof AbstractDiscussionCompactDTO))
+        {
+            throw new IllegalArgumentException("Cannot share " + discussionToShare.getClass().getName());
+        }
         setNewsTitle();
     }
 
@@ -177,7 +184,7 @@ public class NewsDialogLayout extends ShareDialogLayout
         NewsDialogLayout.OnMenuClickedListener listenerCopy = (OnMenuClickedListener) menuClickedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onTranslationRequestedClicked(discussionToShare);
+            listenerCopy.onTranslationRequestedClicked((AbstractDiscussionCompactDTO) whatToShare);
         }
     }
 

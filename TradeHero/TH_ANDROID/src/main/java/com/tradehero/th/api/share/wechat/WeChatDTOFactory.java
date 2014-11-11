@@ -1,6 +1,7 @@
 package com.tradehero.th.api.share.wechat;
 
 import android.content.Context;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -20,28 +21,23 @@ public class WeChatDTOFactory
     }
     //</editor-fold>
 
+    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull DTO whatToShare)
+    {
+        if (whatToShare instanceof AbstractDiscussionCompactDTO)
+        {
+            return createFrom((AbstractDiscussionCompactDTO) whatToShare);
+        }
+        if (whatToShare instanceof UserAchievementDTO)
+        {
+            return createFrom(context, (UserAchievementDTO) whatToShare);
+        }
+        throw new IllegalArgumentException("Unknown element to share " + whatToShare);
+    }
+
     @NonNull public WeChatDTO createFrom(@NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(weChatDTO, abstractDiscussionCompactDTO);
-        return weChatDTO;
-    }
-
-    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull UserAchievementDTO userAchievementDTO)
-    {
-        WeChatDTO weChatDTO = new WeChatDTO();
-        weChatDTO.id = userAchievementDTO.id;
-        if(userAchievementDTO.achievementDef.isQuest)
-        {
-            weChatDTO.type = WeChatMessageType.QuestBonus;
-            weChatDTO.title = context.getString(R.string.share_to_wechat_quest_bonus_text, userAchievementDTO.achievementDef.thName);
-        }
-        else
-        {
-            weChatDTO.type = WeChatMessageType.Achievement;
-            weChatDTO.title = context.getString(R.string.share_to_wechat_achievement_text, userAchievementDTO.achievementDef.thName);
-        }
-        weChatDTO.imageURL = userAchievementDTO.achievementDef.visual;
         return weChatDTO;
     }
 
@@ -75,5 +71,28 @@ public class WeChatDTOFactory
                 weChatDTO.imageURL = firstMediaWithLogo.url;
             }
         }
+    }
+
+    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull UserAchievementDTO userAchievementDTO)
+    {
+        WeChatDTO weChatDTO = new WeChatDTO();
+        populateWith(context, weChatDTO, userAchievementDTO);
+        return weChatDTO;
+    }
+
+    protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull UserAchievementDTO userAchievementDTO)
+    {
+        weChatDTO.id = userAchievementDTO.id;
+        if(userAchievementDTO.achievementDef.isQuest)
+        {
+            weChatDTO.type = WeChatMessageType.QuestBonus;
+            weChatDTO.title = context.getString(R.string.share_to_wechat_quest_bonus_text, userAchievementDTO.achievementDef.thName);
+        }
+        else
+        {
+            weChatDTO.type = WeChatMessageType.Achievement;
+            weChatDTO.title = context.getString(R.string.share_to_wechat_achievement_text, userAchievementDTO.achievementDef.thName);
+        }
+        weChatDTO.imageURL = userAchievementDTO.achievementDef.visual;
     }
 }

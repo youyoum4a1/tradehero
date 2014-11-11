@@ -34,7 +34,7 @@ public class ShareDialogFactory
     {
         ShareDialogLayout contentView = (ShareDialogLayout) LayoutInflater.from(context)
                 .inflate(R.layout.sharing_dialog_layout, null);
-        contentView.setDiscussionToShare(abstractDiscussionCompactDTO);
+        contentView.setWhatToShare(abstractDiscussionCompactDTO);
         contentView.setMenuClickedListener(
                 menuClickedListener);
         return THDialog.showUpDialog(context, contentView);
