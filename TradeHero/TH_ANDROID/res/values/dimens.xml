@@ -112,9 +112,9 @@
 
   <dimen name="grid_item_bg_border_width">1.2dp</dimen>
   <dimen name="grid_item_bg_radius">8dp</dimen>
-  <dimen name="grid_item_height">105dp</dimen>
+  <dimen name="grid_item_height">128dp</dimen>
 
-  <dimen name="security_logo_width">180dp</dimen>
+  <dimen name="security_logo_width">130dp</dimen>
   <dimen name="security_logo_height">45dp</dimen>
   <dimen name="security_logo_margin_vertical">20dp</dimen>
   <dimen name="security_logo_offset">12dp</dimen>
@@ -148,27 +148,20 @@
   <dimen name="text_display4">112sp</dimen>
 
   <!--Margin sizes will instead of common margin-->
-  <dimen name="margin_xsmall">5dp</dimen>
-  <dimen name="margin_small">10dp</dimen>
-  <dimen name="margin_medium">20dp</dimen>
+  <dimen name="margin_xsmall">@dimen/size_1</dimen>
+  <dimen name="margin_small">@dimen/size_2</dimen>
+  <dimen name="margin_medium">@dimen/size_3</dimen>
+  <dimen name="margin_large">@dimen/size_4</dimen>
+  <dimen name="margin_xlarge">@dimen/size_5</dimen>
 
-  <!--common margin should not change-->
-  <dimen name="common_margin_1">1dp</dimen>
-  <dimen name="common_margin_2">2dp</dimen>
-  <dimen name="common_margin_4">4dp</dimen>
-  <dimen name="common_margin_10">10dp</dimen>
-  <dimen name="common_margin_15">15dp</dimen>
-  <dimen name="common_margin_20">20dp</dimen>
-  <dimen name="common_margin_30">30dp</dimen>
-  <dimen name="common_margin_50">50dp</dimen>
-  <dimen name="common_margin_60">60dp</dimen>
-  <dimen name="common_margin_80">80dp</dimen>
-  <dimen name="common_margin_100">100dp</dimen>
-  <dimen name="common_margin_110">110dp</dimen>
-  <dimen name="common_margin_130">130dp</dimen>
-  <dimen name="common_height_40">40dp</dimen>
-  <dimen name="common_text_size_30">30sp</dimen>
-  <dimen name="common_text_size_25">25sp</dimen>
+  <!-- Size is a multiple of 8dp as suggested by Google Design Spec -->
+  <!-- http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
+  <dimen name="size_1">8dp</dimen>
+  <dimen name="size_2">16dp</dimen>
+  <dimen name="size_3">24dp</dimen>
+  <dimen name="size_4">32dp</dimen>
+  <dimen name="size_5">40dp</dimen>
+  <dimen name="size_6">48dp</dimen>
 
   <dimen name="clickable_element_min_dimen">48dp</dimen>
   <dimen name="list_item_min_height">80dp</dimen>

@@ -29,8 +29,7 @@
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@+id/hint_open_portfolio"
       android:layout_centerVertical="true"
-      android:layout_marginRight="8dp"
-      android:padding="@dimen/common_margin_1"
+      android:layout_marginRight="@dimen/margin_small"
       style="@style/TH.UserROI"
       tools:text="▼77.6%"
       />

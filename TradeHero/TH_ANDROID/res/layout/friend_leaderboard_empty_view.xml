@@ -7,31 +7,33 @@
     android:orientation="vertical"
     android:layout_gravity="top"
     android:gravity="top"
-    android:padding="5dp"
+    android:padding="@dimen/margin_small"
     >
 
   <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAllCaps="true"
-      android:textSize="@dimen/text_header"
+      style="@style/TH.Subhead"
       android:text="@string/leaderboard_keep_friends_close"
       />
 
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_xsmall"
+      style="@style/TH.Body"
       android:text="@string/leaderboard_friend_empty_text_invite_friends"
       />
 
-  <TextView
+  <Button
       android:id="@+id/connect_accounts"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/leaderboard_connect_accounts"
       android:textColor="@color/connect_accounts"
-      android:paddingTop="@dimen/common_margin_10"
-      android:gravity="center_horizontal"
+      android:background="@drawable/basic_transparent_selector"
+      style="@style/TH.Button.Accented"
       />
 
 </LinearLayout>

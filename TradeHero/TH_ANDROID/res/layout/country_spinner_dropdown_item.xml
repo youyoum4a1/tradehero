@@ -6,13 +6,13 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/common_margin_10"
+    android:padding="@dimen/margin_small"
     >
 
   <ImageView
       android:id="@+id/spinner_item_icon"
-      android:layout_height="24dp"
-      android:layout_width="24dp"
+      android:layout_height="@dimen/small_icon_w_h"
+      android:layout_width="@dimen/small_icon_w_h"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
       android:baselineAlignBottom="true"
@@ -27,7 +27,7 @@
       android:layout_width="match_parent"
       android:layout_centerInParent="true"
       android:layout_toRightOf="@id/spinner_item_icon"
-      android:textSize="@dimen/text_subhead"
+      style="@style/TH.Subhead"
       android:gravity="center"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"

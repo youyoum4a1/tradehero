@@ -15,8 +15,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/common_margin_50"
-        android:paddingBottom="@dimen/common_margin_50"
+        android:paddingTop="@dimen/margin_medium"
+        android:paddingBottom="@dimen/margin_medium"
         android:orientation="horizontal"
         >
 
@@ -27,8 +27,8 @@
           android:orientation="vertical"
           android:background="@drawable/trend_price_bar"
           tools:visibility="visible"
-          android:layout_marginLeft="@dimen/common_margin_10"
-          android:layout_marginBottom="@dimen/common_margin_20"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginBottom="@dimen/margin_medium"
           >
 
         <include layout="@layout/yahoo_chart_buttons_merge"/>
@@ -72,8 +72,8 @@
       android:id="@+id/close"
       android:layout_width="100dp"
       android:layout_height="30dp"
-      android:layout_marginTop="@dimen/common_margin_10"
-      android:layout_marginRight="@dimen/common_margin_10"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
       style="@style/TH.Button.Small.Accented"
       android:text="@string/security_close"
       android:background="@drawable/basic_yellow_selector"

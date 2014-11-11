@@ -14,13 +14,16 @@
       android:id="@+id/authentication_back_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/common_margin_10"
+      android:layout_marginTop="@dimen/margin_small"
       android:background="@drawable/basic_transparent_selector"
       android:src="@drawable/settings_back_light_default"/>
 
   <ScrollView
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:requiresFadingEdge="vertical"
+      android:fadingEdge="vertical"
+      android:fadingEdgeLength="@dimen/size_3">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +38,7 @@
           android:id="@+id/authentication_sign_up_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/common_margin_80"
+          android:layout_marginTop="@dimen/margin_medium"
           android:background="@drawable/authentication_button"
           android:text="@string/authentication_register"
           style="@style/TH.Button.Inverse"
@@ -45,5 +48,3 @@
   </ScrollView>
 
 </LinearLayout>
-
-    <!--</ScrollView>-->

@@ -17,7 +17,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_15"
+        android:layout_marginTop="@dimen/margin_small"
         android:gravity="center"
         android:text="@string/onboard_exchange_title"
         style="@style/TH.Title"
@@ -26,7 +26,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_10"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:gravity="center"
         android:text="@string/onboard_exchange_summary1"
         style="@style/TH.Body"
@@ -43,7 +43,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_10"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:gravity="center"
         android:text="@string/onboard_exchange_summary2"
         style="@style/TH.Body"

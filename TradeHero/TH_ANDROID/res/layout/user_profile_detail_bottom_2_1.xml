@@ -36,7 +36,7 @@
           android:text="@string/user_profile_count_heroes"
           style="@style/UserProfile.Contained.Header"
           android:drawableTop="@drawable/ic_profile_heroes"
-          android:layout_marginLeft="@dimen/common_margin_4"
+          android:layout_marginLeft="@dimen/margin_xsmall"
           android:gravity="center"
           />
 
@@ -65,7 +65,7 @@
           android:layout_width="wrap_content"
           style="@style/UserProfile.Contained.Header"
           android:drawableTop="@drawable/ic_profile_followers"
-          android:layout_marginLeft="@dimen/common_margin_4"
+          android:layout_marginLeft="@dimen/margin_xsmall"
           android:gravity="center"
           />
 
@@ -96,7 +96,7 @@
           android:text="@string/user_profile_achievements_count"
           style="@style/UserProfile.Contained.Header"
           android:drawableTop="@drawable/ic_profile_achievements"
-          android:layout_marginLeft="@dimen/common_margin_4"
+          android:layout_marginLeft="@dimen/margin_xsmall"
           />
 
     </LinearLayout>

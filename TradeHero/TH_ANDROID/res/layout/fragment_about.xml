@@ -13,8 +13,8 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layerType="hardware"
-      android:requiresFadingEdge="vertical"
       android:scrollbars="none"
+      android:requiresFadingEdge="vertical"
       android:fadingEdge="vertical"
       android:fadingEdgeLength="@dimen/about_screen_padding_top"
       android:clipToPadding="false"
@@ -34,7 +34,7 @@
           android:layout_height="wrap_content"
           android:src="@drawable/logo_about_bull"
           android:layout_gravity="center_horizontal"
-          android:layout_margin="@dimen/common_margin_10"
+          android:layout_margin="@dimen/margin_small"
           android:contentDescription="@null"/>
 
       <TextView

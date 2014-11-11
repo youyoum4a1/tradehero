@@ -43,7 +43,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/basic_transparent_selector"
-            android:layout_marginTop="@dimen/common_margin_10"
+            android:layout_marginTop="@dimen/margin_small"
             android:src="@drawable/ic_action_content_edit"
             android:visibility="gone"/>
 
@@ -59,7 +59,7 @@
             android:shadowRadius="1"
             android:layout_toLeftOf="@id/user_profile_edit"
             android:layout_toStartOf="@id/user_profile_edit"
-            android:layout_marginTop="@dimen/common_margin_10"
+            android:layout_marginTop="@dimen/margin_small"
             tools:text="Lorem ipsum dolor sit amet contentulla"
             android:layout_toRightOf="@+id/user_profile_avatar"
             android:layout_toEndOf="@+id/user_profile_avatar" />

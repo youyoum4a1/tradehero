@@ -19,9 +19,9 @@
       <HorizontalScrollView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="20dp"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
+          android:layout_marginTop="@dimen/margin_small"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
           >
 
         <FrameLayout
@@ -58,10 +58,10 @@
 
         <TextView
             android:id="@+id/news_detail_loading"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginBottom="@dimen/margin_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_subhead"
@@ -72,9 +72,9 @@
 
         <TextView
             android:id="@+id/discussion_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_subhead"
@@ -84,32 +84,27 @@
 
       </com.tradehero.common.widget.BetterViewAnimator>
 
-      <TextView
+      <Button
           android:id="@+id/news_view_on_web"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/news_view_on_web"
           android:gravity="center"
           android:background="@drawable/basic_light_grey_selector"
-          android:paddingTop="@dimen/common_margin_10"
-          android:layout_marginTop="15dp"
-          android:paddingBottom="@dimen/common_margin_10"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"/>
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:layout_marginTop="@dimen/margin_small"/>
 
-      <TextView
+      <Button
           android:id="@+id/news_start_new_discussion"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/start_new_discussion"
           android:gravity="center"
           android:background="@drawable/basic_light_grey_selector"
-          android:paddingTop="@dimen/common_margin_10"
-          android:layout_marginTop="15dp"
-          android:paddingBottom="@dimen/common_margin_10"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          android:paddingLeft="5dp"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:layout_marginTop="@dimen/margin_small"
           />
 
     </LinearLayout>

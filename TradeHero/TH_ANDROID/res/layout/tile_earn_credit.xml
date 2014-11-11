@@ -5,6 +5,7 @@
     android:id="@+id/extra_tile_background"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_item_height"
+    android:minHeight="@dimen/grid_item_height"
     android:gravity="center"
     android:layout_gravity="center"
     android:orientation="vertical"

@@ -17,8 +17,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_10"
-        android:padding="@dimen/common_margin_10"
         android:orientation="vertical"
         android:background="@color/white"
         >
@@ -27,7 +25,7 @@
           android:id="@+id/settings_referral_code"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_10"
+          android:layout_margin="@dimen/margin_small"
           android:gravity="center_horizontal"
           style="@style/TH.Headline.Accented"
           android:textColorHighlight="@color/light_grey_transparent"
@@ -39,7 +37,8 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_10"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
           android:gravity="center_horizontal"
           android:text="@string/settings_referral_code_message"
           style="@style/TH.Subhead"
@@ -58,8 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginRight="@dimen/common_margin_10"
-            android:layout_marginEnd="@dimen/common_margin_10"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
             android:text="@string/referral_code_copy_clipboard"
             android:enabled="false"
             />
@@ -88,13 +87,13 @@
           layout="@layout/invite_code_dialog_layout"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_10"/>
+          android:layout_margin="@dimen/margin_xsmall"/>
 
       <LinearLayout
           android:id="@+id/already_done_key"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_10"
+          android:layout_margin="@dimen/margin_xsmall"
           android:orientation="vertical"
           android:alpha="0.5"
           android:background="@color/white"
@@ -103,7 +102,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/common_margin_20"
+            android:layout_margin="@dimen/margin_small"
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/referral_dollars_claimed"
