@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/listview_item_selector"
+        android:id="@+id/llItemAll"
+        android:orientation="vertical"
+        >
+
+    <LinearLayout
+            android:id="@+id/llAllTimeLine"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:id="@+id/imgSecurityTLUserHeader"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/default_image"/>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_width="fill_parent">
+
+            <RelativeLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent">
+                <TextView
+                        android:id="@+id/tvUserTLTimeStamp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="2dp"
+                        android:textSize="11sp"
+                        android:layout_alignParentRight="true"
+                        android:text="刚刚"
+                        android:textColor="@color/text_gray_normal"
+                        />
+
+                <TextView
+                        android:id="@+id/tvUserTLName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="2dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/tradehero_blue"
+                        />
+            </RelativeLayout>
+
+
+            <LinearLayout
+                    android:id="@+id/llUserTLNoTrade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <com.tradehero.th.widget.MarkdownTextView
+                        android:id="@+id/tvUserTLContent"
+                        android:layout_below="@id/tvUserTLTimeStamp"
+                        android:layout_width="wrap_content"
+                        android:lineSpacingExtra="4dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dip"
+                        android:textColorLink="@color/timeline_item_link"
+                        android:textColor="@color/timeline_item"
+                        android:textSize="@dimen/text_medium"
+                        android:textStyle="normal"
+                        tools:text="Hello world!"
+                        android:maxLines="3"
+                        />
+            </LinearLayout>
+
+
+            <include
+                    android:id="@+id/includeTLOperater"
+                    layout="@layout/timeline_operater_line"
+                    />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
+

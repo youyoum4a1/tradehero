@@ -1,60 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_blue"
-    android:paddingTop="20dip"
-    android:paddingBottom="20dip"
-    android:paddingLeft="20dip"
-    android:paddingRight="20dip">
-
-  <LinearLayout
-      android:layout_above="@+id/copyright"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:layout_alignParentTop="true"
-      android:layout_centerHorizontal="true"
-      >
-    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginLeft="45dp"
-        android:layout_marginRight="45dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/splash_logo2"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@null"
-        />
+        android:layout_height="match_parent"
+        android:background="@color/color_blue"
+        android:paddingTop="20dip"
+        android:paddingBottom="40dip"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginBottom="10dp"
-        android:layout_gravity="center"
-        />
-  </LinearLayout>
+    <LinearLayout
+            android:layout_above="@+id/copyright"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            >
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+            <ImageView android:layout_width="0dp" android:layout_height="wrap_content"
+                       android:layout_weight="1"/>
+            <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginTop="45dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/splash_logo2"
+                    android:contentDescription="@null"
+                    />
+            <ImageView android:layout_width="0dp" android:layout_height="wrap_content"
+                       android:layout_weight="1"/>
+        </LinearLayout>
+        <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                />
+    </LinearLayout>
 
-  <LinearLayout
-      android:id="@+id/copyright"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_centerHorizontal="true"
-      android:orientation="vertical" android:paddingTop="20dp">
+    <LinearLayout
+            android:id="@+id/copyright"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical" android:paddingTop="20dp">
 
-    <TextView
-        android:id="@+id/tips"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textSize="@dimen/text_medium_decrease"
-        />
+        <TextView
+                android:id="@+id/tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/text_medium_decrease"
+                />
 
-  </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

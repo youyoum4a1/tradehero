@@ -62,7 +62,6 @@
           ptr:ptrHeaderTextColor="@color/black"
           android:id="@+id/listTimeLine"
           android:scrollingCache="false"
-          android:layout_marginTop="20dp"
           android:layout_above="@id/rlSend"
           android:fadingEdge="none"
           android:dividerHeight="1px"

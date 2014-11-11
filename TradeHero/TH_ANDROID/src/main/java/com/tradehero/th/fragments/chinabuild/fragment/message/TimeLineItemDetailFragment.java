@@ -162,7 +162,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         ButterKnife.inject(this, view);
         setNeedToMonitorBackPressed(true);
         ListView lv = listTimeLine.getRefreshableView();
-        mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, null);
+        mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item_plus, null);
         lv.addHeaderView(mRefreshView);
         initRoot(mRefreshView);
 
