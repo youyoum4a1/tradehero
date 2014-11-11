@@ -113,10 +113,6 @@ public class MainTimelineAdapter extends ArrayAdapter
     }
     //</editor-fold>
 
-    //////////////////////
-    // Timeline elements
-    //////////////////////
-
     //<editor-fold desc="Timeline Adapter">
     public int getTimelineLoaderId()
     {
@@ -396,7 +392,5 @@ public class MainTimelineAdapter extends ArrayAdapter
     public static interface OnLoadFinishedListener
     {
         void onLoadFinished();
-
-        void onBeginRefresh(TimelineFragment.TabType tabType);
     }
 }

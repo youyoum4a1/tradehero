@@ -130,7 +130,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private MainTimelineAdapter mainTimelineAdapter;
     @Nullable private Subscription freeFollowSubscription;
-    private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
     private UserProfileView userProfileView;
     private View loadingView;
     protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
@@ -253,20 +252,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         mainTimelineAdapter.setProfileClickListener(this::display);
-        mainTimelineAdapter.setOnLoadFinishedListener(
-                new MainTimelineAdapter.OnLoadFinishedListener()
-                {
-                    @Override public void onLoadFinished()
-                    {
-                        TimelineFragment.this.onLoadFinished();
-                    }
-
-                    @Override public void onBeginRefresh(TabType tabType)
-                    {
-                        fetchPortfolioList();
-                        fetchUserProfile();
-                    }
-                });
+        mainTimelineAdapter.setOnLoadFinishedListener(TimelineFragment.this::onLoadFinished);
         mainTimelineAdapter.getTimelineLoader().loadNext();
 
         timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
