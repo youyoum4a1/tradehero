@@ -19,16 +19,18 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
+import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.tradehero.th.api.social.ReferralCodeDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.news.ShareDialogFactory;
-import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -43,8 +45,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject SocialServiceWrapper socialServiceWrapper;
-    @Inject ShareDialogFactory shareDialogFactory;
+    @Inject SocialShareHelper socialShareHelper;
     @Inject AlertDialogUtil alertDialogUtil;
 
     @InjectView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
@@ -56,6 +57,12 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @Nullable private Subscription profileCacheSubscription;
     private UserProfileDTO userProfileDTO;
     @Nullable private Subscription shareReqCodeSubscription;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        socialShareHelper.setMenuClickedListener(createShareMenuListener());
+    }
 
     @Override public void onAttach(Activity activity)
     {
@@ -146,45 +153,40 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @OnClick(R.id.btn_referral_share)
     protected void shareToSocialNetwork(View view)
     {
-        // TODO
-        //shareDialog = shareDialogFactory.createShareDialog(
-        //        getActivity(),
-        //        discussionToShare,
-        //        createShareMenuClickedListener());
+        socialShareHelper.share(new ReferralCodeDTO());
     }
 
-    protected void effectShare(@NonNull SocialNetworkEnum socialNetworkEnum)
+    @NonNull protected SocialShareHelper.OnMenuClickedListener createShareMenuListener()
     {
-        alertDialogUtil.showProgressDialog(getActivity(), getString(R.string.referral_code_sharing_to_networks));
-        unsubscribe(shareReqCodeSubscription);
-        shareReqCodeSubscription = AndroidObservable.bindFragment(
-                this,
-                socialServiceWrapper.shareRx(new ReferralCodeShareFormDTO(socialNetworkEnum)))
-        .subscribe(createShareObserver());
+        return new ShareMenuClickedListener();
     }
 
-    @NonNull protected Observer<UserProfileDTO> createShareObserver()
+    protected class ShareMenuClickedListener implements SocialShareHelper.OnMenuClickedListener
     {
-        return new ShareObserver();
-    }
-
-    protected class ShareObserver implements Observer<UserProfileDTO>
-    {
-        @Override public void onNext(UserProfileDTO args)
+        @Override public void onCancelClicked()
         {
-            linkWith(args);
+            // Nothing to do
         }
 
-        @Override public void onCompleted()
+        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
         {
-            alertDialogUtil.dismissProgressDialog();
+            // Nothing to do
         }
 
-        @Override public void onError(Throwable e)
+        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO, List<SocialNetworkEnum> toConnect)
         {
-            alertDialogUtil.dismissProgressDialog();
+            // Nothing to do
+        }
+
+        @Override public void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
+        {
+            // Nothing to do?
+        }
+
+        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        {
             THToast.show(R.string.error_share_referral_code_on_network);
-            Timber.e(e, "Failed to share on social networks");
+            Timber.e(throwable, "Failed to share " + shareFormDTO);
         }
     }
 

@@ -79,7 +79,7 @@ import rx.functions.Func1;
     @NonNull public Observable<UserProfileDTO> shareReferralCodeRx(
             @NonNull ReferralCodeShareFormDTO reqFormDTO)
     {
-        return socialServiceRx.share(reqFormDTO)
+        return socialServiceRx.shareReferralCode(reqFormDTO)
                 .doOnNext(new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache));
     }
     //</editor-fold>

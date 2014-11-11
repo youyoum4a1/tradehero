@@ -6,6 +6,8 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTOFactory;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
+import com.tradehero.th.api.social.ReferralCodeDTO;
+import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationWithEnum;
 import com.tradehero.th.models.share.WeChatShareDestination;
@@ -44,6 +46,10 @@ public class SocialShareFormDTOFactory
                 return timelineItemShareFormDTOFactory.createFrom(
                         ((ShareDestinationWithEnum) shareDestination).getSocialNetworkEnum(),
                         (AbstractDiscussionCompactDTO) whatToShare);
+            }
+            if (whatToShare instanceof ReferralCodeDTO)
+            {
+                return new ReferralCodeShareFormDTO(((ShareDestinationWithEnum) shareDestination).getSocialNetworkEnum());
             }
         }
         throw new IllegalArgumentException("Unhandled ShareDestination " + shareDestination.getClass().getName() +

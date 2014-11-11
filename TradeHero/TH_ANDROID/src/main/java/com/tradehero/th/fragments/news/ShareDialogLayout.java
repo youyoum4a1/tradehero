@@ -103,13 +103,20 @@ public class ShareDialogLayout extends LinearLayout
             @SuppressWarnings("UnusedParameters") long id)
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
-        DTO discussionToShareCopy = whatToShare;
-        if (listenerCopy != null && discussionToShareCopy != null)
+        DTO whatToShareCopy = whatToShare;
+        if (listenerCopy != null && whatToShareCopy != null)
         {
-            listenerCopy.onShareRequestedClicked(
-                    socialShareFormDTOFactory.createForm(
-                            (ShareDestination) parent.getItemAtPosition(position),
-                            discussionToShareCopy));
+            if (whatToShareCopy instanceof SocialShareFormDTO)
+            {
+                listenerCopy.onShareRequestedClicked((SocialShareFormDTO) whatToShareCopy);
+            }
+            else
+            {
+                listenerCopy.onShareRequestedClicked(
+                        socialShareFormDTOFactory.createForm(
+                                (ShareDestination) parent.getItemAtPosition(position),
+                                whatToShareCopy));
+            }
         }
     }
 

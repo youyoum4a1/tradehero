@@ -32,6 +32,6 @@ interface SocialServiceRx
     //</editor-fold>
 
     @POST("/users/share/referralcode")
-    Observable<UserProfileDTO> share(
+    Observable<UserProfileDTO> shareReferralCode(
             @Body ReferralCodeShareFormDTO reqFormDTO);
 }
