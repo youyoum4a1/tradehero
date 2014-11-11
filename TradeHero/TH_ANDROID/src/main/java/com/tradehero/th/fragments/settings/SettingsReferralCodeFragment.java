@@ -173,17 +173,17 @@ public class SettingsReferralCodeFragment extends DashboardFragment
             // Nothing to do
         }
 
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO, List<SocialNetworkEnum> toConnect)
+        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
         {
             // Nothing to do
         }
 
-        @Override public void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
+        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO)
         {
             // Nothing to do?
         }
 
-        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
         {
             THToast.show(R.string.error_share_referral_code_on_network);
             Timber.e(throwable, "Failed to share " + shareFormDTO);

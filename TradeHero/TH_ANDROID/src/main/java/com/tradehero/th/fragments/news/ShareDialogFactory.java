@@ -27,7 +27,7 @@ public class ShareDialogFactory
      * @param menuClickedListener
      * @return
      */
-    public Dialog createShareDialog(
+    @NonNull public Dialog createShareDialog(
             @NonNull Context context,
             @NonNull DTO whatToShare,
             @Nullable ShareDialogLayout.OnShareMenuClickedListener menuClickedListener)

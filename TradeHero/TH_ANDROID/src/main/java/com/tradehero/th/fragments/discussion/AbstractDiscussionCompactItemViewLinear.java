@@ -204,20 +204,20 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         {
         }
 
-        @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
+        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
         {
         }
 
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO, List<SocialNetworkEnum> toConnect)
+        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
         {
         }
 
-        @Override public void onShared(SocialShareFormDTO shareFormDTO,
-                SocialShareResultDTO socialShareResultDTO)
+        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
+                @NonNull SocialShareResultDTO socialShareResultDTO)
         {
         }
 
-        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
         {
         }
 
