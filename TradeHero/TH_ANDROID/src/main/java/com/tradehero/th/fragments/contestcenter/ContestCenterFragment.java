@@ -1,25 +1,25 @@
 package com.tradehero.th.fragments.contestcenter;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTabHost;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TabHost;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.astuetz.PagerSlidingTabStrip;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.widget.THTabView;
-import javax.inject.Inject;
 
 public class ContestCenterFragment extends DashboardFragment
 {
-    @Inject GraphicUtil graphicUtil;
-
-    private static final int FRAGMENT_LAYOUT_ID = 10001;
+    @InjectView(R.id.tabs) PagerSlidingTabStrip pagerSlidingTabStrip;
+    @InjectView(R.id.pager) ViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -37,30 +37,48 @@ public class ContestCenterFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return addTabs();
+        View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
+        ButterKnife.inject(this, view);
+        initViews();
+        return view;
     }
 
-    private View addTabs()
+    @Override public void onDestroyView()
     {
-        FragmentTabHost mTabHost = new FragmentTabHost(getActivity());
-        mTabHost.setup(getActivity(), this.getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        graphicUtil.setBackground(mTabHost.getTabWidget(), Color.WHITE);
-        Bundle args = getArguments();
-        if (args == null)
+        pagerSlidingTabStrip.setViewPager(null);
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    private void initViews()
+    {
+        ContestCenterPagerAdapter adapter = new ContestCenterPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapter);
+        pagerSlidingTabStrip.setViewPager(viewPager);
+    }
+
+    private class ContestCenterPagerAdapter extends FragmentPagerAdapter
+    {
+        public ContestCenterPagerAdapter(FragmentManager fm)
         {
-            args = new Bundle();
-        }
-        ContestCenterTabType[] types = ContestCenterTabType.values();
-        for (ContestCenterTabType tabTitle : types)
-        {
-            args = new Bundle(args);
-            THTabView tabView = THTabView.inflateWith(mTabHost.getTabWidget());
-            String title = getString(tabTitle.titleRes);
-            tabView.setTitle(title);
-            TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabView);
-            mTabHost.addTab(tabSpec, tabTitle.tabClass, args);
+            super(fm);
         }
 
-        return mTabHost;
+        @Override public Fragment getItem(int position)
+        {
+            ContestCenterTabType tabType = ContestCenterTabType.values()[position];
+            Bundle args = new Bundle();
+            return Fragment.instantiate(getActivity(), tabType.tabClass.getName(), args);
+        }
+
+        @Override public int getCount()
+        {
+            return ContestCenterTabType.values().length;
+        }
+
+        @Override public CharSequence getPageTitle(int position)
+        {
+            return getString(ContestCenterTabType.values()[position].titleRes);
+        }
     }
 }

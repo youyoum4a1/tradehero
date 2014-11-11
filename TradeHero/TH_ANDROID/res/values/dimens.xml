@@ -196,4 +196,5 @@
   <dimen name="country_search_margin">5dp</dimen>
   <dimen name="dashboard_tabhost_height">48dp</dimen>
   <dimen name="dashboard_red_dot_dimen">5dp</dimen>
+  <dimen name="tab_strip_height">48dip</dimen>
 </resources>

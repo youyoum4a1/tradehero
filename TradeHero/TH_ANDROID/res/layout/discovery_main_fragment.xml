@@ -9,7 +9,7 @@
   <com.astuetz.PagerSlidingTabStrip
       android:id="@+id/tabs"
       android:layout_width="match_parent"
-      android:layout_height="48dip"/>
+      android:layout_height="@dimen/tab_strip_height"/>
   <com.tradehero.common.widget.NonSwipeableViewPager
       android:id="@+id/pager"
       android:layout_width="match_parent"
