@@ -61,6 +61,7 @@
             android:layout_marginLeft="2dp"
             android:layout_centerVertical="true"
             android:text="刚刚"
+            android:textColor="@color/text_gray_normal"
             />
 
         <TextView
@@ -73,7 +74,7 @@
             android:textSize="11sp"
             android:layout_marginLeft="2dp"
             android:layout_centerVertical="true"
-            android:text="刚刚2"
+            android:textColor="@color/text_gray_normal"
             />
 
         <TextView
@@ -109,6 +110,7 @@
             android:textColor="@color/timeline_item"
             android:textSize="@dimen/text_medium"
             android:textStyle="normal"
+            android:lineSpacingExtra="4dp"
             tools:text="Hello world!"
             android:maxLines="3"
             />

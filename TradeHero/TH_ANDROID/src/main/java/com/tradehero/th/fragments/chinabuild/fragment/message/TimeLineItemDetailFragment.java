@@ -164,7 +164,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         ListView lv = listTimeLine.getRefreshableView();
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item, null);
         lv.addHeaderView(mRefreshView);
-        //llDisscurssOrNews.setLayoutParams(new ListView.LayoutParams(AbsoluteLayout.LayoutParams.FILL_PARENT,ListView.LayoutParams.FILL_PARENT));
         initRoot(mRefreshView);
 
         initView();
@@ -215,7 +214,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public void initView()
     {
         tvUserTLContent.setMaxLines(1000);
-        //listTimeLine.setEmptyView(tvEmpty);
         listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listTimeLine.setAdapter(adapter);
 

@@ -44,6 +44,7 @@
             android:textSize="11sp"
             android:layout_alignParentRight="true"
             android:text="刚刚"
+            android:textColor="@color/text_gray_normal"
             />
 
         <TextView
@@ -53,9 +54,8 @@
             android:singleLine="true"
             android:layout_gravity="left"
             android:layout_marginLeft="2dp"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="@color/tradehero_blue"
-            android:text=""
             />
       </RelativeLayout>
 
@@ -68,6 +68,7 @@
             android:id="@+id/tvUserTLContent"
             android:layout_below="@id/tvUserTLTimeStamp"
             android:layout_width="wrap_content"
+            android:lineSpacingExtra="4dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dip"
             android:textColorLink="@color/timeline_item_link"
