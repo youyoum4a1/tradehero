@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.astuetz.PagerSlidingTabStrip;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
@@ -28,6 +29,7 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
+    @InjectView(R.id.tabs) PagerSlidingTabStrip pagerSlidingTabStrip;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -39,8 +41,14 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.discovery_main_fragment, container, false);
         ButterKnife.inject(this, view);
-        tabViewPager.setAdapter(discoveryPagerAdapter);
+        initViews();
         return view;
+    }
+
+    private void initViews()
+    {
+        tabViewPager.setAdapter(discoveryPagerAdapter);
+        pagerSlidingTabStrip.setViewPager(tabViewPager);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -66,6 +74,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         tabViewPager.setAdapter(null);
+        pagerSlidingTabStrip.setViewPager(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.NonSwipeableViewPager
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@android:color/holo_red_dark"
-    >
-
-  <android.support.v4.view.PagerTabStrip
+    android:orientation="vertical">
+  <com.astuetz.PagerSlidingTabStrip
+      android:id="@+id/tabs"
+      android:layout_width="match_parent"
+      android:layout_height="48dip"/>
+  <com.tradehero.common.widget.NonSwipeableViewPager
+      android:id="@+id/pager"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      tools:background="@android:color/white"
-      tools:textColor="@android:color/black"
+      tools:background="@android:color/holo_red_dark"
       />
-</com.tradehero.common.widget.NonSwipeableViewPager>
+</LinearLayout>
