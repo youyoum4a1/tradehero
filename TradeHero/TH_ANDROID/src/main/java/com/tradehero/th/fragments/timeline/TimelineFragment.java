@@ -15,10 +15,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.BottomTabs;
@@ -63,6 +63,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -171,9 +172,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
-
         loadingView = new ProgressBar(getActivity());
-
         ButterKnife.inject(this, view);
         initViews(view);
         return view;
@@ -200,9 +199,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.addFooterView(loadingView);
         }
         timelineListView.setAdapter(mainTimelineAdapter);
-
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-
         fetchPortfolioList();
     }
 
@@ -255,7 +252,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mainTimelineAdapter.setOnLoadFinishedListener(TimelineFragment.this::onLoadFinished);
         mainTimelineAdapter.getTimelineLoader().loadNext();
 
-        timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        FlagNearEdgeScrollListener nearEndScrollListener = createNearEndScrollListener();
+        nearEndScrollListener.lowerEndFlag();
+        nearEndScrollListener.activateEnd();
+        timelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(), nearEndScrollListener));
         swipeRefreshContainer.setOnRefreshListener(() -> {
             switch(currentTab)
             {
@@ -290,6 +290,19 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         fetchMessageThreadHeader();
 
         dashboardTabHost.get().setOnTranslate((x, y) -> btnContainer.setTranslationY(y));
+    }
+
+    private FlagNearEdgeScrollListener createNearEndScrollListener()
+    {
+        return new FlagNearEdgeScrollListener()
+        {
+            @Override public void raiseEndFlag()
+            {
+                super.raiseEndFlag();
+                mainTimelineAdapter.getTimelineLoader().loadPrevious();
+                loadingView.setVisibility(View.VISIBLE);
+            }
+        };
     }
 
     @Override public void onPause()
@@ -717,15 +730,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 THToast.show(R.string.error_fetch_message_thread_header);
                 Timber.e(e, "Error while getting message thread");
             }
-        }
-    }
-
-    private class TimelineLastItemVisibleListener implements PullToRefreshBase.OnLastItemVisibleListener
-    {
-        @Override public void onLastItemVisible()
-        {
-            mainTimelineAdapter.getTimelineLoader().loadPrevious();
-            loadingView.setVisibility(View.VISIBLE);
         }
     }
 
