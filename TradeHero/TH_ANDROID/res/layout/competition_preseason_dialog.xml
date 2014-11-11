@@ -10,7 +10,7 @@
       android:orientation="vertical"
       android:background="@drawable/rectangle_round_corner_white_bg"
       android:layout_gravity="center"
-      android:layout_width="300dp"
+      android:layout_width="@dimen/provider_preseason_popup_width"
       android:layout_height="wrap_content"
       >
 
@@ -34,8 +34,8 @@
 
         <ImageView
             android:id="@+id/preseason_title_image"
-            android:layout_width="192dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/provider_preseason_title_image_w"
+            android:layout_height="@dimen/provider_preseason_title_image_h"
             android:layout_margin="@dimen/margin_small"
             android:scaleType="fitCenter"
             tools:src="@drawable/upgrade_alerts_pressed"
@@ -43,8 +43,8 @@
 
         <ImageView
             android:id="@+id/preseason_prize_image"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="@dimen/provider_preseason_prize_image_w_h"
+            android:layout_height="@dimen/provider_preseason_prize_image_w_h"
             tools:src="@drawable/launcher"
             />
 
