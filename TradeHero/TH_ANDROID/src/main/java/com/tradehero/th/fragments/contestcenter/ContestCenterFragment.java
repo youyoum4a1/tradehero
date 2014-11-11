@@ -45,7 +45,6 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        pagerSlidingTabStrip.setViewPager(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
