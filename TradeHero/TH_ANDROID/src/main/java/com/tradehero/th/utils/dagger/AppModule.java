@@ -426,6 +426,7 @@ import java.util.Locale;
                         NotificationFragment.class,
                         NotificationListAdapter.class,
                         TimeLineItemDetailFragment.class,
+                        TimeLineDetailDiscussSecItem.class,
                         CompetitionCollegeFragment.class,
 
                         LoginSuggestDialogFragment.class,

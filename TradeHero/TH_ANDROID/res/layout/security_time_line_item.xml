@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:background="@drawable/listview_item_selector"
-    android:id="@+id/llItemAll"
-    android:orientation="vertical"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/listview_item_selector"
+        android:id="@+id/llItemAll"
+        android:orientation="vertical"
+        >
+
+  <!--<include layout="@layout/separate_line_transpant" />-->
 
   <LinearLayout
       android:id="@+id/llAllTimeLine"
@@ -73,7 +74,6 @@
             android:textColor="@color/timeline_item"
             android:textSize="@dimen/text_medium"
             android:textStyle="normal"
-            tools:text="Hello world!"
             android:maxLines="3"
             />
       </LinearLayout>

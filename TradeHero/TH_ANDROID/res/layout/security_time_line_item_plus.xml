@@ -2,19 +2,19 @@
 
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:background="@drawable/listview_item_selector"
+        android:paddingTop="10dp"
         android:id="@+id/llItemAll"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
     <LinearLayout
             android:id="@+id/llAllTimeLine"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:orientation="horizontal"
+            android:paddingRight="10dp">
 
         <ImageView
                 android:id="@+id/imgSecurityTLUserHeader"
@@ -73,18 +73,12 @@
                         android:textColor="@color/timeline_item"
                         android:textSize="@dimen/text_medium"
                         android:textStyle="normal"
-                        tools:text="Hello world!"
                         android:maxLines="3"
                         />
             </LinearLayout>
-
-
-            <include
-                    android:id="@+id/includeTLOperater"
-                    layout="@layout/timeline_operater_line"
-                    />
+            <include android:id="@+id/includeTLOperater" layout="@layout/timeline_operater_line"/>
         </LinearLayout>
-
     </LinearLayout>
+    <View android:layout_width="match_parent" android:layout_height="15dp" android:background="#eeeeef"/>
 </LinearLayout>
 

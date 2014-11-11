@@ -111,13 +111,6 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
     {
 
             final AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
-            //if(item!=null && item instanceof EmptyDiscussionCompactDTO)
-            //{
-            //    convertView = inflater.inflate(R.layout.separate_line_transpant, viewGroup, false);
-            //    return convertView;
-            //}
-            //else if (item != null)
-            //{
                 ViewHolder holder = null;
                 if (convertView == null)
                 {
@@ -133,17 +126,6 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
                     holder.imgSecurityTLUserHeader = (ImageView) convertView.findViewById(R.id.imgSecurityTLUserHeader);
                     holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
-                    ////是股票交易
-                    //holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
-                    //holder.tvTradeName = (TextView) convertView.findViewById(R.id.tvTradeName);
-                    //holder.tvTradePrice = (TextView) convertView.findViewById(R.id.tvTradePrice);
-                    //holder.tvTradeCount = (TextView) convertView.findViewById(R.id.tvTradeCount);
-                    //holder.tvTradeMoney = (TextView) convertView.findViewById(R.id.tvTradeMoney);
-                    //holder.tvTradeCost = (TextView) convertView.findViewById(R.id.tvTradeCost);
-                    //holder.title0 = (TextView) convertView.findViewById(R.id.title0);
-                    //holder.title1 = (TextView) convertView.findViewById(R.id.title1);
-                    //holder.title2 = (TextView) convertView.findViewById(R.id.title2);
-
                     //赞，评论，分享
                     holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
                     holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);

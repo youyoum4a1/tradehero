@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <ImageView android:id="@+id/imageview_discuss_second_avatar" android:layout_width="30dp"
+               android:layout_height="30dp" android:layout_marginLeft="10dp" android:layout_marginBottom="10dp" android:layout_marginRight="5dp"
+               android:layout_marginTop="10dp" android:src="@drawable/default_image"
+               android:scaleType="fitCenter"/>
+
+    <LinearLayout android:id="@+id/linearlayout_discuss_second_allcontent"
+                  android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="vertical" android:layout_gravity="center_vertical"
+                  android:layout_marginRight="12dp">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+            <TextView android:id="@+id/textview_discuss_second_user" android:layout_width="wrap_content"
+                      android:singleLine="true"
+                      android:textSize="13sp"
+                      android:maxEms="8" android:layout_height="wrap_content" android:textColor="@color/tradehero_blue"
+                      android:layout_centerVertical="true" android:text="User"
+                      android:layout_alignParentLeft="true"/>
+            <TextView android:id="@+id/textview_discuss_second_time" android:layout_width="wrap_content"
+                      android:singleLine="true"
+                      android:textSize="11sp"
+                      android:text="moment ago" android:layout_height="wrap_content"
+                      android:textColor="@color/text_gray_normal"
+                      android:layout_centerVertical="true"
+                      android:layout_alignParentRight="true"
+                    />
+        </RelativeLayout>
+        <com.tradehero.th.widget.MarkdownTextView android:id="@+id/textview_discuss_second_content" android:layout_width="wrap_content"
+                  android:textSize="14sp" android:layout_height="wrap_content" android:textColor="#000000"
+                  android:layout_marginTop="5dp" android:layout_marginBottom="10dp" android:layout_centerVertical="true"
+                  android:text="Content" android:layout_alignParentLeft="true"/>
+        <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/separate_line_color" />
+    </LinearLayout>
+
+</LinearLayout>

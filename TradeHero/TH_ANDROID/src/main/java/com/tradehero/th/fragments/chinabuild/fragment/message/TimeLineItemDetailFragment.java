@@ -22,8 +22,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
+import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
 import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
@@ -61,7 +61,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -78,11 +77,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private PaginatedDiscussionListKey discussionListKey;
     @Inject DiscussionListCacheNew discussionListCache;
 
-    //@InjectView(R.id.tvTimeLineDetailContent) TextView tvTimeLineDetailContent;
     @InjectView(R.id.btnSend) Button btnSend;
     @InjectView(R.id.edtSend) EditText edtSend;
 
-    private SecurityTimeLineDiscussOrNewsAdapter adapter;
+    private TimeLineDetailDiscussSecItem adapter;
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
@@ -133,7 +131,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         super.onCreate(savedInstanceState);
         discussionFetchListener = createDiscussionCacheListener();
         initArgment();
-        adapter = new SecurityTimeLineDiscussOrNewsAdapter(getActivity(), true);
+        adapter = new TimeLineDetailDiscussSecItem(getActivity());
     }
 
     public void initArgment()
@@ -217,39 +215,35 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listTimeLine.setAdapter(adapter);
 
-        listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+        listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 fetchDiscussList(true);
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                //refreshDataMore(false);
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
             }
         });
 
-        adapter.setTimeLineOperater(new TimeLineBaseAdapter.TimeLineOperater()
-        {
-            @Override public void OnTimeLineItemClicked(int position)
-            {
-                Timber.d("ListItemLine clicked Position : " + position);
+        adapter.setListener(new TimeLineBaseAdapter.TimeLineOperater() {
+            @Override
+            public void OnTimeLineItemClicked(int position) {
                 setHintForSender(position);
             }
 
-            @Override public void OnTimeLinePraiseClicked(int position)
-            {
+            @Override
+            public void OnTimeLinePraiseClicked(int position) {
 
             }
 
-            @Override public void OnTimeLineCommentsClicked(int position)
-            {
+            @Override
+            public void OnTimeLineCommentsClicked(int position) {
 
             }
 
-            @Override public void OnTimeLineShareClied(int position)
-            {
+            @Override
+            public void OnTimeLineShareClied(int position) {
 
             }
         });
@@ -263,7 +257,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     }
 
     boolean isReplayFollower = false;
-    public void setHintForSender(int position)
+    public void setHintForSender(long position)
     {
         if (position == -1)//回复主题
         {
@@ -271,7 +265,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
         else//回复楼层
         {
-            AbstractDiscussionCompactDTO dto = adapter.getItem(position);
+            AbstractDiscussionCompactDTO dto = adapter.getItem((int)position);
+            if(dto == null){
+                return;
+            }
             if (dto instanceof DiscussionDTO)
             {
                 String displayName = ((DiscussionDTO) dto).user.getDisplayName();
@@ -288,21 +285,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
         openInputMethod();
     }
-
-    //public void closeInputMethod()
-    //{
-    //    boolean isShow = InputTools.KeyBoard(edtSend);
-    //    if (isShow)
-    //    {
-    //        InputTools.HideKeyboard(edtSend);
-    //        strReply = "";
-    //        edtSend.setText("");
-    //    }
-    //    else
-    //    {
-    //
-    //    }
-    //}
 
     public void openInputMethod()
     {

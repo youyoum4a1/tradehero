@@ -1450,15 +1450,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    //protected void detachMiddleCallbackUpdate()
-    //{
-    //    if (middleCallbackUpdate != null)
-    //    {
-    //        middleCallbackUpdate.setPrimaryCallback(null);
-    //    }
-    //    middleCallbackUpdate = null;
-    //}
-
     protected void detachMiddleCallbackDelete()
     {
         if (middleCallbackDelete != null)
