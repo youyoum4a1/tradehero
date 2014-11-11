@@ -29,7 +29,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
@@ -46,7 +45,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject SocialShareHelper socialShareHelper;
-    @Inject AlertDialogUtil alertDialogUtil;
 
     @InjectView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
     @InjectView(R.id.btn_referral_copy) View btnCopy;
@@ -72,9 +70,13 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_settings_referral_code_layout, container, false);
+        return inflater.inflate(R.layout.fragment_settings_referral_code_layout, container, false);
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        return view;
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -147,6 +149,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         ClipData clip = ClipData.newPlainText(getString(R.string.settings_primary_referral_code), userProfileDTO.referralCode);
         clipboardManager.setPrimaryClip(clip);
+        THToast.show(getString(R.string.referral_code_copied_clipboard, userProfileDTO.referralCode));
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})

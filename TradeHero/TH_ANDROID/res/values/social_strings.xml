@@ -36,6 +36,7 @@
 
   <string name="referral_code_copy_clipboard">Copy</string>
   <string name="referral_code_share_network">Share</string>
+  <string name="referral_code_copied_clipboard">%1$s copied to clipboard</string>
   <string name="referral_code_sharing_to_networks">Sharing your referral code to social network(s)</string>
   <string name="error_share_referral_code_on_network">Sharing on social network(s) failed</string>
 

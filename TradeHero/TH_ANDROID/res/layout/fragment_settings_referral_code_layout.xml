@@ -17,6 +17,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_medium"
         android:orientation="vertical"
         android:background="@color/white"
         >
@@ -63,6 +65,7 @@
             android:text="@string/referral_code_copy_clipboard"
             android:enabled="false"
             android:drawableLeft="@drawable/ic_action_content_content_copy_white"
+            android:drawableStart="@drawable/ic_action_content_content_copy_white"
             android:background="@drawable/blue_rounded_button_selector"
             />
 
@@ -76,6 +79,7 @@
             android:text="@string/referral_code_share_network"
             android:enabled="false"
             android:drawableLeft="@drawable/ic_action_social_share_white"
+            android:drawableStart="@drawable/ic_action_social_share_white"
             android:background="@drawable/blue_rounded_button_selector"
             />
 
