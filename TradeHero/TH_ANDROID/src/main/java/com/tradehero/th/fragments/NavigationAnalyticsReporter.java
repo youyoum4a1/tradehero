@@ -7,7 +7,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
-@Deprecated
+
 public class NavigationAnalyticsReporter implements DashboardNavigator.DashboardFragmentWatcher
 {
     private final Analytics analytics;
@@ -21,6 +21,20 @@ public class NavigationAnalyticsReporter implements DashboardNavigator.Dashboard
 
     @Override public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
     {
+        reportAnalytics(fragmentClass);
+
+        dashboardTabHost.showTabBar();
+        for (RootFragmentType rootFragmentType: RootFragmentType.forBottomBar())
+        {
+            if (rootFragmentType.fragmentClass == fragmentClass)
+            {
+                dashboardTabHost.setCurrentTabByTag(rootFragmentType.toString());
+                return;
+            }
+        }
+    }
+
+    private <T extends Fragment> void reportAnalytics(Class<T> fragmentClass) {
         if (RootFragmentType.values()[dashboardTabHost.getCurrentTab()].fragmentClass == fragmentClass)
         {
             analytics.fireEvent(new SingleAttributeEvent(

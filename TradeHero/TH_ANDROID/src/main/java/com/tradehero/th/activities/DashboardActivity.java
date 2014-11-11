@@ -250,14 +250,11 @@ public class DashboardActivity extends BaseActivity
     {
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
-        dashboardTabHost.setAnalytics(analytics);
         dashboardTabHost.setOnTabChangedListener(tabId -> {
             RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
             navigator.goToTab(selectedFragmentType);
         });
-        navigator.addDashboardFragmentWatcher(dashboardTabHost);
-        //this is not work, we need separate bottom and side, in below this always bottom
-//        navigator.addDashboardFragmentWatcher(analyticsReporter.get());
+        navigator.addDashboardFragmentWatcher(analyticsReporter.get());
     }
 
     private void initBroadcastReceivers()
