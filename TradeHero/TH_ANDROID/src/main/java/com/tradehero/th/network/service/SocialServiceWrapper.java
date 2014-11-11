@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
@@ -10,8 +11,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
-import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -23,22 +22,16 @@ import rx.functions.Func1;
 {
     @NonNull private final SocialServiceRx socialServiceRx;
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final UserProfileCacheRx userProfileCache;
-    @NonNull private final HomeContentCacheRx homeContentCache;
     @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialServiceWrapper(
             @NonNull SocialServiceRx socialServiceRx,
             @NonNull CurrentUserId currentUserId,
-            @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull HomeContentCacheRx homeContentCache,
             @NonNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
     {
         this.socialServiceRx = socialServiceRx;
         this.currentUserId = currentUserId;
-        this.userProfileCache = userProfileCache;
-        this.homeContentCache = homeContentCache;
         this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
     //</editor-fold>
@@ -76,11 +69,10 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Share Referral Code">
-    @NonNull public Observable<UserProfileDTO> shareReferralCodeRx(
+    @NonNull public Observable<BaseResponseDTO> shareReferralCodeRx(
             @NonNull ReferralCodeShareFormDTO reqFormDTO)
     {
-        return socialServiceRx.shareReferralCode(reqFormDTO)
-                .doOnNext(new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache));
+        return socialServiceRx.shareReferralCode(reqFormDTO);
     }
     //</editor-fold>
 }

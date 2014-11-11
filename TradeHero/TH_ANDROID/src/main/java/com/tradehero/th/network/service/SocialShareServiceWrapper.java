@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.share.UserProfileSocialShareResultDTO;
 import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
 import javax.inject.Inject;
@@ -50,9 +49,9 @@ import rx.Observable;
                 .map(BaseResponseSocialShareResultDTO::new);
     }
 
-    @NonNull public Observable<UserProfileSocialShareResultDTO> shareRx(@NonNull ReferralCodeShareFormDTO shareFormDTO)
+    @NonNull public Observable<BaseResponseSocialShareResultDTO> shareRx(@NonNull ReferralCodeShareFormDTO shareFormDTO)
     {
         return socialServiceWrapper.shareReferralCodeRx(shareFormDTO)
-                .map(UserProfileSocialShareResultDTO::new);
+                .map(BaseResponseSocialShareResultDTO::new);
     }
 }
