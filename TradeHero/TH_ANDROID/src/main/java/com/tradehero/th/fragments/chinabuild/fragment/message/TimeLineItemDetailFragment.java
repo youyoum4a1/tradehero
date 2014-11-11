@@ -121,6 +121,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView tvTLPraise;
     private TextView tvTLComment;
     private TextView tvTLShare;
+    private TextView btnTLPraise;
 
     private LinearLayout mRefreshView;
 
@@ -194,6 +195,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
         tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
         tvTLShare = (TextView) view.findViewById(R.id.tvTLShare);
+        btnTLPraise = (TextView)view.findViewById(R.id.btnTLPraise);
 
         tvUserTLName.setOnClickListener(this);
         imgSecurityTLUserHeader.setOnClickListener(this);
@@ -450,6 +452,13 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                         .placeholder(R.drawable.superman_facebook)
                         .error(R.drawable.superman_facebook)
                         .into(imgSecurityTLUserHeader);
+            }
+
+            if(dto.voteDirection == 1){
+                btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
+            }
+            if(dto.voteDirection == 0){
+                btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
             }
 
             tvTLComment.setText("" + dto.commentCount);

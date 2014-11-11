@@ -38,13 +38,14 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
@@ -339,6 +340,13 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     });
                 }
                 holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+            }
+
+            if(item.voteDirection == 1){
+                holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
+            }
+            if(item.voteDirection == 0){
+                holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
             }
 
             holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));

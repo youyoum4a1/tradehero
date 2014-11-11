@@ -10,11 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,11 +28,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -112,13 +104,14 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -241,6 +234,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.llTLComment) LinearLayout llTLComment;
     @InjectView(R.id.llTLShare) LinearLayout llTLShare;
     @InjectView(R.id.tvTLPraise) TextView tvTLPraise;
+    @InjectView(R.id.btnTLPraise) TextView btnTLPraise;
     @InjectView(R.id.tvTLComment) TextView tvTLComment;
     @InjectView(R.id.tvTLShare) TextView tvTLShare;
     @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout bottomBarLL;
@@ -1744,6 +1738,13 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                         .placeholder(R.drawable.superman_facebook)
                         .error(R.drawable.superman_facebook)
                         .into(imgSecurityTLUserHeader);
+            }
+
+            if(dto.voteDirection == 1){
+                btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
+            }
+            if(dto.voteDirection == 0){
+                btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
             }
 
             tvTLComment.setText("" + dto.commentCount);

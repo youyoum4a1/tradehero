@@ -25,12 +25,13 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 {
@@ -201,6 +202,13 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                             openUserProfile(((DiscussionDTO) item).user.id);
                         }
                     });
+                }
+
+                if(item.voteDirection == 1){
+                    holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
+                }
+                if(item.voteDirection == 0){
+                    holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
                 }
 
                 holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));
