@@ -67,7 +67,11 @@ public class ContestCenterFragment extends DashboardFragment
         @Override public Fragment getItem(int position)
         {
             ContestCenterTabType tabType = ContestCenterTabType.values()[position];
-            Bundle args = new Bundle();
+            Bundle args = getArguments();
+            if (args == null)
+            {
+                args = new Bundle();
+            }
             return Fragment.instantiate(getActivity(), tabType.tabClass.getName(), args);
         }
 
