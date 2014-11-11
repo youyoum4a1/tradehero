@@ -110,16 +110,9 @@ public class LeaderboardDefDTO implements DTO
         switch (id)
         {
             case LeaderboardDefKeyKnowledge.MOST_SKILLED_ID:
-                return //LeaderboardSortType.HeroQuotient.getFlag()
-            //            |
-            LeaderboardSortType.Roi.getFlag()
-                        | LeaderboardSortType.Followers.getFlag()
-                        | LeaderboardSortType.Comments.getFlag()
-                        | LeaderboardSortType.SharpeRatio.getFlag();
+                return LeaderboardSortType.Roi.getFlag();
             default:
-                return
-                //LeaderboardSortType.HeroQuotient.getFlag()          |
-                LeaderboardSortType.Roi.getFlag();
+                return LeaderboardSortType.Roi.getFlag();
         }
     }
 

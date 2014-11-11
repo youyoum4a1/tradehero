@@ -6,12 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_item_height"
+    android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
+    android:gravity="center"
     android:padding="@dimen/grid_item_bg_border_width"
     android:background="@drawable/grid_item_bg"
     >
-  <!--android:background="@drawable/trending_grid_item_bg2"-->
-  <!--android:layout_height="@dimen/security_item_height"-->
 
     <com.makeramen.RoundedImageView
       android:id="@+id/stock_bg_logo"
@@ -30,8 +30,6 @@
       android:id="@+id/stock_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="5dp"
-      android:layout_marginRight="5dp"
       android:layout_centerHorizontal="true"
       android:ellipsize="marquee"
       android:marqueeRepeatLimit="marquee_forever"
@@ -48,11 +46,8 @@
       android:layout_height="@dimen/security_logo_height"
       android:layout_below="@id/stock_name"
       android:layout_centerHorizontal="true"
-      android:layout_marginBottom="2dp"
-      android:layout_marginTop="0dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
       android:contentDescription="@null"
+      android:adjustViewBounds="false"
       android:scaleType="fitCenter"
       tools:src="@drawable/flag_country_round_united_states"/>
 
@@ -81,7 +76,6 @@
         android:id="@+id/profit_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
         android:lines="1"
         tools:text="@string/arrow_prefix_positive"
         style="@style/TH.Body"
@@ -92,8 +86,6 @@
         android:id="@+id/currency_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="4dp"
         android:lines="1"
         style="@style/TH.Body"
         tools:text="US$"

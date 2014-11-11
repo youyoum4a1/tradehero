@@ -11,7 +11,7 @@
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/common_margin_10"
+      android:layout_margin="@dimen/margin_small"
       android:gravity="center_horizontal"
       android:text="@string/invite_code_title"
       style="@style/TH.Headline"
@@ -21,7 +21,9 @@
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_margin="@dimen/common_margin_10"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginTop="@dimen/margin_xsmall"
       android:gravity="center_horizontal"
       android:text="@string/invite_code_message"
       style="@style/TH.Body"
@@ -45,7 +47,7 @@
           style="@style/TH.Title.Accented"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_10"
+          android:layout_margin="@dimen/margin_small"
           android:maxLength="6"
           android:padding="@dimen/discussion_action_buttons_drawable_padding"
           android:inputType="text|textCapCharacters"
@@ -129,7 +131,7 @@
       <TextView
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/common_margin_10"
+          android:layout_margin="@dimen/margin_small"
           android:text="@string/referral_code_callback_success"
           />
 

@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_10"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:gravity="center"
         android:text="@string/security_on_board_select_invitation_come_on"
         style="@style/TH.Body"
@@ -37,7 +37,7 @@
       android:id="@+id/switcher_stock"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_margin="@dimen/common_margin_4"
+      android:layout_margin="@dimen/margin_xsmall"
       >
 
     <ProgressBar
@@ -51,8 +51,8 @@
         android:id="@+id/stocks_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:horizontalSpacing="@dimen/common_margin_10"
-        android:verticalSpacing="@dimen/common_margin_10"
+        android:horizontalSpacing="@dimen/margin_xsmall"
+        android:verticalSpacing="@dimen/margin_xsmall"
         android:numColumns="@integer/trending_list_column_count"
         />
 

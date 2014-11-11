@@ -87,8 +87,8 @@
     followers&#8230;</string>
   <string name="settings_alipay_successful_update">Alipay account successfully updated</string>
   <string name="settings_transaction_header">Transaction History</string>
-  <string name="settings_transaction_date">DATE</string>
-  <string name="settings_transaction_balance">BALANCE</string>
-  <string name="settings_transaction_comment">COMMENT</string>
+  <string name="settings_transaction_date">Date</string>
+  <string name="settings_transaction_balance">Balance</string>
+  <string name="settings_transaction_comment">Comment</string>
 
 </resources>

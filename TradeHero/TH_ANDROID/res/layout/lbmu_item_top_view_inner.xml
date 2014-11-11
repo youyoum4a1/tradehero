@@ -67,7 +67,6 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_user_item_fof"
       android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
-      android:layout_marginTop="2dp"
       >
 
     <TextView

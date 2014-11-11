@@ -9,7 +9,6 @@
       android:id="@+id/leaderboard_def_item_icon_container"
       android:layout_width="@dimen/leaderboard_def_item_icon_container"
       android:layout_height="@dimen/leaderboard_def_item_icon_container"
-      android:layout_marginLeft="@dimen/leaderboard_title_text_padding"
       >
 
     <ImageView

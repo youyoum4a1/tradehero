@@ -27,7 +27,7 @@
       android:layout_toRightOf="@id/country_logo"
       android:layout_centerVertical="true"
       style="@style/TH.Subhead"
-      android:layout_marginLeft="@dimen/common_margin_10"
+      android:layout_marginLeft="@dimen/margin_small"
       tools:text="AQ"
       />
 
@@ -38,7 +38,7 @@
       android:layout_toRightOf="@id/country_code"
       android:layout_centerVertical="true"
       style="@style/TH.Subhead"
-      android:layout_marginLeft="@dimen/common_margin_10"
+      android:layout_marginLeft="@dimen/margin_small"
       tools:text="AQ"
       />
 

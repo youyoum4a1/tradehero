@@ -37,9 +37,9 @@
 
     <ImageView
         android:id="@+id/leaderboard_user_item_network_label"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="12dp"
+        android:layout_width="@dimen/small_icon_w_h"
+        android:layout_height="@dimen/small_icon_w_h"
+        android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"/>
 
     <ImageView
@@ -66,8 +66,6 @@
         android:singleLine="false"
         android:layout_toRightOf="@id/leaderboard_user_item_profile_picture"
         android:layout_toLeftOf="@+id/leaderboard_user_item_invite_btn"
-        android:layout_marginLeft="@dimen/common_margin_2"
-        android:layout_marginRight="@dimen/common_margin_2"
         android:shadowColor="@color/light_grey"
         android:shadowDy="1"
         android:shadowRadius="1"
@@ -80,9 +78,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/common_margin_4"
-        android:layout_marginRight="@dimen/common_margin_10"
-        android:layout_marginBottom="@dimen/common_margin_4"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/margin_small"
         android:text="@string/invite"
         style="@style/TH.Btn_Invite_Action"
         />

@@ -7,8 +7,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/margin_small"
-    android:paddingTop="@dimen/margin_small"
+    android:paddingBottom="@dimen/margin_xsmall"
+    android:paddingTop="@dimen/margin_xsmall"
     tools:background="@color/black">
 
     <ImageView
@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_xsmall"
         style="@style/TH.ResideMenuSmall.Text"
         android:text="@string/dashboard_store" />
 

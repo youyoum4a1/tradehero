@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    >
 
   <LinearLayout
-      android:layout_marginTop="50dp"
-      android:layout_marginRight="20dp"
-      android:layout_marginLeft="20dp"
+      android:layout_marginTop="@dimen/margin_medium"
+      android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginLeft="@dimen/margin_small"
       android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      >
 
     <TextView
         android:text="@string/settings_alipay_label"
-        android:textSize="20dp"
+        style="@style/TH.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"/>
+        android:layout_gravity="left"
+        />
 
-    <!--android:inputType="textEmailAddress"-->
-    <!--app:invalidDrawableRight="@drawable/warning_red"-->
     <com.tradehero.th.widget.ServerValidatedEmailText
         android:id="@+id/settings_alipay_email_text"
         android:hint="@string/settings_alipay_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dip"
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
@@ -42,7 +41,8 @@
         app:minTextLength="1"
         app:validatePattern="@string/regex_email_validator"
         app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
-        app:delayValidationByMilliSec="500"/>
+        app:delayValidationByMilliSec="500"
+        />
 
 
     <com.tradehero.th.widget.ServerValidatedEmailText
@@ -50,7 +50,6 @@
         android:hint="@string/settings_alipay_id_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dip"
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
@@ -61,7 +60,6 @@
         android:hint="@string/settings_alipay_realname_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dip"
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
         style="@style/TradeHero.Authentication.EditText"
@@ -72,22 +70,19 @@
         android:id="@+id/settings_alipay_update_button"
         android:text="@string/settings_alipay_update"
         android:layout_width="match_parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/margin_small"
         android:background="@drawable/authentication_button"
-        android:padding="@dimen/common_margin_10"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_headline"
-        android:textStyle="bold"
-        android:layout_height="wrap_content"/>
+        style="@style/TH.Button.Inverse"
+        android:layout_height="wrap_content"
+        />
 
     <TextView
         android:text="@string/settings_alipay_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_10"
-        android:layout_marginBottom="100dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_xlarge"
+        />
   </LinearLayout>
 
 </FrameLayout>

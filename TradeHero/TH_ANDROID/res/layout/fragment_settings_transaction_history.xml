@@ -7,31 +7,36 @@
     >
 
   <LinearLayout
-      android:layout_marginTop="16dp"
-      android:layout_marginBottom="12dp"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_marginBottom="@dimen/margin_small"
       android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:weightSum="6">
     <TextView
         android:text="@string/settings_transaction_date"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="40dp"
-        android:textSize="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        style="@style/TH.Subhead"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        />
     <TextView
         android:text="@string/settings_transaction_balance"
-        android:layout_marginLeft="@dimen/common_margin_10"
-        android:layout_marginRight="30dp"
-        android:textSize="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        style="@style/TH.Subhead"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
     <TextView
         android:text="@string/settings_transaction_comment"
-        android:layout_marginLeft="@dimen/common_margin_10"
-        android:textSize="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        style="@style/TH.Subhead"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        />
   </LinearLayout>
 
   <ListView android:id="@+id/transaction_list"

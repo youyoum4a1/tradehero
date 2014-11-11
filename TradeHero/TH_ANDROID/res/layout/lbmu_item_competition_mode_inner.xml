@@ -18,25 +18,28 @@
       android:layout_gravity="center_vertical"
       android:drawableLeft="@drawable/icn_competition_prize"
       android:visibility="gone"
-      android:layout_marginRight="@dimen/activity_horizontal_margin"
+      android:layout_marginRight="@dimen/margin_small"
       android:gravity="center"
-      android:text=""/>
+      android:text=""
+      />
 
   <include
       layout="@layout/lbmu_item_top_view_inner"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_toLeftOf="@id/leaderboard_prize_amount"
-      android:layout_alignParentLeft="true"/>
+      android:layout_alignParentLeft="true"
+      />
 
   <com.tradehero.th.fragments.leaderboard.ExpandingLayout
       android:id="@+id/expanding_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/leaderboard_user_item_basic_info"
+      android:layout_below="@+id/leaderboard_user_item_basic_info"
       android:orientation="vertical"
-      android:padding="8dp"
-      android:visibility="gone"
+      android:padding="@dimen/margin_xsmall"
+      android:visibility="visible"
+      tools:ignore="UnknownIdInLayout"
       >
 
     <!-- Hero Quotient -->
@@ -55,7 +58,8 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_user_hero_quotient"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          android:textColor="@color/light_grey"
+          />
 
       <TextView
           android:id="@+id/leaderboard_user_item_hq"
@@ -66,8 +70,8 @@
           android:textSize="@dimen/text_xxsmall"
           android:gravity="center"
           android:textStyle="bold"
-          android:paddingBottom="@dimen/common_margin_10"
-          android:layout_marginLeft="@dimen/common_margin_10"
+          android:paddingBottom="@dimen/margin_small"
+          android:layout_marginLeft="@dimen/margin_small"
           android:shadowColor="@color/light_grey"
           android:shadowDy="1"
           android:shadowRadius="1"
@@ -81,7 +85,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -89,14 +94,15 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_p_n_l"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <TextView
           android:id="@+id/lbmu_pl"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
+          style="@style/TH.InfoValue"
           tools:text="US$ 92,579,534"
           />
 
@@ -107,7 +113,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -115,14 +122,15 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_period"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <TextView
           android:id="@+id/lbmu_period"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
+          style="@style/TH.InfoValue"
           tools:text="27 Jan 2014 - 3 Feb 2014"
           />
 
@@ -143,12 +151,13 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_user_sharpe_ratio"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
+          android:paddingLeft="@dimen/margin_small"
           android:layout_height="wrap_content"
           >
 
@@ -157,14 +166,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            style="@style/TH.InfoValue"
             />
 
         <TextView
             android:id="@+id/lbmu_volatility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/common_margin_10"
-            android:textColor="@color/gray_1"
+            style="@style/TH.InfoValue"
             />
 
       </LinearLayout>
@@ -176,7 +185,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -185,23 +195,17 @@
           android:text="@string/leaderboard_number_trades_in_period_title"
           android:gravity="right"
           android:lines="1"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
-      <LinearLayout
+      <TextView
+          android:id="@+id/lbmu_number_trades_in_period"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
-          >
-
-        <TextView
-            android:id="@+id/lbmu_number_trades_in_period"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="21"
-            />
-
-      </LinearLayout>
+          style="@style/TH.InfoValue"
+          tools:text="21"
+          />
 
     </LinearLayout>
 
@@ -210,7 +214,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -218,23 +223,17 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_win_ratio_title"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
-      <LinearLayout
+      <TextView
+          android:id="@+id/lbmu_win_ratio"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
-          >
-
-        <TextView
-            android:id="@+id/lbmu_win_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="66.8%"
-            />
-
-      </LinearLayout>
+          style="@style/TH.InfoValue"
+          tools:text="66.8%"
+          />
 
     </LinearLayout>
 
@@ -243,7 +242,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -251,24 +251,19 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_avg_days_held"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
-      <LinearLayout
+
+      <TextView
+          android:id="@+id/lbmu_avg_days_held"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
-          >
-
-        <TextView
-            android:id="@+id/lbmu_avg_days_held"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            tools:text="3.77"
-            />
-
-      </LinearLayout>
+          android:textStyle="bold"
+          style="@style/TH.InfoValue"
+          tools:text="3.77"
+          />
 
     </LinearLayout>
 
@@ -277,7 +272,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -285,15 +281,16 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_benchmark_roi"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <TextView
           android:id="@+id/lbmu_benchmark_roi"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
+          android:paddingLeft="@dimen/margin_small"
           android:layout_height="wrap_content"
-          android:textColor="@color/gray_1"
+          style="@style/TH.InfoValue"
           tools:text="0.11% (S&amp;P 500)"
           />
 
@@ -304,7 +301,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -312,12 +310,12 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_positions_count"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
           >
 
@@ -326,6 +324,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            style="@style/TH.InfoValue"
             tools:text="12"
             />
 
@@ -333,8 +332,7 @@
             android:id="@+id/lbmu_number_of_trades"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/common_margin_10"
-            android:textColor="@color/gray_1"
+            style="@style/TH.InfoValue"
             tools:text="(21 trades)"
             />
 
@@ -347,7 +345,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -355,15 +354,15 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_followers_count"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <TextView
           android:id="@+id/lbmu_followers_count"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
-          android:textStyle="bold"
+          style="@style/TH.InfoValue"
           tools:text="3"
           />
 
@@ -374,7 +373,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="2dp">
+        android:paddingBottom="2dp"
+        >
 
       <TextView
           android:layout_width="0dp"
@@ -382,15 +382,15 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_comments_count"
           android:gravity="right"
-          android:textColor="@color/light_grey"/>
+          style="@style/TH.InfoKey"
+          />
 
       <TextView
           android:id="@+id/lbmu_comments_count"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="@dimen/common_margin_10"
           android:layout_height="wrap_content"
-          android:textStyle="bold"
+          style="@style/TH.InfoValue"
           tools:text="1"
           />
 
@@ -399,7 +399,8 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/lbmu_item_action_buttons"/>
+        layout="@layout/lbmu_item_action_buttons"
+        />
 
   </com.tradehero.th.fragments.leaderboard.ExpandingLayout>
 

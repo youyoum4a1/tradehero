@@ -71,8 +71,6 @@ public class SendMessageFragment extends DashboardFragment
     @NonNull protected SubscriptionList sendMessageSubscriptions;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
-    @InjectView(R.id.message_spinner_lifetime) Spinner lifeTimeSpinner;
-    @InjectView(R.id.message_spinner_target_user) Spinner targetUserSpinner;
     @InjectView(R.id.message_type) TextView messageTypeView;
 
     @Inject CurrentUserId currentUserId;

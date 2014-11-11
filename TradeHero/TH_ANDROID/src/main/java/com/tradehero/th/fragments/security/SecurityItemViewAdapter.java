@@ -66,14 +66,6 @@ abstract public class SecurityItemViewAdapter
         SecurityCompactDTO dto = (SecurityCompactDTO) getItem(position);
         dtoView.display(dto);
         fineTune(position, dto, dtoView);
-        if (itemHeight == 0 && convertView.getHeight() > 0)
-        {
-            itemHeight = convertView.getHeight();
-            SharedPreferences pref = getContext().getSharedPreferences("trade_hero", Context.MODE_WORLD_WRITEABLE);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("trending_item_height", itemHeight);
-            editor.apply();
-        }
         return convertView;
     }
 
