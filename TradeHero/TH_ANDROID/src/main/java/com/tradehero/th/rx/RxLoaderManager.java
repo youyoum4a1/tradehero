@@ -76,6 +76,7 @@ public class RxLoaderManager
         if (subscription != null)
         {
             subscription.unsubscribe();
+            taskSubscriptions.remove(subscription);
         }
     }
 

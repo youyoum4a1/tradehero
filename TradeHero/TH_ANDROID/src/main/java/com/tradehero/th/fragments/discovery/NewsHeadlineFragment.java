@@ -220,6 +220,7 @@ public class NewsHeadlineFragment extends Fragment
     @Override public void onDestroyView()
     {
         newsSubscription.unsubscribe();
+        rxLoaderManager.remove(newsItemListKey);
         super.onDestroyView();
     }
 
