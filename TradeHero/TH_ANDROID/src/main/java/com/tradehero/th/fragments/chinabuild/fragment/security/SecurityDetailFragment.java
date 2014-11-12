@@ -10,12 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -33,11 +28,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -113,13 +104,14 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -1876,11 +1868,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             @Override
             public void run()
             {
-                int width = llSecurityBuy.getWidth();
-                int height = llSecurityBuy.getHeight();
-                int radius = llSecurityBuy.getHeight() / 2;
-                int position_y = (int) bottomBarLL.getY() + height / 2;
-                int position_x = (int) bottomBarLL.getX() + width / 2;
+                int width = betterViewAnimator.getWidth();
+                int height = betterViewAnimator.getHeight();
+                int radius = betterViewAnimator.getHeight() / 2;
+                int position_y = (int) betterViewAnimator.getY() + height / 2;
+                int position_x = (int) betterViewAnimator.getX() + width / 3;
                 ((DashboardActivity) getActivity()).showGuideView(position_x, position_y, radius, GuideView.TYPE_GUIDE_STOCK_BUG);
             }
         }, 500);
