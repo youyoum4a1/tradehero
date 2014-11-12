@@ -8,11 +8,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+
   <com.astuetz.PagerSlidingTabStrip
       android:id="@+id/tabs"
       android:layout_width="match_parent"
       android:layout_height="@dimen/tab_strip_height"
-      app:pstsShouldExpand="true"/>
+      app:pstsShouldExpand="true"
+      app:pstsIndicatorColor="@color/tradehero_blue"
+      app:pstsUnderlineHeight="0dp"
+      app:pstsTabBackground="@drawable/tab_indicator_ab_th"
+      app:pstsUnderlineColor="@color/red"
+      android:background="@drawable/ab_background"/>
 
   <com.tradehero.common.widget.NonSwipeableViewPager
       android:id="@+id/pager"
