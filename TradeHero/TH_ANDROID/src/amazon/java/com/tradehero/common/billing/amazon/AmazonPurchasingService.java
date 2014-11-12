@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 @Singleton public class AmazonPurchasingService
     implements PurchasingListener
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
         this.purchasingListeners = new LruCache<>(DEFAULT_MAP_LENGTH);
         this.waitingResponses = new LruCache<>(DEFAULT_MAP_LENGTH);
         PurchasingService.registerListener(appContext, this);
+        Timber.e(new Exception("Sandbox is " + PurchasingService.IS_SANDBOX_MODE), "Sandbox is %s", PurchasingService.IS_SANDBOX_MODE);
     }
     //</editor-fold>
 
