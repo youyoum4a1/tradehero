@@ -12,17 +12,13 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
 
 public class NewsPagerFragment extends Fragment
 {
     @InjectView(R.id.news_pager) ViewPager mViewPager;
-    @InjectView(R.id.news_carousel_wrapper) View mNewsCarouselWrapper;
     @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
-    private QuickReturnListViewOnScrollListener quickReturnScrollListener;
 
     @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
     {
@@ -60,9 +56,6 @@ public class NewsPagerFragment extends Fragment
                 mViewPager.setCurrentItem(position);
             }
         });
-        int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
-        quickReturnScrollListener = new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
-                mNewsCarouselWrapper, -headerHeight, null, 0);
     }
 
     @Override public void onAttach(Activity activity)
@@ -80,18 +73,7 @@ public class NewsPagerFragment extends Fragment
 
         @Override public Fragment getItem(int i)
         {
-            NewsHeadlineFragment newsHeadlineFragment = NewsHeadlineFragment.newInstance(NewsType.values()[i]);
-            newsHeadlineFragment.setScrollListener(quickReturnScrollListener);
-            return newsHeadlineFragment;
-        }
-
-        @Override public void destroyItem(ViewGroup container, int position, Object object)
-        {
-            if (object instanceof NewsHeadlineFragment)
-            {
-                ((NewsHeadlineFragment) object).setScrollListener(null);
-            }
-            super.destroyItem(container, position, object);
+            return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
         }
     }
 

@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -45,6 +47,8 @@ import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
+import static butterknife.ButterKnife.findById;
+
 public class NewsHeadlineFragment extends Fragment
 {
     private static final String NEWS_TYPE_KEY = NewsHeadlineFragment.class.getName() + ".newsType";
@@ -58,6 +62,7 @@ public class NewsHeadlineFragment extends Fragment
     private ProgressBar mBottomLoadingView;
     private PublishSubject<List<NewsItemDTOKey>> newsSubject;
     private Observable<List<NewsItemDTOKey>> paginatedNewsItemListKeyObservable;
+    private AbsListView.OnScrollListener scrollListener;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -80,7 +85,6 @@ public class NewsHeadlineFragment extends Fragment
 
     private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
-    private AbsListView.OnScrollListener scrollListener;
 
     public NewsHeadlineFragment()
     {
@@ -139,6 +143,9 @@ public class NewsHeadlineFragment extends Fragment
     private void initView(View view)
     {
         ButterKnife.inject(this, view);
+        int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
+        scrollListener = new QuickReturnListViewOnScrollListener(
+                QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
         mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
 
@@ -204,11 +211,6 @@ public class NewsHeadlineFragment extends Fragment
                         new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener, new OnScrollOperator(subscriber))));
         return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
                 .startWith(NewsItemListKeyHelper.copy(newsItemListKey, new PaginationDTO(1, newsItemListKey.perPage)));
-    }
-
-    public final void setScrollListener(AbsListView.OnScrollListener scrollListener)
-    {
-        this.scrollListener = scrollListener;
     }
 
     @Override public void onAttach(Activity activity)
