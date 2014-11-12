@@ -342,7 +342,7 @@ dependencies {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'
-  compile 'com.jakewharton:butterknife:5.1.2'
+  compile 'com.jakewharton:butterknife:6.0.0'
   // For Test
   androidTestCompile 'junit:junit:4.10'
   androidTestCompile('org.robolectric:robolectric:2.3') {
