@@ -26,6 +26,8 @@ public class ListViewObservable
     public static final boolean REFRESH_ON_LAST_ELEMENT = true;
     public static final boolean NO_REFRESH_ON_LAST_ELEMENT = false;
 
+    /** Deprecated since we are replacing PullToRefresh library by SwipeRefreshLayout */
+    @Deprecated
     public static <S extends AbsListView, T extends PullToRefreshAdapterViewBase<S>>
     Observable.OnSubscribe<PullToRefreshBase.Mode> refreshOperator(final T ptrListView, boolean refreshOnLastElement)
     {
