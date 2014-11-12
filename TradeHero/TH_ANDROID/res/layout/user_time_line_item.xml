@@ -142,13 +142,6 @@
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
             android:text="成交金额："/>
-        <TextView
-            android:id="@+id/title4"
-            android:layout_below="@id/title3"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:text="    手续费："/>
-
 
         <TextView
             android:id="@+id/tvTradeName"
@@ -186,14 +179,14 @@
             android:textColor="@color/black"
             android:text=""/>
 
-        <TextView
-            android:id="@+id/tvTradeCost"
-            android:layout_toRightOf="@id/title4"
-            android:layout_below="@id/title3"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/black"
-            android:text=""/>
+        <!--<TextView-->
+            <!--android:id="@+id/tvTradeCost"-->
+            <!--android:layout_toRightOf="@id/title4"-->
+            <!--android:layout_below="@id/title3"-->
+            <!--style="@style/buy_sale_title"-->
+            <!--android:layout_marginTop="3dp"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:text=""/>-->
 
       </RelativeLayout>
 
