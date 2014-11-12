@@ -4,7 +4,7 @@ buildscript {
     maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.14.0'
+    classpath 'com.android.tools.build:gradle:0.14.2'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
@@ -109,7 +109,7 @@ android {
     release {
       minifyEnabled true
       proguardFile 'proguard/proguard-android.txt'
-      shrinkResources true
+      shrinkResources false
       signingConfig signingConfigs.release
     }
   }
