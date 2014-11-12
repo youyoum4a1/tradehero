@@ -15,8 +15,8 @@ import javax.inject.Singleton;
 )
 public class FlavorDebugModule
 {
-    @Provides @Singleton AmazonPurchasingService provideAmazonPurchasingService(AmazonPurchasingServiceDummy amazonPurchasingServiceDummy)
-    {
-        return amazonPurchasingServiceDummy;
-    }
+    //@Provides @Singleton AmazonPurchasingService provideAmazonPurchasingService(AmazonPurchasingServiceDummy amazonPurchasingServiceDummy)
+    //{
+    //    return amazonPurchasingServiceDummy;
+    //}
 }
