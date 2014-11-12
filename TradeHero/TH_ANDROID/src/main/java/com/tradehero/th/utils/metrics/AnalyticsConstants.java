@@ -134,6 +134,7 @@ public class AnalyticsConstants
     public static final String WeiBo = "WeiBo";//
     public static final String DiscoverNewsViewed = "DiscoverNewsViewed";//
     public static final String DiscoverDiscussionsViewed = "DiscoverDiscussionsViewed";//
+    public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
 
     //Attribute
     public static final String ClickedFrom = "ClickedFrom";//
@@ -146,4 +147,8 @@ public class AnalyticsConstants
     public static final String Time1T3M = "1 to 3 minutes";//
     public static final String Time3T10M = "3 to 10 minutes";//
     public static final String Time10M = "more than 10 minutes";//
+    public static final String Trigger = "Trigger";//
+    public static final String Clicked = "Clicked";//
+    public static final String Level = "Level";//
+    public static final String Type = "Type";//
 }

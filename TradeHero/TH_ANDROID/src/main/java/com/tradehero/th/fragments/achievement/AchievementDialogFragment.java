@@ -3,12 +3,13 @@ package com.tradehero.th.fragments.achievement;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.InjectView;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
@@ -16,9 +17,13 @@ import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.AttributesEvent;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
+import butterknife.InjectView;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 
@@ -31,6 +36,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject AchievementCategoryCacheRx achievementCategoryCache;
+    @Inject Analytics analytics;
 
     //<editor-fold desc="Constructors">
     public AchievementDialogFragment()
@@ -110,6 +116,8 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 achievementProgressIndicator.setAchievementDef(pair.second.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
                 achievementProgressIndicator.animateCurrentLevel();
             }
+
+            reportAnalytics(userAchievementDTOCopy);
         }
 
         @Override public void onCompleted()
@@ -119,6 +127,14 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         @Override public void onError(Throwable e)
         {
         }
+    }
+
+    private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy) {
+        Map<String,String> collections = Collections.emptyMap();
+        collections.put(AnalyticsConstants.Trigger, AnalyticsConstants.Clicked);
+        collections.put(AnalyticsConstants.Type, userAchievementDTOCopy.achievementDef.thName);
+        collections.put(AnalyticsConstants.Level, String.valueOf(userAchievementDTOCopy.achievementDef.achievementLevel));
+        analytics.fireEvent(new AttributesEvent(AnalyticsConstants.AchievementNotificationScreen, collections));
     }
 
     protected class AchievementValueAnimatorUpdateListener extends AbstractAchievementValueAnimatorUpdateListener

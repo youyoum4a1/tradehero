@@ -8,12 +8,11 @@ import com.tapstream.sdk.Tapstream;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
-import dagger.Module;
-import dagger.Provides;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Singleton;
-
+import dagger.Module;
+import dagger.Provides;
 import static com.tradehero.th.utils.Constants.DOGFOOD_BUILD;
 import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
 import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_RELEASE;
