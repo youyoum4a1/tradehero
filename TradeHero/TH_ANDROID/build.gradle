@@ -4,7 +4,7 @@ buildscript {
     maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.12.+'
+    classpath 'com.android.tools.build:gradle:0.14.0'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
@@ -72,7 +72,6 @@ android {
   compileSdkVersion 20
 
   buildToolsVersion "20.0.0"
-  useOldManifestMerger=true
 
   dexOptions {
     // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
@@ -264,13 +263,13 @@ dependencies {
 
   // This does not work as we would hope. Second "setProperty" wins
   def fbGoogproj = project(':facebook-android-sdk:facebook')
-  fbGoogproj.setProperty('TEST_GOOGLE_PLAY', "true")
+  fbGoogproj.ext.TEST_GOOGLE_PLAY = "true"
   googleplayCompile (fbGoogproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
 
   def fbproj = project(':facebook-android-sdk:facebook')
-  fbproj.setProperty('TEST_GOOGLE_PLAY', "false")
+  fbGoogproj.ext.TEST_GOOGLE_PLAY = "false"
   amazonCompile (fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
