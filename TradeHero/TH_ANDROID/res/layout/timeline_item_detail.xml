@@ -44,6 +44,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:background="@color/transparent"
+            android:textSize="16sp"
             android:textColor="@color/tradehero_blue"/>
 
         <EditText
@@ -52,6 +53,7 @@
             android:layout_height="fill_parent"
             android:hint="@string/please_to_reply"
             android:singleLine="true"
+            android:textSize="16sp"
             android:maxLength="140"
             android:layout_toLeftOf="@id/btnSend"/>
       </RelativeLayout>

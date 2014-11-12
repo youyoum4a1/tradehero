@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,10 +31,12 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /*
     单个Position的交易详情
@@ -64,7 +65,7 @@ public class PositionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvPositionHoldTime) TextView tvPositionHoldTime;//持有时间
 
     @InjectView(R.id.listTrade) SecurityListView listView;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_my_securities_history) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
 
     private PositionTradeListAdapter adapter;
@@ -134,7 +135,8 @@ public class PositionDetailFragment extends DashboardFragment
 
         if(adapter!=null && adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_my_securities_history);
+            progressBar.startLoading();
         }
         else
         {
@@ -276,6 +278,7 @@ public class PositionDetailFragment extends DashboardFragment
 
         public void onFinish()
         {
+            progressBar.stopLoading();
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
         }
     }

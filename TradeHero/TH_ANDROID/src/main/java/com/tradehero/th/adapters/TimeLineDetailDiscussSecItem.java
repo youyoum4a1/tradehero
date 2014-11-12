@@ -90,7 +90,11 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter {
         if (item instanceof DiscussionDTO)
         {
             holder.content.setText(((DiscussionDTO) item).text);
-            holder.user.setText(((DiscussionDTO) item).user.getDisplayName());
+            if(((DiscussionDTO) item).user != null){
+                holder.user.setText(((DiscussionDTO) item).user.getDisplayName());
+            }else{
+                holder.user.setText("");
+            }
             picasso.get()
                     .load(((DiscussionDTO) item).user.picture)
                     .placeholder(R.drawable.superman_facebook)

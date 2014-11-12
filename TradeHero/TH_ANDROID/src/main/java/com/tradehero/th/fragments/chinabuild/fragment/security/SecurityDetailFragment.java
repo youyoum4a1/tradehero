@@ -1872,7 +1872,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 int height = betterViewAnimator.getHeight();
                 int radius = betterViewAnimator.getHeight() / 2;
                 int position_y = (int) betterViewAnimator.getY() + height / 2;
-                int position_x = (int) betterViewAnimator.getX() + width / 3;
+                int position_x = (int) betterViewAnimator.getX() + width / 4;
                 ((DashboardActivity) getActivity()).showGuideView(position_x, position_y, radius, GuideView.TYPE_GUIDE_STOCK_BUG);
             }
         }, 500);
