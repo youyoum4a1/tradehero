@@ -2,9 +2,11 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
   <TextView
       android:id="@android:id/empty"
@@ -16,16 +18,24 @@
       android:visibility="gone"
       />
 
-  <com.handmark.pulltorefresh.library.PullToRefreshListView
-      android:id="@+id/generic_ptr_list"
+  <android.support.v4.widget.SwipeRefreshLayout
+      android:id="@+id/generic_swipe_refresh_layout"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:clipToPadding="false"
-      tools:listitem="@layout/achievement_cell_view"
-      app:ptrMode="pullFromStart"
-      app:ptrScrollingWhileRefreshingEnabled="true"
-      android:listSelector="@android:color/transparent"
-      android:cacheColorHint="@android:color/transparent"/>
+      >
+
+    <ListView
+        android:id="@+id/generic_ptr_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        tools:listitem="@layout/achievement_cell_view"
+        android:listSelector="@android:color/transparent"
+        android:cacheColorHint="@android:color/transparent"
+        />
+    
+  </android.support.v4.widget.SwipeRefreshLayout>
+
 
   <ProgressBar
       android:id="@android:id/progress"

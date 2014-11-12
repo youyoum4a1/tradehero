@@ -1,12 +1,14 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -26,7 +28,8 @@ public class AchievementListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_USER_ID = AchievementListFragment.class.getName() + ".userId";
 
-    @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
+    @InjectView(R.id.generic_swipe_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.generic_ptr_list) protected ListView listView;
     @InjectView(android.R.id.progress) protected ProgressBar progressBar;
     @InjectView(android.R.id.empty) protected View emptyView;
 
@@ -77,9 +80,9 @@ public class AchievementListFragment extends DashboardFragment
         achievementListAdapter = new AchievementListAdapter(getActivity(), R.layout.achievement_cell_view);
         listView.setAdapter(achievementListAdapter);
 
-        listView.setOnRefreshListener(listViewPullToRefreshBase -> {
-            listView.setRefreshing();
-            attachAndFetchAchievementCategoryListener();
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            AchievementListFragment.this.attachAndFetchAchievementCategoryListener();
         });
     }
 
@@ -133,7 +136,7 @@ public class AchievementListFragment extends DashboardFragment
     {
         @Override public void onNext(Pair<UserBaseKey, AchievementCategoryDTOList> pair)
         {
-            listView.onRefreshComplete();
+            swipeRefreshLayout.setRefreshing(false);
             achievementListAdapter.clear();
             achievementListAdapter.addAll(pair.second);
             achievementListAdapter.notifyDataSetChanged();
@@ -150,7 +153,7 @@ public class AchievementListFragment extends DashboardFragment
 
         @Override public void onError(Throwable e)
         {
-            listView.onRefreshComplete();
+            swipeRefreshLayout.setRefreshing(false);
             THToast.show(getString(R.string.error_fetch_achievements));
             Timber.e(e, "Error fetching the list of competition info cell");
             hideProgress();
