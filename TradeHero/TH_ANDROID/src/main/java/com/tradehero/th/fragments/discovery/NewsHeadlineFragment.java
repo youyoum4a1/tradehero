@@ -37,6 +37,7 @@ import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
+import java.util.Random;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
@@ -154,9 +155,10 @@ public class NewsHeadlineFragment extends Fragment
         mNewsListView.addFooterView(mBottomLoadingView);
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
 
+        final Random random = new Random();
         Observable<NewsItemListKey> newsItemListKeyObservable = createNewsItemListKeyObservable()
                 .share() // convert to hot observable coz replaceNewsItemListView can be call more than once
-                .distinctUntilChanged(NewsItemListKey::hashCode);
+                .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
 
         newsSubject = PublishSubject.create();
         newsSubject.subscribe(new EmptyObserver<List<NewsItemDTOKey>>()
