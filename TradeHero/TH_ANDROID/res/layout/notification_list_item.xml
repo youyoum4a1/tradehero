@@ -38,7 +38,7 @@
                     android:singleLine="true"
                     android:layout_marginRight="100dp"
                     android:maxEms="15"
-                    android:text="用户"
+                    android:text=""
                     android:layout_alignParentLeft="true"
                     android:textSize="15sp"/>
             <TextView

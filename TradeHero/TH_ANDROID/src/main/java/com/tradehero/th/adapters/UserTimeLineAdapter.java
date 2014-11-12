@@ -38,14 +38,13 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
@@ -241,7 +240,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvTradePrice = (TextView) convertView.findViewById(R.id.tvTradePrice);
                 holder.tvTradeCount = (TextView) convertView.findViewById(R.id.tvTradeCount);
                 holder.tvTradeMoney = (TextView) convertView.findViewById(R.id.tvTradeMoney);
-                holder.tvTradeCost = (TextView) convertView.findViewById(R.id.tvTradeCost);
+                //holder.tvTradeCost = (TextView) convertView.findViewById(R.id.tvTradeCost);
                 holder.title0 = (TextView) convertView.findViewById(R.id.title0);
                 holder.title1 = (TextView) convertView.findViewById(R.id.title1);
                 holder.title2 = (TextView) convertView.findViewById(R.id.title2);
@@ -302,7 +301,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.getUnitPriceCurrency());
                     holder.tvTradeCount.setText(tradeDTO.displayTradeQuantity());
                     holder.tvTradeMoney.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.displayTradeMoney());
-                    holder.tvTradeCost.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.transactionCost);
+                    //holder.tvTradeCost.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.transactionCost);
                     holder.title0.setText(tradeDTO.isBuy() ? "买入股票：" : "卖出股票：");
                     holder.title1.setText(tradeDTO.isBuy() ? "买入价格：" : "卖出价格：");
                     holder.title2.setText(tradeDTO.isBuy() ? "买入数量：" : "卖出数量：");
@@ -501,7 +500,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         public TextView tvTradePrice;
         public TextView tvTradeCount;
         public TextView tvTradeMoney;
-        public TextView tvTradeCost;
+        //public TextView tvTradeCost;
         public TextView title0;//买入股票
         public TextView title1;//买入价格
         public TextView title2;//买入数量

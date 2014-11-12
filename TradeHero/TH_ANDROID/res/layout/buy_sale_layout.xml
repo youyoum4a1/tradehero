@@ -99,29 +99,9 @@
   </LinearLayout>
 
   <LinearLayout
-      android:id="@+id/llBuySaleLine4"
-      style="@style/buy_sale_item"
-      android:layout_below="@id/llBuySaleLine3"
-      >
-
-    <TextView
-        style="@style/buy_sale_title"
-        android:id="@+id/buy_sell_item_title4"
-        android:text="    手续费："/>
-
-    <TextView
-        android:id="@+id/tvBuySaleCost"
-        style="@style/buy_sale_title"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/black"
-        android:text="$5"/>
-
-  </LinearLayout>
-
-  <LinearLayout
       android:id="@+id/llBuySaleLine5"
       style="@style/buy_sale_item"
-      android:layout_below="@id/llBuySaleLine4"
+      android:layout_below="@id/llBuySaleLine3"
       >
 
     <TextView

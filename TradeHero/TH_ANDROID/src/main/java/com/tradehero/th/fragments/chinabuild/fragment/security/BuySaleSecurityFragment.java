@@ -108,7 +108,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     @InjectView(R.id.tvBuySalePrice) TextView tvBuySalePrice;//交易价格
     @InjectView(R.id.tvBuySaleRate) TextView tvBuySaleRate;//涨跌幅
-    @InjectView(R.id.tvBuySaleCost) TextView tvBuySaleCost;//手续费
+    //@InjectView(R.id.tvBuySaleCost) TextView tvBuySaleCost;//手续费
     @InjectView(R.id.tvBuySaleTotalValue) TextView tvBuySaleTotalValue;//股票总价
     @InjectView(R.id.tvBuySaleCashLeft) TextView tvBuySaleCashLeft;//资产余额
     @InjectView(R.id.tvBuySaleMayProfit) TextView tvBuySaleMayProfit;//预估盈利
@@ -361,7 +361,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         updateTradeValueAndCashShareLeft();
         //updateConfirmButton();
         updateRate();
-        updateCostUSD();
+        //updateCostUSD();
     }
 
     private void updateRate()
@@ -457,10 +457,10 @@ public class BuySaleSecurityFragment extends DashboardFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, isBuy);
     }
 
-    private void updateCostUSD()
-    {
-        tvBuySaleCost.setText(portfolioCompactDTO.getCurrencyDisplay() + portfolioCompactDTO.getProperTxnCostUsd());
-    }
+    //private void updateCostUSD()
+    //{
+    //    tvBuySaleCost.setText(portfolioCompactDTO.getCurrencyDisplay() + portfolioCompactDTO.getProperTxnCostUsd());
+    //}
 
     private void updateProfitLoss()
     {
