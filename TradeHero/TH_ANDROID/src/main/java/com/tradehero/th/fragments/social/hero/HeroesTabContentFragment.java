@@ -40,6 +40,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -66,6 +67,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @InjectView(android.R.id.progress) public ProgressBar progressBar;
     @InjectView(R.id.heros_list) public ListView heroListView;
     @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout pullToRefreshListView;
+    private Subscription heroesSubscription;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
@@ -215,6 +217,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             this.heroListView.setOnItemClickListener(null);
             this.heroListView.setOnScrollListener(null);
         }
+        unsubscribe(heroesSubscription);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -266,7 +269,8 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     protected void fetchHeroes()
     {
-        AndroidObservable.bindFragment(this, heroListCache.get(followerId))
+        unsubscribe(heroesSubscription);
+        heroesSubscription = AndroidObservable.bindFragment(this, heroListCache.get(followerId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new HeroManagerHeroListCacheObserver());
     }
