@@ -1,7 +1,8 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,19 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -35,32 +35,26 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment
-        implements PullToRefreshBase.OnRefreshListener2<ListView>
+        implements SwipeRefreshLayout.OnRefreshListener
 {
     private static final String BUNDLE_KEY_FOLLOWER_ID =
             HeroesTabContentFragment.class.getName() + ".followerId";
 
-    private HeroManagerViewContainer viewContainer;
     private HeroListItemAdapter heroListAdapter;
     // The follower whose heroes we are listing
     @NonNull private UserBaseKey followerId;
-    private UserProfileDTO userProfileDTO;
-    private List<HeroDTO> heroDTOs;
     protected SimpleFollowUserAssistant simpleFollowUserAssistant;
 
-    @Inject UserProfileCacheRx userProfileCache;
     @Inject HeroListCacheRx heroListCache;
     @Inject public HeroAlertDialogUtil heroAlertDialogUtil;
     /** when no heroes */
@@ -68,6 +62,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
+
+    @InjectView(android.R.id.progress) public ProgressBar progressBar;
+    @InjectView(R.id.heros_list) public ListView heroListView;
+    @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout pullToRefreshListView;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(Bundle args, UserBaseKey followerId)
@@ -97,17 +95,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     @Override protected void initViews(View view)
     {
-        this.viewContainer = new HeroManagerViewContainer(view);
-        if (this.viewContainer.btnBuyMore != null)
-        {
-            this.viewContainer.btnBuyMore.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    handleBuyMoreClicked();
-                }
-            });
-        }
+        ButterKnife.inject(this, view);
 
         this.heroListAdapter = new HeroListItemAdapter(
                 getActivity(),
@@ -118,53 +106,37 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         this.heroListAdapter.setHeroStatusButtonClickedListener(createHeroStatusButtonClickedListener());
         this.heroListAdapter.setFollowerId(followerId);
         this.heroListAdapter.setMostSkilledClicked(createHeroListMostSkiledClickedListener());
-        if (this.viewContainer.pullToRefreshListView != null)
+        if (this.pullToRefreshListView != null)
         {
-            this.viewContainer.pullToRefreshListView.setOnRefreshListener(this);
+            this.pullToRefreshListView.setOnRefreshListener(this);
         }
-        if (this.viewContainer.heroListView != null)
+        if (this.heroListView != null)
         {
-            this.viewContainer.heroListView.setAdapter(this.heroListAdapter);
-            this.viewContainer.heroListView.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener()
-                    {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id)
-                        {
-                            handleHeroClicked(parent, view, position, id);
-                        }
-                    }
+            this.heroListView.setAdapter(this.heroListAdapter);
+            this.heroListView.setOnItemClickListener(
+                    this::handleHeroClicked
             );
         }
         setListShown(false);
-        this.viewContainer.heroListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        this.heroListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     protected HeroListItemView.OnHeroStatusButtonClickedListener createHeroStatusButtonClickedListener()
     {
-        return new HeroListItemView.OnHeroStatusButtonClickedListener()
-        {
-            @Override
-            public void onHeroStatusButtonClicked(HeroListItemView heroListItemView,
-                    HeroDTO heroDTO)
-            {
-                handleHeroStatusButtonClicked(heroDTO);
-            }
-        };
+        return (heroListItemView, heroDTO) -> handleHeroStatusButtonClicked(heroDTO);
     }
 
     private void setListShown(boolean shown)
     {
         if (shown)
         {
-            this.viewContainer.heroListView.setVisibility(View.VISIBLE);
-            this.viewContainer.progressBar.setVisibility(View.INVISIBLE);
+            this.heroListView.setVisibility(View.VISIBLE);
+            this.progressBar.setVisibility(View.INVISIBLE);
         }
         else
         {
-            this.viewContainer.heroListView.setVisibility(View.INVISIBLE);
-            this.viewContainer.progressBar.setVisibility(View.VISIBLE);
+            this.heroListView.setVisibility(View.INVISIBLE);
+            this.progressBar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -179,18 +151,13 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         super.onResume();
         enablePullToRefresh(false);
         displayProgress(true);
-        fetchProfile();
         fetchHeroes();
     }
 
     private boolean isCurrentUser()
     {
         UserBaseKey followerId = getFollowerId(getArguments());
-        if (followerId != null && followerId.key != null && currentUserId != null)
-        {
-            return (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
-        }
-        return false;
+        return currentUserId != null && (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
     }
 
     private int getEmptyViewLayout()
@@ -201,7 +168,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
         else
         {
-           return R.layout.hero_list_item_empty_placeholder_for_other;
+            return R.layout.hero_list_item_empty_placeholder_for_other;
         }
     }
 
@@ -219,7 +186,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void refreshContent()
     {
-        fetchProfile();
         fetchHeroes();
     }
 
@@ -244,13 +210,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             this.heroListAdapter.setMostSkilledClicked(null);
         }
         this.heroListAdapter = null;
-        if (this.viewContainer.heroListView != null)
+        if (this.heroListView != null)
         {
-            this.viewContainer.heroListView.setOnItemClickListener(null);
-            this.viewContainer.heroListView.setOnScrollListener(null);
+            this.heroListView.setOnItemClickListener(null);
+            this.heroListView.setOnScrollListener(null);
         }
-        this.viewContainer = null;
-
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -270,7 +235,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             {
                 Timber.d("onUserFollowSuccess");
                 THToast.show(getString(R.string.manage_heroes_unfollow_success));
-                linkWith(currentUserProfileDTO, true);
                 fetchHeroes();
             }
 
@@ -300,32 +264,11 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         simpleFollowUserAssistant = null;
     }
 
-    protected void fetchProfile()
-    {
-        AndroidObservable.bindFragment(this, userProfileCache.get(followerId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new HeroManagerUserProfileCacheObserver());
-    }
-
     protected void fetchHeroes()
     {
         AndroidObservable.bindFragment(this, heroListCache.get(followerId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new HeroManagerHeroListCacheObserver());
-    }
-
-    private void handleBuyMoreClicked()
-    {
-        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-        if (applicablePortfolioId != null)
-        {
-            detachRequestCode();
-            //noinspection unchecked
-            requestCode = userInteractor.run((THUIBillingRequest) uiBillingRequestBuilderProvider.get()
-                    .applicablePortfolioId(getApplicablePortfolioId())
-                    .domainToPresent(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
-                    .build());
-        }
     }
 
     private void handleHeroStatusButtonClicked(HeroDTO heroDTO)
@@ -343,26 +286,16 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         if (!clickedHeroDTO.active)
         {
             heroAlertDialogUtil.popAlertFollowHero(getActivity(),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            premiumFollowUser(clickedHeroDTO.getBaseKey());
-                        }
-                    }
+                    (dialog, which) -> premiumFollowUser(clickedHeroDTO.getBaseKey())
             );
         }
         else
         {
             heroAlertDialogUtil.popAlertUnfollowHero(getActivity(),
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            THToast.show(
-                                    getString(R.string.manage_heroes_unfollow_progress_message));
-                            unfollow(clickedHeroDTO.getBaseKey());
-                        }
+                    (dialog, which) -> {
+                        THToast.show(
+                                getString(R.string.manage_heroes_unfollow_progress_message));
+                        unfollow(clickedHeroDTO.getBaseKey());
                     }
             );
         }
@@ -405,11 +338,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }
 
-    public void display(UserProfileDTO userProfileDTO)
-    {
-        linkWith(userProfileDTO, true);
-    }
-
     abstract protected void display(HeroDTOExtWrapper heroDTOExtWrapper);
 
     protected void display(List<HeroDTO> heroDTOs)
@@ -419,51 +347,49 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
     {
-        this.userProfileDTO = userProfileDTO;
         if (andDisplay)
         {
-            viewContainer.displayFollowCount(userProfileDTO);
-            viewContainer.displayCoinStack(userProfileDTO);
         }
     }
 
     public void linkWith(List<HeroDTO> heroDTOs, boolean andDisplay)
     {
-        this.heroDTOs = heroDTOs;
-        heroListAdapter.setItems(this.heroDTOs);
+        heroListAdapter.setItems(heroDTOs);
         if (andDisplay)
         {
             displayHeroList();
         }
     }
 
-    //<editor-fold desc="Display methods">
     public void display()
     {
-        viewContainer.displayFollowCount(userProfileDTO);
-        viewContainer.displayCoinStack(userProfileDTO);
         displayHeroList();
+    }
+
+    @Override public void onRefresh()
+    {
+        refreshContent();
     }
 
     private void onRefreshCompleted()
     {
-        if (viewContainer.pullToRefreshListView != null)
+        if (pullToRefreshListView != null)
         {
-            viewContainer.pullToRefreshListView.onRefreshComplete();
+            pullToRefreshListView.setRefreshing(false);
         }
     }
 
     private void enablePullToRefresh(boolean enable)
     {
-        if (viewContainer.pullToRefreshListView != null)
+        if (pullToRefreshListView != null)
         {
             if (!enable)
             {
-                viewContainer.pullToRefreshListView.setMode(PullToRefreshBase.Mode.DISABLED);
+                pullToRefreshListView.setEnabled(false);
             }
             else
             {
-                viewContainer.pullToRefreshListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                pullToRefreshListView.setEnabled(true);
             }
         }
     }
@@ -478,49 +404,15 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void displayProgress(boolean running)
     {
-        if (viewContainer.progressBar != null)
+        if (progressBar != null)
         {
-            viewContainer.progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
+            progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         }
     }
-
-    @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-    {
-        Timber.d("onPullDownToRefresh");
-        refreshContent();
-    }
-
-    @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-    {
-        Timber.d("onPullUpToRefresh");
-    }
-    //</editor-fold>
 
     private HeroListMostSkilledClickedListener createHeroListMostSkiledClickedListener()
     {
         return new HeroListMostSkilledClickedListener();
-    }
-
-    private class HeroManagerUserProfileCacheObserver
-            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            if (pair.first.equals(HeroesTabContentFragment.this.followerId))
-            {
-                display(pair.second);
-            }
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e("Could not fetch user profile", e);
-            THToast.show(R.string.error_fetch_user_profile);
-        }
     }
 
     private class HeroManagerHeroListCacheObserver
