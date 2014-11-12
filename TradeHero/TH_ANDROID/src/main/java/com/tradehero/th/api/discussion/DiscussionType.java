@@ -1,7 +1,6 @@
 package com.tradehero.th.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +13,8 @@ public enum DiscussionType
     NEWS(4, "news"),
     PRIVATE_MESSAGE(5, "private-message"),
     BROADCAST_MESSAGE(6, "broadcast-message");
+
+
 
     public final int value;
     @NotNull public final String description;

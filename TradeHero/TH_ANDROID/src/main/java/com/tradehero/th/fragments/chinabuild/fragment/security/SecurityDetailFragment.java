@@ -10,7 +10,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,7 +33,11 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.*;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -104,14 +113,13 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -201,7 +209,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @InjectView(R.id.tvInfo2Value) TextView tvInfo2Value;//成交量
     @InjectView(R.id.tvInfo3Value) TextView tvInfo3Value;//平均量
 
+    @InjectView(R.id.progress) ProgressBar progress;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout llBuySaleButtons;//购买卖出栏
+
     @InjectView(R.id.llSecurityBuy) RelativeLayout llSecurityBuy;//购买
     @InjectView(R.id.llSecuritySale) RelativeLayout llSecuritySale;//出售
     @InjectView(R.id.llSecurityDiscuss) RelativeLayout llSecurityDiscuss;//讨论
@@ -301,6 +312,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         initView();
         updateHeadView(true);
         //hideActionBar();
+        betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
         return view;
     }
 
@@ -388,14 +400,19 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void setBuySaleButtonVisable(boolean isCanSale)
     {
-            try{
-                llBuySaleButtons.setVisibility(View.VISIBLE);
-                llSecurityBuy.setVisibility(View.VISIBLE);
-                llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
-            }catch (Exception e)
+        try
+        {
+            llBuySaleButtons.setVisibility(View.VISIBLE);
+            llSecurityBuy.setVisibility(View.VISIBLE);
+            llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
+            if (isCanSale || isBuyOrSaleValid(true, false))
             {
-               Timber.d("setBuySaleButtonVisable error "+ e.toString());
+                betterViewAnimator.setDisplayedChildByLayoutId(R.id.ic_info_buy_sale_btns);
             }
+        } catch (Exception e)
+        {
+            Timber.d("setBuySaleButtonVisable error " + e.toString());
+        }
     }
 
     @Override protected void initViews(View view)
@@ -770,7 +787,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
-        if(getActivity()!=null)
+        if (getActivity() != null)
         {
             this.portfolioCompactDTO = portfolioCompactDTO;
             clampBuyQuantity(andDisplay);
@@ -922,7 +939,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void setDiscussOrNewsViewDefault()
     {
-        indexDiscussOrNews = 0;
+        //indexDiscussOrNews = 0;
         for (int i = 0; i < btnDiscussOrNews.length; i++)
         {
             btnDiscussOrNews[i].setBackgroundResource(
@@ -1052,6 +1069,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @OnClick({R.id.llSecurityBuy, R.id.llSecuritySale, R.id.llSecurityDiscuss})
     public void onClickItems(View view)
     {
+        if (betterViewAnimator.getDisplayedChildLayoutId() == R.id.progress) return;
         int id = view.getId();
         if (id == R.id.llSecurityBuy)
         {
@@ -1071,40 +1089,55 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    public boolean isBuyOrSaleValid()
+    public boolean isBuyOrSaleValid(boolean isBuy)
+    {
+        return isBuyOrSaleValid(isBuy, true);
+    }
+
+    public boolean isBuyOrSaleValid(boolean isBuy, boolean display)
     {
         if (quoteDTO == null) return false;
         if (quoteDTO.ask == null && quoteDTO.bid == null)
         {//ask bid 都没有返回 则说明停牌
-            showBuyOrSaleError(ERROR_NO_ASK_BID);
-            return false;
+            if (display)
+            {
+                showBuyOrSaleError(ERROR_NO_ASK_BID);
+                return false;
+            }
         }
-        else if (quoteDTO.bid == null)
-        {//涨停
-            showBuyOrSaleError(ERROR_NO_ASK);
-            return false;
-        }
-        else if (quoteDTO.ask == null)
+        else if (quoteDTO.bid == null && (!isBuy))
         {//跌停
-            showBuyOrSaleError(ERROR_NO_BID);
-            return false;
+            if (display)
+            {
+                showBuyOrSaleError(ERROR_NO_BID);
+                return false;
+            }
+        }
+        else if (quoteDTO.ask == null && (isBuy))
+        {//涨停
+            if (display)
+            {
+                showBuyOrSaleError(ERROR_NO_ASK);
+                return false;
+            }
         }
 
-        if (portfolioCompactDTO == null)
+        if (isFromCompetition && portfolioCompactDTO == null)
         {
-            Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
-            if (isFromCompetition)
+            if(display)
             {
+                Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
                 showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
+                return false;
             }
             else
             {
-
+                return true;
             }
-            return false;
         }
 
         return true;
+
     }
 
     public void showBuyOrSaleError(int type)
@@ -1113,11 +1146,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             THToast.show("你所购买的股票已停牌");
         }
-        else if (type == ERROR_NO_ASK)
+        else if (type == ERROR_NO_BID)
         {
             THToast.show("你所购买的股票已跌停");
         }
-        else if (type == ERROR_NO_BID)
+        else if (type == ERROR_NO_ASK)
         {
             THToast.show("你所购买的股票已涨停");
         }
@@ -1130,7 +1163,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public void enterBuySale(boolean isBuy)
     {
 
-        if (!isBuyOrSaleValid()) return;
+        if (!isBuyOrSaleValid(isBuy)) return;
         Bundle bundle = new Bundle();
         bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
         bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
@@ -1731,10 +1764,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                         .into(imgSecurityTLUserHeader);
             }
 
-            if(dto.voteDirection == 1){
+            if (dto.voteDirection == 1)
+            {
                 btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
             }
-            if(dto.voteDirection == 0){
+            if (dto.voteDirection == 0)
+            {
                 btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
             }
 

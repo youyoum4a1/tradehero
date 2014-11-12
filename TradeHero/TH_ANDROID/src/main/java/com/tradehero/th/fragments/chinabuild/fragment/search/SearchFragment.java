@@ -9,7 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -40,13 +44,12 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
 
 /*
    搜索  热门／历史
@@ -62,7 +65,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
 
     public SecuritySearchListAdapter adapter;
 
-    @InjectView(R.id.progressbar_trade_security_search)TradeHeroProgressBar pbSearch;
+    @InjectView(R.id.progressbar_trade_security_search) TradeHeroProgressBar pbSearch;
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) EditText tvSearchInput;
     @InjectView(R.id.btn_search_x) Button btnSearch_x;
@@ -111,8 +114,11 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
         {
-            showLoadingProgress();
-            fetchHotSecuritySearchList(true);
+            if (adapter != null && adapter.getCount() == 0)
+            {
+                showLoadingProgress();
+                fetchHotSecuritySearchList(true);
+            }
         }
 
         tvSearchInput.addTextChangedListener(new TextWatcher()
@@ -169,7 +175,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
                 Timber.d("下拉刷新");
-                if (isUserSearch&&(!StringUtils.isNullOrEmpty(getSearchString())))
+                if (isUserSearch && (!StringUtils.isNullOrEmpty(getSearchString())))
                 {
                     fetchSecuritySearchList(true);
                 }
@@ -241,7 +247,7 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
     @Override public void onPause()
     {
         super.onPause();
-        if(listSearch!=null)
+        if (listSearch != null)
         {
             listSearch.onRefreshComplete();
         }
@@ -286,6 +292,10 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         @Override
         public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
         {
+            if (getActivity() == null)
+            {
+                return;
+            }
             initAdapterSecurity(value, key);
             tvResult.setText(searchNoResult);
             onFinish();
@@ -294,6 +304,10 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
         @Override
         public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
         {
+            if (getActivity() == null)
+            {
+                return;
+            }
             tvResult.setText(searchNoResult);
             onFinish();
         }

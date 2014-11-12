@@ -78,9 +78,9 @@ public class UserBaseDTO extends ExtendedDTO
 
     public String getDisplayName()
     {
-        if(displayName!=null)
+        if (displayName != null)
         {
-            return displayName.trim();
+            return displayName.replace("　", "");
         }
         return "";
     }

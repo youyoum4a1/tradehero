@@ -48,6 +48,15 @@ public class UserCompetitionDTO implements DTO, Serializable
         }
     }
 
+    public String getHostUserName()
+    {
+        if(hostUserName!=null)
+        {
+            return hostUserName.replace("　","");
+        }
+        return "";
+    }
+
     public String getUserCounter()
     {
         return String.valueOf(userCount) + "人";

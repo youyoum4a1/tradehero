@@ -190,8 +190,8 @@ public class QuoteDTO
         {
             args.putLong(BUNDLE_KEY_AS_OF_UTC, 0);
         }
-        args.putDouble(BUNDLE_KEY_BID_PRICE, bid);
-        args.putDouble(BUNDLE_KEY_ASK_PRICE, ask);
+        args.putDouble(BUNDLE_KEY_BID_PRICE, bid == null ? 0 : bid);
+        args.putDouble(BUNDLE_KEY_ASK_PRICE, ask == null ? 0 : ask);
         args.putString(BUNDLE_KEY_CURRENCY_ISO, currencyISO);
         args.putString(BUNDLE_KEY_CURRENCY_DISPLAY, currencyDisplay);
         args.putBoolean(BUNDLE_KEY_FROM_CACHE, fromCache);

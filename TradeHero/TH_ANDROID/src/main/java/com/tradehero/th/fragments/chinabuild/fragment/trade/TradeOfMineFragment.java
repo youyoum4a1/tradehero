@@ -5,7 +5,13 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -54,13 +60,12 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
     交易－我的交易
@@ -209,8 +214,15 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
-                    ((SecurityPositionItem) item).position);
+            if (((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_CLOSED)
+            {
+                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
+                        ((SecurityPositionItem) item).position);
+            }
+            else if (((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
+            {
+                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+            }
         }
         else if (item instanceof WatchPositionItem)
         {
@@ -436,7 +448,8 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             listView.onRefreshComplete();
             fetchSimplePage(false);
-            if(progressBar!=null){
+            if (progressBar != null)
+            {
                 progressBar.stopLoading();
             }
         }
@@ -501,7 +514,8 @@ public class TradeOfMineFragment extends DashboardFragment
                     .signTypeArrow()
                     .build();
             tvItemROI.setText(roi.toString());
-            if(getActivity()!=null){
+            if (getActivity() != null)
+            {
                 tvItemROI.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
             }
         }
@@ -583,7 +597,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
                 if (securityCompactDTO != null)
                 {
-                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i), SecurityPositionItem.TYPE_ACTIVE));
                     //持有股票收益率涨副超过 10% 弹窗提示分享
                     if (listData.get(i).getROISinceInception() * 100 > 10)
                     {
@@ -615,7 +629,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
                 if (securityCompactDTO != null)
                 {
-                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i), SecurityPositionItem.TYPE_CLOSED));
                 }
             }
             if (adapter != null)

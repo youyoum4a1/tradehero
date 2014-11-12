@@ -17,16 +17,31 @@
       android:layout_height="72dp"
       layout="@layout/security_info_data"/>
 
-  <include
-      android:id="@+id/ic_info_buy_sale_btns"
+
+  <com.tradehero.common.widget.BetterViewAnimator
+      android:id="@+id/bvaViewAll"
       android:layout_width="fill_parent"
-      android:layout_height="48dp"
       android:layout_alignParentBottom="true"
-      layout="@layout/security_info_buy_sale_discuss"/>
+      android:layout_height="48dp">
+
+    <include
+        android:id="@+id/ic_info_buy_sale_btns"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        layout="@layout/security_info_buy_sale_discuss"/>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:background="@drawable/tab_menu_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        />
+
+  </com.tradehero.common.widget.BetterViewAnimator>
 
 
   <ScrollView android:layout_width="fill_parent"
-      android:layout_above="@id/ic_info_buy_sale_btns"
+      android:layout_above="@id/bvaViewAll"
       android:layout_below="@id/ic_info_data"
       android:layout_height="fill_parent" android:fillViewport="false">
 

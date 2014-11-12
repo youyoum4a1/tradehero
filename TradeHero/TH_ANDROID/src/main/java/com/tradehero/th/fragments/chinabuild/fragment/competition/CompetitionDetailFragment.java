@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -70,13 +69,13 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import com.tradehero.th.widget.TradeHeroProgressBar;
 import timber.log.Timber;
 
 /**
@@ -307,7 +306,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null)
         {
             tvCompetitionIntro.setText(userCompetitionDTO.description);
-            tvCompetitionCreator.setText(userCompetitionDTO.hostUserName);
+            tvCompetitionCreator.setText(userCompetitionDTO.getHostUserName());
             tvCompetitionPeriod.setText(userCompetitionDTO.getDisplayDatePeriod());
             tvCompetitionExchange.setText(userCompetitionDTO.getDisplayExchangeShort());
         }
