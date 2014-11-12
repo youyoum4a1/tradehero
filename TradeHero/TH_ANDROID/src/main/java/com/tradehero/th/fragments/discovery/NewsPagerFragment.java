@@ -9,14 +9,13 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 
 public class NewsPagerFragment extends Fragment
 {
@@ -25,7 +24,6 @@ public class NewsPagerFragment extends Fragment
     @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
     private QuickReturnListViewOnScrollListener quickReturnScrollListener;
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
@@ -33,7 +31,6 @@ public class NewsPagerFragment extends Fragment
         mNewsCarousel.setCurrentItem((currentItem + size - 1) % size, currentItem != 0);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_filter) void handleNextFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
