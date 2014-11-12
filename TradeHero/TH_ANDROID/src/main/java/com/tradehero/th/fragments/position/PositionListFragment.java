@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.position;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -90,7 +91,8 @@ public class PositionListFragment
 
     //@InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
-    @InjectView(R.id.pull_to_refresh_position_list) PullToRefreshListView pullToRefreshListView;
+    @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
+    @InjectView(R.id.position_list) ListView pullToRefreshListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.error) View errorView;
 
@@ -209,7 +211,7 @@ public class PositionListFragment
         showLoadingView(!loaded);
         if (loaded && pullToRefreshListView != null)
         {
-            pullToRefreshListView.onRefreshComplete();
+            swipeToRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -253,31 +255,15 @@ public class PositionListFragment
         }
         if (pullToRefreshListView != null)
         {
-            pullToRefreshListView.onRefreshComplete();
+            swipeToRefreshLayout.setRefreshing(false);
         }
     }
 
     private void initPullToRefreshListView(View view)
     {
         //TODO make it better
-        pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                refreshSimplePage();
-            }
-
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-            }
-        });
-        pullToRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
-            {
-                handlePositionItemClicked(adapterView, view, i, l);
-            }
-        });
+        swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
+        pullToRefreshListView.setOnItemClickListener(this::handlePositionItemClicked);
     }
 
     protected void createPositionItemAdapter()
@@ -368,9 +354,9 @@ public class PositionListFragment
             portfolioHeaderView.setTimelineRequestedListener(null);
         }
 
-        if (pullToRefreshListView.getRefreshableView() != null)
+        if (pullToRefreshListView != null)
         {
-            firstPositionVisible = pullToRefreshListView.getRefreshableView().getFirstVisiblePosition();
+            firstPositionVisible = pullToRefreshListView.getFirstVisiblePosition();
         }
         super.onPause();
     }
@@ -396,9 +382,9 @@ public class PositionListFragment
         }
         positionItemAdapter = null;
 
-        if (pullToRefreshListView != null)
+        if (swipeToRefreshLayout != null)
         {
-            pullToRefreshListView.setOnRefreshListener((PullToRefreshBase.OnRefreshListener<ListView>) null);
+            swipeToRefreshLayout.setOnRefreshListener(null);
         }
 
         super.onDestroyView();
@@ -470,17 +456,12 @@ public class PositionListFragment
             positionItemAdapter.addAll(getPositionsDTO.positions);
             positionItemAdapter.notifyDataSetChanged();
             pullToRefreshListView.setAdapter(positionItemAdapter);
-            //if (positionsListView != null)
-            //{
-            //    positionsListView.setAdapter(positionItemAdapter);
-            //}
         }
     }
 
     public void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
     {
         this.getPositionsDTO = getPositionsDTO;
-        //reAttemptFetchPortfolio();
         rePurposeAdapter();
 
         if (andDisplay)
@@ -576,7 +557,7 @@ public class PositionListFragment
     @Override public void onUserFollowed(UserBaseKey userBaseKey)
     {
         //
-        pullToRefreshListView.setRefreshing();
+        swipeToRefreshLayout.setRefreshing(true);
         refreshSimplePage();
     }
 
@@ -753,5 +734,6 @@ public class PositionListFragment
         this.portfolioCompactDTO = portfolioCompactDTO;
         portfolioHeaderView.linkWith(portfolioCompactDTO);
         displayActionBarTitle();
+        showResultIfNecessary();
     }
 }
