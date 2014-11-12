@@ -36,7 +36,6 @@ public class SecurityListAdapter extends BaseAdapter
     {
         DaggerUtils.inject(this);
         this.context = context;
-        //this.securityCompactDTOs = list;
         this.securityType = securityType;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

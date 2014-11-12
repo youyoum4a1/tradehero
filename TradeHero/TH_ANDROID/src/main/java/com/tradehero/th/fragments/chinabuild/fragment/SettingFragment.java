@@ -98,16 +98,9 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         mLogoutLayout.setOnClickListener(this);
         mVersionLayout.setOnClickListener(this);
 
-        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(getActivity());
-        if(appInfoDTO.isSuggestUpgrade()){
-            mVersionLayout.setClickable(true);
-            mNewVersionImageView.setVisibility(View.VISIBLE);
-            mVersionCode.setVisibility(View.GONE);
-        }else{
-            mVersionLayout.setClickable(false);
-            mNewVersionImageView.setVisibility(View.GONE);
-            mVersionCode.setVisibility(View.VISIBLE);
-        }
+        mVersionLayout.setClickable(false);
+        mNewVersionImageView.setVisibility(View.GONE);
+        mVersionCode.setVisibility(View.VISIBLE);
         mNotificationsLayout.setOnClickListener(this);
         if(THSharePreferenceManager.isNotificationsOn(getActivity())){
             mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);

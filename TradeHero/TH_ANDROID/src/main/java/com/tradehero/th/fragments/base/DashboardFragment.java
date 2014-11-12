@@ -303,18 +303,11 @@ abstract public class DashboardFragment extends BaseFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                //if (shouldShowHomeAsUp())
-                //{
                 DashboardNavigator navigator = getDashboardNavigator();
                 if (navigator != null)
                 {
                     navigator.popFragment();
                 }
-                //}
-                //else
-                //{
-                //    resideMenuLazy.get().openMenu();
-                //}
                 return true;
 
             case R.id.menu_info:

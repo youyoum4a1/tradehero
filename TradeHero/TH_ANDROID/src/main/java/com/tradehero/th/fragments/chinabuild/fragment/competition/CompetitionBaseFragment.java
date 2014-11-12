@@ -152,7 +152,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putSerializable(CompetitionDetailFragment.BUNDLE_COMPETITION_DTO, userCompetitionDTO);
         gotoDashboard(CompetitionDetailFragment.class.getName(), bundle);
-        //THToast.show(userCompetitionDTO.name);
     }
 
     private void initCompetitionAdv(UserCompetitionDTOList userCompetitionDTOs)
@@ -291,12 +290,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         {
             return (views == null) ? 0 : views.size();
         }
-
-        //@Override
-        //public CharSequence getPageTitle(int position) {
-        //    // TODO Auto-generated method stub
-        //    return titles.get(position);
-        //}
     };
 
     public void startScrol()

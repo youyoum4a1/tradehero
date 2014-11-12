@@ -198,7 +198,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null)
         {
             initCompetitionTitle();
-            //initView();
             fetchCompetitionDetail(false);
         }
         else
@@ -391,7 +390,6 @@ public class CompetitionDetailFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        //refreshStatus();
 
         if (THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION_JOIN))
         {
