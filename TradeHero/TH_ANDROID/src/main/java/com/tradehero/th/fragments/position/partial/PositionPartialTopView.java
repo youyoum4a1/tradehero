@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -19,7 +20,6 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -27,18 +27,18 @@ import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.THColorUtils;
-import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
 {
-    @Inject protected Lazy<Picasso> picasso;
-    @Inject protected Lazy<SecurityIdCache> securityIdCache;
-    @Inject protected Lazy<SecurityCompactCacheRx> securityCompactCache;
+    @Inject protected Picasso picasso;
+    @Inject protected SecurityIdCache securityIdCache;
+    @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected PositionDTOUtils positionDTOUtils;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
@@ -52,12 +52,11 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
     @InjectView(R.id.btn_trade_history) protected View tradeHistoryButton;
 
-    protected SecurityId securityId;
-    protected SecurityCompactDTO securityCompactDTO;
     protected PositionDTO positionDTO;
-
-    private Subscription securityIdFetchSubscription;
+    protected SecurityId securityId;
     private Subscription securityCompactCacheFetchSubscription;
+    protected SecurityCompactDTO securityCompactDTO;
+
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -84,11 +83,6 @@ public class PositionPartialTopView extends LinearLayout
         super.onFinishInflate();
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
-        initViews();
-    }
-
-    protected void initViews()
-    {
         if (stockLogo != null)
         {
             stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
@@ -103,8 +97,6 @@ public class PositionPartialTopView extends LinearLayout
         }
         tradeHistoryButton = null;
 
-        unsubscribe(securityIdFetchSubscription);
-        securityIdFetchSubscription = null;
         unsubscribe(securityCompactCacheFetchSubscription);
         securityCompactCacheFetchSubscription = null;
         if (stockLogo != null)
@@ -131,61 +123,51 @@ public class PositionPartialTopView extends LinearLayout
             displayPositionLastAmountHeader();
             displayPositionLastAmount();
         }
-        if (positionDTO != null && securityIdFetchSubscription == null)
+        if (positionDTO != null && securityCompactCacheFetchSubscription == null)
         {
-            securityIdFetchSubscription = securityIdCache.get().get(positionDTO.getSecurityIntegerId())
+            securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
+                    .map(pair -> pair.second)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Pair<SecurityIntegerId, SecurityId>>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                        }
-
-                        @Override public void onNext(Pair<SecurityIntegerId, SecurityId> pair)
-                        {
-                            linkWith(pair.second, andDisplay);
-                        }
-                    });
-        }
-    }
-
-    protected void linkWith(SecurityId securityId, boolean andDisplay)
-    {
-        if (securityId.equals(this.securityId))
-        {
-            return;
-        }
-        this.securityId = securityId;
-
-        if (securityCompactCacheFetchSubscription == null)
-        {
-            securityCompactCacheFetchSubscription = securityCompactCache.get().get(securityId)
+                    .doOnNext(this::linkWith)
+                    .flatMap(securityCompactCache::get)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(createSecurityCompactCacheObserver());
         }
+    }
 
-        if (andDisplay)
+    protected void linkWith(@NonNull SecurityId securityId)
+    {
+        this.securityId = securityId;
+        displayStockSymbol();
+    }
+
+    protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
+    {
+        return new SecurityCompactObserver();
+    }
+
+    protected class SecurityCompactObserver extends EmptyObserver<Pair<SecurityId, SecurityCompactDTO>>
+    {
+        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
         {
-            displayStockSymbol();
+            linkWith(pair.second);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show("There was an error when fetching the security information");
+            Timber.e(e, "Error fetching the security");
         }
     }
 
-    protected void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    protected void linkWith(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
-        if (andDisplay)
-        {
-            displayStockLogo();
-            displayCompanyName();
-            displayStockMovementIndicator();
-            displayStockLastPrice();
-            displayMarketClose();
-            // TODO more
-        }
+        displayStockLogo();
+        displayCompanyName();
+        displayStockMovementIndicator();
+        displayStockLastPrice();
+        displayMarketClose();
     }
 
     //<editor-fold desc="Display Methods">
@@ -209,8 +191,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
-                picasso.get()
-                        .load(securityCompactDTO.imageBlobUrl)
+                picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(new WhiteToTransparentTransformation())
                         .into(stockLogo, new Callback()
                         {
@@ -235,8 +216,7 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (securityCompactDTO != null)
         {
-            picasso.get()
-                    .load(securityCompactDTO.getExchangeLogoId())
+            picasso.load(securityCompactDTO.getExchangeLogoId())
                     .into(stockLogo);
         }
         else
@@ -407,30 +387,4 @@ public class PositionPartialTopView extends LinearLayout
         }
     }
     //</editor-fold>
-
-    private Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
-    {
-        return new Observer<Pair<SecurityId,SecurityCompactDTO>>()
-        {
-            @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-            {
-                linkWith(pair.second, true);
-            }
-
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                THToast.show("There was an error when fetching the security information");
-                Timber.e(e, "Error fetching the security");
-            }
-        };
-    }
-
-    public View getTradeHistoryButton()
-    {
-        return tradeHistoryButton;
-    }
 }
