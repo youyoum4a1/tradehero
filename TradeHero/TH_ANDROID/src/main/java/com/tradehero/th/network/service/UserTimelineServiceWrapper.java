@@ -105,7 +105,13 @@ import retrofit.client.Response;
         return middleCallback;
     }
     //股神动态
-
+    public @NotNull MiddleCallback<TimelineDTO> getTimelineStockGodNews(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+            @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelineStockGodNews(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
 
     //</editor-fold>
 

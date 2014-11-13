@@ -52,7 +52,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     private MiddleCallback<DiscussionDTO> voteCallback;
 
     @Inject Picasso picasso;
-    private List<TimelineItemDTO> listData;
+    //private List<TimelineItemDTO> listData;
 
     private List<UserProfileCompactDTO> users = new ArrayList<>();
     private List<SecurityCompactDTO> securities = new ArrayList<>();
@@ -60,8 +60,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     private List<DiscussionDTO> comments = new ArrayList<>();
     private List<TradeDTO> trades = new ArrayList<>();
 
-    public boolean isShowHeadAndName = false;
-
+    public boolean isShowHeadAndName = false;//是否显示头像和名字
+    //public boolean isSecurityAsUser = false;//是否是以股票为头像和名字
     public boolean isMySelf = false;
 
     @Inject Analytics analytics;
@@ -94,11 +94,11 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         users.addAll(timelineDTO.getUsers());
         securities.addAll(timelineDTO.getSecurities());
         enhancedItems.addAll(timelineDTO.getEnhancedItems());
-        if(timelineDTO.getComments()!=null)
+        if (timelineDTO.getComments() != null)
         {
             comments.addAll(timelineDTO.getComments());
         }
-        if(timelineDTO.getTrades()!=null)
+        if (timelineDTO.getTrades() != null)
         {
             trades.addAll(timelineDTO.getTrades());
         }
@@ -176,10 +176,12 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             if (isTrade)
             {
                 TradeDTO tradeDTO = getTradeDTO(dto.tradeId);
-                if(tradeDTO==null){
+                if (tradeDTO == null)
+                {
                     return "";
                 }
-                if (tradeDTO.isBuy()) {
+                if (tradeDTO.isBuy())
+                {
 
                     String securityName = dto.getMedias().get(0).displaySecurityName();
                     StringBuffer sb = new StringBuffer();
@@ -191,7 +193,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                             .append(
                                     securityName);
                     return sb.toString();
-                } else {
+                }
+                else
+                {
                     String securityName = dto.getMedias().get(0).displaySecurityName();
                     StringBuffer sb = new StringBuffer();
                     sb.append("我以 ")
@@ -314,37 +318,42 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
             if (isShowHeadAndName)
             {
-                if (item.getUser() != null)
-                {
-                    holder.tvUserTLName.setText(item.getUser().getDisplayName());
-                    picasso.load(item.getUser().picture)
-                            .placeholder(R.drawable.superman_facebook)
-                            .error(R.drawable.superman_facebook)
-                            .into(holder.imgUserTLUserHeader);
 
-                    holder.tvUserTLName.setOnClickListener(new View.OnClickListener()
+                    if (item.getUser() != null)
                     {
-                        @Override public void onClick(View view)
-                        {
-                            openUserProfile(item.getUser().id);
-                        }
-                    });
+                        holder.tvUserTLName.setText(item.getUser().getDisplayName());
+                        picasso.load(item.getUser().picture)
+                                .placeholder(R.drawable.superman_facebook)
+                                .error(R.drawable.superman_facebook)
+                                .into(holder.imgUserTLUserHeader);
 
-                    holder.imgUserTLUserHeader.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override public void onClick(View view)
+                        holder.tvUserTLName.setOnClickListener(new View.OnClickListener()
                         {
-                            openUserProfile(item.getUser().id);
-                        }
-                    });
-                }
+                            @Override public void onClick(View view)
+                            {
+                                openUserProfile(item.getUser().id);
+                            }
+                        });
+
+                        holder.imgUserTLUserHeader.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override public void onClick(View view)
+                            {
+                                openUserProfile(item.getUser().id);
+                            }
+                        });
+                    }
+
+
                 holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
             }
 
-            if(item.voteDirection == 1){
+            if (item.voteDirection == 1)
+            {
                 holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
             }
-            if(item.voteDirection == 0){
+            if (item.voteDirection == 0)
+            {
                 holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
             }
 
@@ -362,13 +371,13 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    if(view instanceof MarkdownTextView)
+                    if (view instanceof MarkdownTextView)
                     {
-                        if(!((MarkdownTextView)view).isClicked)
+                        if (!((MarkdownTextView) view).isClicked)
                         {
                             timeLineOperater.OnTimeLineItemClicked(position);
                         }
-                        ((MarkdownTextView)view).isClicked = false;
+                        ((MarkdownTextView) view).isClicked = false;
                     }
                 }
             });
@@ -419,6 +428,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
         }
     }
+
+
+
 
     private void openUserProfile(int userId)
     {

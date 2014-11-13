@@ -47,12 +47,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /*
 最新动态
@@ -71,7 +70,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
 
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.tradeheroprogressbar_discovery)TradeHeroProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_discovery) TradeHeroProgressBar progressBar;
 
     private UserTimeLineAdapter adapter;
 
@@ -206,13 +205,12 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
     }
 
-
-
     //Share to wechat moment and share to weibo on the background
     private void shareToWechatMoment(final String strShare)
     {
-        String show  = getUnParsedText(strShare);
-        if(TextUtils.isEmpty(show)){
+        String show = getUnParsedText(strShare);
+        if (TextUtils.isEmpty(show))
+        {
             return;
         }
         UserProfileDTO updatedUserProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
@@ -232,19 +230,21 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
         weChatDTO.title = show;
-        ((SocialSharerImpl)socialSharerLazy.get()).share(weChatDTO, getActivity());
-
+        ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
 
-    private class RequestCallback implements Callback{
+    private class RequestCallback implements Callback
+    {
 
         @Override
-        public void success(Object o, Response response) {
+        public void success(Object o, Response response)
+        {
 
         }
 
         @Override
-        public void failure(RetrofitError retrofitError) {
+        public void failure(RetrofitError retrofitError)
+        {
 
         }
     }
@@ -252,7 +252,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     @Override public void onPause()
     {
         super.onPause();
-        if(listTimeLine!=null)
+        if (listTimeLine != null)
         {
             listTimeLine.onRefreshComplete();
         }
@@ -287,21 +287,22 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             timeLineMiddleCallback.setPrimaryCallback(null);
         }
         timeLineMiddleCallback = null;
-
     }
 
     public void fetchTimeLine()
     {
         detachTimeLineMiddleCallback();
         maxID = -1;
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, -1, maxID, new TimeLineCallback());
+        timeLineMiddleCallback =
+                timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, -1, maxID, new TimeLineCallback());
     }
 
     public void fetchTimeLineMore()
     {
         detachTimeLineMiddleCallback();
         maxID = adapter.getMaxID();
-        timeLineMiddleCallback = timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, maxID, -1, new TimeLineCallback());
+        timeLineMiddleCallback =
+                timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, maxID, -1, new TimeLineCallback());
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>
