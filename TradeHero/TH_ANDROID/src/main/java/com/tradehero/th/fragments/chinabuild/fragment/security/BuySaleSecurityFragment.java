@@ -144,7 +144,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(getSecurityName());
         setHeadViewMiddleSub(getSecurityId().getDisplayName());
-        if(isNeedShowMore)
+        if (isNeedShowMore)
         {
             setHeadViewRight0("持仓明细");
         }
@@ -395,11 +395,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
             int shared = positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId());
             double avPrice = positionDTOCompactList.getAvPrice(portfolioCompactDTO.getPortfolioId());
 
-            if(competitionID != 0)//比赛进来不要看持仓详情
-            {
-                setNoTradeHistroy();
-            }
-            else if (shared != 0 && avPrice != 0)
+            if (shared != 0 && avPrice != 0)
             {
                 tvBuySaleShared.setText(String.valueOf(shared));
                 tvBuySaleALLAV.setText("$ " + PositionDTOCompact.getShortDouble(avPrice));
@@ -416,7 +412,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
         {
             setNoTradeHistroy();
         }
-
     }
 
     public void setNoTradeHistroy()
@@ -917,7 +912,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         bundle.putBoolean(PositionDetailFragment.BUNLDE_KEY_NEED_SHOW_MORE, false);
         if (portfolioCompactDTO != null && positionDTOCompactList != null)
         {
-            PositionDetailFragment.putPositionDTOKey(bundle, new OwnedPositionId(portfolioCompactDTO.userId, portfolioCompactDTO.id,
+            PositionDetailFragment.putPositionDTOKey(bundle, new OwnedPositionId(currentUserId.toUserBaseKey().getUserId(), portfolioCompactDTO.id,
                     positionDTOCompactList.getPositionId(portfolioCompactDTO.getPortfolioId())));
             PositionDetailFragment.putApplicablePortfolioId(bundle, portfolioCompactDTO.getOwnedPortfolioId());
             pushFragment(PositionDetailFragment.class, bundle);
