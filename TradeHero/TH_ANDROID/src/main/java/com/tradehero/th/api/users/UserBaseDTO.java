@@ -80,7 +80,7 @@ public class UserBaseDTO extends ExtendedDTO
     {
         if (displayName != null)
         {
-            return displayName.replace("　", "");
+            return displayName.replace("　", "").replace(" ","");
         }
         return "";
     }
