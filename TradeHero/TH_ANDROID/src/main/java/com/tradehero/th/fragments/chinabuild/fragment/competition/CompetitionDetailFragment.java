@@ -161,31 +161,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         adapter = new LeaderboardListAdapter(getActivity());
     }
 
-    public void getBundleCompetition()
-    {
-        Bundle bundle = getArguments();
-        if (bundle != null)
-        {
-            this.userCompetitionDTO = (UserCompetitionDTO) bundle.getSerializable(BUNDLE_COMPETITION_DTO);
-            if (userCompetitionDTO != null)
-            {
-                competitionId = userCompetitionDTO.id;
-            }
-            else
-            {
-                this.competitionId = bundle.getInt(BUNDLE_COMPETITION_ID, 0);
-            }
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("比赛详情");
-        setInviteFriendView();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -219,9 +194,34 @@ public class CompetitionDetailFragment extends DashboardFragment
         return view;
     }
 
+    public void getBundleCompetition()
+    {
+        Bundle bundle = getArguments();
+        if (bundle != null)
+        {
+            this.userCompetitionDTO = (UserCompetitionDTO) bundle.getSerializable(BUNDLE_COMPETITION_DTO);
+            if (userCompetitionDTO != null)
+            {
+                competitionId = userCompetitionDTO.id;
+            }
+            else
+            {
+                this.competitionId = bundle.getInt(BUNDLE_COMPETITION_ID, 0);
+            }
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain("比赛详情");
+        setInviteFriendView();
+    }
+
     private void noFoundCompetition()
     {
-        if(getActivity() != null)
+        if (getActivity() != null)
         {
             THToast.show("没有找到该比赛");
             popCurrentFragment();
@@ -317,6 +317,7 @@ public class CompetitionDetailFragment extends DashboardFragment
         if (userCompetitionDTO != null)
         {
             initCompetitionTitle();
+            tvGotoCompetition.setVisibility(View.VISIBLE);
             tvGotoCompetition.setText(userCompetitionDTO.isEnrolled ? "去比赛" : "我要报名");
             if (!userCompetitionDTO.isOngoing)
             {
@@ -531,7 +532,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     public void toPlayCompetition()
     {
         Timber.d("去比赛");
-        if(userCompetitionDTO==null)
+        if (userCompetitionDTO == null)
         {
             THToast.show("没有找到比赛");
             return;
@@ -553,7 +554,14 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     public void getMySelfRank()
     {
-        competitionCacheLazy.get().getMySelfRank(userCompetitionDTO.leaderboardId, currentUserId.toUserBaseKey().getUserId(), callbackMySelfRank);
+        if(leaderboardDTO == null)
+        {
+            competitionCacheLazy.get().getMySelfRank(userCompetitionDTO.leaderboardId, currentUserId.toUserBaseKey().getUserId(), callbackMySelfRank);
+        }
+        else
+        {
+            displayMySelfRank(leaderboardDTO);
+        }
     }
 
     protected class GetCompetitionDetailCallback implements retrofit.Callback<UserCompetitionDTO>
@@ -588,7 +596,8 @@ public class CompetitionDetailFragment extends DashboardFragment
             {
                 mTransactionDialog.dismiss();
             }
-            if(progressBar!=null){
+            if (progressBar != null)
+            {
                 progressBar.stopLoading();
             }
         }
@@ -631,8 +640,10 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
     }
 
+    private LeaderboardDTO leaderboardDTO;
     private void displayMySelfRank(LeaderboardDTO leaderboardDTO)
     {
+        this.leaderboardDTO = leaderboardDTO;
         int ordinaPosition = -1;
         try
         {
