@@ -125,6 +125,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private String strReply = "";
 
+    private final int ITEMS_PER_PAGE = 50;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -141,7 +143,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             timelineItemDTOKey = discussionKeyFactory.fromBundle(bundle.getBundle(BUNDLE_ARGUMENT_DISCUSSTION_ID));
             fetchDiscussion(timelineItemDTOKey, false);
-            discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, 1000);
+            discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, ITEMS_PER_PAGE);
             fetchDiscussList(false);
         }
     }
@@ -212,17 +214,20 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public void initView()
     {
         tvUserTLContent.setMaxLines(1000);
-        listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
         listTimeLine.setAdapter(adapter);
 
         listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                discussionListKey.setPage(1);
                 fetchDiscussList(true);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                discussionListKey = discussionListKey.next();
+                fetchDiscussList(true);
             }
         });
 
@@ -449,12 +454,15 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @Override public void onDTOReceived(@NotNull DiscussionListKey key, @NotNull DiscussionKeyList value)
     {
         List<AbstractDiscussionCompactDTO> listData = new ArrayList<>();
-        for (int i = 0; i < value.size(); i++)
-        {
+        for (int i = 0; i < value.size(); i++) {
             AbstractDiscussionCompactDTO dto = discussionCache.get(value.get(i));
             listData.add(dto);
         }
-        adapter.setListData(listData);
+        if (discussionListKey.getPage() == 1) {
+            adapter.setListData(listData);
+        }else{
+            adapter.addListData(listData);
+        }
         listTimeLine.onRefreshComplete();
     }
 
@@ -523,7 +531,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             onFinish();
             DeviceUtil.dismissKeyboard(getActivity());
-            fetchDiscussList(false);
+            discussionListKey.setPage(1);
+            fetchDiscussList(true);
             fetchDiscussion(timelineItemDTOKey, true);
             strReply = "";
             edtSend.setText("");

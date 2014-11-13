@@ -3,6 +3,7 @@ package com.tradehero.th.api.discussion.key;
 import android.os.Bundle;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.pagination.PaginatedKey;
+
 import java.util.Map;
 
 public class PaginatedDiscussionListKey extends DiscussionListKey
@@ -32,6 +33,10 @@ public class PaginatedDiscussionListKey extends DiscussionListKey
         super(inReplyToType, inReplyToId);
         this.page = page;
         this.perPage = perPage;
+    }
+
+    public void setPage(int page){
+        this.page = page;
     }
 
     public PaginatedDiscussionListKey(DiscussionListKey discussionListKey, Integer page, Integer perPage)

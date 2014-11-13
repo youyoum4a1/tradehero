@@ -17,10 +17,11 @@ import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by palmer on 14-11-11.
@@ -145,6 +146,11 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         }
         listData = listCompactDTO;
         ABCLogger.d("listData size b " + listData.size());
+        notifyDataSetChanged();
+    }
+
+    public void addListData(List<AbstractDiscussionCompactDTO> listCompactDTO){
+        listData.addAll(listCompactDTO);
         notifyDataSetChanged();
     }
 
