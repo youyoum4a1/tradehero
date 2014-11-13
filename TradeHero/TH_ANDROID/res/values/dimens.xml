@@ -175,7 +175,7 @@
   <dimen name="buysell_dialog_scroll_height">160dp</dimen>
   <dimen name="guide_close_margin">15dp</dimen>
   <dimen name="security_logo_midium">60dp</dimen>
-  <dimen name="button_height_30">30dp</dimen>
+  <dimen name="button_height_small">30dp</dimen>
   <dimen name="leaderboard_numerical_label_text_size">@dimen/text_caption</dimen>
 
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
