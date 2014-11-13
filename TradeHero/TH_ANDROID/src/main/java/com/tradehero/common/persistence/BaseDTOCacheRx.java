@@ -1,11 +1,11 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
@@ -122,11 +122,6 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     @Override public void invalidate(@NonNull DTOKeyType key)
     {
         cachedValues.remove(key);
-        BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject = cachedSubjects.remove(key);
-        if (cachedSubject != null)
-        {
-            cachedSubject.onCompleted();
-        }
     }
 
     @Override public void invalidateAll()
@@ -147,7 +142,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
      * @param counter
      * @param cachedSubject
      */
-    private void removeConditional(
+    protected void removeConditional(
             @NonNull DTOKeyType key,
             @NonNull RefCounter counter,
             @NonNull BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject)
@@ -164,7 +159,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedValues.snapshot();
     }
 
-    private static class RefCounter
+    protected static class RefCounter
     {
         private int subscriberCount = 0;
 
