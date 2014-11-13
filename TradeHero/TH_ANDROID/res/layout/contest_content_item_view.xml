@@ -8,6 +8,7 @@
     android:contentDescription="@null"
     app:dominantMeasurement="width"
     style="@style/TH.ListItem.Clickable"
+    android:gravity="center_vertical"
     app:aspectRatioEnabled="false"
     >
 
