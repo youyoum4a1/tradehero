@@ -45,28 +45,28 @@ import timber.log.Timber;
 public class PortfolioListItemView extends RelativeLayout
         implements DTOView<DisplayablePortfolioDTO>
 {
+    @Inject CurrentUserId currentUserId;
+    @Inject THRouter thRouter;
+    @Inject UserProfileCacheRx userProfileCache;
+    @Inject GetPositionsCacheRx getPositionsCache;
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
+    @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
+    @Inject Picasso picasso;
+    @Inject @ForUserPhoto Transformation userImageTransformation;
+    @Inject DashboardNavigator navigator;
+
     @InjectView(R.id.follower_profile_picture) @Optional protected ImageView userIcon;
     @InjectView(R.id.portfolio_title) protected TextView title;
     @InjectView(R.id.portfolio_description) protected TextView description;
     @InjectView(R.id.roi_value) @Optional protected TextView roiValue;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
-    private UserProfileDTO currentUserProfileDTO;
-    private GetPositionsDTO getPositionsDTO;
-    private WatchlistPositionDTOList watchedSecurityPositions;
-    @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userImageTransformation;
-    @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCacheRx userProfileCache;
-    @Inject GetPositionsCacheRx getPositionsCache;
-    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
-    @Inject THRouter thRouter;
-    @Inject DashboardNavigator navigator;
-
     @Nullable private Subscription currentUserProfileCacheSubscription;
+    private UserProfileDTO currentUserProfileDTO;
     @Nullable private Subscription getPositionsSubscription;
+    private GetPositionsDTO getPositionsDTO;
     @Nullable private Subscription userWatchlistSubscription;
+    private WatchlistPositionDTOList watchedSecurityPositions;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -89,9 +89,12 @@ public class PortfolioListItemView extends RelativeLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        detachUserProfileCache();
-        detachGetPositionsCache();
-        detachUserWatchlistTask();
+        unsubscribe(currentUserProfileCacheSubscription);
+        currentUserProfileCacheSubscription = null;
+        unsubscribe(getPositionsSubscription);
+        getPositionsSubscription = null;
+        unsubscribe(userWatchlistSubscription);
+        userWatchlistSubscription = null;
 
         if (this.userIcon != null)
         {
@@ -120,34 +123,12 @@ public class PortfolioListItemView extends RelativeLayout
         }
     }
 
-    protected void detachUserProfileCache()
+    protected void unsubscribe(@Nullable Subscription subscription)
     {
-        Subscription copy = currentUserProfileCacheSubscription;
-        if (copy != null)
+        if (subscription != null)
         {
-            copy.unsubscribe();
+            subscription.unsubscribe();
         }
-        currentUserProfileCacheSubscription = null;
-    }
-
-    protected void detachGetPositionsCache()
-    {
-        Subscription copy = getPositionsSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        getPositionsSubscription = null;
-    }
-
-    protected void detachUserWatchlistTask()
-    {
-        Subscription copy = userWatchlistSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        userWatchlistSubscription = null;
     }
 
     public void display(DisplayablePortfolioDTO displayablePortfolioDTO)
@@ -173,10 +154,12 @@ public class PortfolioListItemView extends RelativeLayout
 
     protected void fetchCurrentUserProfile()
     {
-        detachUserProfileCache();
-        currentUserProfileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new PortfolioListItemViewCurrentUserProfileCacheObserver());
+        if (currentUserProfileCacheSubscription == null)
+        {
+            currentUserProfileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new PortfolioListItemViewCurrentUserProfileCacheObserver());
+        }
     }
 
     protected void fetchAdditional()
@@ -194,9 +177,9 @@ public class PortfolioListItemView extends RelativeLayout
                 !displayablePortfolioDTOCopy.portfolioDTO.isWatchlist &&
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
                 displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()
-                        .equals(currentUserId.toUserBaseKey()))
+                        .equals(currentUserId.toUserBaseKey())
+                && getPositionsSubscription == null)
         {
-            detachGetPositionsCache();
             getPositionsSubscription = getPositionsCache.get(displayablePortfolioDTOCopy.ownedPortfolioId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new PortfolioListItemViewGetPositionsObserver());
@@ -212,11 +195,11 @@ public class PortfolioListItemView extends RelativeLayout
                 displayablePortfolioDTOCopy.portfolioDTO.isWatchlist &&
                 displayablePortfolioDTOCopy.userBaseDTO != null &&
                 displayablePortfolioDTOCopy.userBaseDTO.getBaseKey()
-                        .equals(currentUserId.toUserBaseKey()))
+                        .equals(currentUserId.toUserBaseKey()) &&
+                userWatchlistSubscription == null)
         {
             Timber.d("fetchWatchedSecurities launching");
             UserBaseKey key = displayablePortfolioDTOCopy.userBaseDTO.getBaseKey();
-            detachUserWatchlistTask();
             userWatchlistSubscription = userWatchlistPositionCache.get(key)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new PortfolioListItemViewWatchedSecurityIdListObserver());

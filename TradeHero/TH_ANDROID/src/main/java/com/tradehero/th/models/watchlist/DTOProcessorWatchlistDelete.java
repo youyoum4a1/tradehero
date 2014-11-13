@@ -7,7 +7,6 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import rx.functions.Action1;
@@ -18,7 +17,6 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
 {
     @NonNull private final UserBaseKey concernedUser;
     @NonNull private final WatchlistPositionCacheRx watchlistPositionCache;
-    @NonNull private final PortfolioCompactCacheRx portfolioCompactCache;
     @NonNull private final PortfolioCacheRx portfolioCache;
     @NonNull private final UserWatchlistPositionCacheRx userWatchlistPositionCache;
 
@@ -26,14 +24,12 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
     public DTOProcessorWatchlistDelete(
             @NonNull WatchlistPositionCacheRx watchlistPositionCache,
             @NonNull UserBaseKey concernedUser,
-            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
             @NonNull PortfolioCacheRx portfolioCache,
             @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache)
     {
         super();
         this.concernedUser = concernedUser;
         this.watchlistPositionCache = watchlistPositionCache;
-        this.portfolioCompactCache = portfolioCompactCache;
         this.portfolioCache = portfolioCache;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
@@ -41,7 +37,6 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
 
     @Override public WatchlistPositionDTO process(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
-        portfolioCompactCache.invalidate(concernedUser, true);
         portfolioCache.invalidate(concernedUser, true);
         SecurityId deletedSecurityId = null;
         if (watchlistPositionDTO.securityDTO != null)

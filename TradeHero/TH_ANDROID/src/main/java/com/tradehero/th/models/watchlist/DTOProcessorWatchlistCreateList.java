@@ -28,7 +28,6 @@ public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPo
         individualProcessor = new DTOProcessorWatchlistCreate(
                 watchlistPositionCache,
                 concernedUser,
-                portfolioCompactCache,
                 portfolioCache,
                 userWatchlistPositionCache);
     }

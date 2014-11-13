@@ -1,17 +1,16 @@
 package com.tradehero.th.persistence.portfolio;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, PortfolioCompactDTO>
@@ -72,26 +71,6 @@ public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, Portfol
         for (PortfolioCompactDTO portfolioCompactDTO : portfolioCompactDTOs)
         {
             onNext(portfolioCompactDTO.getPortfolioId(), portfolioCompactDTO);
-        }
-    }
-
-    public void invalidate(@NonNull UserBaseKey concernedUser)
-    {
-        invalidate(concernedUser, false);
-    }
-
-    public void invalidate(@NonNull UserBaseKey concernedUser, boolean onlyWatchlist)
-    {
-        PortfolioCompactDTO cached;
-        for (PortfolioId key: snapshot().keySet())
-        {
-            cached = getValue(key);
-            if (cached != null
-                    && cached.userId.equals(concernedUser.key)
-                    && (cached.isWatchlist || !onlyWatchlist))
-            {
-                invalidate(cached.getPortfolioId());
-            }
         }
     }
 }

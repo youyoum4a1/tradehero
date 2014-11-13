@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
@@ -24,12 +26,9 @@ import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -78,7 +77,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onResume();
 
-        fetchPortfolioCompactList();
+        softFetchPortfolioCompactList();
     }
 
     @Override public void onStop()
@@ -108,7 +107,20 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         thPurchaseActionInteractor = null;
     }
 
-    private void fetchPortfolioCompactList()
+    protected void softFetchPortfolioCompactList()
+    {
+        PortfolioCompactDTOList list = portfolioCompactListCache.getValue(currentUserId.toUserBaseKey());
+        if (list == null)
+        {
+            fetchPortfolioCompactList();
+        }
+        else
+        {
+            prepareApplicableOwnedPortolioId(list.getDefaultPortfolio());
+        }
+    }
+
+    protected void fetchPortfolioCompactList()
     {
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = AndroidObservable.bindFragment(

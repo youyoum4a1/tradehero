@@ -2,9 +2,9 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.os.Bundle;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import javax.inject.Inject;
 
 public class LeaderboardPositionListFragment
         extends PositionListFragment
@@ -38,10 +38,10 @@ public class LeaderboardPositionListFragment
         return args.getString(LEADERBOARD_PERIOD_START_STRING);
     }
 
-    @Override protected void createPositionItemAdapter()
+    @Override protected PositionItemAdapter createPositionItemAdapter()
     {
-        super.createPositionItemAdapter();
         isTimeRestricted = getLeaderBoardTimeRestricted(getArguments());
+        return super.createPositionItemAdapter();
     }
 
     @Override public void onResume()

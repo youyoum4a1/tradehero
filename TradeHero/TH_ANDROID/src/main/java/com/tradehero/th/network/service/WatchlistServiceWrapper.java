@@ -60,7 +60,6 @@ import rx.Observable;
         return new DTOProcessorWatchlistCreate(
                 watchlistPositionCache.get(),
                 concernedUser,
-                portfolioCompactCache.get(),
                 portfolioCache.get(),
                 userWatchlistPositionCache.get());
     }
@@ -78,7 +77,6 @@ import rx.Observable;
         return new DTOProcessorWatchlistUpdate(
                 concernedUser,
                 watchlistPositionCache.get(),
-                portfolioCompactCache.get(),
                 portfolioCache.get());
     }
 
@@ -157,7 +155,6 @@ import rx.Observable;
         return new DTOProcessorWatchlistDelete(
                 watchlistPositionCache.get(),
                 concernedUser,
-                portfolioCompactCache.get(),
                 portfolioCache.get(),
                 userWatchlistPositionCache.get());
     }

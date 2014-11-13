@@ -1232,6 +1232,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    @Override protected void softFetchPortfolioCompactList()
+    {
+        // Force a proper fetch
+        fetchPortfolioCompactList();
+    }
+
     @Override @NonNull protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
     {
         return new BuySellPortfolioCompactListObserver();

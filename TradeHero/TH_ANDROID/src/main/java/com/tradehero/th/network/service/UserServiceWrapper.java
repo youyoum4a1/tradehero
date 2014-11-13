@@ -40,7 +40,6 @@ import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfileDeep;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
@@ -48,7 +47,6 @@ import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -71,12 +69,10 @@ import rx.functions.Func1;
     @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<HeroListCacheRx> heroListCache;
-    @NonNull private final Lazy<GetPositionsCacheRx> getPositionsCache;
     @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
     @NonNull private final Lazy<ProviderCacheRx> providerCache;
     @NonNull private final Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache;
     @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
-    @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -87,13 +83,11 @@ import rx.functions.Func1;
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
-            @NonNull Lazy<GetPositionsCacheRx> getPositionsCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
             @NonNull Lazy<ProviderCacheRx> providerCache,
             @NonNull Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache,
             @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache,
-            @NonNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
+            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.userService = userService;
         this.currentUserId = currentUserId;
@@ -101,14 +95,12 @@ import rx.functions.Func1;
         this.userProfileCache = userProfileCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
-        this.getPositionsCache = getPositionsCache;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
         this.homeContentCache = homeContentCache;
-        this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
     //</editor-fold>
 
@@ -445,7 +437,6 @@ import rx.functions.Func1;
                 userProfileCache.get(),
                 homeContentCache.get(),
                 heroListCache.get(),
-                getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
                 batchFollowFormDTO);
@@ -483,7 +474,6 @@ import rx.functions.Func1;
                 userProfileCache.get(),
                 homeContentCache.get(),
                 heroListCache.get(),
-                getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
                 currentUserId.toUserBaseKey(),
@@ -508,7 +498,6 @@ import rx.functions.Func1;
                 userProfileCache.get(),
                 homeContentCache.get(),
                 heroListCache.get(),
-                getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
                 allowableRecipientPaginatedCache.get(),
                 currentUserId.toUserBaseKey(),

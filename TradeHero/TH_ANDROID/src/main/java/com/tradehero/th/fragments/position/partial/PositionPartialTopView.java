@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -102,8 +103,10 @@ public class PositionPartialTopView extends LinearLayout
         }
         tradeHistoryButton = null;
 
-        detachSecurityIdFetch();
-        detachSecurityCompactCache();
+        unsubscribe(securityIdFetchSubscription);
+        securityIdFetchSubscription = null;
+        unsubscribe(securityCompactCacheFetchSubscription);
+        securityCompactCacheFetchSubscription = null;
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
@@ -111,27 +114,15 @@ public class PositionPartialTopView extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    protected void detachSecurityIdFetch()
+    protected void unsubscribe(@Nullable Subscription subscription)
     {
-        Subscription copy = securityIdFetchSubscription;
-        if (copy != null)
+        if (subscription != null)
         {
-            copy.unsubscribe();
+            subscription.unsubscribe();
         }
-        securityIdFetchSubscription = null;
     }
 
-    protected void detachSecurityCompactCache()
-    {
-        Subscription copy = securityCompactCacheFetchSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        securityCompactCacheFetchSubscription = null;
-    }
-
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO, final boolean andDisplay)
     {
         this.positionDTO = positionDTO;
         if (andDisplay)
@@ -140,9 +131,8 @@ public class PositionPartialTopView extends LinearLayout
             displayPositionLastAmountHeader();
             displayPositionLastAmount();
         }
-        if (positionDTO != null)
+        if (positionDTO != null && securityIdFetchSubscription == null)
         {
-            detachSecurityIdFetch();
             securityIdFetchSubscription = securityIdCache.get().get(positionDTO.getSecurityIntegerId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Pair<SecurityIntegerId, SecurityId>>()
@@ -165,12 +155,18 @@ public class PositionPartialTopView extends LinearLayout
 
     protected void linkWith(SecurityId securityId, boolean andDisplay)
     {
+        if (securityId.equals(this.securityId))
+        {
+            return;
+        }
         this.securityId = securityId;
 
-        detachSecurityCompactCache();
-        securityCompactCacheFetchSubscription = securityCompactCache.get().get(securityId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createSecurityCompactCacheObserver());
+        if (securityCompactCacheFetchSubscription == null)
+        {
+            securityCompactCacheFetchSubscription = securityCompactCache.get().get(securityId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createSecurityCompactCacheObserver());
+        }
 
         if (andDisplay)
         {
