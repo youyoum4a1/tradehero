@@ -57,25 +57,24 @@ public class DiscoveryMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setViewPager(tabViewPager);
         beginTime = System.currentTimeMillis();
         oldPageItem = 0;
-        // Introduced a new bug of highlighting selected tab when switching between discover tabs
-        //tabViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-        //    @Override
-        //    public void onPageScrolled(int i, float v, int i2) {
-        //
-        //    }
-        //
-        //    @Override
-        //    public void onPageSelected(int i) {
-        //        reportAnalytics();
-        //        beginTime = System.currentTimeMillis();
-        //        oldPageItem = i;
-        //    }
-        //
-        //    @Override
-        //    public void onPageScrollStateChanged(int i) {
-        //
-        //    }
-        //});
+        pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                reportAnalytics();
+                beginTime = System.currentTimeMillis();
+                oldPageItem = i;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
