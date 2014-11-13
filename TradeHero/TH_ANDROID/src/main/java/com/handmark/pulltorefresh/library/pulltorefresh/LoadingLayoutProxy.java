@@ -1,8 +1,8 @@
-package pulltorefresh;
+package com.handmark.pulltorefresh.library.pulltorefresh;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import pulltorefresh.internal.LoadingLayout;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.LoadingLayout;
 
 import java.util.HashSet;
 
@@ -18,7 +18,7 @@ public class LoadingLayoutProxy implements ILoadingLayout {
 	 * This allows you to add extra LoadingLayout instances to this proxy. This
 	 * is only necessary if you keep your own instances, and want to have them
 	 * included in any
-	 * {@link pulltorefresh.PullToRefreshBase#createLoadingLayoutProxy(boolean, boolean)
+	 * {@link PullToRefreshBase#createLoadingLayoutProxy(boolean, boolean)
 	 * createLoadingLayoutProxy(...)} calls.
 	 * 
 	 * @param layout - LoadingLayout to have included.

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import pulltorefresh.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 
 public class PositionListView extends PullToRefreshListView
 {

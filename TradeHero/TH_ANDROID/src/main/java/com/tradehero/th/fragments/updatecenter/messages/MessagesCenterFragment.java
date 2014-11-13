@@ -14,7 +14,7 @@ import android.widget.AbsListView;
 import butterknife.ButterKnife;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
-import pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;

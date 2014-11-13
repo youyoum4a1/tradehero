@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.chinabuild.listview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import pulltorefresh.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.th.utils.DaggerUtils;
 
 public class SecurityListView extends PullToRefreshListView

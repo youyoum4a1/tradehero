@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh;
+package com.handmark.pulltorefresh.library.pulltorefresh;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -29,8 +29,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.*;
 import com.tradehero.th.R;
-import pulltorefresh.internal.*;
 
 public abstract class PullToRefreshBase<T extends View> extends LinearLayout implements IPullToRefresh<T> {
 
@@ -1321,7 +1321,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 		/**
 		 * Disables Pull-to-Refresh gesture handling, but allows manually
 		 * setting the Refresh state via
-		 * {@link pulltorefresh.PullToRefreshBase#setRefreshing() setRefreshing()}.
+		 * {@link PullToRefreshBase#setRefreshing() setRefreshing()}.
 		 */
 		MANUAL_REFRESH_ONLY(0x4);
 
@@ -1399,7 +1399,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	/**
 	 * Simple Listener that allows you to be notified when the user has scrolled
 	 * to the end of the AdapterView. See (
-	 * {@link pulltorefresh.PullToRefreshAdapterViewBase#setOnLastItemVisibleListener}.
+	 * {@link PullToRefreshAdapterViewBase#setOnLastItemVisibleListener}.
 	 *
 	 * @author Chris Banes
 	 */
@@ -1416,7 +1416,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 	 * Listener that allows you to be notified when the user has started or
 	 * finished a touch event. Useful when you want to append extra UI events
 	 * (such as sounds). See (
-	 * {@link pulltorefresh.PullToRefreshAdapterViewBase#setOnPullEventListener}.
+	 * {@link PullToRefreshAdapterViewBase#setOnPullEventListener}.
 	 *
 	 * @author Chris Banes
 	 */
@@ -1508,7 +1508,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 
 		/**
 		 * When the UI is currently refreshing, caused by a call to
-		 * {@link pulltorefresh.PullToRefreshBase#setRefreshing() setRefreshing()}.
+		 * {@link PullToRefreshBase#setRefreshing() setRefreshing()}.
 		 */
 		MANUAL_REFRESHING(0x9),
 

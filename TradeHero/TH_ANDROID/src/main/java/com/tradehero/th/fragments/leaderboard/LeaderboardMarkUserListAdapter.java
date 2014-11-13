@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
-import pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;

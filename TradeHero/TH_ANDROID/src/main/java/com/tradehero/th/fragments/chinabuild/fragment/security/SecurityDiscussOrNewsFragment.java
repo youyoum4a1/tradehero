@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.widget.BetterViewAnimator;

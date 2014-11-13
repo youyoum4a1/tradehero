@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh;
+package com.handmark.pulltorefresh.library.pulltorefresh;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -26,9 +26,10 @@ import android.view.ViewParent;
 import android.widget.*;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
 import com.tradehero.th.R;
-import pulltorefresh.internal.EmptyViewMethodAccessor;
-import pulltorefresh.internal.IndicatorLayout;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.IndicatorLayout;
 
 public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extends PullToRefreshBase<T> implements
 		OnScrollListener {
@@ -84,8 +85,8 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	 * Gets whether an indicator graphic should be displayed when the View is in
 	 * a state where a Pull-to-Refresh can happen. An example of this state is
 	 * when the Adapter View is scrolled to the top and the mode is set to
-	 * {@link pulltorefresh.PullToRefreshBase.Mode#PULL_FROM_START}. The default value is <var>true</var> if
-	 * {@link pulltorefresh.PullToRefreshBase#isPullToRefreshOverScrollEnabled()
+	 * {@link PullToRefreshBase.Mode#PULL_FROM_START}. The default value is <var>true</var> if
+	 * {@link PullToRefreshBase#isPullToRefreshOverScrollEnabled()
 	 * isPullToRefreshOverScrollEnabled()} returns false.
 	 *
 	 * @return true if the indicators will be shown
@@ -136,7 +137,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	}
 
 	/**
-	 * Pass-through method for {@link pulltorefresh.PullToRefreshBase#getRefreshableView()
+	 * Pass-through method for {@link PullToRefreshBase#getRefreshableView()
 	 * getRefreshableView()}.
 	 * {@link android.widget.AdapterView#setAdapter(android.widget.Adapter)}
 	 * setAdapter(adapter)}. This is just for convenience!
@@ -197,7 +198,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	}
 
 	/**
-	 * Pass-through method for {@link pulltorefresh.PullToRefreshBase#getRefreshableView()
+	 * Pass-through method for {@link PullToRefreshBase#getRefreshableView()
 	 * getRefreshableView()}.
 	 * {@link android.widget.AdapterView#setOnItemClickListener(android.widget.AdapterView.OnItemClickListener)
 	 * setOnItemClickListener(listener)}. This is just for convenience!
@@ -224,7 +225,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	 * Sets whether an indicator graphic should be displayed when the View is in
 	 * a state where a Pull-to-Refresh can happen. An example of this state is
 	 * when the Adapter View is scrolled to the top and the mode is set to
-	 * {@link pulltorefresh.PullToRefreshBase.Mode#PULL_FROM_START}
+	 * {@link PullToRefreshBase.Mode#PULL_FROM_START}
 	 * 
 	 * @param showIndicator - true if the indicators should be shown.
 	 */

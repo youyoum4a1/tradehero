@@ -213,8 +213,8 @@
   <dimen name="header_footer_left_right_padding">24dp</dimen>
   <dimen name="header_footer_top_bottom_padding">12dp</dimen>
 
-  <dimen name="pulltorefresh_loading_width">41dp</dimen>
-  <dimen name="pulltorefresh_loading_height">39dp</dimen>
+  <dimen name="pulltorefresh_loading_width">49dp</dimen>
+  <dimen name="pulltorefresh_loading_height">46dp</dimen>
   <!--PullToRefresh -->
 
 </resources>

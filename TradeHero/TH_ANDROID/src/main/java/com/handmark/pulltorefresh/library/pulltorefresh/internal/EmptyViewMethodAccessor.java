@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh.internal;
+package com.handmark.pulltorefresh.library.pulltorefresh.internal;
 
 import android.view.View;
 

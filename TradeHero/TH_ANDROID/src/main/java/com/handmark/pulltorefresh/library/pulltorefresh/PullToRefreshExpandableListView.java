@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh;
+package com.handmark.pulltorefresh.library.pulltorefresh;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -22,7 +22,8 @@ import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ExpandableListView;
-import pulltorefresh.internal.EmptyViewMethodAccessor;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
 
 public class PullToRefreshExpandableListView extends PullToRefreshAdapterViewBase<ExpandableListView> {
 

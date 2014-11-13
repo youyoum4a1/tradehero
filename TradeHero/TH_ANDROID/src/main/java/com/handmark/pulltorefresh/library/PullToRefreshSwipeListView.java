@@ -10,8 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListAdapter;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
-import pulltorefresh.internal.EmptyViewMethodAccessor;
-import pulltorefresh.OverscrollHelper;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
+import com.handmark.pulltorefresh.library.pulltorefresh.OverscrollHelper;
 
 public class PullToRefreshSwipeListView extends PullToRefreshListViewBase<SwipeListView>
 {

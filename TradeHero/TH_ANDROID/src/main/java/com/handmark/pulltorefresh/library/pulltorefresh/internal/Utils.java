@@ -1,4 +1,4 @@
-package pulltorefresh.internal;
+package com.handmark.pulltorefresh.library.pulltorefresh.internal;
 
 import android.util.Log;
 

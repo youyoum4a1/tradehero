@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh;
+package com.handmark.pulltorefresh.library.pulltorefresh;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -21,24 +21,26 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ScrollView;
+import android.widget.GridView;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
 import com.tradehero.th.R;
+import com.handmark.pulltorefresh.library.pulltorefresh.internal.EmptyViewMethodAccessor;
 
-public class PullToRefreshScrollView extends PullToRefreshBase<ScrollView> {
+public class PullToRefreshGridView extends PullToRefreshAdapterViewBase<GridView> {
 
-	public PullToRefreshScrollView(Context context) {
+	public PullToRefreshGridView(Context context) {
 		super(context);
 	}
 
-	public PullToRefreshScrollView(Context context, AttributeSet attrs) {
+	public PullToRefreshGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public PullToRefreshScrollView(Context context, Mode mode) {
+	public PullToRefreshGridView(Context context, Mode mode) {
 		super(context, mode);
 	}
 
-	public PullToRefreshScrollView(Context context, Mode mode, AnimationStyle style) {
+	public PullToRefreshGridView(Context context, Mode mode, AnimationStyle style) {
 		super(context, mode, style);
 	}
 
@@ -48,36 +50,40 @@ public class PullToRefreshScrollView extends PullToRefreshBase<ScrollView> {
 	}
 
 	@Override
-	protected ScrollView createRefreshableView(Context context, AttributeSet attrs) {
-		ScrollView scrollView;
+	protected final GridView createRefreshableView(Context context, AttributeSet attrs) {
+		final GridView gv;
 		if (VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD) {
-			scrollView = new InternalScrollViewSDK9(context, attrs);
+			gv = new InternalGridViewSDK9(context, attrs);
 		} else {
-			scrollView = new ScrollView(context, attrs);
+			gv = new InternalGridView(context, attrs);
 		}
 
-		scrollView.setId(R.id.scrollview);
-		return scrollView;
+		// Use Generated ID (from res/values/ids.xml)
+		gv.setId(R.id.gridview);
+		return gv;
 	}
 
-	@Override
-	protected boolean isReadyForPullStart() {
-		return mRefreshableView.getScrollY() == 0;
-	}
+	class InternalGridView extends GridView implements EmptyViewMethodAccessor {
 
-	@Override
-	protected boolean isReadyForPullEnd() {
-		View scrollViewChild = mRefreshableView.getChildAt(0);
-		if (null != scrollViewChild) {
-			return mRefreshableView.getScrollY() >= (scrollViewChild.getHeight() - getHeight());
+		public InternalGridView(Context context, AttributeSet attrs) {
+			super(context, attrs);
 		}
-		return false;
+
+		@Override
+		public void setEmptyView(View emptyView) {
+			PullToRefreshGridView.this.setEmptyView(emptyView);
+		}
+
+		@Override
+		public void setEmptyViewInternal(View emptyView) {
+			super.setEmptyView(emptyView);
+		}
 	}
 
 	@TargetApi(9)
-	final class InternalScrollViewSDK9 extends ScrollView {
+	final class InternalGridViewSDK9 extends InternalGridView {
 
-		public InternalScrollViewSDK9(Context context, AttributeSet attrs) {
+		public InternalGridViewSDK9(Context context, AttributeSet attrs) {
 			super(context, attrs);
 		}
 
@@ -89,22 +95,9 @@ public class PullToRefreshScrollView extends PullToRefreshBase<ScrollView> {
 					scrollRangeY, maxOverScrollX, maxOverScrollY, isTouchEvent);
 
 			// Does all of the hard work...
-			OverscrollHelper.overScrollBy(PullToRefreshScrollView.this, deltaX, scrollX, deltaY, scrollY,
-                    getScrollRange(), isTouchEvent);
+			OverscrollHelper.overScrollBy(PullToRefreshGridView.this, deltaX, scrollX, deltaY, scrollY, isTouchEvent);
 
 			return returnValue;
-		}
-
-		/**
-		 * Taken from the AOSP ScrollView source
-		 */
-		private int getScrollRange() {
-			int scrollRange = 0;
-			if (getChildCount() > 0) {
-				View child = getChildAt(0);
-				scrollRange = Math.max(0, child.getHeight() - (getHeight() - getPaddingBottom() - getPaddingTop()));
-			}
-			return scrollRange;
 		}
 	}
 }

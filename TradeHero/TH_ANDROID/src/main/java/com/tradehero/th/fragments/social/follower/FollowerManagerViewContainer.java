@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import pulltorefresh.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.utils.SecurityUtils;

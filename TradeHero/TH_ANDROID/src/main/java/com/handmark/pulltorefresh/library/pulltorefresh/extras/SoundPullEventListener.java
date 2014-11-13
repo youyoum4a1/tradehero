@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh.extras;
+package com.handmark.pulltorefresh.library.pulltorefresh.extras;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.view.View;
-import pulltorefresh.PullToRefreshBase.Mode;
-import pulltorefresh.PullToRefreshBase.State;
-import pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase.State;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 
 import java.util.HashMap;
 
 public class SoundPullEventListener<V extends View> implements PullToRefreshBase.OnPullEventListener<V> {
 
 	private final Context mContext;
-	private final HashMap<State, Integer> mSoundMap;
+	private final HashMap<PullToRefreshBase.State, Integer> mSoundMap;
 
 	private MediaPlayer mCurrentMediaPlayer;
 
@@ -38,11 +39,11 @@ public class SoundPullEventListener<V extends View> implements PullToRefreshBase
 	 */
 	public SoundPullEventListener(Context context) {
 		mContext = context;
-		mSoundMap = new HashMap<State, Integer>();
+		mSoundMap = new HashMap<PullToRefreshBase.State, Integer>();
 	}
 
 	@Override
-	public final void onPullEvent(PullToRefreshBase<V> refreshView, State event, Mode direction) {
+	public final void onPullEvent(PullToRefreshBase<V> refreshView, PullToRefreshBase.State event, PullToRefreshBase.Mode direction) {
 		Integer soundResIdObj = mSoundMap.get(event);
 		if (null != soundResIdObj) {
 			playSound(soundResIdObj.intValue());
@@ -61,7 +62,7 @@ public class SoundPullEventListener<V extends View> implements PullToRefreshBase
 	 * @param resId - Resource Id of the sound file to be played (e.g.
 	 *            <var>R.raw.pull_sound</var>)
 	 */
-	public void addSoundEvent(State event, int resId) {
+	public void addSoundEvent(PullToRefreshBase.State event, int resId) {
 		mSoundMap.put(event, resId);
 	}
 

@@ -9,7 +9,7 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;

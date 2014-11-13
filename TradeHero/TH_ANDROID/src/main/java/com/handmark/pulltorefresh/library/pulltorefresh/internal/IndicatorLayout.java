@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh.internal;
+package com.handmark.pulltorefresh.library.pulltorefresh.internal;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,8 +25,9 @@ import android.view.animation.Animation.AnimationListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.th.R;
-import pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 
 @SuppressLint("ViewConstructor")
 public class IndicatorLayout extends FrameLayout implements AnimationListener {

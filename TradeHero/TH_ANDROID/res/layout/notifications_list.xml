@@ -32,7 +32,7 @@
         android:id="@+id/listViewLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-      <pulltorefresh.PullToRefreshListView
+      <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
           android:id="@+id/notification_pull_to_refresh_list"
           android:layout_width="match_parent"
           android:layout_height="match_parent"

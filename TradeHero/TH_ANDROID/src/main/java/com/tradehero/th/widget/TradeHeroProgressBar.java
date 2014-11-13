@@ -74,5 +74,6 @@ public class TradeHeroProgressBar extends View {
 
     public void stopLoading(){
         startAnimation = false;
+        this.clearAnimation();
     }
 }

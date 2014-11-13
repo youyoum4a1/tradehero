@@ -1,4 +1,4 @@
-package pulltorefresh;
+package com.handmark.pulltorefresh.library.pulltorefresh;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;

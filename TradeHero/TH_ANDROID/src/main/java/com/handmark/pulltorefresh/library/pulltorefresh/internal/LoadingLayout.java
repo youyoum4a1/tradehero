@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh.internal;
+package com.handmark.pulltorefresh.library.pulltorefresh.internal;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,10 +31,11 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.th.R;
-import pulltorefresh.PullToRefreshBase.Mode;
-import pulltorefresh.PullToRefreshBase.Orientation;
-import pulltorefresh.ILoadingLayout;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase.Orientation;
+import com.handmark.pulltorefresh.library.pulltorefresh.ILoadingLayout;
 
 @SuppressLint("ViewConstructor")
 public abstract class LoadingLayout extends FrameLayout implements ILoadingLayout {
@@ -53,10 +54,10 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 //	private final TextView mHeaderText;
 //	private final TextView mSubHeaderText;
 
-	protected final Mode mMode;
-	protected final Orientation mScrollDirection;
+	protected final PullToRefreshBase.Mode mMode;
+	protected final PullToRefreshBase.Orientation mScrollDirection;
 
-	public LoadingLayout(Context context, final Mode mode, final Orientation scrollDirection, TypedArray attrs) {
+	public LoadingLayout(Context context, final PullToRefreshBase.Mode mode, final PullToRefreshBase.Orientation scrollDirection, TypedArray attrs) {
 		super(context);
 		mMode = mode;
 		mScrollDirection = scrollDirection;
@@ -78,12 +79,12 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 
 		switch (mode) {
 			case PULL_FROM_END:
-				lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.TOP : Gravity.LEFT;
+				lp.gravity = scrollDirection == PullToRefreshBase.Orientation.VERTICAL ? Gravity.TOP : Gravity.LEFT;
 				break;
 
 			case PULL_FROM_START:
 			default:
-				lp.gravity = scrollDirection == Orientation.VERTICAL ? Gravity.BOTTOM : Gravity.RIGHT;
+				lp.gravity = scrollDirection == PullToRefreshBase.Orientation.VERTICAL ? Gravity.BOTTOM : Gravity.RIGHT;
 				break;
 		}
 

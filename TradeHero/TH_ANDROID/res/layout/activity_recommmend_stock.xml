@@ -8,7 +8,7 @@
     <include layout="@layout/custom_head_layout"/>
     <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
 
-        <pulltorefresh.PullToRefreshListView
+        <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
                 android:id="@+id/pulltorefreshlistview_recommend_stock_hero"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

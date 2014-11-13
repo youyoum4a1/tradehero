@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package pulltorefresh.internal;
+package com.handmark.pulltorefresh.library.pulltorefresh.internal;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.th.R;
-import pulltorefresh.PullToRefreshBase.Mode;
-import pulltorefresh.PullToRefreshBase.Orientation;
 
 
 public class RotateLoadingLayout extends LoadingLayout {
@@ -36,11 +34,11 @@ public class RotateLoadingLayout extends LoadingLayout {
     private int loading_width = 0;
     private int loading_height = 0;
 
-    public RotateLoadingLayout(Context context, Mode mode, Orientation scrollDirection, TypedArray attrs) {
-		super(context, mode, scrollDirection, attrs);
+    public RotateLoadingLayout(Context context, PullToRefreshBase.Mode mode, PullToRefreshBase.Orientation scrollDirection, TypedArray attrs) {
+        super(context, mode, scrollDirection, attrs);
         this.context = context;
-        loading_width = (int)context.getResources().getDimension(R.dimen.pulltorefresh_loading_width);
-        loading_height = (int)context.getResources().getDimension(R.dimen.pulltorefresh_loading_height);
+        loading_width = (int) context.getResources().getDimension(R.dimen.pulltorefresh_loading_width);
+        loading_height = (int) context.getResources().getDimension(R.dimen.pulltorefresh_loading_height);
         animationA = AnimationUtils.loadAnimation(context, R.anim.pull_to_refresh_loading_a);
         animationB = AnimationUtils.loadAnimation(context, R.anim.pull_to_refresh_loading_b);
         animationA.setAnimationListener(new Animation.AnimationListener() {
@@ -75,52 +73,55 @@ public class RotateLoadingLayout extends LoadingLayout {
 
             }
         });
-	}
+    }
 
-	public void onLoadingDrawableSet(Drawable imageDrawable) {
-	}
+    public void onLoadingDrawableSet(Drawable imageDrawable) {
+    }
 
-	protected void onPullImpl(float scaleOfLayout) {
+    protected void onPullImpl(float scaleOfLayout) {
         //scaleOfLayout 0.0 - 1.0
-        if(scaleOfLayout < 0.1f){
-            scaleOfLayout = 0.1f;
-        }
-        if(scaleOfLayout >1.0f){
+        if (scaleOfLayout > 1.0f) {
             scaleOfLayout = 1.0f;
         }
         float width = loading_width * scaleOfLayout;
         float height = loading_height * scaleOfLayout;
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)width, (int)height);
+        if (width < 1.0f) {
+            width = 1.0f;
+        }
+        if (height < 1.0f) {
+            height = 1.0f;
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) width, (int) height);
         mHeaderImage.setLayoutParams(params);
-	}
+    }
 
-	@Override
-	protected void refreshingImpl() {
+    @Override
+    protected void refreshingImpl() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(loading_width, loading_height);
         mHeaderImage.setLayoutParams(params);
-		mHeaderImage.startAnimation(animationA);
-	}
+        mHeaderImage.startAnimation(animationA);
+    }
 
-	@Override
-	protected void resetImpl() {
+    @Override
+    protected void resetImpl() {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(loading_width, loading_height);
         mHeaderImage.setLayoutParams(params);
-		mHeaderImage.clearAnimation();
-	}
+        mHeaderImage.clearAnimation();
+    }
 
-	@Override
-	protected void pullToRefreshImpl() {
-		// NO-OP
-	}
+    @Override
+    protected void pullToRefreshImpl() {
+        // NO-OP
+    }
 
-	@Override
-	protected void releaseToRefreshImpl() {
-		// NO-OP
-	}
+    @Override
+    protected void releaseToRefreshImpl() {
+        // NO-OP
+    }
 
-	@Override
-	protected int getDefaultDrawableResId() {
-		return R.drawable.logo;
-	}
+    @Override
+    protected int getDefaultDrawableResId() {
+        return R.drawable.logo;
+    }
 
 }
