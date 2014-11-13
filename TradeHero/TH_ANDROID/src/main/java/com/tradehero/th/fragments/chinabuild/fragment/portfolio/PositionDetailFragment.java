@@ -33,19 +33,18 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /*
     单个Position的交易详情
  */
 public class PositionDetailFragment extends DashboardFragment
 {
-    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
-            PositionDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
-    private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = PositionDetailFragment.class.getName() + ".positionDTOKey";
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = PositionDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    public static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = PositionDetailFragment.class.getName() + ".positionDTOKey";
+    public static final String BUNLDE_KEY_NEED_SHOW_MORE = PositionDetailFragment.class.getName() + ".needShowMore";//是否需要显示行情按钮在右上角
 
     @Inject Lazy<PositionCache> positionCache;
     @Inject Lazy<TradeListCache> tradeListCache;
@@ -101,7 +100,10 @@ public class PositionDetailFragment extends DashboardFragment
 
         setHeadViewMiddleMain("交易详情");
         getSecurityName();
-        setHeadViewRight0("行情");
+        if(getNeedShowMore())
+        {
+            setHeadViewRight0("行情");
+        }
     }
 
     public void getSecurityName()
@@ -115,6 +117,17 @@ public class PositionDetailFragment extends DashboardFragment
                 setHeadViewMiddleMain(securityName);
             }
         }
+    }
+
+    public boolean getNeedShowMore()
+    {
+        Bundle args = getArguments();
+        if (args != null)
+        {
+            boolean isNeedShow = args.getBoolean(BUNLDE_KEY_NEED_SHOW_MORE, true);
+            return isNeedShow;
+        }
+        return true;
     }
 
     @Override public void onClickHeadRight0()

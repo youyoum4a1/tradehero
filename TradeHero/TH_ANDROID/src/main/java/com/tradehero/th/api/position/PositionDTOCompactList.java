@@ -36,6 +36,44 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
         return sum;
     }
 
+    public Integer getPositionId(@Nullable PortfolioId portfolioId)
+    {
+        if (portfolioId == null || portfolioId.key == null)
+        {
+            return null;
+        }
+        int position = 0;
+        for (PositionDTOCompact positionDTOCompact: this)
+        {
+            if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
+            {
+                position = positionDTOCompact.id;
+                return position;
+            }
+        }
+        return position;
+    }
+
+    //获取成本均价
+    public Double getAvPrice(@Nullable PortfolioId portfolioId)
+    {
+        if (portfolioId == null || portfolioId.key == null)
+        {
+            return null;
+        }
+
+        double avprice = 0;
+        for (PositionDTOCompact positionDTOCompact: this)
+        {
+            if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
+            {
+                avprice = positionDTOCompact.averagePriceRefCcy;
+                return avprice;
+            }
+        }
+        return avprice;
+    }
+
     //<editor-fold desc="Net Sell Proceeds USD">
     /**
      * If it returns a negative number it means it will eat into the cash available.

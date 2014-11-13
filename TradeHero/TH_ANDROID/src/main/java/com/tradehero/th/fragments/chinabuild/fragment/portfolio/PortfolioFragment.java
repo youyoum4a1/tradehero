@@ -168,7 +168,6 @@ public class PortfolioFragment extends DashboardFragment
             setHeadViewRight0("去比赛");
             analytics.addEventAuto(
                     new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_PORTFOLIO_GOTO_COMPETITION));
-
         }
     }
 
@@ -232,8 +231,15 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
-                    ((SecurityPositionItem) item).position);
+            if(((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE && portfolio_type == PORTFOLIO_TYPE_MINE)
+            {
+                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+            }
+            else
+            {
+                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
+                        ((SecurityPositionItem) item).position);
+            }
         }
         else if (item instanceof WatchPositionItem)
         {
@@ -409,7 +415,7 @@ public class PortfolioFragment extends DashboardFragment
             {
                 detachGetPositionsTask();
                 getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
-                getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey,true);
+                getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, true);
             }
         }
     }
@@ -605,7 +611,7 @@ public class PortfolioFragment extends DashboardFragment
                     SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
                     if (securityCompactDTO != null && securityCompactDTO.id > 0)
                     {
-                        list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                        list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i), SecurityPositionItem.TYPE_ACTIVE));
                     }
                 }
                 if (adapter != null)
@@ -628,7 +634,7 @@ public class PortfolioFragment extends DashboardFragment
                 SecurityCompactDTO securityCompactDTO = psList.getSecurityCompactDTO(listData.get(i));
                 if (securityCompactDTO != null)
                 {
-                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i)));
+                    list.add(new SecurityPositionItem(securityCompactDTO, listData.get(i), SecurityPositionItem.TYPE_CLOSED));
                 }
             }
             if (adapter != null)

@@ -49,6 +49,7 @@ abstract public class DashboardFragment extends BaseFragment
     private FragmentManager fm;
     @Inject RichTextCreator parser;
 
+
     //Listen to back pressed
     private boolean needToMonitorBackPressed = false;
 

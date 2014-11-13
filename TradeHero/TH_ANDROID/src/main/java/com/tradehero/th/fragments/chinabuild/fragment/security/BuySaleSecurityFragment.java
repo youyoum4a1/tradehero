@@ -26,6 +26,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -37,6 +39,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -49,6 +52,7 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -97,9 +101,12 @@ public class BuySaleSecurityFragment extends DashboardFragment
     private MiddleCallback<SecurityPositionDetailDTO> buySellMiddleCallback;
 
     @InjectView(R.id.llBuySaleLine5) LinearLayout llBuySaleLine5;//预估盈利
-    @InjectView(R.id.llBuySaleLine7) LinearLayout llBuySaleLine7;//分享到社交网络
     @InjectView(R.id.share_to_social_checkbox) CheckBox mShareToSocialCheckBox;//分享到社交网络
     @InjectView(R.id.llBuySaleLineBottom) LinearLayout llBuySaleLineBottom;//确认出售
+
+    @InjectView(R.id.llBuySaleLine7) LinearLayout llBuySaleLine7;//累计盈亏
+    @InjectView(R.id.llBuySaleLine8) LinearLayout llBuySaleLine8;//成本均价
+    @InjectView(R.id.llBuySaleLine9) LinearLayout llBuySaleLine9;//持有股数
 
     @InjectView(R.id.buy_sell_item_title0) TextView tvTitle0;//卖出价格 or 买入价格
     @InjectView(R.id.buy_sell_item_title1) TextView tvTitle1;//卖出数量 or 买入数量
@@ -113,12 +120,17 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @InjectView(R.id.tvBuySaleCashLeft) TextView tvBuySaleCashLeft;//资产余额
     @InjectView(R.id.tvBuySaleMayProfit) TextView tvBuySaleMayProfit;//预估盈利
 
+    @InjectView(R.id.tvBuySaleAllPL) TextView tvBuySaleAllPL;//累计盈亏
+    @InjectView(R.id.tvBuySaleShared) TextView tvBuySaleShared;//持有股数
+    @InjectView(R.id.tvBuySaleALLAV) TextView tvBuySaleALLAV;//成本均价
+
     @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
 
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
 
     private boolean isBuy = false;
     private boolean isSending = false;
+    private boolean isNeedShowMore = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -132,6 +144,16 @@ public class BuySaleSecurityFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(getSecurityName());
         setHeadViewMiddleSub(getSecurityId().getDisplayName());
+        if(isNeedShowMore)
+        {
+            setHeadViewRight0("持仓明细");
+        }
+    }
+
+    @Override public void onClickHeadRight0()
+    {
+        Timber.d("持仓明细");
+        enterSecurity(getSecurityId(), getSecurityName());
     }
 
     @Override
@@ -173,9 +195,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
             mSeekBar.setMax(maxValue);
             mSeekBar.setEnabled(maxValue > 0);
 
-            if(!isBuy)
+            if (!isBuy)
             {//卖出设置为最大
-                int progressMax  = 100;
+                int progressMax = 100;
                 mSeekBar.setProgress(progressMax);
                 mTransactionQuantity = maxValue;
                 updateTransactionDialog();
@@ -362,6 +384,46 @@ public class BuySaleSecurityFragment extends DashboardFragment
         //updateConfirmButton();
         updateRate();
         //updateCostUSD();
+        updatePositionInfo();
+    }
+
+    //显示 累计盈亏，持有股数，成本均价
+    public void updatePositionInfo()
+    {
+        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        {
+            int shared = positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId());
+            double avPrice = positionDTOCompactList.getAvPrice(portfolioCompactDTO.getPortfolioId());
+
+            if(competitionID != 0)//比赛进来不要看持仓详情
+            {
+                setNoTradeHistroy();
+            }
+            else if (shared != 0 && avPrice != 0)
+            {
+                tvBuySaleShared.setText(String.valueOf(shared));
+                tvBuySaleALLAV.setText("$ " + PositionDTOCompact.getShortDouble(avPrice));
+                llBuySaleLine8.setVisibility(View.VISIBLE);
+                llBuySaleLine9.setVisibility(View.VISIBLE);
+                isNeedShowMore = true;
+            }
+            else
+            {
+                setNoTradeHistroy();
+            }
+        }
+        else
+        {
+            setNoTradeHistroy();
+        }
+
+    }
+
+    public void setNoTradeHistroy()
+    {
+        llBuySaleLine8.setVisibility(View.GONE);
+        llBuySaleLine9.setVisibility(View.GONE);
+        isNeedShowMore = false;
     }
 
     private void updateRate()
@@ -471,6 +533,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
                     THSignedMoney.builder(profitLoss)
                             .withSign()
                             .build().toString());
+
+            tvBuySaleMayProfit.setTextColor(getResources().getColor(ColorUtils.getColorResourceIdForNumber(profitLoss)));
         }
         else
         {
@@ -651,7 +715,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
     public void setSaleView()
     {
         llBuySaleLine5.setVisibility(View.VISIBLE);
-        //llBuySaleLine7.setVisibility(View.VISIBLE);
         tvTitle0.setText("卖出价格：");
         tvTitle1.setText("卖出数量：");
         tvTitle6.setText("剩余股份：");
@@ -661,7 +724,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
     public void setBuyView()
     {
         llBuySaleLine5.setVisibility(View.GONE);
-        //llBuySaleLine7.setVisibility(View.GONE);
         tvTitle0.setText("买入价格：");
         tvTitle1.setText("买入数量：");
         tvTitle6.setText("资产余额：");
@@ -671,7 +733,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @OnClick(R.id.llBuySaleLineBottom)
     public void onBuySaleClicked()
     {
-        if(isSending)return;
+        if (isSending) return;
         Timber.d("onBuySaleClicked!!!");
         launchBuySell();
     }
@@ -744,13 +806,14 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             securityId.getDisplayName(), currentUserId.get().toString(),
                             securityCompactDTO.id.toString()));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                            getString(R.string.share_buy_dialog_title, securityId.getDisplayName()),getString(R.string.share_buy_dialog_summary,
+                            getString(R.string.share_buy_dialog_title, securityId.getDisplayName()), getString(R.string.share_buy_dialog_summary,
                             securityId.getDisplayName(), currentUserId.get().toString(),
                             securityCompactDTO.id.toString()));
                 }
                 else
                 {
-                    if(securityPositionDetailDTO==null || securityPositionDetailDTO.positionId<=0){
+                    if (securityPositionDetailDTO == null || securityPositionDetailDTO.positionId <= 0)
+                    {
                         return;
                     }
                     Timber.d("------> " + securityPositionDetailDTO.positionId);
@@ -762,7 +825,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             securityId.getDisplayName(), tvBuySaleRate.getText().toString(),
                             mQuantityEditText.getText().toString(),
                             tvBuySaleMayProfit.getText().toString(),
-                            currentUserId.get().toString(), String.valueOf(positionId), String.valueOf(securityPositionDetailDTO.tradeId), profitLoss);
+                            currentUserId.get().toString(), String.valueOf(positionId), String.valueOf(securityPositionDetailDTO.tradeId),
+                            profitLoss);
                 }
             }
             popCurrentFragment();
@@ -843,5 +907,20 @@ public class BuySaleSecurityFragment extends DashboardFragment
     {
         return securityId != null && securityId.getExchange() != null
                 && securityId.getSecuritySymbol() != null && mTransactionQuantity != 0;
+    }
+
+    public void enterSecurity(SecurityId securityId, String securityName)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putBoolean(PositionDetailFragment.BUNLDE_KEY_NEED_SHOW_MORE, false);
+        if (portfolioCompactDTO != null && positionDTOCompactList != null)
+        {
+            PositionDetailFragment.putPositionDTOKey(bundle, new OwnedPositionId(portfolioCompactDTO.userId, portfolioCompactDTO.id,
+                    positionDTOCompactList.getPositionId(portfolioCompactDTO.getPortfolioId())));
+            PositionDetailFragment.putApplicablePortfolioId(bundle, portfolioCompactDTO.getOwnedPortfolioId());
+            pushFragment(PositionDetailFragment.class, bundle);
+        }
     }
 }

@@ -10,8 +10,8 @@
     >
 
   <!--<include-->
-      <!--android:id="@+id/head_layout"-->
-      <!--layout="@layout/custom_head_layout"/>-->
+  <!--android:id="@+id/head_layout"-->
+  <!--layout="@layout/custom_head_layout"/>-->
 
   <LinearLayout
       style="@style/buy_sale_item"
@@ -82,6 +82,7 @@
   <LinearLayout
       android:id="@+id/llBuySaleLine3"
       android:layout_below="@id/llBuySaleLine2"
+      android:layout_marginTop="10dp"
       style="@style/buy_sale_item">
 
     <TextView
@@ -127,7 +128,7 @@
     <TextView
         style="@style/buy_sale_title"
         android:id="@+id/buy_sell_item_title6"
-        android:text="资产余额："/>
+        android:text="可用余额："/>
 
     <TextView
         android:id="@+id/tvBuySaleCashLeft"
@@ -139,9 +140,72 @@
   </LinearLayout>
 
   <LinearLayout
+      android:visibility="gone"
       android:id="@+id/llBuySaleLine7"
       style="@style/buy_sale_item"
       android:layout_below="@id/llBuySaleLine6"
+      >
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title7"
+        android:text="累计盈亏："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleAllPL"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text=" - - "/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine8"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine7"
+      >
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title8"
+        android:text="持有股数："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleShared"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text=" - - "/>
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine9"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine8"
+      >
+
+    <TextView
+        style="@style/buy_sale_title"
+        android:id="@+id/buy_sell_item_title9"
+        android:text="成本均价："/>
+
+    <TextView
+        android:id="@+id/tvBuySaleALLAV"
+        style="@style/buy_sale_title"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:text=" - - "/>
+
+  </LinearLayout>
+
+
+
+  <LinearLayout
+      android:id="@+id/llBuySaleLine10"
+      style="@style/buy_sale_item"
+      android:layout_below="@id/llBuySaleLine9"
       >
 
     <CheckBox
