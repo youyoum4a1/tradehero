@@ -82,7 +82,7 @@
 
   </TableLayout>
 
-  <com.handmark.pulltorefresh.library.PullToRefreshListView
+  <pulltorefresh.PullToRefreshListView
       xmlns:ptr="http://schemas.android.com/apk/res-auto"
       android:id="@+id/followers_list"
       android:layout_width="match_parent"

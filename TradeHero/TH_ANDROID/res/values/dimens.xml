@@ -206,4 +206,15 @@
   <dimen name="guide_competition_height">101dp</dimen>
   <dimen name="guide_competition_right_margin">20dp</dimen>
 
+  <!--PullToRefresh -->
+  <dimen name="indicator_right_padding">10dp</dimen>
+  <dimen name="indicator_corner_radius">12dp</dimen>
+  <dimen name="indicator_internal_padding">4dp</dimen>
+  <dimen name="header_footer_left_right_padding">24dp</dimen>
+  <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+
+  <dimen name="pulltorefresh_loading_width">41dp</dimen>
+  <dimen name="pulltorefresh_loading_height">39dp</dimen>
+  <!--PullToRefresh -->
+
 </resources>

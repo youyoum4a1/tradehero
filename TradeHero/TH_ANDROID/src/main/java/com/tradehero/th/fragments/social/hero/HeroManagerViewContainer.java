@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import pulltorefresh.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 

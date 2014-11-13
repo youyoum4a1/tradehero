@@ -1,10 +1,8 @@
 package com.handmark.pulltorefresh.library;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,12 +16,14 @@ import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
-import android.widget.ListView;
-import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
-import com.handmark.pulltorefresh.library.internal.IndicatorLayout;
-import com.handmark.pulltorefresh.library.internal.LoadingLayout;
+import com.tradehero.th.R;
+import pulltorefresh.internal.EmptyViewMethodAccessor;
+import pulltorefresh.internal.IndicatorLayout;
+import pulltorefresh.internal.LoadingLayout;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import pulltorefresh.PullToRefreshBase;
+import pulltorefresh.LoadingLayoutProxy;
 
 public class PullToRefreshStickyListHeadersListView extends PullToRefreshBase<StickyListHeadersListView>
         implements AbsListView.OnScrollListener
@@ -382,12 +382,6 @@ public class PullToRefreshStickyListHeadersListView extends PullToRefreshBase<St
             final int totalItemCount)
     {
 
-        if (DEBUG)
-        {
-            Log.d(LOG_TAG, "First Visible: " + firstVisibleItem + ". Visible Count: " + visibleItemCount
-                    + ". Total Items:" + totalItemCount);
-        }
-
         /**
          * Set whether the Last Item is Visible. lastVisibleItemIndex is a
          * zero-based index, so we minus one totalItemCount to check
@@ -697,10 +691,6 @@ public class PullToRefreshStickyListHeadersListView extends PullToRefreshBase<St
 
         if (null == adapter || adapter.isEmpty())
         {
-            if (DEBUG)
-            {
-                Log.d(LOG_TAG, "isFirstItemVisible. Empty View.");
-            }
             return true;
         }
         else
@@ -732,22 +722,12 @@ public class PullToRefreshStickyListHeadersListView extends PullToRefreshBase<St
 
         if (null == adapter || adapter.isEmpty())
         {
-            if (DEBUG)
-            {
-                Log.d(LOG_TAG, "isLastItemVisible. Empty View.");
-            }
             return true;
         }
         else
         {
             final int lastItemPosition = mRefreshableView.getCount() - 1;
             final int lastVisiblePosition = mRefreshableView.getLastVisiblePosition();
-
-            if (DEBUG)
-            {
-                Log.d(LOG_TAG, "isLastItemVisible. Last Item Position: " + lastItemPosition + " Last Visible Pos: "
-                        + lastVisiblePosition);
-            }
 
             /**
              * This check should really just be: lastVisiblePosition ==

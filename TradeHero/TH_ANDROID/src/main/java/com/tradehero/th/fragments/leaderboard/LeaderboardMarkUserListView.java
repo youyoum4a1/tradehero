@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.AdapterView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import pulltorefresh.PullToRefreshListView;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;

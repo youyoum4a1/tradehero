@@ -8,7 +8,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import com.handmark.pulltorefresh.library.internal.LoadingLayout;
+import com.tradehero.th.R;
+import pulltorefresh.internal.LoadingLayout;
+import pulltorefresh.PullToRefreshAdapterViewBase;
+import pulltorefresh.LoadingLayoutProxy;
 
 /**
  * This is a rewrite of PullToRefreshListView, where we keep a generic.

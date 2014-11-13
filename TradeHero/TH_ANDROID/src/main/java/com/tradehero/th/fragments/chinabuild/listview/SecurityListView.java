@@ -2,8 +2,7 @@ package com.tradehero.th.fragments.chinabuild.listview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import butterknife.ButterKnife;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import pulltorefresh.PullToRefreshListView;
 import com.tradehero.th.utils.DaggerUtils;
 
 public class SecurityListView extends PullToRefreshListView
