@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.follower;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -30,6 +29,7 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.THTabView;
 import dagger.Lazy;
 import java.text.MessageFormat;
@@ -49,6 +49,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject GraphicUtil graphicUtil;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
@@ -228,7 +229,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         {
             addTab(resourceDTO);
         }
-        mTabHost.getTabWidget().setBackgroundColor(Color.WHITE);
+        graphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
         return mTabHost;
     }
 
