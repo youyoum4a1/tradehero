@@ -44,7 +44,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
@@ -161,13 +160,7 @@ public class NewsHeadlineFragment extends Fragment
                 .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
 
         newsSubject = PublishSubject.create();
-        newsSubject.subscribe(new EmptyObserver<List<NewsItemDTOKey>>()
-        {
-            @Override public void onNext(List<NewsItemDTOKey> args)
-            {
-                mFeaturedNewsAdapter.setItems(args);
-            }
-        });
+        newsSubject.subscribe(mFeaturedNewsAdapter::setItems);
 
         newsSubject.subscribe(new UpdateUIObserver());
 
@@ -185,6 +178,7 @@ public class NewsHeadlineFragment extends Fragment
     {
         progressBar.setVisibility(View.VISIBLE);
         newsSubscription = rxLoaderManager.create(newsItemListKey, paginatedNewsItemListKeyObservable)
+                .onErrorResumeNext(Observable.empty())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(newsSubject);
