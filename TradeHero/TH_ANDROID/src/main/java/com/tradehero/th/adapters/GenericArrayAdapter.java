@@ -30,11 +30,6 @@ public abstract class GenericArrayAdapter<T> extends BaseAdapter
         notifyDataSetChanged();
     }
 
-    public void clear()
-    {
-        items.clear();
-    }
-
     @Override public int getCount()
     {
         return items.size();
