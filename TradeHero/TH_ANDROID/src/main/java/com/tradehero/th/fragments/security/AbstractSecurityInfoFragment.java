@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.api.security.SecurityId;
@@ -31,9 +32,9 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         return extracted;
     }
 
-    @Override public void onResume()
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        super.onResume();
+        super.onViewCreated(view, savedInstanceState);
         linkWith(getSecurityId(getArguments()), true);
     }
 

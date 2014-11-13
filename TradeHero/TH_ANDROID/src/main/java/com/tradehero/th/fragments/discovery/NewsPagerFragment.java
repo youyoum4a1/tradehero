@@ -17,7 +17,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 
 public class NewsPagerFragment extends Fragment
 {
-    @InjectView(R.id.news_pager) ViewPager mViewPager;
     @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
 
     @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
@@ -45,36 +44,30 @@ public class NewsPagerFragment extends Fragment
     {
         ButterKnife.inject(this, view);
 
-        mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
-        mViewPager.setOffscreenPageLimit(1);
-
         mNewsCarousel.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
         {
             @Override public void onPageSelected(int position)
             {
-                mViewPager.setCurrentItem(position);
+                replaceFragment(position);
             }
         });
+        replaceFragment(0);
+    }
+
+    private void replaceFragment(int position)
+    {
+        NewsHeadlineFragment f = NewsHeadlineFragment.newInstance(NewsType.values()[position]);
+        if(f != null)
+        {
+            getFragmentManager().beginTransaction().replace(R.id.news_pager, f).commit();
+        }
     }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
-    }
-
-    private class DiscoveryNewsFragmentAdapter extends DiscoveryNewsAdapter
-    {
-        public DiscoveryNewsFragmentAdapter(FragmentManager fm)
-        {
-            super(fm);
-        }
-
-        @Override public Fragment getItem(int i)
-        {
-            return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
-        }
     }
 
     private class DiscoveryNewsCarouselFragmentAdapter extends DiscoveryNewsAdapter

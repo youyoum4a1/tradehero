@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnPageChange;
+import com.android.common.SlidingTabLayout;
 import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -102,7 +103,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         implements WithTutorial
 {
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFragment.class.getName() + ".chartButtonClicked";
-    private static final String BUNDLE_KEY_SELECTED_PAGE_INDEX = ".selectedPage";
 
     public static final int MS_DELAY_FOR_BG_IMAGE = 200;
 
@@ -116,9 +116,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
     @InjectView(R.id.vprice_as_of) protected TextView mVpriceAsOf;
-    @InjectView(R.id.info) protected TextView mInfoTextView;
-    @InjectView(R.id.discussions) protected TextView mDiscussTextView;
-    @InjectView(R.id.news) protected TextView mNewsTextView;
+    @InjectView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
 
     @Inject ResideMenu resideMenu;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
@@ -154,7 +152,6 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     private Animation progressAnimation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
-    private int selectedPageIndex;
     private BroadcastReceiver chartImageButtonClickReceiver;
     @Nullable private Subscription quoteTimerSubscription;
 
@@ -174,11 +171,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        if (savedInstanceState != null)
-        {
-            selectedPageIndex = savedInstanceState.getInt(BUNDLE_KEY_SELECTED_PAGE_INDEX);
-        }
-
         return inflater.inflate(R.layout.fragment_buy_sell, container, false);
     }
 
@@ -194,15 +186,18 @@ public class BuySellFragment extends AbstractBuySellFragment
         ButterKnife.inject(this, view);
 
         bottomViewPagerAdapter =
-                new BuySellBottomStockPagerAdapter(((Fragment) this).getChildFragmentManager());
+                new BuySellBottomStockPagerAdapter(getActivity(), this.getChildFragmentManager());
+        bottomViewPagerAdapter.linkWith(securityId);
+
         mBottomViewPager.setAdapter(bottomViewPagerAdapter);
+
+        mSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        mSlidingTabLayout.setViewPager(mBottomViewPager);
 
         mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
-        onPageSelected(selectedPageIndex);
-
         mBuySellBtnContainer.setVisibility(View.GONE);
-        resideMenu.addIgnoredView(mBottomViewPager);
 
         progressAnimation = new Animation()
         {
@@ -216,6 +211,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         mQuoteRefreshProgressBar.setMax((int) MILLISEC_QUOTE_REFRESH);
         mQuoteRefreshProgressBar.setProgress((int) MILLISEC_QUOTE_REFRESH);
         mQuoteRefreshProgressBar.setAnimation(progressAnimation);
+
     }
 
     //<editor-fold desc="ActionBar">
@@ -253,8 +249,6 @@ public class BuySellFragment extends AbstractBuySellFragment
                 .registerReceiver(chartImageButtonClickReceiver,
                         new IntentFilter(EVENT_CHART_IMAGE_CLICKED));
 
-        mBottomViewPager.setCurrentItem(selectedPageIndex);
-
         if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
         {
             abstractTransactionDialogFragment.populateComment();
@@ -270,7 +264,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         LocalBroadcastManager.getInstance(getActivity())
                 .unregisterReceiver(chartImageButtonClickReceiver);
-        selectedPageIndex = mBottomViewPager.getCurrentItem();
         dashboardTabHost.get().setOnTranslate(null);
         super.onPause();
     }
@@ -292,7 +285,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         progressAnimation = null;
         bottomViewPagerAdapter = null;
 
-        resideMenu.removeIgnoredView(mBottomViewPager);
         ButterKnife.reset(this);
 
         super.onDestroyView();
@@ -312,8 +304,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         alertCompactListCacheSubscription = null;
         detachPortfolioMenuSubscription();
         detachBuySellDialog();
-
-        outState.putInt(BUNDLE_KEY_SELECTED_PAGE_INDEX, selectedPageIndex);
     }
 
     @Override public void onDestroy()
@@ -414,7 +404,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         if (andDisplay)
         {
             displayStockName();
-            displayBottomViewPager();
             loadStockLogo();
             displayBuySellPrice();
             displayAsOf();
@@ -560,20 +549,9 @@ public class BuySellFragment extends AbstractBuySellFragment
     public void displayPageElements()
     {
         displayBuySellPrice();
-        displayBottomViewPager();
         displayStockName();
         displayTriggerButton();
         loadStockLogo();
-    }
-
-    public void displayBottomViewPager()
-    {
-        BuySellBottomStockPagerAdapter adapter = bottomViewPagerAdapter;
-        if (adapter != null)
-        {
-            adapter.linkWith(securityId);
-            adapter.notifyDataSetChanged();
-        }
     }
 
     public void displayStockName()
@@ -1029,36 +1007,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         notifyMarketClosed();
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.info)
-    public void handleTabInfoClicked()
-    {
-        if (mBottomViewPager != null)
-        {
-            mBottomViewPager.setCurrentItem(0, true);
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.discussions)
-    public void handleDiscussionsTabClicked()
-    {
-        if (mBottomViewPager != null)
-        {
-            mBottomViewPager.setCurrentItem(1, true);
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.news)
-    public void handleNewsTabClicked()
-    {
-        if (mBottomViewPager != null)
-        {
-            mBottomViewPager.setCurrentItem(2, true);
-        }
-    }
-
     //<editor-fold desc="Interface Creators">
     public void showBuySellDialog()
     {
@@ -1213,24 +1161,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         return R.layout.tutorial_buy_sell;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnPageChange(value = R.id.trade_bottom_pager, callback = OnPageChange.Callback.PAGE_SELECTED)
-    public void onPageSelected(int position)
-    {
-        selectedPageIndex = position;
-        mInfoTextView.setSelected(position == 0);
-        mDiscussTextView.setSelected(position == 1);
-        mNewsTextView.setSelected(position == 2);
-
-        if (selectedPageIndex == 0)
-        {
-            resideMenu.clearIgnoredViewList();
-        }
-        else
-        {
-            resideMenu.addIgnoredView(mBottomViewPager);
-        }
-    }
 
     @Override protected void softFetchPortfolioCompactList()
     {

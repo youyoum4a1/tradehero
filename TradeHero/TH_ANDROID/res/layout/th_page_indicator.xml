@@ -17,9 +17,9 @@
 <com.tradehero.th.widget.THTabView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="@dimen/dashboard_tabhost_height"
     android:orientation="horizontal"
-    style="@style/TradeHero.TabView"
+    style="@style/TradeHero.PageTitleView"
     android:gravity="center">
 
-  <include layout="@layout/th_inner_indicator"/>
+    <include layout="@layout/th_inner_indicator"/>
 
 </com.tradehero.th.widget.THTabView>

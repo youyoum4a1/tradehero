@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.android.common.SlidingTabLayout;
 import com.astuetz.PagerSlidingTabStrip;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -31,7 +32,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Analytics analytics;
     @InjectView(R.id.pager) ViewPager tabViewPager;
-    @InjectView(R.id.tabs) PagerSlidingTabStrip pagerSlidingTabStrip;
+    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     private long beginTime;
@@ -54,6 +55,8 @@ public class DiscoveryMainFragment extends DashboardFragment
     private void initViews()
     {
         tabViewPager.setAdapter(discoveryPagerAdapter);
+        pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
         beginTime = System.currentTimeMillis();
         oldPageItem = 0;
