@@ -1,10 +1,10 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -32,13 +32,12 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         Observable<Pair<DTOKeyType, DTOType>> cachedObservable = super.getOrCreateObservable(key);
         if (cachedFetcherSubscriptions.get(key) == null)
         {
-            fetch(key)
-                    .map(dtoType -> Pair.create(key, dtoType))
-                    .subscribe(new Observer<Pair<DTOKeyType,DTOType>>()
+            cachedFetcherSubscriptions.put(key, fetch(key)
+                    .subscribe(new Observer<DTOType>()
                     {
-                        @Override public void onNext(Pair<DTOKeyType, DTOType> pair)
+                        @Override public void onNext(DTOType value)
                         {
-                            BaseFetchDTOCacheRx.this.onNext(pair.first, pair.second);
+                            BaseFetchDTOCacheRx.this.onNext(key, value);
                         }
 
                         @Override public void onCompleted()
@@ -51,7 +50,7 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
                             cachedFetcherSubscriptions.remove(key);
                             BaseFetchDTOCacheRx.this.onError(key, error);
                         }
-                    });
+                    }));
         }
         return cachedObservable;
     }
