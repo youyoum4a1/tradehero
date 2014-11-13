@@ -14,8 +14,8 @@
 
     <com.tradehero.th.widget.TradeHeroProgressBar
         android:id="@+id/tradeheroprogressbar_discovery"
-        android:layout_width="61dp"
-        android:layout_height="58dp"
+        android:layout_width="@dimen/loading_logo_width"
+        android:layout_height="@dimen/loading_logo_height"
         android:layout_gravity="center"
         android:background="@drawable/logo"
         />

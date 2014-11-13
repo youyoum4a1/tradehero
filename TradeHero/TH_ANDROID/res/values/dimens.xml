@@ -217,4 +217,8 @@
   <dimen name="pulltorefresh_loading_height">46dp</dimen>
   <!--PullToRefresh -->
 
+  <!--Loading -->
+  <dimen name="loading_logo_width">61dp</dimen>
+  <dimen name="loading_logo_height">58dp</dimen>
+  <!--Loading -->
 </resources>

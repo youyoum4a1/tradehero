@@ -214,7 +214,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public void initView()
     {
         tvUserTLContent.setMaxLines(1000);
-        listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
+        listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         listTimeLine.setAdapter(adapter);
 
         listTimeLine.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
@@ -464,6 +464,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             adapter.addListData(listData);
         }
         listTimeLine.onRefreshComplete();
+        if(adapter.getCount() >= ITEMS_PER_PAGE ){
+            listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
+        }else{
+            listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        }
     }
 
     @Override public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error)

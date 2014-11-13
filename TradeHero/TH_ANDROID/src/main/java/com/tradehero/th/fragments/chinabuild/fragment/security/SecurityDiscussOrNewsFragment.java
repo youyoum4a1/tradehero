@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -53,15 +52,17 @@ import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SecurityDiscussOrNewsFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener
 {
@@ -95,7 +96,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
     private SecurityTimeLineDiscussOrNewsAdapter adapter;
     @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_security_discuss_news) TradeHeroProgressBar progressBar;
 
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -142,7 +143,8 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
         if (adapter.getCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_security_discuss_news);
+            progressBar.startLoading();
         }
         else
         {
@@ -348,7 +350,6 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 @NotNull NewsItemListKey key,
                 @NotNull Throwable error)
         {
-            //THToast.show("");
             onFinish();
         }
     }
@@ -444,6 +445,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
 
     public void onFinish()
     {
+        progressBar.stopLoading();
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
         listTimeLine.onRefreshComplete();
     }

@@ -30,9 +30,12 @@
                   android:paddingTop="60dp"
                   android:gravity="center_horizontal"
                   android:visibility="gone"/>
-        <com.tradehero.th.widget.TradeHeroProgressBar android:id="@+id/progressbar_competition_security_search" android:layout_width="61dp"
-                                                      android:layout_height="58dp" android:layout_centerInParent="true"
-                                                      android:background="@drawable/logo" android:visibility="gone" />
+        <com.tradehero.th.widget.TradeHeroProgressBar
+                android:id="@+id/progressbar_competition_security_search"
+                android:layout_width="@dimen/loading_logo_width"
+                android:layout_height="@dimen/loading_logo_height"
+                android:layout_centerInParent="true"
+                android:background="@drawable/logo" android:visibility="gone" />
     </RelativeLayout>
 </LinearLayout>
 
