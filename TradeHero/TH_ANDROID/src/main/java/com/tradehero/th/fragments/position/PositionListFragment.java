@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
@@ -76,6 +76,9 @@ public class PositionListFragment
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
     public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
+    private static final int FLIPPER_INDEX_LOADING = 0;
+    private static final int FLIPPER_INDEX_LIST = 1;
+    private static final int FLIPPER_INDEX_ERROR = 2;
 
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
@@ -91,10 +94,9 @@ public class PositionListFragment
 
     //@InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
+    @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_list) ListView pullToRefreshListView;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
-    @InjectView(R.id.error) View errorView;
+    @InjectView(R.id.position_list) ListView positionListView;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -173,9 +175,9 @@ public class PositionListFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        pullToRefreshListView.setAdapter(positionItemAdapter);
+        positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
-        pullToRefreshListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        positionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
         // portfolio header
         int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey);
@@ -185,66 +187,6 @@ public class PositionListFragment
 
     @Override protected void initViews(@NonNull View view)
     {
-    }
-
-    protected boolean checkLoadingSuccess()
-    {
-        return (userProfileDTO != null) && (getPositionsDTO != null);
-    }
-
-    protected void showResultIfNecessary()
-    {
-        boolean loaded = checkLoadingSuccess();
-        Timber.d("checkLoadingSuccess %b", loaded);
-        showLoadingView(false);
-        if (loaded && pullToRefreshListView != null)
-        {
-            swipeToRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    protected void showLoadingView(boolean shown)
-    {
-        if (progressBar != null)
-        {
-            progressBar.setVisibility(shown ? View.VISIBLE : View.GONE);
-        }
-        if (pullToRefreshListView != null)
-        {
-            pullToRefreshListView.setVisibility(shown ? View.GONE : View.VISIBLE);
-        }
-        if (errorView != null)
-        {
-            errorView.setVisibility(View.GONE);
-        }
-        if (portfolioHeaderView != null && portfolioHeaderView instanceof View)
-        {
-            ((View) portfolioHeaderView).setVisibility(shown ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    protected void showErrorView()
-    {
-        if (progressBar != null)
-        {
-            progressBar.setVisibility(View.GONE);
-        }
-        if (pullToRefreshListView != null)
-        {
-            pullToRefreshListView.setVisibility(View.GONE);
-        }
-        if (errorView != null)
-        {
-            errorView.setVisibility(View.VISIBLE);
-        }
-        if (portfolioHeaderView != null && portfolioHeaderView instanceof View)
-        {
-            ((View) portfolioHeaderView).setVisibility(View.GONE);
-        }
-        if (pullToRefreshListView != null)
-        {
-            swipeToRefreshLayout.setRefreshing(false);
-        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -315,7 +257,7 @@ public class PositionListFragment
 
     @Override public void onPause()
     {
-        firstPositionVisible = pullToRefreshListView.getFirstVisiblePosition();
+        firstPositionVisible = positionListView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -346,8 +288,8 @@ public class PositionListFragment
 
     @Override public void onDestroyView()
     {
-        pullToRefreshListView.setOnScrollListener(null);
-        pullToRefreshListView.setOnTouchListener(null);
+        positionListView.setOnScrollListener(null);
+        positionListView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
         super.onDestroyView();
     }
@@ -402,7 +344,6 @@ public class PositionListFragment
         @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
             linkWith(pair.second, true);
-            showResultIfNecessary();
         }
 
         @Override public void onError(Throwable e)
@@ -469,7 +410,6 @@ public class PositionListFragment
         this.portfolioDTO = portfolioDTO;
         portfolioHeaderView.linkWith(portfolioDTO);
         displayActionBarTitle();
-        showResultIfNecessary();
         showPrettyReviewAndInvite(portfolioDTO);
     }
 
@@ -521,6 +461,8 @@ public class PositionListFragment
         {
             if (getPositionsDTO == null)
             {
+                listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
+
                 THToast.show(getString(R.string.error_fetch_position_list_info));
                 Timber.d(e, "Error fetching the positionList info");
             }
@@ -533,6 +475,8 @@ public class PositionListFragment
         positionItemAdapter.clear();
         positionItemAdapter.addAll(getPositionsDTO.positions);
         positionItemAdapter.notifyDataSetChanged();
+        swipeToRefreshLayout.setRefreshing(false);
+        listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
 
         if (andDisplay)
         {
@@ -543,6 +487,7 @@ public class PositionListFragment
 
     protected void refreshSimplePage()
     {
+        getPositionsCache.invalidate(getPositionsDTOKey);
         getPositionsCache.get(getPositionsDTOKey);
     }
 
