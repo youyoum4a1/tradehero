@@ -341,7 +341,7 @@ import rx.observers.EmptyObserver;
         preFetchAlerts();
         preFetchTranslationToken();
         preFetchLeaderboardDefs();
-        preFetchHomeContent();
+        //preFetchHomeContent();
     }
 
     public void preFetchAlerts()

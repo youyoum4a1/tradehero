@@ -8,6 +8,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import android.support.annotation.NonNull;
@@ -20,9 +21,9 @@ import android.support.annotation.NonNull;
             @NonNull SecurityServiceAsync securityServiceAsync,
             @NonNull SecurityServiceRx securityServiceRx,
             @NonNull ProviderServiceWrapper providerServiceWrapper,
-            @NonNull SecurityCompactCacheRx securityCompactCache,
-            @NonNull SecurityPositionDetailCacheRx securityPositionDetailCache,
-            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
+            @NonNull Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull CurrentUserId currentUserId)
     {
         super(securityService, securityServiceAsync, securityServiceRx, providerServiceWrapper,

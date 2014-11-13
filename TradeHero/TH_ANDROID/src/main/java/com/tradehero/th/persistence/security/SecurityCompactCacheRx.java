@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,11 +17,11 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
-    @NonNull private final SecurityIdCache securityIdCache;
+    @NonNull private final Lazy<SecurityIdCache> securityIdCache;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactCacheRx(
-            @NonNull SecurityIdCache securityIdCache,
+            @NonNull Lazy<SecurityIdCache> securityIdCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
@@ -32,7 +33,7 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
             @NonNull SecurityId key, @NonNull SecurityCompactDTO value)
     {
         SecurityCompactDTO previous = super.putValue(key, value);
-        securityIdCache.onNext(value.getSecurityIntegerId(), key);
+        securityIdCache.get().onNext(value.getSecurityIntegerId(), key);
         return previous;
     }
 

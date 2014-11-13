@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -7,6 +9,7 @@ import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
@@ -27,14 +30,12 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observable;
-import rx.functions.Func1;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -42,9 +43,9 @@ import rx.functions.Func1;
     @NonNull private final SecurityServiceAsync securityServiceAsync;
     @NonNull private final SecurityServiceRx securityServiceRx;
     @NonNull private final ProviderServiceWrapper providerServiceWrapper;
-    @NonNull private final SecurityCompactCacheRx securityCompactCache;
-    @NonNull private final SecurityPositionDetailCacheRx securityPositionDetailCache;
-    @NonNull private final PortfolioCacheRx portfolioCache;
+    @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
+    @NonNull private final Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
+    @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
     @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
@@ -53,9 +54,9 @@ import rx.functions.Func1;
             @NonNull SecurityServiceAsync securityServiceAsync,
             @NonNull SecurityServiceRx securityServiceRx,
             @NonNull ProviderServiceWrapper providerServiceWrapper,
-            @NonNull SecurityCompactCacheRx securityCompactCache,
-            @NonNull SecurityPositionDetailCacheRx securityPositionDetailCache,
-            @NonNull PortfolioCacheRx portfolioCache,
+            @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
+            @NonNull Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache,
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull CurrentUserId currentUserId)
     {
         super();
@@ -73,10 +74,10 @@ import rx.functions.Func1;
     //<editor-fold desc="Get Multiple Securities">
     @NonNull private DTOProcessorMultiSecurities createMultipleSecurityProcessor()
     {
-        return new DTOProcessorMultiSecurities(securityCompactCache);
+        return new DTOProcessorMultiSecurities(securityCompactCache.get());
     }
 
-    public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NonNull SecurityIntegerIdList ids)
+    @NonNull public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NonNull SecurityIntegerIdList ids)
     {
         return securityServiceRx.getMultipleSecurities(ids.getCommaSeparated())
                 .doOnNext(createMultipleSecurityProcessor());
@@ -152,7 +153,7 @@ import rx.functions.Func1;
         return received;
     }
 
-    public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
+    @NonNull public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
         if (key instanceof TrendingSecurityListType)
@@ -226,30 +227,34 @@ import rx.functions.Func1;
         return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
     }
 
-    @NonNull public Observable<SecurityPositionDetailDTO> getSecurityRx(
+    @NonNull public Observable<SecurityPositionDetailDTO> getSecurityPositionDetailRx(
             @NonNull SecurityId securityId)
     {
         return securityServiceRx.getSecurity(
                 securityId.getExchange(),
                 securityId.getPathSafeSymbol())
-                .map(new Func1<SecurityPositionDetailDTO, SecurityPositionDetailDTO>()
-                {
-                    @Override public SecurityPositionDetailDTO call(SecurityPositionDetailDTO securityPositionDetailDTO)
+                .map(securityPositionDetailDTO -> {
+                    if (securityPositionDetailDTO.providers != null)
                     {
-                        if (securityPositionDetailDTO.providers != null)
+                        for (ProviderDTO providerDTO : securityPositionDetailDTO.providers)
                         {
-                            for (ProviderDTO providerDTO : securityPositionDetailDTO.providers)
+                            if (providerDTO.associatedPortfolio != null)
                             {
-                                if (providerDTO.associatedPortfolio != null)
-                                {
-                                    providerDTO.associatedPortfolio.userId = currentUserId.get();
-                                }
+                                providerDTO.associatedPortfolio.userId = currentUserId.get();
                             }
                         }
-
-                        return securityPositionDetailDTO;
                     }
+
+                    return securityPositionDetailDTO;
                 });
+    }
+
+    @NonNull public Observable<SecurityCompactDTO> getSecurityRx(@NonNull SecurityIntegerId securityIntegerId)
+    {
+        SecurityIntegerIdList list = new SecurityIntegerIdList();
+        list.add(securityIntegerId);
+        return securityServiceRx.getMultipleSecurities(list.getCommaSeparated())
+                .map(map -> map.get(securityIntegerId.key));
     }
     //</editor-fold>
 
@@ -259,8 +264,8 @@ import rx.functions.Func1;
         return new DTOProcessorSecurityPositionTransactionUpdated(
                 securityId,
                 currentUserId.toUserBaseKey(),
-                securityPositionDetailCache,
-                portfolioCache);
+                securityPositionDetailCache.get(),
+                portfolioCache.get());
     }
 
     @Deprecated
@@ -284,7 +289,7 @@ import rx.functions.Func1;
         return middleCallback;
     }
 
-    public Observable<SecurityPositionTransactionDTO> buyRx(
+    @NonNull public Observable<SecurityPositionTransactionDTO> buyRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
@@ -325,7 +330,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Buy or Sell Security">
-    public Observable<SecurityPositionTransactionDTO> doTransactionRx(
+    @NonNull public Observable<SecurityPositionTransactionDTO> doTransactionRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO,
             boolean isBuy)
