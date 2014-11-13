@@ -1,9 +1,11 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.common.persistence.LoadingDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableDTOAdapter;
 import com.tradehero.th.adapters.ExpandableListItem;
@@ -17,18 +19,22 @@ import java.util.List;
 
 public class TradeListItemAdapter
         extends ExpandableDTOAdapter<
-            PositionTradeDTOKey,
-            TradeListItemAdapter.ExpandableTradeItem,
-            TradeListItemView>
+        PositionTradeDTOKey,
+        TradeListItemAdapter.ExpandableTradeItem,
+        TradeListItemView>
 {
     public static final int ITEM_TYPE_HEADER_POSITION_SUMMARY = 0;
     public static final int ITEM_TYPE_POSITION_SUMMARY = 1;
-    public static final int ITEM_TYPE_HEADER_TRADE_HISTORY = 2;
-    public static final int ITEM_TYPE_TRADE = 3;
+    public static final int ITEM_TYPE_POSITION_LOADING = 2;
+    public static final int ITEM_TYPE_HEADER_TRADE_HISTORY = 3;
+    public static final int ITEM_TYPE_TRADE = 4;
+    public static final int ITEM_TYPE_TRADE_LOADING = 5;
 
     public static final int LAYOUT_RES_ID_ITEM_HEADER = R.layout.trade_list_item_header;
+    public static final int LAYOUT_RES_ID_ITEM_TRADE_LOADING = R.layout.loading_item;
     public static final int LAYOUT_RES_ID_ITEM_TRADE = R.layout.trade_list_item;
 
+    public static final int LAYOUT_RES_ID_POSITION_LOADING = R.layout.loading_item;
     public static final int LAYOUT_RES_ID_POSITION_OPEN = R.layout.position_open_no_period;
     public static final int LAYOUT_RES_ID_POSITION_CLOSED = R.layout.position_closed_no_period;
     public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_OPEN = R.layout.position_open_in_period;
@@ -37,38 +43,37 @@ public class TradeListItemAdapter
     private List<Integer> itemTypes;
     private List<Object> objects;
 
-    protected PositionDTO shownPositionDTO;
+    @Nullable protected PositionDTO shownPositionDTO;
+    @Nullable protected List<PositionTradeDTOKey> underlyingItems;
 
-    public TradeListItemAdapter(final Context context, final LayoutInflater inflater)
+    public TradeListItemAdapter(final Context context)
     {
         super(context, LAYOUT_RES_ID_ITEM_TRADE);
-        this.itemTypes = new ArrayList<>();
-        this.objects = new ArrayList<>();
+        recreateObjects();
     }
 
     @Override public void setUnderlyingItems(final List<PositionTradeDTOKey> underlyingItems)
     {
         super.setUnderlyingItems(underlyingItems);
+        this.underlyingItems = underlyingItems;
+        notifyDataSetChanged();
+    }
 
+    @Override public void notifyDataSetChanged()
+    {
+        recreateObjects();
+        super.notifyDataSetChanged();
+    }
+
+    protected void recreateObjects()
+    {
         List<Integer> itemTypesTemp = new ArrayList<>();
         List<Object> objectsTemp = new ArrayList<>();
-        if (underlyingItems == null)
-        {
-            this.items = null;
-        }
-        else
-        {
-            this.items = new ArrayList<>(underlyingItems.size());
-            int i = 0;
-            for (final PositionTradeDTOKey id : underlyingItems)
-            {
-                ExpandableTradeItem item = new ExpandableTradeItem(id, i == 0);
-                item.setExpanded(i == 0);
-                items.add(item);
-                ++i;
-            }
+        this.items = new ArrayList<>();
 
-            itemTypesTemp.add(ITEM_TYPE_HEADER_POSITION_SUMMARY);
+        itemTypesTemp.add(ITEM_TYPE_HEADER_POSITION_SUMMARY);
+        if (this.shownPositionDTO != null)
+        {
             if (this.shownPositionDTO.isClosed())
             {
                 objectsTemp.add(R.string.trade_list_header_closed_summary);
@@ -80,9 +85,29 @@ public class TradeListItemAdapter
 
             itemTypesTemp.add(ITEM_TYPE_POSITION_SUMMARY);
             objectsTemp.add(this.shownPositionDTO);
+        }
+        else
+        {
+            objectsTemp.add(R.string.trade_list_header_position_summary);
 
-            itemTypesTemp.add(ITEM_TYPE_HEADER_TRADE_HISTORY);
-            objectsTemp.add(R.string.trade_list_header_history);
+            itemTypesTemp.add(ITEM_TYPE_POSITION_LOADING);
+            objectsTemp.add(new LoadingDTO()
+            {
+            });
+        }
+
+        itemTypesTemp.add(ITEM_TYPE_HEADER_TRADE_HISTORY);
+        objectsTemp.add(R.string.trade_list_header_history);
+        if (underlyingItems != null)
+        {
+            int i = 0;
+            for (final PositionTradeDTOKey id : underlyingItems)
+            {
+                ExpandableTradeItem item = new ExpandableTradeItem(id, i == 0);
+                item.setExpanded(i == 0);
+                items.add(item);
+                ++i;
+            }
 
             for (Object item : items)
             {
@@ -90,9 +115,14 @@ public class TradeListItemAdapter
                 objectsTemp.add(item);
             }
         }
+        else
+        {
+            itemTypesTemp.add(ITEM_TYPE_TRADE_LOADING);
+            objectsTemp.add(new LoadingDTO(){});
+        }
+
         this.itemTypes = itemTypesTemp;
         this.objects = objectsTemp;
-        notifyDataSetChanged();
     }
 
     @Override protected void fineTune(int position, ExpandableTradeItem dto, TradeListItemView convertView)
@@ -111,7 +141,7 @@ public class TradeListItemAdapter
 
     @Override public int getViewTypeCount()
     {
-        return 5;
+        return 6;
     }
 
     @Override public int getCount()
@@ -129,10 +159,10 @@ public class TradeListItemAdapter
         return objects.get(position);
     }
 
-    public int getPositionLayoutResId()
+    public int getPositionLayoutResId(@NonNull PositionDTO position)
     {
-        boolean isClosed = this.shownPositionDTO.isClosed();
-        if (isClosed && this.shownPositionDTO instanceof PositionInPeriodDTO)
+        boolean isClosed = position.isClosed();
+        if (isClosed && position instanceof PositionInPeriodDTO)
         {
             return LAYOUT_RES_ID_POSITION_IN_PERIOD_CLOSED;
         }
@@ -140,7 +170,7 @@ public class TradeListItemAdapter
         {
             return LAYOUT_RES_ID_POSITION_CLOSED;
         }
-        else if (this.shownPositionDTO instanceof PositionInPeriodDTO)
+        else if (position instanceof PositionInPeriodDTO)
         {
             return LAYOUT_RES_ID_POSITION_IN_PERIOD_OPEN;
         }
@@ -150,7 +180,7 @@ public class TradeListItemAdapter
         }
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
+    @Override @NonNull public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         int itemType = getItemViewType(position);
         Object item = getItem(position);
@@ -166,9 +196,13 @@ public class TradeListItemAdapter
                 break;
 
             case ITEM_TYPE_POSITION_SUMMARY:
+                if (shownPositionDTO == null)
+                {
+                    throw new IllegalArgumentException("Type cannot be PositionSummary when shownPosition is null");
+                }
                 if (convertView == null)
                 {
-                    convertView = getInflater().inflate(getPositionLayoutResId(), viewGroup, false);
+                    convertView = getInflater().inflate(getPositionLayoutResId(shownPositionDTO), viewGroup, false);
                 }
 
                 ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
@@ -178,6 +212,13 @@ public class TradeListItemAdapter
                 if (buttons != null)
                 {
                     buttons.setVisibility(View.GONE);
+                }
+                break;
+
+            case ITEM_TYPE_POSITION_LOADING:
+                if (convertView == null)
+                {
+                    convertView = getInflater().inflate(LAYOUT_RES_ID_POSITION_LOADING, viewGroup, false);
                 }
                 break;
 
@@ -193,6 +234,13 @@ public class TradeListItemAdapter
                 convertView = conditionalInflate(position, convertView, viewGroup);
                 ((TradeListItemView) convertView).display((ExpandableTradeItem) item);
                 toggleExpanded((ExpandableTradeItem) item, convertView);
+                break;
+
+            case ITEM_TYPE_TRADE_LOADING:
+                if (convertView == null)
+                {
+                    convertView = getInflater().inflate(LAYOUT_RES_ID_ITEM_TRADE_LOADING, viewGroup, false);
+                }
                 break;
 
             default:
@@ -213,7 +261,9 @@ public class TradeListItemAdapter
         {
             case ITEM_TYPE_HEADER_POSITION_SUMMARY:
             case ITEM_TYPE_POSITION_SUMMARY:
+            case ITEM_TYPE_POSITION_LOADING:
             case ITEM_TYPE_HEADER_TRADE_HISTORY:
+            case ITEM_TYPE_TRADE_LOADING:
                 return false;
 
             case ITEM_TYPE_TRADE:

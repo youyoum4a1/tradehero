@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,6 @@ import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class SecurityActionListLinear extends LinearLayout
 {
@@ -83,6 +83,7 @@ public class SecurityActionListLinear extends LinearLayout
         this.menuClickedListener = menuClickedListener;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.security_action_cancel)
     protected void onCancelClicked(@SuppressWarnings("UnusedParameters") View view)
     {
@@ -93,6 +94,7 @@ public class SecurityActionListLinear extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.security_action_list_sharing_items)
     protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
     {

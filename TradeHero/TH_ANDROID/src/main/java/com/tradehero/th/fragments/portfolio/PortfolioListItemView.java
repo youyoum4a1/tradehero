@@ -354,6 +354,7 @@ public class PortfolioListItemView extends RelativeLayout
 
         @Override public void onError(Throwable e)
         {
+            Timber.e(e, "When getting positionsDTO");
             // We do not inform the user as this is not critical
         }
     }
