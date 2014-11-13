@@ -12,13 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.astuetz.PagerSlidingTabStrip;
+import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class ContestCenterFragment extends DashboardFragment
 {
-    @InjectView(R.id.tabs) PagerSlidingTabStrip pagerSlidingTabStrip;
+    @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @InjectView(R.id.pager) ViewPager viewPager;
 
     @Override
@@ -53,7 +53,9 @@ public class ContestCenterFragment extends DashboardFragment
     {
         ContestCenterPagerAdapter adapter = new ContestCenterPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
-        pagerSlidingTabStrip.setViewPager(viewPager);
+        pagerSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
+        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabLayout.setViewPager(viewPager);
     }
 
     private class ContestCenterPagerAdapter extends FragmentPagerAdapter
