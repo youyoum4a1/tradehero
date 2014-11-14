@@ -46,6 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 
 import static butterknife.ButterKnife.findById;
 
@@ -63,6 +64,7 @@ public class NewsHeadlineFragment extends Fragment
     private PublishSubject<List<NewsItemDTOKey>> newsSubject;
     private Observable<List<NewsItemDTOKey>> paginatedNewsItemListKeyObservable;
     private AbsListView.OnScrollListener scrollListener;
+    private CompositeSubscription subscriptions;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -83,7 +85,6 @@ public class NewsHeadlineFragment extends Fragment
     @Inject RxLoaderManager rxLoaderManager;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
-    private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
 
     public NewsHeadlineFragment()
@@ -131,6 +132,7 @@ public class NewsHeadlineFragment extends Fragment
                 newsItemListKey = newsItemListKeyFromNewsType(NewsType.values()[newsTypeOrdinal]);
             }
         }
+        subscriptions = new CompositeSubscription();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -147,7 +149,7 @@ public class NewsHeadlineFragment extends Fragment
         scrollListener = new QuickReturnListViewOnScrollListener(
                 QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
+        NewsHeadlineAdapter mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
@@ -160,9 +162,8 @@ public class NewsHeadlineFragment extends Fragment
                 .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
 
         newsSubject = PublishSubject.create();
-        newsSubject.subscribe(mFeaturedNewsAdapter::setItems);
-
-        newsSubject.subscribe(new UpdateUIObserver());
+        subscriptions.add(newsSubject.subscribe(mFeaturedNewsAdapter::setItems));
+        subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         paginatedNewsItemListKeyObservable = PaginationObservable.createFromRange(newsItemListKeyObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
                 key -> newsServiceWrapper.getNewsRx(key)
@@ -189,8 +190,13 @@ public class NewsHeadlineFragment extends Fragment
         if (!newsItemListKey.equals(newKey))
         {
             NewsItemListKey oldKey = newsItemListKey;
+            Subscription oldSubscription = newsSubscription;
             newsItemListKey = newKey;
             activateNewsItemListView();
+            if (oldSubscription != null)
+            {
+                oldSubscription.unsubscribe();
+            }
             rxLoaderManager.remove(oldKey);
         }
     }
@@ -218,6 +224,7 @@ public class NewsHeadlineFragment extends Fragment
     @Override public void onDestroyView()
     {
         newsSubscription.unsubscribe();
+        subscriptions.unsubscribe();
         rxLoaderManager.remove(newsItemListKey);
         super.onDestroyView();
     }
