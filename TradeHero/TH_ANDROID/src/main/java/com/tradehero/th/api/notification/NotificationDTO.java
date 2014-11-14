@@ -2,6 +2,7 @@ package com.tradehero.th.api.notification;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
+
 import java.util.Date;
 
 public class NotificationDTO implements DTO, KeyGenerator
@@ -15,6 +16,8 @@ public class NotificationDTO implements DTO, KeyGenerator
     public Integer replyableTypeId;
     public int pushId;
     public String pushGuid;
+
+    public String referencedUserName;
 
     // "legacy" fields to replace custom payloads in iOS pushes
     public Integer relatesToHeroUserId;

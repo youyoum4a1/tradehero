@@ -1,6 +1,7 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,32 +99,33 @@ public class NotificationListAdapter extends BaseAdapter
         NotificationDTO item = (NotificationDTO) getItem(position);
         if (item != null)
         {
-            ViewHolder holder = null;
-            if (convertView == null)
-            {
-                convertView = inflater.inflate(R.layout.notification_list_item, viewGroup, false);
-                holder = new ViewHolder();
-                holder.rlNotificationItem = (RelativeLayout) convertView.findViewById(R.id.rlNotificationItem);
-                holder.imgNotificationHeader = (ImageView) convertView.findViewById(R.id.imgNotificationHeader);
-                holder.tvNotificationTimer = (TextView) convertView.findViewById(R.id.tvNotificationTimer);
-                holder.imgNotificationIsRead = (ImageView) convertView.findViewById(R.id.imgNotificationIsRead);
-                holder.tvNotificationContent = (MarkdownTextView) convertView.findViewById(R.id.tvNotificationContent);
-                holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
-                convertView.setTag(holder);
-            }
-            else
-            {
-                holder = (ViewHolder) convertView.getTag();
-            }
+            ViewHolder holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.notification_list_item, viewGroup, false);
+            holder.rlNotificationItem = (RelativeLayout) convertView.findViewById(R.id.rlNotificationItem);
+            holder.imgNotificationHeader = (ImageView) convertView.findViewById(R.id.imgNotificationHeader);
+            holder.tvNotificationTimer = (TextView) convertView.findViewById(R.id.tvNotificationTimer);
+            holder.imgNotificationIsRead = (ImageView) convertView.findViewById(R.id.imgNotificationIsRead);
+            holder.tvNotificationContent = (MarkdownTextView) convertView.findViewById(R.id.tvNotificationContent);
+            holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
+            convertView.setTag(holder);
+            holder = (ViewHolder) convertView.getTag();
 
             picasso.get()
                     .load(item.imageUrl)
                     .placeholder(R.drawable.superman_facebook)
                     .error(R.drawable.superman_facebook)
                     .into(holder.imgNotificationHeader);
-
+            if(!TextUtils.isEmpty(item.referencedUserName)){
+                holder.tvNotificationUser.setText(item.referencedUserName);
+            }
             holder.tvNotificationTimer.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
-            holder.tvNotificationContent.setText(item.text);
+            if(!TextUtils.isEmpty(item.text)){
+                String text = item.text;
+                if(text.length()>100){
+                    text = text.substring(0, 96) + "...";
+                }
+                holder.tvNotificationContent.setText(text);
+            }
             holder.imgNotificationIsRead.setVisibility(item.unread ? View.VISIBLE : View.GONE);
 
             holder.tvNotificationContent.setOnClickListener(new View.OnClickListener()

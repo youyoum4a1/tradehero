@@ -3,7 +3,8 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
         android:id="@+id/rlNotificationItem"
         android:background="@drawable/listview_item_selector">
 
@@ -28,17 +29,16 @@
                   android:layout_centerVertical="true"
                   android:orientation="vertical">
         <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:layout_marginBottom="7dp">
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp">
             <TextView
                     android:id="@+id/tvNotificationUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:textStyle="bold"
                     android:singleLine="true"
                     android:layout_marginRight="100dp"
                     android:maxEms="15"
-                    android:text=""
                     android:layout_alignParentLeft="true"
                     android:textSize="15sp"/>
             <TextView
@@ -51,7 +51,8 @@
                     android:layout_marginRight="15dp"
                     android:textSize="12sp"/>
         </RelativeLayout>
-        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp">
             <ImageView
                     android:id="@+id/imgNotificationIsRead"
                     android:layout_width="8dp"
@@ -66,7 +67,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:textColor="#979797"
-                    android:singleLine="true"
                     android:layout_marginRight="80dp"
                     android:textSize="13sp"/>
         </RelativeLayout>
