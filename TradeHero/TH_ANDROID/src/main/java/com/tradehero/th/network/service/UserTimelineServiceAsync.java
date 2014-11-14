@@ -76,7 +76,7 @@ interface UserTimelineServiceAsync
     //股神动态
     //@GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
     //https://www.tradehero.mobi/api/users/552948/timeline?maxCount=10&type=recommended&includeComment=true&includeTrade=true
-    @GET("/users/{userId}/timeline?type=recommend&includeComment=false&includeTrade=true")
+    @GET("/users/{userId}/timeline?type=recommended&includeComment=false&includeTrade=true")
     void getTimelineStockGodNews(
             @Path("userId") int userId,
             @Query("maxCount") Integer maxCount,

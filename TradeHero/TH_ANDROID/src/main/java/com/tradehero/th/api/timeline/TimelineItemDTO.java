@@ -27,6 +27,8 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     public UserProfileCompactDTO user;
     public boolean isHighlight;
 
+    public Date lastCommentAtUtc;//最后回复时间
+
     //<editor-fold desc="Constructors">
     public TimelineItemDTO()
     {

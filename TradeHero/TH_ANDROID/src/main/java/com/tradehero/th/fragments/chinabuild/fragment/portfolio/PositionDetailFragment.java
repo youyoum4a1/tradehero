@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.chinabuild.fragment.portfolio;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,8 @@ import timber.log.Timber;
  */
 public class PositionDetailFragment extends DashboardFragment
 {
-    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = PositionDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            PositionDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
     public static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = PositionDetailFragment.class.getName() + ".positionDTOKey";
     public static final String BUNLDE_KEY_NEED_SHOW_MORE = PositionDetailFragment.class.getName() + ".needShowMore";//是否需要显示行情按钮在右上角
 
@@ -100,7 +102,7 @@ public class PositionDetailFragment extends DashboardFragment
 
         setHeadViewMiddleMain("交易详情");
         getSecurityName();
-        if(getNeedShowMore())
+        if (getNeedShowMore())
         {
             setHeadViewRight0("行情");
         }
@@ -112,7 +114,7 @@ public class PositionDetailFragment extends DashboardFragment
         if (args != null)
         {
             String securityName = args.getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
-            if(!StringUtils.isNullOrEmpty(securityName))
+            if (!StringUtils.isNullOrEmpty(securityName))
             {
                 setHeadViewMiddleMain(securityName);
             }
@@ -146,10 +148,11 @@ public class PositionDetailFragment extends DashboardFragment
 
         initListView();
 
-        if(adapter!=null && adapter.getCount() == 0)
+        if (adapter != null && adapter.getCount() == 0)
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_my_securities_history);
             progressBar.startLoading();
+            startTimerForView();
         }
         else
         {
@@ -233,6 +236,7 @@ public class PositionDetailFragment extends DashboardFragment
 
     public void linkWith(PositionDTO positionDTO, boolean andDisplay)
     {
+        if(getActivity() == null )return;
         this.positionDTO = positionDTO;
         fetchTrades();
         displayPosition(positionDTO);
@@ -240,18 +244,23 @@ public class PositionDetailFragment extends DashboardFragment
 
     public void displayPosition(PositionDTO positionDTO)
     {
-        THSignedNumber roi = THSignedPercentage.builder(positionDTO.getROISinceInception() * 100)
-                .withSign()
-                .signTypeArrow()
-                .build();
-        tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
-        tvPositionTotalCcy.setText("$" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
-        tvPositionSumAmont.setText("$" + Math.round(positionDTO.sumInvestedAmountRefCcy));
-        tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
-        tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
-        tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
-                DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
+        try
+        {
+            THSignedNumber roi = THSignedPercentage.builder(positionDTO.getROISinceInception() * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
+            tvPositionTotalCcy.setText("$" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
+            tvPositionSumAmont.setText("$" + Math.round(positionDTO.sumInvestedAmountRefCcy));
+            tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
+            tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
+            tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
+                    DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
+        }catch (Exception e)
+        {
 
+        }
     }
 
     protected void fetchTrades()
@@ -291,8 +300,14 @@ public class PositionDetailFragment extends DashboardFragment
 
         public void onFinish()
         {
-            progressBar.stopLoading();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+            if(progressBar!=null)
+            {
+                progressBar.stopLoading();
+            }
+            if(betterViewAnimator!=null)
+            {
+                betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+            }
         }
     }
 
@@ -301,5 +316,34 @@ public class PositionDetailFragment extends DashboardFragment
         Timber.d("Tradehero: PositionDetailFragment LinkWith");
         this.tradeDTOList = tradeDTOs;
         adapter.setTradeList(tradeDTOList);
+    }
+
+    private Handler handler = new Handler();
+
+    private Runnable runnable;
+
+    public void startTimerForView()
+    {
+        runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                closeTimerForView();
+                onResume();
+            }
+        };
+        handler.postDelayed(runnable, 5000);
+    }
+
+    public void closeTimerForView()
+    {
+        try
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+            handler.removeCallbacks(runnable);
+        } catch (Exception e)
+        {
+        }
     }
 }
