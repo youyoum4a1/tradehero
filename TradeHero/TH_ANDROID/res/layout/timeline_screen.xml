@@ -12,6 +12,7 @@
       android:id="@+id/swipe_container"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
+
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/timeline_list_view"
         android:layout_width="match_parent"
@@ -27,7 +28,9 @@
         android:smoothScrollbar="true"
         android:clipToPadding="false"
         />
+
   </android.support.v4.widget.SwipeRefreshLayout>
+
   <LinearLayout
       android:id="@+id/follow_message_container"
       android:layout_width="match_parent"
@@ -44,14 +47,18 @@
         android:background="@drawable/btn_follow_green"
         android:text="@string/follow"
         style="@style/TH.Button.Timeline.Follow"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:enabled="false"
+        />
 
     <Button
         android:id="@+id/message_button"
         android:background="@drawable/btn_message_blue"
         android:text="@string/message"
         style="@style/TH.Button.Timeline.Message"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:enabled="false"
+        />
 
   </LinearLayout>
 

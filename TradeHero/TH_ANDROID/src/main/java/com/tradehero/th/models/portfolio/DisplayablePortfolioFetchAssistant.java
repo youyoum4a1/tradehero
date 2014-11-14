@@ -51,7 +51,7 @@ public class DisplayablePortfolioFetchAssistant
                 DisplayablePortfolioDTOList::new);
     }
 
-    @NonNull Observable<PortfolioDTOList> getPortfolios(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    @NonNull protected Observable<PortfolioDTOList> getPortfolios(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
         return Observable.from(portfolioCompactDTOs)
                 .flatMap(portfolioCompact -> portfolioCache.get(portfolioCompact.getOwnedPortfolioId()).take(1))
