@@ -12,5 +12,12 @@ public class PriceDTO implements DTO
     PriceDTO()
     {
     }
+
+    public PriceDTO(double priceRefCcy, String currencyDisplay, String currencyISO)
+    {
+        this.priceRefCcy = priceRefCcy;
+        this.currencyDisplay = currencyDisplay;
+        this.currencyISO = currencyISO;
+    }
     //</editor-fold>
 }

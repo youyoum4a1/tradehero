@@ -75,7 +75,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public int achievementCount;
     public int currentXP;
 
-    public PriceDTO uncollectedSocialReward;
+    // FIXME
+    public PriceDTO uncollectedSocialReward = new PriceDTO(2.4d, "US$", "USD");
 
     public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {

@@ -168,6 +168,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
                     .currency(userProfileDTO.uncollectedSocialReward.currencyDisplay)
                     .build();
             message4.setText(Html.fromHtml(getString(MESSAGE_4, reward.toString())));
+            message4.setVisibility(View.VISIBLE);
         }
     }
 

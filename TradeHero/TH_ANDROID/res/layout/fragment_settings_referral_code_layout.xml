@@ -67,7 +67,7 @@
           android:layout_marginRight="@dimen/margin_small"
           android:gravity="center_horizontal"
           tools:text="@string/settings_referral_code_message_3"
-          android:visibility="invisible"
+          android:visibility="gone"
           tools:visibility="visible"
           style="@style/TH.Subhead"
           />
@@ -81,19 +81,9 @@
           android:layout_marginBottom="@dimen/margin_medium"
           android:gravity="center_horizontal"
           tools:text="@string/settings_referral_code_message_4"
-          android:visibility="invisible"
+          android:visibility="gone"
           tools:visibility="visible"
           style="@style/TH.Caption"
-          />
-
-      <TextView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="@dimen/margin_small"
-          android:layout_marginRight="@dimen/margin_small"
-          android:gravity="center_horizontal"
-          android:text="@string/settings_referral_code_message"
-          style="@style/TH.Subhead"
           />
 
       <LinearLayout

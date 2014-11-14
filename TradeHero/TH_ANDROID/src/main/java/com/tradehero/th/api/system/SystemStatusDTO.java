@@ -18,6 +18,9 @@ public class SystemStatusDTO implements DTO
     public SystemStatusDTO()
     {
         super();
+
+        // FIXME
+        socialFriendReward = new PriceDTO(0.2d, "US$", "USD");
     }
     //</editor-fold>
 }

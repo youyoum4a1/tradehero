@@ -31,9 +31,9 @@
   <string name="invite_code_title">Claim your virtual dollars!</string>
   <string name="invite_code_message">If you were referred by a friend, enter the referral code here and get free 10,000 virtual dollars.</string>
   <string name="settings_referral_code_message_1">Share your referral code with friends.</string>
-  <string name="settings_referral_code_message_2">Get <b>FREE TradeHero Dollars</b> when they sign up.</string>
-  <string name="settings_referral_code_message_3">Earn <b>%1$s</b> when they connect their social network and make one trade.</string>
-  <string name="settings_referral_code_message_4">(You have earned: <b>%1$s</b>)</string>
+  <string name="settings_referral_code_message_2">Get &lt;b>FREE TradeHero Dollars&lt;/b> when they sign up.</string>
+  <string name="settings_referral_code_message_3">Earn &lt;b>%1$s&lt;/b> when they connect their social network and make one trade.</string>
+  <string name="settings_referral_code_message_4">(You have earned: &lt;b>%1$s&lt;/b>)</string>
   <string name="settings_referral_code_message">This is your own referral code. Share it with your friends and get FREE Tradehero Dollars when they sign up !
   </string>
   <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
