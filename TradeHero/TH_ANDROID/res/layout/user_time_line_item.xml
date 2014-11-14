@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:layout_alignParentLeft="true"
-            android:textSize="11sp"
+            android:textSize="12sp"
             android:layout_marginLeft="2dp"
             android:layout_centerVertical="true"
             android:text="刚刚"
@@ -118,29 +118,34 @@
           android:id="@+id/rlUserTLTrade"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="5dp"
           android:orientation="vertical">
         <TextView
             android:id="@+id/title0"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
+            android:textSize="@dimen/text_medium_plus_plus"
             android:text="买入股票："/>
         <TextView
             android:id="@+id/title1"
             android:layout_below="@id/title0"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
+            android:textSize="@dimen/text_medium_plus_plus"
             android:text="买入价格："/>
         <TextView
             android:id="@+id/title2"
             android:layout_below="@id/title1"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
+            android:textSize="@dimen/text_medium_plus_plus"
             android:text="买入数量："/>
         <TextView
             android:id="@+id/title3"
             android:layout_below="@id/title2"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
+            android:textSize="@dimen/text_medium_plus_plus"
             android:text="成交金额："/>
 
         <TextView
@@ -148,8 +153,8 @@
             android:layout_toRightOf="@id/title0"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
-            android:textColor="#ffae00"
-            android:text=""/>
+            android:textSize="@dimen/text_medium_plus_plus"
+            android:textColor="#ffae00"/>
 
         <TextView
             android:id="@+id/tvTradePrice"
@@ -158,7 +163,7 @@
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
             android:textColor="@color/black"
-            android:text=""/>
+            android:textSize="@dimen/text_medium_plus_plus"/>
 
         <TextView
             android:id="@+id/tvTradeCount"
@@ -166,8 +171,8 @@
             android:layout_below="@id/title1"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
-            android:textColor="@color/black"
-            android:text=""/>
+            android:textSize="14sp"
+            android:textColor="@color/black"/>
 
 
         <TextView
@@ -176,17 +181,9 @@
             android:layout_below="@id/title2"
             style="@style/buy_sale_title"
             android:layout_marginTop="3dp"
+            android:textSize="14sp"
             android:textColor="@color/black"
             android:text=""/>
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvTradeCost"-->
-            <!--android:layout_toRightOf="@id/title4"-->
-            <!--android:layout_below="@id/title3"-->
-            <!--style="@style/buy_sale_title"-->
-            <!--android:layout_marginTop="3dp"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:text=""/>-->
 
       </RelativeLayout>
 

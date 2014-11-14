@@ -67,7 +67,7 @@
                     android:layout_alignParentLeft="true"
                     android:textColor="#979797"
                     android:singleLine="true"
-                    android:layout_marginRight="100dp"
+                    android:layout_marginRight="80dp"
                     android:textSize="13sp"/>
         </RelativeLayout>
     </LinearLayout>

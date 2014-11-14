@@ -5,8 +5,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.base.Application;
-import java.util.Date;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Date;
 
 abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
 {
@@ -68,15 +69,6 @@ abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
 
     public String getVoteString()
     {
-        //if (voteDirection == 1)
-        //{
-        //    return "已赞";
-        //}
-        //else
-        //{
-        //    return "" + upvoteCount;
-        //}
-
         String str = "" + upvoteCount;
         if(voteDirection == 1)
         {
