@@ -1,14 +1,19 @@
 package com.tradehero.th.persistence.portfolio;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -54,6 +59,24 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
         }
         portfolioCompactCache.get().onNext(key.getPortfolioIdKey(), value);
         super.onNext(key, value);
+    }
+
+    @NonNull public Observable<PortfolioDTOList> getPortfolios(@NonNull List<? extends PortfolioCompactDTO> portfolioCompactDTOs, @Nullable PortfolioCompactDTO typeQualifier)
+    {
+        return Observable.from(portfolioCompactDTOs)
+                .map(compact -> compact.getOwnedPortfolioId())
+                .toList()
+                .map(OwnedPortfolioIdList::new)
+                .flatMap(list -> getPortfolios(list, (OwnedPortfolioId) null));
+    }
+
+    @NonNull public Observable<PortfolioDTOList> getPortfolios(@NonNull List<? extends OwnedPortfolioId> ownedPortfolioIds, @Nullable OwnedPortfolioId typeQualifier)
+    {
+        return Observable.from(ownedPortfolioIds)
+                .flatMap(id -> get(id).take(1))
+                .map(pair -> pair.second)
+                .toList()
+                .map(PortfolioDTOList::new);
     }
 
     public void invalidate(@NonNull UserBaseKey concernedUser)

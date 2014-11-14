@@ -249,12 +249,13 @@ import rx.Observable;
                 });
     }
 
-    @NonNull public Observable<SecurityCompactDTO> getSecurityRx(@NonNull SecurityIntegerId securityIntegerId)
+    @NonNull public Observable<SecurityCompactDTO> getSecurityRx(@NonNull final SecurityIntegerId securityIntegerId)
     {
         SecurityIntegerIdList list = new SecurityIntegerIdList();
         list.add(securityIntegerId);
         return securityServiceRx.getMultipleSecurities(list.getCommaSeparated())
-                .map(map -> map.get(securityIntegerId.key));
+                .map(map -> map.get(securityIntegerId.key))
+                .filter(compact -> compact != null);
     }
     //</editor-fold>
 

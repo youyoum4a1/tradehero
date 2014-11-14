@@ -1,15 +1,14 @@
 package com.tradehero.th.models.portfolio;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class DisplayablePortfolioFetchAssistant
@@ -47,17 +46,7 @@ public class DisplayablePortfolioFetchAssistant
     {
         return Observable.zip(
                 userProfileCache.get(userBaseKey).map(pair -> pair.second).take(1),
-                getPortfolios(portfolioCompactDTOs),
+                portfolioCache.getPortfolios(portfolioCompactDTOs, null).take(1),
                 DisplayablePortfolioDTOList::new);
-    }
-
-    @NonNull protected Observable<PortfolioDTOList> getPortfolios(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
-    {
-        return Observable.from(portfolioCompactDTOs)
-                .flatMap(portfolioCompact -> portfolioCache.get(portfolioCompact.getOwnedPortfolioId()).take(1))
-                .map(pair -> pair.second)
-                .toList()
-                .map(PortfolioDTOList::new)
-                .take(1);
     }
 }
