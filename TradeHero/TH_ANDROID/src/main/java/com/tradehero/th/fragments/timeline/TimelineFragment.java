@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
@@ -61,12 +59,17 @@ import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
-import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
@@ -412,8 +415,24 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         {
                             onLoadFinished();
                             displayPortfolios(displayablePortfolioDTOs);
+                            reportAnalytics(displayablePortfolioDTOs);
                         }
                     });
+        }
+    }
+
+    private void reportAnalytics(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
+        Collection<String> collection = new ArrayList<String>();
+        for (int i = 0;i < displayablePortfolioDTOs.size();i++)
+        {
+            if (displayablePortfolioDTOs.get(i).portfolioDTO.providerId != null)
+            {
+                collection.add(String.valueOf(displayablePortfolioDTOs.get(i).portfolioDTO.providerId));
+            }
+        }
+        if (collection.size() > 0)
+        {
+            analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
         }
     }
 

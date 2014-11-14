@@ -151,4 +151,5 @@ public class AnalyticsConstants
     public static final String Clicked = "Clicked";//
     public static final String Level = "Level";//
     public static final String Type = "Type";//
+    public static final String CompetitionJoined = "CompetitionJoined";//
 }
