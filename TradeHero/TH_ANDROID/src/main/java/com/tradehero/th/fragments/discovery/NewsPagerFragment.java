@@ -60,7 +60,7 @@ public class NewsPagerFragment extends Fragment
         NewsHeadlineFragment f = NewsHeadlineFragment.newInstance(NewsType.values()[position]);
         if(f != null)
         {
-            getFragmentManager().beginTransaction().replace(R.id.news_pager, f).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.news_pager, f).commit();
         }
     }
 
