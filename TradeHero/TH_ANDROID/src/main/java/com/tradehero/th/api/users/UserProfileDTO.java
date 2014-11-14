@@ -7,6 +7,7 @@ import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
+import com.tradehero.th.api.system.PriceDTO;
 import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
@@ -73,6 +74,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public int achievementCount;
     public int currentXP;
+
+    public PriceDTO uncollectedSocialReward;
 
     public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {
