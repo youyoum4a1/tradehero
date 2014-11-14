@@ -23,4 +23,12 @@
   <string name="amazon_store_billing_purchase_unsupported_error_ok">Sure</string>
   <string name="amazon_store_billing_purchase_unsupported_error_cancel">No need</string>
 
+  <string name="amazon_store_billing_sandbox_window_title">In-App Purchases in Sandbox</string>
+  <string name="amazon_store_billing_sandbox_window_description">It appears that your Amazon In-App Purchases are in Sandbox mode.
+    You will not be able to make In-App Purchases.
+    \nDo you with to report this to TradeHero?
+  </string>
+  <string name="amazon_store_billing_sandbox_window_ok">Sure</string>
+  <string name="amazon_store_billing_sandbox_window_cancel">No need</string>
+
 </resources>

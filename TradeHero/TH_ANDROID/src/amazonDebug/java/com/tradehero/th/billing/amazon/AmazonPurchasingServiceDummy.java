@@ -1,9 +1,9 @@
 package com.tradehero.th.billing.amazon;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.LruCache;
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.PurchasingListener;
-import com.amazon.device.iap.PurchasingService;
 import com.amazon.device.iap.internal.model.PriceBuilder;
 import com.amazon.device.iap.internal.model.ProductBuilder;
 import com.amazon.device.iap.internal.model.ProductDataResponseBuilder;
@@ -12,8 +12,6 @@ import com.amazon.device.iap.internal.model.PurchaseUpdatesResponseBuilder;
 import com.amazon.device.iap.internal.model.ReceiptBuilder;
 import com.amazon.device.iap.internal.model.UserDataBuilder;
 import com.amazon.device.iap.internal.model.UserDataResponseBuilder;
-import com.amazon.device.iap.model.FulfillmentResult;
-import com.amazon.device.iap.model.Price;
 import com.amazon.device.iap.model.Product;
 import com.amazon.device.iap.model.ProductDataResponse;
 import com.amazon.device.iap.model.ProductType;
@@ -25,7 +23,6 @@ import com.amazon.device.iap.model.UserData;
 import com.amazon.device.iap.model.UserDataResponse;
 import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.amazon.THAmazonConstants;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -36,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton public class AmazonPurchasingServiceDummy extends AmazonPurchasingService
 {
@@ -46,9 +43,11 @@ import android.support.annotation.NonNull;
     //<editor-fold desc="Constructors">
     @Inject public AmazonPurchasingServiceDummy(
             @NonNull Context appContext,
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull AmazonAlertDialogUtil dialogUtil,
             @NonNull CurrentUserId currentUserId)
     {
-        super(appContext);
+        super(appContext, activityProvider, dialogUtil);
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
