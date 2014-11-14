@@ -16,10 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.fortysevendeg.swipelistview.SwipeListViewListener;
@@ -41,6 +44,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -103,8 +107,9 @@ public class WatchlistPositionFragment extends DashboardFragment
         ButterKnife.inject(this, view);
 
         watchlistPositionListView.post(this::setWatchlistOffset);
-        watchlistPositionListView.setEmptyView(
-                view.findViewById(R.id.watchlist_position_list_empty_view));
+        watchlistPositionListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
+        watchlistPositionListView.setOnScrollListener(createListViewScrollListener());
+        watchlistPositionListView.setAdapter(watchListAdapter);
         watchlistPositionListView.setSwipeListViewListener(createSwipeListViewListener());
         watchListRefreshableContainer.setOnRefreshListener(this::refreshValues);
     }
@@ -233,6 +238,16 @@ public class WatchlistPositionFragment extends DashboardFragment
                 }
             }
         };
+    }
+
+    @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
+    {
+        int trendingFilterHeight = (int) getResources().getDimension(R.dimen.watch_list_header_height);
+        QuickReturnListViewOnScrollListener portfolioHearderQuickReturnListener =
+                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, watchlistPortfolioHeaderView,
+                        -trendingFilterHeight, null, 0);
+
+        return new MultiScrollListener(portfolioHearderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get());
     }
 
     public void setWatchlistOffset()
