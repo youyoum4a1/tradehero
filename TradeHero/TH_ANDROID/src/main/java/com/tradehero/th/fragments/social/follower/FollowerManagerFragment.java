@@ -2,7 +2,10 @@ package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.common.SlidingTabLayout;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -40,11 +44,14 @@ import timber.log.Timber;
 public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
         implements View.OnClickListener, OnFollowersLoadedListener
 {
-    static final int FRAGMENT_LAYOUT_ID = 10000;
     private static final String BUNDLE_KEY_HERO_ID =
             FollowerManagerFragment.class.getName() + ".heroId";
 
     @InjectView(R.id.send_message_broadcast) View broadcastView;
+    @InjectView(R.id.viewpager) ViewPager mViewPager;
+    @InjectView(R.id.tabs) SlidingTabLayout mSlidingLayout;
+
+    private FollowerManagerFragmentViewPagerAdapter mViewPagerAdapter;
 
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
@@ -52,8 +59,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Inject GraphicUtil graphicUtil;
 
     private UserBaseKey heroId;
-    @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    private ArrayList<HeroTypeResourceDTO> cachedResourceDTOs;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
     {
@@ -75,12 +82,18 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         super.onCreateOptionsMenu(menu, inflater);
 
-        setActionBarTitle(R.string.social_followers);
+        setActionBarTitle(getTitle());
+    }
 
-        Fragment f = getCurrentFragment();
-        if (f != null)
+    private int getTitle()
+    {
+        if (isCurrentUser())
         {
-            getCurrentFragment().onCreateOptionsMenu(menu, inflater);
+            return R.string.manage_my_followers_title;
+        }
+        else
+        {
+            return R.string.manage_followers_title;
         }
     }
 
@@ -135,7 +148,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_followers_2, container, false);
+        View view = inflater.inflate(R.layout.fragment_follower_manager, container, false);
         ButterKnife.inject(this, view);
         addTabs();
         return view;
@@ -151,13 +164,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                broadcastView.setTranslationY(y);
-            }
-        });
+        dashboardTabHost.get().setOnTranslate((x, y) -> broadcastView.setTranslationY(y));
     }
 
     @Override public void onPause()
@@ -169,7 +176,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onDestroyView()
     {
         broadcastView.setOnClickListener(null);
-        mTabHost = null;
         Timber.d("onDestroyView");
         super.onDestroyView();
     }
@@ -211,52 +217,31 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private Fragment getCurrentFragment()
     {
-        if (mTabHost == null)
-        {
-            return null;
-        }
-        String tag = mTabHost.getCurrentTabTag();
-        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
-        return fm.findFragmentByTag(tag);
+        return mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
     }
 
-    private View addTabs()
+    private void addTabs()
     {
-        //TODO NestedFragments needs ChildFragmentManager
-        //http://developer.android.com/about/versions/android-4.2.html#NestedFragments
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
-        for (HeroTypeResourceDTO resourceDTO : getTabResourceDTOs())
-        {
-            addTab(resourceDTO);
-        }
-        graphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
-        return mTabHost;
+        mViewPagerAdapter = new FollowerManagerFragmentViewPagerAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(mViewPagerAdapter);
+        mSlidingLayout.setViewPager(mViewPager);
     }
 
     protected ArrayList<HeroTypeResourceDTO> getTabResourceDTOs()
     {
-        return heroTypeResourceDTOFactory.getListOfHeroType();
-    }
-
-    private void addTab(HeroTypeResourceDTO resourceDTO)
-    {
-        Bundle args = new Bundle();
-        FollowerManagerTabFragment.putHeroId(args, heroId);
-
-        String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), 0);
-        THTabView tabIndicator =
-                THTabView.inflateWith(mTabHost.getTabWidget());
-        tabIndicator.setTitle(title);
-        TabHost.TabSpec tabSpec = mTabHost.newTabSpec(title).setIndicator(tabIndicator);
-        mTabHost.addTab(tabSpec, resourceDTO.followerContentFragmentClass, args);
+        if (cachedResourceDTOs == null)
+        {
+            cachedResourceDTOs = heroTypeResourceDTOFactory.getListOfHeroType();
+        }
+        return cachedResourceDTOs;
     }
 
     private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)
     {
-        THTabView titleView = (THTabView) mTabHost.getTabWidget()
-                .getChildTabViewAt(resourceDTO.followerTabIndex);
-        String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), count);
-        titleView.setTitle(title);
+        //THTabView titleView = (THTabView) mTabHost.getTabWidget()
+        //        .getChildTabViewAt(resourceDTO.followerTabIndex);
+        //String title = MessageFormat.format(getString(resourceDTO.followerTabTitleRes), count);
+        //titleView.setTitle(title);
     }
 
     @Override public void onFollowerLoaded(int page, FollowerSummaryDTO value)
@@ -304,7 +289,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private void goToMessagePage(DiscussionType discussionType)
     {
-        int page = mTabHost.getCurrentTab();
+        int page = mViewPager.getCurrentItem();
         HeroType followerType = HeroType.fromId(page);
 
         Bundle args = new Bundle();
@@ -330,5 +315,32 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
                 page, followerType, discussionType);
         navigator.get().pushFragment(SendMessageFragment.class, args);
+    }
+
+    protected class FollowerManagerFragmentViewPagerAdapter extends FragmentPagerAdapter
+    {
+
+        public FollowerManagerFragmentViewPagerAdapter(FragmentManager fm)
+        {
+            super(fm);
+        }
+
+        @Override public Fragment getItem(int i)
+        {
+            Bundle args = new Bundle();
+            FollowerManagerTabFragment.putHeroId(args, heroId);
+
+            return Fragment.instantiate(getActivity(), getTabResourceDTOs().get(i).followerContentFragmentClass.getName(), args);
+        }
+
+        @Override public int getCount()
+        {
+            return getTabResourceDTOs().size();
+        }
+
+        @Override public CharSequence getPageTitle(int position)
+        {
+            return MessageFormat.format(getString(getTabResourceDTOs().get(position).followerTabTitleRes), 0);
+        }
     }
 }

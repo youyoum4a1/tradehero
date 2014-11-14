@@ -97,8 +97,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(getTitle());
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -141,29 +139,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     private void unSubscribe()
     {
         unsubscribe(followerSubscription);
-    }
-
-    private boolean isCurrentUser()
-    {
-        UserBaseKey heroId = getHeroId(getArguments());
-        if (heroId != null && currentUserId != null)
-        {
-            return (heroId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
-        }
-        return false;
-    }
-
-    private int getTitle()
-    {
-        if (isCurrentUser())
-        {
-            return R.string.manage_my_followers_title;
-        }
-        else
-        {
-            return R.string.manage_followers_title;
-        }
-
     }
 
     protected HeroTypeResourceDTO getHeroTypeResource()
@@ -271,6 +246,16 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             FollowerPayoutManagerFragment.put(args, followerHeroRelationId);
             navigator.get().pushFragment(FollowerPayoutManagerFragment.class, args);
         }
+    }
+
+    private boolean isCurrentUser()
+    {
+        UserBaseKey heroId = getHeroId(getArguments());
+        if (heroId != null && currentUserId != null)
+        {
+            return (heroId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+        }
+        return false;
     }
 
     private void handleFollowerItemClicked(
