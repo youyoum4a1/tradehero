@@ -75,6 +75,7 @@ public class DiscoveryHotTopicFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         adapter = new UserTimeLineAdapter(getActivity());
         adapter.isShowHeadAndName = true;
+        adapter.isShowLastCommentUtc = true;
     }
 
     @Override

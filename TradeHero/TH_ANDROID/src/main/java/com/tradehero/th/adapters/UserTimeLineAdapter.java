@@ -62,6 +62,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     public boolean isShowHeadAndName = false;//是否显示头像和名字
     //public boolean isSecurityAsUser = false;//是否是以股票为头像和名字
+    public boolean isShowLastCommentUtc = false;//是否需要显示时间为最后回复的时间
     public boolean isMySelf = false;
 
     @Inject Analytics analytics;
@@ -278,10 +279,21 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
 
-            if (item.createdAtUtc != null)
+            if (isShowLastCommentUtc)
             {
-                holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+                if (item.lastCommentAtUtc != null)
+                {
+                    holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.lastCommentAtUtc));
+                }
             }
+            else
+            {
+                if (item.createdAtUtc != null)
+                {
+                    holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+                }
+            }
+
             if (isTrade)
             {
                 try
@@ -319,33 +331,45 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             if (isShowHeadAndName)
             {
 
-                    if (item.getUser() != null)
+                if (item.getUser() != null)
+                {
+                    holder.tvUserTLName.setText(item.getUser().getDisplayName());
+                    picasso.load(item.getUser().picture)
+                            .placeholder(R.drawable.superman_facebook)
+                            .error(R.drawable.superman_facebook)
+                            .into(holder.imgUserTLUserHeader);
+
+                    holder.tvUserTLName.setOnClickListener(new View.OnClickListener()
                     {
-                        holder.tvUserTLName.setText(item.getUser().getDisplayName());
-                        picasso.load(item.getUser().picture)
-                                .placeholder(R.drawable.superman_facebook)
-                                .error(R.drawable.superman_facebook)
-                                .into(holder.imgUserTLUserHeader);
-
-                        holder.tvUserTLName.setOnClickListener(new View.OnClickListener()
+                        @Override public void onClick(View view)
                         {
-                            @Override public void onClick(View view)
-                            {
-                                openUserProfile(item.getUser().id);
-                            }
-                        });
+                            openUserProfile(item.getUser().id);
+                        }
+                    });
 
-                        holder.imgUserTLUserHeader.setOnClickListener(new View.OnClickListener()
+                    holder.imgUserTLUserHeader.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override public void onClick(View view)
                         {
-                            @Override public void onClick(View view)
-                            {
-                                openUserProfile(item.getUser().id);
-                            }
-                        });
+                            openUserProfile(item.getUser().id);
+                        }
+                    });
+                }
+
+                if (isShowLastCommentUtc)
+                {
+                    if (item.lastCommentAtUtc != null)
+                    {
+                        holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.lastCommentAtUtc));
                     }
-
-
-                holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+                }
+                else
+                {
+                    if (item.createdAtUtc != null)
+                    {
+                        holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
+                    }
+                }
             }
 
             if (item.voteDirection == 1)
@@ -428,9 +452,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             gotoDashboard(SecurityDetailFragment.class.getName(), bundle);
         }
     }
-
-
-
 
     private void openUserProfile(int userId)
     {
