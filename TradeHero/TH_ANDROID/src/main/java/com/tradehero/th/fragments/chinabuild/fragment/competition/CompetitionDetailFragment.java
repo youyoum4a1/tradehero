@@ -688,7 +688,7 @@ public class CompetitionDetailFragment extends DashboardFragment
             }
             else if (ordinaPosition > 1000)
             {
-                tvUserRank.setText(" - - ");
+                tvUserRank.setText(">1K ");
             }
             else
             {
