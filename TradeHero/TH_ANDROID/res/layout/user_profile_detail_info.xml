@@ -30,7 +30,6 @@
           android:layout_height="wrap_content"
           android:layout_weight="4"
           android:gravity="left"
-          android:textColor="@color/black"
           tools:text="US$ 66,400"
           />
 
@@ -69,7 +68,6 @@
           android:layout_weight="3"
           android:gravity="right"
           android:paddingRight="@dimen/trade_screen_info_title_padding_right"
-          android:textColor="@color/text_gray_normal"
           android:text="@string/user_profile_cash_on_hand"
           />
 
@@ -80,7 +78,6 @@
           android:layout_height="wrap_content"
           android:layout_weight="4"
           android:gravity="left"
-          android:textColor="@color/black"
           android:text=""
           tools:text="US$ 100,000"
           />
