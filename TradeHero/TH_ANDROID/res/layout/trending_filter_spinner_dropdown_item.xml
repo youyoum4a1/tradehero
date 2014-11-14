@@ -12,8 +12,8 @@
 
   <ImageView
       android:id="@+id/trending_filter_spinner_item_icon"
-      android:layout_height="@dimen/small_icon_w_h"
-      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_image_w_h"
+      android:layout_width="@dimen/small_image_w_h"
       tools:src="@drawable/flag_country_round_united_states"
       android:scaleType="centerInside"
       android:layout_marginRight="@dimen/margin_small"

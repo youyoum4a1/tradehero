@@ -15,11 +15,13 @@
       android:layout_gravity="center"
       />
 
-  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+  <ListView
       android:id="@android:id/list"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
-      android:paddingBottom="10dp"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
+      android:dividerHeight="@dimen/margin_xsmall"
+      android:divider="@color/transparent"
       android:clipToPadding="false"
       app:hasStickyHeaders="false"
       />

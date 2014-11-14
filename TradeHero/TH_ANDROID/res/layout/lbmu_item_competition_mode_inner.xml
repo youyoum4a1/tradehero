@@ -63,8 +63,8 @@
 
       <TextView
           android:id="@+id/leaderboard_user_item_hq"
-          android:layout_height="@dimen/small_icon_w_h"
-          android:layout_width="@dimen/small_icon_w_h"
+          android:layout_height="@dimen/small_image_w_h"
+          android:layout_width="@dimen/small_image_w_h"
           android:contentDescription="@null"
           android:background="@drawable/hero_quotient_colour"
           android:textSize="@dimen/text_xxsmall"

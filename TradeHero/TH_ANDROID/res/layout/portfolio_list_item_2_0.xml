@@ -5,11 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/portfolio_padding_left"
-    android:paddingTop="@dimen/portfolio_padding_top"
-    android:paddingBottom="@dimen/portfolio_padding_bottom"
-    android:background="@drawable/basic_white_selector"
-    android:paddingRight="@dimen/position_padding_right"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <ImageView

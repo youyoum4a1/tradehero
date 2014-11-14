@@ -8,7 +8,7 @@
     android:layout_height="@dimen/grid_item_height"
     android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
-    android:gravity="center"
+    android:gravity="center_vertical"
     android:padding="@dimen/grid_item_bg_border_width"
     android:background="@drawable/grid_item_bg"
     >
@@ -105,8 +105,8 @@
 
   <ImageView
       android:id="@+id/ic_market_close"
-      android:layout_width="@dimen/small_icon_w_h"
-      android:layout_height="@dimen/small_icon_w_h"
+      android:layout_width="@dimen/small_image_w_h"
+      android:layout_height="@dimen/small_image_w_h"
       android:layout_alignParentBottom="true"
       android:layout_alignParentRight="true"
       android:paddingBottom="8dp"

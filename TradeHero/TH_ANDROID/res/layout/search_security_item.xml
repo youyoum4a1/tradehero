@@ -21,9 +21,9 @@
 
   <ImageView
       android:id="@+id/country_logo"
-      android:layout_width="40dp"
-      android:layout_height="40dp"
-      android:layout_marginLeft="@dimen/search_stock_people_padding"
+      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_marginLeft="@dimen/margin_small"
       android:layout_centerVertical="true"
       android:layout_marginRight="10dp"
       android:adjustViewBounds="true"
@@ -38,8 +38,8 @@
       android:layout_marginRight="2dp"
       android:layout_toLeftOf="@+id/stock_details"
       android:layout_toRightOf="@+id/country_logo"
-      android:paddingBottom="@dimen/search_stock_people_padding"
-      android:paddingTop="@dimen/search_stock_people_padding"
+      android:paddingBottom="@dimen/search_stock_people_list_padding"
+      android:paddingTop="@dimen/search_stock_people_list_padding"
       android:gravity="center_horizontal"
       android:orientation="vertical"
       >
@@ -75,9 +75,9 @@
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
       android:layout_marginLeft="5dp"
-      android:paddingRight="@dimen/search_stock_people_padding"
-      android:paddingBottom="@dimen/search_stock_people_padding"
-      android:paddingTop="@dimen/search_stock_people_padding"
+      android:paddingRight="@dimen/search_stock_people_list_padding"
+      android:paddingBottom="@dimen/search_stock_people_list_padding"
+      android:paddingTop="@dimen/search_stock_people_list_padding"
       android:orientation="vertical"
       >
 

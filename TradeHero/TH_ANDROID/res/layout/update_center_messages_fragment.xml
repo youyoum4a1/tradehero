@@ -23,7 +23,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:clipToPadding="false"
-          android:paddingTop="@dimen/message_center_vertical_margin"
+          android:paddingTop="@dimen/margin_small"
           android:paddingBottom="@dimen/clickable_element_min_dimen"
           swipe:swipeFrontView="@id/swipelist_frontview"
           swipe:swipeBackView="@id/swipelist_backview"

@@ -15,8 +15,8 @@
 
     <ImageView
         android:id="@+id/user_profile_avatar"
-        android:layout_width="@dimen/big_avatar_w_h"
-        android:layout_height="@dimen/big_avatar_w_h"
+        android:layout_width="@dimen/big_image_w_h"
+        android:layout_height="@dimen/big_image_w_h"
         android:background="@drawable/layout_oval"
         android:contentDescription="@null"
         tools:src="@drawable/superman_facebook"
@@ -44,8 +44,8 @@
 
         <ImageView
             android:id="@+id/country_logo"
-            android:layout_width="@dimen/small_icon_w_h"
-            android:layout_height="@dimen/small_icon_w_h"
+            android:layout_width="@dimen/small_image_w_h"
+            android:layout_height="@dimen/small_image_w_h"
             android:layout_alignParentRight="true"
             tools:src="@drawable/flag_country_round_canada"
             />

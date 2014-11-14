@@ -27,7 +27,7 @@
       android:paddingRight="@dimen/trending_horizontal_spacing"
       android:paddingLeft="@dimen/trending_horizontal_spacing"
       android:paddingTop="@dimen/trending_padding_top"
-      android:paddingBottom="@dimen/trending_padding_bottom"
+      android:paddingBottom="@dimen/trending_grid_padding_bottom"
       android:clipToPadding="false"
       android:scrollbarStyle="outsideOverlay"
       android:listSelector="@drawable/basic_transparent_selector"

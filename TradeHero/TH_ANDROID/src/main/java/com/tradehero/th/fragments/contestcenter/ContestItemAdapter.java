@@ -14,11 +14,9 @@ import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
-        implements StickyListHeadersAdapter
 {
     public static final int TYPE_NORMAL = 0;
     public static final int TYPE_VIP = 1;
-    public static final int TYPE_HEADER = 2;
 
     @NonNull @LayoutRes private Integer[] typeToResIds;
 
@@ -29,8 +27,7 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
             @LayoutRes int normalViewResourceId)
     {
         super(context, 0);
-        typeToResIds = new Integer[3];
-        typeToResIds[TYPE_HEADER] = R.layout.leaderboard_separator;
+        typeToResIds = new Integer[2];
         typeToResIds[TYPE_VIP] = vipViewResourceId;
         typeToResIds[TYPE_NORMAL] = normalViewResourceId;
         HierarchyInjector.inject(context, this);
@@ -57,10 +54,6 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
                 return TYPE_NORMAL;
             }
         }
-        else if (item instanceof EmptyHeadLineDTO)
-        {
-            return TYPE_HEADER;
-        }
         throw new IllegalArgumentException("Unhandled item " + item);
     }
 
@@ -82,22 +75,6 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         }
         return convertView;
     }
-
-    //<editor-fold desc="For headers">
-    @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
-    {
-        if (convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.leaderboard_separator, parent, false);
-        }
-        return convertView;
-    }
-
-    @Override public long getHeaderId(int position)
-    {
-        return getItemViewType(position);
-    }
-    //</editor-fold>
 
     @Override public boolean areAllItemsEnabled()
     {

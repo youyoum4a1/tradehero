@@ -21,10 +21,6 @@ public class ContestCenterJoinedFragment extends ContestCenterBaseFragment
                 if (providerDTO.isUserEnrolled)
                 {
                     contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
-                    if (providerDTO.vip != null && providerDTO.vip)
-                    {
-                        contestListAdapter.add(new EmptyHeadLineDTO());
-                    }
                 }
             }
         }

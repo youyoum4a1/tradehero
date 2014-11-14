@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_header"
+        style="@style/TH.Subhead"
         android:textColor="@color/sec_type"
         tools:text="Target price US$ 19.50"
         android:id="@+id/alert_edit_target_price_change"

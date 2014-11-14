@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_header"
+        style="@style/TH.Subhead"
         tools:text="Price Change -5.0%"
         android:textColor="@color/sec_type"
         android:id="@+id/alert_edit_percentage_change"
@@ -36,8 +36,7 @@
         android:id="@+id/alert_edit_percentage_change_actual_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_header"
-        android:textColor="@color/black"
+        style="@style/TH.Subhead"
         tools:text="(Alert Price US$ 15.33)"
         android:layout_below="@id/alert_edit_percentage_change"/>
 

@@ -95,7 +95,7 @@
   <Button
       android:id="@+id/btn_later"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/medium_logo_w_h"
+      android:layout_height="@dimen/medium_image_w_h"
       android:background="@drawable/basic_transparent_selector"
       android:text="@string/maybe_later"
       style="@style/TH.Button.Small"
