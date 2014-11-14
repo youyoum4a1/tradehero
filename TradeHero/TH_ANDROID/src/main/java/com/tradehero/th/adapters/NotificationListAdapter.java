@@ -115,12 +115,15 @@ public class NotificationListAdapter extends BaseAdapter
                     .placeholder(R.drawable.superman_facebook)
                     .error(R.drawable.superman_facebook)
                     .into(holder.imgNotificationHeader);
+            String text = item.text;
             if(!TextUtils.isEmpty(item.referencedUserName)){
                 holder.tvNotificationUser.setText(item.referencedUserName);
+                if(!TextUtils.isEmpty(item.text)){
+                    text = text.replaceFirst(item.referencedUserName, "");
+                }
             }
             holder.tvNotificationTimer.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
             if(!TextUtils.isEmpty(item.text)){
-                String text = item.text;
                 if(text.length()>100){
                     text = text.substring(0, 96) + "...";
                 }
