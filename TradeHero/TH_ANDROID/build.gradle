@@ -79,6 +79,9 @@ android {
     preDexLibraries = project.ext.preDexEnabled && !project.ext.isTravis
     // TODO is this really necessary?
     jumboMode = true
+
+    incremental true
+    javaMaxHeapSize "4g"
   }
 
   defaultConfig {
@@ -388,6 +391,9 @@ dependencies {
   if (project.ext.isIntelliJ) {
     androidTestCompile files('build/test-classes')
   }
+  compile project(':facebook-android-sdk:facebook')
+
+  releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }
 
 File propFile = file('signing.properties');
