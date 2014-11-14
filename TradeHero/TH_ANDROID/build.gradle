@@ -80,7 +80,7 @@ android {
     // TODO is this really necessary?
     jumboMode = true
 
-    incremental true
+    //incremental true
     javaMaxHeapSize "4g"
   }
 
