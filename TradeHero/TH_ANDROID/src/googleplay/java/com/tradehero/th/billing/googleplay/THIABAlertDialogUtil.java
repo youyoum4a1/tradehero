@@ -115,10 +115,9 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     }
 
     //<editor-fold desc="SKU related">
-    @Override protected THIABSKUDetailAdapter createProductDetailAdapter(Activity activity,
-            LayoutInflater layoutInflater, ProductIdentifierDomain skuDomain)
+    @Override protected THIABSKUDetailAdapter createProductDetailAdapter(Activity activity, ProductIdentifierDomain skuDomain)
     {
-        return new THIABSKUDetailAdapter(activity, layoutInflater, skuDomain);
+        return new THIABSKUDetailAdapter(activity, activity.getLayoutInflater(), skuDomain);
     }
 
     @Override public HashMap<ProductIdentifier, Boolean> getEnabledItems()
