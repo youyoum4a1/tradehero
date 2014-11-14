@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,7 +17,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -28,11 +29,12 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class UserProfileResideMenuItem extends LinearLayout
@@ -43,13 +45,13 @@ public class UserProfileResideMenuItem extends LinearLayout
     @InjectView(R.id.user_profile_roi) TextView userProfileRoi;
     @InjectView(R.id.user_profile_side_menu_view) BetterViewAnimator sideMenuProfileView;
 
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject Lazy<Picasso> picasso;
 
+    @Nullable private Subscription userProfileSubscription;
     private UserProfileDTO userProfileDTO;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileListener;
 
     //<editor-fold desc="Constructors">
     public UserProfileResideMenuItem(Context context, AttributeSet attrs)
@@ -62,76 +64,80 @@ public class UserProfileResideMenuItem extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
         ButterKnife.inject(this);
-
-        userProfileListener = new UserProfileFetchListener();
-    }
-
-    private void fetchAndDisplayUserProfile()
-    {
-        detachUserProfileCache();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
     @Override protected void onAttachedToWindow()
     {
-        userProfileListener = new UserProfileFetchListener();
         fetchAndDisplayUserProfile();
         super.onAttachedToWindow();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        detachUserProfileCache();
-        userProfileListener = null;
+        if (userProfileSubscription != null)
+        {
+            userProfileSubscription.unsubscribe();
+        }
+        userProfileSubscription = null;
+        picasso.get().cancelRequest(userProfileAvatar);
         super.onDetachedFromWindow();
     }
 
-    private void detachUserProfileCache()
+    private void fetchAndDisplayUserProfile()
     {
-        if (userProfileListener != null)
+        if (userProfileSubscription == null)
         {
-            userProfileCache.get().unregister(userProfileListener);
+            userProfileSubscription = userProfileCache.get().get(currentUserId.toUserBaseKey())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new UserProfileFetchObserver());
         }
     }
 
-    @Override public void display(UserProfileDTO dto)
+    private class UserProfileFetchObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        linkWith(dto, true);
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+        {
+            display(pair.second);
+        }
 
-        sideMenuProfileView.setDisplayedChildByLayoutId(R.id.user_profile_view);
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
+        }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    @Override public void display(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
 
-        if (andDisplay)
+        displayAvatar();
+
+        if (userProfileDTO != null)
         {
-            displayAvatar();
+            userDisplayName.setText(userProfileDTO.displayName);
 
-            if (userProfileDTO != null)
+            if (userProfileDTO.portfolio.roiSinceInception == null)
             {
-                userDisplayName.setText(userProfileDTO.displayName);
-
-                if (userProfileDTO.portfolio.roiSinceInception == null)
-                {
-                    userProfileDTO.portfolio.roiSinceInception = 0.0D;
-                }
-                THSignedNumber thRoiSinceInception = THSignedPercentage
-                        .builder(userProfileDTO.portfolio.roiSinceInception * 100)
-                        .build();
-
-                userProfileRoi.setText(thRoiSinceInception.toString());
-                userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
+                userProfileDTO.portfolio.roiSinceInception = 0.0D;
             }
-            else
-            {
-                resetView();
-            }
+            THSignedNumber thRoiSinceInception = THSignedPercentage
+                    .builder(userProfileDTO.portfolio.roiSinceInception * 100)
+                    .build();
+
+            userProfileRoi.setText(thRoiSinceInception.toString());
+            userProfileRoi.setTextColor(getResources().getColor(thRoiSinceInception.getColorResId()));
         }
+        else
+        {
+            resetView();
+        }
+
+        sideMenuProfileView.setDisplayedChildByLayoutId(R.id.user_profile_view);
     }
 
     private void displayAvatar()
@@ -194,19 +200,6 @@ public class UserProfileResideMenuItem extends LinearLayout
             picasso.get().load(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
                     .into(userProfileAvatar);
-        }
-    }
-
-    private class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey,UserProfileDTO>
-    {
-        @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
-        {
-            display(value);
-        }
-
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
-        {
-            THToast.show(new THException(error));
         }
     }
 }

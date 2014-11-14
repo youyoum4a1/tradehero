@@ -13,11 +13,10 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
-import dagger.Lazy;
+import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -33,7 +32,7 @@ public class UserStatisticView extends LinearLayout
     @InjectView(R.id.leaderboard_gauge_winrate) @Optional GaugeView winRateGauge;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCache> userProfileCache;
+    @Inject UserProfileCacheRx userProfileCache;
 
     private LeaderboardUserDTO leaderboardUserDTO;
 
@@ -272,7 +271,7 @@ public class UserStatisticView extends LinearLayout
 
     private Double getAvgConsistency()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
