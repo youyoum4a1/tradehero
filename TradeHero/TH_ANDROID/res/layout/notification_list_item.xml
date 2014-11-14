@@ -38,6 +38,7 @@
                     android:textColor="#000000"
                     android:singleLine="true"
                     android:layout_marginRight="100dp"
+                    android:text="@string/app_name_cn"
                     android:maxEms="15"
                     android:layout_alignParentLeft="true"
                     android:textSize="15sp"/>
@@ -47,7 +48,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:textColor="@color/text_gray_normal"
-                    android:text="刚刚"
                     android:layout_marginRight="15dp"
                     android:textSize="12sp"/>
         </RelativeLayout>
