@@ -2,6 +2,7 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingInteractor;
 import com.tradehero.common.billing.BillingLogicHolder;
+import com.tradehero.th.billing.amazon.AmazonAlertDialogUtil;
 import com.tradehero.th.billing.amazon.THAmazonAlertDialogUtil;
 import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTester;
 import com.tradehero.th.billing.amazon.THAmazonBillingAvailableTesterHolder;
@@ -161,5 +162,10 @@ public class BillingUIModule
     @Provides BaseTHUIBillingRequest.Builder provideTHUIBillingRequestBuilder()
     {
         return BaseTHUIAmazonRequest.builder();
+    }
+
+    @Provides AmazonAlertDialogUtil provideAmazonAlertDialogUtil(THAmazonAlertDialogUtil dialogUtil)
+    {
+        return dialogUtil;
     }
 }
