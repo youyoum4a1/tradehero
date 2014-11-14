@@ -6,7 +6,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -37,6 +36,7 @@ public class MeTimelineFragment extends TimelineFragment
     @Override public void onResume()
     {
         super.onResume();
+        dtoCacheUtil.anonymousPrefetches();
         dtoCacheUtil.initialPrefetches();
     }
 

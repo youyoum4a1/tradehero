@@ -10,20 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
+@Routable("achievements")
 public class AchievementListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_USER_ID = AchievementListFragment.class.getName() + ".userId";

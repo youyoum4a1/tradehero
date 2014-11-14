@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.android.common.SlidingTabLayout;
 import com.astuetz.PagerSlidingTabStrip;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
@@ -22,15 +23,18 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
+import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import dagger.Lazy;
 
+@Routable({"news","discussion", "academy"})
 public class DiscoveryMainFragment extends DashboardFragment
 {
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Analytics analytics;
+    @Inject THRouter thRouter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
@@ -42,6 +46,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         discoveryPagerAdapter = new DiscoveryPagerAdapter(this.getChildFragmentManager());
+        thRouter.inject(this);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
