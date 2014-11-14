@@ -5,10 +5,11 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
 import android.support.annotation.NonNull;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import rx.functions.Func1;
 
 public class DTOProcessorPortfolioListReceived<PortfolioCompactListType extends PortfolioCompactDTOList>
-    implements DTOProcessor<PortfolioCompactListType>, Func1<PortfolioCompactListType, PortfolioCompactListType>
+    extends ThroughDTOProcessor<PortfolioCompactListType>
 {
     @NonNull private final DTOProcessor<PortfolioCompactDTO> individualProcessor;
 
@@ -27,10 +28,5 @@ public class DTOProcessorPortfolioListReceived<PortfolioCompactListType extends 
             }
         }
         return value;
-    }
-
-    @Override public PortfolioCompactListType call(PortfolioCompactListType value)
-    {
-        return process(value);
     }
 }

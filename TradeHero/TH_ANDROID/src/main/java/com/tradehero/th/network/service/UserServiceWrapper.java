@@ -323,9 +323,11 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @NonNull protected DTOProcessorUpdatePayPalEmail createUpdatePaypalEmailProcessor(@NonNull UserBaseKey userBaseKey)
+    @NonNull protected DTOProcessorUpdatePayPalEmail createUpdatePaypalEmailProcessor(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey);
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey, updatePayPalEmailFormDTO);
     }
 
     public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
@@ -333,14 +335,16 @@ import rx.functions.Func1;
             @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return userServiceRx.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO)
-                .doOnNext(createUpdatePaypalEmailProcessor(userBaseKey));
+                .map(createUpdatePaypalEmailProcessor(userBaseKey, updatePayPalEmailFormDTO));
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
-    @NonNull protected DTOProcessorUpdateAlipayAccount createUpdateAlipayAccountProcessor(@NonNull UserBaseKey playerId)
+    @NonNull protected DTOProcessorUpdateAlipayAccount createUpdateAlipayAccountProcessor(
+            @NonNull UserBaseKey playerId,
+            @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId);
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId, updateAlipayAccountFormDTO);
     }
 
     public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
@@ -348,7 +352,7 @@ import rx.functions.Func1;
             @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
         return userServiceRx.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO)
-                .doOnNext(createUpdateAlipayAccountProcessor(userBaseKey));
+                .map(createUpdateAlipayAccountProcessor(userBaseKey, updateAlipayAccountFormDTO));
     }
     //</editor-fold>
 
@@ -436,16 +440,14 @@ import rx.functions.Func1;
         return new DTOProcessorFollowFreeUserBatch(
                 userProfileCache.get(),
                 homeContentCache.get(),
-                heroListCache.get(),
                 userMessagingRelationshipCache.get(),
-                allowableRecipientPaginatedCache.get(),
                 batchFollowFormDTO);
     }
 
     @NonNull public Observable<UserProfileDTO> followBatchFreeRx(@NonNull BatchFollowFormDTO batchFollowFormDTO)
     {
         return userServiceRx.followBatchFree(batchFollowFormDTO)
-                .doOnNext(createBatchFollowFreeProcessor(batchFollowFormDTO));
+                .map(createBatchFollowFreeProcessor(batchFollowFormDTO));
     }
     //</editor-fold>
 
@@ -475,7 +477,6 @@ import rx.functions.Func1;
                 homeContentCache.get(),
                 heroListCache.get(),
                 userMessagingRelationshipCache.get(),
-                allowableRecipientPaginatedCache.get(),
                 currentUserId.toUserBaseKey(),
                 heroId);
     }
@@ -499,14 +500,13 @@ import rx.functions.Func1;
                 homeContentCache.get(),
                 heroListCache.get(),
                 userMessagingRelationshipCache.get(),
-                allowableRecipientPaginatedCache.get(),
                 currentUserId.toUserBaseKey(),
                 heroId);
     }
 
     public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.freeFollow(heroId.key).doOnNext(createFollowFreeUserProcessor(heroId));
+        return userServiceRx.freeFollow(heroId.key).map(createFollowFreeUserProcessor(heroId));
     }
     //</editor-fold>
 
@@ -544,7 +544,6 @@ import rx.functions.Func1;
         return new DTOProcessorUpdateCountryCode(
                 userProfileCache.get(),
                 providerListCache.get(),
-                providerCache.get(),
                 playerId,
                 updateCountryCodeFormDTO);
     }
@@ -554,7 +553,7 @@ import rx.functions.Func1;
             @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return userServiceRx.updateCountryCode(userKey.key, updateCountryCodeFormDTO)
-                .doOnNext(createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
+                .map(createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
     }
     //</editor-fold>
 
@@ -571,7 +570,7 @@ import rx.functions.Func1;
             @NonNull UpdateReferralCodeDTO updateReferralCodeDTO)
     {
         return userServiceRx.updateReferralCode(invitedUserId.key, updateReferralCodeDTO)
-                .doOnNext(createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
+                .map(createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
     }
     //</editor-fold>
 

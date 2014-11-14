@@ -5,15 +5,13 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import rx.functions.Action1;
 import timber.log.Timber;
 
-public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositionDTO>,
-        Action1<WatchlistPositionDTO>
+public class DTOProcessorWatchlistDelete extends ThroughDTOProcessor<WatchlistPositionDTO>
 {
     @NonNull private final UserBaseKey concernedUser;
     @NonNull private final WatchlistPositionCacheRx watchlistPositionCache;
@@ -63,10 +61,5 @@ public class DTOProcessorWatchlistDelete implements DTOProcessor<WatchlistPositi
             watchlistPositionCache.invalidate(concernedUser);
         }
         return watchlistPositionDTO;
-    }
-
-    @Override public void call(WatchlistPositionDTO watchlistPositionDTO)
-    {
-        process(watchlistPositionDTO);
     }
 }

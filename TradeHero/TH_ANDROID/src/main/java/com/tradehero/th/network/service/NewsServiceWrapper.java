@@ -78,7 +78,7 @@ import rx.Observable;
         }
 
         return paginatedNewsItemCompactDTO
-                .doOnNext(newsDTOProcessorProvider.get());
+                .map(newsDTOProcessorProvider.get());
     }
 
     private Observable<PaginatedDTO<NewsItemCompactDTO>> getFeaturedNewsRx(NewsItemListFeaturedKey key)

@@ -66,7 +66,7 @@ public class NotificationServiceWrapper
             @NonNull NotificationKey pushKey)
     {
         return notificationServiceRx.markAsRead(pushKey.key)
-                .doOnNext(createNotificationReadDTOProcessor(readerId, pushKey));
+                .map(createNotificationReadDTOProcessor(readerId, pushKey));
     }
     //</editor-fold>
 
@@ -82,7 +82,7 @@ public class NotificationServiceWrapper
     public Observable<BaseResponseDTO> markAsReadAllRx(@NonNull final UserBaseKey readerId)
     {
         return notificationServiceRx.markAsReadAll()
-                .doOnNext(createNotificationAllReadDTOProcessor(readerId));
+                .map(createNotificationAllReadDTOProcessor(readerId));
     }
     //</editor-fold>
 }

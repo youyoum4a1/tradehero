@@ -32,9 +32,9 @@ public class DTOProcessorNotificationAllRead extends ThroughDTOProcessor<BaseRes
         if (userProfileDTO != null)
         {
             userProfileDTO.unreadNotificationsCount = 0;
+            userProfileCache.onNext(readerId, userProfileDTO);
         }
-        userProfileCache.get(readerId);
-        notificationCache.invalidateAll();
+        notificationCache.setUnreadAll(false);
         return value;
     }
 }

@@ -99,7 +99,7 @@ import rx.Observable;
             PurchaseReportDTO purchaseReportDTO)
     {
         return this.portfolioServiceRx.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
-                .doOnNext(createUpdateProfileProcessor());
+                .map(createUpdateProfileProcessor());
     }
     //</editor-fold>
 

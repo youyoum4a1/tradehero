@@ -84,7 +84,7 @@ import timber.log.Timber;
             @NonNull LoginSignUpFormDTO loginFormDTO)
     {
         return sessionServiceRx.login(authorization, loginFormDTO)
-                .doOnNext(createUserLoginProcessor());
+                .map(createUserLoginProcessor());
     }
     //</editor-fold>
 
@@ -101,7 +101,7 @@ import timber.log.Timber;
                 userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO);
         }
 
-        return userLoginDTOObservable.doOnNext(createUserLoginProcessor());
+        return userLoginDTOObservable.map(createUserLoginProcessor());
     }
     //</editor-fold>
 
@@ -129,7 +129,7 @@ import timber.log.Timber;
     @NonNull public Observable<UserProfileDTO> updateDeviceRx()
     {
         return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get())
-                .doOnNext(createUpdateDeviceProcessor());
+                .map(createUpdateDeviceProcessor());
     }
     //</editor-fold>
 

@@ -4,15 +4,13 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import rx.functions.Action1;
 
-public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPositionDTOList>,
-        Action1<WatchlistPositionDTOList>
+public class DTOProcessorWatchlistCreateList extends ThroughDTOProcessor<WatchlistPositionDTOList>
 {
     @NonNull DTOProcessorWatchlistCreate individualProcessor;
 
@@ -41,10 +39,5 @@ public class DTOProcessorWatchlistCreateList implements DTOProcessor<WatchlistPo
             processed.add(individualProcessor.process(position));
         }
         return processed;
-    }
-
-    @Override public void call(WatchlistPositionDTOList watchlistPositionDTOs)
-    {
-        process(watchlistPositionDTOs);
     }
 }

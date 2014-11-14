@@ -40,7 +40,7 @@ import rx.functions.Func1;
     @NonNull public Observable<UserProfileDTO> connectRx(@NonNull UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
         return socialServiceRx.connect(userBaseKey.key, userFormDTO)
-                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
+                .map(dtoProcessorUpdateUserProfileProvider.get());
     }
 
     @NonNull public Func1<AuthData, Observable<UserProfileDTO>> connectFunc1(@NonNull final UserBaseKey userBaseKey)
@@ -64,7 +64,7 @@ import rx.functions.Func1;
     public Observable<UserProfileDTO> disconnectRx(@NonNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return socialServiceRx.disconnect(userBaseKey.key, socialNetworkFormDTO)
-                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
+                .map(dtoProcessorUpdateUserProfileProvider.get());
     }
     //</editor-fold>
 

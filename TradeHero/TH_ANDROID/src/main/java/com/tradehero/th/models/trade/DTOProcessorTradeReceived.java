@@ -1,13 +1,11 @@
 package com.tradehero.th.models.trade;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
-import rx.functions.Action1;
+import com.tradehero.th.models.ThroughDTOProcessor;
 
-public class DTOProcessorTradeReceived implements DTOProcessor<TradeDTO>,
-        Action1<TradeDTO>
+public class DTOProcessorTradeReceived extends ThroughDTOProcessor<TradeDTO>
 {
     @NonNull private final OwnedPositionId ownedPositionId;
 
@@ -30,10 +28,5 @@ public class DTOProcessorTradeReceived implements DTOProcessor<TradeDTO>,
             value.positionId = ownedPositionId.positionId;
         }
         return value;
-    }
-
-    @Override public void call(TradeDTO tradeDTO)
-    {
-        process(tradeDTO);
     }
 }

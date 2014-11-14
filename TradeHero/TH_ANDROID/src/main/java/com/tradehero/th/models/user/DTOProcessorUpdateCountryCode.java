@@ -7,7 +7,6 @@ import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 
@@ -15,20 +14,17 @@ public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCou
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final ProviderListCacheRx providerListCache;
-    @NonNull private final ProviderCacheRx providerCache;
     @NonNull private final UserBaseKey playerId;
     @NonNull private final UpdateCountryCodeFormDTO updateCountryCodeFormDTO;
 
     public DTOProcessorUpdateCountryCode(
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull ProviderListCacheRx providerListCache,
-            @NonNull ProviderCacheRx providerCache,
             @NonNull UserBaseKey playerId,
             @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         this.userProfileCache = userProfileCache;
         this.providerListCache = providerListCache;
-        this.providerCache = providerCache;
         this.playerId = playerId;
         this.updateCountryCodeFormDTO = updateCountryCodeFormDTO;
     }
@@ -44,10 +40,6 @@ public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCou
                 cachedUserProfile.countryCode = updateCountryCodeFormDTO.countryCode;
             }
             userProfileCache.get(playerId);
-
-            providerCache.invalidateAll();
-            providerCache.invalidateAll();
-            providerListCache.invalidateAll();
             providerListCache.get(new ProviderListKey());
         }
 

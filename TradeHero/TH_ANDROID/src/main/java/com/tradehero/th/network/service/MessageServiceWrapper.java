@@ -86,7 +86,7 @@ public class MessageServiceWrapper
         return messageServiceRx.getMessageHeaders(
                         messageListKey.page,
                         messageListKey.perPage)
-                .doOnNext(createReadablePaginatedMessageHeaderReceivedProcessor());
+                .map(createReadablePaginatedMessageHeaderReceivedProcessor());
     }
 
     public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(TypedMessageListKey messageListKey)
@@ -100,7 +100,7 @@ public class MessageServiceWrapper
                         null,
                         messageListKey.page,
                         messageListKey.perPage)
-                .doOnNext(createReadablePaginatedMessageHeaderReceivedProcessor());
+                .map(createReadablePaginatedMessageHeaderReceivedProcessor());
     }
 
     public Observable<ReadablePaginatedMessageHeaderDTO> getMessageHeadersRx(
@@ -111,7 +111,7 @@ public class MessageServiceWrapper
                         messageListKey.recipientId.key,
                         messageListKey.page,
                         messageListKey.perPage)
-                .doOnNext(createReadablePaginatedMessageHeaderReceivedProcessor());
+                .map(createReadablePaginatedMessageHeaderReceivedProcessor());
     }
     //</editor-fold>
 
@@ -154,7 +154,7 @@ public class MessageServiceWrapper
     public Observable<DiscussionDTO> createMessageRx(MessageCreateFormDTO form)
     {
         return messageServiceRx.createMessage(form)
-                .doOnNext(createDiscussionCreateProcessor(null));
+                .map(createDiscussionCreateProcessor(null));
     }
     //</editor-fold>
 
@@ -182,7 +182,7 @@ public class MessageServiceWrapper
                         messageHeaderId.commentId,
                         senderUserId.key,
                         recipientUserId.key)
-                .doOnNext(createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
+                .map(createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
     }
     //</editor-fold>
 
@@ -210,7 +210,7 @@ public class MessageServiceWrapper
                         commentId.commentId,
                         senderUserId.key,
                         recipientUserId.key)
-                .doOnNext(createMessageHeaderReadProcessor(messageHeaderId, readerId));
+                .map(createMessageHeaderReadProcessor(messageHeaderId, readerId));
     }
     //</editor-fold>
 
@@ -229,7 +229,7 @@ public class MessageServiceWrapper
             @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.readAllMessage()
-                .doOnNext(createMessageHeaderReadAllProcessor(readerId));
+                .map(createMessageHeaderReadAllProcessor(readerId));
     }
     //</editor-fold>
 }

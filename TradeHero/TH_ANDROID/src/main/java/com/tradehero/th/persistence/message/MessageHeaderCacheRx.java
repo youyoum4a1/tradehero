@@ -46,10 +46,18 @@ public class MessageHeaderCacheRx extends BaseFetchDTOCacheRx<MessageHeaderId, M
     public void setUnread(@NonNull MessageHeaderId messageHeaderId, boolean unread)
     {
         MessageHeaderDTO messageHeaderDTO = getValue(messageHeaderId);
-        if (messageHeaderDTO != null && messageHeaderDTO.unread)
+        if (messageHeaderDTO != null && messageHeaderDTO.unread != unread)
         {
             messageHeaderDTO.unread = unread;
             onNext(messageHeaderId, messageHeaderDTO);
+        }
+    }
+
+    public void setUnreadAll(boolean unread)
+    {
+        for (MessageHeaderId id : snapshot().keySet())
+        {
+            setUnread(id, unread);
         }
     }
 }

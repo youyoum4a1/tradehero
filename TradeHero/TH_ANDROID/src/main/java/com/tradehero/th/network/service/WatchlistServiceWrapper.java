@@ -67,7 +67,7 @@ import rx.Observable;
     @Nullable public Observable<WatchlistPositionDTO> createWatchlistEntryRx(@NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return watchlistServiceRx.createWatchlistEntry(watchlistPositionFormDTO)
-                .doOnNext(createWatchlistCreateProcessor(currentUserId.toUserBaseKey()));
+                .map(createWatchlistCreateProcessor(currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 
@@ -92,7 +92,7 @@ import rx.Observable;
             @NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return watchlistServiceRx.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO)
-                .doOnNext(createWatchlistUpdateProcessor(currentUserId.toUserBaseKey()));
+                .map(createWatchlistUpdateProcessor(currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 
@@ -111,7 +111,7 @@ import rx.Observable;
             @NonNull SecurityIntegerIdListForm securityIntegerIds)
     {
         return watchlistServiceRx.batchCreate(securityIntegerIds)
-                .doOnNext(createWatchlistPositionBatchCreate(currentUserId.toUserBaseKey()));
+                .map(createWatchlistPositionBatchCreate(currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 
@@ -167,7 +167,7 @@ import rx.Observable;
     @Nullable public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull PositionCompactId positionCompactId)
     {
         return watchlistServiceRx.deleteWatchlist(positionCompactId.key)
-                .doOnNext(createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()));
+                .map(createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 }

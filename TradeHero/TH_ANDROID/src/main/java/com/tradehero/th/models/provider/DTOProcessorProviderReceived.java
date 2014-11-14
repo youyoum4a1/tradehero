@@ -1,13 +1,14 @@
 package com.tradehero.th.models.provider;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
-import android.support.annotation.NonNull;
 
-public class DTOProcessorProviderReceived implements DTOProcessor<ProviderDTO>
+public class DTOProcessorProviderReceived extends ThroughDTOProcessor<ProviderDTO>
 {
     @NonNull private final DTOProcessor<PortfolioCompactDTO> portfolioCompactProcessor;
 

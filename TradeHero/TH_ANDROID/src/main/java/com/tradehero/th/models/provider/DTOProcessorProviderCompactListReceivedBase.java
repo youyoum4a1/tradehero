@@ -1,14 +1,15 @@
 package com.tradehero.th.models.provider;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.BaseProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
+import com.tradehero.th.models.ThroughDTOProcessor;
 
 public class DTOProcessorProviderCompactListReceivedBase<
         ProviderCompactDTOType extends ProviderDTO,
         ProviderCompactDTOListType extends BaseProviderDTOList<? extends ProviderCompactDTOType>>
-        implements DTOProcessor<ProviderCompactDTOListType>
+        extends ThroughDTOProcessor<ProviderCompactDTOListType>
 {
     @NonNull private final DTOProcessor<ProviderCompactDTOType> providerCompactProcessor;
 

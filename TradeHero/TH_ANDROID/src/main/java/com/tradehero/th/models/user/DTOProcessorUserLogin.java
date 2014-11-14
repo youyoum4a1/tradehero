@@ -1,21 +1,19 @@
 package com.tradehero.th.models.user;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
-import rx.functions.Action1;
 
-public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
-    , Action1<UserLoginDTO> // TODO remove when changed DTOProcessor
+public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
 {
     @NonNull private final SystemStatusCache systemStatusCache;
     @NonNull private final CurrentUserId currentUserId;
@@ -58,10 +56,5 @@ public class DTOProcessorUserLogin implements DTOProcessor<UserLoginDTO>
             }
         }
         return value;
-    }
-
-    @Override public void call(UserLoginDTO userLoginDTO)
-    {
-        process(userLoginDTO);
     }
 }

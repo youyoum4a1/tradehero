@@ -80,7 +80,7 @@ import rx.Observable;
     @NonNull public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NonNull SecurityIntegerIdList ids)
     {
         return securityServiceRx.getMultipleSecurities(ids.getCommaSeparated())
-                .doOnNext(createMultipleSecurityProcessor());
+                .map(createMultipleSecurityProcessor());
     }
     //</editor-fold>
 
@@ -264,7 +264,6 @@ import rx.Observable;
         return new DTOProcessorSecurityPositionTransactionUpdated(
                 securityId,
                 currentUserId.toUserBaseKey(),
-                securityPositionDetailCache.get(),
                 portfolioCache.get());
     }
 
@@ -294,7 +293,7 @@ import rx.Observable;
             @NonNull TransactionFormDTO transactionFormDTO)
     {
         return this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
-            .doOnNext(createSecurityPositionTransactionUpdatedProcessor(securityId));
+            .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
     }
     //</editor-fold>
 
@@ -325,7 +324,7 @@ import rx.Observable;
             @NonNull TransactionFormDTO transactionFormDTO)
     {
         return this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
-                .doOnNext(createSecurityPositionTransactionUpdatedProcessor(securityId));
+                .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
     }
     //</editor-fold>
 

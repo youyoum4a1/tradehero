@@ -1,12 +1,11 @@
 package com.tradehero.th.models.security;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import android.support.annotation.NonNull;
 
 public class DTOProcessorSecurityPositionTransactionUpdated extends DTOProcessorSecurityPositionTransactionReceived
 {
@@ -16,10 +15,9 @@ public class DTOProcessorSecurityPositionTransactionUpdated extends DTOProcessor
     public DTOProcessorSecurityPositionTransactionUpdated(
             @NonNull SecurityId securityId,
             @NonNull UserBaseKey ownerId,
-            @NonNull SecurityPositionDetailCacheRx securityPositionDetailCache,
             @NonNull PortfolioCacheRx portfolioCache)
     {
-        super(securityId, ownerId, securityPositionDetailCache);
+        super(securityId, ownerId);
         this.portfolioCache = portfolioCache;
     }
     //</editor-fold>

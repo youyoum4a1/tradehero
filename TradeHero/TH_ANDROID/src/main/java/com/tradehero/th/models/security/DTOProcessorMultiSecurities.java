@@ -1,14 +1,12 @@
 package com.tradehero.th.models.security;
 
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import java.util.Map;
-import android.support.annotation.Nullable;
-import rx.functions.Action1;
 
-public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, SecurityCompactDTO>>,
-        Action1<Map<Integer, SecurityCompactDTO>>
+public class DTOProcessorMultiSecurities extends ThroughDTOProcessor<Map<Integer, SecurityCompactDTO>>
 {
     private final SecurityCompactCacheRx securityCompactCache;
 
@@ -32,10 +30,5 @@ public class DTOProcessorMultiSecurities implements DTOProcessor<Map<Integer, Se
             }
         }
         return value;
-    }
-
-    @Override public void call(Map<Integer, SecurityCompactDTO> map)
-    {
-        process(map);
     }
 }
