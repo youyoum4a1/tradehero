@@ -106,12 +106,12 @@
         android:icon="@drawable/settings_trans_history"
         />
 
-    <Preference
-        android:enabled="true"
-        android:key="@string/key_settings_primary_restore_purchases"
-        android:title="@string/settings_primary_restore_purchases"
-        android:icon="@drawable/settings_recover_purchase"
-        />
+    <!--<Preference-->
+        <!--android:enabled="false"-->
+        <!--android:key="@string/key_settings_primary_restore_purchases"-->
+        <!--android:title="@string/settings_primary_restore_purchases"-->
+        <!--android:icon="@drawable/settings_recover_purchase"-->
+        <!--/>-->
 
     <com.tradehero.th.fragments.settings.ReferralCodeUnreadPreference
         android:enabled="true"

@@ -75,7 +75,8 @@ public class PortfolioCompactDTO implements DTO
 
     @JsonIgnore public boolean isAllowedAddCash()
     {
-        return isDefault();
+        //return isDefault();
+        return false;
     }
 
     @JsonIgnore public double getTotalExtraCash()

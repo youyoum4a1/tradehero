@@ -695,7 +695,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mFollowType = getFollowType();
         if (mFollowType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
         {
-            mFollowButton.setText(R.string.upgrade_to_premium);
+            mFollowButton.setText(R.string.following_free);
+            mFollowButton.setEnabled(false);
         }
         else if (mFollowType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
         {

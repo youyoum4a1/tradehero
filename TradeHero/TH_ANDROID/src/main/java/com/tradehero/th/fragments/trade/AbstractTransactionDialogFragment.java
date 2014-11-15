@@ -470,6 +470,12 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
+    @Override protected void linkWith(UserProfileDTO updatedUserProfileDTO)
+    {
+        super.linkWith(updatedUserProfileDTO);
+        displayAddCashButton();
+    }
+
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
         this.buySellTransactionListener = buySellTransactionListener;
@@ -489,10 +495,18 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         if (mBtnAddCash != null)
         {
-            mBtnAddCash.setVisibility(
-                    (portfolioCompactDTO != null && portfolioCompactDTO.isAllowedAddCash())
-                    ? View.VISIBLE
-                    : View.GONE);
+            // HACK
+            if (userProfileDTO != null && userProfileDTO.isAdmin)
+            {
+                mBtnAddCash.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mBtnAddCash.setVisibility(
+                        (portfolioCompactDTO != null && portfolioCompactDTO.isAllowedAddCash())
+                                ? View.VISIBLE
+                                : View.GONE);
+            }
         }
     }
 

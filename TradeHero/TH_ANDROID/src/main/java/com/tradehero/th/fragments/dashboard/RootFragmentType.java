@@ -91,7 +91,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, STORE, SETTING
+                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, /*STORE,*/ SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);

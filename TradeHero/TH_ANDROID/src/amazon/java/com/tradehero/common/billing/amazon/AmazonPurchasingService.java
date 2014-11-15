@@ -66,6 +66,7 @@ import timber.log.Timber;
 
     @NotNull public RequestId getUserData(@NotNull PurchasingListener listener)
     {
+        Timber.e(new Exception("Calling getUserData"), "Calling getUserData");
         RequestId requestId = PurchasingService.getUserData();
         purchasingListeners.put(requestId, listener);
         callWaitingResponses();
@@ -74,6 +75,7 @@ import timber.log.Timber;
 
     @NotNull public RequestId purchase(@NotNull String sku, @NotNull PurchasingListener listener)
     {
+        Timber.e(new Exception("Calling purchase " + sku), "Calling purchase %s", sku);
         RequestId requestId = PurchasingService.purchase(sku);
         purchasingListeners.put(requestId, listener);
         callWaitingResponses();
@@ -82,6 +84,14 @@ import timber.log.Timber;
 
     @NotNull public RequestId getProductData(@NotNull Set<String> skus, @NotNull PurchasingListener listener)
     {
+        StringBuilder sb = new StringBuilder();
+        String separator = "";
+        for (String sku : skus)
+        {
+            sb.append(separator).append(sku);
+            separator = ",";
+        }
+        Timber.e(new Exception("Calling product data " + sb.toString()), "Calling product data %s", sb.toString());
         RequestId requestId = PurchasingService.getProductData(skus);
         purchasingListeners.put(requestId, listener);
         callWaitingResponses();
@@ -91,6 +101,7 @@ import timber.log.Timber;
     // TODO implement further calling of purchases within this class
     @NotNull public RequestId getPurchaseUpdates(boolean reset, @NotNull PurchasingListener listener)
     {
+        Timber.e(new Exception("Calling purchase updates"), "Calling purchase updates");
         RequestId requestId = PurchasingService.getPurchaseUpdates(reset);
         purchasingListeners.put(requestId, listener);
         callWaitingResponses();
@@ -99,29 +110,35 @@ import timber.log.Timber;
 
     public void notifyFulfillment(@NotNull String receiptId, @NotNull FulfillmentResult fulfillmentResult)
     {
+        Timber.e(new Exception("Calling fulfill receipt " + receiptId + " result " + fulfillmentResult),
+                "Calling fulfill receipt %s result %s", receiptId, fulfillmentResult);
         PurchasingService.notifyFulfillment(receiptId, fulfillmentResult);
     }
 
     @Override public void onUserDataResponse(@NotNull UserDataResponse userDataResponse)
     {
+        Timber.e(new Exception("Got user data " + userDataResponse), "Got user data %s", userDataResponse);
         putWaitingResponse(userDataResponse.getRequestId(), userDataResponse);
         callWaitingResponses();
     }
 
     @Override public void onProductDataResponse(@NotNull ProductDataResponse productDataResponse)
     {
+        Timber.e(new Exception("Got product data " + productDataResponse), "Got product data %s", productDataResponse);
         putWaitingResponse(productDataResponse.getRequestId(), productDataResponse);
         callWaitingResponses();
     }
 
     @Override public void onPurchaseResponse(@NotNull PurchaseResponse purchaseResponse)
     {
+        Timber.e(new Exception("Got purchase " + purchaseResponse), "Got purchase %s", purchaseResponse);
         putWaitingResponse(purchaseResponse.getRequestId(), purchaseResponse);
         callWaitingResponses();
     }
 
     @Override public void onPurchaseUpdatesResponse(@NotNull PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
+        Timber.e(new Exception("Got purchase updates " + purchaseUpdatesResponse), "Got purchase updates %s", purchaseUpdatesResponse);
         putWaitingResponse(purchaseUpdatesResponse.getRequestId(), purchaseUpdatesResponse);
         callWaitingResponses();
     }

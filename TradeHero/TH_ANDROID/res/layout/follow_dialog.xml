@@ -160,6 +160,7 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:orientation="vertical"
+        android:visibility="gone"
         >
 
       <TextView

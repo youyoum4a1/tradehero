@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.LruCache;
 import com.amazon.device.iap.PurchasingListener;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,9 +48,11 @@ import org.jetbrains.annotations.NotNull;
     //<editor-fold desc="Constructors">
     @Inject public AmazonPurchasingServiceDummy(
             @NotNull Context appContext,
+            @NotNull Provider<Activity> activityProvider,
+            @NotNull AmazonAlertDialogUtil dialogUtil,
             @NotNull CurrentUserId currentUserId)
     {
-        super(appContext);
+        super(appContext, activityProvider, dialogUtil);
         this.currentUserId = currentUserId;
     }
     //</editor-fold>
