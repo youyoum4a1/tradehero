@@ -61,16 +61,16 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
         super.onNext(key, value);
     }
 
-    @NonNull public Observable<PortfolioDTOList> getPortfolios(@NonNull List<? extends PortfolioCompactDTO> portfolioCompactDTOs, @Nullable PortfolioCompactDTO typeQualifier)
+    @NonNull public Observable<PortfolioDTOList> getPortfolios(
+            @NonNull List<? extends PortfolioCompactDTO> portfolioCompactDTOs, @SuppressWarnings(
+            "UnusedParameters") @Nullable PortfolioCompactDTO typeQualifier)
     {
-        return Observable.from(portfolioCompactDTOs)
-                .map(compact -> compact.getOwnedPortfolioId())
-                .toList()
-                .map(OwnedPortfolioIdList::new)
-                .flatMap(list -> getPortfolios(list, (OwnedPortfolioId) null));
+        return getPortfolios(new OwnedPortfolioIdList(portfolioCompactDTOs, null), null);
     }
 
-    @NonNull public Observable<PortfolioDTOList> getPortfolios(@NonNull List<? extends OwnedPortfolioId> ownedPortfolioIds, @Nullable OwnedPortfolioId typeQualifier)
+    @NonNull public Observable<PortfolioDTOList> getPortfolios(
+            @NonNull List<? extends OwnedPortfolioId> ownedPortfolioIds, @SuppressWarnings(
+            "UnusedParameters") @Nullable OwnedPortfolioId typeQualifier)
     {
         return Observable.from(ownedPortfolioIds)
                 .flatMap(id -> get(id).take(1))

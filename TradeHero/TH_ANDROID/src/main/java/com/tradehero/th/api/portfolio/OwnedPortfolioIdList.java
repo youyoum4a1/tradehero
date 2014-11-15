@@ -18,7 +18,16 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
         super(ownedPortfolioIds);
     }
 
-
+    public OwnedPortfolioIdList(
+            @NonNull Collection<? extends PortfolioCompactDTO> portfolioCompactDTOs,
+            @SuppressWarnings("UnusedParameters") @NonNull PortfolioCompactDTO typeQualifier)
+    {
+        super();
+        for (PortfolioCompactDTO compactDTO : portfolioCompactDTOs)
+        {
+            add(compactDTO.getOwnedPortfolioId());
+        }
+    }
     //</editor-fold>
 
     public PortfolioIdList getPortfolioIds()
