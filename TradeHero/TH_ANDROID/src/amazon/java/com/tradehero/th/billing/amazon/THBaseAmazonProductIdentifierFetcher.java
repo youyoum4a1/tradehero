@@ -38,9 +38,9 @@ public class THBaseAmazonProductIdentifierFetcher
         list.add(new AmazonSKU(THAmazonConstants.CREDIT_10));
         list.add(new AmazonSKU(THAmazonConstants.CREDIT_20));
         list.add(new AmazonSKU(THAmazonConstants.RESET_PORTFOLIO_0));
-        list.add(new AmazonSKU(THAmazonConstants.ALERT_1));
-        list.add(new AmazonSKU(THAmazonConstants.ALERT_5));
-        list.add(new AmazonSKU(THAmazonConstants.ALERT_UNLIMITED));
+        //list.add(new AmazonSKU(THAmazonConstants.ALERT_1));
+        //list.add(new AmazonSKU(THAmazonConstants.ALERT_5));
+        //list.add(new AmazonSKU(THAmazonConstants.ALERT_UNLIMITED));
         return list;
     }
 
@@ -60,9 +60,9 @@ public class THBaseAmazonProductIdentifierFetcher
             case ENTITLED:
                 break;
             case SUBSCRIPTION:
-                list.add(createAmazonSku(THAmazonConstants.ALERT_1));
-                list.add(createAmazonSku(THAmazonConstants.ALERT_5));
-                list.add(createAmazonSku(THAmazonConstants.ALERT_UNLIMITED));
+                //list.add(createAmazonSku(THAmazonConstants.ALERT_1));
+                //list.add(createAmazonSku(THAmazonConstants.ALERT_5));
+                //list.add(createAmazonSku(THAmazonConstants.ALERT_UNLIMITED));
                 break;
         }
     }
