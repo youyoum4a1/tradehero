@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.amazon;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.amazon.device.iap.PurchasingListener;
@@ -9,31 +8,25 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
+import com.tradehero.common.billing.BaseRequestCodeActor;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 
-abstract public class BaseAmazonActor implements PurchasingListener, AmazonActor
+abstract public class BaseAmazonActor
+        extends BaseRequestCodeActor
+        implements PurchasingListener, AmazonActor
 {
-    @NonNull protected final Context appContext;
     @NonNull protected final AmazonPurchasingService purchasingService;
-    private final int activityRequestCode;
     @Nullable private RequestId currentRequestId;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonActor(
             int activityRequestCode,
-            @NonNull Context appContext,
             @NonNull AmazonPurchasingService purchasingService)
     {
-        super();
-        this.activityRequestCode = activityRequestCode;
-        this.appContext = appContext;
+        super(activityRequestCode);
         this.purchasingService = purchasingService;
     }
     //</editor-fold>
-
-    @Override public int getRequestCode()
-    {
-        return activityRequestCode;
-    }
 
     @Override public void onDestroy()
     {

@@ -65,7 +65,7 @@ abstract public class BaseAmazonPurchaseFetcherHolder<
         AmazonPurchaseFetcherType purchaseFetcher = amazonPurchaseFetcherTypeProvider.get();
         purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);
-        purchaseFetcher.fetchPurchases(requestCode);
+        purchaseFetcher.fetchPurchases();
     }
 
     @Override public void onDestroy()

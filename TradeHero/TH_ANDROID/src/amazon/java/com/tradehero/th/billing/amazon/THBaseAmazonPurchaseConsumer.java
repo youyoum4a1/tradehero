@@ -1,11 +1,10 @@
 package com.tradehero.th.billing.amazon;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonPurchaseCacheRx;
-import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumer;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import javax.inject.Inject;
@@ -22,12 +21,12 @@ public class THBaseAmazonPurchaseConsumer
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseConsumer(
-            @NonNull Context appContext,
+            int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
             @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache)
     {
-        super(appContext, purchasingService);
+        super(request, purchasingService);
         this.thAmazonExceptionFactory = amazonExceptionFactory;
         this.thAmazonPurchaseCache = thAmazonPurchaseCache;
     }

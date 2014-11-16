@@ -1,9 +1,9 @@
 package com.tradehero.common.billing.amazon;
 
-import android.content.Context;
-import com.tradehero.common.billing.amazon.exception.AmazonException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 
 abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType extends AmazonException>
     extends BaseAmazonActor
@@ -13,10 +13,10 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
 
     //<editor-fold desc="Constructors">
     public BaseAmazonBillingAvailableTester(
-            @NonNull Context appContext,
+            int request,
             @NonNull AmazonPurchasingService purchasingService)
     {
-        super(appContext, purchasingService);
+        super(request, purchasingService);
     }
     //</editor-fold>
 
@@ -37,9 +37,8 @@ abstract public class BaseAmazonBillingAvailableTester<AmazonExceptionType exten
     }
 
     // TODO confirm this is the right way to test
-    @Override public void testBillingAvailable(int requestCode)
+    @Override public void testBillingAvailable()
     {
-        setRequestCode(requestCode);
         notifyBillingAvailable();
     }
 

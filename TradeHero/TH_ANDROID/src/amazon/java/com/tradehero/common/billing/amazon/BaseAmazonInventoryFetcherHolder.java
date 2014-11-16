@@ -48,7 +48,7 @@ abstract public class BaseAmazonInventoryFetcherHolder<
         inventoryFetcher.setInventoryFetchedListener(skuFetchedListener);
         inventoryFetcher.setProductIdentifiers(allIds);
         inventoryFetchers.put(requestCode, inventoryFetcher);
-        inventoryFetcher.fetchInventory(requestCode);
+        inventoryFetcher.fetchInventory();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)

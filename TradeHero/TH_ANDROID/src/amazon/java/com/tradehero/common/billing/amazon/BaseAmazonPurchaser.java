@@ -1,10 +1,10 @@
 package com.tradehero.common.billing.amazon;
 
-import android.content.Context;
-import com.amazon.device.iap.model.PurchaseResponse;
-import com.tradehero.common.billing.amazon.exception.AmazonException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.amazon.device.iap.model.PurchaseResponse;
+import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import timber.log.Timber;
 
 abstract public class BaseAmazonPurchaser<
@@ -26,10 +26,10 @@ abstract public class BaseAmazonPurchaser<
 
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaser(
-            @NonNull Context context,
+            int request,
             @NonNull AmazonPurchasingService purchasingService)
     {
-        super(context, purchasingService);
+        super(request, purchasingService);
     }
     //</editor-fold>
 
@@ -49,9 +49,8 @@ abstract public class BaseAmazonPurchaser<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    @Override public void purchase(int requestCode, @NonNull AmazonPurchaseOrderType purchaseOrder)
+    @Override public void purchase(@NonNull AmazonPurchaseOrderType purchaseOrder)
     {
-        setRequestCode(requestCode);
         this.purchaseOrder = purchaseOrder;
         purchasingService.purchase(purchaseOrder.sku.skuId, this);
     }

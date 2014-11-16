@@ -1,11 +1,11 @@
 package com.tradehero.common.billing.amazon;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.ProductType;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 
 abstract public class BaseAmazonPurchaseConsumer<
             AmazonSKUType extends AmazonSKU,
@@ -18,24 +18,18 @@ abstract public class BaseAmazonPurchaseConsumer<
         AmazonPurchaseType,
         AmazonException>
 {
-    private int requestCode;
     private boolean consuming = false;
     protected AmazonPurchaseType purchase;
     @Nullable private OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaseConsumer(
-            @NonNull Context appContext,
+            int request,
             @NonNull AmazonPurchasingService purchasingService)
     {
-        super(appContext, purchasingService);
+        super(request, purchasingService);
     }
     //</editor-fold>
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
-    }
 
     @Override public void onDestroy()
     {
@@ -68,10 +62,9 @@ abstract public class BaseAmazonPurchaseConsumer<
         this.consumptionFinishedListener = consumptionFinishedListener;
     }
 
-    @Override public void consume(int requestCode, AmazonPurchaseType purchase)
+    @Override public void consume(AmazonPurchaseType purchase)
     {
         checkNotConsuming();
-        this.requestCode = requestCode;
 
         if (purchase == null)
         {
@@ -109,7 +102,7 @@ abstract public class BaseAmazonPurchaseConsumer<
         OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException> listener = getConsumptionFinishedListener();
         if (listener != null)
         {
-            listener.onPurchaseConsumed(requestCode, purchase);
+            listener.onPurchaseConsumed(getRequestCode(), purchase);
         }
     }
 

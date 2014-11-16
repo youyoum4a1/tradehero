@@ -12,7 +12,7 @@ public interface AmazonPurchaseConsumer<
     OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> getConsumptionFinishedListener();
     void setConsumptionFinishedListener(
             OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> consumptionListener);
-    void consume(int requestCode, AmazonPurchaseType purchase);
+    void consume(AmazonPurchaseType purchase);
 
     public static interface OnAmazonConsumptionFinishedListener<
             AmazonSKUType extends AmazonSKU,

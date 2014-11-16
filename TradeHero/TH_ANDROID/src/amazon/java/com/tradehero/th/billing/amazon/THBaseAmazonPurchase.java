@@ -19,7 +19,7 @@ public class THBaseAmazonPurchase
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    protected THBaseAmazonPurchase(
+    public THBaseAmazonPurchase(
             @NonNull PurchaseResponse purchaseResponse,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {

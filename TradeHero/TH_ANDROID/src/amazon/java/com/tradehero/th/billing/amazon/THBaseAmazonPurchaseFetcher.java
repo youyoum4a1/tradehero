@@ -1,13 +1,14 @@
 package com.tradehero.th.billing.amazon;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
-import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
@@ -16,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class THBaseAmazonPurchaseFetcher
@@ -35,12 +34,12 @@ public class THBaseAmazonPurchaseFetcher
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaseFetcher(
-            @NonNull Context context,
+            int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
             @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
-        super(context, purchasingService);
+        super(request, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;
         this.processingPurchaseStringSet = processingPurchaseStringSet;
         savedPurchasesInProcess = new ArrayList<>();

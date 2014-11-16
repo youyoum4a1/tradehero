@@ -1,15 +1,14 @@
 package com.tradehero.th.billing.amazon;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.ProductType;
-import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.amazon.BaseAmazonProductIdentifierFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class THBaseAmazonProductIdentifierFetcher
     extends BaseAmazonProductIdentifierFetcher<
@@ -21,10 +20,10 @@ public class THBaseAmazonProductIdentifierFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonProductIdentifierFetcher(
-            @NonNull Context context,
+            int requestCode,
             @NonNull AmazonPurchasingService purchasingService)
     {
-        super(context, purchasingService);
+        super(requestCode, purchasingService);
     }
     //</editor-fold>
 

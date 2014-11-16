@@ -68,7 +68,7 @@ abstract public class BaseAmazonPurchaserHolder<
         AmazonPurchaserType iabPurchaser = amazonPurchaserTypeProvider.get();
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         purchasers.put(requestCode, iabPurchaser);
-        iabPurchaser.purchase(requestCode, purchaseOrder);
+        iabPurchaser.purchase(purchaseOrder);
     }
 
     @Override public void onDestroy()

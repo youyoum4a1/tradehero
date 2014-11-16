@@ -1,37 +1,33 @@
 package com.tradehero.th.billing.amazon.identifier;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.ProductType;
-import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
-import com.tradehero.common.billing.amazon.BaseAmazonProductIdentifierFetcher;
-import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.common.billing.amazon.identifier.BaseAmazonProductIdentifierFetcherRx;
 import com.tradehero.th.billing.amazon.THAmazonConstants;
-import com.tradehero.th.billing.amazon.THAmazonProductIdentifierFetcher;
 import javax.inject.Inject;
 
 public class THBaseAmazonProductIdentifierFetcherRx
     extends BaseAmazonProductIdentifierFetcherRx<
                 AmazonSKUListKey,
                     AmazonSKU,
-                AmazonSKUList,
-                AmazonException>
+                AmazonSKUList>
     implements THAmazonProductIdentifierFetcherRx
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonProductIdentifierFetcherRx(
-            @NonNull Context context,
-            @NonNull AmazonPurchasingService purchasingService)
+    @Inject public THBaseAmazonProductIdentifierFetcherRx(int requestCode)
     {
-        super(context, purchasingService);
+        super(requestCode);
     }
     //</editor-fold>
 
-    public static AmazonSKUList getAllSkus()
+    @Override public void onDestroy()
+    {
+    }
+
+    @NonNull public static AmazonSKUList getAllSkus()
     {
         AmazonSKUList list = new AmazonSKUList();
         list.add(new AmazonSKU(THAmazonConstants.EXTRA_CASH_T0_KEY));
@@ -47,7 +43,7 @@ public class THBaseAmazonProductIdentifierFetcherRx
         return list;
     }
 
-    @Override protected void populate(AmazonSKUList list, ProductType productType)
+    @Override protected void populate(@NonNull AmazonSKUList list, @NonNull ProductType productType)
     {
         switch (productType)
         {
@@ -70,17 +66,17 @@ public class THBaseAmazonProductIdentifierFetcherRx
         }
     }
 
-    @Override protected AmazonSKUListKey createAmazonListKey(ProductType productType)
+    @Override @NonNull protected AmazonSKUListKey createAmazonListKey(@NonNull ProductType productType)
     {
         return new AmazonSKUListKey(productType);
     }
 
-    protected AmazonSKU createAmazonSku(String skuId)
+    @NonNull protected AmazonSKU createAmazonSku(@NonNull String skuId)
     {
         return new AmazonSKU(skuId);
     }
 
-    @Override protected AmazonSKUList createAmazonSKUList()
+    @Override @NonNull protected AmazonSKUList createAmazonSKUList()
     {
         return new AmazonSKUList();
     }

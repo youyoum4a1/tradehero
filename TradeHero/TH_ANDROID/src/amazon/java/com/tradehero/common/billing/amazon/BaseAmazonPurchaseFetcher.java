@@ -1,15 +1,14 @@
 package com.tradehero.common.billing.amazon;
 
-import android.content.Context;
-import com.amazon.device.iap.PurchasingService;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseAmazonPurchaseFetcher<
@@ -33,10 +32,10 @@ abstract public class BaseAmazonPurchaseFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaseFetcher(
-            @NonNull Context context,
+            int request,
             @NonNull AmazonPurchasingService purchasingService)
     {
-        super(context, purchasingService);
+        super(request, purchasingService);
         fetchedIncompletePurchases = new ArrayList<>();
         fetchedCanceledPurchases = new ArrayList<>();
         purchases = new ArrayList<>();
@@ -49,11 +48,10 @@ abstract public class BaseAmazonPurchaseFetcher<
         super.onDestroy();
     }
 
-    @Override public void fetchPurchases(int requestCode)
+    @Override public void fetchPurchases()
     {
         checkNotFetching();
         this.fetching = true;
-        setRequestCode(requestCode);
         purchasingService.getPurchaseUpdates(true, this);
     }
 

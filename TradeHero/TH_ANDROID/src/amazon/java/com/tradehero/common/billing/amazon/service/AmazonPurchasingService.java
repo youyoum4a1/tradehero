@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.amazon;
+package com.tradehero.common.billing.amazon.service;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
+import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcher;
 import com.tradehero.th.billing.amazon.AmazonAlertDialogUtil;
 import java.util.ArrayList;
 import java.util.HashSet;

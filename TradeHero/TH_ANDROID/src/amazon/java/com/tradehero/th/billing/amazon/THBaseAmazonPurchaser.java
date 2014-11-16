@@ -1,22 +1,20 @@
 package com.tradehero.th.billing.amazon;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.PurchaseResponse;
-import com.tradehero.common.billing.amazon.AmazonPurchasingService;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaser;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseCanceledException;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
-import android.support.annotation.NonNull;
-import timber.log.Timber;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import timber.log.Timber;
 
 public class THBaseAmazonPurchaser
     extends BaseAmazonPurchaser<
@@ -32,12 +30,12 @@ public class THBaseAmazonPurchaser
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonPurchaser(
-            @NonNull Context context,
+            int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
             @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
     {
-        super(context, purchasingService);
+        super(request, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;
         this.processingPurchaseStringSet = processingPurchaseStringSet;
     }

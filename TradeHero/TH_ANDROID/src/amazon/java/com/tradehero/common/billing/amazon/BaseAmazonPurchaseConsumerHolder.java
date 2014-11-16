@@ -84,7 +84,7 @@ public class BaseAmazonPurchaseConsumerHolder<
         AmazonPurchaseConsumerType iabPurchaseConsumer = purchaseConsumerTypeProvider.get();
         iabPurchaseConsumer.setConsumptionFinishedListener(consumeListener);
         amazonPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
-        iabPurchaseConsumer.consume(requestCode, purchase);
+        iabPurchaseConsumer.consume(purchase);
     }
 
     @NonNull protected AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException>

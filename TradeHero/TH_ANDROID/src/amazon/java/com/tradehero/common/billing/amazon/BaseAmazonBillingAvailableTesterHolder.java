@@ -1,12 +1,12 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonBillingAvailableTesterHolder<
         AmazonBillingAvailableTesterType extends AmazonBillingAvailableTester<AmazonExceptionType>,
@@ -33,7 +33,7 @@ abstract public class BaseAmazonBillingAvailableTesterHolder<
         AmazonBillingAvailableTesterType tester = amazonBillingAvailableTesterTypeProvider.get();
         tester.setBillingAvailableListener(skuFetchedListener);
         testers.put(requestCode, tester);
-        tester.testBillingAvailable(requestCode);
+        tester.testBillingAvailable();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)

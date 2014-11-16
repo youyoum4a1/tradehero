@@ -1,6 +1,5 @@
 package com.tradehero.common.billing.amazon.identifier;
 
-import com.amazon.device.iap.PurchasingListener;
 import com.tradehero.common.billing.amazon.AmazonActor;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
@@ -15,6 +14,6 @@ public interface AmazonProductIdentifierFetcherRx<
             AmazonSKUListKeyType,
             AmazonSKUType,
             AmazonSKUListType>,
-        AmazonActor, PurchasingListener
+        AmazonActor
 {
 }
