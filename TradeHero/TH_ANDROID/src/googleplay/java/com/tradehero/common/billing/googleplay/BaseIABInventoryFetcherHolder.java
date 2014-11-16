@@ -59,7 +59,7 @@ abstract public class BaseIABInventoryFetcherHolder<
         BillingInventoryFetcher.OnInventoryFetchedListener<IABSKUType, IABProductDetailType, IABException>
                 fetchedListener = createInventoryFetchedListener();
 
-        IABInventoryFetcherType inventoryFetcher = createInventoryFetcher();
+        IABInventoryFetcherType inventoryFetcher = createInventoryFetcher(requestCode);
         iabInventoryFetchers.put(requestCode, inventoryFetcher);
         inventoryFetcher.setProductIdentifiers(allSkus);
         inventoryFetcher.setInventoryFetchedListener(fetchedListener);
@@ -80,5 +80,5 @@ abstract public class BaseIABInventoryFetcherHolder<
         super.onDestroy();
     }
 
-    abstract protected IABInventoryFetcherType createInventoryFetcher();
+    abstract protected IABInventoryFetcherType createInventoryFetcher(int requestCode);
 }

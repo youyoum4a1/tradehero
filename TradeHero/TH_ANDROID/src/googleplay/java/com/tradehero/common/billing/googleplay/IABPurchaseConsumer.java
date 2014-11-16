@@ -12,7 +12,7 @@ public interface IABPurchaseConsumer<
 {
     OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> getConsumptionFinishedListener();
     void setConsumptionFinishedListener(OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABExceptionType> consumptionListener);
-    void consume(int requestCode, IABPurchaseType purchase);
+    void consume(IABPurchaseType purchase);
 
     public static interface OnIABConsumptionFinishedListener<
             IABSKUType extends IABSKU,

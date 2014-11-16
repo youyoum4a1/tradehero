@@ -1,9 +1,7 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.exception.BillingException;
-
 import android.support.annotation.Nullable;
-
+import com.tradehero.common.billing.exception.BillingException;
 import java.util.Map;
 
 abstract public class BaseProductIdentifierFetcher<
@@ -17,20 +15,16 @@ abstract public class BaseProductIdentifierFetcher<
         ProductIdentifierListType,
         BillingExceptionType>
 {
-    protected int requestCode;
+    protected final int requestCode;
     @Nullable protected ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> productIdentifierFetchedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseProductIdentifierFetcher()
+    public BaseProductIdentifierFetcher(int requestCode)
     {
         super();
-    }
-    //</editor-fold>
-
-    @Override public void fetchProductIdentifiers(int requestCode)
-    {
         this.requestCode = requestCode;
     }
+    //</editor-fold>
 
     @Override public int getRequestCode()
     {

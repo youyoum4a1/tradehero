@@ -66,7 +66,7 @@ abstract public class BaseIABPurchaserHolder<
     {
         BillingPurchaser.OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseListener =
                 createPurchaseFinishedListener();
-        IABPurchaserType iabPurchaser = createPurchaser();
+        IABPurchaserType iabPurchaser = createPurchaser(requestCode);
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         iabPurchasers.put(requestCode, iabPurchaser);
         iabPurchaser.purchase(purchaseOrder);
@@ -99,5 +99,5 @@ abstract public class BaseIABPurchaserHolder<
         super.onDestroy();
     }
 
-    abstract protected IABPurchaserType createPurchaser();
+    abstract protected IABPurchaserType createPurchaser(int requestCode);
 }

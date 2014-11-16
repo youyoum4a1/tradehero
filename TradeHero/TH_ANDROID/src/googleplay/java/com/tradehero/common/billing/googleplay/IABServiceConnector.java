@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
 import com.android.vending.billing.IInAppBillingService;
+import com.tradehero.common.billing.RequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
@@ -17,7 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import timber.log.Timber;
 
-public class IABServiceConnector implements ServiceConnection, IABServiceListenerHolder
+public class IABServiceConnector implements ServiceConnection, IABServiceListenerHolder, RequestCodeActor
 {
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
@@ -28,6 +29,7 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
 
     @Nullable protected IInAppBillingService billingService;
 
+    protected final int requestCode;
     private boolean subscriptionSupported;
     private boolean setupDone = false;
     boolean disposed = false;
@@ -36,13 +38,20 @@ public class IABServiceConnector implements ServiceConnection, IABServiceListene
 
     //<editor-fold desc="Constructors">
     @Inject public IABServiceConnector(
+            int request,
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
+        this.requestCode = request;
         this.context = context;
         this.iabExceptionFactory = iabExceptionFactory;
     }
     //</editor-fold>
+
+    @Override public int getRequestCode()
+    {
+        return requestCode;
+    }
 
     public void startConnectionSetup()
     {

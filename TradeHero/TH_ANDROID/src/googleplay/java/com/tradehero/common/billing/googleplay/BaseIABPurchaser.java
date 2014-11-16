@@ -37,15 +37,15 @@ abstract public class BaseIABPurchaser<
 {
     private boolean purchasing = false;
     private IABPurchaseOrderType purchaseOrder;
-    private int activityRequestCode;
     @Nullable private OnPurchaseFinishedListener<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType, IABExceptionType> purchaseFinishedListener;
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaser(
+            int requestCode,
             @NonNull Activity activity,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(activity, iabExceptionFactory);
+        super(requestCode, activity, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -57,11 +57,6 @@ abstract public class BaseIABPurchaser<
 
     abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;
     abstract protected IABProductDetailType getProductDetails(IABSKUType iabskuType);
-
-    @Override public int getRequestCode()
-    {
-        return activityRequestCode;
-    }
 
     public boolean isPurchasing()
     {
@@ -123,7 +118,7 @@ abstract public class BaseIABPurchaser<
         OnPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
         {
-            listener.onPurchaseFailed(activityRequestCode, purchaseOrder, exception);
+            listener.onPurchaseFailed(getRequestCode(), purchaseOrder, exception);
         }
     }
 
@@ -144,7 +139,7 @@ abstract public class BaseIABPurchaser<
         OnPurchaseFinishedListener listener = getPurchaseFinishedListener();
         if (listener != null)
         {
-            listener.onPurchaseFinished(activityRequestCode, purchaseOrder, purchase);
+            listener.onPurchaseFinished(getRequestCode(), purchaseOrder, purchase);
         }
     }
 
@@ -165,9 +160,9 @@ abstract public class BaseIABPurchaser<
                 Timber.d("BuyIntentBundle " + buyIntentBundle);
 
                 PendingIntent pendingIntent = buyIntentBundle.getParcelable(IABConstants.RESPONSE_BUY_INTENT);
-                Timber.d("Launching buy intent for %s. Request code: %d", getProductDetails(purchaseOrder.getProductIdentifier()), activityRequestCode);
+                Timber.d("Launching buy intent for %s. Request code: %d", getProductDetails(purchaseOrder.getProductIdentifier()), getRequestCode());
                 ((Activity) context).startIntentSenderForResult(pendingIntent.getIntentSender(),
-                        activityRequestCode, new Intent(), 0, 0, 0);
+                        getRequestCode(), new Intent(), 0, 0, 0);
             }
             catch (IntentSender.SendIntentException e)
             {
@@ -224,7 +219,7 @@ abstract public class BaseIABPurchaser<
     @Override public boolean handleActivityResult(int requestCode, int resultCode, Intent data)
     {
         Timber.d("handleActivityResult requestCode: %d, resultCode: %d", requestCode, resultCode);
-        if (requestCode != activityRequestCode)
+        if (requestCode != getRequestCode())
         {
             Timber.w("handleActivityResult. This requestcode was not for me");
             return false;

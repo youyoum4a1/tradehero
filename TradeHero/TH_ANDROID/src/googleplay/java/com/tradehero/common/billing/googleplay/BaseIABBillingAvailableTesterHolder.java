@@ -6,22 +6,18 @@ import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
 
-public class BaseIABBillingAvailableTesterHolder<
-        IABBillingAvailableTesterType extends  IABBillingAvailableTester<IABExceptionType>,
+abstract public class BaseIABBillingAvailableTesterHolder<
+        IABBillingAvailableTesterType extends IABBillingAvailableTester<IABExceptionType>,
         IABExceptionType extends IABException>
-    extends BaseBillingAvailableTesterHolder<IABExceptionType>
+        extends BaseBillingAvailableTesterHolder<IABExceptionType>
 {
-    @NonNull protected final Provider<IABBillingAvailableTesterType> iabBillingAvailableTesterProvider;
     @NonNull protected final Map<Integer /*requestCode*/, IABBillingAvailableTesterType> billingAvailableTesters;
 
     //<editor-fold desc="Constructors">
-    public BaseIABBillingAvailableTesterHolder(
-            @NonNull Provider<IABBillingAvailableTesterType> iabBillingAvailableTesterProvider)
+    public BaseIABBillingAvailableTesterHolder()
     {
         super();
-        this.iabBillingAvailableTesterProvider = iabBillingAvailableTesterProvider;
         billingAvailableTesters = new HashMap<>();
     }
     //</editor-fold>
@@ -47,15 +43,17 @@ public class BaseIABBillingAvailableTesterHolder<
     @Override public void launchBillingAvailableTestSequence(int requestCode)
     {
         BillingAvailableTester.OnBillingAvailableListener<IABExceptionType> billingAvailableListener = createBillingAvailableListener();
-        IABBillingAvailableTesterType billingAvailableTester = iabBillingAvailableTesterProvider.get();
+        IABBillingAvailableTesterType billingAvailableTester = createBillingAvailableTester(requestCode);
         billingAvailableTester.setBillingAvailableListener(billingAvailableListener);
         billingAvailableTesters.put(requestCode, billingAvailableTester);
         billingAvailableTester.testBillingAvailable();
     }
 
+    @NonNull abstract protected IABBillingAvailableTesterType createBillingAvailableTester(int requestCode);
+
     @Override public void onDestroy()
     {
-        for (IABBillingAvailableTester billingAvailableTester: billingAvailableTesters.values())
+        for (IABBillingAvailableTester billingAvailableTester : billingAvailableTesters.values())
         {
             if (billingAvailableTester != null)
             {

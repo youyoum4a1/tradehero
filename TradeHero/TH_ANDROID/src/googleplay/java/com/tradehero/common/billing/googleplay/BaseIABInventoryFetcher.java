@@ -32,16 +32,16 @@ abstract public class BaseIABInventoryFetcher<
 {
     protected HashMap<IABSKUType, IABProductDetailsType> inventory;
     private List<IABSKUType> iabSKUs;
-    private int requestCode;
 
     @Nullable private OnInventoryFetchedListener<IABSKUType, IABProductDetailsType, IABException> inventoryListener;
 
     //<editor-fold desc="Constructors">
     public BaseIABInventoryFetcher(
+            int requestCode,
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory);
         this.inventory = new HashMap<>();
     }
     //</editor-fold>
@@ -60,11 +60,6 @@ abstract public class BaseIABInventoryFetcher<
     @Override public void setProductIdentifiers(List<IABSKUType> productIdentifiers)
     {
         this.iabSKUs = productIdentifiers;
-    }
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
     }
 
     abstract protected IABProductDetailsType createSKUDetails(IABSKUListKey itemType, String json) throws JSONException;

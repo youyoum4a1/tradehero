@@ -13,7 +13,7 @@ public interface ProductIdentifierFetcher<
 {
     ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> getProductIdentifierListener();
     void setProductIdentifierListener(ProductIdentifierFetcher.OnProductIdentifierFetchedListener<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, BillingExceptionType> listener);
-    void fetchProductIdentifiers(int requestCode);
+    void fetchProductIdentifiers();
 
     public static interface OnProductIdentifierFetchedListener<
             ProductIdentifierListKeyType extends ProductIdentifierListKey,

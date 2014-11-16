@@ -12,7 +12,6 @@ abstract public class BaseBillingInventoryFetcher<
         implements BillingInventoryFetcher<ProductIdentifierType, ProductDetailsType, BillingExceptionType>
 {
     private List<ProductIdentifierType> productIdentifiers;
-    private int requestCode;
 
     private OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, BillingExceptionType> inventoryListener;
 
@@ -36,7 +35,7 @@ abstract public class BaseBillingInventoryFetcher<
         OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, BillingExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
+            listenerCopy.onInventoryFetchSuccess(getRequestCode(), productIdentifiers, inventory);
         }
     }
 
@@ -45,7 +44,7 @@ abstract public class BaseBillingInventoryFetcher<
         OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, BillingExceptionType> listenerCopy = getInventoryFetchedListener();
         if (listenerCopy != null)
         {
-            listenerCopy.onInventoryFetchFail(requestCode, productIdentifiers, billingException);
+            listenerCopy.onInventoryFetchFail(getRequestCode(), productIdentifiers, billingException);
         }
     }
 

@@ -82,10 +82,10 @@ abstract public class BaseIABPurchaseConsumerHolder<
     @Override public void launchConsumeSequence(int requestCode, IABPurchaseType purchase)
     {
         IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumeListener = createConsumptionFinishedListener();
-        IABPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer();
+        IABPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer(requestCode);
         iabPurchaseConsumer.setConsumptionFinishedListener(consumeListener);
         iabPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
-        iabPurchaseConsumer.consume(requestCode, purchase);
+        iabPurchaseConsumer.consume(purchase);
     }
 
     @NonNull protected IABPurchaseConsumer.OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException>
@@ -156,5 +156,5 @@ abstract public class BaseIABPurchaseConsumerHolder<
         parentConsumeFinishedHandlers.clear();
     }
 
-    abstract protected IABPurchaseConsumerType createPurchaseConsumer();
+    abstract protected IABPurchaseConsumerType createPurchaseConsumer(int requestCode);
 }

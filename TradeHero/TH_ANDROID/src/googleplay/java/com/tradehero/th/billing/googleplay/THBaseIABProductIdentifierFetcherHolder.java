@@ -20,20 +20,15 @@ public class THBaseIABProductIdentifierFetcherHolder
         IABException>
     implements THIABProductIdentifierFetcherHolder
 {
-    @NonNull protected final Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider;
-
     //<editor-fold desc="Constructors">
-    @Inject public THBaseIABProductIdentifierFetcherHolder(
-            @NonNull Provider<THIABProductIdentifierFetcher> thiabProductIdentifierFetcherProvider
-    )
+    @Inject public THBaseIABProductIdentifierFetcherHolder()
     {
         super();
-        this.thiabProductIdentifierFetcherProvider = thiabProductIdentifierFetcherProvider;
     }
     //</editor-fold>
 
-    @Override protected THIABProductIdentifierFetcher createProductIdentifierFetcher()
+    @Override protected THIABProductIdentifierFetcher createProductIdentifierFetcher(int requestCode)
     {
-        return thiabProductIdentifierFetcherProvider.get();
+        return new THBaseIABProductIdentifierFetcher(requestCode);
     }
 }

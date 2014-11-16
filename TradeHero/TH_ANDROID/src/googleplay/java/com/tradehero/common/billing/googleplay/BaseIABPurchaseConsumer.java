@@ -24,24 +24,19 @@ abstract public class BaseIABPurchaseConsumer<
         IABPurchaseType,
         IABException>
 {
-    private int requestCode;
     private boolean consuming = false;
     protected IABPurchaseType purchase;
     @Nullable private OnIABConsumptionFinishedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> consumptionFinishedListener;
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseConsumer(
+            int requestCode,
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory);
     }
     //</editor-fold>
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
-    }
 
     @Override public void onDestroy()
     {
@@ -74,10 +69,9 @@ abstract public class BaseIABPurchaseConsumer<
         this.consumptionFinishedListener = consumptionFinishedListener;
     }
 
-    @Override public void consume(int requestCode, IABPurchaseType purchase)
+    @Override public void consume(IABPurchaseType purchase)
     {
         checkNotConsuming();
-        this.requestCode = requestCode;
 
         if (purchase == null)
         {

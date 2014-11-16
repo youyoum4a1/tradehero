@@ -43,10 +43,10 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<IABSKUListKeyType, IABSKUType, IABSKUListType, IABExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
-        IABProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher();
+        IABProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher(requestCode);
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
-        skuFetcher.fetchProductIdentifiers(requestCode);
+        skuFetcher.fetchProductIdentifiers();
     }
 
     @Override public void onDestroy()
@@ -63,5 +63,5 @@ abstract public class BaseIABProductIdentifierFetcherHolder<
         super.onDestroy();
     }
 
-    abstract protected IABProductIdentifierFetcherType createProductIdentifierFetcher();
+    abstract protected IABProductIdentifierFetcherType createProductIdentifierFetcher(int requestCode);
 }

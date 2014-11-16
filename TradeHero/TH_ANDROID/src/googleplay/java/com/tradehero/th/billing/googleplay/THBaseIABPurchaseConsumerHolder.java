@@ -1,33 +1,41 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
-
-import android.support.annotation.NonNull;
-
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import dagger.Lazy;
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 public class THBaseIABPurchaseConsumerHolder
-    extends BaseIABPurchaseConsumerHolder<
+        extends BaseIABPurchaseConsumerHolder<
         IABSKU,
         THIABOrderId,
         THIABPurchase,
         THIABPurchaseConsumer>
-    implements THIABPurchaseConsumerHolder
+        implements THIABPurchaseConsumerHolder
 {
-    @NonNull protected final Provider<THIABPurchaseConsumer> thiabPurchaseConsumerProvider;
+    @NonNull protected final Context context;
+    @NonNull protected final Lazy<IABExceptionFactory> iabExceptionFactory;
+    @NonNull protected final THIABPurchaseCacheRx thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseIABPurchaseConsumerHolder(@NonNull Provider<THIABPurchaseConsumer> thiabPurchaseConsumerProvider)
+    @Inject public THBaseIABPurchaseConsumerHolder(
+            @NonNull Context context,
+            @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
+            @NonNull THIABPurchaseCacheRx thiabPurchaseCache)
     {
         super();
-        this.thiabPurchaseConsumerProvider = thiabPurchaseConsumerProvider;
+        this.context = context;
+        this.iabExceptionFactory = iabExceptionFactory;
+        this.thiabPurchaseCache = thiabPurchaseCache;
     }
     //</editor-fold>
 
-    @Override protected THIABPurchaseConsumer createPurchaseConsumer()
+    @Override protected THIABPurchaseConsumer createPurchaseConsumer(int requestCode)
     {
-        return thiabPurchaseConsumerProvider.get();
+        return new THBaseIABPurchaseConsumer(requestCode, context, iabExceptionFactory, thiabPurchaseCache);
     }
 }

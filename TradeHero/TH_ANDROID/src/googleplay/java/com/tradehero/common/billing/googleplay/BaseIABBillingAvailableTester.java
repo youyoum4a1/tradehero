@@ -12,16 +12,16 @@ public class BaseIABBillingAvailableTester
         extends IABServiceConnector
         implements IABBillingAvailableTester<IABException>
 {
-    protected int requestCode;
     protected boolean testing;
     @Nullable protected OnBillingAvailableListener<IABException> billingAvailableListener;
 
     //<editor-fold desc="Constructors">
     @Inject public BaseIABBillingAvailableTester(
+            int requestCode,
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory)
     {
-        super(context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory);
     }
     //</editor-fold>
 
@@ -29,11 +29,6 @@ public class BaseIABBillingAvailableTester
     {
         billingAvailableListener = null;
         super.onDestroy();
-    }
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
     }
 
     @Override @Nullable public OnBillingAvailableListener<IABException> getBillingAvailableListener()

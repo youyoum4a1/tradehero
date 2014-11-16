@@ -16,7 +16,7 @@ public interface THPurchaseReporter<
 {
     THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> getPurchaseReporterListener();
     void setPurchaseReporterListener(final THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> listener);
-    void reportPurchase(int requestCode, THProductPurchaseType purchase);
+    void reportPurchase(THProductPurchaseType purchase);
 
     public static interface OnPurchaseReportedListener<
             ProductIdentifierType extends ProductIdentifier,

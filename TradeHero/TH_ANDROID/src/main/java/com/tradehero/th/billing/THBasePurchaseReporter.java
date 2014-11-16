@@ -2,6 +2,7 @@ package com.tradehero.th.billing;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.exception.BillingException;
@@ -27,6 +28,7 @@ abstract public class THBasePurchaseReporter<
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>,
         BillingExceptionType extends BillingException>
+    extends BaseRequestCodeActor
         implements THPurchaseReporter<
         ProductIdentifierType,
         THOrderIdType,
@@ -44,13 +46,13 @@ abstract public class THBasePurchaseReporter<
                 THProductDetailType,
                 THProductDetailTunerType>> productDetailCache;
 
-    protected int requestCode;
     protected THProductPurchaseType purchase;
     protected THProductDetailType productDetail;
     @Nullable private THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> listener;
 
     //<editor-fold desc="Constructors">
     protected THBasePurchaseReporter(
+            int requestCode,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<? extends AlertPlanServiceWrapper> alertPlanServiceWrapper,
             @NonNull Lazy<? extends AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
@@ -62,7 +64,7 @@ abstract public class THBasePurchaseReporter<
                     THProductDetailType,
                     THProductDetailTunerType>> productDetailCache)
     {
-        super();
+        super(requestCode);
         this.currentUserId = currentUserId;
         this.alertPlanServiceWrapper = alertPlanServiceWrapper;
         this.alertPlanCheckServiceWrapper = alertPlanCheckServiceWrapper;
@@ -72,11 +74,6 @@ abstract public class THBasePurchaseReporter<
         this.productDetailCache = productDetailCache;
     }
     //</editor-fold>
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
-    }
 
     @Override @Nullable public THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> getPurchaseReporterListener()
     {
@@ -185,7 +182,7 @@ abstract public class THBasePurchaseReporter<
         THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> listener1 = getPurchaseReporterListener();
         if (listener1 != null)
         {
-            listener1.onPurchaseReported(requestCode, this.purchase, updatedUserPortfolio);
+            listener1.onPurchaseReported(getRequestCode(), this.purchase, updatedUserPortfolio);
         }
     }
 
@@ -194,7 +191,7 @@ abstract public class THBasePurchaseReporter<
         THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> listener1 = getPurchaseReporterListener();
         if (listener1 != null)
         {
-            listener1.onPurchaseReportFailed(requestCode, this.purchase, error);
+            listener1.onPurchaseReportFailed(getRequestCode(), this.purchase, error);
         }
     }
 

@@ -15,7 +15,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
-import javax.inject.Inject;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -30,7 +29,8 @@ public class THBaseIABPurchaseReporter
     implements THIABPurchaseReporter
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseIABPurchaseReporter(
+    public THBaseIABPurchaseReporter(
+            int requestCode,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
             @NonNull Lazy<AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
@@ -40,6 +40,7 @@ public class THBaseIABPurchaseReporter
             @NonNull Lazy<THIABProductDetailCacheRx> skuDetailCache)
     {
         super(
+                requestCode,
                 currentUserId,
                 alertPlanServiceWrapper,
                 alertPlanCheckServiceWrapper,
@@ -50,9 +51,8 @@ public class THBaseIABPurchaseReporter
     }
     //</editor-fold>
 
-    @Override public void reportPurchase(int requestCode, @NonNull THIABPurchase purchase)
+    @Override public void reportPurchase(@NonNull THIABPurchase purchase)
     {
-        this.requestCode = requestCode;
         this.purchase = purchase;
 
         // TODO do something when info is not available

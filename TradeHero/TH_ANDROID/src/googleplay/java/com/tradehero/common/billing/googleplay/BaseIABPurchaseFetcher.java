@@ -33,18 +33,18 @@ abstract public class BaseIABPurchaseFetcher<
 {
     @NonNull protected final IABPurchaseCacheRx<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache;
 
-    protected int requestCode;
     protected boolean fetching;
     protected List<IABPurchaseType> purchases;
     @Nullable protected OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> fetchListener;
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaseFetcher(
+            int requestCode,
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
             @NonNull IABPurchaseCacheRx<IABSKUType, IABOrderIdType, IABPurchaseType> purchaseCache)
     {
-        super(context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory);
         this.purchaseCache = purchaseCache;
         purchases = new ArrayList<>();
     }
@@ -54,11 +54,6 @@ abstract public class BaseIABPurchaseFetcher<
     {
         fetchListener = null;
         super.onDestroy();
-    }
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
     }
 
     @Override public void fetchPurchases()

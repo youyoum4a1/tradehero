@@ -1,18 +1,14 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-
-import android.support.annotation.NonNull;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 public class THBaseIABProductIdentifierFetcher
     extends BaseProductIdentifierFetcher<
@@ -25,9 +21,9 @@ public class THBaseIABProductIdentifierFetcher
     @NonNull protected final Map<IABSKUListKey, IABSKUList> availableProductIdentifiers;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseIABProductIdentifierFetcher()
+    public THBaseIABProductIdentifierFetcher(int requestCode)
     {
-        super();
+        super(requestCode);
         availableProductIdentifiers = new HashMap<>();
 
         // TODO hard-coded while there is nothing coming from the server.
@@ -52,9 +48,8 @@ public class THBaseIABProductIdentifierFetcher
     }
     //</editor-fold>
 
-    @Override public void fetchProductIdentifiers(int requestCode)
+    @Override public void fetchProductIdentifiers()
     {
-        super.fetchProductIdentifiers(requestCode);
         notifyListenerFetched(Collections.unmodifiableMap(availableProductIdentifiers));
     }
 }

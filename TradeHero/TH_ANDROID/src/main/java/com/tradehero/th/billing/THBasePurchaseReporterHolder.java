@@ -12,7 +12,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
 import timber.log.Timber;
 
 abstract public class THBasePurchaseReporterHolder<
@@ -34,7 +33,6 @@ abstract public class THBasePurchaseReporterHolder<
     @NonNull protected final Lazy<UserProfileCacheRx> userProfileCache;
     @NonNull protected final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
     @NonNull protected final Lazy<PortfolioCacheRx> portfolioCache;
-    @NonNull protected final Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider;
 
     @NonNull protected final Map<Integer /*requestCode*/, THPurchaseReporterType> purchaseReporters;
     @NonNull protected final Map<Integer /*requestCode*/, THPurchaseReporter.OnPurchaseReportedListener<
@@ -47,14 +45,12 @@ abstract public class THBasePurchaseReporterHolder<
     public THBasePurchaseReporterHolder(
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
-            @NonNull Provider<THPurchaseReporterType> thPurchaseReporterTypeProvider)
+            @NonNull Lazy<PortfolioCacheRx> portfolioCache)
     {
         super();
         this.userProfileCache = userProfileCache;
         this.portfolioCompactListCache = portfolioCompactListCache;
         this.portfolioCache = portfolioCache;
-        this.thPurchaseReporterTypeProvider = thPurchaseReporterTypeProvider;
         this.purchaseReporters = new HashMap<>();
         this.parentPurchaseReportedHandlers = new HashMap<>();
     }
@@ -100,11 +96,13 @@ abstract public class THBasePurchaseReporterHolder<
     @Override public void launchReportSequence(int requestCode, THProductPurchaseType purchase)
     {
         THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> reportedListener = createPurchaseReportedListener();
-        THPurchaseReporterType purchaseReporter = thPurchaseReporterTypeProvider.get();
+        THPurchaseReporterType purchaseReporter = createPurchaseReporter(requestCode);
         purchaseReporter.setPurchaseReporterListener(reportedListener);
         purchaseReporters.put(requestCode, purchaseReporter);
-        purchaseReporter.reportPurchase(requestCode, purchase);
+        purchaseReporter.reportPurchase(purchase);
     }
+
+    @NonNull abstract protected THPurchaseReporterType createPurchaseReporter(int requestCode);
 
     @NonNull protected THPurchaseReporter.OnPurchaseReportedListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType> createPurchaseReportedListener()
     {

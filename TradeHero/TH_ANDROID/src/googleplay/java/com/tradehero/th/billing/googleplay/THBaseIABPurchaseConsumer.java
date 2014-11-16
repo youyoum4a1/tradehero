@@ -8,7 +8,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import dagger.Lazy;
-import javax.inject.Inject;
 
 public class THBaseIABPurchaseConsumer
         extends BaseIABPurchaseConsumer<
@@ -20,12 +19,13 @@ public class THBaseIABPurchaseConsumer
     @NonNull protected final THIABPurchaseCacheRx thiabPurchaseCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseIABPurchaseConsumer(
+    public THBaseIABPurchaseConsumer(
+            int requestCode,
             @NonNull Context context,
             @NonNull Lazy<IABExceptionFactory> iabExceptionFactory,
             @NonNull THIABPurchaseCacheRx thiabPurchaseCache)
     {
-        super(context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory);
         this.thiabPurchaseCache = thiabPurchaseCache;
     }
     //</editor-fold>

@@ -58,7 +58,7 @@ abstract public class BaseIABPurchaseFetcherHolder<
     @Override public void launchFetchPurchaseSequence(int requestCode)
     {
         BillingPurchaseFetcher.OnPurchaseFetchedListener<IABSKUType, IABOrderIdType, IABPurchaseType, IABException> purchaseFetchedListener = createPurchaseFetchedListener();
-        IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher();
+        IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher(requestCode);
         purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);
         purchaseFetcher.fetchPurchases();
@@ -77,5 +77,5 @@ abstract public class BaseIABPurchaseFetcherHolder<
         super.onDestroy();
     }
 
-    abstract protected IABPurchaseFetcherType createPurchaseFetcher();
+    abstract protected IABPurchaseFetcherType createPurchaseFetcher(int requestCode);
 }
