@@ -1,10 +1,11 @@
 package com.tradehero.th.utils;
 
+import android.support.annotation.Nullable;
 import java.util.List;
 
 public class StringUtils
 {
-    public static String join(String glue, List elements)
+    public static String join(String glue, @Nullable List elements)
     {
         if (elements == null)
         {

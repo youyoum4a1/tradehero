@@ -15,7 +15,7 @@ public interface BillingInventoryFetcher<
     void setInventoryFetchedListener(OnInventoryFetchedListener<ProductIdentifierType, ProductDetailType, BillingExceptionType> onInventoryFetchedListener);
     List<ProductIdentifierType> getProductIdentifiers();
     void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers);
-    void fetchInventory(int requestCode);
+    void fetchInventory();
 
     public static interface OnInventoryFetchedListener<
             ProductIdentifierType extends ProductIdentifier,

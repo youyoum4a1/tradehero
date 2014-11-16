@@ -14,7 +14,7 @@ public interface BillingPurchaser<
 {
     OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> getPurchaseFinishedListener();
     void setPurchaseFinishedListener(OnPurchaseFinishedListener<ProductIdentifierType, PurchaseOrderType, OrderIdType, ProductPurchaseType, BillingExceptionType> purchaseFinishedListener);
-    void purchase(int requestCode, @NonNull PurchaseOrderType purchaseOrder);
+    void purchase(@NonNull PurchaseOrderType purchaseOrder);
 
     
     public static interface OnPurchaseFinishedListener<

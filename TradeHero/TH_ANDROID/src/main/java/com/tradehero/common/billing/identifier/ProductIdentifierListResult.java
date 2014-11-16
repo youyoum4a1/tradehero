@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.identifier;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BaseResult;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -11,11 +12,13 @@ public class ProductIdentifierListResult<
         ProductIdentifierListType extends BaseProductIdentifierList<ProductIdentifierType>>
     extends BaseResult
 {
-    public final ProductIdentifierListKeyType type;
-    public final ProductIdentifierListType productIdentifiers;
+    @NonNull public final ProductIdentifierListKeyType type;
+    @NonNull public final ProductIdentifierListType productIdentifiers;
 
     //<editor-fold desc="Constructors">
-    public ProductIdentifierListResult(int requestCode, ProductIdentifierListKeyType type, ProductIdentifierListType productIdentifiers)
+    public ProductIdentifierListResult(int requestCode,
+            @NonNull ProductIdentifierListKeyType type,
+            @NonNull ProductIdentifierListType productIdentifiers)
     {
         super(requestCode);
         this.type = type;

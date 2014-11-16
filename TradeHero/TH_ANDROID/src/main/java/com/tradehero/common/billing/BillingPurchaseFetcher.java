@@ -13,7 +13,7 @@ public interface BillingPurchaseFetcher<
 {
     OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> getFetchListener();
     void setPurchaseFetchedListener(OnPurchaseFetchedListener<ProductIdentifierType, OrderIdType, ProductPurchaseType, BillingExceptionType> fetchListener);
-    void fetchPurchases(int requestCode);
+    void fetchPurchases();
 
     public static interface OnPurchaseFetchedListener<
             ProductIdentifierType extends ProductIdentifier,

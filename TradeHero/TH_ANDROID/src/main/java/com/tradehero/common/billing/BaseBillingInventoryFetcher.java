@@ -8,6 +8,7 @@ abstract public class BaseBillingInventoryFetcher<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailsType extends ProductDetail<ProductIdentifierType>,
         BillingExceptionType extends BillingException>
+        extends BaseRequestCodeActor
         implements BillingInventoryFetcher<ProductIdentifierType, ProductDetailsType, BillingExceptionType>
 {
     private List<ProductIdentifierType> productIdentifiers;
@@ -15,9 +16,9 @@ abstract public class BaseBillingInventoryFetcher<
 
     private OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, BillingExceptionType> inventoryListener;
 
-    public BaseBillingInventoryFetcher()
+    public BaseBillingInventoryFetcher(int request)
     {
-        super();
+        super(request);
     }
 
     @Override public List<ProductIdentifierType> getProductIdentifiers()
@@ -28,16 +29,6 @@ abstract public class BaseBillingInventoryFetcher<
     @Override public void setProductIdentifiers(List<ProductIdentifierType> productIdentifiers)
     {
         this.productIdentifiers = productIdentifiers;
-    }
-
-    @Override public int getRequestCode()
-    {
-        return requestCode;
-    }
-
-    @Override public void fetchInventory(int requestCode)
-    {
-        this.requestCode = requestCode;
     }
 
     protected void notifyListenerFetched(Map<ProductIdentifierType, ProductDetailsType> inventory)
@@ -63,7 +54,8 @@ abstract public class BaseBillingInventoryFetcher<
         return inventoryListener;
     }
 
-    @Override public void setInventoryFetchedListener(OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, BillingExceptionType> onInventoryFetchedListener)
+    @Override public void setInventoryFetchedListener(
+            OnInventoryFetchedListener<ProductIdentifierType, ProductDetailsType, BillingExceptionType> onInventoryFetchedListener)
     {
         this.inventoryListener = onInventoryFetchedListener;
     }

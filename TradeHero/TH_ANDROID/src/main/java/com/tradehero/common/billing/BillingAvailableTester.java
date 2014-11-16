@@ -7,7 +7,7 @@ public interface BillingAvailableTester<BillingExceptionType extends BillingExce
 {
     OnBillingAvailableListener<BillingExceptionType> getBillingAvailableListener();
     void setBillingAvailableListener(OnBillingAvailableListener<BillingExceptionType> billingAvailableListener);
-    void testBillingAvailable(int requestCode);
+    void testBillingAvailable();
 
     public static interface OnBillingAvailableListener<BillingExceptionType extends BillingException>
     {
