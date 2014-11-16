@@ -16,7 +16,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import rx.Observable;
 
-abstract public class THBasePurchaseReporterRx<
+public class THBasePurchaseReporterRx<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
         THOrderIdType extends THOrderId,
@@ -126,8 +126,11 @@ abstract public class THBasePurchaseReporterRx<
         }
     }
 
-    @NonNull abstract protected PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> createResult(
-            @NonNull UserProfileDTO userProfileDTO);
+    @NonNull protected PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> createResult(
+            @NonNull UserProfileDTO userProfileDTO)
+    {
+        return new PurchaseReportResult<>(getRequestCode(), purchase, userProfileDTO);
+    }
 
     protected Observable<UserProfileDTO> seeIfPlanIsYours(@NonNull Throwable errorFromReport)
     {

@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseRequestCodeHolder;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.billing.THOrderId;
+import com.tradehero.th.billing.THProductDetail;
 import com.tradehero.th.billing.THProductPurchase;
 import rx.Observable;
 
 abstract public class THBasePurchaseReporterHolderRx<
         ProductIdentifierType extends ProductIdentifier,
+        THProductDetailType extends THProductDetail<ProductIdentifierType>,
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>>
         extends BaseRequestCodeHolder<THPurchaseReporterRx<
@@ -17,6 +19,7 @@ abstract public class THBasePurchaseReporterHolderRx<
         THProductPurchaseType>>
         implements THPurchaseReporterHolderRx<
         ProductIdentifierType,
+        THProductDetailType,
         THOrderIdType,
         THProductPurchaseType>
 {
@@ -29,7 +32,8 @@ abstract public class THBasePurchaseReporterHolderRx<
 
     @NonNull @Override public Observable<PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> get(
             int requestCode,
-            @NonNull THProductPurchaseType purchase)
+            @NonNull THProductPurchaseType purchase,
+            @NonNull THProductDetailType productDetail)
     {
         THPurchaseReporterRx<
                 ProductIdentifierType, THOrderIdType, THProductPurchaseType> reporter = actors.get(requestCode);
@@ -37,7 +41,7 @@ abstract public class THBasePurchaseReporterHolderRx<
         {
             try
             {
-                reporter = createReporter(requestCode, purchase);
+                reporter = createReporter(requestCode, purchase, productDetail);
             } catch (Exception e)
             {
                 return Observable.error(e);
@@ -49,5 +53,6 @@ abstract public class THBasePurchaseReporterHolderRx<
 
     @NonNull abstract protected THPurchaseReporterRx<ProductIdentifierType, THOrderIdType, THProductPurchaseType> createReporter(
             int requestCode,
-            @NonNull THProductPurchaseType purchase);
+            @NonNull THProductPurchaseType purchase,
+            @NonNull THProductDetailType productDetail);
 }
