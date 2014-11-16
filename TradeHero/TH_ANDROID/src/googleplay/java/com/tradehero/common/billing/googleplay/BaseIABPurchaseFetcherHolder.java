@@ -1,11 +1,9 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-
-import android.support.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +61,7 @@ abstract public class BaseIABPurchaseFetcherHolder<
         IABPurchaseFetcherType purchaseFetcher = createPurchaseFetcher();
         purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);
-        purchaseFetcher.fetchPurchases(requestCode);
+        purchaseFetcher.fetchPurchases();
     }
 
     @Override public void onDestroy()

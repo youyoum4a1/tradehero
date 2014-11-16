@@ -61,10 +61,9 @@ abstract public class BaseIABPurchaseFetcher<
         return requestCode;
     }
 
-    @Override public void fetchPurchases(int requestCode)
+    @Override public void fetchPurchases()
     {
         checkNotFetching();
-        this.requestCode = requestCode;
         this.fetching = true;
         startConnectionSetup();
     }

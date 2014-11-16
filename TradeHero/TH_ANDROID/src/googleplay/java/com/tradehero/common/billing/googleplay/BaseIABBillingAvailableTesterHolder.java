@@ -1,14 +1,11 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingAvailableTesterHolder;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-
-import android.support.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Provider;
 
 public class BaseIABBillingAvailableTesterHolder<
@@ -53,7 +50,7 @@ public class BaseIABBillingAvailableTesterHolder<
         IABBillingAvailableTesterType billingAvailableTester = iabBillingAvailableTesterProvider.get();
         billingAvailableTester.setBillingAvailableListener(billingAvailableListener);
         billingAvailableTesters.put(requestCode, billingAvailableTester);
-        billingAvailableTester.testBillingAvailable(requestCode);
+        billingAvailableTester.testBillingAvailable();
     }
 
     @Override public void onDestroy()

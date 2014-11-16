@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -16,8 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -69,9 +69,8 @@ abstract public class BaseIABInventoryFetcher<
 
     abstract protected IABProductDetailsType createSKUDetails(IABSKUListKey itemType, String json) throws JSONException;
 
-    @Override public void fetchInventory(int requestCode)
+    public void fetchInventory()
     {
-        this.requestCode = requestCode;
         this.startConnectionSetup();
     }
 

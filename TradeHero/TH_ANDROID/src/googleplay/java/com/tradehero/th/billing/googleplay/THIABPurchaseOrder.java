@@ -22,6 +22,7 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
     @NonNull private IABSKU sku;
     private int quantity;
     @NonNull private OwnedPortfolioId developerPayload;
+    @NonNull private String type;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
@@ -84,6 +85,16 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
     @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {
         return developerPayload;
+    }
+
+    @Override @NonNull public String getType()
+    {
+        return type;
+    }
+
+    public void setType(@NonNull String type)
+    {
+        this.type = type;
     }
 
     @JsonIgnore

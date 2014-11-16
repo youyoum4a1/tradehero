@@ -3,10 +3,10 @@ package com.tradehero.common.billing;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
-public class BaseRequestCodeReplayActor<T> extends BaseRequestCodeActor
+public class BaseRequestCodeReplayActor<ResultType> extends BaseRequestCodeActor
 {
-    protected BehaviorSubject<T> subject;
-    protected Observable<T> replayObservable;
+    protected BehaviorSubject<ResultType> subject;
+    protected Observable<ResultType> replayObservable;
 
     //<editor-fold desc="Constructors">
     protected BaseRequestCodeReplayActor(int requestCode)

@@ -1,11 +1,9 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingInventoryFetcherHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-
-import android.support.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +63,7 @@ abstract public class BaseIABInventoryFetcherHolder<
         iabInventoryFetchers.put(requestCode, inventoryFetcher);
         inventoryFetcher.setProductIdentifiers(allSkus);
         inventoryFetcher.setInventoryFetchedListener(fetchedListener);
-        inventoryFetcher.fetchInventory(requestCode);
+        inventoryFetcher.fetchInventory();
     }
 
     @Override public void onDestroy()

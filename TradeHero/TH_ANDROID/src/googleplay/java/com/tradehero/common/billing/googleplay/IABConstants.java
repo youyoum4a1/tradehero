@@ -3,6 +3,7 @@ package com.tradehero.common.billing.googleplay;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BillingConstants;
 
 import timber.log.Timber;
@@ -104,7 +105,7 @@ public class IABConstants implements BillingConstants
     }
 
     // Workaround to bug where sometimes response codes come as Long instead of Integer
-    public static int getResponseCodeFromBundle(Bundle b)
+    public static int getResponseCodeFromBundle(@NonNull Bundle b)
     {
         Object o = b.get(RESPONSE_CODE);
         if (o == null)

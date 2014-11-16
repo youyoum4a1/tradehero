@@ -3,7 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.th.billing.THBillingConstants;
 
-class THIABConstants
+public class THIABConstants
         extends IABConstants
         implements THBillingConstants
 {

@@ -1,12 +1,12 @@
 package com.tradehero.common.billing.googleplay;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class BaseIABBillingAvailableTester
         extends IABServiceConnector
@@ -54,11 +54,10 @@ public class BaseIABBillingAvailableTester
         }
     }
 
-    @Override public void testBillingAvailable(int requestCode)
+    @Override public void testBillingAvailable()
     {
         checkNotTesting();
         testing = true;
-        this.requestCode = requestCode;
         startConnectionSetup();
     }
 

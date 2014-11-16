@@ -12,9 +12,9 @@ import org.json.JSONException;
 
 public class THBaseIABInventoryFetcher
         extends BaseIABInventoryFetcher<
-                        IABSKU,
-                        THIABProductDetail>
-    implements THIABInventoryFetcher
+        IABSKU,
+        THIABProductDetail>
+        implements THIABInventoryFetcher
 {
     //<editor-fold desc="Constructors">
     @Inject public THBaseIABInventoryFetcher(

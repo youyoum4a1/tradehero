@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
@@ -15,8 +17,6 @@ import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavaila
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import dagger.Lazy;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 
@@ -86,12 +86,11 @@ abstract public class BaseIABPurchaser<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    @Override public void purchase(int activityRequestCode, @NonNull IABPurchaseOrderType purchaseOrder)
+    @Override public void purchase(@NonNull IABPurchaseOrderType purchaseOrder)
     {
         checkNotPurchasing();
         purchasing = true;
         this.purchaseOrder = purchaseOrder;
-        this.activityRequestCode = activityRequestCode;
         startConnectionSetup();
     }
 
@@ -300,7 +299,7 @@ abstract public class BaseIABPurchaser<
             }
             else
             {
-                Timber.w("Purchase failed. Result code: %s. Response: %s", Integer.toString(resultCode), IABConstants
+                Timber.w("Purchase failed. Result code: %d. Response: %s", resultCode, IABConstants
                         .getStatusCodeDescription(responseCode));
                 handlePurchaseFailedInternal(iabExceptionFactory.get().create(IABConstants.IABHELPER_UNKNOWN_PURCHASE_RESPONSE));
             }
