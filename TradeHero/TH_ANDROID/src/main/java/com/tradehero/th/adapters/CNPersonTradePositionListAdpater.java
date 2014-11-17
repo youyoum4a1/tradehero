@@ -10,7 +10,8 @@ import android.widget.TextView;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.chinabuild.data.*;
+import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
+import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -106,7 +107,7 @@ public class CNPersonTradePositionListAdpater extends BaseExpandableListAdapter 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.position_head_item, parent, false);
+        convertView = inflater.inflate(R.layout.position_head_plus_item, parent, false);
         TextView tvHead = (TextView) convertView.findViewById(R.id.tvPositionHead);
         tvHead.setText(generalsTypes[groupPosition]);
         ImageView ivHead = (ImageView)convertView.findViewById(R.id.ivPositionHead);

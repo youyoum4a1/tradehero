@@ -17,12 +17,5 @@
      android:textSize="15sp"
      android:text=""/>
 
- <ImageView android:layout_width="15dp" android:layout_height="8dp"
-            android:id="@+id/ivPositionHead"
-         android:layout_centerVertical="true"
-         android:layout_alignParentRight="true"
-         android:layout_marginRight="10dp"
-         android:background="@drawable/icon_arrow_up_gray"/>
-
 </RelativeLayout>
 

@@ -19,7 +19,6 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdpater;
-import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -41,7 +40,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -56,12 +54,13 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     交易－我的交易
@@ -153,34 +152,6 @@ public class TradeOfMineFragment extends DashboardFragment
         listView.getRefreshableView().setAdapter(adapter);
         listView.getRefreshableView().setChildDivider(null);
         listView.getRefreshableView().setGroupIndicator(null);
-//        listView.getRefreshableView().setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-//            @Override
-//            public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
-//                if(listView.getRefreshableView().isGroupExpanded(groupPosition)){
-//                    listView.getRefreshableView().collapseGroup(groupPosition);
-//
-//                }else{
-//                    listView.getRefreshableView().expandGroup(groupPosition);
-//                    int currentPosition = 1;
-//                    if(groupPosition == 1){
-//                        if(listView.getRefreshableView().isGroupExpanded(0)) {
-//                            currentPosition = currentPosition + adapter.getSecurityPositionCount();
-//                        }
-//                    }
-//                    if(groupPosition==2){
-//                        if(listView.getRefreshableView().isGroupExpanded(0)) {
-//                            currentPosition = currentPosition + adapter.getSecurityPositionCount();
-//                        }
-//                        if(listView.getRefreshableView().isGroupExpanded(1)) {
-//                            currentPosition = currentPosition + adapter.getSecurityPositionClosedCount();
-//                        }
-//                    }
-//                    currentPosition = currentPosition + 3;
-//                    listView.getRefreshableView().smoothScrollToPosition(currentPosition);
-//                }
-//                return true;
-//            }
-//        });
         listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ExpandableListView>() {
