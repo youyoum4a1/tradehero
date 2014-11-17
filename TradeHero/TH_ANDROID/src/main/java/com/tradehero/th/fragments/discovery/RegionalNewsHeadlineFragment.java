@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discovery;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.View;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
@@ -20,28 +21,36 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
     @Inject Locale locale;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
-    @Override protected Observable<NewsItemListKey> createNewsItemListKeyObservable()
+
+    @Override protected void initView(View view)
     {
-        return super.createNewsItemListKeyObservable()
-                .mergeWith(createNewsItemListRegionalKeyObservable());
+        super.initView(view);
+
+        subscriptions.add(
+                Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
+                        .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::replaceNewsItemListView));
     }
 
-    private Observable<NewsItemListKey> createNewsItemListRegionalKeyObservable()
+    private NewsItemListRegionalKey newsItemListKeyFromPref()
     {
-        return Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
-                .map((Func1<Intent, NewsItemListKey>) intent -> {
-                    CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
-                    return new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null);
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::replaceNewsItemListView);
+        CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
+        return new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
+        if (countryLanguagePreference.isSet())
+        {
+            newsItemListKey = newsItemListKeyFromPref();
+        }
+        else
+        {
+            newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
+        }
     }
 }
