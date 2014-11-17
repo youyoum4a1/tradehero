@@ -156,6 +156,10 @@ public class NewsHeadlineFragment extends Fragment
         mBottomLoadingView.setVisibility(View.GONE);
         mNewsListView.addFooterView(mBottomLoadingView);
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
+        swipeRefreshLayout.setProgressViewOffset(false,
+                headerHeight,
+                headerHeight + (int) getResources().getDimension(R.dimen.discovery_news_swipe_indicator_height));
+
         mTotalHeadersAndFooters = mNewsListView.getFooterViewsCount() + mNewsListView.getHeaderViewsCount();
 
         final Random random = new Random();
