@@ -1,6 +1,7 @@
 package com.tradehero.th.billing.samsung;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.BaseSamsungPurchaser;
@@ -9,35 +10,32 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
-import com.tradehero.th.utils.DaggerUtils;
-import android.support.annotation.NonNull;
-import timber.log.Timber;
-
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import timber.log.Timber;
 
 public class THBaseSamsungPurchaser
-    extends BaseSamsungPurchaser<
+        extends BaseSamsungPurchaser<
         SamsungSKU,
         THSamsungPurchaseOrder,
         THSamsungOrderId,
         THSamsungPurchase,
         SamsungException>
-    implements THSamsungPurchaser
+        implements THSamsungPurchaser
 {
     @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
     @NonNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseSamsungPurchaser(
+    public THBaseSamsungPurchaser(
+            int requestCode,
             @NonNull Context context,
-            @ForSamsungBillingMode int mode,
+            int mode,
             @NonNull THSamsungExceptionFactory samsungExceptionFactory,
-            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull StringSetPreference processingPurchaseStringSet)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
         this.samsungExceptionFactory = samsungExceptionFactory;
         this.processingPurchaseStringSet = processingPurchaseStringSet;
     }
@@ -66,8 +64,7 @@ public class THBaseSamsungPurchaser
         try
         {
             stringedPurchase = THJsonAdapter.getInstance().toStringBody(purchase.getPurchaseToSaveDTO());
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }

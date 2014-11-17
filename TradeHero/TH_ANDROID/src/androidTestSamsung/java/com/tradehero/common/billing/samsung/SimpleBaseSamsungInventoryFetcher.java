@@ -15,9 +15,9 @@ public class SimpleBaseSamsungInventoryFetcher
             BaseSamsungProductDetail<SamsungSKU>,
             SamsungException>
 {
-    public SimpleBaseSamsungInventoryFetcher(Context context, int mode)
+    public SimpleBaseSamsungInventoryFetcher(int requestCode, Context context, int mode)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
     }
 
     @Override protected SamsungSKU createSamsungSku(String groupId, String itemId)

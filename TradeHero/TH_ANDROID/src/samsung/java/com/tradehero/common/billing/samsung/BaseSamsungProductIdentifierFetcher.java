@@ -1,6 +1,8 @@
 package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.ItemVo;
@@ -10,8 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseSamsungProductIdentifierFetcher<
@@ -35,9 +35,9 @@ abstract public class BaseSamsungProductIdentifierFetcher<
     @Nullable private OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> fetchedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungProductIdentifierFetcher(@NonNull Context context, int mode)
+    public BaseSamsungProductIdentifierFetcher(int requestCode, @NonNull Context context, int mode)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         samsungSKUs = new HashMap<>();
@@ -54,11 +54,10 @@ abstract public class BaseSamsungProductIdentifierFetcher<
         this.fetchedListener = listener;
     }
 
-    @Override public void fetchProductIdentifiers(int requestCode)
+    @Override public void fetchProductIdentifiers()
     {
         checkNotFetching();
         this.fetching = true;
-        setRequestCode(requestCode);
         fetchKnownItemGroups();
     }
 

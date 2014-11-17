@@ -1,12 +1,11 @@
 package com.tradehero.common.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseSamsungPurchaseFetcherHolder<
         SamsungSKUType extends SamsungSKU,
@@ -29,15 +28,12 @@ abstract public class BaseSamsungPurchaseFetcherHolder<
         SamsungPurchaseType,
         SamsungExceptionType>
 {
-    @NonNull protected final Provider<SamsungPurchaseFetcherType> samsungPurchaseFetcherTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, SamsungPurchaseFetcherType> purchaseFetchers;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungPurchaseFetcherHolder(
-            @NonNull Provider<SamsungPurchaseFetcherType> samsungPurchaseFetcherTypeProvider)
+    public BaseSamsungPurchaseFetcherHolder()
     {
         super();
-        this.samsungPurchaseFetcherTypeProvider = samsungPurchaseFetcherTypeProvider;
         purchaseFetchers = new HashMap<>();
     }
     //</editor-fold>
@@ -62,11 +58,13 @@ abstract public class BaseSamsungPurchaseFetcherHolder<
     @Override public void launchFetchPurchaseSequence(int requestCode)
     {
         BillingPurchaseFetcher.OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFetchedListener = createPurchaseFetchedListener();
-        SamsungPurchaseFetcherType purchaseFetcher = samsungPurchaseFetcherTypeProvider.get();
+        SamsungPurchaseFetcherType purchaseFetcher = createPurchaseFetcher(requestCode);
         purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);
-        purchaseFetcher.fetchPurchases(requestCode);
+        purchaseFetcher.fetchPurchases();
     }
+
+    @NonNull protected abstract SamsungPurchaseFetcherType createPurchaseFetcher(int requestCode);
 
     @Override public void onDestroy()
     {

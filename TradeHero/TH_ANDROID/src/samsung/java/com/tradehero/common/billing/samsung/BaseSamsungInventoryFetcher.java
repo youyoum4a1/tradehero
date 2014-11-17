@@ -1,6 +1,8 @@
 package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.ItemVo;
@@ -10,8 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 /**
@@ -36,9 +36,9 @@ abstract public class BaseSamsungInventoryFetcher<
     @Nullable private OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> inventoryFetchedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungInventoryFetcher(@NonNull Context context, int mode)
+    public BaseSamsungInventoryFetcher(int requestCode, @NonNull Context context, int mode)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         inventory = new HashMap<>();
@@ -65,12 +65,11 @@ abstract public class BaseSamsungInventoryFetcher<
         throw new IllegalArgumentException("It is not necessary to set the identifiers on this one");
     }
 
-    @Override public void fetchInventory(int requestCode)
+    @Override public void fetchInventory()
     {
         Timber.d("Fetching inventory");
         checkNotFetching();
         this.fetching = true;
-        setRequestCode(requestCode);
         fetchKnownItemGroups();
     }
 

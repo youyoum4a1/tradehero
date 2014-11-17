@@ -1,12 +1,12 @@
 package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseSamsungPurchaser<
@@ -27,9 +27,9 @@ abstract public class BaseSamsungPurchaser<
     @Nullable private OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseFinishedListener;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungPurchaser(@NonNull Context context, int mode)
+    public BaseSamsungPurchaser(int requestCode, @NonNull Context context, int mode)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
     }
     //</editor-fold>
 
@@ -43,9 +43,8 @@ abstract public class BaseSamsungPurchaser<
         this.purchaseFinishedListener = purchaseFinishedListener;
     }
 
-    @Override public void purchase(int requestCode, @NonNull SamsungPurchaseOrderType purchaseOrder)
+    @Override public void purchase(@NonNull SamsungPurchaseOrderType purchaseOrder)
     {
-        setRequestCode(requestCode);
         this.purchaseOrder = purchaseOrder;
         SamsungSKUType sku = purchaseOrder.getProductIdentifier();
         mIapHelper.startPayment(sku.groupId, sku.itemId, true, this);

@@ -17,7 +17,6 @@ import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheR
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import dagger.Lazy;
 import java.io.IOException;
-import javax.inject.Inject;
 import retrofit.RetrofitError;
 import timber.log.Timber;
 
@@ -32,7 +31,8 @@ public class THBaseSamsungPurchaseReporter
     implements THSamsungPurchaseReporter
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseSamsungPurchaseReporter(
+    public THBaseSamsungPurchaseReporter(
+            int requestCode,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
             @NonNull Lazy<AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
@@ -42,6 +42,7 @@ public class THBaseSamsungPurchaseReporter
             @NonNull Lazy<THSamsungProductDetailCacheRx> skuDetailCache)
     {
         super(
+                requestCode,
                 currentUserId,
                 alertPlanServiceWrapper,
                 alertPlanCheckServiceWrapper,
@@ -52,9 +53,8 @@ public class THBaseSamsungPurchaseReporter
     }
     //</editor-fold>
 
-    @Override public void reportPurchase(int requestCode, @NonNull THSamsungPurchase purchase)
+    @Override public void reportPurchase(@NonNull THSamsungPurchase purchase)
     {
-        this.requestCode = requestCode;
         this.purchase = purchase;
 
         // TODO do something when info is not available

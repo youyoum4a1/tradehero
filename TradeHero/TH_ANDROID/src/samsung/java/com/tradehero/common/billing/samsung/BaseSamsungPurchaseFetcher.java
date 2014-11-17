@@ -1,6 +1,8 @@
 package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.InboxVo;
@@ -9,8 +11,6 @@ import com.tradehero.th.billing.samsung.THSamsungConstants;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 abstract public class BaseSamsungPurchaseFetcher<
@@ -19,8 +19,8 @@ abstract public class BaseSamsungPurchaseFetcher<
         SamsungPurchaseType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
         SamsungPurchaseIncompleteType extends SamsungPurchase<SamsungSKUType, SamsungOrderIdType>,
         SamsungExceptionType extends SamsungException>
-    extends BaseSamsungActor
-    implements SamsungPurchaseFetcher<
+        extends BaseSamsungActor
+        implements SamsungPurchaseFetcher<
         SamsungSKUType,
         SamsungOrderIdType,
         SamsungPurchaseType,
@@ -38,10 +38,11 @@ abstract public class BaseSamsungPurchaseFetcher<
 
     //<editor-fold desc="Constructors">
     public BaseSamsungPurchaseFetcher(
+            int requestCode,
             @NonNull Context context,
             int mode)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
         remainingGroupIds = new LinkedList<>();
         fetchingGroupId = null;
         fetchedIncompletePurchases = new ArrayList<>();
@@ -49,11 +50,10 @@ abstract public class BaseSamsungPurchaseFetcher<
     }
     //</editor-fold>
 
-    @Override public void fetchPurchases(int requestCode)
+    @Override public void fetchPurchases()
     {
         checkNotFetching();
         this.fetching = true;
-        setRequestCode(requestCode);
         fetchKnownItemGroups();
     }
 
@@ -124,12 +124,14 @@ abstract public class BaseSamsungPurchaseFetcher<
 
     @NonNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(String groupId, InboxVo inboxVo);
 
-    @Override @Nullable public OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getFetchListener()
+    @Override @Nullable
+    public OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> getFetchListener()
     {
         return fetchListener;
     }
 
-    @Override public void setPurchaseFetchedListener(@Nullable OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener)
+    @Override public void setPurchaseFetchedListener(
+            @Nullable OnPurchaseFetchedListener<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> fetchListener)
     {
         this.fetchListener = fetchListener;
     }

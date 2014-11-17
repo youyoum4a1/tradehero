@@ -27,15 +27,12 @@ abstract public class BaseSamsungInventoryFetcherHolder<
         SamsungProductDetailType,
         SamsungExceptionType>
 {
-    @NonNull protected final Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, SamsungInventoryFetcherType> inventoryFetchers;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungInventoryFetcherHolder(
-            @NonNull Provider<SamsungInventoryFetcherType> samsungInventoryFetcherTypeProvider)
+    public BaseSamsungInventoryFetcherHolder()
     {
         super();
-        this.samsungInventoryFetcherTypeProvider = samsungInventoryFetcherTypeProvider;
         inventoryFetchers = new HashMap<>();
     }
     //</editor-fold>
@@ -44,11 +41,13 @@ abstract public class BaseSamsungInventoryFetcherHolder<
     {
         Timber.d("Launching fetch sequence");
         BillingInventoryFetcher.OnInventoryFetchedListener<SamsungSKUType, SamsungProductDetailType, SamsungExceptionType> skuFetchedListener = createInventoryFetchedListener();
-        SamsungInventoryFetcherType inventoryFetcher = samsungInventoryFetcherTypeProvider.get();
+        SamsungInventoryFetcherType inventoryFetcher = createInventoryFetcher(requestCode);
         inventoryFetcher.setInventoryFetchedListener(skuFetchedListener);
         inventoryFetchers.put(requestCode, inventoryFetcher);
-        inventoryFetcher.fetchInventory(requestCode);
+        inventoryFetcher.fetchInventory();
     }
+
+    @NonNull protected abstract SamsungInventoryFetcherType createInventoryFetcher(int requestCode);
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

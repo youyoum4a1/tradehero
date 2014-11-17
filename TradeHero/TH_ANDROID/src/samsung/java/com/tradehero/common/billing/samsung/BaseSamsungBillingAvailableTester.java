@@ -1,11 +1,10 @@
 package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
-import com.sec.android.iap.lib.helper.SamsungIapHelper;
-import com.tradehero.common.billing.BillingAvailableTester;
-import com.tradehero.common.billing.samsung.exception.SamsungException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.tradehero.common.billing.samsung.exception.SamsungException;
 
 abstract public class BaseSamsungBillingAvailableTester<SamsungExceptionType extends SamsungException>
     extends BaseSamsungActor
@@ -14,9 +13,9 @@ abstract public class BaseSamsungBillingAvailableTester<SamsungExceptionType ext
     @Nullable private OnBillingAvailableListener<SamsungExceptionType> availableListener;
 
     //<editor-fold desc="Description">
-    public BaseSamsungBillingAvailableTester(@NonNull Context context, int mode)
+    public BaseSamsungBillingAvailableTester(int requestCode, @NonNull Context context, int mode)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
     }
     //</editor-fold>
 
@@ -31,9 +30,8 @@ abstract public class BaseSamsungBillingAvailableTester<SamsungExceptionType ext
     }
 
     // TODO confirm this is the right way to test
-    @Override public void testBillingAvailable(int requestCode)
+    @Override public void testBillingAvailable()
     {
-        setRequestCode(requestCode);
         mIapHelper.bindIapService(this);
     }
 

@@ -1,12 +1,11 @@
 package com.tradehero.common.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingPurchaserHolder;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseSamsungPurchaserHolder<
         SamsungSKUType extends SamsungSKU,
@@ -33,14 +32,12 @@ abstract public class BaseSamsungPurchaserHolder<
         SamsungPurchaseType,
         SamsungExceptionType>
 {
-    @NonNull protected final Provider<SamsungPurchaserType> samsungPurchaserTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, SamsungPurchaserType> purchasers;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungPurchaserHolder(@NonNull Provider<SamsungPurchaserType> samsungPurchaserTypeProvider)
+    public BaseSamsungPurchaserHolder()
     {
         super();
-        this.samsungPurchaserTypeProvider = samsungPurchaserTypeProvider;
         purchasers = new HashMap<>();
     }
     //</editor-fold>
@@ -65,11 +62,13 @@ abstract public class BaseSamsungPurchaserHolder<
     @Override public void launchPurchaseSequence(int requestCode, SamsungPurchaseOrderType purchaseOrder)
     {
         BillingPurchaser.OnPurchaseFinishedListener<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType, SamsungExceptionType> purchaseListener = createPurchaseFinishedListener();
-        SamsungPurchaserType iabPurchaser = samsungPurchaserTypeProvider.get();
+        SamsungPurchaserType iabPurchaser = createPurchaser(requestCode);
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         purchasers.put(requestCode, iabPurchaser);
-        iabPurchaser.purchase(requestCode, purchaseOrder);
+        iabPurchaser.purchase(purchaseOrder);
     }
+
+    @NonNull protected abstract SamsungPurchaserType createPurchaser(int requestCode);
 
     @Override public void onDestroy()
     {

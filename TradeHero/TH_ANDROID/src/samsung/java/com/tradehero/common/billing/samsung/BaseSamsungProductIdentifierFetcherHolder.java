@@ -1,12 +1,11 @@
 package com.tradehero.common.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.samsung.exception.SamsungException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListKeyType extends SamsungSKUListKey,
@@ -29,15 +28,12 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
         SamsungSKUListType,
         SamsungExceptionType>
 {
-    @NonNull protected final Provider<SamsungProductIdentifierFetcherType> samsungProductIdentifierFetcherTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, SamsungProductIdentifierFetcherType> skuFetchers;
 
     //<editor-fold desc="Constructors">
-    public BaseSamsungProductIdentifierFetcherHolder(
-            @NonNull Provider<SamsungProductIdentifierFetcherType> samsungProductIdentifierFetcherTypeProvider)
+    public BaseSamsungProductIdentifierFetcherHolder()
     {
         super();
-        this.samsungProductIdentifierFetcherTypeProvider = samsungProductIdentifierFetcherTypeProvider;
         skuFetchers = new HashMap<>();
     }
     //</editor-fold>
@@ -45,11 +41,13 @@ abstract public class BaseSamsungProductIdentifierFetcherHolder<
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<SamsungSKUListKeyType, SamsungSKUType, SamsungSKUListType, SamsungExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
-        SamsungProductIdentifierFetcherType skuFetcher = samsungProductIdentifierFetcherTypeProvider.get();
+        SamsungProductIdentifierFetcherType skuFetcher = createProductIdentifierFetcher(requestCode);
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
-        skuFetcher.fetchProductIdentifiers(requestCode);
+        skuFetcher.fetchProductIdentifiers();
     }
+
+    @NonNull protected abstract SamsungProductIdentifierFetcherType createProductIdentifierFetcher(int requestCode);
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

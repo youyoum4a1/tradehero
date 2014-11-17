@@ -1,6 +1,7 @@
 package com.tradehero.th.billing.samsung;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.ErrorVo;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungInventoryFetcher;
@@ -10,25 +11,24 @@ import com.tradehero.common.billing.samsung.exception.SamsungException;
 import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class THBaseSamsungInventoryFetcher
-    extends BaseSamsungInventoryFetcher<
+        extends BaseSamsungInventoryFetcher<
         SamsungSKU,
         THSamsungProductDetail,
         SamsungException>
-    implements THSamsungInventoryFetcher
+        implements THSamsungInventoryFetcher
 {
     @NonNull protected final THSamsungExceptionFactory samsungExceptionFactory;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseSamsungInventoryFetcher(
+    public THBaseSamsungInventoryFetcher(
+            int requestCode,
             @NonNull Context context,
-            @ForSamsungBillingMode int mode,
+            int mode,
             @NonNull THSamsungExceptionFactory samsungExceptionFactory)
     {
-        super(context, mode);
+        super(requestCode, context, mode);
         this.samsungExceptionFactory = samsungExceptionFactory;
     }
     //</editor-fold>
