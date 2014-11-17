@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -102,22 +101,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         }
 
         analytics.openSession();
-
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable(){
-            @Override
-            public void run() {
-                viewpager.setCurrentItem((viewpager.getCurrentItem() + 1)%4, true);
-                if (isFinishing() /*|| isDestroyed()*/ || mIndicator0 == null)
-                {
-                }
-                else
-                {
-                    handler.postDelayed(this, 3000);
-                }
-            }
-        };
-        handler.postDelayed(runnable, 3000);
     }
 
     @Override protected void onPause()

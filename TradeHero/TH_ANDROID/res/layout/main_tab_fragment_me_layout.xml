@@ -103,9 +103,6 @@
             android:layout_toRightOf="@id/img_me_message_center"
             android:layout_alignParentBottom="true"/>
       </RelativeLayout>
-      <!--<View-->
-      <!--android:layout_width="fill_parent"-->
-      <!--android:layout_height="20dp"/>-->
 
       <RelativeLayout
           android:id="@+id/rlMeInviteFriends"
