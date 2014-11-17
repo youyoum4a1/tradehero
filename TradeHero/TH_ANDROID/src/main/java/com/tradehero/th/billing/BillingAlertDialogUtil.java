@@ -134,7 +134,7 @@ abstract public class BillingAlertDialogUtil<
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
                 .setTitle(titleResId)
-                .setIcon(R.drawable.th_app_logo)
+                .setIcon(R.drawable.logo)
                 .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int i)

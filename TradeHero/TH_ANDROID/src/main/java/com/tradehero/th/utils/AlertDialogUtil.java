@@ -104,7 +104,7 @@ public class AlertDialogUtil
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
-                .setIcon(R.drawable.th_app_logo)
+                .setIcon(R.drawable.logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelRes, cancelListener);
         if (titleRes != null)
@@ -201,7 +201,7 @@ public class AlertDialogUtil
         alertDialogBuilder
                 .setTitle(title)
                 .setMessage(description)
-                .setIcon(R.drawable.th_app_logo)
+                .setIcon(R.drawable.logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelResId, cancelClickListener)
                 .setPositiveButton(okResId, okClickListener);

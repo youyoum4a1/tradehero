@@ -44,7 +44,7 @@ public class BingTranslationResult extends TranslationResult
 
     @Override public int logoResId()
     {
-        return R.drawable.logo_bing;
+        return R.drawable.logo;
     }
 
     @Override

@@ -32,7 +32,6 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="0dp"
       android:layout_gravity="center_vertical"
-      android:src="@drawable/logo_bing"
       />
 
 </LinearLayout>

@@ -106,7 +106,7 @@ public class BingTranslationToken extends TranslationToken
 
     @Override public int logoResId()
     {
-        return R.drawable.logo_bing;
+        return R.drawable.logo;
     }
 
     @Override
