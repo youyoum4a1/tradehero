@@ -48,4 +48,9 @@ public class CountryLanguagePreference extends AbstractPreference<CountryLanguag
                 .putString(languageKey, value.languageCode)
                 .apply();
     }
+
+    @Override public boolean isSet()
+    {
+        return preference.contains(nameKey) && preference.contains(countryKey) && preference.contains(languageKey);
+    }
 }
