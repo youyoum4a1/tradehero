@@ -266,21 +266,10 @@ dependencies {
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
 
   // This does not work as we would hope. Second "setProperty" wins
-  def fbGoogproj = project(':facebook-android-sdk:facebook')
-  fbGoogproj.setProperty('TEST_GOOGLE_PLAY', "true")
-  googleplayCompile (fbGoogproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-
   def fbproj = project(':facebook-android-sdk:facebook')
-  fbproj.setProperty('TEST_GOOGLE_PLAY', "false")
-  amazonCompile (fbproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-  chinaCompile (fbproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-  samsungCompile (fbproj) {
+  fbproj.setProperty('TEST_GOOGLE_PLAY', "true") // Swap to this one for others
+  //fbproj.setProperty('TEST_GOOGLE_PLAY', "false") // Swap to this one for Amazon
+  compile(fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
 
@@ -391,7 +380,6 @@ dependencies {
   if (project.ext.isIntelliJ) {
     androidTestCompile files('build/test-classes')
   }
-  compile project(':facebook-android-sdk:facebook')
 
   releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }
