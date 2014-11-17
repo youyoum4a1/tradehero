@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.exception.SamsungBindException;
@@ -10,15 +11,15 @@ public class SamsungIapBindOperator extends BaseSamsungOperator
     implements Observable.OnSubscribe<Integer>
 {
     //<editor-fold desc="Constructors">
-    public SamsungIapBindOperator(@NonNull SamsungIapHelper mIapHelper)
+    public SamsungIapBindOperator(@NonNull Context context, int mode)
     {
-        super(mIapHelper);
+        super(context, mode);
     }
     //</editor-fold>
 
     @Override public void call(Subscriber<? super Integer> subscriber)
     {
-        mIapHelper.bindIapService(result -> {
+        getSamsungIapHelper().bindIapService(result -> {
             if (result == SamsungIapHelper.IAP_RESPONSE_RESULT_OK)
             {
                 subscriber.onNext(result);

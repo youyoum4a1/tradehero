@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.InboxVo;
@@ -11,28 +12,35 @@ import rx.Subscriber;
 public class SamsungInboxOperator extends BaseSamsungOperator
         implements Observable.OnSubscribe<InboxVo>
 {
-    public static final int FIRST_ITEM_NUM = 1;
-    public static final String FIRST_DATE = "20140101";
-
+    protected final int startNum;
+    protected final int endNum;
+    @NonNull protected final String startDate;
     @NonNull protected final String groupId;
 
     //<editor-fold desc="Constructors">
     public SamsungInboxOperator(
-            @NonNull SamsungIapHelper mIapHelper,
+            @NonNull Context context,
+            int mode,
+            int startNum,
+            int endNum,
+            @NonNull String startDate,
             @NonNull String groupId)
     {
-        super(mIapHelper);
+        super(context, mode);
+        this.startNum = startNum;
+        this.endNum = endNum;
+        this.startDate = startDate;
         this.groupId = groupId;
     }
     //</editor-fold>
 
     @Override public void call(Subscriber<? super InboxVo> subscriber)
     {
-        mIapHelper.getItemInboxList(
+        getSamsungIapHelper().getItemInboxList(
                 groupId,
-                FIRST_ITEM_NUM,
-                Integer.MAX_VALUE,
-                FIRST_DATE,
+                startNum,
+                endNum,
+                startDate,
                 THSamsungConstants.getTodayStringForInbox(),
                 (errorVo, inboxList) -> {
                     if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)

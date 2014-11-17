@@ -1,46 +1,51 @@
 package com.tradehero.common.billing.samsung;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.exception.SamsungItemListException;
+import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 
 public class SamsungItemListOperator extends BaseSamsungOperator
-    implements Observable.OnSubscribe<ItemVo>
+        implements Observable.OnSubscribe<List<ItemVo>>
 {
-    public static final int FIRST_ITEM_NUM = 1;
-
+    protected final int startNum;
+    protected final int endNum;
+    @NonNull protected final String itemType;
     @NonNull protected final String groupId;
-    protected final int mode;
 
     //<editor-fold desc="Constructors">
     public SamsungItemListOperator(
-            @NonNull SamsungIapHelper mIapHelper,
-            @NonNull String groupId,
-            int mode)
+            @NonNull Context context,
+            int mode,
+            int startNum,
+            int endNum,
+            @NonNull String itemType,
+            @NonNull String groupId)
     {
-        super(mIapHelper);
+        super(context, mode);
+        this.startNum = startNum;
+        this.endNum = endNum;
+        this.itemType = itemType;
         this.groupId = groupId;
-        this.mode = mode;
     }
     //</editor-fold>
 
-    @Override public void call(Subscriber<? super ItemVo> subscriber)
+    @Override public void call(Subscriber<? super List<ItemVo>> subscriber)
     {
-        mIapHelper.getItemList(
+        getSamsungIapHelper().getItemList(
                 groupId,
-                FIRST_ITEM_NUM, Integer.MAX_VALUE,
-                SamsungIapHelper.ITEM_TYPE_ALL,
+                startNum,
+                endNum,
+                itemType,
                 mode,
                 (errorVo, itemList) -> {
                     if (errorVo.getErrorCode() == SamsungIapHelper.IAP_ERROR_NONE)
                     {
-                        for (ItemVo itemVo : itemList)
-                        {
-                            subscriber.onNext(itemVo);
-                        }
+                        subscriber.onNext(itemList);
                         subscriber.onCompleted();
                     }
                     else

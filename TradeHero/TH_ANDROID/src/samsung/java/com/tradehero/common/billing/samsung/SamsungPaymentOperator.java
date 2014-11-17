@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.PurchaseVo;
@@ -16,12 +17,13 @@ public class SamsungPaymentOperator extends BaseSamsungOperator
 
     //<editor-fold desc="Constructors">
     public SamsungPaymentOperator(
-            @NonNull SamsungIapHelper mIapHelper,
+            @NonNull Context context,
+            int mode,
             @NonNull String groupId,
             @NonNull String itemId,
             boolean showSuccessDialog)
     {
-        super(mIapHelper);
+        super(context, mode);
         this.groupId = groupId;
         this.itemId = itemId;
         this.showSuccessDialog = showSuccessDialog;
@@ -30,7 +32,7 @@ public class SamsungPaymentOperator extends BaseSamsungOperator
 
     @Override public void call(Subscriber<? super PurchaseVo> subscriber)
     {
-        mIapHelper.startPayment(
+        getSamsungIapHelper().startPayment(
                 groupId,
                 itemId,
                 showSuccessDialog,
