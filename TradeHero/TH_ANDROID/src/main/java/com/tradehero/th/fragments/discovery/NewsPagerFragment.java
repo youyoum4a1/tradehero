@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.discovery;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +12,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
 
-public class NewsPagerFragment extends Fragment
+public final class NewsPagerFragment extends Fragment
 {
+    @InjectView(R.id.news_pager) ViewPager mViewPager;
     @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
 
     @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
@@ -44,30 +43,29 @@ public class NewsPagerFragment extends Fragment
     {
         ButterKnife.inject(this, view);
 
+        mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
         mNewsCarousel.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
         {
             @Override public void onPageSelected(int position)
             {
-                replaceFragment(position);
+                mViewPager.setCurrentItem(position);
             }
         });
-        replaceFragment(0);
     }
 
-    private void replaceFragment(int position)
+    private class DiscoveryNewsFragmentAdapter extends DiscoveryNewsAdapter
     {
-        NewsHeadlineFragment f = NewsHeadlineFragment.newInstance(NewsType.values()[position]);
-        if(f != null)
+
+        public DiscoveryNewsFragmentAdapter(FragmentManager fm)
         {
-            getChildFragmentManager().beginTransaction().replace(R.id.news_pager, f).commit();
+            super(fm);
         }
-    }
 
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        HierarchyInjector.inject(this);
+        @Override public Fragment getItem(int i)
+        {
+            return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
+        }
     }
 
     private class DiscoveryNewsCarouselFragmentAdapter extends DiscoveryNewsAdapter

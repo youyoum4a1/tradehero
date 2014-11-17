@@ -11,7 +11,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 DiscoveryMainFragment.class,
-                NewsPagerFragment.class,
 
                 NewsHeadlineFragment.class,
                 RegionalNewsHeadlineFragment.class,
