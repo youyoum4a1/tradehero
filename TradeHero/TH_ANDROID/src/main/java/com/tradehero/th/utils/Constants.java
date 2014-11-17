@@ -54,4 +54,6 @@ public class Constants
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 
     public static final int SHARE_WEIBO_CONTENT_LENGTH_LIMIT = 140;
+
+    public final static String EMAIL_FEEDBACK = "support@tradehero.mobi";
 }

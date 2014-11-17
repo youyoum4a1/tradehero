@@ -35,6 +35,7 @@ import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -53,6 +54,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @InjectView(R.id.settings_logout) LinearLayout mLogoutLayout;
     @InjectView(R.id.togglebutton_setting_notifications) ToggleButton mNotificationTB;
     @InjectView(R.id.relativelayout_setting_notification) RelativeLayout mNotificationsLayout;
+    @InjectView(R.id.settings_send_feedback)RelativeLayout mSeedFeedbackLayout;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareDialogAfterScoreKey BooleanPreference mShareDialogAfterScoreKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -97,7 +99,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         }
         mLogoutLayout.setOnClickListener(this);
         mVersionLayout.setOnClickListener(this);
-
+        mSeedFeedbackLayout.setOnClickListener(this);
         mVersionLayout.setClickable(false);
         mNewVersionImageView.setVisibility(View.GONE);
         mVersionCode.setVisibility(View.VISIBLE);
@@ -148,6 +150,9 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             case R.id.relativelayout_setting_notification:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_NOTIFICAITONS_ON_OFF));
                 gotoSetNotifications();
+                break;
+            case R.id.settings_send_feedback:
+                seedFeedback();
                 break;
         }
     }
@@ -256,6 +261,12 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             THSharePreferenceManager.setNotificaitonsStatus(context, true);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
         }
+    }
+
+    private void seedFeedback(){
+        Intent data=new Intent(Intent.ACTION_SENDTO);
+        data.setData(Uri.parse("mailto:" + Constants.EMAIL_FEEDBACK));
+        startActivity(data);
     }
 
 }
