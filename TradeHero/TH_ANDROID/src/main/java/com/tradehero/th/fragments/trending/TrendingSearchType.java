@@ -4,8 +4,8 @@ import com.tradehero.th.R;
 
 public enum TrendingSearchType
 {
-    STOCKS(0, R.string.search_stock_spinner_stock, R.drawable.toggle_stocks),
-    PEOPLE(1, R.string.search_stock_spinner_people, R.drawable.toggle_users);
+    STOCKS(0, R.string.search_stock_spinner_stock, R.drawable.logo),
+    PEOPLE(1, R.string.search_stock_spinner_people, R.drawable.logo);
 
     public final int value;
     public final int searchStringResId;

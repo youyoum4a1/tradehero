@@ -22,8 +22,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:src="@drawable/logo_twitter" />
+                android:layout_marginLeft="10dip"/>
             <!-- Logo Ends -->
 
         </LinearLayout>
@@ -35,7 +34,6 @@
             android:layout_width="fill_parent"
             android:layout_height="90dip"
             android:layout_alignParentBottom="true"
-            android:background="@layout/footer_repeat"
             android:orientation="horizontal" >
         </LinearLayout>
         <!-- Footer Ends -->

@@ -33,7 +33,7 @@ public class GrayscaleTransformation implements Transformation
         Bitmap noise;
         try
         {
-            noise = picasso.load(R.drawable.noise).get();
+            noise = picasso.load(R.drawable.logo).get();
         }
         catch (IOException e)
         {

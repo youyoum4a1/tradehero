@@ -16,19 +16,16 @@
   <ToggleButton
       android:id="@+id/btn_share_fb"
       style="@style/TH.ShareButtons"
-      android:background="@drawable/ic_share_fb"
       />
 
   <ToggleButton
       android:id="@+id/btn_share_tw"
       style="@style/TH.ShareButtons"
-      android:background="@drawable/ic_share_tw"
       />
 
   <ToggleButton
       android:id="@+id/btn_share_li"
       style="@style/TH.ShareButtons"
-      android:background="@drawable/ic_share_li"
       />
 
   <ToggleButton
@@ -40,14 +37,12 @@
   <ToggleButton
       android:id="@+id/btn_share_wb"
       style="@style/TH.ShareButtons"
-      android:background="@drawable/ic_share_wb"
       />
 
   <ToggleButton
       android:id="@+id/btn_location"
       style="@style/TH.ShareButtons"
       android:visibility="invisible"
-      android:background="@drawable/ic_location"
       />
 
   <LinearLayout

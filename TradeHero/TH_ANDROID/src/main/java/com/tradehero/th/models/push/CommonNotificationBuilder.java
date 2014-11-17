@@ -243,7 +243,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.notification_status_icon);
         return new NotificationCompat.Builder(context)
                         .setLargeIcon(largeIcon)
-                        .setSmallIcon(R.drawable.th_logo)
+                        .setSmallIcon(R.drawable.logo)
                         .setAutoCancel(true);
     }
 

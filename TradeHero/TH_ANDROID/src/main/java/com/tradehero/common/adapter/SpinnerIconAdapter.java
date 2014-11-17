@@ -80,7 +80,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
     {
         if (position >= icons.length)
         {
-            return R.drawable.th_logo;
+            return R.drawable.logo;
         }
         return icons[position];
     }
@@ -89,7 +89,7 @@ public class SpinnerIconAdapter extends ArrayAdapter<CharSequence>
     {
         if (position >= dropDownIcons.length)
         {
-            return R.drawable.th_logo;
+            return R.drawable.logo;
         }
         return dropDownIcons[position];
     }

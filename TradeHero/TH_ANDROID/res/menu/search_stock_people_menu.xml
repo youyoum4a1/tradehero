@@ -7,7 +7,6 @@
       android:id="@+id/current_search_mode"
       android:showAsAction="always"
       android:title="@string/trending_search_mode"
-      android:icon="@drawable/toggle_stocks"
       >
 
     <menu>

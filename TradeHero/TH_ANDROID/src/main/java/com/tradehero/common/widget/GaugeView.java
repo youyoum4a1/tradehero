@@ -427,7 +427,7 @@ public class GaugeView extends View {
                 mOuterRimRect.bottom, Color.rgb(255, 255, 255), Color.rgb(84, 90, 100), TileMode.REPEAT);
 
         // Use a Bitmap shader for the metallic style
-        final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.light_alu);
+        final Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
         final BitmapShader aluminiumTile = new BitmapShader(bitmap, TileMode.REPEAT, TileMode.REPEAT);
         final Matrix matrix = new Matrix();
         matrix.setScale(1.0f / bitmap.getWidth(), 1.0f / bitmap.getHeight());
