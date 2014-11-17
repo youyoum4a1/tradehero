@@ -9,18 +9,22 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
-import com.tradehero.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.inject.Inject;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
@@ -119,6 +123,14 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         trendingFilterTypeDTO.exchange = (ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i);
         notifyObserver();
+
+        reportAnalytics();
+    }
+
+    private void reportAnalytics() {
+        Collection<String> collection = new ArrayList<>();
+        collection.add(trendingFilterTypeDTO.exchange.name);
+        analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.InterestedExchange, collection));
     }
 
     private void notifyObserver()
