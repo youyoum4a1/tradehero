@@ -9,7 +9,7 @@ import java.io.Serializable;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
-public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  implements Serializable
+public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact> implements Serializable
 {
     //<editor-fold desc="Constructors">
     public PositionDTOCompactList()
@@ -26,7 +26,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
         }
 
         int sum = 0;
-        for (PositionDTOCompact positionDTOCompact: this)
+        for (PositionDTOCompact positionDTOCompact : this)
         {
             if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
             {
@@ -43,7 +43,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
             return null;
         }
         int position = 0;
-        for (PositionDTOCompact positionDTOCompact: this)
+        for (PositionDTOCompact positionDTOCompact : this)
         {
             if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
             {
@@ -63,11 +63,19 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
         }
 
         double avprice = 0;
-        for (PositionDTOCompact positionDTOCompact: this)
+        for (PositionDTOCompact positionDTOCompact : this)
         {
             if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
             {
-                avprice = positionDTOCompact.averagePriceRefCcy;
+                if (positionDTOCompact.fxRate == null || positionDTOCompact.fxRate == 0)
+                {
+                    avprice = positionDTOCompact.averagePriceRefCcy;
+                }
+                else
+                {
+                    avprice = positionDTOCompact.averagePriceRefCcy / positionDTOCompact.fxRate;
+                }
+
                 return avprice;
             }
         }
@@ -75,12 +83,9 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
     }
 
     //<editor-fold desc="Net Sell Proceeds USD">
+
     /**
      * If it returns a negative number it means it will eat into the cash available.
-     * @param quoteDTO
-     * @param portfolioId
-     * @param includeTransactionCostUsd
-     * @return
      */
     public Double getMaxNetSellProceedsUsd(
             @Nullable QuoteDTO quoteDTO,
@@ -96,11 +101,6 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
 
     /**
      * If it returns a negative number it means it will eat into the cash available.
-     * @param quoteDTO
-     * @param portfolioId
-     * @param includeTransactionCostUsd
-     * @param txnCostUsd
-     * @return
      */
     public Double getMaxNetSellProceedsUsd(
             @Nullable QuoteDTO quoteDTO,
@@ -157,7 +157,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
             return null;
         }
         Double total = null;
-        for (PositionDTOCompact positionDTO: this)
+        for (PositionDTOCompact positionDTO : this)
         {
             if (portfolioId.key.equals(positionDTO.portfolioId)
                     && positionDTO.averagePriceRefCcy != null
@@ -178,7 +178,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>  i
             return null;
         }
         Double total = null;
-        for (PositionDTOCompact positionDTO: this)
+        for (PositionDTOCompact positionDTO : this)
         {
             if (portfolioId.key.equals(positionDTO.portfolioId)
                     && positionDTO.averagePriceRefCcy != null

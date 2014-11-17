@@ -17,6 +17,7 @@ public class PositionDTOCompact extends ExtendedDTO implements Serializable
     public int id;
     public Integer shares;
     public int portfolioId;
+    public Double fxRate;
 
     // This price is always in USD
     public Double averagePriceRefCcy;

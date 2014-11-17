@@ -398,7 +398,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
             if (shared != 0 && avPrice != 0)
             {
                 tvBuySaleShared.setText(String.valueOf(shared));
-                tvBuySaleALLAV.setText("$ " + PositionDTOCompact.getShortDouble(avPrice));
+                tvBuySaleALLAV.setText(securityCompactDTO.getCurrencyDisplay()+ " " + PositionDTOCompact.getShortDouble(avPrice));
                 llBuySaleLine8.setVisibility(View.VISIBLE);
                 llBuySaleLine9.setVisibility(View.VISIBLE);
                 isNeedShowMore = true;
