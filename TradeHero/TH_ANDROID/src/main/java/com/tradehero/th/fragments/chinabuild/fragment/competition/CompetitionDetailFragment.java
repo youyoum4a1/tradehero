@@ -127,24 +127,41 @@ public class CompetitionDetailFragment extends DashboardFragment
     @InjectView(R.id.tvCompetitionPeriod) TextView tvCompetitionPeriod;//比赛周期
     @InjectView(R.id.tvCompetitionIntro) TextView tvCompetitionIntro;//比赛介绍
     @InjectView(R.id.tvGotoCompetition) TextView tvGotoCompetition;//去比赛
+    //
+    //@InjectView(R.id.includeMyPosition) RelativeLayout includeMyPosition;//我的比赛数据行
+    //@InjectView(R.id.tvUserRank) TextView tvUserRank;//我的排名
+    //@InjectView(R.id.tvUserExtraValue) TextView tvUserExtraValue;//我的收益率
+    //@InjectView(R.id.tvUserName) TextView tvUserName;//我的名字
+    //@InjectView(R.id.imgUserHead) ImageView imgUserHead;//我的头像
+    //@InjectView(R.id.imgRightArrow) ImageView imgRightArrow;
+    //
+    //@InjectView(R.id.llCompetitionLeaderboardTitle) LinearLayout llCompetitionLeaderboardTitle;//比赛排名 TITLE
+    //@InjectView(R.id.tvLeaderboardTime) TextView tvLeaderboardTime;
 
-    @InjectView(R.id.includeMyPosition) RelativeLayout includeMyPosition;//我的比赛数据行
-    @InjectView(R.id.tvUserRank) TextView tvUserRank;//我的排名
-    @InjectView(R.id.tvUserExtraValue) TextView tvUserExtraValue;//我的收益率
-    @InjectView(R.id.tvUserName) TextView tvUserName;//我的名字
-    @InjectView(R.id.imgUserHead) ImageView imgUserHead;//我的头像
-    @InjectView(R.id.imgRightArrow) ImageView imgRightArrow;
+    //private TextView tvCompetitionDetailMore;//比赛详情
+    //private TextView tvCompetitionCreator;//创建人
+    //private TextView tvCompetitionExchange;//比赛交易所
+    //private TextView tvCompetitionPeriod;//比赛周期
+    //private TextView tvCompetitionIntro;//比赛介绍
+    //private TextView tvGotoCompetition;//去比赛
+    private RelativeLayout includeMyPosition;//我的比赛数据行
+    private TextView tvUserRank;//我的排名
+    private TextView tvUserExtraValue;//我的收益率
+    private TextView tvUserName;//我的名字
+    private ImageView imgUserHead;//我的头像
+    private ImageView imgRightArrow;
+    private LinearLayout llCompetitionLeaderboardTitle;//比赛排名 TITLE
+    private TextView tvLeaderboardTime;
 
-    @InjectView(R.id.llCompetitionLeaderboardTitle) LinearLayout llCompetitionLeaderboardTitle;//比赛排名 TITLE
-    @InjectView(R.id.tvLeaderboardTime) TextView tvLeaderboardTime;
     @InjectView(R.id.btnCollegeSelect) Button btnCollegeSelect;
-
     @InjectView(R.id.tradeheroprogressbar_competition_detail) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.rlRankAll) RelativeLayout rlRankAll;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     private boolean isShowHeadLine = false;
+
+    private LinearLayout mRefreshView;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -166,6 +183,14 @@ public class CompetitionDetailFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.competition_detail_layout, container, false);
         ButterKnife.inject(this, view);
+
+        listRanks.setEmptyView(imgEmpty);
+        listRanks.setAdapter(adapter);
+        ListView lv = listRanks.getRefreshableView();
+        mRefreshView = (LinearLayout) inflater.inflate(R.layout.competition_detail_listview_header, null);
+        lv.addHeaderView(mRefreshView);
+        mRefreshView.setOnClickListener(null);
+        initRoot(mRefreshView);
 
         includeMyPosition.setVisibility(isShowHeadLine ? View.VISIBLE : View.GONE);
 
@@ -189,9 +214,53 @@ public class CompetitionDetailFragment extends DashboardFragment
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlRankAll);
         }
 
-        listRanks.setEmptyView(imgEmpty);
-        listRanks.setAdapter(adapter);
         return view;
+    }
+
+    public void initRoot(View view)
+    {
+        //tvCompetitionDetailMore = (TextView) view.findViewById(R.id.tvCompetitionDetailMore);//比赛详情
+        //tvCompetitionCreator = (TextView) view.findViewById(R.id.tvCompetitionCreator);//创建人
+        //tvCompetitionExchange = (TextView) view.findViewById(R.id.tvCompetitionExchange);//比赛交易所
+        //tvCompetitionPeriod = (TextView) view.findViewById(R.id.tvCompetitionPeriod);//比赛周期
+        //tvCompetitionIntro = (TextView) view.findViewById(R.id.tvCompetitionIntro);//比赛介绍
+        //tvGotoCompetition = (TextView) view.findViewById(R.id.tvGotoCompetition);//去比赛
+        includeMyPosition = (RelativeLayout) view.findViewById(R.id.includeMyPosition);//我的比赛数据行
+        tvUserRank = (TextView) view.findViewById(R.id.tvUserRank);//我的排名
+        tvUserExtraValue = (TextView) view.findViewById(R.id.tvUserExtraValue);//我的收益率
+        tvUserName = (TextView) view.findViewById(R.id.tvUserName);//我的名字
+        imgUserHead = (ImageView) view.findViewById(R.id.imgUserHead);//我的头像
+        imgRightArrow = (ImageView) view.findViewById(R.id.imgRightArrow);
+        llCompetitionLeaderboardTitle = (LinearLayout) view.findViewById(R.id.llCompetitionLeaderboardTitle);//比赛排名 TITLE
+        tvLeaderboardTime = (TextView) view.findViewById(R.id.tvLeaderboardTime);
+
+
+
+        includeMyPosition.setOnClickListener(new View.OnClickListener()
+        {
+            @Override public void onClick(View view)
+            {
+                onClickMyPosition();
+            }
+        });
+
+        //tvCompetitionDetailMore.setOnClickListener(new View.OnClickListener()
+        //{
+        //    @Override public void onClick(View view)
+        //    {
+        //        onDetailClicked();
+        //    }
+        //});
+        //
+        //tvGotoCompetition.setOnClickListener(new View.OnClickListener()
+        //{
+        //    @Override public void onClick(View view)
+        //    {
+        //        onGotoCompetitionClicked();
+        //    }
+        //});
+
+
     }
 
     public void getBundleCompetition()
@@ -267,10 +336,13 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
             {
-                LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
-                enterPortfolio(userDTO);
+                if (position >= 0)
+                {
+                    LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
+                    enterPortfolio(userDTO);
 
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_RANK_POSITION, "" + position));
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_RANK_POSITION, "" + position));
+                }
             }
         });
     }
@@ -447,71 +519,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
     }
 
-    @OnClick(R.id.btnCollegeSelect)
-    public void onCollegeSelect()
-    {
-        pushFragment(CompetitionCollegeFragment.class, null);
-    }
-
-    @OnClick(R.id.tvGotoCompetition)
-    public void onGotoCompetitionClicked()
-    {
-        if (userCompetitionDTO.isOngoing)
-        {
-            if (!userCompetitionDTO.isEnrolled)
-            {
-                if (mUserProfileDTO != null && mUserProfileDTO.isVisitor)
-                {
-                    alertDialogUtil.popWithOkCancelButton(getActivity(), R.string.app_name,
-                            R.string.guest_user_dialog_summary,
-                            R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            if (getActivity() == null)
-                            {
-                                return;
-                            }
-                            Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
-                            startActivity(gotoAuthticationIntent);
-                            getActivity().finish();
-                        }
-                    });
-                }
-                else
-                {
-                    //去报名
-                    toJoinCompetition();//去报名
-                }
-            }
-            else
-            {
-                toPlayCompetition();//去比赛
-            }
-        }
-    }
-
-    @OnClick(R.id.tvCompetitionDetailMore)
-    public void onDetailClicked()
-    {
-        Bundle bundle = new Bundle();
-        String url = userCompetitionDTO.detailUrl;
-
-        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_URL, url);
-        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_TITLE, userCompetitionDTO.name);
-        pushFragment(WebViewSimpleFragment.class, bundle);
-    }
-
-    @OnClick(R.id.includeMyPosition)
-    public void onClickMyPosition()
-    {
-        if (userCompetitionDTO.isOngoing)
-        {
-            Timber.d("进入我的持仓页面");
-            enterPortfolio();
-        }
-    }
-
     //通过competitionId去获取比赛详情
     public void fetchCompetitionDetail(boolean showDialog)
     {
@@ -554,7 +561,7 @@ public class CompetitionDetailFragment extends DashboardFragment
 
     public void getMySelfRank()
     {
-        if(leaderboardDTO == null)
+        if (leaderboardDTO == null)
         {
             competitionCacheLazy.get().getMySelfRank(userCompetitionDTO.leaderboardId, currentUserId.toUserBaseKey().getUserId(), callbackMySelfRank);
         }
@@ -641,6 +648,7 @@ public class CompetitionDetailFragment extends DashboardFragment
     }
 
     private LeaderboardDTO leaderboardDTO;
+
     private void displayMySelfRank(LeaderboardDTO leaderboardDTO)
     {
         this.leaderboardDTO = leaderboardDTO;
@@ -965,5 +973,70 @@ public class CompetitionDetailFragment extends DashboardFragment
                     }
                 });
         mShareSheetDialog = THDialog.showUpDialog(getActivity(), contentView);
+    }
+
+    @OnClick(R.id.btnCollegeSelect)
+    public void onCollegeSelect()
+    {
+        pushFragment(CompetitionCollegeFragment.class, null);
+    }
+
+    @OnClick(R.id.tvGotoCompetition)
+    public void onGotoCompetitionClicked()
+    {
+        if (userCompetitionDTO.isOngoing)
+        {
+            if (!userCompetitionDTO.isEnrolled)
+            {
+                if (mUserProfileDTO != null && mUserProfileDTO.isVisitor)
+                {
+                    alertDialogUtil.popWithOkCancelButton(getActivity(), R.string.app_name,
+                            R.string.guest_user_dialog_summary,
+                            R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
+                    {
+                        @Override public void onClick(DialogInterface dialog, int which)
+                        {
+                            if (getActivity() == null)
+                            {
+                                return;
+                            }
+                            Intent gotoAuthticationIntent = new Intent(getActivity(), AuthenticationActivity.class);
+                            startActivity(gotoAuthticationIntent);
+                            getActivity().finish();
+                        }
+                    });
+                }
+                else
+                {
+                    //去报名
+                    toJoinCompetition();//去报名
+                }
+            }
+            else
+            {
+                toPlayCompetition();//去比赛
+            }
+        }
+    }
+
+    @OnClick(R.id.tvCompetitionDetailMore)
+    public void onDetailClicked()
+    {
+        Bundle bundle = new Bundle();
+        String url = userCompetitionDTO.detailUrl;
+
+        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_URL, url);
+        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_TITLE, userCompetitionDTO.name);
+        pushFragment(WebViewSimpleFragment.class, bundle);
+    }
+
+    //@OnClick(R.id.includeMyPosition)
+    public void onClickMyPosition()
+    {
+        if (userCompetitionDTO.isOngoing)
+        {
+            Timber.d("进入我的持仓页面");
+            enterPortfolio();
+        }
     }
 }

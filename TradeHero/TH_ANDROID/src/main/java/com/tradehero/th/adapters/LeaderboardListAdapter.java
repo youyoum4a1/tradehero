@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.fragments.chinabuild.data.EmptyLeaderboardUserDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -49,6 +51,12 @@ public class LeaderboardListAdapter extends BaseAdapter
 
     public void setListData(LeaderboardUserDTOList list)
     {
+        if(leaderboardUserDTOs == null) leaderboardUserDTOs = list;
+        if (leaderboardUserDTOs != null && list.size() == 0)
+        {
+            leaderboardUserDTOs.add(new EmptyLeaderboardUserDTO());
+            return;
+        }
         this.leaderboardUserDTOs = list;
     }
 
@@ -62,6 +70,16 @@ public class LeaderboardListAdapter extends BaseAdapter
         this.leaderboardUserDTOs.addAll(listAdd);
     }
 
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        return position >= 0;
+    }
+
     @Override public int getCount()
     {
         return leaderboardUserDTOs == null ? 0 : leaderboardUserDTOs.size();
@@ -69,6 +87,7 @@ public class LeaderboardListAdapter extends BaseAdapter
 
     @Override public Object getItem(int i)
     {
+        if (i == -1) return null;
         return leaderboardUserDTOs == null ? null : leaderboardUserDTOs.get(i);
     }
 
@@ -85,7 +104,7 @@ public class LeaderboardListAdapter extends BaseAdapter
             ViewHolder holder = null;
             if (convertView == null)
             {
-                if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION ||leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
+                if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
                 {
                     convertView = inflater.inflate(R.layout.leaderboard_user_list_item_for_shool, viewGroup, false);
                 }
@@ -104,12 +123,25 @@ public class LeaderboardListAdapter extends BaseAdapter
                 {
                     holder.tvSchool = (TextView) convertView.findViewById(R.id.tvSchool);
                 }
+                holder.allContent = (RelativeLayout)convertView.findViewById(R.id.rlItemAll);
                 convertView.setTag(holder);
             }
             else
             {
                 holder = (ViewHolder) convertView.getTag();
             }
+
+
+            if (item instanceof EmptyLeaderboardUserDTO)
+            {
+                holder.allContent.setVisibility(View.GONE);
+                return convertView;
+            }
+            else
+            {
+                holder.allContent.setVisibility(View.VISIBLE);
+            }
+
             if (position < 3)
             {
                 holder.tvUserRank.setText("");
@@ -189,5 +221,6 @@ public class LeaderboardListAdapter extends BaseAdapter
         public TextView tvUserExtraTitle = null;
         public TextView tvUserExtraValue = null;
         public TextView tvSchool = null;
+        public RelativeLayout allContent;
     }
 }
