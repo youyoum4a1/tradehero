@@ -53,4 +53,13 @@ public class CountryLanguagePreference extends AbstractPreference<CountryLanguag
     {
         return preference.contains(nameKey) && preference.contains(countryKey) && preference.contains(languageKey);
     }
+
+    @Override public void delete()
+    {
+        preference.edit()
+                .remove(nameKey)
+                .remove(countryKey)
+                .remove(languageKey)
+                .apply();
+    }
 }
