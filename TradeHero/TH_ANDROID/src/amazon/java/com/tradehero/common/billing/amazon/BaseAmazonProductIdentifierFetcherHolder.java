@@ -1,12 +1,12 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonProductIdentifierFetcherHolder<
         AmazonSKUListKeyType extends AmazonSKUListKey,
@@ -48,7 +48,7 @@ abstract public class BaseAmazonProductIdentifierFetcherHolder<
         AmazonProductIdentifierFetcherType skuFetcher = amazonProductIdentifierFetcherTypeProvider.get();
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
-        skuFetcher.fetchProductIdentifiers(requestCode);
+        skuFetcher.fetchProductIdentifiers();
     }
 
     @Override public boolean isUnusedRequestCode(int requestCode)

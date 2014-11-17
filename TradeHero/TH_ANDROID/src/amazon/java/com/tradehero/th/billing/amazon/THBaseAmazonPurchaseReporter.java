@@ -32,7 +32,8 @@ public class THBaseAmazonPurchaseReporter
     implements THAmazonPurchaseReporter
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonPurchaseReporter(
+    public THBaseAmazonPurchaseReporter(
+            int requestCode,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<AlertPlanServiceWrapper> alertPlanServiceWrapper,
             @NonNull Lazy<AlertPlanCheckServiceWrapper> alertPlanCheckServiceWrapper,
@@ -42,6 +43,7 @@ public class THBaseAmazonPurchaseReporter
             @NonNull Lazy<THAmazonProductDetailCacheRx> skuDetailCache)
     {
         super(
+                requestCode,
                 currentUserId,
                 alertPlanServiceWrapper,
                 alertPlanCheckServiceWrapper,
@@ -52,9 +54,8 @@ public class THBaseAmazonPurchaseReporter
     }
     //</editor-fold>
 
-    @Override public void reportPurchase(int requestCode, @NonNull THAmazonPurchase purchase)
+    @Override public void reportPurchase(@NonNull THAmazonPurchase purchase)
     {
-        this.requestCode = requestCode;
         this.purchase = purchase;
 
         // TODO do something when info is not available

@@ -8,7 +8,6 @@ import com.tradehero.common.billing.amazon.BaseAmazonInventoryFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
-import javax.inject.Inject;
 
 public class THBaseAmazonInventoryFetcher
     extends BaseAmazonInventoryFetcher<
@@ -20,7 +19,7 @@ public class THBaseAmazonInventoryFetcher
     @NonNull protected final THAmazonExceptionFactory amazonExceptionFactory;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonInventoryFetcher(
+    public THBaseAmazonInventoryFetcher(
             int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory)

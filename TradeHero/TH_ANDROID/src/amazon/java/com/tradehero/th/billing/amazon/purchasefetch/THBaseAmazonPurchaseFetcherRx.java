@@ -9,7 +9,6 @@ import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
-import com.tradehero.th.billing.amazon.ProcessingPurchase;
 import com.tradehero.th.billing.amazon.THAmazonOrderId;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
 import com.tradehero.th.billing.amazon.THAmazonPurchaseIncomplete;
@@ -34,7 +33,7 @@ public class THBaseAmazonPurchaseFetcherRx
     public THBaseAmazonPurchaseFetcherRx(
             int request,
             @NonNull AmazonPurchasingService purchasingService,
-            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull StringSetPreference processingPurchaseStringSet)
     {
         super(request, purchasingService);
         this.processingPurchaseStringSet = processingPurchaseStringSet;

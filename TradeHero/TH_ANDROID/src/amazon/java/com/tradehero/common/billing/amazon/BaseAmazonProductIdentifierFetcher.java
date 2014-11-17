@@ -58,7 +58,7 @@ abstract public class BaseAmazonProductIdentifierFetcher<
         this.fetchedListener = listener;
     }
 
-    @Override public void fetchProductIdentifiers(int requestCode)
+    @Override public void fetchProductIdentifiers()
     {
         checkNotFetching();
         this.fetching = true;

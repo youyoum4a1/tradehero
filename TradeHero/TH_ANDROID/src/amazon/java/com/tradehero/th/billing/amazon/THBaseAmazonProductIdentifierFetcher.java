@@ -8,7 +8,6 @@ import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.amazon.BaseAmazonProductIdentifierFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
-import javax.inject.Inject;
 
 public class THBaseAmazonProductIdentifierFetcher
     extends BaseAmazonProductIdentifierFetcher<
@@ -19,7 +18,7 @@ public class THBaseAmazonProductIdentifierFetcher
     implements THAmazonProductIdentifierFetcher
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonProductIdentifierFetcher(
+    public THBaseAmazonProductIdentifierFetcher(
             int requestCode,
             @NonNull AmazonPurchasingService purchasingService)
     {

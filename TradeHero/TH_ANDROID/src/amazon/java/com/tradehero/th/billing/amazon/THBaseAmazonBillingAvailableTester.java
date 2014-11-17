@@ -5,14 +5,13 @@ import com.tradehero.common.billing.amazon.BaseAmazonBillingAvailableTester;
 import com.tradehero.common.billing.amazon.exception.AmazonBillingNotAvailableException;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
-import javax.inject.Inject;
 
 public class THBaseAmazonBillingAvailableTester
     extends BaseAmazonBillingAvailableTester<AmazonException>
     implements THAmazonBillingAvailableTester
 {
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonBillingAvailableTester(
+    public THBaseAmazonBillingAvailableTester(
             int request,
             @NonNull AmazonPurchasingService purchasingService)
     {

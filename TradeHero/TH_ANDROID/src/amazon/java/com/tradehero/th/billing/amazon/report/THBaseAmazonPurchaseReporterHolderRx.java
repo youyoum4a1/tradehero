@@ -5,7 +5,6 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.billing.amazon.THAmazonOrderId;
 import com.tradehero.th.billing.amazon.THAmazonProductDetail;
 import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.amazon.exception.AmazonMissingCachedProductDetailForPurchaseException;
 import com.tradehero.th.billing.report.THBasePurchaseReporterHolderRx;
 import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
 import com.tradehero.th.network.service.AlertPlanServiceWrapper;
@@ -18,6 +17,7 @@ import javax.inject.Inject;
 public class THBaseAmazonPurchaseReporterHolderRx
         extends THBasePurchaseReporterHolderRx<
         AmazonSKU,
+        THAmazonProductDetail,
         THAmazonOrderId,
         THAmazonPurchase>
         implements THAmazonPurchaseReporterHolderRx
@@ -47,22 +47,16 @@ public class THBaseAmazonPurchaseReporterHolderRx
 
     @NonNull @Override protected THBaseAmazonPurchaseReporterRx createReporter(
             int requestCode,
-            @NonNull THAmazonPurchase purchase)
+            @NonNull THAmazonPurchase purchase,
+            @NonNull THAmazonProductDetail productDetail)
     {
-        THAmazonProductDetail productDetail = productDetailCache.getValue(purchase.getProductIdentifier());
-        if (productDetail != null)
-        {
-            return new THBaseAmazonPurchaseReporterRx(
-                    requestCode,
-                    purchase,
-                    productDetail,
-                    alertPlanServiceWrapper,
-                    alertPlanCheckServiceWrapper,
-                    userServiceWrapper,
-                    portfolioServiceWrapper);
-        }
-        throw new AmazonMissingCachedProductDetailForPurchaseException(
-                "Missing cache detail for " + purchase.getProductIdentifier(),
-                purchase);
+        return new THBaseAmazonPurchaseReporterRx(
+                requestCode,
+                purchase,
+                productDetail,
+                alertPlanServiceWrapper,
+                alertPlanCheckServiceWrapper,
+                userServiceWrapper,
+                portfolioServiceWrapper);
     }
 }
