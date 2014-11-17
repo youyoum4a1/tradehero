@@ -24,7 +24,7 @@ public class UserFriendsFacebookDTO extends UserFriendsDTO
 
     @Override public int getNetworkLabelImage()
     {
-        return R.drawable.icon_share_fb_on;
+        return R.drawable.logo;
     }
 
     @Override public String getProfilePictureURL()

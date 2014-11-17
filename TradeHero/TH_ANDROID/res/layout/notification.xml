@@ -7,9 +7,8 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/notification_padding_top"
     >
-  <!--android:background="@color/white"-->
+
   <ImageView android:id="@+id/notification_icon"
-      android:src="@drawable/icon"
       tools:src="@drawable/icon"
       android:layout_marginRight="@dimen/notification_margin"
       android:layout_marginLeft="@dimen/notification_margin"

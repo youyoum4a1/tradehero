@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -12,8 +12,17 @@
      android:layout_height="wrap_content"
      android:layout_margin="10dp"
      android:textColor="@color/black"
+     android:layout_centerVertical="true"
+     android:layout_alignParentLeft="true"
      android:textSize="15sp"
      android:text=""/>
 
-</LinearLayout>
+ <ImageView android:layout_width="15dp" android:layout_height="8dp"
+            android:id="@+id/ivPositionHead"
+         android:layout_centerVertical="true"
+         android:layout_alignParentRight="true"
+         android:layout_marginRight="10dp"
+         android:background="@drawable/icon_arrow_up_gray"/>
+
+</RelativeLayout>
 

@@ -5,7 +5,7 @@ import com.tradehero.th.R;
 public enum TileType
 {
     Normal(0, false),
-    EarnCredit(R.layout.tile_earn_credit),
+    EarnCredit(R.layout.tile_extra_cash),
     ExtraCash(R.layout.tile_extra_cash),
     ResetPortfolio(R.layout.tile_reset_portfolio),
     Survey(R.layout.tile_survey),

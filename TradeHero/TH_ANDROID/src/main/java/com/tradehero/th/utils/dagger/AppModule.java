@@ -1,6 +1,7 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
@@ -155,6 +156,7 @@ import java.util.Locale;
                         SettingsProfileFragment.class,
                         ProfileInfoView.class,
                         TradeHeroProgressBar.class,
+                        PullToRefreshExpandableListView.class,
                         SimplePremiumFollowUserAssistant.class,
                         PremiumFollowUserAssistant.class,
                         SettingsFragment.class,
@@ -371,6 +373,7 @@ import java.util.Locale;
                         SecurityListAdapter.class,
                         SecuritySearchListAdapter.class,
                         MyTradePositionListAdapter.class,
+                        CNPersonTradePositionListAdpater.class,
 
                         UserTimeLineAdapter.class,
                         SecurityTimeLineDiscussOrNewsAdapter.class,

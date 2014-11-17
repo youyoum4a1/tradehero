@@ -111,20 +111,19 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
-      <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView
           xmlns:ptr="http://schemas.android.com/apk/res-auto"
           ptr:ptrHeaderTextColor="@color/black"
           android:id="@+id/tradeMyPositionList"
           android:scrollingCache="false"
           android:fadingEdge="none"
           android:dividerHeight="1px"
-          android:divider="@color/separate_line_color"
+          android:divider="@null"
           android:background="@color/bg_fragment"
           android:layout_width="fill_parent"
           android:layout_height="fill_parent">
-      </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+      </com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView>
 
-      <include layout="@layout/position_head_item" android:id="@+id/llPositionHeadItem"/>
     </RelativeLayout>
 
 

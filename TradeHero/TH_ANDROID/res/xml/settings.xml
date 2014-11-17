@@ -105,7 +105,6 @@
         android:enabled="true"
         android:key="@string/key_settings_primary_referral_code"
         android:title="@string/settings_primary_referral_code"
-        android:icon="@drawable/refer_friend"
         />
 
     <Preference

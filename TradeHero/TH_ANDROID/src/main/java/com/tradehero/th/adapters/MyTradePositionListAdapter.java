@@ -107,26 +107,17 @@ public class MyTradePositionListAdapter extends BaseAdapter
 
         if (isLocked)
         {
-            //if (getSecurityPositionCount() > 0)
-            //{
             listData.add(new PositionHeadItem("持仓"));
             listData.add(new PositionLockedItem());
-            //}
         }
         else
         {
-            //if (getSecurityPositionCount() > 0)
-            //{
             listData.add(new PositionHeadItem(getHeadStrOfSecurityPosition()));
             listData.addAll(securityPositionList);
-            //}
         }
 
-        //if (getSecurityPositionClosedCount() > 0)
-        //{
         listData.add(new PositionHeadItem(getHeadStrOfSecurityClosedPosition()));
         listData.addAll(securityPositionListClosed);
-        //}
 
         if (getWatchPositionCount() > 0)
         {

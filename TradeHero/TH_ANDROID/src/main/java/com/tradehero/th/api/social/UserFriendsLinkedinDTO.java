@@ -25,7 +25,7 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
 
     @Override public int getNetworkLabelImage()
     {
-        return R.drawable.icon_share_linkedin_on;
+        return R.drawable.logo;
     }
 
     @Override public String getProfilePictureURL()

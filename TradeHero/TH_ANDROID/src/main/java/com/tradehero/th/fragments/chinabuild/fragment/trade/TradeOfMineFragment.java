@@ -5,24 +5,20 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.CNPersonTradePositionListAdpater;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -92,20 +88,16 @@ public class TradeOfMineFragment extends DashboardFragment
 
     @InjectView(R.id.tradeheroprogressbar_trade_mine) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.tradeMyPositionList) SecurityListView listView;
+    @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
     @InjectView(R.id.llEmpty) LinearLayout llEmpty;
     @InjectView(R.id.btnEmptyAction) Button btnEmptyAction;
 
     @InjectView(R.id.rlListAll) RelativeLayout rlListAll;
-    @InjectView(R.id.llPositionHeadItem) LinearLayout llPositionHeadItem;
-    @InjectView(R.id.tvPositionHead) TextView tvPositionHead;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
-    protected GetPositionsDTOKey getPositionsDTOKey;
-    protected GetPositionsDTO getPositionsDTO;
 
-    private MyTradePositionListAdapter adapter;
+    private CNPersonTradePositionListAdpater adapter;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareDialogTotalValueKey BooleanPreference mShareDialogTotalValueKeyPreference;
     @Inject @ShareDialogROIValueKey BooleanPreference mShareDialogROIValueKeyPreference;
@@ -121,7 +113,7 @@ public class TradeOfMineFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        adapter = new MyTradePositionListAdapter(getActivity());
+        adapter = new CNPersonTradePositionListAdpater(getActivity());
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         userWatchlistPositionFetchListener = createWatchlistListener();
         portfolioFetchListener = createPortfolioCacheListener();
@@ -139,7 +131,7 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.trade_of_mine, container, false);
         ButterKnife.inject(this, view);
-        if (adapter.getCount() == 0)
+        if (adapter.getTotalCount() == 0)
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_trade_mine);
             progressBar.startLoading();
@@ -151,7 +143,6 @@ public class TradeOfMineFragment extends DashboardFragment
         startTimerForView();
         initView();
         fetchPortfolio();
-        llPositionHeadItem.setVisibility(View.GONE);//用来显示浮动的标签
 
         return view;
     }
@@ -159,55 +150,62 @@ public class TradeOfMineFragment extends DashboardFragment
     public void initView()
     {
         listView.setEmptyView(llEmpty);
-        //listView.setAdapter((ListAdapter)adapter);
-        listView.setAdapter(adapter);
+        listView.getRefreshableView().setAdapter(adapter);
+        listView.getRefreshableView().setChildDivider(null);
+        listView.getRefreshableView().setGroupIndicator(null);
+//        listView.getRefreshableView().setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+//            @Override
+//            public boolean onGroupClick(ExpandableListView expandableListView, View view, int groupPosition, long l) {
+//                if(listView.getRefreshableView().isGroupExpanded(groupPosition)){
+//                    listView.getRefreshableView().collapseGroup(groupPosition);
+//
+//                }else{
+//                    listView.getRefreshableView().expandGroup(groupPosition);
+//                    int currentPosition = 1;
+//                    if(groupPosition == 1){
+//                        if(listView.getRefreshableView().isGroupExpanded(0)) {
+//                            currentPosition = currentPosition + adapter.getSecurityPositionCount();
+//                        }
+//                    }
+//                    if(groupPosition==2){
+//                        if(listView.getRefreshableView().isGroupExpanded(0)) {
+//                            currentPosition = currentPosition + adapter.getSecurityPositionCount();
+//                        }
+//                        if(listView.getRefreshableView().isGroupExpanded(1)) {
+//                            currentPosition = currentPosition + adapter.getSecurityPositionClosedCount();
+//                        }
+//                    }
+//                    currentPosition = currentPosition + 3;
+//                    listView.getRefreshableView().smoothScrollToPosition(currentPosition);
+//                }
+//                return true;
+//            }
+//        });
         listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
-        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                Timber.d("下拉刷新");
+        listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ExpandableListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ExpandableListView> refreshView) {
                 refreshData(true);
                 fetchPortfolio(true);
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ExpandableListView> refreshView) {
 
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-            {
-                PositionInterface item = adapter.getItem((int) position);
+        listView.getRefreshableView().setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int groupPosition, int childPosition, long l) {
+                PositionInterface item = (PositionInterface)adapter.getChild(groupPosition, childPosition);
                 dealSecurityItem(item);
+                return true;
             }
         });
 
-        listView.setOnScrollListener(new AbsListView.OnScrollListener()
-        {
-            @Override public void onScrollStateChanged(AbsListView absListView, int i)
-            {
-
-            }
-
-            @Override public void onScroll(AbsListView absListView, int i, int i2, int i3)
-            {
-                Timber.d("onScroll i = " + i + " i2 = " + i2 + "i3 = " + i3);
-                if (i == 0)
-                {
-                    llPositionHeadItem.setVisibility(View.GONE);
-                }
-                else
-                {
-                    llPositionHeadItem.setVisibility(View.VISIBLE);
-                    tvPositionHead.setText(adapter.getHeadText(i));
-                }
-            }
-        });
+        listView.getRefreshableView().expandGroup(0);
     }
 
     public void dealSecurityItem(PositionInterface item)

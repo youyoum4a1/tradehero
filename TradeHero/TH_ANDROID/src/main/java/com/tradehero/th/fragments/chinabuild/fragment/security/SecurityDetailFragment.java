@@ -1876,6 +1876,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             @Override
             public void run()
             {
+                if(betterViewAnimator==null){
+                    return;
+                }
                 int width = betterViewAnimator.getWidth();
                 int height = betterViewAnimator.getHeight();
                 int radius = betterViewAnimator.getHeight() / 2;
