@@ -1,0 +1,28 @@
+package com.tradehero.common.billing.samsung.inventory;
+
+import android.support.annotation.NonNull;
+import com.tradehero.common.billing.inventory.BaseBillingInventoryFetcherHolderRx;
+import com.tradehero.common.billing.samsung.SamsungProductDetail;
+import com.tradehero.common.billing.samsung.SamsungSKU;
+import java.util.List;
+
+abstract public class BaseSamsungInventoryFetcherHolderRx<
+        SamsungSKUType extends SamsungSKU,
+        SamsungProductDetailType extends SamsungProductDetail<SamsungSKUType>>
+        extends BaseBillingInventoryFetcherHolderRx<
+        SamsungSKUType,
+        SamsungProductDetailType>
+        implements SamsungInventoryFetcherHolderRx<
+        SamsungSKUType,
+        SamsungProductDetailType>
+{
+    //<editor-fold desc="Constructors">
+    public BaseSamsungInventoryFetcherHolderRx()
+    {
+        super();
+    }
+    //</editor-fold>
+
+    @NonNull @Override abstract protected SamsungInventoryFetcherRx<SamsungSKUType, SamsungProductDetailType> createFetcher(int requestCode,
+            @NonNull List<SamsungSKUType> productIdentifiers);
+}
