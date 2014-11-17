@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,10 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.RangeDTO;
@@ -28,12 +29,13 @@ import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.rx.view.list.ListViewObservable;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
+import rx.android.observables.Assertions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
@@ -47,7 +49,8 @@ public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
 
-    @InjectView(R.id.timeline_list_view) PullToRefreshListView mTimelineListView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.timeline_list_view) ListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;
@@ -60,6 +63,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @NonNull private CompositeSubscription timelineSubscriptions;
 
     private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
+    private int mTotalHeadersAndFooters;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -87,67 +91,53 @@ public class DiscoveryDiscussionFragment extends Fragment
         }
     }
 
+    private Observable<RangeDTO> createPaginationObservable()
+    {
+        Observable<RangeDTO> pullFromStartObservable = Observable.create(subscriber ->
+                swipeRefreshLayout.setOnRefreshListener(() ->
+                                subscriber.onNext(RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId))
+                ));
+
+        Observable<RangeDTO> pullFromBottomObservable = Observable.create(subscriber ->
+                mTimelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener,
+                        new OnScrollOperator(subscriber))));
+        return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
+    }
+
     private void initView(View view)
     {
         ButterKnife.inject(this, view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
+        mBottomLoadingView.setVisibility(View.INVISIBLE);
+        mTimelineListView.addFooterView(mBottomLoadingView);
         mTimelineListView.setAdapter(discoveryDiscussionAdapter);
-        mTimelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener));
-        mTimelineListView.getRefreshableView().addFooterView(mBottomLoadingView);
+        mTotalHeadersAndFooters = mTimelineListView.getHeaderViewsCount() + mTimelineListView.getFooterViewsCount();
 
         PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
-        // emit item on pull up/down or when reaching the bottom of the listview
-        Observable<RangeDTO> timelineRefreshRangeObservable = Observable
-                .create(ListViewObservable.refreshOperator(mTimelineListView, ListViewObservable.REFRESH_ON_LAST_ELEMENT))
-                .map(mode -> {
-                    switch (mode)
-                    {
-                        case PULL_FROM_END:
-                            mBottomLoadingView.setVisibility(View.VISIBLE);
-                            return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
-                        case PULL_FROM_START:
-                        default:
-                            return RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId);
-                    }
-                })
-                .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
-
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
-        timelineSubscriptions.add(timelineSubject.subscribe(new EmptyObserver<List<TimelineItemDTOKey>>()
-        {
-            @Override public void onNext(List<TimelineItemDTOKey> args)
-            {
-                discoveryDiscussionAdapter.setItems(args);
-            }
-        }));
+        timelineSubscriptions.add(timelineSubject.subscribe(discoveryDiscussionAdapter::setItems));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
+        Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
         timelineSubscriptions.add(rxLoaderManager.create(
                 DISCOVERY_LIST_LOADER_ID,
-                PaginationObservable.createFromRange(
-                        timelineRefreshRangeObservable,
-                        (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
-                                rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(
-                                        TimelineSection.Hot,
-                                        currentUserId.toUserBaseKey(),
-                                        rangeDTO)
-                                        .map(TimelineDTO::getEnhancedItems)
-                                        .flatMap(Observable::from)
-                                        .map(TimelineItemDTO::getDiscussionKey)
-                                        .toList()))
-                // gotta do error handling here when applicable
+                PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
+                        rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
+                                .flatMapIterable(TimelineDTO::getEnhancedItems)
+                                .map(TimelineItemDTO::getDiscussionKey)
+                                .toList()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(toastOnErrorAction)
                 .onErrorResumeNext(Observable.empty())
-                .doOnCompleted(mTimelineListView::onRefreshComplete)
                 .subscribe(timelineSubject));
     }
 
     @Override public void onDestroyView()
     {
-        mTimelineListView.setOnLastItemVisibleListener(null);
         timelineSubscriptions.unsubscribe();
         rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
         super.onDestroyView();
@@ -163,7 +153,8 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         private void refreshComplete()
         {
-            mTimelineListView.onRefreshComplete();
+            mBottomLoadingView.setVisibility(View.INVISIBLE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override public void onCompleted()
@@ -195,6 +186,37 @@ public class DiscoveryDiscussionFragment extends Fragment
             else
             {
                 currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null);
+            }
+        }
+    }
+
+    private class OnScrollOperator implements AbsListView.OnScrollListener
+    {
+        private final Subscriber<? super RangeDTO> subscriber;
+        private boolean scrollStateChanged;
+
+        public OnScrollOperator(Subscriber<? super RangeDTO> subscriber)
+        {
+            this.subscriber = subscriber;
+        }
+
+        @Override public void onScrollStateChanged(AbsListView view, int scrollState)
+        {
+            scrollStateChanged = true;
+        }
+
+        @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+        {
+            Assertions.assertUiThread();
+
+            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
+            {
+                if (currentRangeDTO != null && scrollStateChanged)
+                {
+                    scrollStateChanged = false;
+                    mBottomLoadingView.setVisibility(View.VISIBLE);
+                    subscriber.onNext(RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null));
+                }
             }
         }
     }
