@@ -5,7 +5,12 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -19,7 +24,6 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdpater;
-import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -41,7 +45,6 @@ import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -81,10 +84,11 @@ public class TradeOfMineFragment extends DashboardFragment
     @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
 
-    @InjectView(R.id.tvWatchListItemROI) TextView tvItemROI;
-    @InjectView(R.id.tvWatchListItemAllAmount) TextView tvItemAllAmount;
-    @InjectView(R.id.tvWatchListItemDynamicAmount) TextView tvItemDynamicAmount;
-    @InjectView(R.id.tvWatchListItemCash) TextView tvItemCash;
+    private LinearLayout mRefreshView;
+    private TextView tvItemROI;
+    private TextView tvItemAllAmount;
+    private TextView tvItemDynamicAmount;
+    private TextView tvItemCash;
 
     @InjectView(R.id.tradeheroprogressbar_trade_mine) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
@@ -131,6 +135,13 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.trade_of_mine, container, false);
         ButterKnife.inject(this, view);
+
+        ListView lv = listView.getRefreshableView();
+        mRefreshView = (LinearLayout) inflater.inflate(R.layout.trade_of_mine_listview_header, null);
+        lv.addHeaderView(mRefreshView);
+        mRefreshView.setOnClickListener(null);
+        initRoot(mRefreshView);
+
         if (adapter.getTotalCount() == 0)
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_trade_mine);
@@ -145,6 +156,14 @@ public class TradeOfMineFragment extends DashboardFragment
         fetchPortfolio();
 
         return view;
+    }
+
+    public void initRoot(View view)
+    {
+        tvItemROI = (TextView)view.findViewById(R.id.tvWatchListItemROI);
+        tvItemAllAmount = (TextView)view.findViewById(R.id.tvWatchListItemAllAmount);
+        tvItemDynamicAmount = (TextView)view.findViewById(R.id.tvWatchListItemDynamicAmount);
+        tvItemCash = (TextView)view.findViewById(R.id.tvWatchListItemCash);
     }
 
     public void initView()

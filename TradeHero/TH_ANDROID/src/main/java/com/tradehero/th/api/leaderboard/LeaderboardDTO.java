@@ -108,6 +108,10 @@ public class LeaderboardDTO extends BaseHasExpiration
 
     public String getMarkUTCString()
     {
-        return DateUtils.getFormattedUtcDate(Application.context().getResources(), markUtc);
+        if(markUtc!=null)
+        {
+            return DateUtils.getFormattedUtcDate(Application.context().getResources(), markUtc);
+        }
+        return " - - ";
     }
 }

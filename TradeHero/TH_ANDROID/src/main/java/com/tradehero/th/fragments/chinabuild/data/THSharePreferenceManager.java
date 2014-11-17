@@ -33,6 +33,9 @@ public class THSharePreferenceManager {
     public static boolean isLoginContinuallyShowed = false;
     public static int Login_Continuous_Time = 0;
 
+    //只显示一次 交易直接跳转热门持有
+    public final static String KEY_APP_SHOW_TRADE_HOLD_ONCE = "key_app_show_trade_hold_once";
+
     //Novice
     public final static String RECOMMEND_STOCK_GOD = "recommend_stock_god";
 
@@ -246,5 +249,18 @@ public class THSharePreferenceManager {
     public static void setGuideShowed(Context context, String key){
         SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
         sp.edit().putBoolean(key, false).commit();
+    }
+
+    public static boolean isShowTradeHoldOnce(Context context) {
+        if (context == null) {
+            return false;
+        }
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_GUIDE_NAME, Context.MODE_PRIVATE);
+        boolean isOn = sp.getBoolean(KEY_APP_SHOW_TRADE_HOLD_ONCE, false);
+        if(!isOn)
+        {
+            sp.edit().putBoolean(KEY_APP_SHOW_TRADE_HOLD_ONCE, true).commit();
+        }
+        return isOn;
     }
 }

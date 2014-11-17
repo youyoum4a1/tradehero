@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
@@ -59,6 +60,10 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
         indicator.setOutsideListener(this);
+        if(!THSharePreferenceManager.isShowTradeHoldOnce(getActivity()))
+        {
+            pager.setCurrentItem(1);
+        }
     }
 
     @OnClick(R.id.imgSearch)
