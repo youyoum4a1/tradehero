@@ -212,7 +212,11 @@ public class DashboardActivity extends BaseActivity
                 restoreRequestCode = null;
             }
         };
-        launchBilling();
+
+        if (Constants.RELEASE)
+        {
+            launchBilling();
+        }
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
