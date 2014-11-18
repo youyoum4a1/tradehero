@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.games.MiniGameDefDTO;
-import java.util.List;
+import com.tradehero.th.api.games.MiniGameDefDTOList;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
@@ -12,7 +12,11 @@ import rx.Observable;
 interface MiniGameServiceRx
 {
     @GET("/games/all")
-    Observable<List<MiniGameDefDTO>> getAllGames();
+    Observable<MiniGameDefDTOList> getAllGames();
+
+    @GET("/games/{gameId}")
+    Observable<MiniGameDefDTO> getGame(
+            @Path("gameId") int gameId);
 
     @POST("/games/{gameId}/recordscore")
     Observable<BaseResponseDTO> recordScore(

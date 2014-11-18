@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.games.GameScore;
 import com.tradehero.th.api.games.MiniGameDefDTO;
+import com.tradehero.th.api.games.MiniGameDefDTOList;
 import com.tradehero.th.api.games.MiniGameDefKey;
 import java.util.List;
 import javax.inject.Inject;
@@ -20,10 +21,15 @@ public class MiniGameServiceWrapper
         this.miniGameServiceRx = miniGameServiceRx;
     }
 
-    public Observable<List<MiniGameDefDTO>> getAllGames()
+    @NonNull public Observable<MiniGameDefDTOList> getAllGames()
     {
         // do preprocessing here, or since it is a GET request, let the http layer handle caching
         return miniGameServiceRx.getAllGames();
+    }
+
+    @NonNull public Observable<MiniGameDefDTO> getGame(@NonNull MiniGameDefKey gameId)
+    {
+        return miniGameServiceRx.getGame(gameId.key);
     }
 
     @NonNull public Observable<BaseResponseDTO> recordScore(@NonNull MiniGameDefKey gameId, @NonNull GameScore score)
