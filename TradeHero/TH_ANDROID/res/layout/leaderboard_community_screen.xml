@@ -16,7 +16,7 @@
       />
 
   <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-      android:id="@android:id/list"
+      android:id="@+id/leaderboard_community_list"
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       app:hasStickyHeaders="false"

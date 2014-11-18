@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -13,6 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import java.util.List;
@@ -20,7 +22,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class LeaderboardDefView extends RelativeLayout
-        implements DTOView<LeaderboardDefDTO>
+        implements DTOView<Pair<LeaderboardDefDTO, UserProfileDTO>>
 {
     @Inject protected LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;
 
@@ -58,9 +60,21 @@ public class LeaderboardDefView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override public void display(LeaderboardDefDTO dto)
+    @Override public void display(Pair<LeaderboardDefDTO, UserProfileDTO> dtoPair)
     {
-        linkWith(dto, true);
+        dto = dtoPair.first;
+        linkWith(dtoPair.first, true);
+        linkWith(dtoPair, true);
+    }
+
+    private void linkWith(Pair<LeaderboardDefDTO, UserProfileDTO> dtoPair, boolean andDisplay)
+    {
+            //leaderboardDefUserCount.setText("" + 0);
+         int leaderboardRank = dtoPair.second.getLeaderboardRanking(dto.id);
+         if (leaderboardRank > 0)
+         {
+                     //leaderboardDefUserRank.setText("" + leaderboardRank);
+         }
     }
 
     protected void linkWith(LeaderboardDefDTO dto, boolean andDisplay)

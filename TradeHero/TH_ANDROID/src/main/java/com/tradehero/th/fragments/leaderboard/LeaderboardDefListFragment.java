@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,12 @@ import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -25,11 +30,13 @@ import rx.android.observables.AndroidObservable;
 
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
-    @Inject protected Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
+    @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    @Inject CurrentUserId currentUserId;
     @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
     @Nullable protected Subscription leaderboardDefListCacheFetchSubscription;
 
-    private ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView> leaderboardDefListAdapter;
+    private ArrayDTOAdapter<Pair<LeaderboardDefDTO, UserProfileDTO>, LeaderboardDefView> leaderboardDefListAdapter;
     @InjectView(android.R.id.list) protected ListView contentListView;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -88,10 +95,17 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     private void updateLeaderboardDefListKey(Bundle bundle)
     {
         unsubscribe(leaderboardDefListCacheFetchSubscription);
+        Observable<UserProfileDTO> userObservable = userServiceWrapper.get().getUserRx(currentUserId.toUserBaseKey());
         LeaderboardDefListKey key = leaderboardDefListKeyFactory.create(bundle);
-        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(this, leaderboardDefListCache.get().get(key))
+        Observable<List<Pair<LeaderboardDefDTO, UserProfileDTO>>> leaderboardDefObservable = leaderboardDefListCache.get().get(key)
+                .map(pair -> pair.second)
+                .flatMap(Observable::from)
+                .zipWith(userObservable, Pair::create)
+                .toList();
+
+        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(this, leaderboardDefObservable)
                 .doOnError((e) -> THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key)))
                 .onErrorResumeNext(Observable.empty())
-                .subscribe((leaderboardDefPair) -> leaderboardDefListAdapter.setItems(leaderboardDefPair.second));
+                .subscribe(leaderboardDefListAdapter::setItems);
     }
 }
