@@ -199,10 +199,10 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void linkWith(@NonNull SystemStatusDTO statusDTO)
     {
-        if (statusDTO.socialFriendReward != null)
+        if (statusDTO.friendReferralAward != null)
         {
-            THSignedMoney reward = THSignedMoney.builder(statusDTO.socialFriendReward.priceRefCcy)
-                    .currency(statusDTO.socialFriendReward.currencyDisplay)
+            THSignedMoney reward = THSignedMoney.builder(statusDTO.friendReferralAward.priceRefCcy)
+                    .currency(statusDTO.friendReferralAward.currencyDisplay)
                     .build();
 
             message3.setText(Html.fromHtml(getString(MESSAGE_3, reward.toString())));

@@ -12,15 +12,12 @@ public class SystemStatusDTO implements DTO
     public boolean alertsAreFree = DEFAULT_ALERTS_ARE_FREE;
     public String androidAppPackageNameInUse;
 
-    public PriceDTO socialFriendReward;
+    public PriceDTO friendReferralAward;
 
     //<editor-fold desc="Constructors">
     public SystemStatusDTO()
     {
         super();
-
-        // FIXME
-        socialFriendReward = new PriceDTO(0.2d, "US$", "USD");
     }
     //</editor-fold>
 }
