@@ -34,8 +34,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
-import rx.android.observables.Assertions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
@@ -43,6 +41,7 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
@@ -63,7 +62,6 @@ public class DiscoveryDiscussionFragment extends Fragment
     @NonNull private CompositeSubscription timelineSubscriptions;
 
     private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
-    private int mTotalHeadersAndFooters;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -97,10 +95,12 @@ public class DiscoveryDiscussionFragment extends Fragment
                 swipeRefreshLayout.setOnRefreshListener(() ->
                                 subscriber.onNext(RangeDTO.create(currentRangeDTO.maxCount, null, currentRangeDTO.maxId))
                 ));
-
-        Observable<RangeDTO> pullFromBottomObservable = Observable.create(subscriber ->
-                mTimelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsScrollListener,
-                        new OnScrollOperator(subscriber))));
+        Observable<RangeDTO> pullFromBottomObservable = Observable.create((Observable.OnSubscribe<RangeDTO>) subscriber ->
+                mTimelineListView.setOnScrollListener(
+                        new MultiScrollListener(dashboardBottomTabsScrollListener,
+                                createNearEndScrollOperator(
+                                        subscriber, () -> RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null)))))
+                    .doOnNext(o -> mBottomLoadingView.setVisibility(View.VISIBLE));
         return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .startWith(RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null));
@@ -114,7 +114,6 @@ public class DiscoveryDiscussionFragment extends Fragment
         mBottomLoadingView.setVisibility(View.INVISIBLE);
         mTimelineListView.addFooterView(mBottomLoadingView);
         mTimelineListView.setAdapter(discoveryDiscussionAdapter);
-        mTotalHeadersAndFooters = mTimelineListView.getHeaderViewsCount() + mTimelineListView.getFooterViewsCount();
 
         PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
@@ -186,37 +185,6 @@ public class DiscoveryDiscussionFragment extends Fragment
             else
             {
                 currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null);
-            }
-        }
-    }
-
-    private class OnScrollOperator implements AbsListView.OnScrollListener
-    {
-        private final Subscriber<? super RangeDTO> subscriber;
-        private boolean scrollStateChanged;
-
-        public OnScrollOperator(Subscriber<? super RangeDTO> subscriber)
-        {
-            this.subscriber = subscriber;
-        }
-
-        @Override public void onScrollStateChanged(AbsListView view, int scrollState)
-        {
-            scrollStateChanged = true;
-        }
-
-        @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-        {
-            Assertions.assertUiThread();
-
-            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
-            {
-                if (currentRangeDTO != null && scrollStateChanged)
-                {
-                    scrollStateChanged = false;
-                    mBottomLoadingView.setVisibility(View.VISIBLE);
-                    subscriber.onNext(RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null));
-                }
             }
         }
     }
