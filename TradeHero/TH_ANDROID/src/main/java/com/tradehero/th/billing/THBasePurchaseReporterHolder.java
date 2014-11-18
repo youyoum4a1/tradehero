@@ -1,5 +1,6 @@
 package com.tradehero.th.billing;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -184,5 +185,10 @@ abstract public class THBasePurchaseReporterHolder<
         }
         purchaseReporters.clear();
         parentPurchaseReportedHandlers.clear();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

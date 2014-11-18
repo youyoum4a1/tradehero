@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay.identifier;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
@@ -25,5 +26,10 @@ public class THBaseIABProductIdentifierFetcherHolderRx
     @NonNull @Override protected IABProductIdentifierFetcherRx<IABSKUListKey, IABSKU, IABSKUList> createFetcher(int requestCode)
     {
         return new THBaseIABProductIdentifierFetcherRx(requestCode);
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

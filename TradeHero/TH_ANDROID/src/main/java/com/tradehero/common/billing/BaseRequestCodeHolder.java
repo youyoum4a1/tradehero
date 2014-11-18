@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseRequestCodeHolder<ActorType> implements RequestCodeHolder
+abstract public class BaseRequestCodeHolder<ActorType> implements RequestCodeHolder
 {
     @NonNull protected final Map<Integer /*requestCode*/, ActorType> actors;
 

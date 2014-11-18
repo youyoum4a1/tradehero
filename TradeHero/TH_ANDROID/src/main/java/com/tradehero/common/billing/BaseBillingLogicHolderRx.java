@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.identifier.ProductIdentifierFetcherHolderRx;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
@@ -131,7 +132,8 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierListType>> getIds(
             int requestCode)
     {
-        return productIdentifierFetcherHolder.get(requestCode)
+        return test(requestCode)
+                .flatMap(result -> productIdentifierFetcherHolder.get(requestCode))
                 .doOnNext(result -> productIdentifierCache.onNext(result.type, result.productIdentifiers));
     }
 
@@ -139,7 +141,7 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierType,
             ProductDetailType>> getInventory(int requestCode)
     {
-        return productIdentifierFetcherHolder.get(requestCode)
+        return getIds(requestCode)
                 .flatMap(result -> getInventory(result.requestCode, result.productIdentifiers));
     }
 
@@ -147,7 +149,8 @@ abstract public class BaseBillingLogicHolderRx<
             ProductIdentifierType,
             ProductDetailType>> getInventory(int requestCode, @NonNull List<ProductIdentifierType> productIdentifiers)
     {
-        return inventoryFetcherHolder.get(requestCode, productIdentifiers)
+        return test(requestCode)
+                .flatMap(result -> inventoryFetcherHolder.get(requestCode, productIdentifiers))
                 .doOnNext(result -> productDetailCache.onNext(result.id, result.detail));
     }
 
@@ -157,7 +160,8 @@ abstract public class BaseBillingLogicHolderRx<
             OrderIdType,
             ProductPurchaseType>> purchase(int requestCode, @NonNull PurchaseOrderType purchaseOrder)
     {
-        return purchaserHolder.get(requestCode, purchaseOrder)
+        return test(requestCode)
+                .flatMap(result -> purchaserHolder.get(requestCode, purchaseOrder))
                 .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
     }
 
@@ -166,7 +170,17 @@ abstract public class BaseBillingLogicHolderRx<
             OrderIdType,
             ProductPurchaseType>> getPurchases(int requestCode)
     {
-        return purchaseFetcherHolder.get(requestCode)
+        return test(requestCode)
+                .flatMap(result -> purchaseFetcherHolder.get(requestCode))
                 .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        billingAvailableTesterHolder.onActivityResult(requestCode, resultCode, data);
+        productIdentifierFetcherHolder.onActivityResult(requestCode, resultCode, data);
+        inventoryFetcherHolder.onActivityResult(requestCode, resultCode, data);
+        purchaseFetcherHolder.onActivityResult(requestCode, resultCode, data);
+        purchaserHolder.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.googleplay.report;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -63,5 +64,10 @@ public class THBaseIABPurchaseReporterHolderRx
                 alertPlanCheckServiceWrapper,
                 userServiceWrapper,
                 portfolioServiceWrapper);
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

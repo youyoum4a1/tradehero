@@ -1,5 +1,6 @@
 package com.tradehero.th.billing;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingLogicHolderRx;
 import com.tradehero.common.billing.BaseProductIdentifierList;
@@ -10,6 +11,7 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchaseCacheRx;
 import com.tradehero.common.billing.identifier.ProductIdentifierFetcherHolderRx;
 import com.tradehero.common.billing.inventory.BillingInventoryFetcherHolderRx;
+import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.purchase.BillingPurchaserHolderRx;
 import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherHolderRx;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
@@ -112,8 +114,8 @@ abstract public class THBaseBillingLogicHolderRx<
             THProductPurchaseType>> report(int requestCode,
             @NonNull THProductPurchaseType purchase)
     {
-        return inventoryFetcherHolder.get(requestCode, Collections.singletonList(purchase.getProductIdentifier()))
-                .flatMap(result -> purchaseReporterHolder.get(requestCode, purchase, result.detail));
+        return getInventory(requestCode, Collections.singletonList(purchase.getProductIdentifier()))
+                .flatMap(result -> report(requestCode, purchase, result.detail));
     }
 
     @NonNull @Override public Observable<PurchaseReportResult<
@@ -133,5 +135,21 @@ abstract public class THBaseBillingLogicHolderRx<
     {
         return getPurchases(requestCode)
                 .flatMap(result -> report(requestCode, result.purchase));
+    }
+
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
+            THProductDetailType>> getDetailsOfDomain(
+            int requestCode,
+            @NonNull ProductIdentifierDomain domain)
+    {
+        return getInventory(requestCode)
+                .filter(result -> result.detail.getDomain().equals(domain));
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        purchaseReporterHolder.onActivityResult(requestCode, resultCode, data);
     }
 }

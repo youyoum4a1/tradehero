@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.content.Intent;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 
 import android.support.annotation.NonNull;
@@ -157,4 +158,9 @@ abstract public class BaseIABPurchaseConsumerHolder<
     }
 
     abstract protected IABPurchaseConsumerType createPurchaseConsumer(int requestCode);
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
+    }
 }

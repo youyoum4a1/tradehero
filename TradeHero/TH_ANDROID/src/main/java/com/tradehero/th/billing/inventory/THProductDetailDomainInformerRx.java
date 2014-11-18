@@ -11,9 +11,9 @@ public interface THProductDetailDomainInformerRx<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>>
 {
-    @NonNull Observer<ProductInventoryResult<
+    @NonNull rx.Observable<ProductInventoryResult<
             ProductIdentifierType,
             THProductDetailType>> getDetailsOfDomain(
-            int requetCode,
+            int requestCode,
             @NonNull ProductIdentifierDomain domain);
 }

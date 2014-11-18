@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
-import com.tradehero.common.billing.googleplay.IABPurchaser;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.purchase.BaseBillingPurchaserHolderRx;
 import timber.log.Timber;
@@ -39,10 +38,10 @@ abstract public class BaseIABPurchaserHolderRx<
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Timber.d("onActivityResult requestCode: " + requestCode + ", resultCode: " + resultCode);
-        IABPurchaser iabPurchaser = (IABPurchaser) actors.get(requestCode);
+        IABPurchaserRx iabPurchaser = (IABPurchaserRx) actors.get(requestCode);
         if (iabPurchaser != null)
         {
-            iabPurchaser.handleActivityResult(requestCode, resultCode, data);
+            iabPurchaser.onActivityResult(requestCode, resultCode, data);
         }
         else
         {

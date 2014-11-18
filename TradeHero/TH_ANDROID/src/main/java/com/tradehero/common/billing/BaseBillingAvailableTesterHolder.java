@@ -1,5 +1,6 @@
 package com.tradehero.common.billing;
 
+import android.content.Intent;
 import com.tradehero.common.billing.exception.BillingException;
 
 import android.support.annotation.NonNull;
@@ -93,5 +94,10 @@ abstract public class BaseBillingAvailableTesterHolder<BillingExceptionType exte
     @Override public void onDestroy()
     {
         parentBillingAvailableListener.clear();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }
