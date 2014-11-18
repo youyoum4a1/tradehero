@@ -104,11 +104,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override protected void onProgressChanged(WebView view, int newProgress)
     {
         super.onProgressChanged(view, newProgress);
-        Activity activity = getActivity();
-        if (activity != null)
-        {
-            activity.setProgress(newProgress * 100);
-        }
 
         if (mainContentWrapper != null && newProgress > 50)
         {

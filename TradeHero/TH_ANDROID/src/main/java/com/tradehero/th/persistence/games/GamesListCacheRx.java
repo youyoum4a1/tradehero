@@ -7,9 +7,9 @@ import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.games.GamesListDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.GamesServiceWrapper;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import dagger.Lazy;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -38,5 +38,4 @@ public class GamesListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, GamesList
     {
         super.onNext(key, gamesListDTO);
     }
-
 }
