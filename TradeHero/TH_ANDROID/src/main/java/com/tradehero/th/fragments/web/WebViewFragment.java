@@ -2,19 +2,38 @@
 package com.tradehero.th.fragments.web;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
-import javax.inject.Inject;
 import timber.log.Timber;
 
+@Routable("web/url/:requiredUrlEncoded")
 public class WebViewFragment extends BaseWebViewFragment
 {
-    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    @Inject THRouter thRouter;
+
+    @RouteProperty("requiredUrlEncoded") String requiredUrlEncoded;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        thRouter.inject(this);
+        Bundle args = getArguments();
+        if (requiredUrlEncoded != null && args != null)
+        {
+            try
+            {
+                putUrl(args, Uri.decode(requiredUrlEncoded));
+            }
+            catch (Exception e)
+            {
+                Timber.e(e, "Failed to decode Url %s", requiredUrlEncoded);
+            }
+        }
+    }
 
     @Override protected int getLayoutResId()
     {
