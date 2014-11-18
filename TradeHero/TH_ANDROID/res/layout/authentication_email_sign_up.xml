@@ -30,9 +30,11 @@
                         android:id="@+id/register_account"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_medium"
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:layout_marginBottom="@dimen/margin_medium"
+                        android:layout_marginLeft="15dp"
                         android:text="@string/login_account"
-                        android:textSize="@dimen/text_large"/>
+                        android:textSize="@dimen/text_medium"/>
                 <EditText
                         android:id="@+id/authentication_sign_up_email"
                         android:layout_width="match_parent"
@@ -41,27 +43,30 @@
                         android:layout_alignBaseline="@+id/register_account"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
-                        android:textSize="@dimen/text_large"
+                        android:textSize="@dimen/text_medium"
                         android:singleLine="true"
                         android:hint="@string/login_account_hint"
                         android:maxLength="32"
                         android:textColorHint="#bfbfbf"
+                        android:textColor="#000000"
                         android:background="@color/white"/>
                 <View
                         android:id="@+id/register_line"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
+                        android:layout_height="1px"
                         android:layout_below="@+id/register_account"
-                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginLeft="15dp"
                         android:background="#bfbfbf"/>
                 <TextView
                         android:id="@+id/register_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/register_line"
-                        android:layout_margin="@dimen/margin_medium"
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:layout_marginBottom="@dimen/margin_medium"
+                        android:layout_marginLeft="15dp"
                         android:text="@string/login_password"
-                        android:textSize="@dimen/text_large"/>
+                        android:textSize="@dimen/text_medium"/>
                 <EditText
                         android:id="@+id/authentication_sign_up_password"
                         android:layout_width="match_parent"
@@ -69,12 +74,13 @@
                         android:layout_toRightOf="@+id/register_password"
                         android:layout_alignBaseline="@+id/register_password"
                         android:maxLength="20"
-                        android:textSize="@dimen/text_large"
+                        android:textSize="@dimen/text_medium"
                         android:hint="@string/login_password_hint"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
                         android:singleLine="true"
                         android:textColorHint="#bfbfbf"
+                        android:textColor="#000000"
                         android:background="@color/white"/>
                 <RelativeLayout
                         android:id="@+id/login_verify_code_layout"
@@ -86,41 +92,40 @@
                     <View
                             android:id="@+id/line"
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="1px"
                             android:layout_alignParentTop="true"
-                            android:layout_marginLeft="@dimen/margin_small"
+                            android:layout_marginLeft="15dp"
                             android:background="#bfbfbf"/>
                     <TextView
                             android:id="@+id/login_verify_code_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/line"
-                            android:layout_margin="@dimen/margin_medium"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="20dp"
                             android:text="@string/login_verify_code"
-                            android:textSize="@dimen/text_large"/>
+                            android:textSize="@dimen/text_medium"/>
                     <EditText
                             android:id="@+id/verify_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/login_verify_code_title"
                             android:layout_alignBaseline="@id/login_verify_code_title"
-                            android:layout_marginTop="@dimen/margin_medium"
-                            android:layout_marginBottom="@dimen/margin_medium"
+                            android:layout_centerVertical="true"
                             android:singleLine="true"
                             android:maxLength="4"
-                            android:textSize="@dimen/text_large"
+                            android:textSize="@dimen/text_medium"
                             android:hint="@string/login_verify_code_hint"
                             android:textColorHint="#bfbfbf"
+                            android:textColor="#000000"
                             android:background="@color/white"/>
                     <TextView
                             android:id="@+id/get_verify_code_button"
                             android:layout_width="100dp"
                             android:layout_height="35dp"
-                            android:paddingLeft="@dimen/margin_small"
                             android:layout_centerVertical="true"
-                            android:paddingRight="@dimen/margin_small"
                             android:layout_alignParentRight="true"
-                            android:layout_marginRight="5dp"
+                            android:layout_marginRight="15dp"
                             android:gravity="center"
                             android:text="@string/login_get_verify_code"
                             android:textColor="@color/white"
@@ -133,7 +138,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginLeft="15dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
                 <ImageView
@@ -146,14 +151,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin_xsmall"
                         android:text="@string/agreed"
-                        android:textSize="@dimen/text_large"/>
+                        android:textSize="@dimen/text_medium"/>
                 <TextView
                         android:id="@+id/txt_term_of_service_signin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/authentication_agreement"
                         android:textColor="#1789d5"
-                        android:textSize="@dimen/text_large"/>
+                        android:textSize="@dimen/text_medium"/>
             </LinearLayout>
             <LinearLayout
                     android:layout_width="match_parent"
@@ -167,13 +172,13 @@
                 <Button
                         android:id="@+id/btn_next"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:layout_weight="4"
                         android:background="@drawable/basic_red_selector_round_corner"
                         android:text="@string/authentication_next"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_xlarge"
-                        android:textStyle="bold"/>
+                        android:gravity="center"
+                        android:textSize="17sp"/>
                 <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -186,8 +191,8 @@
                 android:orientation="vertical">
             <ImageView
                     android:id="@+id/image_optional"
-                    android:layout_width="@dimen/huge_avatar_w_h"
-                    android:layout_height="@dimen/huge_avatar_w_h"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_marginTop="@dimen/margin_large"
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/register_photo"
@@ -196,16 +201,15 @@
             <EditText
                     android:id="@+id/authentication_sign_up_username"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="58dp"
                     android:layout_marginTop="@dimen/margin_large"
-                    android:paddingTop="@dimen/margin_small"
-                    android:paddingBottom="@dimen/margin_small"
                     android:gravity="center"
                     android:background="@color/white"
                     android:maxLength="10"
                     android:singleLine="true"
-                    android:textSize="@dimen/text_xlarge"
+                    android:textSize="16sp"
                     android:hint="@string/register_diaplay_name_hint"
+                    android:textColor="#000000"
                     android:textColorHint="#bfbfbf"/>
             <LinearLayout
                     android:layout_width="match_parent"
@@ -219,13 +223,13 @@
                 <Button
                         android:id="@+id/authentication_sign_up_button"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:layout_weight="4"
                         android:background="@drawable/yijian"
                         android:text="@string/register_finish"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/text_xlarge"
-                        android:textStyle="bold"/>
+                        android:gravity="center"
+                        android:textSize="17sp"/>
                 <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

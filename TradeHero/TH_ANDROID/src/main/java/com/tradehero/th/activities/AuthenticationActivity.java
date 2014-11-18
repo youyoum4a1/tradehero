@@ -95,8 +95,6 @@ public class AuthenticationActivity extends DashboardActivity
     {
         super.onResume();
         analytics.openSession();
-        //analytics.tagScreen(AnalyticsConstants.Login_Register);
-        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
         getWeChatAccessToken();
         isClickedWeChat = false;
     }
