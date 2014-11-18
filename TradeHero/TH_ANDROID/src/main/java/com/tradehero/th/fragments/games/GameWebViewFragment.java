@@ -5,11 +5,11 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.games.GameId;
+import com.tradehero.th.api.games.MiniGameDefKey;
 import com.tradehero.th.api.games.GameScore;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.GamesServiceWrapper;
+import com.tradehero.th.network.service.MiniGameServiceWrapper;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
@@ -27,7 +27,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
     static final String GAME_LEVEL_KEY = "levelNum";
 
     @Inject THRouter thRouter;
-    @Inject GamesServiceWrapper gamesServiceWrapper;
+    @Inject MiniGameServiceWrapper gamesServiceWrapper;
 
     @RouteProperty(GAME_ID_KEY) protected Integer gameId;
     @RouteProperty(GAME_SCORE_KEY) protected Integer score;
@@ -56,7 +56,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
     {
         if (gameId != null && score != null && level != null)
         {
-            gamesServiceWrapper.recordScore(new GameId(gameId), new GameScore(score, level))
+            gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level))
                     .subscribe(new Observer<BaseResponseDTO>()
                     {
                         @Override public void onNext(BaseResponseDTO baseResponseDTO)
