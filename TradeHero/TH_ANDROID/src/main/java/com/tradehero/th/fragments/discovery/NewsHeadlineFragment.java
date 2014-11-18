@@ -40,9 +40,7 @@ import java.util.List;
 import java.util.Random;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.observables.Assertions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -50,6 +48,7 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 import static butterknife.ButterKnife.findById;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
 public class NewsHeadlineFragment extends Fragment
 {
@@ -66,7 +65,6 @@ public class NewsHeadlineFragment extends Fragment
     private AbsListView.OnScrollListener scrollListener;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
-    private int mTotalHeadersAndFooters;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -160,8 +158,6 @@ public class NewsHeadlineFragment extends Fragment
                 headerHeight,
                 headerHeight + (int) getResources().getDimension(R.dimen.discovery_news_swipe_indicator_height));
 
-        mTotalHeadersAndFooters = mNewsListView.getFooterViewsCount() + mNewsListView.getHeaderViewsCount();
-
         final Random random = new Random();
         paginationObservable = createPaginationObservable()
                 // convert to hot observable coz replaceNewsItemListView can be call more than once
@@ -185,9 +181,16 @@ public class NewsHeadlineFragment extends Fragment
                                 subscriber.onNext(new PaginationDTO(1, newsItemListKey.perPage))
                 ));
 
-        Observable<PaginationDTO> pullFromBottomObservable = Observable.create(subscriber ->
+        Observable<PaginationDTO> pullFromBottomObservable = Observable.create((Observable.OnSubscribe<PaginationDTO>) subscriber ->
                 mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener,
-                        new OnScrollOperator(subscriber))));
+                        createNearEndScrollOperator(subscriber, () -> {
+                            if (newsItemListKey != null && lastPaginationInfoDTO != null)
+                            {
+                                return lastPaginationInfoDTO.next;
+                            }
+                            return null;
+                        }))))
+                .doOnNext(o -> mBottomLoadingView.setVisibility(View.VISIBLE));
         return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .startWith(new PaginationDTO(1, newsItemListKey.perPage));
@@ -268,32 +271,6 @@ public class NewsHeadlineFragment extends Fragment
         @Override public void onNext(List<NewsItemDTOKey> newsItemDTOKeys)
         {
             updateUI();
-        }
-    }
-
-    private class OnScrollOperator implements AbsListView.OnScrollListener
-    {
-        private final Subscriber<? super PaginationDTO> subscriber;
-
-        public OnScrollOperator(Subscriber<? super PaginationDTO> subscriber)
-        {
-            this.subscriber = subscriber;
-        }
-
-        @Override public void onScrollStateChanged(AbsListView view, int scrollState) { }
-
-        @Override public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-        {
-            Assertions.assertUiThread();
-
-            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
-            {
-                if (newsItemListKey != null && lastPaginationInfoDTO != null)
-                {
-                    mBottomLoadingView.setVisibility(View.VISIBLE);
-                    subscriber.onNext(lastPaginationInfoDTO.next);
-                }
-            }
         }
     }
 }

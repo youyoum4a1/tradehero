@@ -37,7 +37,11 @@ final class NearEndScrollOperator<T> implements AbsListView.OnScrollListener
             if (scrollStateChanged)
             {
                 scrollStateChanged = false;
-                subscriber.onNext(itemCreator.call());
+                T item = itemCreator.call();
+                if (item != null)
+                {
+                    subscriber.onNext(item);
+                }
             }
         }
     }
