@@ -90,6 +90,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -814,7 +815,8 @@ public class DashboardActivity extends BaseActivity
                     PositionListFragment.class,
                     TradeListFragment.class,
                     HomeFragment.class,
-                    ProviderVideoListFragment.class
+                    ProviderVideoListFragment.class,
+                    WebViewFragment.class
             );
             router.registerAlias("messages", "updatecenter/0");
             router.registerAlias("notifications", "updatecenter/1");

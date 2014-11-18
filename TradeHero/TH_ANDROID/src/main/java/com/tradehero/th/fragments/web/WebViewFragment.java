@@ -4,10 +4,15 @@ package com.tradehero.th.fragments.web;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.utils.route.THRouter;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 @Routable("web/url/:requiredUrlEncoded")

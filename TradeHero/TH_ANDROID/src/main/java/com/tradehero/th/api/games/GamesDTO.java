@@ -14,7 +14,7 @@ public class GamesDTO implements DTO
     public String title;
 
     //<editor-fold desc="Constructors">
-    protected GamesDTO() // For deserialiser
+    public GamesDTO() // For deserialiser
     {
     }
     //</editor-fold>
