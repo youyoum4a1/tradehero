@@ -5,12 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -196,7 +191,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 return true;
             }
         });
-
+        listView.getRefreshableView().expandGroup(1);
         listView.getRefreshableView().expandGroup(0);
     }
 
