@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.tradehero.th.widget;
 
 import android.view.View;
 import android.widget.TextView;
@@ -9,7 +9,7 @@ import com.tradehero.th.R;
 
 public class TextHolder
 {
-    @InjectView(R.id.title) TextView text;
+    @InjectView(R.id.title) public TextView text;
 
     public TextHolder(View view)
     {
