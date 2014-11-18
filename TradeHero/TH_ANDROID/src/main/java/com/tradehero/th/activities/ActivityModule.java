@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;

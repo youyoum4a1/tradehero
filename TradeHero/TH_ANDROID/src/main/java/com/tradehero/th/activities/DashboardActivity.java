@@ -25,6 +25,7 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.CollectionUtils;

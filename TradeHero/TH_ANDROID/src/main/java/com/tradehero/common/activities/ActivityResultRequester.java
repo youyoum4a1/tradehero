@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.tradehero.common.activities;
 
 import android.content.Intent;
 

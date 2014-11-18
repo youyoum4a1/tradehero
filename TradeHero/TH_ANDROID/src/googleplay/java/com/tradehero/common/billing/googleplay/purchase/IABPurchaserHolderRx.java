@@ -5,7 +5,7 @@ import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.purchase.BillingPurchaserHolderRx;
-import com.tradehero.th.activities.ActivityResultRequester;
+import com.tradehero.common.activities.ActivityResultRequester;
 
 public interface IABPurchaserHolderRx<
         IABSKUType extends IABSKU,

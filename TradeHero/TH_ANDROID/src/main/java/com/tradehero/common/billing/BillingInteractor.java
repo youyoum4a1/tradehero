@@ -3,7 +3,7 @@ package com.tradehero.common.billing;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
-import com.tradehero.th.activities.ActivityResultRequester;
+import com.tradehero.common.activities.ActivityResultRequester;
 import android.support.annotation.NonNull;
 
 public interface BillingInteractor<
