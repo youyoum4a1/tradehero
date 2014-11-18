@@ -16,11 +16,12 @@ import dagger.Provides;
                 RegionalNewsHeadlineFragment.class,
                 DiscoveryDiscussionFragment.class,
                 LearningFragment.class,
-                DiscoveryGamesFragment.class,
-                GamesItemView.class,
 
                 RegionalNewsSelectorView.class,
-                RegionalNewsSearchableSelectorView.class
+                RegionalNewsSearchableSelectorView.class,
+
+                DiscoveryGameFragment.class,
+                MiniGameDefItemView.class,
         },
         library = true,
         complete = false

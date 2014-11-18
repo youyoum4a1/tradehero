@@ -154,11 +154,6 @@ public class RetrofitProtectedModule
         return adapter.create(VideoServiceRx.class);
     }
 
-    @Provides @Singleton GamesServiceRx provideGamesServiceRx(RestAdapter adapter)
-    {
-        return adapter.create(GamesServiceRx.class);
-    }
-
     @Provides @Singleton WatchlistServiceRx provideWatchlistServiceRx(RestAdapter adapter)
     {
         return adapter.create(WatchlistServiceRx.class);

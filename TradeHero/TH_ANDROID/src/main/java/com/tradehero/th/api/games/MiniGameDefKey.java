@@ -5,17 +5,17 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.route.RouteProperty;
 
-public class GameId extends AbstractIntegerDTOKey
+public class MiniGameDefKey extends AbstractIntegerDTOKey
 {
-    public static final String BUNDLE_KEY_KEY = GameId.class.getName() + ".key";
+    private static final String BUNDLE_KEY = MiniGameDefKey.class.getName() +".key";
 
     //<editor-fold desc="Constructors">
-    public GameId(Integer key)
+    public MiniGameDefKey(Integer key)
     {
         super(key);
     }
 
-    public GameId(@NonNull Bundle args)
+    public MiniGameDefKey(@NonNull Bundle args)
     {
         super(args);
     }
@@ -30,7 +30,7 @@ public class GameId extends AbstractIntegerDTOKey
 
     @Override public String getBundleKey()
     {
-        return BUNDLE_KEY_KEY;
+        return BUNDLE_KEY;
     }
 
     @Override public String toString()

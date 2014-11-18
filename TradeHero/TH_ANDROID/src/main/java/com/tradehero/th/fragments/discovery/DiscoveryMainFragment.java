@@ -12,8 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
-import com.astuetz.PagerSlidingTabStrip;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -21,13 +22,12 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import javax.inject.Inject;
 
 @Routable({"news","discussion", "academy"})
 public class DiscoveryMainFragment extends DashboardFragment
@@ -60,6 +60,11 @@ public class DiscoveryMainFragment extends DashboardFragment
     private void initViews()
     {
         tabViewPager.setAdapter(discoveryPagerAdapter);
+        if (!Constants.RELEASE)
+        {
+            tabViewPager.setOffscreenPageLimit(0);
+        }
+
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
         pagerSlidingTabStrip.setViewPager(tabViewPager);

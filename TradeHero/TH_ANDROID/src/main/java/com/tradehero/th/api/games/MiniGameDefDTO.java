@@ -1,4 +1,4 @@
-package com.tradehero.th.api.game;
+package com.tradehero.th.api.games;
 
 import com.tradehero.common.persistence.DTO;
 

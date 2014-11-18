@@ -621,4 +621,18 @@
     <item name="android:paddingRight">@dimen/margin_small</item>
     <item name="android:paddingLeft">@dimen/margin_small</item>
   </style>
+
+  <style name="TH.MiniGame.Title">
+    <item name="android:layout_gravity">top|left</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@drawable/minigame_title_background</item>
+    <item name="android:paddingLeft">@dimen/minigame_title_horizontal_padding</item>
+    <item name="android:paddingRight">@dimen/minigame_title_end_padding</item>
+    <item name="android:paddingBottom">@dimen/minigame_title_vertical_padding</item>
+    <item name="android:paddingTop">@dimen/minigame_title_vertical_padding</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="TH.MiniGame" parent="None"/>
+  <style name="None"/>
 </resources>
