@@ -13,6 +13,12 @@ public class GamesDTO implements DTO
     public boolean comingSoon;
     public String title;
 
+    //<editor-fold desc="Constructors">
+    protected GamesDTO() // For deserialiser
+    {
+    }
+    //</editor-fold>
+
     @Override
     public String toString() {
         return "GamesDTO{" +

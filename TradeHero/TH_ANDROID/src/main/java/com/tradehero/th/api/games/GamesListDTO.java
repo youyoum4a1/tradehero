@@ -1,9 +1,9 @@
 package com.tradehero.th.api.games;
 
+import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import java.util.ArrayList;
 
-public class GamesListDTO extends ArrayList<GamesDTO> implements DTO
+public class GamesListDTO extends BaseArrayList<GamesDTO> implements DTO
 {
 
 }
