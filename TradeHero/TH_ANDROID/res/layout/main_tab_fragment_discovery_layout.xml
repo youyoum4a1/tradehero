@@ -16,34 +16,9 @@
         android:layout_height="@dimen/tab_main_indicator_height"
         android:background="@color/tab_head_bg">
 
-      <Button
-          android:id="@+id/btnNotification"
-          android:layout_alignParentRight="true"
-          android:layout_height="48dp"
-          android:layout_width="48dp"
-          android:layout_marginRight="5dp"
-          android:layout_marginLeft="5dp"
-          android:layout_centerInParent="true"
-          android:background="@drawable/icon_notification_xml"
-          />
-      <TextView
-          android:id="@+id/tvNotificationCount"
-          android:layout_width="15dp"
-          android:layout_height="15dp"
-          android:layout_toRightOf="@id/btnNotification"
-          android:background="@drawable/icon_bg_count"
-          android:textColor="@color/white"
-          android:gravity="center"
-          android:layout_marginLeft="-25dp"
-          android:layout_marginTop="10dp"
-          android:textSize="8sp"
-          android:text="">
-      </TextView>
-
       <com.viewpagerindicator.TabPageIndicator
           android:id="@+id/indicator"
           android:visibility="visible"
-          android:layout_toLeftOf="@id/btnNotification"
           android:layout_height="fill_parent"
           android:layout_width="fill_parent"
           />

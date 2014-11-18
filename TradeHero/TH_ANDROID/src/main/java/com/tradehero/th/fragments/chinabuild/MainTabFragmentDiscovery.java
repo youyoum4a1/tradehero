@@ -8,30 +8,17 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.message.NotificationFragment;
-import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-import dagger.Lazy;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 
 public class MainTabFragmentDiscovery extends AbsBaseFragment
@@ -40,26 +27,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     private FragmentPagerAdapter adapter;
 
-    @InjectView(R.id.btnNotification) Button btnNotification;
     @InjectView(R.id.tvCreateTimeLine) TextView tvCreateTimeLine;
-    @InjectView(R.id.tvNotificationCount) TextView tvNotificationCount;
-
-    @Inject Lazy<UserProfileCache> userProfileCache;
-    private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
-
-    //@InjectView(R.id.rlCustomHeadView) RelativeLayout rlCustomHeadLayout;
-    //@InjectView(R.id.tvHeadLeft) TextView tvHeadLeft;
-    //@InjectView(R.id.tvHeadMiddleMain) TextView tvHeadTitle;
-    //@InjectView(R.id.tvHeadRight0) TextView tvHeadRight;
-
-    @Inject Analytics analytics;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        userProfileCacheListener = createUserProfileFetchListener();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -67,7 +35,6 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         View view = inflater.inflate(R.layout.main_tab_fragment_discovery_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
-        tvNotificationCount.setVisibility(View.GONE);
         return view;
     }
 
@@ -77,47 +44,12 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(5);
         indicator.setViewPager(pager);
-
-        //rlCustomHeadLayout.setVisibility(View.VISIBLE);
-        //tvHeadLeft.setVisibility(View.GONE);
-        //tvHeadTitle.setVisibility(View.VISIBLE);
-        //tvHeadTitle.setText("最新动态");
-    }
-
-    @OnClick(R.id.btnNotification)
-    public void onButtonNoticifation()
-    {
-        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_MESSAGE_CENTER));
-
-        enterNotificationFragment();
-    }
-
-    private void enterNotificationFragment()
-    {
-        gotoDashboard(NotificationFragment.class.getName());
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        detachUserProfileCache();
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        fetchUserProfile(false);
-        super.onResume();
     }
 
     private static final String[] CONTENT = new String[] {"最新动态"
@@ -164,57 +96,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
     @OnClick(R.id.tvCreateTimeLine)
     public void createTimeLine()
     {
-        Timber.d("tvCreateTimeLine!!");
         gotoDashboard(DiscoveryDiscussSendFragment.class.getName());
     }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
-    {
-        return new UserProfileFetchListener();
-    }
-
-    protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
-    {
-        @Override
-        public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
-        {
-            showNotification(value);
-        }
-
-        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
-        {
-
-        }
-    }
-
-    public void showNotification(UserProfileDTO value)
-    {
-        if(tvNotificationCount == null)return;
-        if (value.unreadNotificationsCount > 0)
-        {
-            tvNotificationCount.setVisibility(View.VISIBLE);
-            tvNotificationCount.setText(value.getUnReadNotificationCount());
-        }
-        else
-        {
-            if(tvNotificationCount==null){
-                getActivity().finish();
-            }
-            tvNotificationCount.setVisibility(View.GONE);
-        }
-    }
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
-    }
-
-    protected void fetchUserProfile(boolean force)
-    {
-        detachUserProfileCache();
-        userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), force);
-    }
-
 
 }

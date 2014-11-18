@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.chinabuild;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.*;
-import com.tradehero.th.fragments.chinabuild.fragment.test.FragmentTest03;
+import com.tradehero.th.fragments.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
@@ -37,7 +38,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -60,6 +60,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
 
     @InjectView(R.id.rlMeDynamic) RelativeLayout rlMeDynamic;
     @InjectView(R.id.rlMeMessageCenter) RelativeLayout rlMeMessageCenter;
+    @InjectView(R.id.textview_me_notification_count) TextView tvMeNotificationCount;
     @InjectView(R.id.rlMeInviteFriends) RelativeLayout rlMeInviteFriends;
     @InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
 
@@ -74,8 +75,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @InjectView(R.id.tvAllHero) TextView tvAllHero;
     @InjectView(R.id.tvAllFans) TextView tvAllFans;
     @InjectView(R.id.tvEarning) TextView tvEarning;
-
-    @InjectView(R.id.viewEndpoint) View viewEndpoint;
 
     @Inject Analytics analytics;
 
@@ -118,7 +117,11 @@ public class MainTabFragmentMe extends AbsBaseFragment
         @Override
         public void onDTOReceived(@NotNull UserBaseKey key, @NotNull UserProfileDTO value)
         {
+            if(getActivity()==null){
+                return;
+            }
             initUserProfile(value);
+            showUnreadNotificationCount(value);
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -136,19 +139,21 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         @Override public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value)
         {
-            //linkWith(value);
             linkWith(value);
         }
 
         @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_portfolio_info);
-            Timber.d(getString(R.string.error_fetch_portfolio_info));
+
         }
     }
 
     private void initUserProfile(UserProfileDTO user)
     {
+        if(tvMeName==null||tvAllFans==null||tvAllHero==null){
+            return;
+        }
+
         if (user != null)
         {
             if (user.picture != null && imgMeHead != null)
@@ -193,35 +198,30 @@ public class MainTabFragmentMe extends AbsBaseFragment
                 break;
             case R.id.rlMeDynamic:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_MY_MOMENT));
-                Timber.d("clicked rlMeDynamic");
                 enterMyMainPager();
                 break;
             case R.id.rlMeMessageCenter:
-                Timber.d("clicked rlMeMessageCenter");
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_MESSAGE_CENTER));
+                gotoDashboard(NotificationFragment.class.getName());
                 break;
             case R.id.rlMeInviteFriends:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_INVITE_FRIENDS));
-                Timber.d("clicked rlMeInviteFriends");
                 gotoDashboard(InviteFriendsFragment.class.getName());
                 break;
             case R.id.rlMeSetting:
-                Timber.d("clicked rlMeSetting");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MINE_SETTING));
                 gotoDashboard(SettingFragment.class.getName());
                 break;
             case R.id.llItemAllAmount:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_TOTAL_PROPERTY));
-                Timber.d("clicked llItemAllAmount");
                 enterUserAllAmount();
                 break;
             case R.id.llItemAllHero:
-                Timber.d("clicked llItemAllHero");
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_STOCK_HEROES));
                 enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_HERO);
                 break;
             case R.id.llItemAllFans:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_STOCK_FOLLOWER));
-                Timber.d("clicked llItemAllFans");
                 enterFriendsListFragment(UserFriendsListFragment.TYPE_FRIENDS_FOLLOWS);
                 break;
         }
@@ -242,11 +242,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
         gotoDashboard(UserFriendsListFragment.class.getName(), bundle);
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -263,14 +258,10 @@ public class MainTabFragmentMe extends AbsBaseFragment
         gotoDashboard(UserMainPage.class.getName(), bundle);
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
+        tvMeNotificationCount.setVisibility(View.GONE);
         fetchUserProfile();
         fetchPortfolio();
     }
@@ -293,8 +284,21 @@ public class MainTabFragmentMe extends AbsBaseFragment
     {
         detachUserProfileCache();
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
-        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
+        //Get user profile from cache
+        userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), false);
+
+        //Get user profile from server 1 second later
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+            }
+        },1000);
+
     }
+
+
 
     protected void fetchPortfolio()
     {
@@ -341,16 +345,19 @@ public class MainTabFragmentMe extends AbsBaseFragment
         }
     }
 
-    private int viewPointCount = 0;
-
-    @OnClick(R.id.viewEndpoint)
-    public void onEndPoint()
-    {
-        viewPointCount++;
-        if (viewPointCount > 99)
-        {
-            Timber.d("onTestClicked FragmentTest02");
-            gotoDashboard(FragmentTest03.class.getName(), new Bundle());
+    private void showUnreadNotificationCount(@NotNull UserProfileDTO value){
+        if(tvMeNotificationCount==null){
+            return;
         }
+        int count = value.unreadNotificationsCount;
+        if(count>=0){
+            tvMeNotificationCount.setVisibility(View.GONE);
+            return;
+        }
+        if(count>99){
+            tvMeNotificationCount.setText(String.valueOf("99"));
+            return;
+        }
+        tvMeNotificationCount.setText(String.valueOf(count));
     }
 }

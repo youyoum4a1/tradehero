@@ -277,7 +277,7 @@
   <string name="error_fetch_exchange_list">获取交易所列表错误</string>
 
   <string name="my_dynamic">我的动态</string>
-  <string name="my_message_center">消息中心</string>
+  <string name="my_message_center">通知</string>
   <string name="my_invite_friends">邀请好友</string>
   <string name="my_setting">设置</string>
 
@@ -301,17 +301,7 @@
   <string name="or">or</string>
   <string name="position_hold_days">%d天</string>
   <string name="competition_joined_invite">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！</string>
-  <string name="friends_can_be_invite">%s friends</string>
-  <string name="friends_can_be_follow">%s friends</string>
-  <string name="weibo_message_text_limit">[%d/140]</string>
-  <string name="weibo_message_length_error">不能超过140字</string>
-  <string name="weibo_friends_invite">我正在玩一款牛逼的炒股应用。虚拟股金，真实数据，零风险提高炒股技术。分享股市洞察，还能从粉丝那里赚取现金！赶快加入，与我一试高下吧！使用我的邀请码 %1$s 更有额外奖励哦！</string>
-  <string name="referral_dollars_claimed">已成功提交邀请码</string>
 
-  <string name="mark_as_all_read">全部已读</string>
-  <string name="guide_screen_login">登录</string>
-  <string name="guide_screen_try">马上体验</string>
-  <string name="or">或者</string>
   <string name="login_with_offical_account">使用官方账号登录</string>
   <string name="login_account">账号：</string>
   <string name="login_password">密码：</string>
