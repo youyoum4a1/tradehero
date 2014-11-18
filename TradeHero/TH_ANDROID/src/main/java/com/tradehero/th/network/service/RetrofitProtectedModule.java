@@ -3,9 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.RequestHeaders;
+import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(
@@ -152,6 +152,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton VideoServiceRx provideVideoServiceRx(RestAdapter adapter)
     {
         return adapter.create(VideoServiceRx.class);
+    }
+
+    @Provides @Singleton GamesServiceRx provideGamesServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(GamesServiceRx.class);
     }
 
     @Provides @Singleton WatchlistServiceRx provideWatchlistServiceRx(RestAdapter adapter)
