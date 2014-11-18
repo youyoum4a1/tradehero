@@ -18,12 +18,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
@@ -58,7 +60,7 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private ProgressBar mBottomLoadingView;
 
-    private DiscoveryDiscussionAdapter discoveryDiscussionAdapter;
+    private ArrayDTOAdapter<TimelineItemDTOKey, TimelineItemViewLinear> discoveryDiscussionAdapter;
     @NonNull private CompositeSubscription timelineSubscriptions;
 
     private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
@@ -67,7 +69,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        discoveryDiscussionAdapter = new DiscoveryDiscussionAdapter(getActivity(), R.layout.timeline_item_view);
+        discoveryDiscussionAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.timeline_item_view);
         timelineSubscriptions = new CompositeSubscription();
     }
 
