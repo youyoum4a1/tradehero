@@ -9,6 +9,8 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+/** TODO IMHO, CommunityPageDTOFactory hides the fact about where the real data comes from */
+@Deprecated
 class CommunityPageDTOFactory
 {
     private static final boolean ENABLE_COUNTRY_LEADERBOARD_DEF = false;

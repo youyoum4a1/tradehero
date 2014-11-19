@@ -47,12 +47,12 @@ public class RxLoaderManager
         {
             @Override public void onCompleted()
             {
-                cachedRequests.remove(key);
+                remove(key);
             }
 
             @Override public void onError(Throwable e)
             {
-                cachedRequests.remove(key);
+                remove(key);
             }
 
             @Override public void onNext(V v)

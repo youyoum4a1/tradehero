@@ -18,6 +18,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKeyFactory;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -25,7 +26,7 @@ import rx.android.observables.AndroidObservable;
 
 public class LeaderboardDefListFragment extends BaseLeaderboardFragment
 {
-    @Inject protected Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
+    @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
     @Nullable protected Subscription leaderboardDefListCacheFetchSubscription;
 
@@ -89,9 +90,12 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     {
         unsubscribe(leaderboardDefListCacheFetchSubscription);
         LeaderboardDefListKey key = leaderboardDefListKeyFactory.create(bundle);
-        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(this, leaderboardDefListCache.get().get(key))
+        Observable<List<LeaderboardDefDTO>> leaderboardDefObservable = leaderboardDefListCache.get().get(key)
+                .map(pair -> pair.second);
+
+        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(this, leaderboardDefObservable)
                 .doOnError((e) -> THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key)))
                 .onErrorResumeNext(Observable.empty())
-                .subscribe((leaderboardDefPair) -> leaderboardDefListAdapter.setItems(leaderboardDefPair.second));
+                .subscribe(leaderboardDefListAdapter::setItems);
     }
 }

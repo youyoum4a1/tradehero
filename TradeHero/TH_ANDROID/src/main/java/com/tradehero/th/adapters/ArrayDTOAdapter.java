@@ -16,7 +16,7 @@ public class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapte
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        convertView = conditionalInflate(position, convertView, viewGroup);
+        convertView = super.getView(position, convertView, viewGroup);
 
         @SuppressWarnings("unchecked")
         V dtoView = (V) convertView;
