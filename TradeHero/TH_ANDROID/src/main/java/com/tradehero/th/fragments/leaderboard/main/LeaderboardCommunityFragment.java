@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.leaderboard.main;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +21,11 @@ import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
@@ -40,11 +38,9 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -59,9 +55,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         implements WithTutorial, View.OnClickListener
 {
     @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
-    @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject UserProfileCacheRx userProfileCache;
+    @Inject CommunityPageDTOFactory communityPageDTOFactory;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
@@ -194,15 +189,10 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         unsubscribe(leaderboardDefListFetchSubscription);
 
-        Observable<UserProfileDTO> userObservable = userProfileCache.get(currentUserId.toUserBaseKey()).map(i -> i.second);
-        Observable<List<Pair<LeaderboardDefDTO, UserProfileDTO>>> leaderboardDefObservable = leaderboardDefListCache.get().get(
-                new LeaderboardDefListKey())
+        Observable<LeaderboardDefDTOList> leaderboardDefObservable =
+                leaderboardDefListCache.get().get(new LeaderboardDefListKey())
                 .map(pair -> pair.second)
-                .doOnNext(i -> Timber.d("item: %s", i))
-                .flatMap(Observable::from)
-                .zipWith(userObservable, Pair::create)
-                .doOnError(throwable -> Timber.e(throwable, "nah"))
-                .toList()
+                .map(leaderboardDefDTOs -> communityPageDTOFactory.collectFromCaches(null)) // TODO remove communityPageDTOFactory
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 

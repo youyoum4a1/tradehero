@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -12,19 +11,32 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
+import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LeaderboardDefView extends RelativeLayout
-        implements DTOView<Pair<LeaderboardDefDTO, UserProfileDTO>>
+        implements DTOView<LeaderboardDefDTO>
 {
     @Inject protected LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;
+    @Inject LeaderboardCacheRx leaderboardCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject ToastOnErrorAction toastOnError;
 
     @InjectView(R.id.leaderboard_def_item_icon_container) View leaderboardDefIconContainer;
     @InjectView(R.id.leaderboard_def_item_icon) ImageView leaderboardDefIcon;
@@ -33,8 +45,11 @@ public class LeaderboardDefView extends RelativeLayout
     @InjectView(R.id.leaderboard_def_item_name) TextView leaderboardDefName;
     @InjectView(R.id.leaderboard_def_item_desc) TextView leaderboardDefDesc;
     @InjectView(R.id.leaderboard_def_item_action_icon) ImageView actionIcon;
+    @InjectView(R.id.leaderboard_def_item_user_rank) TextView leaderboardDefUserRank;
+    @InjectView(R.id.leaderboard_def_utem_rank_wrapper) View leaderboardDefUserRankWrapper;
 
     protected LeaderboardDefDTO dto;
+    private Subscription fetchUserRankingSubscription;
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefView(Context context)
@@ -60,21 +75,58 @@ public class LeaderboardDefView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override public void display(Pair<LeaderboardDefDTO, UserProfileDTO> dtoPair)
+    @Override protected void onDetachedFromWindow()
     {
-        dto = dtoPair.first;
-        linkWith(dtoPair.first, true);
-        linkWith(dtoPair, true);
+        detachFetchUserRanking();
+        super.onDetachedFromWindow();
     }
 
-    private void linkWith(Pair<LeaderboardDefDTO, UserProfileDTO> dtoPair, boolean andDisplay)
+    private void detachFetchUserRanking()
     {
-            //leaderboardDefUserCount.setText("" + 0);
-         int leaderboardRank = dtoPair.second.getLeaderboardRanking(dto.id);
-         if (leaderboardRank > 0)
-         {
-                     //leaderboardDefUserRank.setText("" + leaderboardRank);
-         }
+        if (fetchUserRankingSubscription != null)
+        {
+            fetchUserRankingSubscription.unsubscribe();
+        }
+    }
+
+    @Override public void display(LeaderboardDefDTO leaderboardDefDTO)
+    {
+        dto = leaderboardDefDTO;
+        fetchUserRank();
+        linkWith(leaderboardDefDTO, true);
+    }
+
+    private void fetchUserRank()
+    {
+        detachFetchUserRanking();
+        if (dto.id > 0)
+        {
+            fetchUserRankingSubscription = leaderboardCache.get(new UserOnLeaderboardKey(dto.id, currentUserId.get()))
+                    .doOnError(toastOnError)
+                    .map(i -> i.second.users.get(0))
+                    .first()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorResumeNext(Observable.empty())
+                    .subscribe(this::showUserBestROI);
+        }
+        else
+        {
+            leaderboardDefUserRankWrapper.setVisibility(GONE);
+        }
+    }
+
+    private void showUserBestROI(LeaderboardUserDTO leaderboardUserDTO)
+    {
+        THSignedNumber roi = THSignedPercentage
+                .builder(leaderboardUserDTO.roiInPeriod * 100)
+                .withSign()
+                .signTypeArrow()
+                .relevantDigitCount(3)
+                .build();
+        leaderboardDefUserRank.setText(roi.toString());
+        leaderboardDefUserRank.setTextColor(getResources().getColor(roi.getColorResId()));
+        leaderboardDefUserRankWrapper.setVisibility(VISIBLE);
     }
 
     protected void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
