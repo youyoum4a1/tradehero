@@ -84,11 +84,18 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     protected void fetchLeaderboardDef()
     {
         unsubscribe(leaderboardDefCacheSubscription);
-        leaderboardDefCacheSubscription = AndroidObservable.bindFragment(
-                this,
-                leaderboardDefCache.get(leaderboardDefKey))
-        .subscribe(createLeaderboardDefCacheObserver()
-        );
+        if (leaderboardDefKey.key > 0)
+        {
+            leaderboardDefCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    leaderboardDefCache.get(leaderboardDefKey))
+                    .subscribe(createLeaderboardDefCacheObserver()
+                    );
+        }
+        else
+        {
+            Timber.d("Skipping fetching leaderboardDef for key %d", leaderboardDefKey.key);
+        }
     }
 
     protected void fetchCurrentUserProfile()
