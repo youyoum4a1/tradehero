@@ -81,7 +81,7 @@ public class BillingUIModule
         return thSamsungLogicHolderFull;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THSamsungAlertDialogUtil THSamsungAlertDialogUtil)
+    @Provides THBillingAlertDialogUtil provideBillingAlertDialogUtil(THSamsungAlertDialogUtil THSamsungAlertDialogUtil)
     {
         return THSamsungAlertDialogUtil;
     }

@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon.purchasefetch;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.purchasefetch.BaseAmazonPurchaseFetcherHolderRx;
@@ -34,5 +35,10 @@ public class THBaseAmazonPurchaseFetcherHolderRx
     @NonNull @Override protected THBaseAmazonPurchaseFetcherRx createFetcher(int requestCode)
     {
         return new THBaseAmazonPurchaseFetcherRx(requestCode, purchasingService, processingPurchaseStringSet);
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

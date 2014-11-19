@@ -15,7 +15,7 @@ import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedExcepti
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.billing.THBillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
@@ -27,7 +27,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
+public class THAmazonAlertDialogUtil extends THBillingAlertDialogUtil<
         AmazonSKU,
         THAmazonProductDetail,
         THAmazonLogicHolder,

@@ -141,7 +141,7 @@ public class BillingUIModule
         return thiabLogicHolderFull;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
+    @Provides THBillingAlertDialogUtil provideBillingAlertDialogUtil(THIABAlertDialogUtil THIABAlertDialogUtil)
     {
         return THIABAlertDialogUtil;
     }

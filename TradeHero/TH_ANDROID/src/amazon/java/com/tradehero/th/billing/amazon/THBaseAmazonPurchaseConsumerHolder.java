@@ -1,10 +1,10 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumerHolder;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 public class THBaseAmazonPurchaseConsumerHolder
     extends BaseAmazonPurchaseConsumerHolder<

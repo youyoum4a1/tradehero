@@ -10,7 +10,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.billing.THBillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
@@ -22,7 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
+public class THSamsungAlertDialogUtil extends THBillingAlertDialogUtil<
         SamsungSKU,
         THSamsungProductDetail,
         THSamsungLogicHolder,

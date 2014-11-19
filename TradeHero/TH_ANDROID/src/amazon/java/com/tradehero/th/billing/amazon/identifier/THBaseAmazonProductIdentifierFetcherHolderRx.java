@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon.identifier;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
@@ -24,5 +25,10 @@ public class THBaseAmazonProductIdentifierFetcherHolderRx
     @NonNull @Override protected THBaseAmazonProductIdentifierFetcherRx createFetcher(int requestCode)
     {
         return new THBaseAmazonProductIdentifierFetcherRx(requestCode);
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

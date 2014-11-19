@@ -10,7 +10,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.BillingAlertDialogUtil;
+import com.tradehero.th.billing.THBillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
@@ -22,7 +22,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
+public class THIABAlertDialogUtil extends THBillingAlertDialogUtil<
         IABSKU,
         THIABProductDetail,
         THIABLogicHolder,

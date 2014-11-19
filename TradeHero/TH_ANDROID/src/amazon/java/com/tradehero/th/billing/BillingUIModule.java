@@ -139,7 +139,7 @@ public class BillingUIModule
         return thAmazonLogicHolderFull;
     }
 
-    @Provides BillingAlertDialogUtil provideBillingAlertDialogUtil(THAmazonAlertDialogUtil thAmazonAlertDialogUtil)
+    @Provides THBillingAlertDialogUtil provideBillingAlertDialogUtil(THAmazonAlertDialogUtil thAmazonAlertDialogUtil)
     {
         return thAmazonAlertDialogUtil;
     }

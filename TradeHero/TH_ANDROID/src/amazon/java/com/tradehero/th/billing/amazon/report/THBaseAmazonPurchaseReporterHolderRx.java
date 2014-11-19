@@ -1,5 +1,6 @@
 package com.tradehero.th.billing.amazon.report;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.billing.amazon.THAmazonOrderId;
@@ -58,5 +59,10 @@ public class THBaseAmazonPurchaseReporterHolderRx
                 alertPlanCheckServiceWrapper,
                 userServiceWrapper,
                 portfolioServiceWrapper);
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

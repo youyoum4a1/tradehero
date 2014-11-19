@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.amazon;
 
+import android.content.Intent;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
@@ -153,5 +154,10 @@ public class BaseAmazonPurchaseConsumerHolder<
         }
         amazonPurchaseConsumers.clear();
         parentConsumeFinishedHandlers.clear();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

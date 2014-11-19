@@ -59,6 +59,6 @@ public interface THBillingInteractor<
         THBillingRequestType,
         THUIBillingRequestType,
         BillingExceptionType>,
-        BillingAlertDialogUtil.OnDialogProductDetailClickListener<THProductDetailType>
+        THBillingAlertDialogUtil.OnDialogProductDetailClickListener<THProductDetailType>
 {
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.metrics.Analytics;
@@ -20,14 +21,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
-abstract public class BillingAlertDialogUtil<
+abstract public class THBillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
         ProductDetailDomainInformerType extends THProductDetailDomainInformer<
-                        ProductIdentifierType,
-                        THProductDetailType>,
+                ProductIdentifierType,
+                THProductDetailType>,
         ProductDetailViewType extends ProductDetailView<
                 ProductIdentifierType,
                 THProductDetailType>,
@@ -41,7 +41,7 @@ abstract public class BillingAlertDialogUtil<
     @NonNull private final Analytics analytics;
 
     //<editor-fold desc="Constructors">
-    public BillingAlertDialogUtil(
+    public THBillingAlertDialogUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil)
     {
@@ -138,10 +138,9 @@ abstract public class BillingAlertDialogUtil<
             int titleResId,
             final OnDialogProductDetailClickListener<THProductDetailType> clickListener)
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = createDefaultDialogBuilder(context);
         alertDialogBuilder
                 .setTitle(titleResId)
-                .setIcon(R.drawable.th_app_logo)
                 .setSingleChoiceItems(detailsAdapter, 0, new DialogInterface.OnClickListener()
                 {
                     @Override public void onClick(DialogInterface dialogInterface, int i)
@@ -158,7 +157,6 @@ abstract public class BillingAlertDialogUtil<
                         dialogInterface.cancel();
                     }
                 })
-                .setCancelable(true)
                 .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int id)
@@ -311,7 +309,8 @@ abstract public class BillingAlertDialogUtil<
                 context.getString(R.string.iap_purchase_restored_cancel));
     }
 
-    public AlertDialog popSendEmailSupportRestorePartiallyFailed(final Context context, final DialogInterface.OnClickListener clickListener, final int countOk, final int countFailed)
+    public AlertDialog popSendEmailSupportRestorePartiallyFailed(final Context context, final DialogInterface.OnClickListener clickListener,
+            final int countOk, final int countFailed)
     {
         return popWithOkCancelButton(context,
                 context.getString(R.string.iap_send_support_email_restore_fail_partial_title),

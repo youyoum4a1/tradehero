@@ -109,7 +109,7 @@ abstract public class THBaseBillingInteractor<
 
     @NonNull protected final Provider<Activity> activityProvider;
     @NonNull protected final ProgressDialogUtil progressDialogUtil;
-    @NonNull protected final BillingAlertDialogUtil billingAlertDialogUtil;
+    @NonNull protected final THBillingAlertDialogUtil billingAlertDialogUtil;
     @NonNull protected final THBillingRequisitePreparer billingRequisitePreparer;
 
     protected Subscription billingInitialSubscription;
@@ -122,7 +122,7 @@ abstract public class THBaseBillingInteractor<
             @NonNull THBillingLogicHolderType billingLogicHolder,
             @NonNull Provider<Activity> activityProvider,
             @NonNull ProgressDialogUtil progressDialogUtil,
-            @NonNull BillingAlertDialogUtil<
+            @NonNull THBillingAlertDialogUtil<
                     ProductIdentifierType,
                     THProductDetailType,
                     THBillingLogicHolderType,
@@ -359,7 +359,8 @@ abstract public class THBaseBillingInteractor<
             ProductIdentifierListType,
             BillingExceptionType>
     {
-        @Override public void onFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
+        @Override public void onFetchedProductIdentifiers(int requestCode,
+                Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
         {
             handleFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
             notifyFetchedProductIdentifiers(requestCode, availableProductIdentifiers);
@@ -372,7 +373,8 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected void handleFetchedProductIdentifiers(int requestCode, Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
+    protected void handleFetchedProductIdentifiers(int requestCode,
+            Map<ProductIdentifierListKeyType, ProductIdentifierListType> availableProductIdentifiers)
     {
     }
 
@@ -402,7 +404,8 @@ abstract public class THBaseBillingInteractor<
 
     protected class THBaseBillingInteractorOnInventoryFetchedListener extends BaseBillingInteractorOnInventoryFetchListenerWrapper
     {
-        @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
+        @Override public void onInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers,
+                Map<ProductIdentifierType, THProductDetailType> inventory)
         {
             Timber.d("Inventory fetched count %d", productIdentifiers.size());
             super.onInventoryFetchSuccess(requestCode, productIdentifiers, inventory);
@@ -417,7 +420,8 @@ abstract public class THBaseBillingInteractor<
         }
     }
 
-    protected void handleInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers, Map<ProductIdentifierType, THProductDetailType> inventory)
+    protected void handleInventoryFetchSuccess(int requestCode, List<ProductIdentifierType> productIdentifiers,
+            Map<ProductIdentifierType, THProductDetailType> inventory)
     {
         THUIBillingRequestType thuiBillingRequest = uiBillingRequests.get(requestCode);
         if (thuiBillingRequest != null)
@@ -447,7 +451,7 @@ abstract public class THBaseBillingInteractor<
     //</editor-fold>
 
     //<editor-fold desc="Fetch Purchases">
-    protected  BillingPurchaseFetcher.OnPurchaseFetchedListener<
+    protected BillingPurchaseFetcher.OnPurchaseFetchedListener<
             ProductIdentifierType,
             THOrderIdType,
             THProductPurchaseType,
@@ -499,7 +503,8 @@ abstract public class THBaseBillingInteractor<
     {
         return new BillingPurchaseRestorer.OnPurchaseRestorerListener<ProductIdentifierType, THOrderIdType, THProductPurchaseType, BillingExceptionType>()
         {
-            @Override public void onPurchaseRestored(int requestCode, List<THProductPurchaseType> restoredPurchases, List<THProductPurchaseType> failedRestorePurchases,
+            @Override public void onPurchaseRestored(int requestCode, List<THProductPurchaseType> restoredPurchases,
+                    List<THProductPurchaseType> failedRestorePurchases,
                     List<BillingExceptionType> failExceptions)
             {
                 Timber.d("onPurchaseRestored %d, %d, %d", restoredPurchases.size(), failedRestorePurchases.size(), failExceptions.size());
@@ -509,7 +514,8 @@ abstract public class THBaseBillingInteractor<
         };
     }
 
-    protected void handlePurchaseRestored(int requestCode, List<THProductPurchaseType> restoredPurchases, List<THProductPurchaseType> failedRestorePurchases, List<BillingExceptionType> failExceptions)
+    protected void handlePurchaseRestored(int requestCode, List<THProductPurchaseType> restoredPurchases,
+            List<THProductPurchaseType> failedRestorePurchases, List<BillingExceptionType> failExceptions)
     {
         notifyPurchaseRestored(requestCode, restoredPurchases, failedRestorePurchases, failExceptions);
     }
