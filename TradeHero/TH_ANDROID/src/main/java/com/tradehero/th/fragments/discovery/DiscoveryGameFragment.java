@@ -3,23 +3,25 @@ package com.tradehero.th.fragments.discovery;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.MiniGameServiceWrapper;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -27,12 +29,13 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class DiscoveryGameFragment extends Fragment
+public class DiscoveryGameFragment extends DashboardFragment
 {
     private static final String MINIGAMES_LIST_LOADER_ID = DiscoveryGameFragment.class.getName() + ".gameList";
 
     @InjectView(R.id.game_list) StickyListHeadersListView stickyListHeadersListView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @Inject CurrentUserId currentUserId;
 
     /*@OnItemClick(android.R.id.list) */void handleItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -41,6 +44,13 @@ public class DiscoveryGameFragment extends Fragment
         {
             MiniGameDefDTO miniGameDefDTO = (MiniGameDefDTO) item;
             THToast.show("Push the game in, game url is: " + miniGameDefDTO.url);
+
+            Bundle args = new Bundle();
+            GameWebViewFragment.putUrl(args, ((MiniGameDefDTO) parent.getItemAtPosition(position)).url + "?userId=" + currentUserId.toUserBaseKey().getUserId());
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(GameWebViewFragment.class, args);
+            }
         }
     }
 
