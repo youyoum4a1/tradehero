@@ -162,10 +162,10 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         btnCopy.setEnabled(true);
         btnShare.setEnabled(true);
 
-        if (userProfileDTO.uncollectedSocialReward != null)
+        if (userProfileDTO.accumulatedReferralAwards != null)
         {
-            THSignedMoney reward = THSignedMoney.builder(userProfileDTO.uncollectedSocialReward.priceRefCcy)
-                    .currency(userProfileDTO.uncollectedSocialReward.currencyDisplay)
+            THSignedMoney reward = THSignedMoney.builder(userProfileDTO.accumulatedReferralAwards.priceRefCcy)
+                    .currency(userProfileDTO.accumulatedReferralAwards.currencyDisplay)
                     .build();
             message4.setText(Html.fromHtml(getString(MESSAGE_4, reward.toString())));
             message4.setVisibility(View.VISIBLE);
