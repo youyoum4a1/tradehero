@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
@@ -17,6 +16,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.NotificationListAdapter;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.notification.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -117,9 +118,14 @@ public class NotificationFragment extends DashboardFragment
         {
             @Override public void OnNotificationItemClicked(int position)
             {
-                if(((NotificationDTO) adapter.getItem(position)).unread){
+                NotificationDTO dto = (NotificationDTO) adapter.getItem((int) position);
+                if(dto==null){
+                    return;
+                }
+                if(dto.unread){
                     reportNotificationRead(((NotificationDTO) adapter.getItem(position)).pushId);
                 }
+                jumpToTarget(dto);
             }
         });
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -137,19 +143,6 @@ public class NotificationFragment extends DashboardFragment
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
-            {
-                NotificationDTO dto = (NotificationDTO) adapter.getItem((int) position);
-                enterNotification(dto);
-            }
-        });
-    }
-
-    public void enterNotification(NotificationDTO dto)
-    {
-        reportNotificationRead(dto.pushId);
     }
 
     @Override public void onStop()
@@ -364,4 +357,29 @@ public class NotificationFragment extends DashboardFragment
                         currentUserId.toUserBaseKey(),
                         createMarkNotificationAsReadAllCallback()));
     }
+
+    private void jumpToTarget(NotificationDTO dto){
+        if(dto.replyableTypeId == null || dto.replyableId == null){
+            return;
+        }
+        if(dto.replyableTypeId == 1){
+            jump(dto, DiscussionType.COMMENT);
+            return;
+        }
+        if(dto.replyableTypeId == 2){
+            jump(dto, DiscussionType.TIMELINE_ITEM);
+            return;
+        }
+    }
+
+    private void jump(NotificationDTO dto, DiscussionType type){
+        Bundle bundle = new Bundle();
+        Bundle discussBundle = new Bundle();
+        discussBundle.putString(DiscussionKey.BUNDLE_KEY_TYPE, type.name());
+        discussBundle.putInt(DiscussionKey.BUNDLE_KEY_ID, dto.replyableId);
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, discussBundle);
+        pushFragment(TimeLineItemDetailFragment.class, bundle);
+        return;
+    }
+
 }

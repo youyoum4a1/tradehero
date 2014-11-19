@@ -32,6 +32,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -350,14 +351,17 @@ public class MainTabFragmentMe extends AbsBaseFragment
             return;
         }
         int count = value.unreadNotificationsCount;
+        ABCLogger.d(" unreadNotificationsCount " + count);
         if(count>=0){
             tvMeNotificationCount.setVisibility(View.GONE);
             return;
         }
         if(count>99){
             tvMeNotificationCount.setText(String.valueOf("99"));
+            tvMeNotificationCount.setVisibility(View.VISIBLE);
             return;
         }
         tvMeNotificationCount.setText(String.valueOf(count));
+        tvMeNotificationCount.setVisibility(View.VISIBLE);
     }
 }
