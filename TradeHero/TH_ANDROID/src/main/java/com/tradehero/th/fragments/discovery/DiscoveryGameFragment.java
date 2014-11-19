@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
@@ -20,8 +22,6 @@ import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -46,7 +46,7 @@ public class DiscoveryGameFragment extends DashboardFragment
             THToast.show("Push the game in, game url is: " + miniGameDefDTO.url);
 
             Bundle args = new Bundle();
-            GameWebViewFragment.putUrl(args, ((MiniGameDefDTO) parent.getItemAtPosition(position)).url + "?userId=" + currentUserId.toUserBaseKey().getUserId());
+            GameWebViewFragment.putUrl(args, ((MiniGameDefDTO) parent.getItemAtPosition(position)), currentUserId.toUserBaseKey());
             if (navigator != null)
             {
                 navigator.get().pushFragment(GameWebViewFragment.class, args);

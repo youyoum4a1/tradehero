@@ -1,12 +1,15 @@
 package com.tradehero.th.fragments.games;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.api.games.MiniGameDefKey;
 import com.tradehero.th.api.games.GameScore;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.MiniGameServiceWrapper;
@@ -32,6 +35,12 @@ public class GameWebViewFragment extends BaseWebViewFragment
     @RouteProperty(GAME_ID_KEY) protected Integer gameId;
     @RouteProperty(GAME_SCORE_KEY) protected Integer score;
     @RouteProperty(GAME_LEVEL_KEY) protected Integer level;
+
+    public static void putUrl(@NonNull Bundle args, @NonNull MiniGameDefDTO miniGameDefDTO, @NonNull UserBaseKey userBaseKey)
+    {
+        putUrl(args, miniGameDefDTO.url + "?userId=" + userBaseKey.getUserId());
+    }
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
