@@ -202,6 +202,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
     }
 

@@ -165,6 +165,7 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         chartImageButtonClickReceiver = createImageButtonClickBroadcastReceiver();
     }
 
@@ -212,6 +213,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         mQuoteRefreshProgressBar.setProgress((int) MILLISEC_QUOTE_REFRESH);
         mQuoteRefreshProgressBar.setAnimation(progressAnimation);
 
+        listenToBuySellDialog();
     }
 
     //<editor-fold desc="ActionBar">
@@ -279,7 +281,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         unsubscribe(alertCompactListCacheSubscription);
         alertCompactListCacheSubscription = null;
         detachPortfolioMenuSubscription();
-        detachBuySellDialog();
+        stopListeningToBuySellDialog();
 
         mQuoteRefreshProgressBar.clearAnimation();
         progressAnimation = null;
@@ -303,13 +305,13 @@ public class BuySellFragment extends AbstractBuySellFragment
         unsubscribe(alertCompactListCacheSubscription);
         alertCompactListCacheSubscription = null;
         detachPortfolioMenuSubscription();
-        detachBuySellDialog();
     }
 
     @Override public void onDestroy()
     {
         userWatchlistPositionCacheSubscription = null;
         chartImageButtonClickReceiver = null;
+        abstractTransactionDialogFragment = null;
         super.onDestroy();
     }
 
@@ -319,14 +321,34 @@ public class BuySellFragment extends AbstractBuySellFragment
         portfolioMenuSubscription = null;
     }
 
-    private void detachBuySellDialog()
+    private void stopListeningToBuySellDialog()
     {
         AbstractTransactionDialogFragment dialogCopy = abstractTransactionDialogFragment;
         if (dialogCopy != null)
         {
             dialogCopy.setBuySellTransactionListener(null);
         }
-        abstractTransactionDialogFragment = null;
+    }
+
+    private void listenToBuySellDialog()
+    {
+        if (abstractTransactionDialogFragment != null)
+        {
+            abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
+            {
+                @Override public void onTransactionSuccessful(boolean isBuy,
+                        @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
+                {
+                    showPrettyReviewAndInvite(isBuy);
+                    pushPortfolioFragment(securityPositionTransactionDTO);
+                }
+
+                @Override public void onTransactionFailed(boolean isBuy, THException error)
+                {
+                    // TODO Toast error buy?
+                }
+            });
+        }
     }
 
     public void fetchAlertCompactList()
@@ -1023,20 +1045,7 @@ public class BuySellFragment extends AbstractBuySellFragment
                         quoteDTO,
                         isTransactionTypeBuy);
                 abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
-                abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractTransactionDialogFragment.BuySellTransactionListener()
-                {
-                    @Override public void onTransactionSuccessful(boolean isBuy,
-                            @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO)
-                    {
-                        showPrettyReviewAndInvite(isBuy);
-                        pushPortfolioFragment(securityPositionTransactionDTO);
-                    }
-
-                    @Override public void onTransactionFailed(boolean isBuy, THException error)
-                    {
-                        // TODO Toast error buy?
-                    }
-                });
+                listenToBuySellDialog();
             }
             else
             {
@@ -1161,7 +1170,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         return R.layout.tutorial_buy_sell;
     }
-
 
     @Override protected void softFetchPortfolioCompactList()
     {
