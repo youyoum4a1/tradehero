@@ -57,7 +57,6 @@ public class PositionPartialTopView extends LinearLayout
     private Subscription securityCompactCacheFetchSubscription;
     protected SecurityCompactDTO securityCompactDTO;
 
-
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public PositionPartialTopView(Context context)
@@ -116,6 +115,9 @@ public class PositionPartialTopView extends LinearLayout
 
     public void linkWith(PositionDTO positionDTO, final boolean andDisplay)
     {
+        boolean isDifferentSecurity = positionDTO != null
+                && (this.positionDTO == null
+                || !this.positionDTO.getSecurityIntegerId().equals(positionDTO.getSecurityIntegerId()));
         this.positionDTO = positionDTO;
         if (andDisplay)
         {
@@ -123,8 +125,13 @@ public class PositionPartialTopView extends LinearLayout
             displayPositionLastAmountHeader();
             displayPositionLastAmount();
         }
-        if (positionDTO != null && securityCompactCacheFetchSubscription == null)
+        if (positionDTO == null)
         {
+            unsubscribe(securityCompactCacheFetchSubscription);
+        }
+        else if (isDifferentSecurity)
+        {
+            unsubscribe(securityCompactCacheFetchSubscription);
             securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
                     .map(pair -> pair.second)
                     .observeOn(AndroidSchedulers.mainThread())
