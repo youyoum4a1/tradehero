@@ -536,6 +536,7 @@ public class BuySellFragment extends AbstractBuySellFragment
             // TODO max purchasable shares
             displayBuySellPrice();
             conditionalDisplayPortfolioChanged();
+            displayBuySellSwitch();
         }
     }
 
