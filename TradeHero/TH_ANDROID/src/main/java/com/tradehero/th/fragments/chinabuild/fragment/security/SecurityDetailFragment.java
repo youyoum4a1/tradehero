@@ -10,12 +10,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -33,11 +28,7 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -113,13 +104,14 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -128,11 +120,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 {
     public final static String BUNDLE_KEY_SECURITY_NAME = SecurityDetailFragment.class.getName() + ".securityName";
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".securityId";
-    public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".providerId";
     public final static String BUNDLE_KEY_COMPETITION_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".competitionID";
-
-    public static final int TYPE_DISCUSS = 0;
-    public static final int TYPE_NEWS = 1;
 
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -168,7 +156,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     protected WatchlistPositionDTOList watchedList;
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     protected FreshQuoteHolder freshQuoteHolder;
-    //protected boolean querying = false;
     @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
     protected boolean isTransactionTypeBuy = true;
@@ -1225,7 +1212,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_detailed_security_info);
             Timber.e("Error fetching the security position detail %s", key, error);
         }
     }
@@ -1249,7 +1235,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_your_user_profile);
             Timber.e("Error fetching the user profile %s", key, error);
         }
     }
@@ -1323,7 +1308,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
             Timber.e("Failed to fetch list of watch list items", error);
-            //THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
 
@@ -1332,7 +1316,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         this.watchedList = watchedList;
         if (andDisplay)
         {
-            //displayWatchlistButton();
             Timber.d("显示 添加或者删除 自选股 相关");
             if (watchedList != null && securityId != null)
             {
@@ -1573,13 +1556,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 @NotNull NewsItemListKey key,
                 @NotNull Throwable error)
         {
-            //THToast.show("");
             finish();
         }
 
         public void finish()
         {
-            //endLoading();
         }
     }
 
@@ -1835,11 +1816,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     protected class VoteCallback implements retrofit.Callback<DiscussionDTO>
     {
-        //<editor-fold desc="Constructors">
         public VoteCallback(VoteDirection voteDirection)
         {
         }
-        //</editor-fold>
 
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {

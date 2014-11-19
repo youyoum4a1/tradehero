@@ -189,8 +189,7 @@
 
       <include
           android:id="@+id/includeTLOperater"
-          layout="@layout/timeline_operater_line"
-          android:layout_below="@id/title0"/>
+          layout="@layout/timeline_operater_line"/>
     </LinearLayout>
   </LinearLayout>
 
