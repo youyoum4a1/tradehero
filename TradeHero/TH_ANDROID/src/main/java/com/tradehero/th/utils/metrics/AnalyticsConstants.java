@@ -135,6 +135,7 @@ public class AnalyticsConstants
     public static final String DiscoverNewsViewed = "DiscoverNewsViewed";//
     public static final String DiscoverDiscussionsViewed = "DiscoverDiscussionsViewed";//
     public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
+    public static final String GamePlaySummary = "GamePlaySummary";
 
     //Attribute
     public static final String ClickedFrom = "ClickedFrom";//
@@ -153,4 +154,6 @@ public class AnalyticsConstants
     public static final String Type = "Type";//
     public static final String CompetitionJoined = "CompetitionJoined";//
     public static final String InterestedExchange = "InterestedExchange";//
+    public static final String GamePlayed = "GamePlayed";//
+    public static final String TimeInGame = "TimeInGame";//
 }

@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.AbsListView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -69,6 +67,7 @@ import com.tradehero.th.fragments.competition.ForCompetitionEnrollment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -113,9 +112,6 @@ import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
-import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -124,6 +120,11 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -822,7 +823,8 @@ public class DashboardActivity extends BaseActivity
                     HomeFragment.class,
                     ProviderVideoListFragment.class,
                     WebViewFragment.class,
-                    GameWebViewFragment.class
+                    GameWebViewFragment.class,
+                    DiscoveryMainFragment.class
             );
             router.registerAlias("messages", "updatecenter/0");
             router.registerAlias("notifications", "updatecenter/1");
