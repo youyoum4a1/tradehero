@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
@@ -30,11 +30,17 @@ public class NotificationListAdapter extends BaseAdapter
 
     private NotificationClickListener listener;
 
+    private int readColor;
+    private int unreadColor;
+
     public NotificationListAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        readColor = context.getResources().getColor(R.color.notification_item_read);
+        unreadColor = context.getResources().getColor(R.color.notification_item_unread);
     }
 
     public void setNotificationLister(NotificationClickListener listener)
@@ -101,10 +107,9 @@ public class NotificationListAdapter extends BaseAdapter
         {
             ViewHolder holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.notification_list_item, viewGroup, false);
-            holder.rlNotificationItem = (RelativeLayout) convertView.findViewById(R.id.rlNotificationItem);
+            holder.llNotificationItem = (LinearLayout) convertView.findViewById(R.id.llNotificationItem);
             holder.imgNotificationHeader = (ImageView) convertView.findViewById(R.id.imgNotificationHeader);
             holder.tvNotificationTimer = (TextView) convertView.findViewById(R.id.tvNotificationTimer);
-            holder.imgNotificationIsRead = (ImageView) convertView.findViewById(R.id.imgNotificationIsRead);
             holder.tvNotificationContent = (MarkdownTextView) convertView.findViewById(R.id.tvNotificationContent);
             holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
             convertView.setTag(holder);
@@ -129,7 +134,11 @@ public class NotificationListAdapter extends BaseAdapter
                 }
                 holder.tvNotificationContent.setText(text);
             }
-            holder.imgNotificationIsRead.setVisibility(item.unread ? View.VISIBLE : View.GONE);
+            if(item.unread){
+                holder.tvNotificationContent.setTextColor(unreadColor);
+            }else{
+                holder.tvNotificationContent.setTextColor(readColor);
+            }
 
             holder.tvNotificationContent.setOnClickListener(new View.OnClickListener()
             {
@@ -138,7 +147,7 @@ public class NotificationListAdapter extends BaseAdapter
                     listener.OnNotificationItemClicked(position);
                 }
             });
-            holder.rlNotificationItem.setOnClickListener(new View.OnClickListener()
+            holder.llNotificationItem.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
@@ -151,10 +160,9 @@ public class NotificationListAdapter extends BaseAdapter
 
     static class ViewHolder
     {
-        public RelativeLayout rlNotificationItem = null;
+        public LinearLayout llNotificationItem = null;
         public ImageView imgNotificationHeader = null;
         public TextView tvNotificationTimer = null;
-        public ImageView imgNotificationIsRead = null;
         public MarkdownTextView tvNotificationContent = null;
         public TextView tvNotificationUser = null;
     }

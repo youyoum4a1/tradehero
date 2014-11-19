@@ -96,4 +96,9 @@
   <!-- Recommend Items (Stock & Hero)-->
   <color name="recomment_rate_of_return">#e63636</color>
   <!-- Recommend -->
+
+  <!-- Notification -->
+  <color name="notification_item_read">#979797</color>
+  <color name="notification_item_unread">#000000</color>
+  <!-- Notification -->
 </resources>
