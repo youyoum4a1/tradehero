@@ -6,20 +6,20 @@ import com.tradehero.th.api.games.GameScore;
 import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.api.games.MiniGameDefDTOList;
 import com.tradehero.th.api.games.MiniGameDefKey;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 
-@Singleton
-public class MiniGameServiceWrapper
+@Singleton public class MiniGameServiceWrapper
 {
-    private final MiniGameServiceRx miniGameServiceRx;
+    @NonNull private final MiniGameServiceRx miniGameServiceRx;
 
-    @Inject public MiniGameServiceWrapper(MiniGameServiceRx miniGameServiceRx)
+    //<editor-fold desc="Constructors">
+    @Inject public MiniGameServiceWrapper(@NonNull MiniGameServiceRx miniGameServiceRx)
     {
         this.miniGameServiceRx = miniGameServiceRx;
     }
+    //</editor-fold>
 
     @NonNull public Observable<MiniGameDefDTOList> getAllGames()
     {

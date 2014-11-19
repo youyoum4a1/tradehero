@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -67,7 +68,7 @@ public class MiniGameDefItemView extends FrameLayout
         picasso.load(miniGameDefDTO.image)
                 .placeholder(miniGameDefDTO.comingSoon ? R.color.gray_3 : R.color.tradehero_blue)
                 .into(gameBackground);
-        if (miniGameDefDTO.comingSoon)
+        if (miniGameDefDTO.comingSoon && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
         {
             gameBackground.setImageAlpha(80);
         }
