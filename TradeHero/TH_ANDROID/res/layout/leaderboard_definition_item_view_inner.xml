@@ -90,8 +90,7 @@
       android:orientation="horizontal"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:gravity="center_vertical"
-      android:layout_gravity="center_vertical"
+      android:layout_centerVertical="true"
       android:visibility="gone"
       android:layout_toLeftOf="@id/leaderboard_def_item_action_icon">
     <TextView
