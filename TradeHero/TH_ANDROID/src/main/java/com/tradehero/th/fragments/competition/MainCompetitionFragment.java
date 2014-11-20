@@ -46,6 +46,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCel
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
@@ -440,7 +441,17 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             handleDisplayCellClicked((CompetitionZoneDisplayCellDTO) competitionZoneDTO);
         }
+        else if (competitionZoneDTO instanceof CompetitionZonePreSeasonDTO)
+        {
+            handlePreSeasonCellClicked();
+        }
         // TODO others?
+    }
+
+    private void handlePreSeasonCellClicked()
+    {
+        CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(providerId);
+        dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
     }
 
     private void pushAdvertisement(@NonNull CompetitionZoneAdvertisementDTO competitionZoneDTO)
