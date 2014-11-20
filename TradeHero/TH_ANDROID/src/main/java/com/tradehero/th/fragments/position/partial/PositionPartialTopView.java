@@ -199,6 +199,7 @@ public class PositionPartialTopView extends LinearLayout
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
                 picasso.load(securityCompactDTO.imageBlobUrl)
+                        .placeholder(R.drawable.default_image)
                         .transform(new WhiteToTransparentTransformation())
                         .into(stockLogo, new Callback()
                         {
@@ -224,6 +225,7 @@ public class PositionPartialTopView extends LinearLayout
         if (securityCompactDTO != null)
         {
             picasso.load(securityCompactDTO.getExchangeLogoId())
+                    .placeholder(R.drawable.default_image)
                     .into(stockLogo);
         }
         else
