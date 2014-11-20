@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.api.games.MiniGameDefListKey;
@@ -32,8 +32,9 @@ public class DiscoveryGameFragment extends DashboardFragment
 {
     private static final String MINIGAMES_LIST_LOADER_ID = DiscoveryGameFragment.class.getName() + ".gameList";
 
+    @InjectView(R.id.switcher) BetterViewAnimator switcher;
     @InjectView(R.id.game_list) StickyListHeadersListView stickyListHeadersListView;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @InjectView(android.R.id.empty) View emptyView;
     @Inject CurrentUserId currentUserId;
 
     /*@OnItemClick(android.R.id.list) */void handleItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -79,6 +80,7 @@ public class DiscoveryGameFragment extends DashboardFragment
         DiscoveryGameAdapter adapter = new DiscoveryGameAdapter(getActivity(), R.layout.discovery_game_item_view);
         stickyListHeadersListView.setAdapter(adapter);
         stickyListHeadersListView.setOnItemClickListener(this::handleItemClick);
+        stickyListHeadersListView.setEmptyView(emptyView);
 
         subscriptions = new CompositeSubscription();
         PublishSubject<List<MiniGameDefDTO>> miniGamesSubject = PublishSubject.create();
@@ -92,15 +94,14 @@ public class DiscoveryGameFragment extends DashboardFragment
                                 miniGameDefListCache.get(new MiniGameDefListKey()).map(pair -> pair.second)))
                         .doOnError(toastOnErrorAction)
                         .onErrorResumeNext(Observable.empty())
-                        .doOnNext(miniGameDefDTOs -> progressBar.setVisibility(View.INVISIBLE))
+                        .doOnNext(miniGameDefDTOs -> switcher.setDisplayedChildByLayoutId(R.id.game_list))
                         .subscribe(miniGamesSubject));
     }
 
     @Override public void onDestroyView()
     {
-        super.onDestroyView();
-
         subscriptions.unsubscribe();
         rxLoaderManager.remove(MINIGAMES_LIST_LOADER_ID);
+        super.onDestroyView();
     }
 }
