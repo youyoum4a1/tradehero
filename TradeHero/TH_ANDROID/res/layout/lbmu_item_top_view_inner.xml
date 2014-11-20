@@ -80,7 +80,6 @@
         android:id="@+id/lbmu_roi_annualized"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
         android:textColor="@color/gray_1"
         android:visibility="gone"
         tools:text="(annualised: +1200%)"
@@ -106,7 +105,6 @@
       android:contentDescription="@null"
       android:layout_centerVertical="true"
       android:layout_alignParentRight="true"
-      android:src="@drawable/info"
       android:visibility="gone"
       />
 

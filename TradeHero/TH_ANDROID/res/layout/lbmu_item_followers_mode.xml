@@ -95,7 +95,6 @@
       android:contentDescription="@null"
       android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/leaderboard_user_item_expand"
-      android:src="@drawable/info"
       />
 
   <com.tradehero.th.fragments.leaderboard.ExpandingLayout
@@ -128,7 +127,6 @@
           android:layout_height="30dp"
           android:layout_width="30dp"
           android:contentDescription="@null"
-          android:background="@drawable/hero_quotient_colour"
           android:textSize="12dp"
           android:gravity="center"
           android:textStyle="bold"

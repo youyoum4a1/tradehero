@@ -61,7 +61,6 @@
           android:layout_height="@dimen/small_icon_w_h"
           android:layout_width="@dimen/small_icon_w_h"
           android:contentDescription="@null"
-          android:background="@drawable/hero_quotient_colour"
           android:textSize="@dimen/text_xxsmall"
           android:gravity="center"
           android:textStyle="bold"

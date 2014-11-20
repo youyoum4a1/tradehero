@@ -35,9 +35,7 @@ import java.text.SimpleDateFormat;
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroDTO>
 {
-    public static final int RES_ID_ACTIVE = R.drawable.image_icon_validation_valid;
-    public static final int RES_ID_INACTIVE = R.drawable.image_icon_validation_valid;
-    public static final int RES_ID_CROSS_RED = R.drawable.image_icon_validation_valid;
+    public static final int RES_ID_CROSS_RED = R.drawable.logo;
 
     @InjectView(R.id.follower_profile_picture) ImageView userIcon;
     @InjectView(R.id.hero_title) TextView title;

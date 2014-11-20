@@ -114,12 +114,15 @@ public class NotificationListAdapter extends BaseAdapter
             holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
             convertView.setTag(holder);
             holder = (ViewHolder) convertView.getTag();
-
-            picasso.get()
-                    .load(item.imageUrl)
-                    .placeholder(R.drawable.superman_facebook)
-                    .error(R.drawable.superman_facebook)
-                    .into(holder.imgNotificationHeader);
+            if(item.useSysIcon){
+                holder.imgNotificationHeader.setImageResource(R.drawable.offical_logo);
+            }else {
+                picasso.get()
+                        .load(item.imageUrl)
+                        .placeholder(R.drawable.superman_facebook)
+                        .error(R.drawable.superman_facebook)
+                        .into(holder.imgNotificationHeader);
+            }
             String text = item.text;
             if(!TextUtils.isEmpty(item.referencedUserName)){
                 holder.tvNotificationUser.setText(item.referencedUserName);

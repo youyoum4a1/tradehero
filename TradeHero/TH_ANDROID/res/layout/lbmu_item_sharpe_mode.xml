@@ -74,7 +74,6 @@
 
       <LinearLayout
           android:layout_width="wrap_content"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
 
@@ -89,7 +88,6 @@
             android:id="@+id/lbmu_volatility"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
             android:textColor="@color/gray_1"
             />
 
@@ -116,7 +114,6 @@
       android:contentDescription="@null"
       android:layout_centerVertical="true"
       android:layout_toLeftOf="@id/leaderboard_user_item_expand"
-      android:src="@drawable/info"
       />
 
   <com.tradehero.th.fragments.leaderboard.ExpandingLayout
@@ -149,7 +146,6 @@
           android:layout_height="30dp"
           android:layout_width="30dp"
           android:contentDescription="@null"
-          android:background="@drawable/hero_quotient_colour"
           android:textSize="12dp"
           android:gravity="center"
           android:textStyle="bold"
@@ -180,7 +176,6 @@
           android:id="@+id/lbmu_pl"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
 
@@ -204,7 +199,6 @@
           android:id="@+id/lbmu_period"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           />
 
@@ -227,7 +221,6 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
 
@@ -241,7 +234,6 @@
             android:id="@+id/lbmu_roi_annualized"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
             android:textColor="@color/gray_1"
             android:visibility="gone"
             />
@@ -268,7 +260,6 @@
           android:id="@+id/lbmu_benchmark_roi"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textColor="@color/gray_1"
           />
@@ -292,7 +283,6 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
 
@@ -307,7 +297,6 @@
             android:id="@+id/lbmu_number_of_trades"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
             android:textColor="@color/gray_1"
             />
 
@@ -332,7 +321,6 @@
       <LinearLayout
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           >
 
@@ -347,7 +335,6 @@
             android:id="@+id/lbmu_win_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
             android:textColor="@color/gray_1"
             />
 
@@ -373,7 +360,6 @@
           android:id="@+id/lbmu_followers_count"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textStyle="bold"
           />
@@ -398,7 +384,6 @@
           android:id="@+id/lbmu_comments_count"
           android:layout_width="0dp"
           android:layout_weight="2"
-          android:paddingLeft="10dp"
           android:layout_height="wrap_content"
           android:textStyle="bold"
           />
