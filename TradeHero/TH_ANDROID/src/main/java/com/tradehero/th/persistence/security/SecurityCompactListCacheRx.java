@@ -22,19 +22,28 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
     public static final int DEFAULT_MAX_FETCHER_SIZE = 5;
 
     @NonNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
+    @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactListCacheRx(
             @NonNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
+            @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
+        this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
 
     @NonNull @Override protected Observable<SecurityCompactDTOList> fetch(@NonNull SecurityListType key)
     {
         return securityServiceWrapper.get().getSecuritiesRx(key);
+    }
+
+    @Override public void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)
+    {
+        securityCompactCache.get().onNext(value);
+        super.onNext(key, value);
     }
 }

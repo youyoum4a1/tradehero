@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Pair;
@@ -51,6 +52,7 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -89,7 +91,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
+    @Nullable protected Subscription securitySubscription;
     protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected Subscription alertSlotSubscription;
     protected ProgressDialog progressDialog;
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
@@ -187,6 +191,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(securitySubscription);
+        securitySubscription = null;
+        unsubscribe(alertSlotSubscription);
+        alertSlotSubscription = null;
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         scrollView.setOnScrollChangedListener(null);
@@ -201,11 +214,21 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
     {
+        if (!securityId.equals(this.securityId))
+        {
+            unsubscribe(securitySubscription);
+            securitySubscription = null;
+        }
         this.securityId = securityId;
 
         progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
-        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .observeOn(AndroidSchedulers.mainThread())
+        fetchSecurityCompact();
+    }
+
+    protected void fetchSecurityCompact()
+    {
+        unsubscribe(securitySubscription);
+        securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                 {
                     @Override public void onCompleted()
@@ -259,7 +282,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            AndroidObservable.bindFragment(
+            unsubscribe(alertSlotSubscription);
+            alertSlotSubscription = AndroidObservable.bindFragment(
                     this,
                     securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()))
                     .take(1)

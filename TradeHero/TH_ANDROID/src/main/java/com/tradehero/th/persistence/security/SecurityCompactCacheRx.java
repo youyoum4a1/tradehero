@@ -14,7 +14,7 @@ import javax.inject.Singleton;
 @Singleton @UserCache
 public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityCompactDTO>
 {
-    public static final int DEFAULT_MAX_VALUE_SIZE = 100;
+    public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<SecurityIdCache> securityIdCache;
