@@ -17,7 +17,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 
 public class ChoiceFollowUserAssistantWithDialog
         implements OnFollowRequestedListener
@@ -87,14 +87,18 @@ public class ChoiceFollowUserAssistantWithDialog
     public void launchChoice()
     {
         unsubscribe(currentUserProfileSubscription);
-        currentUserProfileSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
-                .observeOn(AndroidSchedulers.mainThread())
+        currentUserProfileSubscription = AndroidObservable.bindActivity(
+                activity,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .take(1))
                 .subscribe(createUserProfileCacheObserver());
         if (heroBaseInfo == null)
         {
             unsubscribe(heroSubscription);
-            heroSubscription = userProfileCache.get(heroId)
-                    .observeOn(AndroidSchedulers.mainThread())
+            heroSubscription = AndroidObservable.bindActivity(
+                    activity,
+                    userProfileCache.get(heroId)
+                            .take(1))
                     .subscribe(createUserProfileCacheObserver());
         }
     }
