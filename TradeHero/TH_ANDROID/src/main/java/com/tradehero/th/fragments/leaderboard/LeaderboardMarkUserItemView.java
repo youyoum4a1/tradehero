@@ -665,9 +665,20 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     protected void displayUserIsLoading()
     {
-        lbmuPosition.setText("-");
-        lbmuRoi.setText("-");
-        lbmuDisplayName.setText(R.string.loading_required_information);
+        // Strangely, those may be null
+        // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/546d39eb65f8dfea1521d9f6
+        if (lbmuPosition != null)
+        {
+            lbmuPosition.setText("-");
+        }
+        if (lbmuRoi != null)
+        {
+            lbmuRoi.setText("-");
+        }
+        if (lbmuDisplayName != null)
+        {
+            lbmuDisplayName.setText(R.string.loading_required_information);
+        }
     }
 
     protected void displayUserIsNotRanked()
