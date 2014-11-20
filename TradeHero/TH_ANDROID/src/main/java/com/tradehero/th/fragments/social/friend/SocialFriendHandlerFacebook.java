@@ -1,12 +1,10 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
@@ -19,25 +17,19 @@ import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.auth.facebook.ObservableWebDialog;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.MakePairFunc2;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -47,13 +39,11 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     private static final int MAX_FACEBOOK_FRIENDS_RECEIVERS = 50;
 
     @NonNull final CurrentUserId currentUserId;
-    @NonNull final ProgressDialogUtil dialogUtil;
     @NonNull final SocialServiceWrapper socialServiceWrapper;
     @NonNull private final FacebookAuthenticationProvider facebookAuthenticationProvider;
-    @NonNull final UserProfileCache userProfileCache;
+    @NonNull final UserProfileCacheRx userProfileCache;
     @NonNull private final Provider<Activity> activityProvider;
 
-    private ProgressDialog progressDialog;
     private UserBaseKey userBaseKey;
     private List<UserFriendsDTO> users;
     RequestObserver<BaseResponseDTO> observer;
@@ -62,15 +52,13 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     @Inject public SocialFriendHandlerFacebook(
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull CurrentUserId currentUserId,
-            @NonNull ProgressDialogUtil dialogUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
             @NonNull FacebookAuthenticationProvider facebookAuthenticationProvider,
-            @NonNull UserProfileCache userProfileCache,
+            @NonNull UserProfileCacheRx userProfileCache,
             @NonNull Provider<Activity> activityProvider)
     {
         super(userServiceWrapper);
         this.currentUserId = currentUserId;
-        this.dialogUtil = dialogUtil;
         this.socialServiceWrapper = socialServiceWrapper;
         this.facebookAuthenticationProvider = facebookAuthenticationProvider;
         this.userProfileCache = userProfileCache;
@@ -105,34 +93,14 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     {
         // TODO/refactor
         facebookAuthenticationProvider.logIn(activityProvider.get())
-                .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
-                {
-                    @Override public Observable<UserProfileDTO> call(AuthData authData)
-                    {
-                        return socialServiceWrapper.connectRx(userKey, new AccessTokenForm(authData));
-                    }
-                })
-                .subscribe(new Observer<UserProfileDTO>()
-                {
-                    @Override public void onCompleted()
-                    {
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        new SocialLinkingCallback().failure(new THException(e));
-                    }
-
-                    @Override public void onNext(UserProfileDTO userProfileDTO)
-                    {
-                        new SocialLinkingCallback().success(userProfileDTO, (Response) null);
-                    }
-                });
+                .map(AccessTokenForm::new)
+                .flatMap(accessTokenForm -> socialServiceWrapper.connectRx(userKey, accessTokenForm))
+                .subscribe(new SocialLinkingObserver());
     }
 
-    private class SocialLinkingCallback extends THCallback<UserProfileDTO>
+    private class SocialLinkingObserver implements Observer<UserProfileDTO>
     {
-        @Override protected void success(UserProfileDTO userProfileDTO, THResponse thResponse)
+        @Override public void onNext(UserProfileDTO userProfileDTO)
         {
             if (Session.getActiveSession() != null)
             {
@@ -140,15 +108,14 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
             }
         }
 
-        @Override protected void failure(THException ex)
+        @Override public void onCompleted()
         {
-            // user unlinked current authentication
-            THToast.show(ex);
         }
 
-        @Override protected void finish()
+        @Override public void onError(Throwable ex)
         {
-            progressDialog.dismiss();
+            // user unlinked current authentication
+            THToast.show(new THException(ex));
         }
     }
 
@@ -166,7 +133,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         }
         Timber.d("list of fbIds: %s", stringBuilder.toString());
 
-        UserProfileDTO userProfileDTO = userProfileCache.get(userBaseKey);
+        UserProfileDTO userProfileDTO = userProfileCache.getValue(userBaseKey);
         if (userProfileDTO != null)
         {
             String messageToFacebookFriends =
@@ -186,32 +153,28 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                     new WebDialog.RequestsDialogBuilder(activity,
                             session,
                             params))
-                    .setOnCompleteListener(new WebDialog.OnCompleteListener()
-                    {
-                        @Override public void onComplete(Bundle values, FacebookException error)
+                    .setOnCompleteListener((values, error) -> {
+                        if (error != null)
                         {
-                            if (error != null)
+                            if (error instanceof FacebookOperationCanceledException)
                             {
-                                if (error instanceof FacebookOperationCanceledException)
-                                {
-                                    handleCanceled();
-                                }
-                                else
-                                {
-                                    handleError(error);
-                                }
+                                handleCanceled();
                             }
                             else
                             {
-                                final String requestId = values.getString("request");
-                                if (requestId != null)
-                                {
-                                    handleSuccess();
-                                }
-                                else
-                                {
-                                    handleCanceled();
-                                }
+                                handleError(error);
+                            }
+                        }
+                        else
+                        {
+                            final String requestId = values.getString("request");
+                            if (requestId != null)
+                            {
+                                handleSuccess();
+                            }
+                            else
+                            {
+                                handleCanceled();
                             }
                         }
                     })
@@ -258,25 +221,21 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
     {
         return Observable.combineLatest(
-                userProfileCache.createObservable(currentUserId.toUserBaseKey()),
+                userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second),
                 facebookAuthenticationProvider.createSessionObservable(activityProvider.get()),
-                new MakePairFunc2<UserProfileDTO, Session>())
-                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<Pair<UserProfileDTO, Session>>>()
-                {
-                    @Override public Observable<Pair<UserProfileDTO, Session>> call(final Pair<UserProfileDTO, Session> pair)
+                new MakePairFunc2<>())
+                .flatMap(pair -> {
+                    if (pair.first.fbLinked)
                     {
-                        if (pair.first.fbLinked)
-                        {
-                            return Observable.just(pair);
-                        }
-                        // Need to link then return
-                        return Observable.combineLatest(
-                                facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
-                                        .observeOn(Schedulers.io())
-                                        .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
-                                Observable.just(Session.getActiveSession()),
-                                new MakePairFunc2<UserProfileDTO, Session>());
+                        return Observable.just(pair);
                     }
+                    // Need to link then return
+                    return Observable.combineLatest(
+                            facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get())
+                                    .observeOn(Schedulers.io())
+                                    .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
+                            Observable.just(Session.getActiveSession()),
+                            new MakePairFunc2<>());
                 });
     }
 

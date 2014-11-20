@@ -10,14 +10,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -73,22 +71,9 @@ public class WebDialogFactory
     {
         return Observable.just(facebookAuthenticationProvider.get())
                 .observeOn(Schedulers.computation())
-                .map(new Func1<FacebookAuthenticationProvider, FacebookAuthenticationProvider>()
-                {
-                    @Override public FacebookAuthenticationProvider call(FacebookAuthenticationProvider facebookAuthenticationProvider)
-                    {
-                        //facebookAuthenticationProvider.addPermission(FacebookPermissionsConstants.PUBLISH_WALL_FRIEND);
-                        return facebookAuthenticationProvider;
-                    }
-                })
+                .map(facebookAuthenticationProvider1 -> facebookAuthenticationProvider1)
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<FacebookAuthenticationProvider, Observable<AuthData>>()
-                {
-                    @Override public Observable<AuthData> call(FacebookAuthenticationProvider facebookAuthenticationProvider)
-                    {
-                        return facebookAuthenticationProvider.logIn(activity);
-                    }
-                })
+                .flatMap(facebookAuthenticationProvider1 -> facebookAuthenticationProvider1.logIn(activity))
                 .observeOn(Schedulers.io())
                 .flatMap(socialServiceWrapperLazy.get().connectFunc1(currentUserId.toUserBaseKey()));
     }
@@ -104,34 +89,24 @@ public class WebDialogFactory
             @NonNull final Activity activity,
             @NonNull final Iterable<? extends UserFriendsFacebookDTO> userFriendsFacebookDTOs)
     {
-        return new Func1<UserProfileDTO, Observable<String>>()
-        {
-            @Override public Observable<String> call(final UserProfileDTO userProfileDTO)
-            {
-                return Observable.create(new Observable.OnSubscribe<String>()
-                {
-                    @Override public void call(final Subscriber<? super String> subscriber)
-                    {
-                        Bundle postParams = new Bundle();
-                        //addTo(postParams, userFriendsFacebookDTOs);
-                        addInvitation(postParams, userProfileDTO);
+        return userProfileDTO -> Observable.create(subscriber -> {
+            Bundle postParams = new Bundle();
+            //addTo(postParams, userFriendsFacebookDTOs);
+            addInvitation(postParams, userProfileDTO);
 
-                        //FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
-                        //        .setApplicationName("TradeHero")
-                        //        .setCaption("Caption")
-                        //        .build();
-                        //FacebookDialog.PendingCall call = shareDialog.present();
+            //FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
+            //        .setApplicationName("TradeHero")
+            //        .setCaption("Caption")
+            //        .build();
+            //FacebookDialog.PendingCall call = shareDialog.present();
 
-                        WebDialog postDialog = new WebDialog.FeedDialogBuilder(
-                                activity,
-                                Session.getActiveSession(),
-                                postParams)
-                                .setOnCompleteListener(new SubscriberOnCompleteListener(subscriber))
-                                .build();
-                        postDialog.show();
-                    }
-                });
-            }
-        };
+            WebDialog postDialog = new WebDialog.FeedDialogBuilder(
+                    activity,
+                    Session.getActiveSession(),
+                    postParams)
+                    .setOnCompleteListener(new SubscriberOnCompleteListener(subscriber))
+                    .build();
+            postDialog.show();
+        });
     }
 }

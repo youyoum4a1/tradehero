@@ -71,6 +71,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         super.onDetachedFromWindow();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.social_item_action_btn)
     public void onActionButtonClick()
     {
@@ -87,6 +88,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.social_item_action_cb)
     public void onActionCheckBoxClick()
     {
@@ -97,6 +99,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.social_friend_item_ll)
     public void onActionItemViewClick()
     {
