@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,9 +23,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,6 +34,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 {
     @Inject CurrentUserId currentUserId;
     @Inject FollowerSummaryCacheRx followerSummaryCache;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @InjectView(R.id.manage_followers_header) View headerView;
     @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
@@ -76,7 +78,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         AndroidObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
-                .subscribe(this::onListItemClick);
+                .subscribe(this::onListItemClick, toastOnErrorAction);
     }
 
     @Override public void onDestroyView()

@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +16,6 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import java.util.HashMap;
 import java.util.Map;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -80,7 +80,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     public void add(@NonNull LeaderboardFriendsDTO leaderboardFriendsDTO)
     {
         Observable.from(leaderboardFriendsDTO.leaderboard.users)
-                .observeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.computation())
                 .map(this::createUserDTOFrom)
                 .toList()
                 .doOnNext(friendLeaderboardMarkedUserDTOs -> {
@@ -94,10 +94,13 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
                         .map(this::createUserDTOFrom)
                         .toList())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(friendLeaderboardMarkedUserDTOs -> {
-                    appendHead(friendLeaderboardMarkedUserDTOs);
-                    notifyDataSetChanged();
-                });
+                .subscribe(
+                        friendLeaderboardMarkedUserDTOs -> {
+                            appendHead(friendLeaderboardMarkedUserDTOs);
+                            notifyDataSetChanged();
+                        }, throwable -> {
+                            //Do nothing
+                        });
     }
 
     private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull LeaderboardUserDTO leaderboardUserDTO)

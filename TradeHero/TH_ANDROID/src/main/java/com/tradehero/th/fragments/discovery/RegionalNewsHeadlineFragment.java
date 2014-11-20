@@ -7,10 +7,11 @@ import android.view.View;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 import rx.functions.Func1;
 import rx.operators.OperatorLocalBroadcastRegister;
 import rx.schedulers.Schedulers;
@@ -21,17 +22,20 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
     @Inject Locale locale;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @Override protected void initView(View view)
     {
         super.initView(view);
 
         subscriptions.add(
-                Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
-                        .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::replaceNewsItemListView));
+                AndroidObservable.bindFragment(
+                        this,
+                        Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
+                                .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
+                                .subscribeOn(Schedulers.io()))
+                        .onErrorResumeNext(Observable.empty())
+                        .subscribe(this::replaceNewsItemListView, toastOnErrorAction));
     }
 
     private NewsItemListRegionalKey newsItemListKeyFromPref()

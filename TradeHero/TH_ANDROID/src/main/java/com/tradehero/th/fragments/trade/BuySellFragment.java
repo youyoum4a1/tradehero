@@ -964,7 +964,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
         else
         {
-            THToast.show("Try again in a moment");
+            THToast.show(R.string.error_incomplete_info_message);
         }
     }
 

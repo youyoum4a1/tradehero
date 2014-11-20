@@ -24,7 +24,6 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -107,8 +106,9 @@ public class LeaderboardDefView extends RelativeLayout
                     .first()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorResumeNext(Observable.empty())
-                    .subscribe(this::showUserBestROI);
+                    .subscribe(this::showUserBestROI, throwable -> {
+                        // Do nothing
+                    });
         }
         else
         {
