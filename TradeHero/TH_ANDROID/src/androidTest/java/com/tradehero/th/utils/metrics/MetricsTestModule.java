@@ -1,7 +1,7 @@
 package com.tradehero.th.utils.metrics;
 
-import com.localytics.android.LocalyticsSession;
 import com.tapstream.sdk.Api;
+import com.tradehero.metrics.Analytics;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

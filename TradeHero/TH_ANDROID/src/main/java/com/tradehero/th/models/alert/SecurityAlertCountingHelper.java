@@ -1,11 +1,11 @@
 package com.tradehero.th.models.alert;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.MakePairFunc2;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class SecurityAlertCountingHelper
@@ -29,12 +29,6 @@ public class SecurityAlertCountingHelper
                 userProfileCache.get(userBaseKey),
                 alertCompactListCache.get(userBaseKey),
                 new MakePairFunc2<>())
-            .map(pair -> {
-                AlertSlotDTO alertSlots = new AlertSlotDTO();
-                alertSlots.usedAlertSlots = pair.second.second == null ? 0 : pair.second.second.size();
-                alertSlots.totalAlertSlots = pair.first.second == null ? 0 : pair.first.second.getUserAlertPlansAlertCount();
-                alertSlots.freeAlertSlots = alertSlots.totalAlertSlots - alertSlots.usedAlertSlots;
-                return alertSlots;
-            });
+            .map(pair -> new AlertSlotDTO(pair.first.second, pair.second.second));
     }
 }

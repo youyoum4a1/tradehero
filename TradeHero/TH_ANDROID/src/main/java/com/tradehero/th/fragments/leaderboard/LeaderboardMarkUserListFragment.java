@@ -44,7 +44,7 @@ import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPr
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -308,7 +308,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override public void onDestroy()
     {
-        this.userOnLeaderboardCacheSubscription = null;
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
         getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);

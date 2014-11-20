@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.discovery;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,23 +8,16 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.th.R;
 
-public class NewsPagerFragment extends Fragment
+public final class NewsPagerFragment extends Fragment
 {
     @InjectView(R.id.news_pager) ViewPager mViewPager;
-    @InjectView(R.id.news_carousel_wrapper) View mNewsCarouselWrapper;
     @InjectView(R.id.news_carousel) ViewPager mNewsCarousel;
-    private QuickReturnListViewOnScrollListener quickReturnScrollListener;
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.previous_filter) void handlePreviousFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
@@ -33,7 +25,6 @@ public class NewsPagerFragment extends Fragment
         mNewsCarousel.setCurrentItem((currentItem + size - 1) % size, currentItem != 0);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_filter) void handleNextFilterClick()
     {
         int currentItem = mNewsCarousel.getCurrentItem();
@@ -54,8 +45,6 @@ public class NewsPagerFragment extends Fragment
 
         mViewPager.setAdapter(new DiscoveryNewsFragmentAdapter(this.getChildFragmentManager()));
         mNewsCarousel.setAdapter(new DiscoveryNewsCarouselFragmentAdapter(this.getChildFragmentManager()));
-        mViewPager.setOffscreenPageLimit(1);
-
         mNewsCarousel.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
         {
             @Override public void onPageSelected(int position)
@@ -63,19 +52,11 @@ public class NewsPagerFragment extends Fragment
                 mViewPager.setCurrentItem(position);
             }
         });
-        int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
-        quickReturnScrollListener = new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
-                mNewsCarouselWrapper, -headerHeight, null, 0);
-    }
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        HierarchyInjector.inject(this);
     }
 
     private class DiscoveryNewsFragmentAdapter extends DiscoveryNewsAdapter
     {
+
         public DiscoveryNewsFragmentAdapter(FragmentManager fm)
         {
             super(fm);
@@ -83,18 +64,7 @@ public class NewsPagerFragment extends Fragment
 
         @Override public Fragment getItem(int i)
         {
-            NewsHeadlineFragment newsHeadlineFragment = NewsHeadlineFragment.newInstance(NewsType.values()[i]);
-            newsHeadlineFragment.setScrollListener(quickReturnScrollListener);
-            return newsHeadlineFragment;
-        }
-
-        @Override public void destroyItem(ViewGroup container, int position, Object object)
-        {
-            if (object instanceof NewsHeadlineFragment)
-            {
-                ((NewsHeadlineFragment) object).setScrollListener(null);
-            }
-            super.destroyItem(container, position, object);
+            return NewsHeadlineFragment.newInstance(NewsType.values()[i]);
         }
     }
 

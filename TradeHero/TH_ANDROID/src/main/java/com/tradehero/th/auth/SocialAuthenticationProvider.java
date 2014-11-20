@@ -2,24 +2,22 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.SocialLinker;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;
-import android.support.annotation.NonNull;
 import rx.Observable;
-import rx.functions.Func1;
 
-public abstract class SocialAuthenticationProvider implements THAuthenticationProvider
+public abstract class SocialAuthenticationProvider implements AuthenticationProvider
 {
     // TODO make it private when the refactor is done
     protected WeakReference<Activity> baseActivity;
     private Map<Activity, Observable<AuthData>> cachedObservables = new WeakHashMap<>();
 
     protected WeakReference<Context> baseContext;
-    protected THAuthenticationProvider.THAuthenticationCallback currentOperationCallback;
 
     @NonNull protected final SocialLinker socialLinker;
 
@@ -32,27 +30,6 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
     {
         baseContext = new WeakReference<>(context);
         return this;
-    }
-
-    @Override public void cancel()
-    {
-        handleCancel(this.currentOperationCallback);
-    }
-
-    protected void handleCancel(THAuthenticationProvider.THAuthenticationCallback callback)
-    {
-        if ((currentOperationCallback != callback) || (callback == null))
-        {
-            return;
-        }
-        try
-        {
-            callback.onCancel();
-        }
-        finally
-        {
-            currentOperationCallback = null;
-        }
     }
 
     @Override
@@ -82,12 +59,6 @@ public abstract class SocialAuthenticationProvider implements THAuthenticationPr
             @NonNull Activity activity)
     {
         return logIn(activity)
-                .flatMap(new Func1<AuthData, Observable<UserProfileDTO>>()
-                {
-                    @Override public Observable<UserProfileDTO> call(AuthData authData)
-                    {
-                        return socialLinker.link(new AccessTokenForm(authData));
-                    }
-                });
+                .flatMap(authData -> socialLinker.link(new AccessTokenForm(authData)));
     }
 }

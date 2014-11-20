@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.ThroughDTOProcessor;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
@@ -36,10 +37,15 @@ public class DTOProcessorAllMessagesRead extends ThroughDTOProcessor<BaseRespons
         Timber.d("DTOProcessAllMessageRead: process");
         if (readerId != null)
         {
-            userProfileCache.get(readerId);
+            UserProfileDTO cachedProfile = userProfileCache.getValue(readerId);
+            if (cachedProfile != null)
+            {
+                cachedProfile.unreadMessageThreadsCount = 0;
+                userProfileCache.onNext(readerId, cachedProfile);
+            }
             homeContentCache.invalidate(readerId);
         }
-        messageHeaderCache.invalidateAll();
+        messageHeaderCache.setUnreadAll(false);
         return value;
     }
 }

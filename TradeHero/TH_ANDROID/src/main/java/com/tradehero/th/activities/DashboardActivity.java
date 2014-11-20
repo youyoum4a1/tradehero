@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.AbsListView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.crashlytics.android.Crashlytics;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -32,6 +30,7 @@ import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.NotifyingWebView;
 import com.tradehero.common.widget.QuickReturnWebViewOnScrollChangedListener;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
@@ -58,6 +57,7 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.NavigationAnalyticsReporter;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
@@ -67,6 +67,8 @@ import com.tradehero.th.fragments.competition.ForCompetitionEnrollment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.onboarding.ForOnBoard;
@@ -88,6 +90,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -106,12 +109,9 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.level.ForXP;
 import com.tradehero.th.utils.level.XpModule;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
-import dagger.Lazy;
-import dagger.Module;
-import dagger.Provides;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -120,6 +120,11 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import dagger.Lazy;
+import dagger.Module;
+import dagger.Provides;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -164,6 +169,8 @@ public class DashboardActivity extends BaseActivity
     @Inject @ForSendLove IntentFilter sendLoveIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
+    @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
+    @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
@@ -182,7 +189,6 @@ public class DashboardActivity extends BaseActivity
     private BroadcastReceiver enrollmentBroadcastReceiver;
     private BroadcastReceiver sendLoveBroadcastReceiver;
     private BroadcastReceiver onlineStateReceiver;
-    @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
     private MenuItem networkIndicator;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -207,7 +213,11 @@ public class DashboardActivity extends BaseActivity
                 restoreRequestCode = null;
             }
         };
-        launchBilling();
+
+        if (Constants.RELEASE)
+        {
+            launchBilling();
+        }
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
@@ -251,6 +261,7 @@ public class DashboardActivity extends BaseActivity
             RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
             navigator.goToTab(selectedFragmentType);
         });
+        navigator.addDashboardFragmentWatcher(analyticsReporter.get());
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
     }
 
@@ -567,6 +578,7 @@ public class DashboardActivity extends BaseActivity
         AndroidObservable.bindActivity(this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
+                .first()
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
@@ -809,7 +821,10 @@ public class DashboardActivity extends BaseActivity
                     PositionListFragment.class,
                     TradeListFragment.class,
                     HomeFragment.class,
-                    ProviderVideoListFragment.class
+                    ProviderVideoListFragment.class,
+                    WebViewFragment.class,
+                    GameWebViewFragment.class,
+                    DiscoveryMainFragment.class
             );
             router.registerAlias("messages", "updatecenter/0");
             router.registerAlias("notifications", "updatecenter/1");
@@ -839,6 +854,11 @@ public class DashboardActivity extends BaseActivity
         @Provides @BottomTabsQuickReturnWebViewListener NotifyingWebView.OnScrollChangedListener provideQuickReturnWebViewOnScrollListener()
         {
             return new QuickReturnWebViewOnScrollChangedListener(QuickReturnType.FOOTER, null, 0, dashboardTabHost, tabHostHeight);
+        }
+
+        @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
+        {
+            return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
         }
     }
 }

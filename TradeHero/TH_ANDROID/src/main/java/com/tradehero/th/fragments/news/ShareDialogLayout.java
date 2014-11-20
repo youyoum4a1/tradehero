@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,8 +13,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareFormDTOFactory;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -20,8 +22,6 @@ import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
 import java.util.Comparator;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class ShareDialogLayout extends LinearLayout
 {
@@ -34,7 +34,7 @@ public class ShareDialogLayout extends LinearLayout
     @Inject @NonNull Comparator<ShareDestination> shareDestinationIndexResComparator;
 
     @Nullable protected OnShareMenuClickedListener menuClickedListener;
-    @Nullable protected AbstractDiscussionCompactDTO discussionToShare;
+    @Nullable protected DTO whatToShare;
 
     //<editor-fold desc="Constructors">
     public ShareDialogLayout(Context context, AttributeSet attrs)
@@ -73,9 +73,9 @@ public class ShareDialogLayout extends LinearLayout
         listViewSharingOptions.setDividerHeight(1);
     }
 
-    public void setDiscussionToShare(@SuppressWarnings("NullableProblems") @NonNull AbstractDiscussionCompactDTO discussionToShare)
+    public void setWhatToShare(@SuppressWarnings("NullableProblems") @NonNull DTO whatToShare)
     {
-        this.discussionToShare = discussionToShare;
+        this.whatToShare = whatToShare;
     }
 
     public void setMenuClickedListener(@Nullable OnShareMenuClickedListener menuClickedListener)
@@ -83,8 +83,9 @@ public class ShareDialogLayout extends LinearLayout
         this.menuClickedListener = menuClickedListener;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.news_action_share_cancel)
-    protected void onCancelClicked(/*View view*/)
+    protected void onCancelClicked(@SuppressWarnings("UnusedParameters") View view)
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
         if (listenerCopy != null)
@@ -93,6 +94,7 @@ public class ShareDialogLayout extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.news_action_list_sharing_items)
     protected void onShareOptionsItemClicked(
             AdapterView<?> parent,
@@ -101,13 +103,20 @@ public class ShareDialogLayout extends LinearLayout
             @SuppressWarnings("UnusedParameters") long id)
     {
         OnShareMenuClickedListener listenerCopy = menuClickedListener;
-        AbstractDiscussionCompactDTO discussionToShareCopy = discussionToShare;
-        if (listenerCopy != null && discussionToShareCopy != null)
+        DTO whatToShareCopy = whatToShare;
+        if (listenerCopy != null && whatToShareCopy != null)
         {
-            listenerCopy.onShareRequestedClicked(
-                    socialShareFormDTOFactory.createForm(
-                            (ShareDestination) parent.getItemAtPosition(position),
-                            discussionToShareCopy));
+            if (whatToShareCopy instanceof SocialShareFormDTO)
+            {
+                listenerCopy.onShareRequestedClicked((SocialShareFormDTO) whatToShareCopy);
+            }
+            else
+            {
+                listenerCopy.onShareRequestedClicked(
+                        socialShareFormDTOFactory.createForm(
+                                (ShareDestination) parent.getItemAtPosition(position),
+                                whatToShareCopy));
+            }
         }
     }
 

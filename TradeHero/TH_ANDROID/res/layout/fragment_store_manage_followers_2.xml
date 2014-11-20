@@ -25,7 +25,6 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:drawableLeft="@drawable/icn_message_white"
-      android:drawableStart="@drawable/icn_message_white"
       android:drawablePadding="@dimen/margin_xsmall"
       style="@style/TH.Button.Inverse"
       android:textColor="@color/white"

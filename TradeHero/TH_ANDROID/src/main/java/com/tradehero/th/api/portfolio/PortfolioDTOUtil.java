@@ -1,21 +1,22 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesDTO;
-import com.tradehero.th.api.competition.specific.ProviderSpecificResourcesFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
 
 public class PortfolioDTOUtil
 {
-    @Inject Lazy<PortfolioCompactDTOUtil> portfolioCompactDTOUtil;
-    @Inject Lazy<ProviderSpecificResourcesFactory> providerSpecificResourcesFactory;
+    @NonNull private final Lazy<PortfolioCompactDTOUtil> portfolioCompactDTOUtil;
 
-    @Inject public PortfolioDTOUtil()
+    //<editor-fold desc="Constructors">
+    @Inject public PortfolioDTOUtil(@NonNull Lazy<PortfolioCompactDTOUtil> portfolioCompactDTOUtil)
     {
         super();
+        this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
     }
+    //</editor-fold>
 
     public String getLongTitleType(Context context, PortfolioDTO portfolioDTO)
     {
@@ -31,12 +32,7 @@ public class PortfolioDTOUtil
             }
             if (portfolioDTO.providerId != null)
             {
-                ProviderSpecificResourcesDTO resourcesDTO = providerSpecificResourcesFactory.get().createResources(portfolioDTO.getProviderIdKey());
-                if (resourcesDTO != null && resourcesDTO.competitionPortfolioTitleResId > 0)
-                {
-                    return context.getString(resourcesDTO.competitionPortfolioTitleResId);
-                }
-                else if (portfolioDTO.title != null)
+                if (portfolioDTO.title != null)
                 {
                     return portfolioDTO.title;
                 }

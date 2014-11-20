@@ -10,6 +10,7 @@ import com.tradehero.th.fragments.contestcenter.FragmentContestCenterModule;
 import com.tradehero.th.fragments.discovery.FragmentDiscoveryModule;
 import com.tradehero.th.fragments.discussion.FragmentDiscussionModule;
 import com.tradehero.th.fragments.education.FragmentEducationModule;
+import com.tradehero.th.fragments.games.FragmentGamesModule;
 import com.tradehero.th.fragments.home.FragmentHomeModule;
 import com.tradehero.th.fragments.leaderboard.FragmentLeaderboardModule;
 import com.tradehero.th.fragments.location.FragmentLocationModule;
@@ -31,32 +32,33 @@ import dagger.Module;
 
 @Module(
         includes = {
-                FragmentTimelineModule.class,
-                FragmentLeaderboardModule.class,
-                FragmentHomeModule.class,
-                FragmentSettingUIModule.class,
-                FragmentTradeModule.class,
-                FragmentSocialModule.class,
+                FragmentAchievementModule.class,
                 FragmentAlertModule.class,
-                FragmentSecurityModule.class,
+                FragmentAuthenticationModule.class,
+                FragmentBillingModule.class,
+                FragmentCompetitionModule.class,
+                FragmentContestCenterModule.class,
                 FragmentDiscussionModule.class,
                 FragmentDiscoveryModule.class,
-                FragmentPositionModule.class,
-                FragmentUpdateCenterModule.class,
-                FragmentPortfolioModule.class,
-                FragmentContestCenterModule.class,
-                FragmentNewsModule.class,
-                FragmentTrendingModule.class,
-                FragmentWatchlistModule.class,
-                FragmentCompetitionModule.class,
-                FragmentBillingModule.class,
-                FragmentLocationModule.class,
-                FragmentWebModule.class,
                 FragmentEducationModule.class,
-                FragmentTranslationModule.class,
-                FragmentAuthenticationModule.class,
+                FragmentGamesModule.class,
+                FragmentHomeModule.class,
+                FragmentLeaderboardModule.class,
+                FragmentLocationModule.class,
+                FragmentNewsModule.class,
                 FragmentOnBoardModule.class,
-                FragmentAchievementModule.class,
+                FragmentPortfolioModule.class,
+                FragmentPositionModule.class,
+                FragmentSecurityModule.class,
+                FragmentSettingUIModule.class,
+                FragmentSocialModule.class,
+                FragmentTimelineModule.class,
+                FragmentTradeModule.class,
+                FragmentTranslationModule.class,
+                FragmentTrendingModule.class,
+                FragmentUpdateCenterModule.class,
+                FragmentWatchlistModule.class,
+                FragmentWebModule.class,
         },
         injects = {
                 DashboardFragment.class,

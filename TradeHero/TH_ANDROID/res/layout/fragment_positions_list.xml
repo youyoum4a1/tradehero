@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:orientation="vertical"
     >
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
 
   <ViewStub
       android:id="@+id/position_list_header_stub"
@@ -19,40 +14,43 @@
       android:layout_height="wrap_content"
       />
 
-  <com.handmark.pulltorefresh.library.PullToRefreshListView
-      xmlns:ptr="http://schemas.android.com/apk/res-auto"
-      android:id="@+id/pull_to_refresh_position_list"
+  <ViewAnimator
+      android:id="@+id/list_flipper"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      ptr:ptrMode="pullFromStart"
-      ptr:ptrScrollingWhileRefreshingEnabled="true"
-      android:fadingEdge="none"
-      android:scrollbars="none"
-      android:paddingBottom="@dimen/dashboard_tabhost_height"
-      android:clipToPadding="false"
-      />
+      android:layout_height="match_parent">
 
-  <TextView
-      style="@style/TH.Loading_Error_Text"
-      android:id="@+id/error"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:layout_centerInParent="true"
-      android:text="@string/message_fetch_error"
-      android:visibility="gone"
-      />
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_to_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+      <ListView
+          android:id="@+id/position_list"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:fadingEdge="none"
+          android:paddingBottom="@dimen/dashboard_tabhost_height"
+          android:clipToPadding="false"
+          />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/message_fetch_error"
+        />
+
+  </ViewAnimator>
 
 </LinearLayout>
-
-  <ProgressBar
-      android:id="@android:id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:visibility="visible"
-      android:layout_centerInParent="true"
-      android:layout_gravity="center"
-      />
-
-</FrameLayout>

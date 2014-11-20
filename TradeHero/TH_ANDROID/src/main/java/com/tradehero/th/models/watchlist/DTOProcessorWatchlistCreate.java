@@ -6,7 +6,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 
@@ -18,11 +17,10 @@ public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistUpdate
     public DTOProcessorWatchlistCreate(
             @NonNull WatchlistPositionCacheRx watchlistPositionCache,
             @NonNull UserBaseKey concernedUser,
-            @NonNull PortfolioCompactCacheRx portfolioCompactCache,
             @NonNull PortfolioCacheRx portfolioCache,
             @NonNull UserWatchlistPositionCacheRx userWatchlistPositionCache)
     {
-        super(concernedUser,watchlistPositionCache, portfolioCompactCache, portfolioCache);
+        super(concernedUser,watchlistPositionCache, portfolioCache);
         this.userWatchlistPositionCache = userWatchlistPositionCache;
     }
     //</editor-fold>

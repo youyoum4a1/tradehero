@@ -13,7 +13,7 @@ import timber.log.Timber;
 public class THToast
 {
     public static Handler toastHandler = null;
-    public static int toastPosition = THApp.context().getResources().getDimensionPixelOffset(R.dimen.button_height_30);
+    public static int toastPosition = THApp.context().getResources().getDimensionPixelOffset(R.dimen.button_height_small);
     public static void show(final String message)
     {
         //THLog.e(TAG, "show " + message, new IllegalArgumentException());

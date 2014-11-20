@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.home;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import com.tradehero.common.widget.NotifyingWebView;
@@ -12,8 +14,6 @@ import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -95,8 +95,8 @@ public final class HomeWebView extends NotifyingWebView
         @Override public void onNext(Pair<UserBaseKey, HomeContentDTO> pair)
         {
             reloadWebView(pair.second);
-            dtoCacheUtil.anonymousPrefetches();
-            dtoCacheUtil.initialPrefetches();
+//            dtoCacheUtil.anonymousPrefetches();
+//            dtoCacheUtil.initialPrefetches();
         }
 
         @Override public void onCompleted()

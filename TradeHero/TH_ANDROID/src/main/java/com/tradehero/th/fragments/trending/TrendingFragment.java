@@ -53,7 +53,7 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;

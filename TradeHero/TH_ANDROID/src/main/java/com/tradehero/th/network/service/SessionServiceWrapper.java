@@ -10,7 +10,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
@@ -23,7 +22,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton public class SessionServiceWrapper
@@ -59,7 +57,18 @@ import timber.log.Timber;
     }
     //</editor-fold>
 
-    //<editor-fold desc="DTO Processors">
+    //<editor-fold desc="Get System Status">
+    @NonNull public Observable<SystemStatusDTO> getSystemStatusRx()
+    {
+        return sessionServiceRx.getSystemStatus()
+                .onErrorReturn(throwable -> {
+                    Timber.e(throwable, "When requesting for systemStatus");
+                    return new SystemStatusDTO();
+                });
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Login">
     @NonNull protected DTOProcessorUserLogin createUserLoginProcessor()
     {
         return new DTOProcessorUserLogin(
@@ -70,40 +79,12 @@ import timber.log.Timber;
                 dtoCacheUtil);
     }
 
-    @NonNull protected DTOProcessor<UserProfileDTO> createUpdateDeviceProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
-    }
-
-    @NonNull protected DTOProcessorLogout createLogoutProcessor()
-    {
-        return new DTOProcessorLogout(
-                dtoCacheUtil, dtoCacheUtil,
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get System Status">
-    @NonNull public Observable<SystemStatusDTO> getSystemStatusRx()
-    {
-        return sessionServiceRx.getSystemStatus()
-                .onErrorReturn(new Func1<Throwable, SystemStatusDTO>()
-                {
-                    @Override public SystemStatusDTO call(Throwable throwable)
-                    {
-                        Timber.e(throwable, "When requesting for systemStatus");
-                        return new SystemStatusDTO();
-                    }
-                });
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Login">
     @NonNull public Observable<UserLoginDTO> loginRx(
             @NonNull String authorization,
             @NonNull LoginSignUpFormDTO loginFormDTO)
     {
-        return sessionServiceRx.login(authorization, loginFormDTO);
+        return sessionServiceRx.login(authorization, loginFormDTO)
+                .map(createUserLoginProcessor());
     }
     //</editor-fold>
 
@@ -120,11 +101,18 @@ import timber.log.Timber;
                 userLoginDTOObservable = sessionServiceRx.signupAndLogin(authorizationHeader, loginSignUpFormDTO);
         }
 
-        return userLoginDTOObservable.doOnNext(createUserLoginProcessor());
+        return userLoginDTOObservable.map(createUserLoginProcessor());
     }
     //</editor-fold>
 
     //<editor-fold desc="Logout">
+    @NonNull protected DTOProcessorLogout createLogoutProcessor()
+    {
+        return new DTOProcessorLogout(
+                dtoCacheUtil, dtoCacheUtil,
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
+    }
+
     @NonNull public Observable<UserProfileDTO> logoutRx()
     {
         return sessionServiceRx.logout()
@@ -133,9 +121,15 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
+    @NonNull protected DTOProcessorUpdateUserProfile createUpdateDeviceProcessor()
+    {
+        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
+    }
+
     @NonNull public Observable<UserProfileDTO> updateDeviceRx()
     {
-        return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get());
+        return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get())
+                .map(createUpdateDeviceProcessor());
     }
     //</editor-fold>
 

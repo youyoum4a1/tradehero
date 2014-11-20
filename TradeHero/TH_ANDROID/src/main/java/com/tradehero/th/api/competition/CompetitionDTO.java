@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -37,25 +38,17 @@ public class CompetitionDTO implements DTO
     }
     //</editor-fold>
 
-    public CompetitionId getCompetitionId()
+    @NonNull public CompetitionId getCompetitionId()
     {
         return new CompetitionId(id);
     }
 
-    public String getIconUrl()
+    @Nullable public String getIconUrl()
     {
         LeaderboardDefDTO leaderboardCopy = this.leaderboard;
         if (leaderboardCopy != null)
         {
-            Boolean isWithinUtcRestricted = leaderboardCopy.isWithinUtcRestricted();
-            if (isWithinUtcRestricted != null && isWithinUtcRestricted)
-            {
-                return iconActiveUrl;
-            }
-            else if (isWithinUtcRestricted != null)
-            {
-                return iconInactiveUrl;
-            }
+            return leaderboardCopy.isWithinUtcRestricted() ? iconActiveUrl : iconInactiveUrl;
         }
         return null;
     }

@@ -10,7 +10,7 @@ import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
-import javax.inject.Inject;
+import com.tradehero.th.widget.TextHolder;
 import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 

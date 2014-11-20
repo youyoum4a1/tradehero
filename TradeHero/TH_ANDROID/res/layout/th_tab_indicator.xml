@@ -20,19 +20,6 @@
     style="@style/TradeHero.TabView"
     android:gravity="center">
 
-    <ImageView
-        android:id="@android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        android:contentDescription="@null" />
-
-    <TextView
-        android:id="@android:id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        style="@style/TradeHero.TabText" />
+  <include layout="@layout/th_inner_indicator"/>
 
 </com.tradehero.th.widget.THTabView>

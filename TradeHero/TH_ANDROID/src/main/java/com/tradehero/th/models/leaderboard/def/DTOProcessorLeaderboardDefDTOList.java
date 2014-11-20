@@ -1,13 +1,11 @@
 package com.tradehero.th.models.leaderboard.def;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
-import rx.functions.Func1;
+import com.tradehero.th.models.ThroughDTOProcessor;
 
-public class DTOProcessorLeaderboardDefDTOList implements DTOProcessor<LeaderboardDefDTOList>,
-        Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>
+public class DTOProcessorLeaderboardDefDTOList extends ThroughDTOProcessor<LeaderboardDefDTOList>
 {
     private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
@@ -20,10 +18,5 @@ public class DTOProcessorLeaderboardDefDTOList implements DTOProcessor<Leaderboa
     {
         leaderboardDefDTOFactory.complementServerLeaderboardDefDTOs(value);
         return value;
-    }
-
-    @Override public LeaderboardDefDTOList call(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
-    {
-        return process(leaderboardDefDTOs);
     }
 }

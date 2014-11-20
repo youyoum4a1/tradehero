@@ -6,9 +6,9 @@ abstract public class TestStraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType
         extends StraightDTOCacheNew<DTOKeyType, DTOType>
 {
     //<editor-fold desc="Constructors">
-    public TestStraightDTOCacheNew(int maxSize)
+    public TestStraightDTOCacheNew(int maxSize, DTOCacheUtilNew dtoCacheUtil)
     {
-        super(maxSize);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

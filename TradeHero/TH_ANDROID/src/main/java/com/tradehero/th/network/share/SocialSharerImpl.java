@@ -8,21 +8,21 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.tradehero.th.network.service.SocialShareServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.wxapi.WXEntryActivity;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class SocialSharerImpl implements SocialSharer
@@ -30,10 +30,10 @@ public class SocialSharerImpl implements SocialSharer
     @NonNull private final Activity activity;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final UserProfileCacheRx userProfileCache;
-    @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
+    @NonNull private final SocialShareServiceWrapper socialShareServiceWrapper;
     @NonNull private final SocialShareVerifier socialShareVerifier;
 
-    private OnSharedListener sharedListener;
+    @Nullable private OnSharedListener sharedListener;
     @Nullable private UserProfileDTO currentUserProfile;
     @Nullable private SocialShareFormDTO waitingSocialShareFormDTO;
 
@@ -42,33 +42,33 @@ public class SocialSharerImpl implements SocialSharer
             @NonNull Activity activity,
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull DiscussionServiceWrapper discussionServiceWrapper,
+            @NonNull SocialShareServiceWrapper socialShareServiceWrapper,
             @NonNull SocialShareVerifier socialShareVerifier)
     {
         this.activity = activity;
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
-        this.discussionServiceWrapper = discussionServiceWrapper;
+        this.socialShareServiceWrapper = socialShareServiceWrapper;
         this.socialShareVerifier = socialShareVerifier;
     }
     //</editor-fold>
 
     //<editor-fold desc="Shared Listener">
-    @Override public void setSharedListener(OnSharedListener sharedListener)
+    @Override public void setSharedListener(@Nullable OnSharedListener sharedListener)
     {
         this.sharedListener = sharedListener;
     }
 
-    protected void notifyConnectRequiredListener(SocialShareFormDTO shareFormDTO)
+    protected void notifyConnectRequiredListener(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
     {
         OnSharedListener sharedListenerCopy = sharedListener;
         if (sharedListenerCopy != null)
         {
-            sharedListenerCopy.onConnectRequired(shareFormDTO);
+            sharedListenerCopy.onConnectRequired(shareFormDTO, toConnect);
         }
     }
 
-    protected void notifySharedListener(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO)
+    protected void notifySharedListener(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO)
     {
         OnSharedListener sharedListenerCopy = sharedListener;
         if (sharedListenerCopy != null)
@@ -77,7 +77,7 @@ public class SocialSharerImpl implements SocialSharer
         }
     }
 
-    protected void notifySharedFailedListener(SocialShareFormDTO shareFormDTO, Throwable throwable)
+    protected void notifySharedFailedListener(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
     {
         OnSharedListener sharedListenerCopy = sharedListener;
         if (sharedListenerCopy != null)
@@ -118,7 +118,11 @@ public class SocialSharerImpl implements SocialSharer
                         break;
 
                     case NEED_AUTH:
-                        notifyConnectRequiredListener(waitingSocialShareFormDTO);
+                        notifyConnectRequiredListener(
+                                waitingSocialShareFormDTO,
+                                socialShareVerifier.getNeedAuthSocialNetworks(
+                                        currentUserProfile,
+                                        waitingSocialShareFormDTO));
                         break;
 
                     case TRY_AND_SEE:
@@ -136,81 +140,27 @@ public class SocialSharerImpl implements SocialSharer
     {
         if (waitingSocialShareFormDTO != null)
         {
-            if (waitingSocialShareFormDTO instanceof TimelineItemShareFormDTO)
+            if (waitingSocialShareFormDTO instanceof WeChatDTO)
             {
-                share((TimelineItemShareFormDTO) waitingSocialShareFormDTO);
-            }
-            else if (waitingSocialShareFormDTO instanceof WeChatDTO)
-            {
-                share((WeChatDTO) waitingSocialShareFormDTO);
+                activity.startActivity(createWeChatIntent(activity, (WeChatDTO) waitingSocialShareFormDTO));
             }
             else
             {
-                throw new IllegalArgumentException("Unhandled type " + waitingSocialShareFormDTO.getClass());
+                socialShareServiceWrapper.shareRx(waitingSocialShareFormDTO)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createShareObserver(waitingSocialShareFormDTO));
             }
         }
         waitingSocialShareFormDTO = null;
     }
 
-    public void share(TimelineItemShareFormDTO timelineItemShareFormDTO)
-    {
-        // We do not save the Subscription because the intermediation is already
-        // handled by the OnSharedListener
-        discussionServiceWrapper.shareRx(
-                timelineItemShareFormDTO.discussionListKey,
-                timelineItemShareFormDTO.timelineItemShareRequestDTO)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createDiscussionObserver(timelineItemShareFormDTO));
-    }
-
-    public void share(@NonNull WeChatDTO weChatDTO)
-    {
-        activity.startActivity(createWeChatIntent(activity, weChatDTO));
-    }
-
-    public Intent createWeChatIntent(@NonNull Context activityContext, @NonNull WeChatDTO weChatDTO)
-    {
-        Intent intent = new Intent(activityContext, WXEntryActivity.class);
-        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
-        return intent;
-    }
-
-    protected Observer<BaseResponseDTO> createDiscussionObserver(SocialShareFormDTO shareFormDTO)
-    {
-        return new SocialSharerImplDiscussionObserver(shareFormDTO);
-    }
-
-    protected class SocialSharerImplDiscussionObserver implements Observer<BaseResponseDTO>
-    {
-        private final SocialShareFormDTO shareFormDTO;
-
-        public SocialSharerImplDiscussionObserver(SocialShareFormDTO shareFormDTO)
-        {
-            this.shareFormDTO = shareFormDTO;
-        }
-
-        @Override public void onNext(BaseResponseDTO baseResponseDTO)
-        {
-            notifySharedListener(shareFormDTO, new BaseResponseSocialShareResultDTO(baseResponseDTO));
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            notifySharedFailedListener(shareFormDTO, e);
-        }
-    }
-
-    //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
         // Here we do not care about keeping the subscription because the listener already provides
         // the intermediation
         userProfileCache.get(currentUserId.toUserBaseKey())
                 .observeOn(AndroidSchedulers.mainThread())
+                .first()
                 .subscribe(createProfileObserver());
     }
 
@@ -236,5 +186,38 @@ public class SocialSharerImpl implements SocialSharer
             THToast.show(R.string.error_fetch_user_profile);
         }
     }
-    //</editor-fold>
+
+    @NonNull public Intent createWeChatIntent(@NonNull Context activityContext, @NonNull WeChatDTO weChatDTO)
+    {
+        Intent intent = new Intent(activityContext, WXEntryActivity.class);
+        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
+        return intent;
+    }
+
+    @NonNull protected Observer<SocialShareResultDTO> createShareObserver(@NonNull SocialShareFormDTO shareFormDTO)
+    {
+        return new ShareObserver(shareFormDTO);
+    }
+
+    protected class ShareObserver extends EmptyObserver<SocialShareResultDTO>
+    {
+        @NonNull private SocialShareFormDTO shareFormDTO;
+
+        //<editor-fold desc="Constructors">
+        public ShareObserver(@NonNull SocialShareFormDTO shareFormDTO)
+        {
+            this.shareFormDTO = shareFormDTO;
+        }
+        //</editor-fold>
+
+        @Override public void onNext(SocialShareResultDTO socialShareResultDTO)
+        {
+            notifySharedListener(shareFormDTO, socialShareResultDTO);
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            notifySharedFailedListener(shareFormDTO, e);
+        }
+    }
 }

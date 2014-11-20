@@ -77,7 +77,6 @@ public class RegionalNewsSelectorView extends LinearLayout
     {
         super.onAttachedToWindow();
 
-
         // observable of whenever userProfileDTO is available
         Observable<String> countryCodeObservable = userProfileCacheRx.get(currentUserId.toUserBaseKey())
                 .map(userProfileDTOPair -> userProfileDTOPair.second.countryCode);

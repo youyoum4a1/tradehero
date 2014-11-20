@@ -12,8 +12,8 @@
     android:background="@drawable/tile_earn_credit_bg">
 
   <ImageView
-      android:layout_width="@dimen/big_avatar_w_h"
-      android:layout_height="@dimen/big_avatar_w_h"
+      android:layout_width="@dimen/big_image_w_h"
+      android:layout_height="@dimen/big_image_w_h"
       android:scaleType="fitCenter"
       android:id="@+id/extra_tile_image"
       android:src="@drawable/icon_earn_credit"

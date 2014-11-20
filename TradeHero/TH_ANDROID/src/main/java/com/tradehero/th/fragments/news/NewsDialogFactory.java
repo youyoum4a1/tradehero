@@ -23,7 +23,7 @@ public class NewsDialogFactory extends ShareDialogFactory
     {
         NewsDialogLayout contentView = (NewsDialogLayout) LayoutInflater.from(context)
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
-        contentView.setDiscussionToShare(abstractDiscussionCompactDTO);
+        contentView.setWhatToShare(abstractDiscussionCompactDTO);
         contentView.setMenuClickedListener(
                 menuClickedListener);
         return THDialog.showUpDialog(context, contentView);

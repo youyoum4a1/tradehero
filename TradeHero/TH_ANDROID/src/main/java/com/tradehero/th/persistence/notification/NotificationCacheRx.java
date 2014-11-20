@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.notification;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -12,7 +13,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -41,6 +41,24 @@ public class NotificationCacheRx extends BaseFetchDTOCacheRx<NotificationKey, No
         for (NotificationDTO notificationDTO : notificationDTOs)
         {
             onNext(notificationDTO.getDTOKey(), notificationDTO);
+        }
+    }
+
+    public void setUnread(@NonNull NotificationKey key, boolean unread)
+    {
+        NotificationDTO notificationDTO = getValue(key);
+        if (notificationDTO != null && notificationDTO.unread != unread)
+        {
+            notificationDTO.unread = unread;
+            onNext(key, notificationDTO);
+        }
+    }
+
+    public void setUnreadAll(boolean unread)
+    {
+        for (NotificationKey key : snapshot().keySet())
+        {
+            setUnread(key, unread);
         }
     }
 }

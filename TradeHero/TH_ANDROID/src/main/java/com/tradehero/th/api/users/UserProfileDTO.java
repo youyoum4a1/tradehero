@@ -202,7 +202,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
     @Override public String toString()
     {
         return "UserProfileDTO{" +
-                "displayName='" + displayName + '\'' +
+                super.toString() +
+                ", displayName='" + displayName + '\'' +
                 ", id=" + id +
                 ", picture='" + picture + '\'' +
                 ", firstName='" + firstName + '\'' +

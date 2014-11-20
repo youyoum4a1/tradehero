@@ -7,19 +7,15 @@ import android.view.MotionEvent;
 
 public class NonSwipeableViewPager extends ViewPager
 {
-    //<editor-fold desc="Constructors">
-    @SuppressWarnings("UnusedDeclaration")
     public NonSwipeableViewPager(Context context)
     {
         super(context);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public NonSwipeableViewPager(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
-    //</editor-fold>
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent arg0)

@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.annotation.IntegerRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -22,8 +24,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import dagger.Lazy;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -33,7 +34,7 @@ abstract public class SocialConnectSettingViewHolder
 {
     @NonNull protected final AlertDialogUtil alertDialogUtil;
     @NonNull protected final SocialServiceWrapper socialServiceWrapper;
-    @NonNull protected final SocialAuthenticationProvider socialAuthenticationProvider;
+    @NonNull protected final Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider;
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NonNull protected final String authToken;
     @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
@@ -49,7 +50,7 @@ abstract public class SocialConnectSettingViewHolder
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull AlertDialogUtil alertDialogUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
-            @NonNull SocialAuthenticationProvider socialAuthenticationProvider,
+            @NonNull Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull String authToken)
     {
@@ -140,7 +141,7 @@ abstract public class SocialConnectSettingViewHolder
             progressDialog.setCancelable(true);
             progressDialog.setCanceledOnTouchOutside(true);
             unsubscribeLinking();
-            linkingSubscription = socialAuthenticationProvider
+            linkingSubscription = socialAuthenticationProvider.get()
                     .socialLink(activityContext)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new ChangedStatusObserver(activityContext, alertDialogUtil));

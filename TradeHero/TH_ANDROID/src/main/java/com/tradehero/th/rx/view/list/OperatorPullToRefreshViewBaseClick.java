@@ -1,11 +1,8 @@
 package com.tradehero.th.rx.view.list;
 
-import android.view.View;
+import android.support.annotation.NonNull;
 import android.widget.AbsListView;
 import com.handmark.pulltorefresh.library.PullToRefreshAdapterViewBase;
-import java.util.Map;
-import java.util.WeakHashMap;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;

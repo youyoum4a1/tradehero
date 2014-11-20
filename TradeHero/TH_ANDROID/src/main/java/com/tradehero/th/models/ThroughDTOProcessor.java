@@ -1,16 +1,17 @@
 package com.tradehero.th.models;
 
-import rx.functions.Action1;
+import rx.functions.Func1;
 
-public class ThroughDTOProcessor<DTOType> implements DTOProcessor<DTOType>, Action1<DTOType>
+public class ThroughDTOProcessor<DTOType> implements DTOProcessor<DTOType>,
+        Func1<DTOType, DTOType>
 {
     @Override public DTOType process(DTOType value)
     {
         return value;
     }
 
-    @Override public void call(DTOType dtoType)
+    @Override public DTOType call(DTOType dtoType)
     {
-        process(dtoType);
+        return process(dtoType);
     }
 }

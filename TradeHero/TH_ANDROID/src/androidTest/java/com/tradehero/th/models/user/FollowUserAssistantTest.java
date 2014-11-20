@@ -77,7 +77,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         {
             @Override public Object answer(InvocationOnMock invocation) throws Throwable
             {
-                assistant.onErrorThrown(heroId, expected);
+                assistant.onError(expected);
                 return null;
             }
         }).when(userProfileCache).get(currentUserId.toUserBaseKey());
@@ -170,7 +170,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
                 applicablePortfolioId);
         //noinspection ThrowableInstanceNeverThrown
         Throwable expected = new IllegalArgumentException();
-        assistant.onErrorThrown(currentUserId.toUserBaseKey(), expected);
+        assistant.onError(expected);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
@@ -203,7 +203,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
-        verify(userServiceWrapper, times(1)).followRx(heroId, assistant);
+        verify(userServiceWrapper, times(1)).followRx(heroId);
     }
 
     @Test public void followWithEnoughCCAndServiceFailedWillNotify() throws InterruptedException
@@ -296,7 +296,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         assistant.launchPremiumFollow();
         runBgUiTasks(3);
 
-        verify(userServiceWrapper, times(1)).followRx(heroId, assistant);
+        verify(userServiceWrapper, times(1)).followRx(heroId);
     }
 
     // This is very long but here to test that no listener /callback is lost in the process

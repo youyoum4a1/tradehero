@@ -66,7 +66,7 @@ import rx.Observable;
                 ownedPositionId.userId,
                 ownedPositionId.portfolioId,
                 ownedPositionId.positionId)
-                .doOnNext(createTradeListReceivedProcessor(ownedPositionId));
+                .map(createTradeListReceivedProcessor(ownedPositionId));
     }
     //</editor-fold>
 
@@ -85,7 +85,7 @@ import rx.Observable;
                 ownedTradeId.portfolioId,
                 ownedTradeId.positionId,
                 ownedTradeId.tradeId)
-                .doOnNext(createTradeReceivedProcessor(ownedTradeId));
+                .map(createTradeReceivedProcessor(ownedTradeId));
     }
     //</editor-fold>
 }

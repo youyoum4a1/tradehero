@@ -1,7 +1,10 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.auth.AccessTokenForm;
 import com.tradehero.th.api.form.UserFormDTO;
+import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -11,7 +14,6 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -22,6 +24,7 @@ import rx.functions.Func1;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
+    //<editor-fold desc="Constructors">
     @Inject public SocialServiceWrapper(
             @NonNull SocialServiceRx socialServiceRx,
             @NonNull CurrentUserId currentUserId,
@@ -31,12 +34,13 @@ import rx.functions.Func1;
         this.currentUserId = currentUserId;
         this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
+    //</editor-fold>
 
     //<editor-fold desc="Connect">
     @NonNull public Observable<UserProfileDTO> connectRx(@NonNull UserBaseKey userBaseKey, UserFormDTO userFormDTO)
     {
         return socialServiceRx.connect(userBaseKey.key, userFormDTO)
-                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
+                .map(dtoProcessorUpdateUserProfileProvider.get());
     }
 
     @NonNull public Func1<AuthData, Observable<UserProfileDTO>> connectFunc1(@NonNull final UserBaseKey userBaseKey)
@@ -60,7 +64,15 @@ import rx.functions.Func1;
     public Observable<UserProfileDTO> disconnectRx(@NonNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return socialServiceRx.disconnect(userBaseKey.key, socialNetworkFormDTO)
-                .doOnNext(dtoProcessorUpdateUserProfileProvider.get());
+                .map(dtoProcessorUpdateUserProfileProvider.get());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Share Referral Code">
+    @NonNull public Observable<BaseResponseDTO> shareReferralCodeRx(
+            @NonNull ReferralCodeShareFormDTO reqFormDTO)
+    {
+        return socialServiceRx.shareReferralCode(reqFormDTO);
     }
     //</editor-fold>
 }

@@ -1,8 +1,9 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
-import android.support.annotation.NonNull;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,11 +14,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class StraightDTOCacheNewTest
 {
+    @Inject DTOCacheUtilNew dtoCacheUtil;
+
     private TestStraightDTOCacheNew<UserBaseKey, ExpirableDTO> cache;
 
     @Before public void setUp()
     {
-        cache = new TestStraightDTOCacheNew<UserBaseKey, ExpirableDTO>(10)
+        cache = new TestStraightDTOCacheNew<UserBaseKey, ExpirableDTO>(10, dtoCacheUtil)
         {
             @NonNull @Override public ExpirableDTO fetch(@NonNull UserBaseKey key) throws Throwable
             {

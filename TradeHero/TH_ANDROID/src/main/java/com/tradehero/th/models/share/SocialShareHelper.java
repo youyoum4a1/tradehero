@@ -6,10 +6,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
 import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -18,6 +17,7 @@ import com.tradehero.th.fragments.news.ShareDialogLayout;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.utils.AlertDialogUtil;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import android.support.annotation.NonNull;
@@ -113,7 +113,7 @@ public class SocialShareHelper
         }
     }
 
-    protected void notifyShareMenuRequestedClicked(SocialShareFormDTO shareFormDTO)
+    protected void notifyShareMenuRequestedClicked(@NonNull SocialShareFormDTO shareFormDTO)
     {
         OnMenuClickedListener listenerCopy = menuClickedListener;
         if (listenerCopy != null)
@@ -122,17 +122,18 @@ public class SocialShareHelper
         }
     }
 
-    protected void notifyConnectRequired(SocialShareFormDTO shareFormDTO)
+    protected void notifyConnectRequired(@NonNull SocialShareFormDTO shareFormDTO,
+            @NonNull List<SocialNetworkEnum> toConnect)
     {
         OnMenuClickedListener listenerCopy = menuClickedListener;
         if (listenerCopy != null)
         {
-            listenerCopy.onConnectRequired(shareFormDTO);
+            listenerCopy.onConnectRequired(shareFormDTO, toConnect);
         }
     }
 
-    protected void notifyShared(SocialShareFormDTO shareFormDTO,
-            SocialShareResultDTO shareResultDTO)
+    protected void notifyShared(@NonNull SocialShareFormDTO shareFormDTO,
+            @NonNull SocialShareResultDTO shareResultDTO)
     {
         cancelFormWaiting();
         OnMenuClickedListener listenerCopy = menuClickedListener;
@@ -142,7 +143,7 @@ public class SocialShareHelper
         }
     }
 
-    protected void notifyShareFailed(SocialShareFormDTO shareFormDTO, Throwable error)
+    protected void notifyShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable error)
     {
         cancelFormWaiting();
         OnMenuClickedListener listenerCopy = menuClickedListener;
@@ -153,17 +154,17 @@ public class SocialShareHelper
     }
     //</editor-fold>
 
-    public void share(@NonNull AbstractDiscussionCompactDTO discussionToShare)
+    public void share(@NonNull DTO whatToShare)
     {
         cancelFormWaiting();
         dismissShareDialog();
         shareDialog = shareDialogFactory.createShareDialog(
                 activityHolder.get(),
-                discussionToShare,
+                whatToShare,
                 createShareMenuClickedListener());
     }
 
-    protected ShareDialogLayout.OnShareMenuClickedListener createShareMenuClickedListener()
+    @NonNull protected ShareDialogLayout.OnShareMenuClickedListener createShareMenuClickedListener()
     {
         return new SocialShareHelperShareMenuClickedListener();
     }
@@ -195,35 +196,40 @@ public class SocialShareHelper
         currentSocialSharer.share(socialShareFormDTO);
     }
 
-    protected SocialSharer.OnSharedListener createSharedListener()
+    @NonNull protected SocialSharer.OnSharedListener createSharedListener()
     {
         return new SocialShareHelperSharedListener();
     }
 
     protected class SocialShareHelperSharedListener implements SocialSharer.OnSharedListener
     {
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
         {
-            notifyConnectRequired(shareFormDTO);
-            offerToConnect((SocialShareFormDTOWithEnum) shareFormDTO);
+            notifyConnectRequired(shareFormDTO, toConnect);
+            offerToConnect(toConnect);
         }
 
-        @Override public void onShared(SocialShareFormDTO shareFormDTO,
-                SocialShareResultDTO socialShareResultDTO)
+        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
+                @NonNull SocialShareResultDTO socialShareResultDTO)
         {
             notifyShared(shareFormDTO, socialShareResultDTO);
         }
 
-        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
         {
             notifyShareFailed(shareFormDTO, throwable);
         }
     }
 
-    public void offerToConnect(SocialShareFormDTOWithEnum shareFormDTO)
+    public void offerToConnect(@NonNull List<SocialNetworkEnum> toConnect)
+    {
+        // HACK FIXME Connect first only
+        offerToConnect(toConnect.get(0));
+    }
+
+    public void offerToConnect(@NonNull SocialNetworkEnum socialNetwork)
     {
         detachOfferConnectDialog();
-        final SocialNetworkEnum socialNetwork = shareFormDTO.getSocialNetworkEnum();
         alertDialogUtil.popWithOkCancelButton(
                 activityHolder.get(),
                 activityHolder.get().getString(R.string.link, socialNetwork.getName()),
@@ -234,7 +240,7 @@ public class SocialShareHelper
                 createNoConnectDialogListener());
     }
 
-    protected DialogInterface.OnClickListener createNoConnectDialogListener()
+    @NonNull protected DialogInterface.OnClickListener createNoConnectDialogListener()
     {
         return new SocialShareHelperNoConnectClickListener();
     }
@@ -247,7 +253,7 @@ public class SocialShareHelper
         }
     }
 
-    protected DialogInterface.OnClickListener createConnectDialogListener(SocialNetworkEnum socialNetwork)
+    @NonNull protected DialogInterface.OnClickListener createConnectDialogListener(SocialNetworkEnum socialNetwork)
     {
         return new SocialShareHelperConnectClickListener(socialNetwork);
     }
@@ -256,11 +262,13 @@ public class SocialShareHelper
     {
         private final SocialNetworkEnum socialNetwork;
 
+        //<editor-fold desc="Constructors">
         public SocialShareHelperConnectClickListener(
                 SocialNetworkEnum socialNetwork)
         {
             this.socialNetwork = socialNetwork;
         }
+        //</editor-fold>
 
         @Override public void onClick(DialogInterface dialog, int which)
         {
@@ -275,9 +283,9 @@ public class SocialShareHelper
     public interface OnMenuClickedListener
     {
         void onCancelClicked();
-        void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO);
-        void onConnectRequired(SocialShareFormDTO shareFormDTO);
-        void onShared(SocialShareFormDTO shareFormDTO, SocialShareResultDTO socialShareResultDTO);
-        void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable);
+        void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO);
+        void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect);
+        void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO);
+        void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable);
     }
 }

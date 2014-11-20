@@ -15,7 +15,6 @@ import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
-import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;

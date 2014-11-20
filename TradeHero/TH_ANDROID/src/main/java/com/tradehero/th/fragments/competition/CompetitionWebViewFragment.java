@@ -68,14 +68,4 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         }
         return loadingUrl;
     }
-
-    @Override protected void onProgressChanged(WebView view, int newProgress)
-    {
-        super.onProgressChanged(view, newProgress);
-        Activity activity = getActivity();
-        if (activity != null)
-        {
-            activity.setProgress(newProgress * 100);
-        }
-    }
 }

@@ -49,6 +49,7 @@ public class Constants
 
     // GCM
     public static final String GCM_STAGING_SENDER = "927417497470";
+    public static final String TENCENT_APP_ID = "1101331512";
 
     // To change TAPSTREAM_VERSION, look at gradle build flavor for china
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(BuildConfig.TAPSTREAM_VERSION);

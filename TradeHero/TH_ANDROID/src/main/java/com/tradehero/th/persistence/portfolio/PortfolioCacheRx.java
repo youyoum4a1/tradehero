@@ -1,18 +1,21 @@
 package com.tradehero.th.persistence.portfolio;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
-import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 
 @Singleton @UserCache
@@ -23,22 +26,16 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
 
     @NonNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @NonNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
-    @NonNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
-    @NonNull protected final Lazy<GetPositionsCacheRx> getPositionsCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCacheRx(
             @NonNull Lazy<PortfolioServiceWrapper> portfolioServiceWrapper,
             @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
-            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
-            @NonNull Lazy<GetPositionsCacheRx> getPositionsCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.portfolioServiceWrapper = portfolioServiceWrapper;
         this.portfolioCompactCache = portfolioCompactCache;
-        this.portfolioCompactListCache = portfolioCompactListCache;
-        this.getPositionsCache = getPositionsCache;
     }
     //</editor-fold>
 
@@ -61,8 +58,25 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
             throw new NullPointerException("UserId should be set");
         }
         portfolioCompactCache.get().onNext(key.getPortfolioIdKey(), value);
-        getPositionsCache.get().invalidate(key);
         super.onNext(key, value);
+    }
+
+    @NonNull public Observable<PortfolioDTOList> getPortfolios(
+            @NonNull List<? extends PortfolioCompactDTO> portfolioCompactDTOs, @SuppressWarnings(
+            "UnusedParameters") @Nullable PortfolioCompactDTO typeQualifier)
+    {
+        return getPortfolios(new OwnedPortfolioIdList(portfolioCompactDTOs, null), null);
+    }
+
+    @NonNull public Observable<PortfolioDTOList> getPortfolios(
+            @NonNull List<? extends OwnedPortfolioId> ownedPortfolioIds, @SuppressWarnings(
+            "UnusedParameters") @Nullable OwnedPortfolioId typeQualifier)
+    {
+        return Observable.from(ownedPortfolioIds)
+                .flatMap(id -> get(id).take(1))
+                .map(pair -> pair.second)
+                .toList()
+                .map(PortfolioDTOList::new);
     }
 
     public void invalidate(@NonNull UserBaseKey concernedUser)
@@ -83,12 +97,5 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
                 invalidate(key);
             }
         }
-    }
-
-    @Override public void invalidate(@NonNull OwnedPortfolioId key)
-    {
-        super.invalidate(key);
-        getPositionsCache.get().invalidate(key);
-        portfolioCompactListCache.get(key.getUserBaseKey());
     }
 }

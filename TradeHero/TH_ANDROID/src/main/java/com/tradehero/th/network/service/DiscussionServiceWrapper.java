@@ -86,7 +86,7 @@ import rx.Observable;
     @NonNull public Observable<DiscussionDTO> getCommentRx(@NonNull DiscussionKey discussionKey)
     {
         return discussionServiceRx.getComment(discussionKey.id)
-                .doOnNext(createDiscussionProcessor());
+                .map(createDiscussionProcessor());
     }
     //</editor-fold>
 
@@ -96,7 +96,7 @@ import rx.Observable;
         if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
         {
             return discussionServiceRx.createDiscussion(discussionFormDTO)
-                    .doOnNext(createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey));
+                    .map(createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey));
         }
         return postToTimelineRx(
                 currentUserId.toUserBaseKey(),
@@ -139,7 +139,7 @@ import rx.Observable;
                         discussionVoteKey.inReplyToType,
                         discussionVoteKey.inReplyToId,
                         discussionVoteKey.voteDirection)
-                .doOnNext(createDiscussionReplyProcessor(
+                .map(createDiscussionReplyProcessor(
                         discussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
                         null));
     }
@@ -165,7 +165,7 @@ import rx.Observable;
         return discussionServiceRx.postToTimeline(
                         userBaseKey.key,
                         discussionFormDTO)
-                .doOnNext(createDiscussionProcessor());
+                .map(createDiscussionProcessor());
     }
     //</editor-fold>
 }

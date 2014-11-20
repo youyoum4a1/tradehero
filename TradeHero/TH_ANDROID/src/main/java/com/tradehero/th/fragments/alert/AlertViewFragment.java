@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,6 +42,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
@@ -68,6 +70,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected CurrentUserId currentUserId;
 
     private View headerView;
+    @Nullable protected Subscription alertCacheSubscription;
+    @Nullable protected Subscription updateAlertSubscription;
     protected AlertDTO alertDTO;
     private SecurityCompactDTO securityCompactDTO;
     private AlertEventAdapter alertEventAdapter;
@@ -145,6 +149,15 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(alertCacheSubscription);
+        alertCacheSubscription = null;
+        unsubscribe(updateAlertSubscription);
+        updateAlertSubscription = null;
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         priceChangeHistoryList.removeHeaderView(headerView);
@@ -167,7 +180,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         {
             progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
-            AndroidObservable.bindFragment(this,
+            unsubscribe(alertCacheSubscription);
+            alertCacheSubscription = AndroidObservable.bindFragment(this,
                     alertCache.get().get(alertId))
                     .subscribe(createAlertCacheObserver());
         }
@@ -328,7 +342,8 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             alertFormDTO.upOrDown = alertDTO.upOrDown;
             alertFormDTO.priceMovement = alertDTO.priceMovement;
             alertFormDTO.active = alertActive;
-            AndroidObservable.bindFragment(
+            unsubscribe(updateAlertSubscription);
+            updateAlertSubscription = AndroidObservable.bindFragment(
                     this,
                     alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
                     .subscribe(createAlertUpdateObserver());

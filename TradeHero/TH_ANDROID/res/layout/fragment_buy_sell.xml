@@ -67,8 +67,8 @@
 
     <ImageView
         android:id="@+id/market_closed_icon"
-        android:layout_width="@dimen/medium_logo_w_h"
-        android:layout_height="@dimen/medium_logo_w_h"
+        android:layout_width="@dimen/medium_image_w_h"
+        android:layout_height="@dimen/medium_image_w_h"
         android:layout_marginTop="@dimen/margin_small"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
@@ -81,8 +81,8 @@
 
     <ImageView
         android:id="@+id/stock_logo"
-        android:layout_width="@dimen/big_avatar_w_h"
-        android:layout_height="@dimen/big_avatar_w_h"
+        android:layout_width="@dimen/big_image_w_h"
+        android:layout_height="@dimen/big_image_w_h"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
@@ -169,37 +169,18 @@
         android:layout_below="@id/buy_sell_action_buttons"
         />
 
-    <LinearLayout
-        android:id="@+id/belt"
-        android:layout_below="@id/stock_bg_logo"
+    <com.android.common.SlidingTabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        style="@style/TH.BuySell_ViewPager_Belt">
-
-      <TextView
-          android:id="@+id/info"
-          android:text="@string/security_info"
-          style="@style/TH.BuySell_ViewPager_Tabs"
-          />
-
-      <TextView
-          android:id="@+id/discussions"
-          android:text="@string/security_discussions"
-          style="@style/TH.BuySell_ViewPager_Tabs"
-          />
-
-      <TextView
-          android:id="@+id/news"
-          android:text="@string/security_news"
-          style="@style/TH.BuySell_ViewPager_Tabs"
-          />
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        style="@style/TradeHero.TabContainer"
+        android:layout_below="@id/stock_bg_logo"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/trade_bottom_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/belt"
+        android:layout_below="@id/tabs"
         tools:background="#ffeeee"
         />
 

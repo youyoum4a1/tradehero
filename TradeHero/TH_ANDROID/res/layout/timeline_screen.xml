@@ -1,29 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.common.widget.BetterViewAnimator
+
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ptr="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/timeline_screen"
+    android:id="@+id/timeline_list_view_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/timeline_background_color"
+    android:orientation="vertical"
     >
-
-  <ProgressBar
-      android:id="@android:id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:gravity="center_horizontal"
-      android:layout_gravity="center"
-      />
-
-  <RelativeLayout
-      android:id="@+id/timeline_list_view_container"
+  <android.support.v4.widget.SwipeRefreshLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/swipe_container"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical"
-      >
+      android:layout_height="match_parent">
 
-    <com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/timeline_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,37 +27,39 @@
         android:headerDividersEnabled="true"
         android:smoothScrollbar="true"
         android:clipToPadding="false"
-        ptr:ptrAnimationStyle="flip"
-        ptr:ptrMode="both"
         />
 
-    <LinearLayout
-        android:id="@+id/follow_message_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/clickable_element_min_dimen"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dashboard_tabhost_height"
-        android:alpha="0.95">
+  </android.support.v4.widget.SwipeRefreshLayout>
 
-      <Button
-          android:id="@+id/follow_button"
-          android:background="@drawable/btn_follow_green"
-          android:text="@string/follow"
-          style="@style/TH.Button.Timeline.Follow"
-          android:visibility="gone"/>
+  <LinearLayout
+      android:id="@+id/follow_message_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:measureWithLargestChild="true"
+      android:orientation="horizontal"
+      android:layout_alignParentBottom="true"
+      android:layout_marginBottom="@dimen/dashboard_tabhost_height"
+      android:alpha="0.95">
 
-      <Button
-          android:id="@+id/message_button"
-          android:background="@drawable/btn_message_blue"
-          android:text="@string/message"
-          style="@style/TH.Button.Timeline.Message"
-          android:visibility="gone"/>
+    <Button
+        android:id="@+id/follow_button"
+        android:background="@drawable/btn_follow_green"
+        android:text="@string/follow"
+        style="@style/TH.Button.Timeline.Follow"
+        android:visibility="gone"
+        android:enabled="false"
+        />
 
-    </LinearLayout>
+    <Button
+        android:id="@+id/message_button"
+        android:background="@drawable/btn_message_blue"
+        android:text="@string/message"
+        style="@style/TH.Button.Timeline.Message"
+        android:visibility="gone"
+        android:enabled="false"
+        />
 
-  </RelativeLayout>
+  </LinearLayout>
 
-</com.tradehero.common.widget.BetterViewAnimator>
+</RelativeLayout>

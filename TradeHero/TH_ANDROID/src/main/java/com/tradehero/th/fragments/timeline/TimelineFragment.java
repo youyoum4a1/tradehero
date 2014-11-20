@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.timeline;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,14 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshStickyListHeadersListView;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.common.widget.FlagNearEdgeScrollListener;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -32,7 +30,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -60,19 +57,26 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
+import com.tradehero.th.widget.MultiScrollListener;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import dagger.Lazy;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public class TimelineFragment extends BasePurchaseManagerFragment
@@ -111,8 +115,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
-    @InjectView(R.id.timeline_list_view) PullToRefreshStickyListHeadersListView timelineListView;
-    @InjectView(R.id.timeline_screen) BetterViewAnimator timelineScreen;
+    @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
     @InjectView(R.id.follow_button) Button mFollowButton;
     @InjectView(R.id.message_button) Button mSendMsgButton;
     @InjectView(R.id.follow_message_container) ViewGroup btnContainer;
@@ -123,13 +127,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription userProfileCacheSubscription;
     @Nullable private Subscription portfolioSubscription;
     @Nullable protected Subscription messageThreadHeaderFetchSubscription;
+
     protected FollowDialogCombo followDialogCombo;
     protected MessageHeaderDTO messageThreadHeaderDTO;
-    protected UserProfileDTO shownProfile;
+    @Nullable protected UserProfileDTO shownProfile;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private MainTimelineAdapter mainTimelineAdapter;
     @Nullable private Subscription freeFollowSubscription;
-    private PullToRefreshBase.OnLastItemVisibleListener lastItemVisibleListener;
     private UserProfileView userProfileView;
     private View loadingView;
     protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
@@ -156,7 +160,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             shownUserBaseKey = currentUserId.toUserBaseKey();
         }
-        mainTimelineAdapter = createTimelineAdapter(shownUserBaseKey);
+        mainTimelineAdapter = new MainTimelineAdapter(getActivity(), shownUserBaseKey,
+                R.layout.timeline_item_view,
+                R.layout.portfolio_list_item_2_0,
+                R.layout.user_profile_stat_view);
         mainTimelineAdapter.setCurrentTabType(currentTab);
 
         getActivity().getSupportLoaderManager().initLoader(
@@ -164,91 +171,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 mainTimelineAdapter.getLoaderTimelineCallback());
     }
 
-    @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
-    {
-        return new TimelinePurchaseReportedListener();
-    }
-
-    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new TimelinePremiumUserFollowedListener();
-    }
-
-    protected OnFollowRequestedListener createFollowForMessageRequestedListener()
-    {
-        return new TimelineFollowForMessageRequestedListener();
-    }
-
-    protected Observer<UserProfileDTO> createFreeFollowForMessageObserver()
-    {
-        return new FreeUserFollowedForMessageObserver();
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
-
         loadingView = new ProgressBar(getActivity());
-
         ButterKnife.inject(this, view);
         initViews(view);
         return view;
-    }
-
-    @Override public void onHeroClicked()
-    {
-        pushHeroFragment();
-    }
-
-    @Override public void onFollowerClicked()
-    {
-        pushFollowerFragment();
-    }
-
-    @Override public void onAchievementClicked()
-    {
-        pushAchievementFragment();
-    }
-
-    @Override public void onEditProfileClicked()
-    {
-        navigator.get().pushFragment(SettingsProfileFragment.class);
-    }
-
-    protected void pushHeroFragment()
-    {
-        Bundle bundle = new Bundle();
-        HeroManagerFragment.putFollowerId(
-                bundle,
-                mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
-        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
-    }
-
-    protected void pushFollowerFragment()
-    {
-        Bundle bundle = new Bundle();
-        FollowerManagerFragment.putHeroId(
-                bundle,
-                mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
-        if (applicablePortfolio != null)
-        {
-            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
-        }
-        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
-    }
-
-    protected void pushAchievementFragment()
-    {
-        Bundle bundle = new Bundle();
-        AchievementListFragment.putUserId(bundle, mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.get().pushFragment(AchievementListFragment.class, bundle);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -264,7 +194,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             //TODO now only one view, userProfileView useless, need cancel, alex
 
             userProfileView.setProfileClickedListener(this);
-            timelineListView.getRefreshableView().addHeaderView(userProfileView);
+            timelineListView.addHeaderView(userProfileView);
         }
 
         if (loadingView != null)
@@ -272,11 +202,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             timelineListView.addFooterView(loadingView);
         }
         timelineListView.setAdapter(mainTimelineAdapter);
-
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-
-        lastItemVisibleListener = new TimelineLastItemVisibleListener();
-
         fetchPortfolioList();
     }
 
@@ -317,34 +243,47 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         super.onStart();
 
-        unsubscribe(followerSummaryCacheSubscription);
-        followerSummaryCacheSubscription = AndroidObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(new FollowerSummaryObserver());
+        fetchUserProfile();
+        fetchMessageThreadHeader();
+
+        if (followerSummaryCacheSubscription == null)
+        {
+            followerSummaryCacheSubscription = AndroidObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
+                    .subscribe(new FollowerSummaryObserver());
+        }
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        mainTimelineAdapter.setProfileClickListener(createTimelineProfileClickListener());
-        mainTimelineAdapter.setOnLoadFinishedListener(
-                new MainTimelineAdapter.OnLoadFinishedListener()
-                {
-                    @Override public void onLoadFinished()
-                    {
-                        TimelineFragment.this.onLoadFinished();
-                    }
-
-                    @Override public void onBeginRefresh(TabType tabType)
-                    {
-                        fetchPortfolioList();
-                        fetchUserProfile(true);
-                    }
-                });
+        mainTimelineAdapter.setProfileClickListener(this::display);
+        mainTimelineAdapter.setOnLoadFinishedListener(TimelineFragment.this::onLoadFinished);
         mainTimelineAdapter.getTimelineLoader().loadNext();
 
-        timelineListView.setOnRefreshListener(mainTimelineAdapter);
-        timelineListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        timelineListView.setOnLastItemVisibleListener(lastItemVisibleListener);
+        FlagNearEdgeScrollListener nearEndScrollListener = createNearEndScrollListener();
+        nearEndScrollListener.lowerEndFlag();
+        nearEndScrollListener.activateEnd();
+        timelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(), nearEndScrollListener));
+        swipeRefreshContainer.setOnRefreshListener(() -> {
+            switch(currentTab)
+            {
+                case TIMELINE:
+                    mainTimelineAdapter.getTimelineLoader().loadNext();
+                    break;
+
+                case STATS:
+                case PORTFOLIO_LIST:
+                    portfolioCompactListCache.invalidate(shownUserBaseKey);
+                    portfolioCompactListCache.get(shownUserBaseKey);
+                    userProfileCache.get().invalidate(shownUserBaseKey);
+                    userProfileCache.get().get(shownUserBaseKey);
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Unhandled tabType " + currentTab);
+            }
+        });
+        //timelineListView.setOnLastItemVisibleListener(new TimelineLastItemVisibleListener());
         timelineListView.setOnItemClickListener(this::onMainItemClick);
 
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
@@ -354,13 +293,23 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (cancelRefreshingOnResume)
         {
-            timelineListView.onRefreshComplete();
+            swipeRefreshContainer.setRefreshing(false);
             cancelRefreshingOnResume = false;
         }
-        fetchUserProfile(false);
-        fetchMessageThreadHeader();
-
         dashboardTabHost.get().setOnTranslate((x, y) -> btnContainer.setTranslationY(y));
+    }
+
+    private FlagNearEdgeScrollListener createNearEndScrollListener()
+    {
+        return new FlagNearEdgeScrollListener()
+        {
+            @Override public void raiseEndFlag()
+            {
+                super.raiseEndFlag();
+                mainTimelineAdapter.getTimelineLoader().loadPrevious();
+                loadingView.setVisibility(View.VISIBLE);
+            }
+        };
     }
 
     @Override public void onPause()
@@ -372,9 +321,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         dashboardTabHost.get().setOnTranslate(null);
         mainTimelineAdapter.setProfileClickListener(null);
         mainTimelineAdapter.setOnLoadFinishedListener(null);
-        timelineListView.setOnRefreshListener((MainTimelineAdapter) null);
         timelineListView.setOnScrollListener(null);
-        timelineListView.setOnLastItemVisibleListener(null);
+        swipeRefreshContainer.setOnRefreshListener(null);
         timelineListView.setOnItemClickListener(null);
         super.onPause();
     }
@@ -407,7 +355,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         this.userProfileView = null;
         this.loadingView = null;
-        lastItemVisibleListener = null;
 
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -420,6 +367,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         super.onDestroy();
     }
 
+
     protected void detachFollowDialogCombo()
     {
         FollowDialogCombo followDialogComboCopy = followDialogCombo;
@@ -430,7 +378,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         followDialogCombo = null;
     }
 
-    protected void detachChoiceFollowAssistant()
+    private void detachChoiceFollowAssistant()
     {
         ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
         if (copy != null)
@@ -446,7 +394,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         messageThreadHeaderFetchSubscription = AndroidObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(shownUserBaseKey))
-                .subscribe(createMessageThreadHeaderCacheObserver());
+                .subscribe(new TimelineMessageThreadHeaderCacheObserver());
     }
 
     //<editor-fold desc="Display methods">
@@ -471,8 +419,24 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         {
                             onLoadFinished();
                             displayPortfolios(displayablePortfolioDTOs);
+                            reportAnalytics(displayablePortfolioDTOs);
                         }
                     });
+        }
+    }
+
+    private void reportAnalytics(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
+        Collection<String> collection = new ArrayList<>();
+        for (int i = 0;i < displayablePortfolioDTOs.size();i++)
+        {
+            if (displayablePortfolioDTOs.get(i).portfolioDTO.providerId != null)
+            {
+                collection.add(String.valueOf(displayablePortfolioDTOs.get(i).portfolioDTO.providerId));
+            }
+        }
+        if (collection.size() > 0)
+        {
+            analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
         }
     }
 
@@ -483,6 +447,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (andDisplay)
         {
             updateView();
+            mFollowButton.setEnabled(true);
+            mSendMsgButton.setEnabled(true);
         }
     }
 
@@ -495,17 +461,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void linkWithMessageThread(MessageHeaderDTO messageHeaderDTO, boolean andDisplay)
     {
         this.messageThreadHeaderDTO = messageHeaderDTO;
-        if (andDisplay)
-        {
-        }
     }
 
     protected void updateView()
     {
-        if (timelineScreen != null)
-        {
-            timelineScreen.setDisplayedChildByLayoutId(R.id.timeline_list_view_container);
-        }
         if (userProfileView != null)
         {
             userProfileView.display(shownProfile);
@@ -533,24 +492,14 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void fetchUserProfile(boolean force)
+    protected void fetchUserProfile()
     {
-        unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = AndroidObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
-                .subscribe(createUserProfileCacheObserver());
+        if (userProfileCacheSubscription == null)
+        {
+            userProfileCacheSubscription = AndroidObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
+                    .subscribe(new TimelineFragmentUserProfileCacheObserver());
+        }
     }
-
-    //<editor-fold desc="Initial methods">
-    private MainTimelineAdapter createTimelineAdapter(@NonNull UserBaseKey shownUserBaseKey)
-    {
-        return new MainTimelineAdapter(getActivity(),
-                shownUserBaseKey,
-                R.layout.timeline_item_view,
-                R.layout.portfolio_list_item_2_0,
-                R.layout.user_profile_stat_view);
-        // TODO set the layouts
-    }
-    //</editor-fold>
 
     /** item of Portfolio tab is clicked */
     private void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
@@ -613,14 +562,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     private void onLoadFinished()
     {
-        timelineListView.onRefreshComplete();
+        swipeRefreshContainer.setRefreshing(false);
         loadingView.setVisibility(View.GONE);
         cancelRefreshingOnResume = true;
-    }
-
-    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new TimelineFragmentUserProfileCacheObserver();
     }
 
     protected class TimelineFragmentUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
@@ -665,7 +609,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             mFollowButton.setText(R.string.following_premium);
         }
         mFollowButton.setVisibility(View.VISIBLE);
-        mFollowButton.setOnClickListener(v -> handleFollowRequested(shownProfile));
         mSendMsgButton.setVisibility(View.VISIBLE);
         mSendMsgButton.setOnClickListener(v -> {
             if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
@@ -674,7 +617,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 detachFollowDialogCombo();
                 followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
                         UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
-                        createFollowForMessageRequestedListener());
+                        new TimelineFollowForMessageRequestedListener());
             }
             else
             {
@@ -683,16 +626,25 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         });
     }
 
-    protected void handleFollowRequested(@NonNull final UserBaseDTO heroDTO)
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.follow_button)
+    protected void handleFollowRequested(View view)
     {
-        detachChoiceFollowAssistant();
-        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
-                getActivity(),
-                heroDTO.getBaseKey(),
-                createPremiumUserFollowedListener(),
-                getApplicablePortfolioId());
-        choiceFollowUserAssistantWithDialog.setHeroBaseInfo(heroDTO);
-        choiceFollowUserAssistantWithDialog.launchChoice();
+        if (shownProfile == null)
+        {
+            throw new IllegalArgumentException("We should not have arrived here");
+        }
+        else
+        {
+            detachChoiceFollowAssistant();
+            choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
+                    getActivity(),
+                    shownUserBaseKey,
+                    createPremiumUserFollowedListener(),
+                    getApplicablePortfolioId());
+            choiceFollowUserAssistantWithDialog.setHeroBaseInfo(shownProfile);
+            choiceFollowUserAssistantWithDialog.launchChoice();
+        }
     }
 
     protected void pushPrivateMessageFragment()
@@ -755,11 +707,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 .subscribe(followCallback);
     }
 
-    protected TimelineProfileClickListener createTimelineProfileClickListener()
-    {
-        return this::display;
-    }
-
     public class FreeUserFollowedObserver extends EmptyObserver<UserProfileDTO>
     {
         @Override public void onNext(UserProfileDTO userProfileDTO)
@@ -789,13 +736,47 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
         {
-            freeFollow(heroId, createFreeFollowForMessageObserver());
+            freeFollow(heroId, new FreeUserFollowedForMessageObserver());
         }
 
         @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)
         {
             premiumFollowUser(heroId);
         }
+    }
+
+    protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>
+    {
+        @Override public void onNext(Pair<UserBaseKey, MessageHeaderDTO> pair)
+        {
+            linkWithMessageThread(pair.second, true);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (!(e instanceof RetrofitError) ||
+                    (((RetrofitError) e).getResponse() != null &&
+                            ((RetrofitError) e).getResponse().getStatus() != 404))
+            {
+                THToast.show(R.string.error_fetch_message_thread_header);
+                Timber.e(e, "Error while getting message thread");
+            }
+        }
+    }
+
+    //<editor-fold desc="BasePurchaseManagerFragment stuffs">
+    @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
+    {
+        return new TimelinePurchaseReportedListener();
+    }
+
+    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    {
+        return new TimelinePremiumUserFollowedListener();
     }
 
     protected class TimelinePremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
@@ -835,41 +816,62 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             // Nothing for now
         }
     }
+    //</editor-fold>
 
-    @NonNull protected Observer<Pair<UserBaseKey, MessageHeaderDTO>> createMessageThreadHeaderCacheObserver()
+    //<editor-fold desc="UserProfileCompactViewHolder">
+    protected void pushHeroFragment()
     {
-        return new TimelineMessageThreadHeaderCacheObserver();
+        Bundle bundle = new Bundle();
+        HeroManagerFragment.putFollowerId(
+                bundle,
+                mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+        if (applicablePortfolio != null)
+        {
+            HeroManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
+        }
+        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
     }
 
-    protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>
+    protected void pushFollowerFragment()
     {
-        @Override public void onNext(Pair<UserBaseKey, MessageHeaderDTO> pair)
+        Bundle bundle = new Bundle();
+        FollowerManagerFragment.putHeroId(
+                bundle,
+                mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
+        OwnedPortfolioId applicablePortfolio = getApplicablePortfolioId();
+        if (applicablePortfolio != null)
         {
-            linkWithMessageThread(pair.second, true);
+            //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            if (!(e instanceof RetrofitError) ||
-                    (((RetrofitError) e).getResponse() != null &&
-                            ((RetrofitError) e).getResponse().getStatus() != 404))
-            {
-                THToast.show(R.string.error_fetch_message_thread_header);
-                Timber.e(e, "Error while getting message thread");
-            }
-        }
+        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
     }
 
-    private class TimelineLastItemVisibleListener implements PullToRefreshBase.OnLastItemVisibleListener
+    protected void pushAchievementFragment()
     {
-        @Override public void onLastItemVisible()
-        {
-            mainTimelineAdapter.getTimelineLoader().loadPrevious();
-            loadingView.setVisibility(View.VISIBLE);
-        }
+        Bundle bundle = new Bundle();
+        AchievementListFragment.putUserId(bundle, mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
+        navigator.get().pushFragment(AchievementListFragment.class, bundle);
     }
+
+    @Override public void onHeroClicked()
+    {
+        pushHeroFragment();
+    }
+
+    @Override public void onFollowerClicked()
+    {
+        pushFollowerFragment();
+    }
+
+    @Override public void onAchievementClicked()
+    {
+        pushAchievementFragment();
+    }
+
+    @Override public void onEditProfileClicked()
+    {
+        navigator.get().pushFragment(SettingsProfileFragment.class);
+    }
+    //</editor-fold>
 }

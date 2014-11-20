@@ -3,9 +3,9 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.RequestHeaders;
+import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(
@@ -175,6 +175,11 @@ public class RetrofitProtectedModule
                 .setRequestInterceptor(requestHeaders)
                 .build()
                 .create(HomeServiceRx.class);
+    }
+
+    @Provides @Singleton MiniGameServiceRx provideGameServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(MiniGameServiceRx.class);
     }
     //</editor-fold>
 }

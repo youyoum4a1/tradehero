@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,47 +14,89 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.android.common.SlidingTabLayout;
+import com.tradehero.metrics.Analytics;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
+import com.tradehero.th.utils.route.THRouter;
+import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
+@Routable({"news","discussion", "academy"})
 public class DiscoveryMainFragment extends DashboardFragment
-        implements ActionBar.TabListener
 {
-    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
-    private DiscoveryPagerAdapter discoveryPagerAdapter;
+    @Inject Lazy<DashboardNavigator> navigator;
+    @Inject Analytics analytics;
+    @Inject THRouter thRouter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
-    private MenuItem postMenuButton;
-    private static int selectedTab = 0;
+    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+
+    private DiscoveryPagerAdapter discoveryPagerAdapter;
+    private long beginTime;
+    private int oldPageItem;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         discoveryPagerAdapter = new DiscoveryPagerAdapter(this.getChildFragmentManager());
+        thRouter.inject(this);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.discovery_main_fragment, container, false);
         ButterKnife.inject(this, view);
-        tabViewPager.setAdapter(discoveryPagerAdapter);
+        initViews();
         return view;
+    }
+
+    private void initViews()
+    {
+        tabViewPager.setAdapter(discoveryPagerAdapter);
+        if (!Constants.RELEASE)
+        {
+            tabViewPager.setOffscreenPageLimit(0);
+        }
+
+        pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+        pagerSlidingTabStrip.setViewPager(tabViewPager);
+        beginTime = System.currentTimeMillis();
+        oldPageItem = 0;
+        pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                reportAnalytics();
+                beginTime = System.currentTimeMillis();
+                oldPageItem = i;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(getString(R.string.discovery));
-        inflater.inflate(R.menu.menu_create_post_discussion, menu);
-        postMenuButton = menu.findItem(R.id.discussion_edit_post);
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
         {
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            setupTabs(actionBar);
+            actionBar.setTitle(R.string.discovery);
         }
     }
 
@@ -70,50 +110,53 @@ public class DiscoveryMainFragment extends DashboardFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        this.postMenuButton = null;
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public void onDestroyView()
     {
+        reportAnalytics();
         tabViewPager.setAdapter(null);
         ButterKnife.reset(this);
         super.onDestroyView();
+    }
+
+    private void reportAnalytics()
+    {
+        long duration = (System.currentTimeMillis()-beginTime)/1000;
+        String s = AnalyticsConstants.Time10M;
+        if (duration <= 10)
+        {
+            s = AnalyticsConstants.Time1T10S;
+        }
+        else if (duration <= 30)
+        {
+            s = AnalyticsConstants.Time11T30S;
+        }
+        else if (duration <= 60)
+        {
+            s = AnalyticsConstants.Time31T60S;
+        }
+        else if (duration <= 180)
+        {
+            s = AnalyticsConstants.Time1T3M;
+        }
+        else if (duration <= 600)
+        {
+            s = AnalyticsConstants.Time3T10M;
+        }
+        if (oldPageItem == 0){
+            analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverNewsViewed,
+                    AnalyticsConstants.TimeOnScreen, s));
+        }
+        else if (oldPageItem == 1)
+        {
+            analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverDiscussionsViewed,
+                    AnalyticsConstants.TimeOnScreen, s));
+        }
     }
 
     @Override public void onDestroy()
     {
         this.discoveryPagerAdapter = null;
         super.onDestroy();
-    }
-
-    private void setupTabs(@NonNull ActionBar actionBar)
-    {
-        DiscoveryTabType[] types = DiscoveryTabType.values();
-        int savedSelectedTab = selectedTab;
-        if (actionBar.getTabCount() != types.length)
-        {
-            actionBar.removeAllTabs();
-            for (DiscoveryTabType type : types)
-            {
-                actionBar.addTab(
-                        actionBar.newTab()
-                                .setText(type.titleStringResId)
-                                .setTabListener(this)
-                                .setTag(type));
-            }
-        }
-        else
-        {
-            for (int i = 0; i < actionBar.getTabCount(); i++)
-            {
-                actionBar.getTabAt(i).setTabListener(this);
-            }
-        }
-        actionBar.setSelectedNavigationItem(savedSelectedTab);
-        setPagerAt();
     }
 
     private class DiscoveryPagerAdapter extends FragmentPagerAdapter
@@ -139,38 +182,6 @@ public class DiscoveryMainFragment extends DashboardFragment
         @Override public int getCount()
         {
             return DiscoveryTabType.values().length;
-        }
-    }
-
-    //region TabListener
-    @Override public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft)
-    {
-        // When the given tab is selected, switch to the corresponding page in the ViewPager.
-        selectedTab = tab.getPosition();
-        setPagerAt();
-
-        MenuItem postMenuButtonCopy = postMenuButton;
-        if (postMenuButtonCopy != null)
-        {
-            postMenuButtonCopy.setVisible(((DiscoveryTabType) tab.getTag()).showComment);
-        }
-    }
-
-    @Override public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft)
-    {
-    }
-
-    @Override public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft)
-    {
-    }
-    //endregion
-
-    protected void setPagerAt()
-    {
-        ViewPager pager = tabViewPager;
-        if (pager != null && selectedTab != tabViewPager.getCurrentItem())
-        {
-            tabViewPager.setCurrentItem(selectedTab);
         }
     }
 }

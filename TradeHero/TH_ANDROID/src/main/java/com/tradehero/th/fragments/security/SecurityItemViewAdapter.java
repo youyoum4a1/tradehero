@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;

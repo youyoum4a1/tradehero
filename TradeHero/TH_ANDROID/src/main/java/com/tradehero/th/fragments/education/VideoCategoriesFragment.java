@@ -1,12 +1,10 @@
 package com.tradehero.th.fragments.education;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.education.PagedVideoCategories;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
@@ -14,7 +12,6 @@ import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
 import com.tradehero.th.persistence.education.PaginatedVideoCategoryCacheRx;
-import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
@@ -29,16 +26,6 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
 {
     @Inject PaginatedVideoCategoryCacheRx paginatedVideoCategoryCache;
     @Inject Analytics analytics;
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        }
-    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.share.timeline;
 
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -24,7 +25,7 @@ public class TimelineItemShareFormDTO implements SocialShareFormDTOWithEnum
     }
     //</editor-fold>
 
-    @Override public SocialNetworkEnum getSocialNetworkEnum()
+    @Override @Nullable public SocialNetworkEnum getSocialNetworkEnum()
     {
         if (timelineItemShareRequestDTO != null)
         {

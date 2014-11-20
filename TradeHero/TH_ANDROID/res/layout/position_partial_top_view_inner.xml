@@ -5,8 +5,8 @@
 
   <ImageView
       android:id="@+id/stock_logo"
-      android:layout_width="@dimen/big_avatar_w_h"
-      android:layout_height="@dimen/big_avatar_w_h"
+      android:layout_width="@dimen/big_image_w_h"
+      android:layout_height="@dimen/big_image_w_h"
       android:scaleType="fitCenter"
       android:layout_centerVertical="true"
       android:contentDescription="@null"

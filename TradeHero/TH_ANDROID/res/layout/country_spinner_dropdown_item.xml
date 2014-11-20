@@ -11,8 +11,8 @@
 
   <ImageView
       android:id="@+id/spinner_item_icon"
-      android:layout_height="@dimen/small_icon_w_h"
-      android:layout_width="@dimen/small_icon_w_h"
+      android:layout_height="@dimen/small_image_w_h"
+      android:layout_width="@dimen/small_image_w_h"
       android:layout_alignParentLeft="true"
       android:layout_centerVertical="true"
       android:baselineAlignBottom="true"

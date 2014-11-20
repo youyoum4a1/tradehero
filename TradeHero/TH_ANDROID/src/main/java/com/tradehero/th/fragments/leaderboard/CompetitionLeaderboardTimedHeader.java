@@ -92,13 +92,7 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
     {
         if (providerTitle != null)
         {
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.timedHeaderLeaderboardTitleResId > 0)
-            {
-                providerTitle.setText(providerDTO.specificResources.timedHeaderLeaderboardTitleResId);
-            }
-            else if (providerDTO != null)
+            if (providerDTO != null)
             {
                 providerTitle.setText(providerDTO.name);
             }

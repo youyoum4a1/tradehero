@@ -1,23 +1,18 @@
 package com.tradehero.th.fragments.discovery;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-
+import android.view.View;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
-
 import java.util.Locale;
-
 import javax.inject.Inject;
-
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.operators.OperatorLocalBroadcastRegister;
 import rx.schedulers.Schedulers;
 
 public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
@@ -27,60 +22,35 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
     @Inject Locale locale;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
 
-    private BroadcastReceiver regionChangeBroadcastReceiver;
-
-    @Override protected Observable<NewsItemListKey> createNewsItemListKeyObservable()
+    @Override protected void initView(View view)
     {
-        return super.createNewsItemListKeyObservable()
-                .mergeWith(createNewsItemListRegionalKeyObservable());
+        super.initView(view);
+
+        subscriptions.add(
+                Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
+                        .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::replaceNewsItemListView));
     }
 
-    private Observable<NewsItemListKey> createNewsItemListRegionalKeyObservable()
+    private NewsItemListRegionalKey newsItemListKeyFromPref()
     {
-        // observable of the UI event which user change the region
-        return Observable
-                .create((Observable.OnSubscribe<NewsItemListKey>) subscriber -> {
-                    if (regionChangeBroadcastReceiver == null)
-                    {
-                        regionChangeBroadcastReceiver = new RegionalKeyBroadcastReceiver(subscriber);
-                        LocalBroadcastManager.getInstance(getActivity())
-                                .registerReceiver(regionChangeBroadcastReceiver, new IntentFilter(REGION_CHANGED));
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::replaceNewsItemListView);
+        CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
+        return new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
-    }
-
-    @Override public void onDestroy()
-    {
-        LocalBroadcastManager.getInstance(getActivity())
-                .unregisterReceiver(regionChangeBroadcastReceiver);
-        super.onDestroy();
-    }
-
-    private class RegionalKeyBroadcastReceiver extends BroadcastReceiver
-    {
-        private final Subscriber<? super NewsItemListKey> subscriber;
-
-        public RegionalKeyBroadcastReceiver(
-                Subscriber<? super NewsItemListKey> subscriber)
+        if (countryLanguagePreference.isSet())
         {
-            this.subscriber = subscriber;
+            newsItemListKey = newsItemListKeyFromPref();
         }
-
-        @Override public void onReceive(Context context, Intent intent)
+        else
         {
-            CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
-
-            subscriber.onNext(new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null));
+            newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
         }
     }
 }

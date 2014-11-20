@@ -28,8 +28,7 @@
       android:layout_height="match_parent"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
-      android:layout_marginTop="@dimen/margin_small"
-      android:paddingBottom="@dimen/margin_xlarge"
+      android:paddingBottom="@dimen/margin_xxxlarge"
       android:clipToPadding="false"
       android:transcriptMode="alwaysScroll"
       />

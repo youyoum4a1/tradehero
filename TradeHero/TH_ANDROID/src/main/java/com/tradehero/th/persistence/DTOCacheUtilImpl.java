@@ -54,11 +54,11 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import dagger.Lazy;
 import rx.Observable;
 import rx.observers.EmptyObserver;
 
@@ -341,7 +341,7 @@ import rx.observers.EmptyObserver;
         preFetchAlerts();
         preFetchTranslationToken();
         preFetchLeaderboardDefs();
-        preFetchHomeContent();
+        //preFetchHomeContent();
     }
 
     public void preFetchAlerts()

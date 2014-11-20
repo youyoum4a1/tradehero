@@ -69,7 +69,7 @@ import rx.Observable;
     public Observable<UserProfileDTO> enrollRx(@NonNull CompetitionFormDTO form)
     {
         return this.competitionServiceRx.enroll(form)
-                .doOnNext(createDTOProcessorUserProfile());
+                .map(createDTOProcessorUserProfile());
     }
     //</editor-fold>
 
@@ -77,7 +77,7 @@ import rx.Observable;
     public Observable<UserProfileDTO> outboundRx(@NonNull CompetitionFormDTO form)
     {
         return this.competitionServiceRx.outbound(form)
-                .doOnNext(createDTOProcessorUserProfile());
+                .map(createDTOProcessorUserProfile());
     }
     //</editor-fold>
 }

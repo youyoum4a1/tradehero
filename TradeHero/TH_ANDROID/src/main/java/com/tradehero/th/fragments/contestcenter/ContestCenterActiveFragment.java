@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 
 public class ContestCenterActiveFragment extends ContestCenterBaseFragment
 {
-    @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @Override public void recreateAdapter()
     {
@@ -17,11 +17,7 @@ public class ContestCenterActiveFragment extends ContestCenterBaseFragment
         {
             for (ProviderDTO providerDTO : providerDTOs)
             {
-                    contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
-                    if (providerDTO.vip != null && providerDTO.vip)
-                    {
-                        contestListAdapter.add(new EmptyHeadLineDTO());
-                    }
+                contestListAdapter.add(new ProviderContestPageDTO(providerDTO));
             }
         }
 

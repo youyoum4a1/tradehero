@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.web;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +112,11 @@ abstract public class BaseWebViewFragment extends DashboardFragment
 
     protected void onProgressChanged(WebView view, int newProgress)
     {
+        Activity activity = getActivity();
+        if (activity != null)
+        {
+            activity.setProgress(newProgress * 100);
+        }
     }
 
     @Override public void onResume()

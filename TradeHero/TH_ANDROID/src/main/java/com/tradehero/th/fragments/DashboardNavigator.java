@@ -1,25 +1,23 @@
 package com.tradehero.th.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class DashboardNavigator extends Navigator<FragmentActivity>
 {
     private static final boolean TAB_SHOW_HOME_AS_UP = false;
 
-    private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new HashSet<>();
+    private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new LinkedHashSet<>();
 
     public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId)
     {

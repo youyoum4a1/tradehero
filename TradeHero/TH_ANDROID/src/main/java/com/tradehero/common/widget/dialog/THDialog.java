@@ -3,6 +3,7 @@ package com.tradehero.common.widget.dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,7 +88,7 @@ public class THDialog
         return dlg;
     }
 
-    public static Dialog showUpDialog(final Context context, final View contentView)
+    @NonNull public static Dialog showUpDialog(@NonNull final Context context, @NonNull final View contentView)
     {
         final Dialog dlg = createDialog(context, R.style.TH_common_up_dialog, contentView);
         setDialogAttribute(dlg, null);

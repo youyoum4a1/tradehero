@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.timeline;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -11,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
@@ -23,17 +23,12 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
-import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class MainTimelineAdapter extends ArrayAdapter
-    implements StickyListHeadersAdapter,
-        PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>
+    implements StickyListHeadersAdapter
 {
     public static final int TIMELINE_ITEM_TYPE = 0;
     public static final int PORTFOLIO_ITEM_TYPE = 1;
@@ -98,14 +93,6 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
     }
 
-    protected void notifyBeginRefresh(TimelineFragment.TabType tabType)
-    {
-        if (this.onLoadFinishedListener != null)
-        {
-            this.onLoadFinishedListener.onBeginRefresh(tabType);
-        }
-    }
-
     //<editor-fold desc="StickyListHeadersAdapter">
     @Override public long getHeaderId(int position)
     {
@@ -120,46 +107,11 @@ public class MainTimelineAdapter extends ArrayAdapter
         }
         TimelineHeaderButtonView castedView = (TimelineHeaderButtonView) convertView;
         castedView.changeButtonLook(currentTabType);
-        castedView.setTimelineProfileClickListener(tabType -> notifyProfileClickListener(tabType));
+        castedView.setTimelineProfileClickListener(this::notifyProfileClickListener);
 
         return convertView;
     }
     //</editor-fold>
-
-    //<editor-fold desc="PullToRefreshListView.OnRefreshListener<StickyListHeadersListView>">
-    @Override public void onRefresh(PullToRefreshBase<StickyListHeadersListView> refreshView)
-    {
-        switch(currentTabType)
-        {
-            case TIMELINE:
-                switch (refreshView.getCurrentMode())
-                {
-                    case PULL_FROM_START:
-                        getTimelineLoader().loadNext();
-                        break;
-                    case PULL_FROM_END:
-                        getTimelineLoader().loadPrevious();
-                        break;
-                }
-                break;
-
-            case PORTFOLIO_LIST:
-                notifyBeginRefresh(currentTabType);
-                break;
-
-            case STATS:
-                notifyBeginRefresh(currentTabType);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unhandled tabType " + currentTabType);
-        }
-    }
-    //</editor-fold>
-
-    //////////////////////
-    // Timeline elements
-    //////////////////////
 
     //<editor-fold desc="Timeline Adapter">
     public int getTimelineLoaderId()
@@ -440,7 +392,5 @@ public class MainTimelineAdapter extends ArrayAdapter
     public static interface OnLoadFinishedListener
     {
         void onLoadFinished();
-
-        void onBeginRefresh(TimelineFragment.TabType tabType);
     }
 }

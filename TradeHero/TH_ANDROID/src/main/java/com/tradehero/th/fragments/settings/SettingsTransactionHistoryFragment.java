@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.UserTransactionHistoryListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;

@@ -3,17 +3,19 @@ package com.tradehero.th.fragments.discovery;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -35,29 +37,36 @@ import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
+import java.util.Random;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
+
+import static butterknife.ButterKnife.findById;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
 public class NewsHeadlineFragment extends Fragment
 {
     private static final String NEWS_TYPE_KEY = NewsHeadlineFragment.class.getName() + ".newsType";
 
     @InjectView(android.R.id.progress) ProgressBar progressBar;
-    @InjectView(R.id.discovery_news_list) PullToRefreshListView mNewsListView;
+    @InjectView(R.id.discovery_news_list) ListView mNewsListView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
     private Subscription newsSubscription;
     private PaginationInfoDTO lastPaginationInfoDTO;
     private ProgressBar mBottomLoadingView;
     private PublishSubject<List<NewsItemDTOKey>> newsSubject;
-    private Observable<List<NewsItemDTOKey>> paginatedNewsItemListKeyObservable;
+    private AbsListView.OnScrollListener scrollListener;
+    private Observable<PaginationDTO> paginationObservable;
+    protected CompositeSubscription subscriptions;
 
-    @OnItemClick(android.R.id.list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
+    @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         NewsItemDTOKey newsItemDTOKey = (NewsItemDTOKey) parent.getItemAtPosition(position);
         NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) discussionCache.getValue(newsItemDTOKey);
@@ -76,9 +85,7 @@ public class NewsHeadlineFragment extends Fragment
     @Inject RxLoaderManager rxLoaderManager;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
-    private NewsHeadlineAdapter mFeaturedNewsAdapter;
     protected NewsItemListKey newsItemListKey;
-    private AbsListView.OnScrollListener scrollListener;
 
     public NewsHeadlineFragment()
     {
@@ -134,53 +141,81 @@ public class NewsHeadlineFragment extends Fragment
         return view;
     }
 
-    private void initView(View view)
+    protected void initView(View view)
     {
         ButterKnife.inject(this, view);
+        int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
+        scrollListener = new QuickReturnListViewOnScrollListener(
+                QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
+        NewsHeadlineAdapter mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
 
-        View paddingHeader = new View(getActivity());
-        paddingHeader.setLayoutParams(new AbsListView.LayoutParams(1, getResources().getDimensionPixelOffset(R.dimen.discovery_news_carousel_height)));
-        mNewsListView.getRefreshableView().addHeaderView(paddingHeader);
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
-        mNewsListView.getRefreshableView().addFooterView(mBottomLoadingView);
-        mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener));
+        mNewsListView.addFooterView(mBottomLoadingView);
         mNewsListView.setAdapter(mFeaturedNewsAdapter);
+        swipeRefreshLayout.setProgressViewOffset(false,
+                headerHeight,
+                headerHeight + (int) getResources().getDimension(R.dimen.discovery_news_swipe_indicator_height));
 
-        Observable<NewsItemListKey> newsItemListKeyObservable = createNewsItemListKeyObservable()
-                .share() // convert to hot observable coz replaceNewsItemListView can be call more than once
-                .distinctUntilChanged(NewsItemListKey::hashCode);
+        final Random random = new Random();
+        paginationObservable = createPaginationObservable()
+                // convert to hot observable coz replaceNewsItemListView can be call more than once
+                .share()
+                // pulling down from top always refresh the list
+                .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
 
         newsSubject = PublishSubject.create();
-        newsSubject.subscribe(new EmptyObserver<List<NewsItemDTOKey>>()
-        {
-            @Override public void onNext(List<NewsItemDTOKey> args)
-            {
-                mFeaturedNewsAdapter.setItems(args);
-            }
-        });
-
-        newsSubject.subscribe(new UpdateUIObserver());
-
-        paginatedNewsItemListKeyObservable = PaginationObservable.createFromRange(newsItemListKeyObservable, (Func1<NewsItemListKey, Observable<List<NewsItemDTOKey>>>)
-                key -> newsServiceWrapper.getNewsRx(key)
-                        .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                        .map(PaginatedDTO::getData)
-                        .flatMap(Observable::from)
-                        .map(NewsItemCompactDTO::getDiscussionKey)
-                        .toList());
+        subscriptions = new CompositeSubscription();
+        subscriptions.add(newsSubject.subscribe(mFeaturedNewsAdapter::setItems));
+        subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
+    }
+
+
+    private Observable<PaginationDTO> createPaginationObservable()
+    {
+        Observable<PaginationDTO> pullFromStartObservable = Observable.create(subscriber ->
+                swipeRefreshLayout.setOnRefreshListener(() ->
+                                subscriber.onNext(new PaginationDTO(1, newsItemListKey.perPage))
+                ));
+
+        Observable<PaginationDTO> pullFromBottomObservable = Observable.create((Observable.OnSubscribe<PaginationDTO>) subscriber ->
+                mNewsListView.setOnScrollListener(new MultiScrollListener(scrollListener, dashboardBottomTabsScrollListener,
+                        createNearEndScrollOperator(subscriber, () -> {
+                            if (newsItemListKey != null && lastPaginationInfoDTO != null)
+                            {
+                                return lastPaginationInfoDTO.next;
+                            }
+                            return null;
+                        }))))
+                .doOnNext(o -> mBottomLoadingView.setVisibility(View.VISIBLE));
+        return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .startWith(new PaginationDTO(1, newsItemListKey.perPage));
+    }
+
+    private Observable<List<NewsItemDTOKey>> createNewsListKeyPaginationObservable()
+    {
+        return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemDTOKey>>>)
+                key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
+                        .flatMapIterable(PaginatedDTO::getData)
+                        .map(NewsItemCompactDTO::getDiscussionKey)
+                        .toList()
+        );
     }
 
     private void activateNewsItemListView()
     {
         progressBar.setVisibility(View.VISIBLE);
-        newsSubscription = rxLoaderManager.create(newsItemListKey, paginatedNewsItemListKeyObservable)
+        newsSubscription = rxLoaderManager.create(newsItemListKey, createNewsListKeyPaginationObservable())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(Observable.empty())
                 .subscribe(newsSubject);
     }
 
@@ -188,44 +223,14 @@ public class NewsHeadlineFragment extends Fragment
     {
         if (!newsItemListKey.equals(newKey))
         {
-            NewsItemListKey oldKey = newsItemListKey;
+            if (newsSubscription != null)
+            {
+                newsSubscription.unsubscribe();
+            }
+            rxLoaderManager.remove(newsItemListKey);
             newsItemListKey = newKey;
             activateNewsItemListView();
-            rxLoaderManager.remove(oldKey);
         }
-    }
-
-    protected Observable<NewsItemListKey> createNewsItemListKeyObservable()
-    {
-        return Observable
-                .create((Observable.OnSubscribe<PullToRefreshBase.Mode>) subscriber -> {
-                    mNewsListView.setOnRefreshListener(
-                            listViewPullToRefreshBase -> subscriber.onNext(listViewPullToRefreshBase.getCurrentMode()));
-
-                    mNewsListView.setOnLastItemVisibleListener(() -> {
-                        if (!mNewsListView.isRefreshing() && !mFeaturedNewsAdapter.isEmpty())
-                        {
-                            mBottomLoadingView.setVisibility(View.VISIBLE);
-                            subscriber.onNext(PullToRefreshBase.Mode.PULL_FROM_END);
-                        }
-                    });
-                })
-                .startWith(PullToRefreshBase.Mode.PULL_FROM_START)
-                .map(mode -> {
-                    switch (mode)
-                    {
-                        case PULL_FROM_END:
-                            return NewsItemListKeyHelper.copy(newsItemListKey, lastPaginationInfoDTO.next);
-                        case PULL_FROM_START:
-                        default:
-                            return NewsItemListKeyHelper.copy(newsItemListKey, new PaginationDTO(1, newsItemListKey.perPage));
-                    }
-                });
-    }
-
-    public final void setScrollListener(AbsListView.OnScrollListener scrollListener)
-    {
-        this.scrollListener = scrollListener;
     }
 
     @Override public void onAttach(Activity activity)
@@ -237,6 +242,10 @@ public class NewsHeadlineFragment extends Fragment
     @Override public void onDestroyView()
     {
         newsSubscription.unsubscribe();
+        newsSubscription = null;
+        subscriptions.unsubscribe();
+        subscriptions = null;
+        rxLoaderManager.remove(newsItemListKey);
         super.onDestroyView();
     }
 
@@ -246,7 +255,7 @@ public class NewsHeadlineFragment extends Fragment
         {
             progressBar.setVisibility(View.INVISIBLE);
             mBottomLoadingView.setVisibility(View.INVISIBLE);
-            mNewsListView.onRefreshComplete();
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override public void onCompleted()

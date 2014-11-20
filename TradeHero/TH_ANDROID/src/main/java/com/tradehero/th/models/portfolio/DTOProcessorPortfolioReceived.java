@@ -1,13 +1,12 @@
 package com.tradehero.th.models.portfolio;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
-import rx.functions.Func1;
+import com.tradehero.th.models.ThroughDTOProcessor;
 
 public class DTOProcessorPortfolioReceived<PortfolioCompactType extends PortfolioCompactDTO>
-        implements DTOProcessor<PortfolioCompactType>, Func1<PortfolioCompactType, PortfolioCompactType>
+        extends ThroughDTOProcessor<PortfolioCompactType>
 {
     @NonNull private final UserBaseKey userBaseKey;
 
@@ -22,10 +21,5 @@ public class DTOProcessorPortfolioReceived<PortfolioCompactType extends Portfoli
     {
         value.userId = userBaseKey.key;
         return value;
-    }
-
-    @Override public PortfolioCompactType call(@NonNull PortfolioCompactType portfolioCompactType)
-    {
-        return process(portfolioCompactType);
     }
 }

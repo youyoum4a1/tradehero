@@ -1,6 +1,8 @@
 package com.tradehero.common.billing.amazon;
 
+import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.LruCache;
 import com.amazon.device.iap.PurchasingListener;
 import com.amazon.device.iap.PurchasingService;
@@ -10,13 +12,15 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
+import com.tradehero.th.billing.amazon.AmazonAlertDialogUtil;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
+import timber.log.Timber;
 
 @Singleton public class AmazonPurchasingService
         implements PurchasingListener
@@ -27,12 +31,20 @@ import android.support.annotation.NonNull;
     @NonNull private final LruCache<RequestId, Object> waitingResponses;
 
     //<editor-fold desc="Constructors">
-    @Inject public AmazonPurchasingService(@NonNull Context appContext)
+    @Inject public AmazonPurchasingService(
+            @NonNull Context appContext,
+            @NonNull Provider<Activity> activityProvider,
+            @NonNull AmazonAlertDialogUtil dialogUtil)
     {
         super();
         this.purchasingListeners = new LruCache<>(DEFAULT_MAP_LENGTH);
         this.waitingResponses = new LruCache<>(DEFAULT_MAP_LENGTH);
         PurchasingService.registerListener(appContext, this);
+        Timber.e(new Exception("Sandbox is " + PurchasingService.IS_SANDBOX_MODE), "Sandbox is %s", PurchasingService.IS_SANDBOX_MODE);
+        if (PurchasingService.IS_SANDBOX_MODE)
+        {
+            dialogUtil.popSandboxMode(activityProvider.get());
+        }
     }
     //</editor-fold>
 

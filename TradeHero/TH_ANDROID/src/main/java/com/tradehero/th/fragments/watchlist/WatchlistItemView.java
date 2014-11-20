@@ -38,7 +38,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;

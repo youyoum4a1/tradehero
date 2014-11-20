@@ -14,10 +14,10 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.widget.THTabView;
 import java.util.Collection;
 
-public class DashboardTabHost extends TabHost
-    implements DashboardNavigator.DashboardFragmentWatcher
+public class DashboardTabHost extends TabHost implements DashboardNavigator.DashboardFragmentWatcher
 {
     private final Collection<RootFragmentType> bottomBarFragmentTypes = RootFragmentType.forBottomBar();
+    private final Collection<RootFragmentType> slideFragmentTypes = RootFragmentType.forResideMenu();
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
     private OnTranslateListener onTranslateListener;
@@ -53,21 +53,6 @@ public class DashboardTabHost extends TabHost
         indicator.setIcon(tabType.drawableResId);
         addTab(makeTabSpec(tabType)
                 .setIndicator(indicator));
-    }
-
-    @Override public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
-    {
-        showTabBar();
-        for (RootFragmentType rootFragmentType: bottomBarFragmentTypes)
-        {
-            if (rootFragmentType.fragmentClass == fragmentClass)
-            {
-                setCurrentTabByTag(rootFragmentType.toString());
-                return;
-            }
-        }
-        // none of the bottom bar fragment, hide me
-        //hideTabBar();
     }
 
     private void hideTabBar()
@@ -112,6 +97,22 @@ public class DashboardTabHost extends TabHost
     public void setOnTranslate(OnTranslateListener onTranslateListener)
     {
         this.onTranslateListener = onTranslateListener;
+    }
+
+    @Override
+    public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
+    {
+        showTabBar();
+        for (RootFragmentType rootFragmentType: bottomBarFragmentTypes)
+        {
+            if (rootFragmentType.fragmentClass == fragmentClass)
+            {
+                setCurrentTabByTag(rootFragmentType.toString());
+                return;
+            }
+        }
+        // none of the bottom bar fragment, hide me
+        //hideTabBar();
     }
 
     private class DummyTabContentFactory implements TabContentFactory

@@ -1,9 +1,10 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
@@ -11,8 +12,6 @@ import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class UserProfileDTOUtil extends UserBaseDTOUtil
 {
@@ -35,25 +34,6 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         this.securityAlertKnowledge = securityAlertKnowledge;
         this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
         this.firstShowOnBoardDialogPreference = firstShowOnBoardDialogPreference;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Max Purchasable Shares">
-    public Integer getMaxPurchasableShares(UserProfileDTO userProfileDTO, QuoteDTO quoteDTO)
-    {
-        return getMaxPurchasableShares(userProfileDTO, quoteDTO, true);
-    }
-
-    public Integer getMaxPurchasableShares(
-            UserProfileDTO userProfileDTO,
-            QuoteDTO quoteDTO,
-            boolean includeTransactionCost)
-    {
-        if (userProfileDTO == null || userProfileDTO.portfolio == null)
-        {
-            return null;
-        }
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(userProfileDTO.portfolio, quoteDTO, includeTransactionCost);
     }
     //</editor-fold>
 

@@ -1,7 +1,9 @@
 package com.tradehero.th.models.user.follow;
 
 import android.app.Activity;
-import com.tradehero.common.persistence.DTOCacheNew;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -11,24 +13,26 @@ import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
-import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class ChoiceFollowUserAssistantWithDialog
-    implements OnFollowRequestedListener,
-        DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
+        implements OnFollowRequestedListener
 {
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected UserProfileCache userProfileCache;
+    @Inject protected UserProfileCacheRx userProfileCache;
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
     @NonNull private final Activity activity;
     @NonNull protected final UserBaseKey heroId;
     @NonNull protected final FollowUserAssistant followUserAssistant;
     @Nullable protected FollowDialogCombo followDialogCombo;
+    @Nullable protected Subscription currentUserProfileSubscription;
     @Nullable protected UserProfileDTO currentUserProfile;
+    @Nullable protected Subscription heroSubscription;
     @Nullable protected UserBaseDTO heroBaseInfo;
 
     //<editor-fold desc="Constructors">
@@ -48,14 +52,20 @@ public class ChoiceFollowUserAssistantWithDialog
 
     public void onDestroy()
     {
-        detachUserCache();
+        unsubscribe(currentUserProfileSubscription);
+        currentUserProfileSubscription = null;
+        unsubscribe(heroSubscription);
+        heroSubscription = null;
         detachFollowDialogCombo();
         followUserAssistant.onDestroy();
     }
 
-    protected void detachUserCache()
+    protected void unsubscribe(@Nullable Subscription subscription)
     {
-        userProfileCache.unregister(this);
+        if (subscription != null)
+        {
+            subscription.unsubscribe();
+        }
     }
 
     protected void detachFollowDialogCombo()
@@ -76,31 +86,47 @@ public class ChoiceFollowUserAssistantWithDialog
 
     public void launchChoice()
     {
-        userProfileCache.register(currentUserId.toUserBaseKey(), this);
-        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+        unsubscribe(currentUserProfileSubscription);
+        currentUserProfileSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createUserProfileCacheObserver());
         if (heroBaseInfo == null)
         {
-            userProfileCache.register(heroId, this);
-            userProfileCache.getOrFetchAsync(heroId);
+            unsubscribe(heroSubscription);
+            heroSubscription = userProfileCache.get(heroId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(createUserProfileCacheObserver());
         }
     }
 
-    @Override public void onDTOReceived(@NonNull UserBaseKey key, @NonNull UserProfileDTO value)
+    @NonNull Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        if (key.equals(heroId))
-        {
-            heroBaseInfo = value;
-        }
-        else
-        {
-            currentUserProfile = value;
-        }
-        launchFollowChoice();
+        return new UserProfileCacheObserver();
     }
 
-    @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
+    protected class UserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
     {
-        followUserAssistant.notifyFollowFailed(heroId, error);
+        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+        {
+            if (pair.first.equals(heroId))
+            {
+                heroBaseInfo = pair.second;
+            }
+            else
+            {
+                currentUserProfile = pair.second;
+            }
+            launchFollowChoice();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            followUserAssistant.notifyFollowFailed(heroId, e);
+        }
     }
 
     protected void launchFollowChoice()

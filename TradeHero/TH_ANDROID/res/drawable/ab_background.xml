@@ -3,16 +3,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
   <item>
-
-    <shape android:shape="rectangle">
-      <solid android:color="@color/tradehero_blue"/>
-    </shape>
+    <color android:color="@color/tradehero_blue"/>
   </item>
   <item android:bottom="2dp">
-    <shape android:shape="rectangle">
-      <solid android:color="@color/white"/>
-      <padding android:bottom="2dp"/>
-    </shape>
+    <color android:color="@color/white"/>
   </item>
 
 

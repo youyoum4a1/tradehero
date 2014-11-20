@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition.specific;
 
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderIdConstants;
@@ -7,8 +8,8 @@ import com.tradehero.th.api.competition.specific.macquarie.MacquarieProviderSpec
 import com.tradehero.th.api.competition.specific.macquarie.PhillipMacquarieProviderSpecificKnowledgeDTO;
 import com.tradehero.th.api.competition.specific.sgxtockwhiz.SgxStockWhizProviderSpecificKnowledgeDTO;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
 
+@Deprecated
 public class ProviderSpecificKnowledgeFactory
 {
     //<editor-fold desc="Constructors">

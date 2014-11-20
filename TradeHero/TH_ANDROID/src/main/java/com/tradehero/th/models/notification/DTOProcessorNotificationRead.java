@@ -39,13 +39,14 @@ public class DTOProcessorNotificationRead extends ThroughDTOProcessor<BaseRespon
         {
             previousUnread = notificationDTO.unread;
             notificationDTO.unread = false;
+            notificationCache.onNext(key, notificationDTO);
         }
         UserProfileDTO userProfileDTO = userProfileCache.getValue(readerId);
         if (previousUnread && userProfileDTO != null && userProfileDTO.unreadNotificationsCount > 0)
         {
             userProfileDTO.unreadNotificationsCount--;
+            userProfileCache.onNext(readerId, userProfileDTO);
         }
-        userProfileCache.get(readerId);
         return value;
     }
 }

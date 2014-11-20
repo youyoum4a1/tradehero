@@ -1,13 +1,16 @@
 package com.tradehero.th.network.share;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
-import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.social.HasSocialNetworkEnum;
+import com.tradehero.th.api.social.HasSocialNetworkEnumList;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SocialShareVerifier
 {
@@ -34,30 +37,43 @@ public class SocialShareVerifier
         {
             return CanShareType.TRY_AND_SEE;
         }
-        if (toShare instanceof TimelineItemShareFormDTO)
+        if (toShare instanceof HasSocialNetworkEnum)
         {
-            TimelineItemShareFormDTO tiShareDTO = (TimelineItemShareFormDTO) toShare;
-            if (tiShareDTO.timelineItemShareRequestDTO == null)
-            {
-                return CanShareType.NO;
-            }
-            return canShare(currentUserProfile, tiShareDTO.timelineItemShareRequestDTO.socialNetwork);
+            return canShare(currentUserProfile, (HasSocialNetworkEnum) toShare);
         }
-        if (toShare instanceof AchievementShareFormDTO)
+        if (toShare instanceof HasSocialNetworkEnumList)
         {
-            AchievementShareFormDTO aShareDTO = (AchievementShareFormDTO) toShare;
-            CanShareType canShare;
-            for (SocialNetworkEnum socialNetworkEnum : aShareDTO.achievementShareReqFormDTO.networks)
-            {
-                canShare = canShare(currentUserProfile, socialNetworkEnum);
-                if (canShare != CanShareType.YES)
-                {
-                    return canShare;
-                }
-            }
-            return CanShareType.YES;
+            return canShare(currentUserProfile, (HasSocialNetworkEnumList) toShare);
         }
         throw new IllegalStateException("Unhandled type " + toShare.getClass().getName());
+    }
+
+    @NonNull protected CanShareType canShare(
+            @NonNull UserProfileCompactDTO currentUserProfile,
+            @NonNull HasSocialNetworkEnum hasSocialNetworkEnum)
+    {
+        SocialNetworkEnum socialNetwork = hasSocialNetworkEnum.getSocialNetworkEnum();
+        if (socialNetwork == null)
+        {
+            return CanShareType.NO;
+        }
+        return canShare(currentUserProfile, socialNetwork);
+    }
+
+    @NonNull protected CanShareType canShare(
+            @NonNull UserProfileCompactDTO currentUserProfile,
+            @NonNull HasSocialNetworkEnumList hasSocialNetworkEnumList)
+    {
+        CanShareType canShare;
+        for (SocialNetworkEnum socialNetworkEnum : hasSocialNetworkEnumList.getSocialNetworkEnumList())
+        {
+            canShare = canShare(currentUserProfile, socialNetworkEnum);
+            if (canShare != CanShareType.YES)
+            {
+                return canShare;
+            }
+        }
+        return CanShareType.YES;
     }
 
     @NonNull protected CanShareType canShare(
@@ -87,5 +103,39 @@ public class SocialShareVerifier
             default:
                 throw new IllegalArgumentException("Unhandled SocialNetworkEnum." + socialNetworkEnum)    ;
         }
+    }
+
+    @NonNull public List<SocialNetworkEnum> getNeedAuthSocialNetworks(
+            @NonNull UserProfileCompactDTO currentUserProfile,
+            @NonNull SocialShareFormDTO toShare)
+    {
+        if (toShare instanceof HasSocialNetworkEnum)
+        {
+            return getNeedAuthSocialNetworks(
+                    currentUserProfile,
+                    Arrays.asList(((HasSocialNetworkEnum) toShare).getSocialNetworkEnum()));
+        }
+        if (toShare instanceof HasSocialNetworkEnumList)
+        {
+            return getNeedAuthSocialNetworks(
+                    currentUserProfile,
+                    ((HasSocialNetworkEnumList) toShare).getSocialNetworkEnumList());
+        }
+        throw new IllegalStateException("Unhandled type " + toShare.getClass().getName());
+    }
+
+    @NonNull public List<SocialNetworkEnum> getNeedAuthSocialNetworks(
+            @NonNull UserProfileCompactDTO currentUserProfile,
+            @NonNull List<SocialNetworkEnum> candidates)
+    {
+        List<SocialNetworkEnum> needAuth = new ArrayList<>();
+        for (SocialNetworkEnum candidate : candidates)
+        {
+            if (canShare(currentUserProfile, candidate).equals(CanShareType.NEED_AUTH))
+            {
+                needAuth.add(candidate);
+            }
+        }
+        return needAuth;
     }
 }

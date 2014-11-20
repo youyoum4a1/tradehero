@@ -15,9 +15,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
+import java.util.List;
 import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -343,24 +345,24 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
                 // Nothing to do
             }
 
-            @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
+            @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
             {
                 // Nothing to do
             }
 
-            @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+            @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
             {
                 // Nothing to do
             }
 
-            @Override public void onShared(SocialShareFormDTO shareFormDTO,
-                    SocialShareResultDTO socialShareResultDTO)
+            @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
+                    @NonNull SocialShareResultDTO socialShareResultDTO)
             {
                 // Nothing to do
             }
 
-            @Override public void onShareFailed(SocialShareFormDTO shareFormDTO,
-                    Throwable throwable)
+            @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO,
+                    @NonNull Throwable throwable)
             {
                 // Nothing to do
             }

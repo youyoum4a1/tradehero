@@ -3,7 +3,7 @@ package com.tradehero.th.auth.tencent_qq;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class QQAppAuthData
+class QQAppAuthData
 {
     public static final String JSON_KEY_OPEN_ID = "openid";
     public static final String JSON_KEY_EXPIRES_IN = "expires_in";

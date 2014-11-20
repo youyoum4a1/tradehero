@@ -11,6 +11,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -18,6 +19,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -202,20 +204,20 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         {
         }
 
-        @Override public void onShareRequestedClicked(SocialShareFormDTO socialShareFormDTO)
+        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
         {
         }
 
-        @Override public void onConnectRequired(SocialShareFormDTO shareFormDTO)
+        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
         {
         }
 
-        @Override public void onShared(SocialShareFormDTO shareFormDTO,
-                SocialShareResultDTO socialShareResultDTO)
+        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
+                @NonNull SocialShareResultDTO socialShareResultDTO)
         {
         }
 
-        @Override public void onShareFailed(SocialShareFormDTO shareFormDTO, Throwable throwable)
+        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
         {
         }
 

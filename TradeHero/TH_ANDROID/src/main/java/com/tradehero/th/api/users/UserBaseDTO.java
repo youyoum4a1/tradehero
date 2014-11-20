@@ -1,10 +1,8 @@
 package com.tradehero.th.api.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Country;
-import java.io.IOException;
 import java.util.Date;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -67,14 +65,18 @@ public class UserBaseDTO extends ExtendedDTO
 
     @Override public String toString()
     {
-        try
-        {
-            return THJsonAdapter.getInstance().toStringBody(this);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return "Failed to json";
-        }
+        return "UserBaseDTO{" +
+                "id=" + id +
+                ", picture='" + picture + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", memberSince=" + memberSince +
+                ", isAdmin=" + isAdmin +
+                ", activeSurveyURL='" + activeSurveyURL + '\'' +
+                ", activeSurveyImageURL='" + activeSurveyImageURL + '\'' +
+                ", roiSinceInception=" + roiSinceInception +
+                ", countryCode='" + countryCode + '\'' +
+                '}';
     }
 }

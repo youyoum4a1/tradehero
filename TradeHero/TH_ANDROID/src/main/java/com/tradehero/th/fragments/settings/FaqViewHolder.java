@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;

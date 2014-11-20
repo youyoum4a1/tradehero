@@ -42,6 +42,10 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
+/**
+ * Note that this is the first version of RegionalNewsSelectorView, with the inline searching feature on the dropdown view
+ * We use RegionalNewsSelectorView after the requirement specification has changed.
+ */
 public class RegionalNewsSearchableSelectorView extends LinearLayout
 {
     @InjectView(R.id.news_region_selector) TextView mRegionSelector;

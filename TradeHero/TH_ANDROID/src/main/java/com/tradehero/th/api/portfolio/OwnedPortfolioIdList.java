@@ -1,9 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
-import com.tradehero.common.persistence.DTOKeyIdList;
-import com.tradehero.th.api.users.UserBaseKey;
-import java.util.Collection;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOKeyIdList;
+import java.util.Collection;
 
 public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
 {
@@ -14,12 +13,19 @@ public class OwnedPortfolioIdList extends DTOKeyIdList<OwnedPortfolioId>
     }
 
     public OwnedPortfolioIdList(
-            @NonNull UserBaseKey userBaseKey,
-            @NonNull Collection<? extends PortfolioCompactDTO> portfolioCompactDTOs)
+            @NonNull Collection<? extends OwnedPortfolioId> ownedPortfolioIds)
     {
-        for (PortfolioCompactDTO portfolioCompactDTO : portfolioCompactDTOs)
+        super(ownedPortfolioIds);
+    }
+
+    public OwnedPortfolioIdList(
+            @NonNull Collection<? extends PortfolioCompactDTO> portfolioCompactDTOs,
+            @SuppressWarnings("UnusedParameters") @NonNull PortfolioCompactDTO typeQualifier)
+    {
+        super();
+        for (PortfolioCompactDTO compactDTO : portfolioCompactDTOs)
         {
-            add(new OwnedPortfolioId(userBaseKey.key, portfolioCompactDTO.id));
+            add(compactDTO.getOwnedPortfolioId());
         }
     }
     //</editor-fold>

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.alert.AlertEventDTO;
+import com.tradehero.th.widget.TextHolder;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class AlertEventAdapter extends ArrayDTOAdapterNew<AlertEventDTO, AlertEventItemView>

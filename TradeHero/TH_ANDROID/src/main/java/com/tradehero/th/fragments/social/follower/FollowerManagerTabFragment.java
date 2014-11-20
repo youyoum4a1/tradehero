@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -8,14 +9,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -33,14 +30,13 @@ import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
-        implements PullToRefreshBase.OnRefreshListener2<ListView>
+        implements SwipeRefreshLayout.OnRefreshListener
 {
     public static final int ITEM_ID_REFRESH_MENU = 0;
     private static final String HERO_ID_BUNDLE_KEY =
@@ -49,12 +45,15 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Inject protected CurrentUserId currentUserId;
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
-    @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
+    @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.follower_list) ListView pullToRefreshListView;
+    @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
-    private FollowerAndPayoutListItemAdapter followerListAdapter;
+    private FollowerListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
     @Inject THRouter thRouter;
+    private Subscription followerSubscription;
 
     public static void putHeroId(Bundle args, UserBaseKey followerId)
     {
@@ -81,26 +80,17 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         ButterKnife.inject(this, view);
         if (followerListAdapter == null)
         {
-            followerListAdapter = new FollowerAndPayoutListItemAdapter(getActivity(),
+            followerListAdapter = new FollowerListItemAdapter(getActivity(),
                     getActivity().getLayoutInflater(),
-                    R.layout.follower_list_header,
-                    R.layout.hero_payout_list_item,
-                    R.layout.hero_payout_none_list_item,
-                    R.layout.follower_list_item,
-                    R.layout.follower_none_list_item
+                    R.layout.follower_list_item
             );
         }
-        pullToRefreshListView.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this);
         pullToRefreshListView.setAdapter(followerListAdapter);
-        pullToRefreshListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());        pullToRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                    long id)
-            {
-                ListView listView = (ListView)parent;
-                handleFollowerItemClicked(view, position - listView.getHeaderViewsCount(), id);
-            }
+        pullToRefreshListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        pullToRefreshListView.setOnItemClickListener((parent, view1, position, id) -> {
+            ListView listView = (ListView)parent;
+            handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
         });
         displayProgress(true);
     }
@@ -136,15 +126,21 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Override public void onDestroyView()
     {
         this.followerListAdapter = null;
+        unSubscribe();
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     protected void fetchFollowers()
     {
-        AndroidObservable.bindFragment(this, followerSummaryCache.get(heroId))
-                .observeOn(AndroidSchedulers.mainThread())
+        unSubscribe();
+        followerSubscription = AndroidObservable.bindFragment(this, followerSummaryCache.get(heroId))
                 .subscribe(createFollowerSummaryCacheObserver());
+    }
+
+    private void unSubscribe()
+    {
+        unsubscribe(followerSubscription);
     }
 
     private boolean isCurrentUser()
@@ -203,7 +199,16 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     {
         if (this.followerListAdapter != null)
         {
-            this.followerListAdapter.setFollowerSummaryDTO(this.followerSummaryDTO);
+            if(this.followerSummaryDTO.userFollowers.isEmpty())
+            {
+                emptyView.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                emptyView.setVisibility(View.GONE);
+                this.followerListAdapter.setFollowerSummaryDTO(this.followerSummaryDTO);
+                this.followerListAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -216,9 +221,10 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     {
         progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
         pullToRefreshListView.setVisibility(running ? View.GONE : View.VISIBLE);
+        swipeRefreshLayout.setRefreshing(running);
     }
 
-    @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
+    @Override public void onRefresh()
     {
         if(followerSummaryDTO == null || followerSummaryDTO.userFollowers == null || followerSummaryDTO.userFollowers.size() == 0)
         {
@@ -226,15 +232,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         }
 
         doRefreshContent();
-    }
-
-    @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-    {
-    }
-
-    private void onRefreshCompleted()
-    {
-        pullToRefreshListView.onRefreshComplete();
     }
 
     private void refreshContent()
@@ -281,9 +278,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             int position,
             @SuppressWarnings("UnusedParameters") long id)
     {
-        if (followerListAdapter != null
-                && followerListAdapter.getItemViewType(position)
-                == FollowerAndPayoutListItemAdapter.VIEW_TYPE_ITEM_FOLLOWER)
+        if (followerListAdapter != null)
         {
             UserFollowerDTO followerDTO =
                     (UserFollowerDTO) followerListAdapter.getItem(position);
@@ -333,27 +328,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             displayProgress(false);
             THToast.show(R.string.error_fetch_follower);
             Timber.e("Failed to fetch FollowerSummary", e);
-        }
-    }
-
-    protected class RefreshFollowerManagerFollowerSummaryListener
-            implements DTOCacheNew.Listener<UserBaseKey, FollowerSummaryDTO>
-    {
-        @Override
-        public void onDTOReceived(@NonNull UserBaseKey key, @NonNull FollowerSummaryDTO value)
-        {
-            displayProgress(false);
-            onRefreshCompleted();
-            handleFollowerSummaryDTOReceived(value);
-            notifyFollowerLoaded(value);
-        }
-
-        @Override public void onErrorThrown(@NonNull UserBaseKey key, @NonNull Throwable error)
-        {
-            displayProgress(false);
-            onRefreshCompleted();
-            //THToast.show(R.string.error_fetch_follower);
-            Timber.e("Failed to fetch FollowerSummary", error);
         }
     }
 

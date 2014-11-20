@@ -6,11 +6,15 @@ public class AnalyticsConstants
     public static final String TabBar_Me = "TabBar/Me";
     public static final String TabBar_Trade = "TabBar/Trade";
     public static final String TabBar_Trending = "TabBar/Trending";
+    public static final String TabBar_Discovery = "TabBar/Discovery";
     public static final String TabBar_Community = "TabBar/Community";
+    public static final String TabBar_ContestCenter = "TabBar/ContestCenter";
     public static final String TabBar_Academy = "TabBar/Academy";
     public static final String TabBar_Portfolio = "TabBar/Portfolio";
     public static final String TabBar_Store = "TabBar/Store";
     public static final String TabBar_Settings = "TabBar/Settings";
+    public static final String TabBar_AdminSettings = "TabBar/AdminSettings";
+    public static final String TabBar_Divider = "TabBar/Divider";
     public static final String SignUp = "SignUp"; //User tap sign up on the landing
     public static final String SignUp_Tap = "SignUp/Tap"; //User tap sign up on the landing
     public static final String SignUp_Success = "SignUp/Success"; //User tap sign up on the landing
@@ -128,5 +132,28 @@ public class AnalyticsConstants
     public static final String Trade_Sell = "Trade/Sell";//
     public static final String Twitter = "Twitter";//
     public static final String WeiBo = "WeiBo";//
+    public static final String DiscoverNewsViewed = "DiscoverNewsViewed";//
+    public static final String DiscoverDiscussionsViewed = "DiscoverDiscussionsViewed";//
+    public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
+    public static final String GamePlaySummary = "GamePlaySummary";
 
+    //Attribute
+    public static final String ClickedFrom = "ClickedFrom";//
+    public static final String Bottom = "Bottom";//
+    public static final String Side = "Side";//
+    public static final String TimeOnScreen = "TimeOnScreen";//
+    public static final String Time1T10S = "1 to 10 seconds";//
+    public static final String Time11T30S = "11 to 30 seconds";//
+    public static final String Time31T60S = "31 to 60 seconds";//
+    public static final String Time1T3M = "1 to 3 minutes";//
+    public static final String Time3T10M = "3 to 10 minutes";//
+    public static final String Time10M = "more than 10 minutes";//
+    public static final String Trigger = "Trigger";//
+    public static final String Clicked = "Clicked";//
+    public static final String Level = "Level";//
+    public static final String Type = "Type";//
+    public static final String CompetitionJoined = "CompetitionJoined";//
+    public static final String InterestedExchange = "InterestedExchange";//
+    public static final String GamePlayed = "GamePlayed";//
+    public static final String TimeInGame = "TimeInGame";//
 }

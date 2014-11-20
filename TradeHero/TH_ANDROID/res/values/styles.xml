@@ -161,6 +161,16 @@
     <item name="android:minWidth">80dip</item>
   </style>
 
+  <style name="TradeHero.PageTitleView" parent="TradeHero.TabView">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_weight">0</item>
+  </style>
+
+  <style name="TradeHero.TabContainer">
+    <item name="android:background">@drawable/ab_background</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+  </style>
+
   <style name="TH.BuySell_ViewPager_Tabs"
       parent="TradeHero.TabView">
     <item name="android:layout_height">match_parent</item>
@@ -253,7 +263,7 @@
     <item name="android:ellipsize">middle</item>
     <item name="android:layout_marginLeft">5dp</item>
     <item name="android:layout_marginRight">5dp</item>
-    <item name="android:minHeight">@dimen/button_height_30</item>
+    <item name="android:minHeight">@dimen/button_height_small</item>
     <item name="android:maxWidth">180dp</item>
     <item name="android:background">@drawable/basic_white_selector</item>
   </style>
@@ -281,7 +291,7 @@
   </style>
 
   <style name="TH.BuySell_ViewPager_Belt"
-      parent="@android:style/Widget">
+      parent="TradeHero.TabContainer">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
@@ -289,7 +299,6 @@
     <item name="android:divider">?android:attr/dividerVertical</item>
     <item name="android:showDividers">middle</item>
     <item name="android:dividerPadding">6dp</item>
-    <item name="android:background">@color/white</item>
   </style>
 
   <style name="TH.ShareButtons">
@@ -606,4 +615,24 @@
     <item name="android:scaleType">fitCenter</item>
     <item name="android:background">@drawable/basic_transparent_selector</item>
   </style>
+
+  <style name="TH.ReferralButtons" parent="TH.Button.Inverse">
+    <item name="android:minWidth">@dimen/button_min_width</item>
+    <item name="android:paddingRight">@dimen/margin_small</item>
+    <item name="android:paddingLeft">@dimen/margin_small</item>
+  </style>
+
+  <style name="TH.MiniGame.Title">
+    <item name="android:layout_gravity">top|left</item>
+    <item name="android:gravity">center</item>
+    <item name="android:background">@drawable/minigame_title_background</item>
+    <item name="android:paddingLeft">@dimen/minigame_title_horizontal_padding</item>
+    <item name="android:paddingRight">@dimen/minigame_title_end_padding</item>
+    <item name="android:paddingBottom">@dimen/minigame_title_vertical_padding</item>
+    <item name="android:paddingTop">@dimen/minigame_title_vertical_padding</item>
+    <item name="android:textStyle">bold</item>
+  </style>
+
+  <style name="TH.MiniGame" parent="None"/>
+  <style name="None"/>
 </resources>

@@ -2,34 +2,23 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import java.util.Arrays;
-import java.util.List;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.R;
+import com.tradehero.th.api.social.SocialNetworkEnum;
+import java.util.Set;
+import javax.inject.Inject;
 
 public class SocialConnectSettingViewHolderContainer implements SettingViewHolder
 {
-    private final List<SocialConnectSettingViewHolder> settingViewHolders;
+    private final Set<SocialConnectSettingViewHolder> settingViewHolders;
 
     @Nullable protected PreferenceCategory container;
 
     //<editor-fold desc="Constructors">
-    @Inject public SocialConnectSettingViewHolderContainer(
-            @NonNull SocialConnectFacebookSettingViewHolder socialConnectFacebookSettingViewHolder,
-            @NonNull SocialConnectLinkedInSettingViewHolder socialConnectLinkedInSettingViewHolder,
-            @NonNull SocialConnectQQSettingViewHolder socialConnectQQSettingViewHolder,
-            @NonNull SocialConnectTwitterSettingViewHolder socialConnectTwitterSettingViewHolder,
-            @NonNull SocialConnectWeiboSettingViewHolder socialConnectWeiboSettingViewHolder)
+    @Inject public SocialConnectSettingViewHolderContainer(Set<SocialConnectSettingViewHolder> settingViewHolders)
     {
-        settingViewHolders = Arrays.asList(
-                socialConnectFacebookSettingViewHolder,
-                socialConnectLinkedInSettingViewHolder,
-                socialConnectQQSettingViewHolder,
-                socialConnectTwitterSettingViewHolder,
-                socialConnectWeiboSettingViewHolder);
+        this.settingViewHolders = settingViewHolders;
     }
     //</editor-fold>
 

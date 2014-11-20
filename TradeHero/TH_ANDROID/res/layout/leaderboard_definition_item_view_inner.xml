@@ -85,5 +85,27 @@
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       />
-
+  <LinearLayout
+      android:id="@+id/leaderboard_def_utem_rank_wrapper"
+      android:orientation="horizontal"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_centerVertical="true"
+      android:visibility="gone"
+      android:layout_toLeftOf="@id/leaderboard_def_item_action_icon">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:text="@string/best_roi"
+        android:paddingRight="3dp"
+        />
+    <TextView
+        android:id="@+id/leaderboard_def_item_user_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:paddingRight="3dp"
+        />
+  </LinearLayout>
 </merge>

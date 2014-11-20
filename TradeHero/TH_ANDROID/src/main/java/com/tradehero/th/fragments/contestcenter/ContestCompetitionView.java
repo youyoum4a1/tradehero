@@ -1,23 +1,27 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.widgets.AspectRatioImageView;
 import com.squareup.widgets.AspectRatioImageViewCallback;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
-import timber.log.Timber;
 
 public class ContestCompetitionView extends AspectRatioImageView
         implements DTOView<ContestPageDTO>
 {
+    @DrawableRes private static final int PLACE_HOLDER = R.drawable.lb_competitions_bg;
+
     @Inject protected Lazy<Picasso> picasso;
     @Nullable private ContestPageDTO contestPageDTO;
     @Nullable private ProviderDTO providerDTO;
@@ -76,28 +80,27 @@ public class ContestCompetitionView extends AspectRatioImageView
 
     protected void displayImageView()
     {
+        RequestCreator request;
         if (providerDTO != null)
         {
             setVisibility(View.VISIBLE);
 
-            int joinBannerResId = providerDTO.specificResources == null ? 0 : providerDTO.specificResources.getJoinBannerResId(providerDTO.isUserEnrolled);
-            if (joinBannerResId != 0)
+            String url = providerDTO.getStatusSingleImageUrl();
+            if (url != null)
             {
-                try
-                {
-                    setImageResource(joinBannerResId);
-                }
-                catch (OutOfMemoryError e)
-                {
-                    Timber.e(e, "providerId %d", providerDTO.id);
-                }
+                request = picasso.get()
+                        .load(url)
+                        .placeholder(PLACE_HOLDER);
             }
             else
             {
-                picasso.get()
-                        .load(providerDTO.getStatusSingleImageUrl())
-                        .into(this, new AspectRatioImageViewCallback(this));
+                request = picasso.get().load(PLACE_HOLDER);
             }
         }
+        else
+        {
+            request = picasso.get().load(PLACE_HOLDER);
+        }
+        request.into(this, new AspectRatioImageViewCallback(this));
     }
 }

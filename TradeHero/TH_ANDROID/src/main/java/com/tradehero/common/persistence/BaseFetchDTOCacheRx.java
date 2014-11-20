@@ -1,13 +1,13 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import android.support.annotation.NonNull;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
+import rx.observers.EmptyObserver;
 import rx.subjects.BehaviorSubject;
 
 abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -32,28 +32,27 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         Observable<Pair<DTOKeyType, DTOType>> cachedObservable = super.getOrCreateObservable(key);
         if (cachedFetcherSubscriptions.get(key) == null)
         {
-            fetch(key)
-                    .map(dtoType -> Pair.create(key, dtoType))
-                    .subscribe(new Observer<Pair<DTOKeyType,DTOType>>()
+            cachedFetcherSubscriptions.put(key, fetch(key)
+                    .doOnUnsubscribe(() -> removeFetcher(key))
+                    .subscribe(new EmptyObserver<DTOType>()
                     {
-                        @Override public void onNext(Pair<DTOKeyType, DTOType> pair)
+                        @Override public void onNext(DTOType value)
                         {
-                            BaseFetchDTOCacheRx.this.onNext(pair.first, pair.second);
-                        }
-
-                        @Override public void onCompleted()
-                        {
-                            cachedFetcherSubscriptions.remove(key);
+                            BaseFetchDTOCacheRx.this.onNext(key, value);
                         }
 
                         @Override public void onError(Throwable error)
                         {
-                            cachedFetcherSubscriptions.remove(key);
                             BaseFetchDTOCacheRx.this.onError(key, error);
                         }
-                    });
+                    }));
         }
         return cachedObservable;
+    }
+
+    private void removeFetcher(@NonNull DTOKeyType key)
+    {
+        cachedFetcherSubscriptions.remove(key);
     }
 
     public void onError(@NonNull DTOKeyType key, @NonNull Throwable error)

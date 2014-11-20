@@ -22,7 +22,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;

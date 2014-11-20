@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +30,6 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -134,13 +134,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
-        if (providerDTO != null
-                && providerDTO.specificResources != null
-                && providerDTO.specificResources.helpVideoListFragmentTitleResId > 0)
-        {
-            setActionBarTitle(providerDTO.specificResources.helpVideoListFragmentTitleResId);
-        }
-        else if (providerDTO == null || providerDTO.name == null)
+        if (providerDTO == null || providerDTO.name == null)
         {
             setActionBarTitle("");
         }

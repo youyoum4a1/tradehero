@@ -1,12 +1,14 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,7 +33,8 @@ import timber.log.Timber;
 
 public class AchievementListTestingFragment extends DashboardFragment
 {
-    @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
+    @InjectView(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.generic_ptr_list) protected ListView listView;
     @InjectView(android.R.id.progress) protected ProgressBar progressBar;
 
     @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
@@ -51,7 +54,7 @@ public class AchievementListTestingFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
+        swipeRefreshLayout.setEnabled(false);
         initAdapter();
         listView.setOnItemClickListener(this::onListViewItemClicked);
     }

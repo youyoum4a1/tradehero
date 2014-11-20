@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class GenericArrayAdapter<T> extends BaseAdapter
+public class GenericArrayAdapter<T> extends BaseAdapter
 {
     @NonNull protected List<T> items = Collections.emptyList();
     @NonNull private final LayoutInflater inflater;
@@ -30,9 +30,9 @@ public abstract class GenericArrayAdapter<T> extends BaseAdapter
         notifyDataSetChanged();
     }
 
-    public void clear()
+    @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        items.clear();
+        return conditionalInflate(position, convertView, parent);
     }
 
     @Override public int getCount()

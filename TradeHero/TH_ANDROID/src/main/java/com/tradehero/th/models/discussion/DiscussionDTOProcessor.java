@@ -3,9 +3,9 @@ package com.tradehero.th.models.discussion;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import rx.functions.Action1;
+import rx.functions.Func1;
 
-public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> implements Action1<PaginatedDTO<T>>
+public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> implements Func1<PaginatedDTO<T>, PaginatedDTO<T>>
 {
     private final DiscussionCacheRx discussionCache;
 
@@ -14,7 +14,7 @@ public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> impl
         this.discussionCache = discussionCache;
     }
 
-    @Override public void call(PaginatedDTO<T> paginatedDiscussionDTO)
+    @Override public PaginatedDTO<T> call(PaginatedDTO<T> paginatedDiscussionDTO)
     {
         if (paginatedDiscussionDTO != null)
         {
@@ -23,5 +23,6 @@ public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> impl
                 discussionCache.onNext(item.getDiscussionKey(), item);
             }
         }
+        return paginatedDiscussionDTO;
     }
 }

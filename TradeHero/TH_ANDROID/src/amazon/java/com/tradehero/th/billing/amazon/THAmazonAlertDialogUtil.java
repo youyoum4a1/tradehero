@@ -13,6 +13,7 @@ import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryFailedE
 import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryUnsupportedException;
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.BillingAlertDialogUtil;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -20,7 +21,7 @@ import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import com.tradehero.th.utils.ActivityUtil;
-import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
         THAmazonLogicHolder,
         THAmazonStoreProductDetailView,
         THAmazonSKUDetailAdapter>
+    implements AmazonAlertDialogUtil
 {
     @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
     @NonNull protected final AmazonStoreUtils amazonStoreUtils;
@@ -189,22 +191,40 @@ public class THAmazonAlertDialogUtil extends BillingAlertDialogUtil<
         );
     }
 
-    public AlertDialog popPurchaseUnsupportedError(final Context context, final AmazonPurchaseUnsupportedException exception)
+    @Override public AlertDialog popPurchaseUnsupportedError(final Context context, final AmazonPurchaseUnsupportedException exception)
     {
         return popWithOkCancelButton(context,
                 R.string.amazon_store_billing_purchase_unsupported_error_window_title,
                 R.string.amazon_store_billing_purchase_unsupported_error_window_description,
                 R.string.amazon_store_billing_purchase_unsupported_error_ok,
                 R.string.amazon_store_billing_purchase_unsupported_error_cancel,
-                new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.cancel();
-                        sendSupportEmailBillingUnknownError(context, exception);
-                    }
+                (dialog, id) -> {
+                    dialog.cancel();
+                    sendSupportEmailBillingUnknownError(context, exception);
                 }
         );
     }
+
+    @Override public AlertDialog popSandboxMode(final Context context)
+    {
+        return popWithOkCancelButton(context,
+                R.string.amazon_store_billing_sandbox_window_title,
+                R.string.amazon_store_billing_sandbox_window_description,
+                R.string.amazon_store_billing_sandbox_window_ok,
+                R.string.amazon_store_billing_sandbox_window_cancel,
+                (dialog, id) -> {
+                    dialog.cancel();
+                    sendSupportEmailBillingSandbox(context);
+                });
+    }
+
+    public void sendSupportEmailBillingSandbox(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
+                VersionUtils.getSupportEmailTraceParameters(context, true));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My Amazon Store in-app purchases are in sandbox mode");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
 
 }

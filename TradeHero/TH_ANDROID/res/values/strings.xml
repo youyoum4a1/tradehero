@@ -226,11 +226,6 @@
   <string name="notification_new_activities">You have %d new activities</string>
   <string name="friend_link_social_network">Please Link Social Network.</string>
   <string name="exit_app">Exit app</string>
-  <string name="invite_code_title">Claim your virtual dollars!</string>
-  <string name="invite_code_message">If you were referred by a friend, enter the referral code here and get free 10,000 virtual dollars.</string>
-  <string name="settings_referral_code_message">This is your own referral code. Share it with your friends and get FREE Tradehero Dollars when they sign up !
-  </string>
-  <string name="referral_code_callback_success">Your invite code is correct, you will get extra 10,000 TH dollars</string>
 
   <string name="friends_can_be_invite">%s friends can be invited</string>
   <string name="friends_can_be_follow">%s friends can be followed</string>
@@ -250,6 +245,8 @@
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
   <string name="discovery_learning">Academy</string>
+  <string name="discovery_games">@string/games</string>
+  <string name="discovery_articles">@string/articles</string>
   <string name="onboard_exchange_title">To Help Get You Started</string>
   <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
   <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
@@ -271,5 +268,9 @@
   <!-- Residemenu -->
   <string name="residemenu_footer_title">Content Partners:</string>
 
-  <!--  -->
+  <!-- Discovery games -->
+  <string name="games">Games</string>
+  <string name="coming_soon">Coming soon!</string>
+  <string name="articles">Articles</string>
+  <string name="best_roi">ROI:</string>
 </resources>

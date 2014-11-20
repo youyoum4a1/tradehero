@@ -17,8 +17,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_medium"
         android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@color/white"
+        >
 
       <TextView
           android:id="@+id/settings_referral_code"
@@ -40,8 +43,47 @@
           android:layout_marginRight="@dimen/margin_small"
           android:gravity="center_horizontal"
           android:text="@string/settings_referral_code_message"
-          style="@style/TH.Body"
+          style="@style/TH.Subhead"
           />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          android:layout_marginBottom="@dimen/margin_xsmall"
+          android:gravity="center"
+          >
+
+        <Button
+            android:id="@+id/btn_referral_copy"
+            style="@style/TH.ReferralButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:text="@string/referral_code_copy_clipboard"
+            android:enabled="false"
+            android:drawableLeft="@drawable/ic_action_content_content_copy_white"
+            android:drawableStart="@drawable/ic_action_content_content_copy_white"
+            android:background="@drawable/blue_rounded_button_selector"
+            />
+
+        <Button
+            android:id="@+id/btn_referral_share"
+            style="@style/TH.ReferralButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:text="@string/referral_code_share_network"
+            android:enabled="false"
+            android:drawableLeft="@drawable/ic_action_social_share_white"
+            android:drawableStart="@drawable/ic_action_social_share_white"
+            android:background="@drawable/blue_rounded_button_selector"
+            />
+
+      </LinearLayout>
 
     </LinearLayout>
 
@@ -54,8 +96,7 @@
       <include
           layout="@layout/invite_code_dialog_layout"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="@dimen/margin_xsmall"/>
+          android:layout_height="wrap_content"/>
 
       <LinearLayout
           android:id="@+id/already_done_key"

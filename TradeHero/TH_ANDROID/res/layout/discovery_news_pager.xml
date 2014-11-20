@@ -11,7 +11,7 @@
   <com.tradehero.common.widget.NonSwipeableViewPager
       android:id="@+id/news_pager"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       tools:background="@android:color/holo_red_dark"
       />
 

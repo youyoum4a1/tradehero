@@ -3,15 +3,14 @@ package com.tradehero.th.fragments.discovery;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import dagger.Module;
-import dagger.Provides;
 import java.util.Locale;
 import javax.inject.Singleton;
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
                 DiscoveryMainFragment.class,
-                NewsPagerFragment.class,
 
                 NewsHeadlineFragment.class,
                 RegionalNewsHeadlineFragment.class,
@@ -19,7 +18,10 @@ import javax.inject.Singleton;
                 LearningFragment.class,
 
                 RegionalNewsSelectorView.class,
-                RegionalNewsSearchableSelectorView.class
+                RegionalNewsSearchableSelectorView.class,
+
+                DiscoveryGameFragment.class,
+                MiniGameDefItemView.class,
         },
         library = true,
         complete = false

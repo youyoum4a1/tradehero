@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,8 +63,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -355,13 +355,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void displayActionBarTitle()
     {
-        if (providerDTO != null
-                && providerDTO.specificResources != null
-                && providerDTO.specificResources.mainCompetitionFragmentTitleResId > 0)
-        {
-            setActionBarTitle(providerDTO.specificResources.mainCompetitionFragmentTitleResId);
-        }
-        else if (this.providerDTO == null || this.providerDTO.name == null)
+        if (this.providerDTO == null || this.providerDTO.name == null)
         {
             setActionBarTitle("");
         }

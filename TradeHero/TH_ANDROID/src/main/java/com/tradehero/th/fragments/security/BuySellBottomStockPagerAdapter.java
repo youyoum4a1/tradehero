@@ -1,27 +1,31 @@
 package com.tradehero.th.fragments.security;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
+import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
 
-public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
+public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
 {
     public static final int FRAGMENT_ID_CHART = 0;
     public static final int FRAGMENT_ID_DISCUSS = 1;
     public static final int FRAGMENT_ID_NEWS = 2;
     private SecurityId securityId;
+    private Context context;
 
     //<editor-fold desc="Constructors">
-    public BuySellBottomStockPagerAdapter(FragmentManager fragmentManager)
+    public BuySellBottomStockPagerAdapter(Context context, FragmentManager fragmentManager)
     {
         super(fragmentManager);
+        this.context = context;
     }
     //</editor-fold>
 
@@ -33,6 +37,20 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     public void linkWith(SecurityId securityId)
     {
         this.securityId = securityId;
+    }
+
+    @Override public CharSequence getPageTitle(int position)
+    {
+        switch (position)
+        {
+            case FRAGMENT_ID_CHART:
+                return context.getString(R.string.security_info);
+            case FRAGMENT_ID_DISCUSS:
+                return context.getString(R.string.security_discussions);
+            case FRAGMENT_ID_NEWS:
+                return context.getString(R.string.security_news);
+        }
+        return super.getPageTitle(position);
     }
 
     @Override public int getCount()
@@ -92,10 +110,5 @@ public class BuySellBottomStockPagerAdapter extends FragmentStatePagerAdapter
     private void populateForNewsHeadlineFragment(Bundle args)
     {
         NewsHeadlineFragment.putSecurityId(args, securityId);
-    }
-
-    @Override public int getItemPosition(Object object)
-    {
-        return POSITION_NONE;
     }
 }

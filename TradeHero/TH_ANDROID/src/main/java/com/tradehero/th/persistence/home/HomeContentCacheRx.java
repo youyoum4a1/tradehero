@@ -1,6 +1,6 @@
 package com.tradehero.th.persistence.home;
 
-import android.util.Pair;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import retrofit.client.Header;
 import rx.Observable;
 
@@ -57,10 +56,5 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
                         return Observable.error(e);
                     }
                 });
-    }
-
-    @NonNull @Override public Observable<Pair<UserBaseKey, HomeContentDTO>> get(@NonNull UserBaseKey key)
-    {
-        return super.get(key);
     }
 }

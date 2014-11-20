@@ -11,7 +11,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
-import com.tradehero.th.models.user.DTOProcessorAddCash;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -100,27 +99,16 @@ import rx.Observable;
             PurchaseReportDTO purchaseReportDTO)
     {
         return this.portfolioServiceRx.resetPortfolio(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
-                .doOnNext(createUpdateProfileProcessor());
+                .map(createUpdateProfileProcessor());
     }
     //</editor-fold>
 
     //<editor-fold desc="Add Cash">
-    protected DTOProcessorAddCash createAddCashProcessor(OwnedPortfolioId ownedPortfolioId)
-    {
-        return new DTOProcessorAddCash(userProfileCache,
-                homeContentCache.get(),
-                portfolioCompactListCache.get(),
-                portfolioCompactCache.get(),
-                portfolioCache.get(),
-                ownedPortfolioId);
-    }
-
     @NonNull public Observable<UserProfileDTO> addCashRx(
             @NonNull OwnedPortfolioId ownedPortfolioId,
             PurchaseReportDTO purchaseReportDTO)
     {
-        return this.portfolioServiceRx.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO)
-                .doOnNext(createAddCashProcessor(ownedPortfolioId));
+        return this.portfolioServiceRx.addCash(ownedPortfolioId.userId, ownedPortfolioId.portfolioId, purchaseReportDTO);
     }
     //</editor-fold>
 

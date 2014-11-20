@@ -40,7 +40,6 @@ import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfileDeep;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
@@ -48,7 +47,6 @@ import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -71,12 +69,10 @@ import rx.functions.Func1;
     @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<HeroListCacheRx> heroListCache;
-    @NonNull private final Lazy<GetPositionsCacheRx> getPositionsCache;
     @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
     @NonNull private final Lazy<ProviderCacheRx> providerCache;
     @NonNull private final Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache;
     @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
-    @NonNull private final Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
@@ -87,13 +83,11 @@ import rx.functions.Func1;
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
-            @NonNull Lazy<GetPositionsCacheRx> getPositionsCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
             @NonNull Lazy<ProviderCacheRx> providerCache,
             @NonNull Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache,
             @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
-            @NonNull Lazy<HomeContentCacheRx> homeContentCache,
-            @NonNull Provider<DTOProcessorUpdateUserProfile> dtoProcessorUpdateUserProfileProvider)
+            @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.userService = userService;
         this.currentUserId = currentUserId;
@@ -101,14 +95,12 @@ import rx.functions.Func1;
         this.userProfileCache = userProfileCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
-        this.getPositionsCache = getPositionsCache;
         this.providerListCache = providerListCache;
         this.providerCache = providerCache;
         this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
         this.homeContentCache = homeContentCache;
-        this.dtoProcessorUpdateUserProfileProvider = dtoProcessorUpdateUserProfileProvider;
     }
     //</editor-fold>
 
@@ -331,9 +323,11 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @NonNull protected DTOProcessorUpdatePayPalEmail createUpdatePaypalEmailProcessor(@NonNull UserBaseKey userBaseKey)
+    @NonNull protected DTOProcessorUpdatePayPalEmail createUpdatePaypalEmailProcessor(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey);
+        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey, updatePayPalEmailFormDTO);
     }
 
     public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
@@ -341,14 +335,16 @@ import rx.functions.Func1;
             @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return userServiceRx.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO)
-                .doOnNext(createUpdatePaypalEmailProcessor(userBaseKey));
+                .map(createUpdatePaypalEmailProcessor(userBaseKey, updatePayPalEmailFormDTO));
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
-    @NonNull protected DTOProcessorUpdateAlipayAccount createUpdateAlipayAccountProcessor(@NonNull UserBaseKey playerId)
+    @NonNull protected DTOProcessorUpdateAlipayAccount createUpdateAlipayAccountProcessor(
+            @NonNull UserBaseKey playerId,
+            @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId);
+        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId, updateAlipayAccountFormDTO);
     }
 
     public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
@@ -356,7 +352,7 @@ import rx.functions.Func1;
             @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
         return userServiceRx.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO)
-                .doOnNext(createUpdateAlipayAccountProcessor(userBaseKey));
+                .map(createUpdateAlipayAccountProcessor(userBaseKey, updateAlipayAccountFormDTO));
     }
     //</editor-fold>
 
@@ -444,17 +440,14 @@ import rx.functions.Func1;
         return new DTOProcessorFollowFreeUserBatch(
                 userProfileCache.get(),
                 homeContentCache.get(),
-                heroListCache.get(),
-                getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
-                allowableRecipientPaginatedCache.get(),
                 batchFollowFormDTO);
     }
 
     @NonNull public Observable<UserProfileDTO> followBatchFreeRx(@NonNull BatchFollowFormDTO batchFollowFormDTO)
     {
         return userServiceRx.followBatchFree(batchFollowFormDTO)
-                .doOnNext(createBatchFollowFreeProcessor(batchFollowFormDTO));
+                .map(createBatchFollowFreeProcessor(batchFollowFormDTO));
     }
     //</editor-fold>
 
@@ -483,9 +476,7 @@ import rx.functions.Func1;
                 userProfileCache.get(),
                 homeContentCache.get(),
                 heroListCache.get(),
-                getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
-                allowableRecipientPaginatedCache.get(),
                 currentUserId.toUserBaseKey(),
                 heroId);
     }
@@ -508,16 +499,14 @@ import rx.functions.Func1;
                 userProfileCache.get(),
                 homeContentCache.get(),
                 heroListCache.get(),
-                getPositionsCache.get(),
                 userMessagingRelationshipCache.get(),
-                allowableRecipientPaginatedCache.get(),
                 currentUserId.toUserBaseKey(),
                 heroId);
     }
 
     public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.freeFollow(heroId.key).doOnNext(createFollowFreeUserProcessor(heroId));
+        return userServiceRx.freeFollow(heroId.key).map(createFollowFreeUserProcessor(heroId));
     }
     //</editor-fold>
 
@@ -555,7 +544,6 @@ import rx.functions.Func1;
         return new DTOProcessorUpdateCountryCode(
                 userProfileCache.get(),
                 providerListCache.get(),
-                providerCache.get(),
                 playerId,
                 updateCountryCodeFormDTO);
     }
@@ -565,7 +553,7 @@ import rx.functions.Func1;
             @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return userServiceRx.updateCountryCode(userKey.key, updateCountryCodeFormDTO)
-                .doOnNext(createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
+                .map(createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
     }
     //</editor-fold>
 
@@ -582,7 +570,7 @@ import rx.functions.Func1;
             @NonNull UpdateReferralCodeDTO updateReferralCodeDTO)
     {
         return userServiceRx.updateReferralCode(invitedUserId.key, updateReferralCodeDTO)
-                .doOnNext(createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
+                .map(createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
     }
     //</editor-fold>
 

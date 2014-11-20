@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.InputType;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -36,7 +38,8 @@ import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
 {
-    @InjectView(R.id.generic_ptr_list) protected PullToRefreshListView listView;
+    @InjectView(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @InjectView(R.id.generic_ptr_list) protected ListView listView;
     @InjectView(android.R.id.progress) protected ProgressBar emptyView;
 
     @Inject QuestBonusListCacheRx questBonusListCache;
@@ -59,16 +62,16 @@ public class QuestListTestingFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
+        swipeRefreshLayout.setEnabled(false);
         initAdapter();
         listView.setOnItemClickListener(this::onItemClick);
-        listView.getRefreshableView().addHeaderView(createHeaderView());
+        listView.addHeaderView(createHeaderView());
     }
 
     @SuppressWarnings("UnusedParameters")
     public void onItemClick(@SuppressWarnings("UnusedParameters") AdapterView<?> adapterView, View view, int i, long l)
     {
-        QuestBonusDTO questBonusDTO = list.get(i - listView.getRefreshableView().getHeaderViewsCount());
+        QuestBonusDTO questBonusDTO = list.get(i - listView.getHeaderViewsCount());
 
         MockQuestBonusId mockQuestBonusId = new MockQuestBonusId(questBonusDTO.level, Integer.parseInt(mXPEarned.getText().toString()),
                 (Integer.parseInt(mXPEarned.getText().toString()) + Integer.parseInt(mXPFrom.getText().toString())));

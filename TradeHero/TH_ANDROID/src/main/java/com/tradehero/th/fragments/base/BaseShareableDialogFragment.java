@@ -3,8 +3,11 @@ package com.tradehero.th.fragments.base;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 import butterknife.InjectView;
 import butterknife.InjectViews;
@@ -28,15 +31,12 @@ import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
 import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
-import com.tradehero.th.rx.view.CompoundButtonIsCheckedFunc1;
 import com.tradehero.th.rx.view.CompoundButtonSetCheckedAction1;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -247,7 +247,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                         }
                     }
                 })
-                .filter(new CompoundButtonIsCheckedFunc1())
+                .filter(CompoundButton::isChecked)
                 .doOnNext(new CompoundButtonSetCheckedAction1(false));
     }
 

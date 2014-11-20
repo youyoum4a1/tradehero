@@ -2,11 +2,13 @@ package com.tradehero.th.fragments.contestcenter;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,12 +34,10 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
 public abstract class ContestCenterBaseFragment extends DashboardFragment
@@ -48,7 +48,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @Inject ProviderUtil providerUtil;
 
     @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
-    @InjectView(android.R.id.list) StickyListHeadersListView contestListView;
+    @InjectView(android.R.id.list) ListView contestListView;
 
     protected Subscription providerListCacheSubscription;
     public ContestItemAdapter contestListAdapter;

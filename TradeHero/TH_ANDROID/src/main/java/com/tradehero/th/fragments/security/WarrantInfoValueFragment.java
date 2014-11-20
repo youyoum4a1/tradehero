@@ -180,12 +180,6 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (!isDetached() && mHelpVideoLink != null)
         {
             mHelpVideoLink.setVisibility(hasHelpVideo() ? View.VISIBLE : View.GONE);
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.helpVideoLinkBackgroundResId > 0)
-            {
-                mHelpVideoLink.setBackgroundResource(providerDTO.specificResources.helpVideoLinkBackgroundResId);
-            }
         }
     }
 
@@ -197,17 +191,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             {
                 mHelpVideoLink.setText(providerDTO.helpVideoText);
             }
-            if (providerDTO != null
-                    && providerDTO.specificResources != null
-                    && providerDTO.specificResources.helpVideoLinkTextColourResId > 0)
-            {
-                mHelpVideoLink.setTextColor(getResources().getColor(
-                        providerDTO.specificResources.helpVideoLinkTextColourResId));
-           }
-            else
-            {
-                mHelpVideoLink.setTextColor(getResources().getColor(R.color.black));
-            }
+            mHelpVideoLink.setTextColor(getResources().getColor(R.color.black));
         }
     }
 
