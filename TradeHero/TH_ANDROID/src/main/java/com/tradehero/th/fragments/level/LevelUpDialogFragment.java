@@ -69,7 +69,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         return new LevelDefId(bundle.getBundle(key));
     }
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);

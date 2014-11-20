@@ -136,7 +136,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private Callback mBadgeCallback;
     @Nullable Subscription levelDefSubscription;
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Achievement_Dialog);
