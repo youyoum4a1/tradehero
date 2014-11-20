@@ -352,7 +352,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
         }
         int count = value.unreadNotificationsCount;
         ABCLogger.d(" unreadNotificationsCount " + count);
-        if(count>=0){
+        if(count<=0){
             tvMeNotificationCount.setVisibility(View.GONE);
             return;
         }
