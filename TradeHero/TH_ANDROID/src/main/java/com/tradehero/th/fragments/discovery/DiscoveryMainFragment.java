@@ -24,12 +24,13 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-@Routable({"news","discussion", "academy"})
+@Routable({"news", "discussion", "academy"})
 public class DiscoveryMainFragment extends DashboardFragment
 {
     @Inject Lazy<DashboardNavigator> navigator;
@@ -70,22 +71,24 @@ public class DiscoveryMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setViewPager(tabViewPager);
         beginTime = System.currentTimeMillis();
         oldPageItem = 0;
-        pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
             @Override
-            public void onPageScrolled(int i, float v, int i2) {
-
+            public void onPageScrolled(int i, float v, int i2)
+            {
             }
 
             @Override
-            public void onPageSelected(int i) {
+            public void onPageSelected(int i)
+            {
                 reportAnalytics();
                 beginTime = System.currentTimeMillis();
                 oldPageItem = i;
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) {
-
+            public void onPageScrollStateChanged(int i)
+            {
             }
         });
     }
@@ -120,36 +123,20 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     private void reportAnalytics()
     {
-        long duration = (System.currentTimeMillis()-beginTime)/1000;
-        String s = AnalyticsConstants.Time10M;
-        if (duration <= 10)
+        AnalyticsDuration duration = AnalyticsDuration.sinceTimeMillis(beginTime);
+        if (oldPageItem == 0)
         {
-            s = AnalyticsConstants.Time1T10S;
-        }
-        else if (duration <= 30)
-        {
-            s = AnalyticsConstants.Time11T30S;
-        }
-        else if (duration <= 60)
-        {
-            s = AnalyticsConstants.Time31T60S;
-        }
-        else if (duration <= 180)
-        {
-            s = AnalyticsConstants.Time1T3M;
-        }
-        else if (duration <= 600)
-        {
-            s = AnalyticsConstants.Time3T10M;
-        }
-        if (oldPageItem == 0){
-            analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverNewsViewed,
-                    AnalyticsConstants.TimeOnScreen, s));
+            analytics.fireEvent(new SingleAttributeEvent(
+                    AnalyticsConstants.DiscoverNewsViewed,
+                    AnalyticsConstants.TimeOnScreen,
+                    duration.toString()));
         }
         else if (oldPageItem == 1)
         {
-            analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverDiscussionsViewed,
-                    AnalyticsConstants.TimeOnScreen, s));
+            analytics.fireEvent(new SingleAttributeEvent(
+                    AnalyticsConstants.DiscoverDiscussionsViewed,
+                    AnalyticsConstants.TimeOnScreen,
+                    duration.toString()));
         }
     }
 
