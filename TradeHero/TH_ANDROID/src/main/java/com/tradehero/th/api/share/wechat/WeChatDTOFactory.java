@@ -8,6 +8,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
+import com.tradehero.th.api.social.ReferralCodeDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
@@ -27,9 +28,13 @@ public class WeChatDTOFactory
         {
             return createFrom((AbstractDiscussionCompactDTO) whatToShare);
         }
-        if (whatToShare instanceof UserAchievementDTO)
+        else if (whatToShare instanceof UserAchievementDTO)
         {
             return createFrom(context, (UserAchievementDTO) whatToShare);
+        }
+        else if (whatToShare instanceof ReferralCodeDTO)
+        {
+            return createFrom(context, (ReferralCodeDTO) whatToShare);
         }
         throw new IllegalArgumentException("Unknown element to share " + whatToShare);
     }
@@ -83,7 +88,7 @@ public class WeChatDTOFactory
     protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull UserAchievementDTO userAchievementDTO)
     {
         weChatDTO.id = userAchievementDTO.id;
-        if(userAchievementDTO.achievementDef.isQuest)
+        if (userAchievementDTO.achievementDef.isQuest)
         {
             weChatDTO.type = WeChatMessageType.QuestBonus;
             weChatDTO.title = context.getString(R.string.share_to_wechat_quest_bonus_text, userAchievementDTO.achievementDef.thName);
@@ -94,5 +99,19 @@ public class WeChatDTOFactory
             weChatDTO.title = context.getString(R.string.share_to_wechat_achievement_text, userAchievementDTO.achievementDef.thName);
         }
         weChatDTO.imageURL = userAchievementDTO.achievementDef.visual;
+    }
+
+    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull ReferralCodeDTO referralCodeDTO)
+    {
+        WeChatDTO weChatDTO = new WeChatDTO();
+        populateWith(context, weChatDTO, referralCodeDTO);
+        return weChatDTO;
+    }
+
+    protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull ReferralCodeDTO referralCodeDTO)
+    {
+        weChatDTO.id = 0;
+        weChatDTO.type = WeChatMessageType.Invite;
+        weChatDTO.title = context.getString(WeChatMessageType.Invite.getTitleResId(), referralCodeDTO.referralCode);
     }
 }

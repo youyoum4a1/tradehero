@@ -156,7 +156,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     @OnClick(R.id.btn_referral_share)
     protected void shareToSocialNetwork(View view)
     {
-        socialShareHelper.share(new ReferralCodeDTO());
+        socialShareHelper.share(new ReferralCodeDTO(userProfileDTO.referralCode));
     }
 
     @NonNull protected SocialShareHelper.OnMenuClickedListener createShareMenuListener()
