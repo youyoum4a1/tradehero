@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -63,6 +64,12 @@ public interface ProviderServiceRx
     //<editor-fold desc="Get Cells">
     @GET("/providers/{providerId}/displaycells")
     Observable<ProviderDisplayCellDTOList> getDisplayCells(
+            @Path("providerId") int providerId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Cells">
+    @GET("/providers/{providerId}/preSeason")
+    Observable<CompetitionPreSeasonDTO> getPreseasonDetails(
             @Path("providerId") int providerId);
     //</editor-fold>
 }

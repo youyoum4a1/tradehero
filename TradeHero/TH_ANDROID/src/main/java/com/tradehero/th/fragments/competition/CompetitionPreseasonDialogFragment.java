@@ -8,14 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
@@ -33,14 +38,18 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     @Inject Picasso picasso;
     @Inject ProviderCacheRx providerCacheRx;
+    @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
+    @Inject DashboardNavigator navigator;
 
     @InjectView(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
     @InjectView(R.id.preseason_title_image) ImageView imgTitle;
     @InjectView(R.id.preseason_prize_image) ImageView imgPrize;
     @InjectView(R.id.preseason_prize_description) MarkdownTextView textDescription;
+    @InjectView(R.id.preseason_prize_title) TextView textTitle;
 
     private ProviderId providerId;
     private ProviderDTO providerDTO;
+    private CompetitionPreSeasonDTO competitionPreSeasonDTO;
 
     public static CompetitionPreseasonDialogFragment newInstance(ProviderId providerId)
     {
@@ -88,7 +97,12 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @OnClick(R.id.preseason_prize_tncs)
     public void onTncsClicked()
     {
-        //TODO
+        if (competitionPreSeasonDTO.tncUrl != null)
+        {
+            Bundle b = new Bundle();
+            WebViewFragment.putUrl(b, competitionPreSeasonDTO.tncUrl);
+            navigator.pushFragment(WebViewFragment.class, b);
+        }
     }
 
     private void getProviderIdFromArgs()
@@ -126,14 +140,32 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
                     @Override public void onNext(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair)
                     {
-                        linkAndInitViews(providerIdProviderDTOPair.second);
+                        linkAndShowLogo(providerIdProviderDTOPair.second);
+                    }
+                });
+        AndroidObservable.bindFragment(this, competitionPreseasonCacheRx.get(providerId))
+                .subscribe(new Subscriber<Pair<ProviderId, CompetitionPreSeasonDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+
+                    }
+
+                    @Override public void onNext(Pair<ProviderId, CompetitionPreSeasonDTO> providerIdCompetitionPreSeasonDTOPair)
+                    {
+                        linkAndInitViews(providerIdCompetitionPreSeasonDTOPair.second);
                     }
                 });
     }
 
     private void showLoadingDialog()
     {
-        if(viewFlipper.getDisplayedChild() != LOADING_VIEW_INDEX)
+        if (viewFlipper.getDisplayedChild() != LOADING_VIEW_INDEX)
         {
             viewFlipper.setDisplayedChild(LOADING_VIEW_INDEX);
         }
@@ -141,19 +173,34 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void showContent()
     {
-        if(viewFlipper.getDisplayedChild() != CONTENT_VIEW_INDEX)
+        if (viewFlipper.getDisplayedChild() != CONTENT_VIEW_INDEX)
         {
             viewFlipper.setDisplayedChild(CONTENT_VIEW_INDEX);
         }
     }
 
-    private void linkAndInitViews(ProviderDTO providerDTO)
+    private void linkAndShowLogo(ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        showContent();
         if (providerDTO.navigationLogoUrl != null)
         {
-            picasso.load(providerDTO.navigationLogoUrl).into(imgTitle);
+            picasso.load(providerDTO.navigationLogoUrl)
+                    .into(imgTitle);
         }
+    }
+
+    private void linkAndInitViews(CompetitionPreSeasonDTO competitionPreSeasonDTO)
+    {
+        this.competitionPreSeasonDTO = competitionPreSeasonDTO;
+        showContent();
+        if (competitionPreSeasonDTO.prizeImageUrl != null)
+        {
+            picasso.load(competitionPreSeasonDTO.prizeImageUrl)
+                    .fit()
+                    .centerInside()
+                    .into(imgPrize);
+        }
+        textDescription.setText(competitionPreSeasonDTO.content);
+        textTitle.setText(competitionPreSeasonDTO.headline);
     }
 }

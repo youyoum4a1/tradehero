@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -186,6 +187,11 @@ import rx.Observable;
     public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getDisplayCells(providerId.key);
+    }
+
+    public Observable<CompetitionPreSeasonDTO> getPreseasonDetails(@NonNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getPreseasonDetails(providerId.key);
     }
     //</editor-fold>
 }
