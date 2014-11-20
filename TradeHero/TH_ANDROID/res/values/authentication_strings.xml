@@ -58,7 +58,7 @@
   <string name="authentication_connecting_to_qq">Connecting to QQ</string>
   <string name="wechat">WeChat</string>
   <string name="authentication_connecting_to_wechat">Connecting to WeChat</string>
-  <string name="wechat_login_in">Register with WeChat</string>
+  <string name="wechat_login_in">WeChat Account</string>
   <string name="email">Email</string>
   <string name="email_login_in">Login with Email</string>
   <string name="email_register">Register with Email</string>

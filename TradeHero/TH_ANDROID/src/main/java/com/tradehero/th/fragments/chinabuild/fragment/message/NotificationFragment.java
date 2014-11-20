@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.notification.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
@@ -359,27 +360,40 @@ public class NotificationFragment extends DashboardFragment
     }
 
     private void jumpToTarget(NotificationDTO dto){
-        if(dto.replyableTypeId == null || dto.replyableId == null){
-            return;
+        if(dto.replyableTypeId != null && dto.replyableId != null){
+            int replyableId = dto.replyableId;
+            if(dto.replyableTypeId == 1){
+                jumpTimeLine(replyableId, DiscussionType.COMMENT);
+                return;
+            }
+            if(dto.replyableTypeId == 2){
+                jumpTimeLine(replyableId, DiscussionType.TIMELINE_ITEM);
+                return;
+            }
         }
-        if(dto.replyableTypeId == 1){
-            jump(dto, DiscussionType.COMMENT);
-            return;
+        if(dto.pushTypeId !=null && dto.referencedUserId!=null){
+            if(dto.pushTypeId == 18){
+                jumpUserPage(dto.referencedUserId);
+                return;
+            }
         }
-        if(dto.replyableTypeId == 2){
-            jump(dto, DiscussionType.TIMELINE_ITEM);
-            return;
-        }
+
     }
 
-    private void jump(NotificationDTO dto, DiscussionType type){
+    private void jumpTimeLine(int replyableId, DiscussionType type){
         Bundle bundle = new Bundle();
         Bundle discussBundle = new Bundle();
         discussBundle.putString(DiscussionKey.BUNDLE_KEY_TYPE, type.name());
-        discussBundle.putInt(DiscussionKey.BUNDLE_KEY_ID, dto.replyableId);
+        discussBundle.putInt(DiscussionKey.BUNDLE_KEY_ID, replyableId);
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, discussBundle);
         pushFragment(TimeLineItemDetailFragment.class, bundle);
         return;
+    }
+
+    private void jumpUserPage(int referencedUserId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, referencedUserId);
+        pushFragment(UserMainPage.class, bundle);
     }
 
 }

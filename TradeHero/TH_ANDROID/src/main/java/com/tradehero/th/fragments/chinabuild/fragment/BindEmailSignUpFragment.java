@@ -195,7 +195,17 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
                 // HACK
                 if (!AnalyticsConstants.LOGIN_USER_ACCOUNT.equals(providerName))
                 {
-                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), providerName));
+                    if(getActivity() == null){
+                        return false;
+                    }
+                    String thirdPartyName = providerName;
+                    if(providerName.equals(AnalyticsConstants.BUTTON_LOGIN_WECHAT)){
+                        thirdPartyName = getActivity().getResources().getString(R.string.sign_in_wechat);
+                    }
+                    if(providerName.equals(AnalyticsConstants.BUTTON_LOGIN_WEIBO)){
+                        thirdPartyName = getActivity().getResources().getString(R.string.sign_in_weibo);
+                    }
+                    progressDialog.setMessage(String.format(getString(R.string.authentication_connecting_tradehero), thirdPartyName));
                 }
                 else
                 {
