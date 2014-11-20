@@ -144,17 +144,17 @@ public class BuySaleSecurityFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(getSecurityName());
         setHeadViewMiddleSub(getSecurityId().getDisplayName());
-        if (isNeedShowMore)
-        {
-            setHeadViewRight0("持仓明细");
-        }
+        //if (isNeedShowMore)
+        //{
+        //    setHeadViewRight0("持仓明细");
+        //}
     }
 
-    @Override public void onClickHeadRight0()
-    {
-        Timber.d("持仓明细");
-        enterSecurity(getSecurityId(), getSecurityName());
-    }
+    //@Override public void onClickHeadRight0()
+    //{
+    //    Timber.d("持仓明细");
+    //    enterSecurity(getSecurityId(), getSecurityName());
+    //}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

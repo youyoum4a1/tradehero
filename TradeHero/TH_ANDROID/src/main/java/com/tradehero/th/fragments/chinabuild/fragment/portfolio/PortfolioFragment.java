@@ -33,7 +33,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
-import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
@@ -231,21 +230,21 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            if(((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE && portfolio_type == PORTFOLIO_TYPE_MINE)
+            if(portfolio_type == PORTFOLIO_TYPE_MINE)
             {
-                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+                enterSecurityToSecurityDetail(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,((SecurityPositionItem) item).position);
             }
             else
             {
-                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
+                enterSecurityToPortfolio(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
                         ((SecurityPositionItem) item).position);
             }
         }
-        else if (item instanceof WatchPositionItem)
-        {
-            enterSecurity(((WatchPositionItem) item).watchlistPosition.securityDTO.getSecurityId(),
-                    ((WatchPositionItem) item).watchlistPosition.securityDTO.name);
-        }
+        //else if (item instanceof WatchPositionItem)
+        //{
+        //    enterSecurity(((WatchPositionItem) item).watchlistPosition.securityDTO.getSecurityId(),
+        //            ((WatchPositionItem) item).watchlistPosition.securityDTO.name);
+        //}
         else if (item instanceof PositionLockedItem)
         {
             Timber.d("Clicked follow user!!!");
@@ -311,14 +310,14 @@ public class PortfolioFragment extends DashboardFragment
         pushFragment(UserMainPage.class, bundle);
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
-        pushFragment(SecurityDetailFragment.class, bundle);
-    }
+    //public void enterSecurity(SecurityId securityId, String securityName)
+    //{
+    //    Bundle bundle = new Bundle();
+    //    bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    //    bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+    //    bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
+    //    pushFragment(SecurityDetailFragment.class, bundle);
+    //}
 
     public void setPortfolioInfo(int user_id, int porfolio_id)
     {
@@ -326,7 +325,22 @@ public class PortfolioFragment extends DashboardFragment
         this.portfolio_id = porfolio_id;
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO)
+    public void enterSecurityToSecurityDetail(SecurityId securityId, String securityName, PositionDTO positionDTO)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
+        SecurityDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
+        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(user_id, portfolio_id);
+        if (ownedPortfolioId != null)
+        {
+            SecurityDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
+        }
+        pushFragment(SecurityDetailFragment.class, bundle);
+    }
+
+    public void enterSecurityToPortfolio(SecurityId securityId, String securityName, PositionDTO positionDTO)
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
@@ -339,7 +353,6 @@ public class PortfolioFragment extends DashboardFragment
             PositionDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
         }
         pushFragment(PositionDetailFragment.class, bundle);
-        //pushFragment(SecurityDetailFragment.class, bundle);
     }
 
     @Override public void onStop()
