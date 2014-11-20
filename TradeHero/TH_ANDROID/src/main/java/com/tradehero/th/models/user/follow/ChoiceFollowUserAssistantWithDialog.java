@@ -15,7 +15,7 @@ import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import rx.Observer;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
@@ -87,63 +87,29 @@ public class ChoiceFollowUserAssistantWithDialog
     public void launchChoice()
     {
         unsubscribe(currentUserProfileSubscription);
-        currentUserProfileSubscription = AndroidObservable.bindActivity(
+        currentUserProfileSubscription =
+                AndroidObservable.bindActivity(
+                        activity,
+                        Observable.zip(
+                                userProfileCache.get(currentUserId.toUserBaseKey())
+                                        .map(pair -> pair.second),
+                                userProfileCache.get(heroId)
+                                        .map(pair -> pair.second),
+                                Pair::create)
+                                .take(1))
+                        .subscribe(
+                                this::launchFollowChoice,
+                                e -> followUserAssistant.notifyFollowFailed(heroId, e));
+    }
+
+    protected void launchFollowChoice(@NonNull Pair<UserProfileDTO, UserProfileDTO> currentAndHeroPair)
+    {
+        detachFollowDialogCombo();
+        followDialogCombo = heroAlertDialogUtil.showFollowDialog(
                 activity,
-                userProfileCache.get(currentUserId.toUserBaseKey())
-                        .take(1))
-                .subscribe(createUserProfileCacheObserver());
-        if (heroBaseInfo == null)
-        {
-            unsubscribe(heroSubscription);
-            heroSubscription = AndroidObservable.bindActivity(
-                    activity,
-                    userProfileCache.get(heroId)
-                            .take(1))
-                    .subscribe(createUserProfileCacheObserver());
-        }
-    }
-
-    @NonNull Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new UserProfileCacheObserver();
-    }
-
-    protected class UserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            if (pair.first.equals(heroId))
-            {
-                heroBaseInfo = pair.second;
-            }
-            else
-            {
-                currentUserProfile = pair.second;
-            }
-            launchFollowChoice();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            followUserAssistant.notifyFollowFailed(heroId, e);
-        }
-    }
-
-    protected void launchFollowChoice()
-    {
-        if (heroBaseInfo != null && currentUserProfile != null)
-        {
-            detachFollowDialogCombo();
-            followDialogCombo = heroAlertDialogUtil.showFollowDialog(
-                    activity,
-                    heroBaseInfo,
-                    currentUserProfile.getFollowType(heroId),
-                    this);
-        }
+                currentAndHeroPair.second,
+                currentAndHeroPair.first.getFollowType(heroId),
+                this);
     }
 
     @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
