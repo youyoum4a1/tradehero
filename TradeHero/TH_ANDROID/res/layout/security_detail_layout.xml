@@ -35,7 +35,7 @@
       android:layout_height="fill_parent"
       android:orientation="vertical"
       android:layout_above="@id/bvaViewAll">
-    <com.viewpagerindicator.CirclePageIndicator
+    <com.viewpagerindicator.SquarePageIndicator
         android:id="@+id/indicator"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
