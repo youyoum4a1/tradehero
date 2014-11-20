@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -101,6 +102,19 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
             {
                 CompetitionZoneDisplayCellDTO displayCellDTO = (CompetitionZoneDisplayCellDTO) competitionZoneDTO;
                 String iconUrl = displayCellDTO.getIconUrl();
+                if (iconUrl != null && !iconUrl.isEmpty())
+                {
+                    picasso.cancelRequest(zoneIcon);
+                    picasso.load(iconUrl)
+                            .fit()
+                            .centerInside()
+                            .into(zoneIcon);
+                }
+            }
+            else if (competitionZoneDTO instanceof CompetitionZonePreSeasonDTO)
+            {
+                CompetitionZonePreSeasonDTO preSeasonDTO = (CompetitionZonePreSeasonDTO) competitionZoneDTO;
+                String iconUrl = preSeasonDTO.iconUrl;
                 if (iconUrl != null && !iconUrl.isEmpty())
                 {
                     picasso.cancelRequest(zoneIcon);

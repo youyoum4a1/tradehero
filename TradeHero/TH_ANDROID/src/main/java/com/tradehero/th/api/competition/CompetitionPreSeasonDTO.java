@@ -1,17 +1,19 @@
 package com.tradehero.th.api.competition;
 
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.common.persistence.DTO;
 
-public class CompetitionPreSeasonDTO extends CompetitionZoneDTO
+public class CompetitionPreSeasonDTO implements DTO
 {
     public int providerId;
+    public String title;
+    public String description;
     public String headline;
     public String content;
     public String tncUrl;
     public String prizeImageUrl;
 
-    public CompetitionPreSeasonDTO(String title, String description)
+    public CompetitionPreSeasonDTO()
     {
-        super(title, description);
+        super();
     }
 }
