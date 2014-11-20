@@ -35,6 +35,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     private static final String KEY_PROVIDER_ID = CompetitionPreseasonDialogFragment.class.getName() + ".providerId";
     private static final int CONTENT_VIEW_INDEX = 0;
     private static final int LOADING_VIEW_INDEX = 1;
+    private static final int ERROR_VIEW_INDEX = 2;
 
     @Inject Picasso picasso;
     @Inject ProviderCacheRx providerCacheRx;
@@ -153,7 +154,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
                     @Override public void onError(Throwable e)
                     {
-
+                        showError();
+                        Timber.e(e, "Error loading preseason for providerId %d", providerId.key);
                     }
 
                     @Override public void onNext(Pair<ProviderId, CompetitionPreSeasonDTO> providerIdCompetitionPreSeasonDTOPair)
@@ -165,17 +167,24 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void showLoadingDialog()
     {
-        if (viewFlipper.getDisplayedChild() != LOADING_VIEW_INDEX)
-        {
-            viewFlipper.setDisplayedChild(LOADING_VIEW_INDEX);
-        }
+        showViewAtIndex(LOADING_VIEW_INDEX);
     }
 
     private void showContent()
     {
-        if (viewFlipper.getDisplayedChild() != CONTENT_VIEW_INDEX)
+        showViewAtIndex(CONTENT_VIEW_INDEX);
+    }
+
+    private void showError()
+    {
+        showViewAtIndex(ERROR_VIEW_INDEX);
+    }
+
+    private void showViewAtIndex(int index)
+    {
+        if (viewFlipper.getDisplayedChild() != index)
         {
-            viewFlipper.setDisplayedChild(CONTENT_VIEW_INDEX);
+            viewFlipper.setDisplayedChild(index);
         }
     }
 

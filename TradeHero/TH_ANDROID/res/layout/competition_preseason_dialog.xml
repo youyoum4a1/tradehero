@@ -24,7 +24,6 @@
         android:layout_centerInParent="true"
         >
 
-
       <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -109,6 +108,14 @@
           android:layout_gravity="center"
           />
 
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_gravity="center"
+          style="@style/TH.Loading_Error_Text"
+          android:text="@string/preseason_error_message"
+          />
     </ViewFlipper>
 
 

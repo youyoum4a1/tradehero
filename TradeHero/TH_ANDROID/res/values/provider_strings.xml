@@ -47,5 +47,6 @@
   <string name="share_now">Share Now!</string>
   <string name="tncs_apply">Terms and conditions apply</string>
   <string name="preseason_giveaway">Pre-season Giveaway</string>
+  <string name="preseason_error_message">There\'s an error in fetching pre-season details.</string>
 
 </resources>
