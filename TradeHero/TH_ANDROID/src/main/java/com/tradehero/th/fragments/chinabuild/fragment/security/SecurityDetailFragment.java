@@ -125,7 +125,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
-import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -226,7 +226,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.llSecuritySale) RelativeLayout llSecuritySale;//出售
     @InjectView(R.id.llSecurityDiscuss) RelativeLayout llSecurityDiscuss;//讨论
     @InjectView(R.id.pager) ViewPager pager;
-    @InjectView(R.id.indicator) CirclePageIndicator indicator;
+    @InjectView(R.id.indicator) SquarePageIndicator indicator;
     private List<View> views = new ArrayList<View>();
 
     private Button[] btnChart;
