@@ -278,18 +278,19 @@ public class AlertDialogUtil
 
     public void showProgressDialog(final Context context, @Nullable String content)
     {
-        if(context ==null){
-            return;
-        }
-        if (mProgressDialog != null)
-        {
-            mProgressDialog.dismiss();
-        }
-        mProgressDialog = new ProgressDialog(context);
-        mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.setMessage(content);
-        mProgressDialog.show();
+            if (context == null)
+            {
+                return;
+            }
+            if (mProgressDialog != null)
+            {
+                mProgressDialog.dismiss();
+            }
+            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.setMessage(content);
+            mProgressDialog.show();
     }
 
     public void dismissProgressDialog()

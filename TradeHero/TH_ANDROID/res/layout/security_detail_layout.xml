@@ -7,17 +7,6 @@
     android:layout_height="fill_parent"
     android:background="@color/bg_fragment"
     >
-
-  <include
-      android:layout_marginLeft="10dp"
-      android:layout_marginRight="10dp"
-      android:id="@+id/ic_info_data"
-      android:layout_marginTop="10dp"
-      android:layout_width="fill_parent"
-      android:layout_height="72dp"
-      layout="@layout/security_info_data"/>
-
-
   <com.tradehero.common.widget.BetterViewAnimator
       android:id="@+id/bvaViewAll"
       android:layout_width="fill_parent"
@@ -41,76 +30,24 @@
   </com.tradehero.common.widget.BetterViewAnimator>
 
 
-  <ScrollView android:layout_width="fill_parent"
-      android:layout_above="@id/bvaViewAll"
-      android:layout_below="@id/ic_info_data"
-      android:layout_height="fill_parent" android:fillViewport="false">
-
-    <LinearLayout
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:orientation="vertical"
+      android:layout_above="@id/bvaViewAll">
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/indicator"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_centerHorizontal="true"
+        />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical">
-
-
-      <include
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          android:layout_marginTop="10dp"
-          android:id="@+id/ic_info_chart"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/ic_info_data"
-          layout="@layout/security_info_chart"/>
-
-      <LinearLayout
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent"
-          android:layout_marginLeft="10dp"
-          android:layout_marginRight="10dp"
-          android:layout_below="@id/ic_info_chart"
-          android:layout_above="@id/ic_info_buy_sale_btns"
-          android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="32dp">
-          <Button
-              android:id="@+id/btnTabDiscuss"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:text="讨论"
-              android:textColor="@color/black"
-              android:textSize="15sp"
-              android:background="@drawable/tab_blue_head_active"
-              android:layout_weight="1"/>
-          <Button
-              android:id="@+id/btnTabNews"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:text="资讯"
-              android:textColor="@color/black"
-              android:textSize="15sp"
-              android:background="@drawable/tab_blue_head_xml"
-              android:layout_weight="1"/>
-
-        </LinearLayout>
-
-        <include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>
-        <include layout="@layout/separate_line"/>
-        <TextView
-            android:id="@+id/tvSecurityDiscussOrNewsMore"
-            android:background="@drawable/listview_item_selector"
-            android:layout_width="fill_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="@string/click_to_get_more"/>
-      </LinearLayout>
-    </LinearLayout>
-
-  </ScrollView>
+        />
+  </LinearLayout>
 </RelativeLayout>
 

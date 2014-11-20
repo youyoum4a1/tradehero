@@ -3,7 +3,6 @@ package com.tradehero.th.api.position;
 import android.os.Bundle;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 public class PositionDTOKeyFactory
 {
@@ -14,7 +13,7 @@ public class PositionDTOKeyFactory
     }
     //</editor-fold>
 
-    @NotNull public PositionDTOKey createFrom(@NotNull Bundle args)
+    public PositionDTOKey createFrom(Bundle args)
     {
         if (OwnedPositionId.isOwnedPositionId(args))
         {
@@ -24,6 +23,6 @@ public class PositionDTOKeyFactory
         {
             return new OwnedLeaderboardPositionId(args);
         }
-        throw new IllegalArgumentException("Bundle does not contain a PositionDTOKey");
+        return null;
     }
 }

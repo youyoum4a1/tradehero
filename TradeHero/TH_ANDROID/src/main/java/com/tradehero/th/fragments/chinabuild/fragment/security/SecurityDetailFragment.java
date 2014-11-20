@@ -5,18 +5,25 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import butterknife.Optional;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
@@ -27,8 +34,13 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.*;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -40,8 +52,11 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
+import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOKeyFactory;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -51,6 +66,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormWeiboDTO;
+import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -68,6 +84,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragmen
 import com.tradehero.th.fragments.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.security.ChartImageView;
 import com.tradehero.th.fragments.trade.FreshQuoteHolder;
 import com.tradehero.th.misc.callback.THCallback;
@@ -89,12 +106,16 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheNew;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
+import com.tradehero.th.persistence.position.PositionCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
+import com.tradehero.th.persistence.security.SecurityIdCache;
+import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.NumberDisplayUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
@@ -103,7 +124,12 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.MarkdownTextView;
+import com.tradehero.th.widget.TradeHeroProgressBar;
+import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -111,12 +137,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-import javax.inject.Inject;
-
 /**
  * Created by huhaiping on 14-9-1.
  */
-public class SecurityDetailFragment extends BasePurchaseManagerFragment implements DiscussionListCacheNew.DiscussionKeyListListener
+public class SecurityDetailFragment extends BasePurchaseManagerFragment
+        implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
     public final static String BUNDLE_KEY_SECURITY_NAME = SecurityDetailFragment.class.getName() + ".securityName";
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".securityId";
@@ -125,12 +150,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
 
+    @Inject Analytics analytics;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     private MiddleCallback<DiscussionDTO> voteCallback;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCache userProfileCacheA;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -166,44 +191,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     protected PortfolioCompactDTO portfolioCompactDTO;
     @Inject PortfolioCompactCache portfolioCompactCache;
 
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
-    private ProgressDialog progressBar;
-    @Inject ProgressDialogUtil progressDialogUtil;
-
-    private Button[] btnChart;
-    @InjectView(R.id.btnTabChart0) Button btnChart0;
-    @InjectView(R.id.btnTabChart1) Button btnChart1;
-    @InjectView(R.id.btnTabChart2) Button btnChart2;
-    @InjectView(R.id.btnTabChart3) Button btnChart3;
-    private int indexChart = -1;
-
-    private Button[] btnDiscussOrNews;
-    @InjectView(R.id.btnTabDiscuss) Button btnDiscuss;
-    @InjectView(R.id.btnTabNews) Button btnNews;
-    private int indexDiscussOrNews = -1;
-
-    @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
-    @InjectView(R.id.chart_imageView) protected ChartImageView chartImage;
-    @InjectView(R.id.chart_loading) protected TextView tvLoadingChart;
-    @InjectView(R.id.tvSecurityDiscussOrNewsMore) protected TextView tvSecurityDiscussOrNewsMore;
-
-    @InjectView(R.id.tvSecurityDetailPrice) TextView tvSecurityPrice;//当前价格
-    @InjectView(R.id.tvSecurityDetailRate) TextView tvSecurityDetailRate;//涨跌幅
-    @InjectView(R.id.tvSecurityDetailNum) TextView tvSecurityDetailNum;//涨跌值
-    @InjectView(R.id.tvSecurityDetailNumHead) TextView tvSecurityDetailNumHead;//涨跌值的符号占位
-    @InjectView(R.id.tvInfo0Value) TextView tvInfo0Value;//最高
-    @InjectView(R.id.tvInfo1Value) TextView tvInfo1Value;//最低
-    @InjectView(R.id.tvInfo2Value) TextView tvInfo2Value;//成交量
-    @InjectView(R.id.tvInfo3Value) TextView tvInfo3Value;//平均量
-
-    @InjectView(R.id.progress) ProgressBar progress;
-    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout llBuySaleButtons;//购买卖出栏
-
-    @InjectView(R.id.llSecurityBuy) RelativeLayout llSecurityBuy;//购买
-    @InjectView(R.id.llSecuritySale) RelativeLayout llSecuritySale;//出售
-    @InjectView(R.id.llSecurityDiscuss) RelativeLayout llSecurityDiscuss;//讨论
-
     private boolean isAddWatchSheetOpen = false;
     private boolean isInWatchList = false;//是否是自选股
     private String securityName;
@@ -213,36 +200,85 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
     @Nullable private MiddleCallback<WatchlistPositionDTO> middleCallbackDelete;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<WatchlistPositionCache> watchlistPositionCache;
-
-    public int competitionID;
-
     @Inject DiscussionCache discussionCache;
     @Inject DiscussionListCacheNew discussionListCache;
     private PaginatedDiscussionListKey discussionListKey;
     private NewsItemListKey listKey;
     @Inject NewsItemCompactListCacheNew newsTitleCache;
     @Nullable private DTOCacheNew.Listener<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> newsCacheListener;
-
-    @InjectView(R.id.llDisscurssOrNews) LinearLayout llDisscurssOrNews;
-    @InjectView(R.id.imgSecurityTLUserHeader) ImageView imgSecurityTLUserHeader;
-    @InjectView(R.id.tvUserTLTimeStamp) TextView tvUserTLTimeStamp;
-    @InjectView(R.id.tvUserTLContent) TextView tvUserTLContent;
-    @InjectView(R.id.tvUserTLName) TextView tvUserTLName;
-    @InjectView(R.id.llTLPraise) LinearLayout llTLPraise;
-    @InjectView(R.id.llTLComment) LinearLayout llTLComment;
-    @InjectView(R.id.llTLShare) LinearLayout llTLShare;
-    @InjectView(R.id.tvTLPraise) TextView tvTLPraise;
-    @InjectView(R.id.btnTLPraise) TextView btnTLPraise;
-    @InjectView(R.id.tvTLComment) TextView tvTLComment;
-    @InjectView(R.id.tvTLShare) TextView tvTLShare;
-    @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout bottomBarLL;
-
     @Inject public Lazy<PrettyTime> prettyTime;
-    AbstractDiscussionCompactDTO dtoDiscuss;
-    AbstractDiscussionCompactDTO dtoNews;
-
+    private AbstractDiscussionCompactDTO dtoDiscuss;
+    private AbstractDiscussionCompactDTO dtoNews;
     private Dialog mShareSheetDialog;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
+    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionCacheFetchListener;
+    private ProgressDialog progressBar;
+    @Inject ProgressDialogUtil progressDialogUtil;
+    public int competitionID;
+    private int indexChart = -1;
+    private int indexDiscussOrNews = -1;
+
+    //Security Detail Tab Start
+    @InjectView(R.id.progress) ProgressBar progress;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.ic_info_buy_sale_btns) LinearLayout llBuySaleButtons;//购买卖出栏
+    @InjectView(R.id.llSecurityBuy) RelativeLayout llSecurityBuy;//购买
+    @InjectView(R.id.llSecuritySale) RelativeLayout llSecuritySale;//出售
+    @InjectView(R.id.llSecurityDiscuss) RelativeLayout llSecurityDiscuss;//讨论
+    @InjectView(R.id.pager) ViewPager pager;
+    @InjectView(R.id.indicator) CirclePageIndicator indicator;
+    private List<View> views = new ArrayList<View>();
+
+    private Button[] btnChart;
+    Button btnChart0;
+    Button btnChart1;
+    Button btnChart2;
+    Button btnChart3;
+
+    private Button[] btnDiscussOrNews;
+    Button btnDiscuss;
+    Button btnNews;
+
+    protected BetterViewAnimator chartImageWrapper;
+    protected ChartImageView chartImage;
+    protected TextView tvLoadingChart;
+    protected TextView tvSecurityDiscussOrNewsMore;
+
+    TextView tvSecurityPrice;//当前价格
+    TextView tvSecurityDetailRate;//涨跌幅
+    TextView tvSecurityDetailNum;//涨跌值
+    TextView tvSecurityDetailNumHead;//涨跌值的符号占位
+    TextView tvInfo0Value;//最高
+    TextView tvInfo1Value;//最低
+    TextView tvInfo2Value;//成交量
+    TextView tvInfo3Value;//平均量
+
+    LinearLayout llDisscurssOrNews;
+    ImageView imgSecurityTLUserHeader;
+    TextView tvUserTLTimeStamp;
+    TextView tvUserTLContent;
+    TextView tvUserTLName;
+    LinearLayout llTLPraise;
+    LinearLayout llTLComment;
+    LinearLayout llTLShare;
+    TextView tvTLPraise;
+    TextView btnTLPraise;
+    TextView tvTLComment;
+    TextView tvTLShare;
+    LinearLayout bottomBarLL;
+    //Security Detail Tab End
+
+    //Portfolio Detail Tab Start
+    TextView tvPositionTotalCcy;//累计盈亏
+    TextView tvPositionSumAmont;//总投资
+    TextView tvPositionStartTime;//建仓时间
+    TextView tvPositionLastTime;//最后交易
+    TextView tvPositionHoldTime;//持有时间
+    TextView tvEmpty;//没有交易明细
+    SecurityListView listView;
+    TradeHeroProgressBar progressBarPortfolio;
+    BetterViewAnimator betterViewAnimatorPortfolio;
+    //Portfolio Detail Tab End
 
     public static final int ERROR_NO_ASK_BID = 0;
     public static final int ERROR_NO_ASK = 1;
@@ -251,7 +287,40 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     boolean isFromCompetition = false;
 
-    @Inject Analytics analytics;
+    public static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            SecurityDetailFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    public static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = SecurityDetailFragment.class.getName() + ".positionDTOKey";
+
+    public static void putApplicablePortfolioId(@NotNull Bundle args, @NotNull OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    public static void putPositionDTOKey(@NotNull Bundle args, @NotNull com.tradehero.th.api.position.PositionDTOKey positionDTOKey)
+    {
+        args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
+    }
+
+    private static com.tradehero.th.api.position.PositionDTOKey getPositionDTOKey(Bundle args, PositionDTOKeyFactory positionDTOKeyFactory)
+    {
+        if (args != null && args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE) != null)
+        {
+            return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
+        }
+        return null;
+    }
+
+    @Inject Lazy<PositionCache> positionCache;
+    @Inject Lazy<TradeListCache> tradeListCache;
+    @Inject Lazy<SecurityIdCache> securityIdCache;
+    @Inject PositionDTOKeyFactory positionDTOKeyFactory;
+
+    protected com.tradehero.th.api.position.PositionDTOKey positionDTOKey;
+    protected DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO> fetchPositionListener;
+    protected PositionDTO positionDTO;
+    protected TradeDTOList tradeDTOList;
+    private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
+    private PositionTradeListAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -264,6 +333,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         userProfileCacheListener = createUserProfileCacheListener();
         userWatchlistPositionCacheFetchListener = createUserWatchlistCacheListener();
         newsCacheListener = createNewsCacheListener();
+
+        fetchPositionListener = createPositionCacheListener();
+        fetchTradesListener = createTradeListeCacheListener();
+        adapter = new PositionTradeListAdapter(getActivity());
     }
 
     @Override
@@ -298,7 +371,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         ButterKnife.inject(this, view);
         initView();
         updateHeadView(true);
-        //hideActionBar();
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
         return view;
     }
@@ -409,6 +481,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
     public void initView()
     {
+
+        initTabPageView();
+
         tvUserTLContent.setMaxLines(10);
         llBuySaleButtons.setVisibility(View.GONE);
 
@@ -444,7 +519,140 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 Timber.d("Load chartImage error");
             }
         };
+
+        initListView();
+        if (adapter != null && adapter.getCount() == 0)
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_my_securities_history);
+            progressBarPortfolio.startLoading();
+            startTimerForView();
+        }
+        else
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+        }
     }
+
+    public void initListView()
+    {
+        listView.setAdapter(adapter);
+        listView.setMode(PullToRefreshBase.Mode.DISABLED);
+        listView.setEmptyView(tvEmpty);
+    }
+
+    public void initTabPageView()
+    {
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        views = new ArrayList<View>();
+        View viewTab0 = layoutInflater.inflate(R.layout.security_detail_tab0_layout, null);
+        initRootViewTab0(viewTab0);
+        views.add(viewTab0);
+
+        View viewTab1 = layoutInflater.inflate(R.layout.security_detail_tab1_layout, null);
+        initRootViewTab1(viewTab1);
+        views.add(viewTab1);
+
+        setOnclickListeners();
+        pager.setAdapter(pageAdapter);
+        indicator.setViewPager(pager);
+    }
+
+    public void initRootViewTab0(View tabView0)
+    {
+        btnChart0 = (Button) tabView0.findViewById(R.id.btnTabChart0);
+        btnChart1 = (Button) tabView0.findViewById(R.id.btnTabChart1);
+        btnChart2 = (Button) tabView0.findViewById(R.id.btnTabChart2);
+        btnChart3 = (Button) tabView0.findViewById(R.id.btnTabChart3);
+
+        btnDiscuss = (Button) tabView0.findViewById(R.id.btnTabDiscuss);
+        btnNews = (Button) tabView0.findViewById(R.id.btnTabNews);
+
+        chartImageWrapper = (BetterViewAnimator) tabView0.findViewById(R.id.chart_image_wrapper);
+        chartImage = (ChartImageView) tabView0.findViewById(R.id.chart_imageView);
+        tvLoadingChart = (TextView) tabView0.findViewById(R.id.chart_loading);
+        tvSecurityDiscussOrNewsMore = (TextView) tabView0.findViewById(R.id.tvSecurityDiscussOrNewsMore);
+
+        tvSecurityPrice = (TextView) tabView0.findViewById(R.id.tvSecurityDetailPrice);
+        tvSecurityDetailRate = (TextView) tabView0.findViewById(R.id.tvSecurityDetailRate);
+        tvSecurityDetailNum = (TextView) tabView0.findViewById(R.id.tvSecurityDetailNum);
+        tvSecurityDetailNumHead = (TextView) tabView0.findViewById(R.id.tvSecurityDetailNumHead);
+        tvInfo0Value = (TextView) tabView0.findViewById(R.id.tvInfo0Value);
+        tvInfo1Value = (TextView) tabView0.findViewById(R.id.tvInfo1Value);
+        tvInfo2Value = (TextView) tabView0.findViewById(R.id.tvInfo2Value);
+        tvInfo3Value = (TextView) tabView0.findViewById(R.id.tvInfo3Value);
+
+        llDisscurssOrNews = (LinearLayout) tabView0.findViewById(R.id.llDisscurssOrNews);
+        imgSecurityTLUserHeader = (ImageView) tabView0.findViewById(R.id.imgSecurityTLUserHeader);
+        tvUserTLTimeStamp = (TextView) tabView0.findViewById(R.id.tvUserTLTimeStamp);
+        tvUserTLContent = (TextView) tabView0.findViewById(R.id.tvUserTLContent);
+        tvUserTLName = (TextView) tabView0.findViewById(R.id.tvUserTLName);
+        llTLPraise = (LinearLayout) tabView0.findViewById(R.id.llTLPraise);
+        llTLComment = (LinearLayout) tabView0.findViewById(R.id.llTLComment);
+        llTLShare = (LinearLayout) tabView0.findViewById(R.id.llTLShare);
+        tvTLPraise = (TextView) tabView0.findViewById(R.id.tvTLPraise);
+        btnTLPraise = (TextView) tabView0.findViewById(R.id.btnTLPraise);
+        tvTLComment = (TextView) tabView0.findViewById(R.id.tvTLComment);
+        tvTLShare = (TextView) tabView0.findViewById(R.id.tvTLShare);
+        bottomBarLL = (LinearLayout) tabView0.findViewById(R.id.ic_info_buy_sale_btns);
+    }
+
+    public void setOnclickListeners()
+    {
+        btnChart0.setOnClickListener(this);
+        btnChart1.setOnClickListener(this);
+        btnChart2.setOnClickListener(this);
+        btnChart3.setOnClickListener(this);
+        btnDiscuss.setOnClickListener(this);
+        btnNews.setOnClickListener(this);
+        llTLComment.setOnClickListener(this);
+        llTLShare.setOnClickListener(this);
+        llTLPraise.setOnClickListener(this);
+        llDisscurssOrNews.setOnClickListener(this);
+        imgSecurityTLUserHeader.setOnClickListener(this);
+        tvUserTLContent.setOnClickListener(this);
+        tvSecurityDiscussOrNewsMore.setOnClickListener(this);
+    }
+
+    public void initRootViewTab1(View tabView1)
+    {
+        tvPositionTotalCcy = (TextView) tabView1.findViewById(R.id.tvPositionTotalCcy);
+        tvPositionSumAmont = (TextView) tabView1.findViewById(R.id.tvPositionSumAmont);
+        tvPositionStartTime = (TextView) tabView1.findViewById(R.id.tvPositionStartTime);
+        tvPositionLastTime = (TextView) tabView1.findViewById(R.id.tvPositionLastTime);
+        tvPositionHoldTime = (TextView) tabView1.findViewById(R.id.tvPositionHoldTime);
+        tvEmpty = (TextView) tabView1.findViewById(R.id.tvEmpty);
+        listView = (SecurityListView) tabView1.findViewById(R.id.listTrade);
+        progressBarPortfolio = (TradeHeroProgressBar) tabView1.findViewById(R.id.tradeheroprogressbar_my_securities_history);
+        betterViewAnimatorPortfolio = (BetterViewAnimator) tabView1.findViewById(R.id.bvaViewAllPortfolio);
+    }
+
+    public PagerAdapter pageAdapter = new PagerAdapter()
+    {
+        @Override
+        public void destroyItem(View container, int position, Object object)
+        {
+            ((ViewPager) container).removeView(views.get(position));
+        }
+
+        @Override
+        public Object instantiateItem(View container, int position)
+        {
+            ((ViewPager) container).addView(views.get(position));
+            return views.get(position);
+        }
+
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1)
+        {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public int getCount()
+        {
+            return (views == null) ? 0 : views.size();
+        }
+    };
 
     @Override public void onStop()
     {
@@ -470,6 +678,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         detachWatchlistFetchTask();
         detachSecurityDiscuss();
         detachSecurityNews();
+
+        detachFetchPosition();
+        detachFetchTrades();
+
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -490,6 +702,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             showGuideView();
         }
+
+        linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory));
     }
 
     public void initArgment()
@@ -830,31 +1044,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         displaySecurityInfo();
     }
 
-    @OnClick(R.id.tvSecurityDiscussOrNewsMore)
-    public void onDiscussOrNewsMore()
-    {
-        if (getString(R.string.no_useful_data).equals(tvSecurityDiscussOrNewsMore.getText().toString())) return;
-        if (securityCompactDTO == null) return;
-        if (getAbstractDiscussionCompactDTO() != null)
-        {//点击加载更多
-            Timber.d("更多。。。");
-            //进入股票相关的更多讨论和资讯中
-            Bundle bundle = new Bundle();
-            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
-            bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-            bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
-            pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
-
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
-        }
-        else
-        {//快来抢沙发
-            enterDiscussSend();
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
-        }
-    }
-
     public void setTextForMoreButton()
     {
         tvSecurityDiscussOrNewsMore.setVisibility(View.VISIBLE);
@@ -866,48 +1055,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         else
         {
             tvSecurityDiscussOrNewsMore.setText(getString(R.string.click_to_get_more));
-        }
-    }
-
-    @OnClick({R.id.btnTabChart0, R.id.btnTabChart1, R.id.btnTabChart2, R.id.btnTabChart3
-            , R.id.btnTabDiscuss, R.id.btnTabNews
-    })
-    public void onChartBtnClicked(View view)
-    {
-        if (view.getId() == R.id.btnTabChart0)
-        {
-            setChartView(0);
-            analytics.addEventAuto(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
-        }
-        else if (view.getId() == R.id.btnTabChart1)
-        {
-            setChartView(1);
-            analytics.addEventAuto(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
-        }
-        else if (view.getId() == R.id.btnTabChart2)
-        {
-            setChartView(2);
-            analytics.addEventAuto(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
-        }
-        else if (view.getId() == R.id.btnTabChart3)
-        {
-            setChartView(3);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
-        }
-        else if (view.getId() == R.id.btnTabDiscuss)
-        {
-            setDiscussOrNewsView(0);
-            analytics.addEventAuto(
-                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
-        }
-
-        else if (view.getId() == R.id.btnTabNews)
-        {
-            setDiscussOrNewsView(1);
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
         }
     }
 
@@ -1111,7 +1258,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
 
         if (isFromCompetition && portfolioCompactDTO == null)
         {
-            if(display)
+            if (display)
             {
                 Timber.d("未获取到 portfolioCompactDTO ，不能进行交易");
                 showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
@@ -1124,7 +1271,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
 
         return true;
-
     }
 
     public void showBuyOrSaleError(int type)
@@ -1585,74 +1731,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         }
     }
 
-    @OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})
-    public void onOperaterClicked(View view)
-    {
-        if (view.getId() == R.id.llDisscurssOrNews)
-        {
-            enterTimeLineDetail(getAbstractDiscussionCompactDTO());
-        }
-        else if (view.getId() == R.id.tvUserTLContent)
-        {
-            if (tvUserTLContent instanceof MarkdownTextView)
-            {
-                if (!((MarkdownTextView) tvUserTLContent).isClicked)
-                {
-                    enterTimeLineDetail(getAbstractDiscussionCompactDTO());
-                }
-                ((MarkdownTextView) view).isClicked = false;
-            }
-        }
-        else if (view.getId() == R.id.imgSecurityTLUserHeader)
-        {
-            openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
-        }
-        else if (view.getId() == R.id.llTLPraise)
-        {
-            Timber.d("------> Analytics SecurityDetailFragment praise");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE));
-            clickedPraise();
-        }
-        else if (view.getId() == R.id.llTLComment)
-        {
-            Timber.d("------> Analytics SecurityDetailFragment comment");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_COMMENT));
-            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
-            comments(dto);
-        }
-        else if (view.getId() == R.id.llTLShare)
-        {
-            Timber.d("------> Analytics SecurityDetailFragment share");
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_SHARE));
-            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
-            String strShare = "";
-            if (dto instanceof NewsItemCompactDTO)
-            {
-                strShare = (((NewsItemCompactDTO) dto).description);
-            }
-            else if (dto instanceof DiscussionDTO)
-            {
-                strShare = (((DiscussionDTO) dto).text);
-            }
-
-            if (securityName != null && securityId.getDisplayName() != null)
-            {
-                strShare = securityName + "(" + securityId.getDisplayName() + ")  " + strShare;
-            }
-
-            if (TextUtils.isEmpty(strShare))
-            {
-                if (tvUserTLContent.getText() == null)
-                {
-                    return;
-                }
-                shareToWechatMoment(tvUserTLContent.getText().toString());
-                return;
-            }
-            shareToWechatMoment(strShare);
-        }
-    }
-
     public void comments(AbstractDiscussionCompactDTO dto)
     {
         DiscussionKey discussionKey = dto.getDiscussionKey();
@@ -1686,7 +1764,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
         {
             return;
         }
-        UserProfileDTO updatedUserProfileDTO = userProfileCacheA.get(currentUserId.toUserBaseKey());
+        UserProfileDTO updatedUserProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (updatedUserProfileDTO != null)
         {
             if (updatedUserProfileDTO.wbLinked)
@@ -1855,7 +1933,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
             @Override
             public void run()
             {
-                if(betterViewAnimator==null){
+                if (betterViewAnimator == null)
+                {
                     return;
                 }
                 int width = betterViewAnimator.getWidth();
@@ -1866,5 +1945,331 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment implemen
                 ((DashboardActivity) getActivity()).showGuideView(position_x, position_y, radius, GuideView.TYPE_GUIDE_STOCK_BUG);
             }
         }, 500);
+    }
+
+    //@OnClick(R.id.tvSecurityDiscussOrNewsMore)
+    public void onDiscussOrNewsMore()
+    {
+        if (getString(R.string.no_useful_data).equals(tvSecurityDiscussOrNewsMore.getText().toString())) return;
+        if (securityCompactDTO == null) return;
+        if (getAbstractDiscussionCompactDTO() != null)
+        {//点击加载更多
+            Timber.d("更多。。。");
+            //进入股票相关的更多讨论和资讯中
+            Bundle bundle = new Bundle();
+            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_DISCUSS_OR_NEWS_TYPE, indexDiscussOrNews);
+            bundle.putBundle(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            bundle.putString(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+            bundle.putInt(SecurityDiscussOrNewsFragment.BUNDLE_KEY_SECURIYT_COMPACT_ID, securityCompactDTO.id);
+            pushFragment(SecurityDiscussOrNewsFragment.class, bundle);
+
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_GETMORE));
+        }
+        else
+        {//快来抢沙发
+            enterDiscussSend();
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_SAFA));
+        }
+    }
+
+    //@OnClick({R.id.btnTabChart0, R.id.btnTabChart1, R.id.btnTabChart2, R.id.btnTabChart3
+    //        , R.id.btnTabDiscuss, R.id.btnTabNews
+    //})
+    public void onChartBtnClicked(View view)
+    {
+        if (view.getId() == R.id.btnTabChart0)
+        {
+            setChartView(0);
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_ONEDAY));
+        }
+        else if (view.getId() == R.id.btnTabChart1)
+        {
+            setChartView(1);
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_FIVEDAY));
+        }
+        else if (view.getId() == R.id.btnTabChart2)
+        {
+            setChartView(2);
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_90DAY));
+        }
+        else if (view.getId() == R.id.btnTabChart3)
+        {
+            setChartView(3);
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_CHART_YEAR));
+        }
+        else if (view.getId() == R.id.btnTabDiscuss)
+        {
+            setDiscussOrNewsView(0);
+            analytics.addEventAuto(
+                    new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_DISCUSS));
+        }
+
+        else if (view.getId() == R.id.btnTabNews)
+        {
+            setDiscussOrNewsView(1);
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_DETAIL_TAB_NEWS));
+        }
+    }
+
+    //@OnClick({R.id.llTLComment, R.id.llTLPraise, R.id.llTLShare, R.id.llDisscurssOrNews, R.id.imgSecurityTLUserHeader, R.id.tvUserTLContent})
+    public void onOperaterClicked(View view)
+    {
+        if (view.getId() == R.id.llDisscurssOrNews)
+        {
+            enterTimeLineDetail(getAbstractDiscussionCompactDTO());
+        }
+        else if (view.getId() == R.id.tvUserTLContent)
+        {
+            if (tvUserTLContent instanceof MarkdownTextView)
+            {
+                if (!((MarkdownTextView) tvUserTLContent).isClicked)
+                {
+                    enterTimeLineDetail(getAbstractDiscussionCompactDTO());
+                }
+                ((MarkdownTextView) view).isClicked = false;
+            }
+        }
+        else if (view.getId() == R.id.imgSecurityTLUserHeader)
+        {
+            openUserProfile(((DiscussionDTO) getAbstractDiscussionCompactDTO()).user.id);
+        }
+        else if (view.getId() == R.id.llTLPraise)
+        {
+            Timber.d("------> Analytics SecurityDetailFragment praise");
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE));
+            clickedPraise();
+        }
+        else if (view.getId() == R.id.llTLComment)
+        {
+            Timber.d("------> Analytics SecurityDetailFragment comment");
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_COMMENT));
+            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+            comments(dto);
+        }
+        else if (view.getId() == R.id.llTLShare)
+        {
+            Timber.d("------> Analytics SecurityDetailFragment share");
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_SHARE));
+            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+            String strShare = "";
+            if (dto instanceof NewsItemCompactDTO)
+            {
+                strShare = (((NewsItemCompactDTO) dto).description);
+            }
+            else if (dto instanceof DiscussionDTO)
+            {
+                strShare = (((DiscussionDTO) dto).text);
+            }
+
+            if (securityName != null && securityId.getDisplayName() != null)
+            {
+                strShare = securityName + "(" + securityId.getDisplayName() + ")  " + strShare;
+            }
+
+            if (TextUtils.isEmpty(strShare))
+            {
+                if (tvUserTLContent.getText() == null)
+                {
+                    return;
+                }
+                shareToWechatMoment(tvUserTLContent.getText().toString());
+                return;
+            }
+            shareToWechatMoment(strShare);
+        }
+    }
+
+    @Override public void onClick(View view)
+    {
+        int id = view.getId();
+        if (id == R.id.llTLComment
+                || id == R.id.llTLPraise
+                || id == R.id.llTLShare
+                || id == R.id.llDisscurssOrNews
+                || id == R.id.imgSecurityTLUserHeader
+                || id == R.id.tvUserTLContent)
+        {
+            onOperaterClicked(view);
+        }
+        else if (id == R.id.btnTabChart0
+                || id == R.id.btnTabChart1
+                || id == R.id.btnTabChart2
+                || id == R.id.btnTabChart3
+                || id == R.id.btnTabDiscuss
+                || id == R.id.btnTabNews)
+        {
+            onChartBtnClicked(view);
+        }
+        else if (id == R.id.tvSecurityDiscussOrNewsMore)
+        {
+            onDiscussOrNewsMore();
+        }
+    }
+
+    public void linkWith(com.tradehero.th.api.position.PositionDTOKey newPositionDTOKey)
+    {
+        if (newPositionDTOKey != null)
+        {
+            this.positionDTOKey = newPositionDTOKey;
+            fetchPosition();
+        }
+        else
+        {
+            if (betterViewAnimatorPortfolio != null)
+            {
+                betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+            }
+        }
+    }
+
+    protected void detachFetchPosition()
+    {
+        positionCache.get().unregister(fetchPositionListener);
+    }
+
+    protected void detachFetchTrades()
+    {
+        tradeListCache.get().unregister(fetchTradesListener);
+    }
+
+    protected void fetchPosition()
+    {
+        detachFetchPosition();
+        positionCache.get().register(positionDTOKey, fetchPositionListener);
+        positionCache.get().getOrFetchAsync(positionDTOKey);
+    }
+
+    protected DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO> createPositionCacheListener()
+    {
+        return new TradeListFragmentPositionCacheListener();
+    }
+
+    protected class TradeListFragmentPositionCacheListener implements DTOCacheNew.Listener<com.tradehero.th.api.position.PositionDTOKey, PositionDTO>
+    {
+        @Override public void onDTOReceived(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull PositionDTO value)
+        {
+            linkWith(value, true);
+        }
+
+        @Override public void onErrorThrown(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_position_list_info);
+        }
+    }
+
+    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    {
+        if (getActivity() == null) return;
+        this.positionDTO = positionDTO;
+        fetchTrades();
+        displayPosition(positionDTO);
+    }
+
+    public void displayPosition(PositionDTO positionDTO)
+    {
+        try
+        {
+            THSignedNumber roi = THSignedPercentage.builder(positionDTO.getROISinceInception() * 100)
+                    .withSign()
+                    .signTypeArrow()
+                    .build();
+            tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
+            tvPositionTotalCcy.setText("$" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
+            tvPositionSumAmont.setText("$" + Math.round(positionDTO.sumInvestedAmountRefCcy));
+            tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
+            tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
+            tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,
+                    DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.getLatestHoldDate())));
+        } catch (Exception e)
+        {
+
+        }
+    }
+
+    protected void fetchTrades()
+    {
+        if (positionDTO != null)
+        {
+            detachFetchTrades();
+            OwnedPositionId key = positionDTO.getOwnedPositionId();
+            tradeListCache.get().register(key, fetchTradesListener);
+            tradeListCache.get().getOrFetchAsync(key);
+        }
+        else
+        {
+            betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+        }
+    }
+
+    protected TradeListCache.Listener<OwnedPositionId, TradeDTOList> createTradeListeCacheListener()
+    {
+        return new GetTradesListener();
+    }
+
+    private class GetTradesListener implements TradeListCache.Listener<OwnedPositionId, TradeDTOList>
+    {
+        @Override public void onDTOReceived(@NotNull OwnedPositionId key, @NotNull TradeDTOList tradeDTOs)
+        {
+
+            linkWith(tradeDTOs, true);
+            onFinish();
+        }
+
+        @Override public void onErrorThrown(@NotNull OwnedPositionId key, @NotNull Throwable error)
+        {
+            THToast.show(R.string.error_fetch_trade_list_info);
+            onFinish();
+        }
+
+        public void onFinish()
+        {
+            if (progressBarPortfolio != null)
+            {
+                progressBarPortfolio.stopLoading();
+            }
+            if (betterViewAnimatorPortfolio != null)
+            {
+                betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+            }
+        }
+    }
+
+    public void linkWith(TradeDTOList tradeDTOs, boolean andDisplay)
+    {
+        Timber.d("Tradehero: PositionDetailFragment LinkWith");
+        this.tradeDTOList = tradeDTOs;
+        adapter.setTradeList(tradeDTOList);
+    }
+
+    private Handler handler = new Handler();
+
+    private Runnable runnable;
+
+    public void startTimerForView()
+    {
+        runnable = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                closeTimerForView();
+                linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory));
+            }
+        };
+        handler.postDelayed(runnable, 5000);
+    }
+
+    public void closeTimerForView()
+    {
+        try
+        {
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTrade);
+            handler.removeCallbacks(runnable);
+        } catch (Exception e)
+        {
+        }
     }
 }

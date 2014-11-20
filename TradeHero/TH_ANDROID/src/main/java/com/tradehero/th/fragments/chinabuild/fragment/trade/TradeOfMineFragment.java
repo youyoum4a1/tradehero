@@ -5,7 +5,12 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,7 +42,6 @@ import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -54,13 +58,12 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /*
     交易－我的交易
@@ -206,7 +209,8 @@ public class TradeOfMineFragment extends DashboardFragment
             }
             else if (((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
             {
-                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name);
+                enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
+                        ((SecurityPositionItem) item).position);
             }
         }
         else if (item instanceof WatchPositionItem)
@@ -221,12 +225,12 @@ public class TradeOfMineFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        PositionDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
+        SecurityDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
         if (shownPortfolioId != null)
         {
-            PositionDetailFragment.putApplicablePortfolioId(bundle, shownPortfolioId);
+            SecurityDetailFragment.putApplicablePortfolioId(bundle, shownPortfolioId);
         }
-        gotoDashboard(PositionDetailFragment.class, bundle);
+        gotoDashboard(SecurityDetailFragment.class, bundle);
     }
 
     public void enterSecurity(SecurityId securityId, String securityName)
