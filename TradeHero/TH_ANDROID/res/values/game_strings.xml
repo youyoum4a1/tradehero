@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="game_play_now">Play Now!</string>
+  <string name="error_fetch_info_game">Failed to fetch the mini-game\'s information</string>
   <string name="error_submit_score_game_id_mismatch">The score submission was for another game</string>
 
 </resources>

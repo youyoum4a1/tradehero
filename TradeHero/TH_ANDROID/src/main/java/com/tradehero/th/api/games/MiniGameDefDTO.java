@@ -2,6 +2,7 @@ package com.tradehero.th.api.games;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MiniGameDefDTO implements DTO, KeyGenerator
@@ -14,6 +15,16 @@ public class MiniGameDefDTO implements DTO, KeyGenerator
     public String url;
     public boolean comingSoon;
     public List<String> howToPlayUrls;
+
+    //<editor-fold desc="Constructors">
+    public MiniGameDefDTO()
+    {
+        // HACK
+        howToPlayUrls = new ArrayList<>();
+        howToPlayUrls.add("http://www.yahoo.com");
+        howToPlayUrls.add("http://www.google.com");
+    }
+    //</editor-fold>
 
     @Override public MiniGameDefKey getDTOKey()
     {

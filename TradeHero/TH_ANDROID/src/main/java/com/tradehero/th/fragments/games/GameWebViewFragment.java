@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Menu;
+import android.view.View;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -56,6 +57,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
     private long beginTime;
     @Nullable Subscription miniGameDefSubscription;
     protected MiniGameDefDTO miniGameDefDTO;
+    protected boolean showedHowToPlay = false;
 
     public static void putUrl(@NonNull Bundle args, @NonNull MiniGameDefDTO miniGameDefDTO, @NonNull UserBaseKey userBaseKey)
     {
@@ -161,6 +163,10 @@ public class GameWebViewFragment extends BaseWebViewFragment
     {
         this.miniGameDefDTO = miniGameDefDTO;
         displayName();
+        if (miniGameDefDTO.howToPlayUrls != null && !showedHowToPlay)
+        {
+            displayHowToPlay();
+        }
     }
 
     protected void displayName()
@@ -169,6 +175,14 @@ public class GameWebViewFragment extends BaseWebViewFragment
         {
             setActionBarTitle(miniGameDefDTO.name);
         }
+    }
+
+    protected void displayHowToPlay()
+    {
+        HowToPlayDialogFragment.newInstance(miniGameDefKey)
+                .show(getFragmentManager(),
+                        HowToPlayDialogFragment.class.getName());
+        showedHowToPlay = true;
     }
 
     protected void submitScore()
