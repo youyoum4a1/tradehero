@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
@@ -21,7 +20,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
@@ -101,16 +99,6 @@ public class DiscoveryMainFragment extends DashboardFragment
         {
             actionBar.setTitle(R.string.discovery);
         }
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (item.getItemId() == R.id.discussion_edit_post)
-        {
-            navigator.get().pushFragment(DiscussionEditPostFragment.class);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()

@@ -25,6 +25,8 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
@@ -32,6 +34,7 @@ import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -58,6 +61,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject CurrentUserId currentUserId;
     @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
+    @Inject Lazy<DashboardNavigator> navigator;
 
     private ProgressBar mBottomLoadingView;
 
@@ -92,6 +96,23 @@ public class DiscoveryDiscussionFragment extends Fragment
         }
     }
 
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (item.getItemId() == R.id.discussion_edit_post)
+        {
+            DiscussionEditPostFragment discussionEditPostFragment = navigator.get().pushFragment(DiscussionEditPostFragment.class);
+            discussionEditPostFragment.setCommentPostedListener(this::refresh);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void refresh()
+    {
+        currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
+        subscribes();
+    }
+
     private Observable<RangeDTO> createPaginationObservable()
     {
         Observable<RangeDTO> pullFromStartObservable = Observable.create(subscriber ->
@@ -117,6 +138,13 @@ public class DiscoveryDiscussionFragment extends Fragment
         mBottomLoadingView.setVisibility(View.INVISIBLE);
         mTimelineListView.addFooterView(mBottomLoadingView);
         mTimelineListView.setAdapter(discoveryDiscussionAdapter);
+
+        subscribes();
+    }
+
+    private void subscribes()
+    {
+        timelineSubscriptions.clear();
 
         PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));

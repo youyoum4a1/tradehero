@@ -72,7 +72,13 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private Subscription hasSelectedSubscription;
 
     @Nullable private DiscussionKey discussionKey;
-    private boolean isPosted;
+    private DiscussionPostedListener discussionPostedListener;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -128,8 +134,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         super.onResume();
 
-        isPosted = false;
-
         Bundle args = getArguments();
         if (args != null)
         {
@@ -167,6 +171,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     {
         mentionTaggedStockHandler.setHasSelectedItemFragment(null);
         mentionTaggedStockHandler = null;
+        discussionPostedListener = null;
         super.onDestroy();
     }
 
@@ -302,9 +307,9 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    public boolean isPosted()
+    public void setCommentPostedListener(DiscussionPostedListener discussionPostedListener)
     {
-        return isPosted;
+        this.discussionPostedListener = discussionPostedListener;
     }
 
     private class SecurityDiscussionEditCallback implements Observer<DiscussionDTO>
@@ -320,9 +325,11 @@ public class DiscussionEditPostFragment extends DashboardFragment
                 socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO)); // Proper callback?
             }
 
-            isPosted = true;
-
             DeviceUtil.dismissKeyboard(getActivity());
+            if (discussionPostedListener != null)
+            {
+                discussionPostedListener.onDiscussionPosted();
+            }
             navigator.get().popFragment();
         }
 
@@ -368,5 +375,10 @@ public class DiscussionEditPostFragment extends DashboardFragment
                 }
             }
         }
+    }
+
+    public static interface DiscussionPostedListener
+    {
+        void onDiscussionPosted();
     }
 }
