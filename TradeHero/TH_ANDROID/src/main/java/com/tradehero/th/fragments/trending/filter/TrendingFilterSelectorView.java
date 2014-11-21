@@ -5,10 +5,13 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
@@ -21,10 +24,6 @@ import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.inject.Inject;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemSelected;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
@@ -32,13 +31,11 @@ public class TrendingFilterSelectorView extends RelativeLayout
 {
     @Inject Analytics analytics;
 
-    @InjectView(R.id.previous_filter) public ImageButton mPrevious;
-    @InjectView(R.id.next_filter) public ImageButton mNext;
     @InjectView(R.id.title) public TextView mTitle;
     @InjectView(R.id.trending_filter_title_icon) public ImageView mTitleIcon;
     @InjectView(R.id.description) public TextView mDescription;
     @InjectView(R.id.exchange_selection) public ExchangeSpinner mExchangeSelection;
-    private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
+    private TrendingFilterSpinnerIconSetAdapter mExchangeSelectionAdapter;
 
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
@@ -51,7 +48,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         HierarchyInjector.inject(this);
         trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
         trendingTypeBehavior = BehaviorSubject.create(trendingFilterTypeDTO);
-        mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
+        mExchangeSelectionAdapter = new TrendingFilterSpinnerIconSetAdapter(
                 getContext(),
                 R.layout.trending_filter_spinner_item);
         mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
@@ -71,7 +68,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
         if (exchangeCompactSpinnerDTOs != null)
         {
-            mExchangeSelectionAdapter.addAll(exchangeCompactSpinnerDTOs);
+            mExchangeSelectionAdapter.appendTail(exchangeCompactSpinnerDTOs);
         }
     }
 
@@ -89,7 +86,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     public void setUpExchangeSpinner(@NonNull ExchangeCompactSpinnerDTOList items)
     {
         exchangeCompactSpinnerDTOs = items;
-        mExchangeSelectionAdapter.addAll(items);
+        mExchangeSelectionAdapter.appendTail(items);
         mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
     }
 
