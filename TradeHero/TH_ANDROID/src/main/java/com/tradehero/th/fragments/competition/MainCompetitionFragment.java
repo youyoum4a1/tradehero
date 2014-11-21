@@ -27,6 +27,7 @@ import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
@@ -59,6 +60,7 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
+import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
@@ -90,6 +92,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject ProviderUtil providerUtil;
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
+    @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @RouteProperty("providerId") Integer routedProviderId;
@@ -100,6 +103,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     protected CompetitionDTOList competitionDTOs;
     @Nullable private Subscription displayCellListCacheFetchSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
+    @Nullable private Subscription competitionPreseasonSubscription;
+    private CompetitionPreSeasonDTO competitionPreSeasonDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -157,6 +162,11 @@ public class MainCompetitionFragment extends CompetitionFragment
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId)))
                 .subscribe(createDisplayCellListCacheObserver());
+        unsubscribe(competitionPreseasonSubscription);
+        competitionPreseasonSubscription = AndroidObservable.bindFragment(
+                this,
+                competitionPreseasonCacheRx.get(providerId))
+                .subscribe(createCompetitionPreseasonListCacheObserver());
     }
 
     @Override public void onResume()
@@ -328,6 +338,40 @@ public class MainCompetitionFragment extends CompetitionFragment
                 THToast.show(getString(R.string.error_fetch_provider_competition_display_cell_list));
             }
             Timber.e("Error fetching the list of competition info cell", e);
+        }
+    }
+
+    private Observer<Pair<ProviderId, CompetitionPreSeasonDTO>> createCompetitionPreseasonListCacheObserver()
+    {
+        return new CompetitionPreseasonCacheObserver();
+    }
+
+    protected class CompetitionPreseasonCacheObserver implements Observer<Pair<ProviderId, CompetitionPreSeasonDTO>>
+    {
+
+        @Override public void onCompleted()
+        {
+
+        }
+
+        @Override public void onError(Throwable e)
+        {
+
+        }
+
+        @Override public void onNext(Pair<ProviderId, CompetitionPreSeasonDTO> providerIdCompetitionPreSeasonDTOPair)
+        {
+            linkWith(providerIdCompetitionPreSeasonDTOPair.second, true);
+        }
+    }
+
+    private void linkWith(CompetitionPreSeasonDTO preSeasonDTO, boolean display)
+    {
+        this.competitionPreSeasonDTO = preSeasonDTO;
+        competitionZoneListItemAdapter.setPreseasonDTO(preSeasonDTO);
+        if (display)
+        {
+            displayListView();
         }
     }
 
