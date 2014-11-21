@@ -57,7 +57,7 @@ public class DiscoveryArticleFragment extends Fragment
     private PublishSubject<List<ArticleInfoDTO>> articlesSubject;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
-    private int currentPerPager = Constants.COMMON_ITEM_PER_PAGE;
+    private PaginationDTO currentPagination = new PaginationDTO(1, Constants.COMMON_ITEM_PER_PAGE);
 
     @OnItemClick(R.id.discovery_article_list)
     void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -118,7 +118,7 @@ public class DiscoveryArticleFragment extends Fragment
     {
         Observable<PaginationDTO> pullFromStartObservable = Observable.create(subscriber ->
                 swipeRefreshLayout.setOnRefreshListener(() ->
-                                subscriber.onNext(new PaginationDTO(1, currentPerPager))
+                                subscriber.onNext(new PaginationDTO(1, currentPagination.perPage))
                 ));
 
         Observable<PaginationDTO> pullFromBottomObservable = Observable.create((Observable.OnSubscribe<PaginationDTO>) subscriber ->
@@ -133,15 +133,16 @@ public class DiscoveryArticleFragment extends Fragment
                 .doOnNext(o -> mBottomLoadingView.setVisibility(View.VISIBLE));
         return Observable.merge(pullFromBottomObservable, pullFromStartObservable)
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .startWith(new PaginationDTO(1, currentPerPager));
+                .startWith(currentPagination);
     }
 
     private Observable<List<ArticleInfoDTO>> createArticleListKeyPaginationObservable()
     {
         return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<ArticleInfoDTO>>>)
-                        key -> articleServiceWrapper.getAllArticlesRx(new PaginationDTO(1, 2))
+                        key -> articleServiceWrapper.getAllArticlesRx(currentPagination)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(articleInfoDTOPaginatedDTO -> lastPaginationInfoDTO = articleInfoDTOPaginatedDTO.getPagination())
                                 .flatMapIterable(PaginatedDTO::getData)
                                 .toList()
         );
