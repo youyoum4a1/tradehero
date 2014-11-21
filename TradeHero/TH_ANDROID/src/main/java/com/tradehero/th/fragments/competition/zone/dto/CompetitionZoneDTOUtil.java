@@ -1,24 +1,21 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
-
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTORestrictionComparator;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
@@ -39,8 +36,9 @@ public class CompetitionZoneDTOUtil
             @Nullable ProviderDTO providerDTO,
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
-            @NonNull List<Integer> preparedOrderedTypes,
-            @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
+            @Nullable ProviderPrizePoolDTO providerPrizePoolDTO,
+            @NotNull List<Integer> preparedOrderedTypes,
+            @NotNull List<CompetitionZoneDTO> preparedOrderedItems)
     {
         if (providerDTO != null)
         {
@@ -55,10 +53,12 @@ public class CompetitionZoneDTOUtil
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
 
-            preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
-            preparedOrderedItems.add(new CompetitionZoneLegalDTO(
-                    context.getString(R.string.provider_competition_rules_title),
-                    context.getString(R.string.provider_competition_terms_title)));
+            //prize pool
+            if (providerPrizePoolDTO != null)
+            {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
+                preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(providerPrizePoolDTO));
+            }
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
             {

@@ -5,6 +5,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -64,5 +65,10 @@ public interface ProviderServiceRx
     @GET("/providers/{providerId}/displaycells")
     Observable<ProviderDisplayCellDTOList> getDisplayCells(
             @Path("providerId") int providerId);
+    //</editor-fold>
+
+    //<editor-fold desc="Get ProviderPrizePool">
+    @GET("/providers/{providerId}/prizepool")
+    Observable<ProviderPrizePoolDTO> getProviderPrizePool(@Path("providerId") int providerId);
     //</editor-fold>
 }

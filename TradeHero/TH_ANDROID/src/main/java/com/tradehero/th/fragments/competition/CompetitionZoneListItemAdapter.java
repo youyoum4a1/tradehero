@@ -4,51 +4,35 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
-<<<<<<< HEAD
 import com.tradehero.th.R;
-=======
-
->>>>>>> 1 build config and first version; need data from server
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-<<<<<<< HEAD
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-=======
->>>>>>> 1 build config and first version; need data from server
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
     public static final int ITEM_TYPE_ADS = 0;
     public static final int ITEM_TYPE_HEADER = 1;
-<<<<<<< HEAD
     public static final int ITEM_TYPE_PORTFOLIO = 2;
     public static final int ITEM_TYPE_ZONE_ITEM = 3;
     public static final int ITEM_TYPE_LEADERBOARD = 4;
     public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
     public static final int ITEM_TYPE_LOADING = 6;
-=======
-    public static final int ITEM_TYPE_PRIZE_POOL = 2;
-    public static final int ITEM_TYPE_PORTFOLIO = 3;
-    public static final int ITEM_TYPE_ZONE_ITEM = 4;
-    public static final int ITEM_TYPE_LEADERBOARD = 5;
-    public static final int ITEM_TYPE_LEGAL_MENTIONS = 6;
->>>>>>> 1 build config and first version; need data from server
+    public static final int ITEM_TYPE_PRIZE_POOL = 7;
 
     @NonNull private final Integer[] viewTypeToResId;
     private List<Integer> orderedTypes;
@@ -61,6 +45,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     private ProviderDTO providerDTO;
     private List<CompetitionDTO> competitionDTOs;
     private List<ProviderDisplayCellDTO> providerDisplayCellDTOs;
+    private ProviderPrizePoolDTO providerPrizePoolDTO;
 
     //<editor-fold desc="Constructors">
     public CompetitionZoneListItemAdapter(
@@ -116,6 +101,11 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.providerDisplayCellDTOs = providerDisplayCellDTOList;
     }
 
+    public void setPrizePoolDTO(@Nullable ProviderPrizePoolDTO providerPrizePoolDTO)
+    {
+        this.providerPrizePoolDTO = providerPrizePoolDTO;
+    }
+
     @Override public void notifyDataSetChanged()
     {
         repopulateLists();
@@ -135,6 +125,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
                     providerDTO,
                     competitionDTOs,
                     providerDisplayCellDTOs,
+                    providerPrizePoolDTO,
                     preparedOrderedTypes,
                     preparedOrderedItems);
 

@@ -5,6 +5,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
@@ -74,7 +75,12 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider">
-    @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
+    @NotNull public Observable<ProviderPrizePoolDTO> getProviderPrizePoolRx(@NotNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getProviderPrizePool(providerId.key);
+    }
+
+    @NotNull public Observable<ProviderDTO> getProviderRx(@NotNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)
                 .doOnNext(providerDTO -> {

@@ -2,43 +2,76 @@
 
 <com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="afterDescendants"
+    android:orientation="horizontal"
+    android:background="@color/white"
     >
 
-    <TextView
-        android:id="@+id/competition_legal_rules"
-        style="@style/TH.Subhead"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:maxLines="1"
-        android:background="@drawable/basic_white_selector"
-        android:text="@string/provider_competition_rules_title"
-        android:paddingBottom="@dimen/provider_legal_vertical_padding"
-        android:paddingTop="@dimen/provider_legal_vertical_padding"
-        android:paddingLeft="@dimen/provider_legal_horizontal_padding"
-        android:paddingRight="@dimen/provider_legal_horizontal_padding"
-        android:drawableRight="@drawable/settings_forward_light"
-        />
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/competition_legal_terms"
-        style="@style/TH.Subhead"
+    <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/competition_legal_rules"
-        android:text="@string/provider_competition_terms_title"
-        android:background="@drawable/basic_white_selector"
-        android:paddingBottom="@dimen/provider_legal_vertical_padding"
-        android:paddingTop="@dimen/provider_legal_vertical_padding"
-        android:paddingLeft="@dimen/provider_legal_horizontal_padding"
-        android:paddingRight="@dimen/provider_legal_horizontal_padding"
-        android:layout_marginTop="1dp"
-        android:drawableRight="@drawable/settings_forward_light"
-        android:visibility="gone"
-        />
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text"
+            style="@style/TH.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/current_prize_pool"/>
+
+        <TextView
+            android:id="@+id/value"
+            style="@style/TH.Headline.Accented"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right|center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text2"
+            style="@style/TH.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/new_players_need"/>
+
+        <TextView
+            android:id="@+id/value2"
+            style="@style/TH.Headline.Accented"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|right"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/invite_friend"
+        style="@style/Leaderboard_ActionButton_Blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear2"
+        android:layout_marginBottom="5dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/invite_your_friends_now"/>
 
 </com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView>

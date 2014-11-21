@@ -2,22 +2,34 @@ package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePrizePoolDTO;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
+import com.tradehero.th.inject.HierarchyInjector;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView
 {
-    @InjectView(R.id.competition_legal_rules) TextView rules;
-    @InjectView(R.id.competition_legal_terms) TextView terms;
-    private OnElementClickedListener elementClickedListener;
+    @InjectView(R.id.background) ImageView background;
+    @InjectView(R.id.value) TextView value;
+    @InjectView(R.id.text2) TextView text2;
+    @InjectView(R.id.value2) TextView value2;
+    @InjectView(R.id.invite_friend) Button inviteFriendButton;
+    @Inject Picasso picasso;
+    @Inject DashboardNavigator navigator;
+    private ProviderPrizePoolDTO providerPrizePoolDTO;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -43,6 +55,7 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+        HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
@@ -59,85 +72,56 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
 
     public void linkWith(CompetitionZoneDTO competitionZoneDTO, boolean andDisplay)
     {
-        if (!(competitionZoneDTO instanceof CompetitionZoneLegalDTO))
+        if (!(competitionZoneDTO instanceof CompetitionZonePrizePoolDTO))
         {
             throw new IllegalArgumentException("Only accepts CompetitionZoneLegalDTO");
         }
         super.linkWith(competitionZoneDTO, andDisplay);
+        providerPrizePoolDTO = ((CompetitionZonePrizePoolDTO) competitionZoneDTO).providerPrizePoolDTO;
 
         if (andDisplay)
         {
-            displayRules();
-            displayTerms();
+            displayText();
         }
+    }
+
+    private void displayText() {
+        picasso.load(providerPrizePoolDTO.background)
+                .into(background, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Timber.d("lyl success");
+                        setBackground(background.getDrawable());
+                    }
+
+                    @Override
+                    public void onError() {
+                        Timber.d("lyl fail");
+
+                    }
+                });
+        value.setText(providerPrizePoolDTO.current);
+        text2.setText(getContext().getString(R.string.new_players_need, providerPrizePoolDTO.extra));
+        value2.setText(providerPrizePoolDTO.newPlayerNeeded);
     }
 
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        displayRules();
-        displayTerms();
+        displayText();
     }
 
-    public void displayRules()
+    @OnClick(R.id.invite_friend)
+    public void clickInviteFriend()
     {
-        TextView rulesCopy = this.rules;
-        rules.setText(":)");
-        if (rulesCopy != null)
-        {
-            if (competitionZoneDTO != null)
-            {
-                rulesCopy.setText(competitionZoneDTO.title);
-            }
-        }
+        pushInvitationFragment();
     }
 
-    public void displayTerms()
+    private void pushInvitationFragment()
     {
-        TextView termsCopy = this.terms;
-        if (termsCopy != null)
-        {
-            if (competitionZoneDTO != null)
-            {
-                termsCopy.setText(competitionZoneDTO.description);
-            }
-        }
+        navigator.pushFragment(FriendsInvitationFragment.class);
     }
+
     //</editor-fold>
 
-    public void setOnElementClickedListener(OnElementClickedListener elementClickedListener)
-    {
-        this.elementClickedListener = elementClickedListener;
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.competition_legal_rules)
-    void pushRulesFragment()
-    {
-        Timber.d("pushRulesFragment");
-        notifyElementClicked(CompetitionZoneLegalDTO.LinkType.RULES);
-        // Rely on item click listener
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.competition_legal_terms) void pushTermsFragment()
-    {
-        Timber.d("pushTermsFragment");
-        notifyElementClicked(CompetitionZoneLegalDTO.LinkType.TERMS);
-    }
-
-    private void notifyElementClicked(CompetitionZoneLegalDTO.LinkType linkType)
-    {
-        OnElementClickedListener listenerCopy = this.elementClickedListener;
-        ((CompetitionZoneLegalDTO) competitionZoneDTO).requestedLink = linkType;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onElementClicked(competitionZoneDTO);
-        }
-    }
-
-    public static interface OnElementClickedListener
-    {
-        void onElementClicked(CompetitionZoneDTO competitionZoneDTO);
-    }
 }

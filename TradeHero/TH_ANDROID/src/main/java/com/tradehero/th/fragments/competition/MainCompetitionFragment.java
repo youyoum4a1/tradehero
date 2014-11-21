@@ -16,7 +16,10 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -27,6 +30,7 @@ import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -54,21 +58,15 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
-
+import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
-import dagger.Lazy;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -96,6 +94,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject ProviderServiceWrapper providerServiceWrapper;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -104,6 +103,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Nullable private Subscription competitionListCacheSubscription;
     protected CompetitionDTOList competitionDTOs;
     @Nullable private Subscription displayCellListCacheFetchSubscription;
+    @Nullable private Subscription displayPrizePoolSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -162,6 +162,20 @@ public class MainCompetitionFragment extends CompetitionFragment
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId)))
                 .subscribe(createDisplayCellListCacheObserver());
+
+        fetchPrizePool();
+    }
+
+    private void fetchPrizePool() {
+        Timber.d("lyl fetchPrizePool provider.id="+providerId.toString());
+        //only for sgx
+        if (providerId.key == 24)
+        {
+            unsubscribe(displayPrizePoolSubscription);
+            displayPrizePoolSubscription = AndroidObservable.bindFragment(
+                    this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
+                    .subscribe(new CompetitionFragmentProviderPrizePoolObserver());
+        }
     }
 
     @Override public void onResume()
@@ -190,6 +204,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionListCacheSubscription = null;
         unsubscribe(displayCellListCacheFetchSubscription);
         displayCellListCacheFetchSubscription = null;
+        unsubscribe(displayPrizePoolSubscription);
+        displayPrizePoolSubscription = null;
         super.onStop();
     }
 
@@ -301,7 +317,6 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected void linkWith(CompetitionDTOList competitionDTOs1, boolean andDisplay)
     {
-        Timber.d("lyl CompetitionDTOList.size="+competitionDTOs1.size());
         this.competitionDTOs = competitionDTOs1;
         competitionZoneListItemAdapter.setCompetitionDTOs(competitionDTOs1);
         if (andDisplay)
@@ -632,6 +647,33 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override protected Class<?> getClassToPop()
         {
             return MainCompetitionFragment.class;
+        }
+    }
+
+    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<ProviderPrizePoolDTO>
+//    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<Pair<ProviderId, ProviderPrizePoolDTO>>
+    {
+        @Override public void onNext(ProviderPrizePoolDTO dto)
+//        @Override public void onNext(Pair<ProviderId, ProviderPrizePoolDTO> pair)
+        {
+//            linkWith(pair.second, true);
+            Timber.d("lyl "+dto.toString());
+            providerPrizePoolDTO = dto;
+            competitionZoneListItemAdapter.setPrizePoolDTO(providerPrizePoolDTO);
+            displayListView();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (providerPrizePoolDTO == null)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            }
+            Timber.e("Error fetching the provider info", e);
         }
     }
 }
