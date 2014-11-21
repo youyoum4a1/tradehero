@@ -230,7 +230,7 @@ public class PositionDetailFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull PositionDTOKey key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_position_list_info);
+            //THToast.show(R.string.error_fetch_position_list_info);
         }
     }
 

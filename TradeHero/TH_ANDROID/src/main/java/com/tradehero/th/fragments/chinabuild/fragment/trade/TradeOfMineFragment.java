@@ -23,6 +23,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdpater;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -205,12 +206,12 @@ public class TradeOfMineFragment extends DashboardFragment
             if (((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_CLOSED)
             {
                 enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
-                        ((SecurityPositionItem) item).position);
+                        ((SecurityPositionItem) item).position,true);
             }
             else if (((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
             {
                 enterSecurity(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
-                        ((SecurityPositionItem) item).position);
+                        ((SecurityPositionItem) item).position,false);
             }
         }
         else if (item instanceof WatchPositionItem)
@@ -220,11 +221,12 @@ public class TradeOfMineFragment extends DashboardFragment
         }
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO)
+    public void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO,boolean isGotoTradeDetail)
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+        bundle.putBoolean(SecurityDetailFragment.BUNDLE_KEY_GOTO_TRADE_DETAIL,isGotoTradeDetail);
         SecurityDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
         if (shownPortfolioId != null)
         {
@@ -388,6 +390,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
+            MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
             finish();
         }
@@ -396,6 +399,7 @@ public class TradeOfMineFragment extends DashboardFragment
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
+            MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
             finish();
         }

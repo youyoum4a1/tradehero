@@ -161,7 +161,7 @@
           android:layout_width="fill_parent"
           android:layout_height="fill_parent"
           android:gravity="center"
-          android:text="没有找到交易明细"/>
+          android:text="没有找到持仓交易明细"/>
 
     </com.tradehero.common.widget.BetterViewAnimator>
   </LinearLayout>

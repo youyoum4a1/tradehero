@@ -8,7 +8,7 @@ import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
-import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
 import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
@@ -212,7 +212,7 @@ import retrofit.Callback;
         return null;
     }
 
-    @NotNull public PositionDTOCompact getPositionCompactDTO(PositionDTOKey key)
+    @NotNull public PositionDTO getPositionDTO(PositionDTOKey key)
     {
         return competitionService.getPositionCompactDTO(key.competitionId, key.securityId.getExchange(),key.securityId.getSecuritySymbol());
     }

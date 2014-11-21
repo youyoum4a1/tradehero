@@ -1,14 +1,14 @@
 package com.tradehero.th.fragments.chinabuild.cache;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 
-@Singleton public class PositionCompactNewCache extends StraightDTOCacheNew<PositionDTOKey, PositionDTOCompact>
+@Singleton public class PositionCompactNewCache extends StraightDTOCacheNew<PositionDTOKey, PositionDTO>
 {
     public static final int DEFAULT_MAX_SIZE = 500;
     @NotNull private final Lazy<CompetitionServiceWrapper> competitionServiceWrapper;
@@ -31,9 +31,9 @@ import org.jetbrains.annotations.NotNull;
     }
     //</editor-fold>
 
-    @Override @NotNull public PositionDTOCompact fetch(@NotNull PositionDTOKey key) throws Throwable
+    @Override @NotNull public PositionDTO fetch(@NotNull PositionDTOKey key) throws Throwable
     {
-        return competitionServiceWrapper.get().getPositionCompactDTO(key);
+        return competitionServiceWrapper.get().getPositionDTO(key);
     }
     //
     //@Override public PortfolioCompactDTO put(@NotNull PositionDTOKey key, @NotNull PositionDTOCompact dto)

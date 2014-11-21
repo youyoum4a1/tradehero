@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.chinabuild.data.SecurityPositionItem;
 import com.tradehero.th.fragments.chinabuild.data.WatchPositionItem;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -19,9 +20,8 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
+import javax.inject.Inject;
 
 /**
  * Created by palmer on 14/11/17.
@@ -151,7 +151,7 @@ public class CNPersonTradePositionListAdpater extends BaseExpandableListAdapter 
             //price
             if(item.security.lastPrice!=null)
             {
-                tvSecurityPrice.setText(String.valueOf(item.security.lastPrice));
+                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.security.lastPrice));
             }
             //currency
             tvSecurityCurrency.setText(item.security.getCurrencyDisplay());
@@ -190,7 +190,7 @@ public class CNPersonTradePositionListAdpater extends BaseExpandableListAdapter 
                 //price
                 if(item.watchlistPosition.securityDTO.lastPrice!=null)
                 {
-                    tvSecurityPrice.setText(String.valueOf(item.watchlistPosition.securityDTO.lastPrice));
+                    tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.watchlistPosition.securityDTO.lastPrice));
                 }
 
                 //currency

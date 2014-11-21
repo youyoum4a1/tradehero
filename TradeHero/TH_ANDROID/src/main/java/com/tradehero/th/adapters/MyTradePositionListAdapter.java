@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.chinabuild.data.PositionHeadItem;
 import com.tradehero.th.fragments.chinabuild.data.PositionInterface;
 import com.tradehero.th.fragments.chinabuild.data.PositionLockedItem;
@@ -222,7 +223,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //price
                 if((((SecurityPositionItem) item)).security.lastPrice!=null)
                 {
-                    tvSecurityPrice.setText(String.valueOf((((SecurityPositionItem) item)).security.lastPrice));
+                    tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(((SecurityPositionItem) item).security.lastPrice));
                 }
 
 
@@ -267,7 +268,7 @@ public class MyTradePositionListAdapter extends BaseAdapter
                 //price
                 if((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice!=null)
                 {
-                    tvSecurityPrice.setText(String.valueOf((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice));
+                    tvSecurityPrice.setText(SecurityCompactDTO.getShortValue((((WatchPositionItem) item)).watchlistPosition.securityDTO.lastPrice));
                 }
 
                 //currency

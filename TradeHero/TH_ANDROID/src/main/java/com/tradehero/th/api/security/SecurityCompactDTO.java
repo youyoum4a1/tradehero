@@ -193,6 +193,13 @@ public class SecurityCompactDTO extends ExtendedDTO
         return df.format(d1);
     }
 
+    public static String getShortValue(double value)
+    {
+        double d1 = value;
+        DecimalFormat df = new DecimalFormat("#0.00");
+        return df.format(d1);
+    }
+
     public boolean isLastPriceNotNullOrZero()
     {
         return !Double.isNaN(lastPrice) && !(Double.compare(lastPrice, 0.0) == 0);

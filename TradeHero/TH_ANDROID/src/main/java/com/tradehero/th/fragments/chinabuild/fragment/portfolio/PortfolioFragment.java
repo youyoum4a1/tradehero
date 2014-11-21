@@ -230,12 +230,12 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            if(portfolio_type == PORTFOLIO_TYPE_MINE)
-            {
+            if(portfolio_type == PORTFOLIO_TYPE_MINE && ((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
+            {//只有我的比赛持仓才需要直接跳转至股票详情页面
                 enterSecurityToSecurityDetail(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,((SecurityPositionItem) item).position);
             }
             else
-            {
+            {//其他只需要跳转到持仓详情页
                 enterSecurityToPortfolio(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
                         ((SecurityPositionItem) item).position);
             }
@@ -331,12 +331,12 @@ public class PortfolioFragment extends DashboardFragment
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
-        SecurityDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
-        OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(user_id, portfolio_id);
-        if (ownedPortfolioId != null)
-        {
-            SecurityDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
-        }
+        //SecurityDetailFragment.putPositionDTOKey(bundle, positionDTO.getPositionDTOKey());
+        //OwnedPortfolioId ownedPortfolioId = new OwnedPortfolioId(user_id, portfolio_id);
+        //if (ownedPortfolioId != null)
+        //{
+        //    SecurityDetailFragment.putApplicablePortfolioId(bundle, ownedPortfolioId);
+        //}
         pushFragment(SecurityDetailFragment.class, bundle);
     }
 

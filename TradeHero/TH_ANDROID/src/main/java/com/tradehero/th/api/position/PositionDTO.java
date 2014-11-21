@@ -3,6 +3,7 @@ package com.tradehero.th.api.position;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
@@ -16,6 +17,9 @@ public class PositionDTO extends PositionDTOCompact
 {
     public int userId;
     public int securityId;
+    public String symbol;
+    public String exchange;
+
     public Double realizedPLRefCcy;
     public Double unrealizedPLRefCcy;
     public double marketValueRefCcy;
@@ -72,6 +76,11 @@ public class PositionDTO extends PositionDTOCompact
     public PositionDTOKey getPositionDTOKey()
     {
         return getOwnedPositionId();
+    }
+
+    public SecurityId getSecurityId()
+    {
+        return new SecurityId(exchange,symbol);
     }
 
     public Date getLatestHoldDate()

@@ -34,6 +34,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -146,6 +147,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public final static String BUNDLE_KEY_SECURITY_NAME = SecurityDetailFragment.class.getName() + ".securityName";
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_COMPETITION_ID_BUNDLE = SecurityDetailFragment.class.getName() + ".competitionID";
+    public final static String BUNDLE_KEY_GOTO_TRADE_DETAIL = SecurityDetailFragment.class.getName() + ".gotoTradeDetail";
 
     public final static long MILLISEC_QUOTE_REFRESH = 10000;
     public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
@@ -171,7 +173,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailListener;
 
     @Inject Lazy<PositionCompactNewCache> positionCompactNewCache;
-    private DTOCacheNew.Listener<PositionDTOKey, PositionDTOCompact> positionNewCacheListener;
+    private DTOCacheNew.Listener<PositionDTOKey, PositionDTO> positionNewCacheListener;
 
     protected ProviderId providerId;
     protected UserProfileDTO userProfileDTO;
@@ -322,6 +324,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private DTOCacheNew.Listener<OwnedPositionId, TradeDTOList> fetchTradesListener;
     private PositionTradeListAdapter adapter;
 
+    private boolean isGotoTradeDetail;
+    private boolean isFristLunch;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -337,6 +342,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         fetchPositionListener = createPositionCacheListener();
         fetchTradesListener = createTradeListeCacheListener();
         adapter = new PositionTradeListAdapter(getActivity());
+
+        isGotoTradeDetail = getArguments().getBoolean(BUNDLE_KEY_GOTO_TRADE_DETAIL, false);
+        isFristLunch = true;
     }
 
     @Override
@@ -481,7 +489,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void initView()
     {
-
         initTabPageView();
 
         tvUserTLContent.setMaxLines(10);
@@ -555,6 +562,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         setOnclickListeners();
         pager.setAdapter(pageAdapter);
         indicator.setViewPager(pager);
+
+        if (isGotoTradeDetail && isFristLunch)
+        {
+            isFristLunch = false;
+            indicator.setCurrentItem(1);
+        }
     }
 
     public void initRootViewTab0(View tabView0)
@@ -703,7 +716,31 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             showGuideView();
         }
 
-        linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory));
+        getTradeTabDetail();
+    }
+
+    public void getTradeTabDetail()
+    {
+        com.tradehero.th.api.position.PositionDTOKey positionDTOKey = getPositionDTOKey(getArguments(), positionDTOKeyFactory);
+        if (positionDTOKey == null && securityId != null)
+        {
+            positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityId);
+        }
+        if (positionDTOKey == null && securityCompactDTO != null)
+        {
+            positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityCompactDTO.id);
+        }
+        if (positionDTOKey != null)
+        {
+            linkWith(positionDTOKey);
+        }
+        else //显示没有交易记录
+        {
+            if (betterViewAnimatorPortfolio != null)
+            {
+                betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+            }
+        }
     }
 
     public void initArgment()
@@ -803,6 +840,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onFreshQuote(QuoteDTO quoteDTO)
         {
+            if(quoteDTO!=null&&(quoteDTO.ask==0||quoteDTO.bid==0))return ;
             linkWith(quoteDTO, true);
         }
     }
@@ -1042,6 +1080,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         displayChartImage();
 
         displaySecurityInfo();
+
+        getTradeTabDetail();
     }
 
     public void setTextForMoreButton()
@@ -1114,6 +1154,20 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         return ChartTimeSpan.DAY_1;
     }
 
+    //分时线 和 5天线 每一分钟需要更新一次
+    long TIMER_FOR_DISPLAY_CHART_IMAGE0 = System.currentTimeMillis();
+    long TIMER_FOR_DISPLAY_CHART_IMAGE1 = System.currentTimeMillis();
+
+    public boolean isValidTimerForChartImage0()
+    {
+        return System.currentTimeMillis() - TIMER_FOR_DISPLAY_CHART_IMAGE0 > 60000;
+    }
+
+    public boolean isValidTimerForChartImage1()
+    {
+        return System.currentTimeMillis() - TIMER_FOR_DISPLAY_CHART_IMAGE1 > 60000;
+    }
+
     public void displayChartImage()
     {
         ImageView image = this.chartImage;
@@ -1121,9 +1175,28 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             String imageURL = chartDTO.getChartUrl();
             // HACK TODO find something better than skipCache to avoid OutOfMemory
-            this.picasso
-                    .load(imageURL)
-                    .into(image, chartImageCallback);
+            if ((indexChart == 0) && isValidTimerForChartImage0())
+            {
+                this.picasso
+                        .load(imageURL)
+                        .skipMemoryCache()
+                        .into(image, chartImageCallback);
+                TIMER_FOR_DISPLAY_CHART_IMAGE0 = System.currentTimeMillis();
+            }
+            else if ((indexChart == 1) && isValidTimerForChartImage1())
+            {
+                this.picasso
+                        .load(imageURL)
+                        .skipMemoryCache()
+                        .into(image, chartImageCallback);
+                TIMER_FOR_DISPLAY_CHART_IMAGE1 = System.currentTimeMillis();
+            }
+            else
+            {
+                this.picasso
+                        .load(imageURL)
+                        .into(image, chartImageCallback);
+            }
         }
     }
 
@@ -1150,7 +1223,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 tvSecurityDetailRate.setText(roi.toString());
                 tvSecurityDetailRate.setTextColor(getResources().getColor(roi.getColorResId()));
 
-                tvSecurityPrice.setText(String.valueOf(securityCompactDTO.lastPrice));
+                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.lastPrice));
                 tvSecurityPrice.setTextColor(getResources().getColor(roi.getColorResId()));
 
                 tvSecurityDetailNum.setText(securityCompactDTO.getPriceDifferent());
@@ -1315,14 +1388,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         pushFragment(SecurityDiscussSendFragment.class, bundle);
     }
 
-    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTOCompact> createPositionNewCacheListener()
+    protected DTOCacheNew.Listener<PositionDTOKey, PositionDTO> createPositionNewCacheListener()
     {
         return new PositionNewCacheListener();
     }
 
-    protected class PositionNewCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTOCompact>
+    protected class PositionNewCacheListener implements DTOCacheNew.Listener<PositionDTOKey, PositionDTO>
     {
-        @Override public void onDTOReceived(@NotNull final PositionDTOKey key, @NotNull final PositionDTOCompact value)
+        @Override public void onDTOReceived(@NotNull final PositionDTOKey key, @NotNull final PositionDTO value)
         {
             linkWith(value);
         }
@@ -1341,6 +1414,17 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             PositionDTOCompactList positionDTOCompacts = new PositionDTOCompactList();
             positionDTOCompacts.add(value);
             linkWith(positionDTOCompacts, true);
+        }
+
+        if (value instanceof PositionDTO)
+        {
+            if (((PositionDTO) value).userId == 0)
+            {
+                ((PositionDTO) value).userId = currentUserId.toUserBaseKey().getUserId();
+            }
+            getArguments().putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, ((PositionDTO) value).getPositionDTOKey().getArgs());
+            getArguments().putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ((PositionDTO) value).getOwnedPortfolioId().getArgs());
+            getTradeTabDetail();
         }
     }
 
@@ -2156,7 +2240,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onErrorThrown(@NotNull com.tradehero.th.api.position.PositionDTOKey key, @NotNull Throwable error)
         {
-            THToast.show(R.string.error_fetch_position_list_info);
+            //THToast.show(R.string.error_fetch_position_list_info);
         }
     }
 
@@ -2256,7 +2340,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             public void run()
             {
                 closeTimerForView();
-                linkWith(getPositionDTOKey(getArguments(), positionDTOKeyFactory));
+                getTradeTabDetail();
             }
         };
         handler.postDelayed(runnable, 5000);

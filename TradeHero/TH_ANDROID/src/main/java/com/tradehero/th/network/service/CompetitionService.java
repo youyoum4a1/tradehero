@@ -4,7 +4,7 @@ import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
-import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import retrofit.http.Body;
@@ -86,7 +86,7 @@ public interface CompetitionService
     );
 
     //我的比赛持仓
-    @GET("/usercompetitions/{competitionId}/position") PositionDTOCompact getPositionCompactDTO(
+    @GET("/usercompetitions/{competitionId}/position") PositionDTO getPositionCompactDTO(
             @Path("competitionId") Integer competitionId,
             @Query("exchange") String exchange,
             @Query("symbol") String symbol

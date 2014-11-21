@@ -5,6 +5,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -34,14 +35,39 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
         this.closedPositionsCount = closedPositionsCount;
     }
 
-
     public SecurityCompactDTO getSecurityCompactDTO(PositionDTO positionDTO)
     {
-        for(int i = 0;i<securities.size();i++)
+        for (int i = 0; i < securities.size(); i++)
         {
-            if(securities.get(i).id == positionDTO.securityId)
+            if (securities.get(i).id == positionDTO.securityId)
             {
                 return securities.get(i);
+            }
+        }
+        return null;
+    }
+
+    public PositionDTO getSecurityPositionDTO(SecurityId securityId)
+    {
+        if (positions == null) return null;
+        for (int i = 0; i < positions.size(); i++)
+        {
+            if (securityId.equals(positions.get(i).getSecurityId()) && positions.get(i).shares > 0)//找到持仓的positionDTO
+            {
+                return positions.get(i);
+            }
+        }
+        return null;
+    }
+
+    public PositionDTO getSecurityPositionDTO(int securityId)
+    {
+        if (positions == null) return null;
+        for (int i = 0; i < positions.size(); i++)
+        {
+            if (securityId == positions.get(i).securityId && positions.get(i).shares > 0)//找到持仓的positionDTO
+            {
+                return positions.get(i);
             }
         }
         return null;
@@ -72,7 +98,7 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
             return null;
         }
         List<PositionDTOType> openPositions = new ArrayList<>();
-        for (PositionDTOType positionDTO: positions)
+        for (PositionDTOType positionDTO : positions)
         {
             if (positionDTO.isOpen() == open)
             {

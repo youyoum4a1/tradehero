@@ -254,8 +254,8 @@ public class SquarePageIndicator extends View implements PageIndicator
             shortPaddingBefore = getPaddingLeft();
         }
 
-        final float threeRadius = mRadius * 6;
-        final float halfwidth = 8;
+        final float threeRadius = mRadius * 8;
+        final float halfwidth = 12;
         final float halfheight = 6;
         final float shortOffset = shortPaddingBefore + mRadius;
         float longOffset = longPaddingBefore + mRadius;

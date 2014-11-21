@@ -124,7 +124,7 @@ public class SecurityListAdapter extends BaseAdapter
                 holder.tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
             }
 
-            holder.tvSecurityPrice.setText(String.valueOf(item.lastPrice));
+            holder.tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.lastPrice));
             holder.tvSecurityCurrency.setText(item.getCurrencyDisplay());
         }
         return convertView;
