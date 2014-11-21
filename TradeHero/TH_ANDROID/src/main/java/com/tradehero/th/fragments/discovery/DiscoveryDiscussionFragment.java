@@ -124,6 +124,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
+        progressBar.setVisibility(View.VISIBLE);
         timelineSubscriptions.add(rxLoaderManager.create(
                 DISCOVERY_LIST_LOADER_ID,
                 PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
