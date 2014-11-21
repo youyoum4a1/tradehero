@@ -40,11 +40,6 @@ public class WebViewFragment extends BaseWebViewFragment
         }
     }
 
-    @Override protected int getLayoutResId()
-    {
-        return R.layout.fragment_webview;
-    }
-
     //<editor-fold desc="ActionBar">
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {

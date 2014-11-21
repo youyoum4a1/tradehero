@@ -1,11 +1,10 @@
 package com.tradehero.th.fragments.competition;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.webkit.WebView;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -16,7 +15,6 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 @Routable(
         "providers-enroll/:providerId"
@@ -33,11 +31,6 @@ public class CompetitionWebViewFragment extends BaseWebViewFragment
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         thRouter.inject(this);
-    }
-
-    @Override protected int getLayoutResId()
-    {
-        return R.layout.fragment_webview;
     }
 
     //<editor-fold desc="ActionBar">

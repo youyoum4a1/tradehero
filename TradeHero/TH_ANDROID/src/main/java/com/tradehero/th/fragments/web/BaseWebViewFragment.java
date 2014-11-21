@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.web;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,9 @@ import com.tradehero.th.network.NetworkConstants;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
-abstract public class BaseWebViewFragment extends DashboardFragment
+public class BaseWebViewFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
 
@@ -59,7 +59,10 @@ abstract public class BaseWebViewFragment extends DashboardFragment
         return view;
     }
 
-    abstract protected int getLayoutResId();
+    protected int getLayoutResId()
+    {
+        return R.layout.fragment_webview;
+    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
