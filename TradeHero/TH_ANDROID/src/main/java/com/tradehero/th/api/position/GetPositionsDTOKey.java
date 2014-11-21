@@ -1,8 +1,8 @@
 package com.tradehero.th.api.position;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.DTOKey;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOKey;
 
 public interface GetPositionsDTOKey extends DTOKey
 {

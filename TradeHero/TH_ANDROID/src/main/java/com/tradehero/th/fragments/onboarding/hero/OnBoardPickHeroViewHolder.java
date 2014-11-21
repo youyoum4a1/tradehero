@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.hero;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,7 +16,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class OnBoardPickHeroViewHolder
 {

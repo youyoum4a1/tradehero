@@ -37,8 +37,8 @@ public class CompetitionZoneDTOUtil
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
             @Nullable ProviderPrizePoolDTO providerPrizePoolDTO,
-            @NotNull List<Integer> preparedOrderedTypes,
-            @NotNull List<CompetitionZoneDTO> preparedOrderedItems)
+            @Nullable List<Integer> preparedOrderedTypes,
+            @Nullable List<CompetitionZoneDTO> preparedOrderedItems)
     {
         if (providerDTO != null)
         {

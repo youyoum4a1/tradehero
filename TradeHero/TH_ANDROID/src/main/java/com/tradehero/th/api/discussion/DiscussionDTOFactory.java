@@ -1,12 +1,12 @@
 package com.tradehero.th.api.discussion;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.util.Date;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class DiscussionDTOFactory
 {

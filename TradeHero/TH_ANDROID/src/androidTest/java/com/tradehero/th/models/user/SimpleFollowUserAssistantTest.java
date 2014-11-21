@@ -10,11 +10,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import retrofit.RetrofitError;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import retrofit.RetrofitError;
 
 @RunWith(THRobolectricTestRunner.class)
 public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase

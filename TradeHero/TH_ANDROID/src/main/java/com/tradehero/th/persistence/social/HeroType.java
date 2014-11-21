@@ -1,7 +1,7 @@
 package com.tradehero.th.persistence.social;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import android.support.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum HeroType
 {

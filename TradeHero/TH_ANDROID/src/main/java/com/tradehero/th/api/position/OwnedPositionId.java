@@ -1,10 +1,10 @@
 package com.tradehero.th.api.position;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import android.support.annotation.NonNull;
 
 public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey, DTO
 {

@@ -1,7 +1,7 @@
 package com.tradehero.common.persistence;
 
-import java.util.List;
 import android.support.annotation.NonNull;
+import java.util.List;
 
 abstract public class BaseDTOListCacheRx<
         DTOKeyType extends DTOKey,

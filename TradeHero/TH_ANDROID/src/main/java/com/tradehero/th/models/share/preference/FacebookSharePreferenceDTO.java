@@ -1,7 +1,7 @@
 package com.tradehero.th.models.share.preference;
 
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 
 public class FacebookSharePreferenceDTO extends BaseSocialSharePreferenceDTO
 {

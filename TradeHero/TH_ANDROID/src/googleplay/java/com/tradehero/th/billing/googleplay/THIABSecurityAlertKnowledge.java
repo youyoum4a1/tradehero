@@ -1,14 +1,12 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
 import com.tradehero.th.billing.THBillingConstants;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

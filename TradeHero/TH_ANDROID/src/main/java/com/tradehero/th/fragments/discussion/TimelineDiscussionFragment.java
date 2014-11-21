@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,6 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 {

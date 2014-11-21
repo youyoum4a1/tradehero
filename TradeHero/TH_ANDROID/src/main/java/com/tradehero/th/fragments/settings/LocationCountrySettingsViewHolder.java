@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.annotation.NonNull;
 import android.support.v4.preference.PreferenceFragment;
 import android.util.Pair;
 import com.tradehero.common.utils.THToast;
@@ -11,7 +12,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

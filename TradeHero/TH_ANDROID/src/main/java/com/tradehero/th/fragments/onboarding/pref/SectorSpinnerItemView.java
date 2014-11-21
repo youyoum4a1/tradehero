@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.pref;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -9,7 +10,6 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.SectorCompactDTO;
-import android.support.annotation.Nullable;
 
 public class SectorSpinnerItemView extends RelativeLayout
     implements DTOView<SectorCompactDTO>

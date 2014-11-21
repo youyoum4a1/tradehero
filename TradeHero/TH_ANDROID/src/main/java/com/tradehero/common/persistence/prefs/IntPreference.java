@@ -1,7 +1,6 @@
 package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
 
 public class IntPreference extends AbstractPreference<Integer>

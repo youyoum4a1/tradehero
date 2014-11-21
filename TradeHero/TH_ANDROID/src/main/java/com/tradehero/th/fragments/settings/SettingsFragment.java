@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -22,13 +25,10 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 @Routable("settings")
 public final class SettingsFragment extends DashboardPreferenceFragment

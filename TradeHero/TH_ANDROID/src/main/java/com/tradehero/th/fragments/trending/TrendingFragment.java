@@ -16,6 +16,7 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -53,7 +54,6 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;

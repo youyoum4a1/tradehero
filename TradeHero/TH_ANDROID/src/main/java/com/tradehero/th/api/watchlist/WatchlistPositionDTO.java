@@ -1,11 +1,10 @@
 package com.tradehero.th.api.watchlist;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class WatchlistPositionDTO extends PositionDTO
 {

@@ -1,7 +1,7 @@
 package com.tradehero.th.rx.view;
 
-import android.widget.CompoundButton;
 import android.support.annotation.NonNull;
+import android.widget.CompoundButton;
 import rx.functions.Action1;
 
 public class CompoundButtonSetCheckedAction1

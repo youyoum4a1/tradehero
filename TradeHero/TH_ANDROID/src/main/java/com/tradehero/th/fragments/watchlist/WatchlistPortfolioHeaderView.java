@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,8 +15,6 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import java.text.SimpleDateFormat;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class WatchlistPortfolioHeaderView extends LinearLayout
 {

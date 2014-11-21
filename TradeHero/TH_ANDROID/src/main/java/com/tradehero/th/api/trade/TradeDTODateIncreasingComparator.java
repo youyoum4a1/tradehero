@@ -1,8 +1,8 @@
 package com.tradehero.th.api.trade;
 
+import android.support.annotation.Nullable;
 import java.util.Comparator;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
 
 public class TradeDTODateIncreasingComparator implements Comparator<TradeDTO>
 {

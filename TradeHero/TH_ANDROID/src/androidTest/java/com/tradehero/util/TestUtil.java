@@ -1,10 +1,8 @@
 package com.tradehero.util;
 
+import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.IOUtils;
-
-import android.support.annotation.NonNull;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

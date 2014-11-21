@@ -1,12 +1,10 @@
 package com.tradehero.th.api.education;
 
 import android.os.Bundle;
-
-import com.tradehero.common.api.PagedDTOKey;
-import com.tradehero.common.persistence.DTOKey;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.api.PagedDTOKey;
+import com.tradehero.common.persistence.DTOKey;
 
 public class PagedVideoCategories implements DTOKey, PagedDTOKey
 {

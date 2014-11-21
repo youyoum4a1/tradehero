@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -11,7 +12,6 @@ import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
 import com.tradehero.th.api.discussion.form.PrivateMessageCreateFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.PostCommentView;
-import android.support.annotation.NonNull;
 
 public class PrivatePostCommentView extends PostCommentView
 {

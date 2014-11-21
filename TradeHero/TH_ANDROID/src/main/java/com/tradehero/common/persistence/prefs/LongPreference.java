@@ -1,9 +1,7 @@
 package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LongPreference extends AbstractPreference<Long>
 {

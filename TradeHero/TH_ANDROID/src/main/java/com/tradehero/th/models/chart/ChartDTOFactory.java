@@ -1,7 +1,7 @@
 package com.tradehero.th.models.chart;
 
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 
 public interface ChartDTOFactory
 {

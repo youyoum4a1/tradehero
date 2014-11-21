@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard;
 
-import com.android.internal.util.Predicate;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 
 public class CountryCodeListContainCodePredicate implements Predicate<CountryCodeList>
 {

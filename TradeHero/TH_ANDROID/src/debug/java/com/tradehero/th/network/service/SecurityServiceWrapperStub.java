@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -11,7 +12,6 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton public class SecurityServiceWrapperStub extends SecurityServiceWrapper
 {

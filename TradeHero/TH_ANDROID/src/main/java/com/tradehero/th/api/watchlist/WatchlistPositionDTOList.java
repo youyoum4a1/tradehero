@@ -1,12 +1,10 @@
 package com.tradehero.th.api.watchlist;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIdList;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.ArrayList;
 
 public class WatchlistPositionDTOList extends PositionDTOList<WatchlistPositionDTO>

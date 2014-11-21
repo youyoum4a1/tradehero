@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
+import static butterknife.ButterKnife.findById;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
@@ -36,6 +37,7 @@ import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -48,9 +50,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-
-import static butterknife.ButterKnife.findById;
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
 public class NewsHeadlineFragment extends Fragment
 {

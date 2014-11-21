@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.hero;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.squareup.picasso.Picasso;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SelectableUserViewRelative extends RelativeLayout
     implements DTOView<SelectableUserDTO>

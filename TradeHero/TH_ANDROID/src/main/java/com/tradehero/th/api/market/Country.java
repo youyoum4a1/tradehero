@@ -1,7 +1,7 @@
 package com.tradehero.th.api.market;
 
-import com.tradehero.th.R;
 import android.support.annotation.Nullable;
+import com.tradehero.th.R;
 
 public enum Country
 {

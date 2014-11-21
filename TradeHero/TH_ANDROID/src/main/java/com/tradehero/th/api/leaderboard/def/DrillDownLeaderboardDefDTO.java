@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.def;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import android.support.annotation.NonNull;
 
 public class DrillDownLeaderboardDefDTO extends LeaderboardDefDTO
 {

@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.position;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
@@ -19,7 +20,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.tradehero.th.api.competition.specific.ProviderSpecificsPopulator;
 import java.io.IOException;
-import android.support.annotation.NonNull;
 
 abstract public class ProviderDTODeserialiserBase<ProviderCompactDTOType extends ProviderDTO>
         extends StdDeserializer<ProviderCompactDTOType>

@@ -1,7 +1,7 @@
 package com.tradehero.th.api.i18n;
 
-import com.android.internal.util.Predicate;
 import android.support.annotation.NonNull;
+import com.android.internal.util.Predicate;
 
 public class LanguageCodePredicate implements Predicate<LanguageDTO>
 {

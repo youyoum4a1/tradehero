@@ -3,7 +3,6 @@ package com.tradehero.th.api.discussion;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class MessageHeaderIdList extends DTOKeyIdList<MessageHeaderId>
 {

@@ -75,7 +75,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider">
-    @NotNull public Observable<ProviderPrizePoolDTO> getProviderPrizePoolRx(@NotNull ProviderId providerId)
+    @NonNull public Observable<ProviderPrizePoolDTO> getProviderPrizePoolRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProviderPrizePool(providerId.key);
     }

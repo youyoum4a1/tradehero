@@ -1,5 +1,6 @@
 package com.tradehero.th.api.share.timeline;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -9,7 +10,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class TimelineItemShareFormDTOFactory
 {

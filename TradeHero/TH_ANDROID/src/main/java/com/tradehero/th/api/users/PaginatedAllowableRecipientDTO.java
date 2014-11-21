@@ -1,12 +1,12 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.HasExpiration;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class PaginatedAllowableRecipientDTO extends PaginatedDTO<AllowableRecipientDTO>
         implements HasExpiration

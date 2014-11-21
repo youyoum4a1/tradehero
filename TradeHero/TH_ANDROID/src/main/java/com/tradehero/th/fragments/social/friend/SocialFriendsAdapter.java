@@ -2,19 +2,15 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.social.UserFriendsDTO;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import timber.log.Timber;
 
 public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListItemDTO, SocialFriendItemView>

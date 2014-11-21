@@ -1,8 +1,8 @@
 package com.tradehero.th.api.market;
 
 import android.content.Context;
-import java.util.Comparator;
 import android.support.annotation.NonNull;
+import java.util.Comparator;
 
 public class CountryNameComparator implements Comparator<Country>
 {

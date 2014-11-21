@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,8 +21,6 @@ import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class SocialFriendUserView extends SocialFriendItemView

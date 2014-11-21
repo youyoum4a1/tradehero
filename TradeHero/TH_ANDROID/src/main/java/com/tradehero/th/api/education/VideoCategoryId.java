@@ -1,10 +1,8 @@
 package com.tradehero.th.api.education;
 
 import android.os.Bundle;
-
-import com.tradehero.common.persistence.DTOKey;
-
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOKey;
 
 public class VideoCategoryId implements DTOKey
 {

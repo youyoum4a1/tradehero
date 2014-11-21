@@ -1,9 +1,9 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKey;
 import java.util.ArrayList;
 import java.util.Collection;
-import android.support.annotation.NonNull;
 
 public class SecurityIntegerIdList extends ArrayList<SecurityIntegerId>
     implements DTOKey

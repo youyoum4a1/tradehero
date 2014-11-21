@@ -1,13 +1,12 @@
 package com.tradehero.th.models.user;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class OpenSimpleFollowUserAssistant extends SimpleFollowUserAssistant
 {

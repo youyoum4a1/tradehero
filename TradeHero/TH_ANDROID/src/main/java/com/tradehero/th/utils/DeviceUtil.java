@@ -2,11 +2,9 @@ package com.tradehero.th.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import android.support.annotation.Nullable;
-
 import java.lang.ref.WeakReference;
 
 public final class DeviceUtil

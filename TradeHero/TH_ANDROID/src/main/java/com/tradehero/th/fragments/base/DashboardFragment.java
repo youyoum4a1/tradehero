@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +17,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment

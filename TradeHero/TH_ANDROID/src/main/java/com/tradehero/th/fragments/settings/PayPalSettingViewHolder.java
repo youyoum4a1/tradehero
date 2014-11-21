@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -7,8 +9,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +28,6 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;

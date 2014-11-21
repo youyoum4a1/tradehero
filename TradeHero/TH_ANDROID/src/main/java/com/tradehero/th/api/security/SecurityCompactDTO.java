@@ -1,6 +1,8 @@
 package com.tradehero.th.api.security;
 
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
@@ -19,14 +21,9 @@ import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
 import com.tradehero.th.api.security.compact.UnitCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import timber.log.Timber;
 
 @JsonTypeInfo(

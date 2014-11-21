@@ -13,7 +13,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -26,13 +27,8 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-
 import java.util.ArrayDeque;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

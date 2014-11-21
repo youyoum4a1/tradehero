@@ -1,11 +1,11 @@
 package com.tradehero.th.api.competition;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import android.support.annotation.Nullable;
 
 public class CompetitionDTO implements DTO
 {

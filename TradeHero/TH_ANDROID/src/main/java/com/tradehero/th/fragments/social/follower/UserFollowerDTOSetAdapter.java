@@ -2,10 +2,10 @@ package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.social.UserFollowerDTO;
-import android.support.annotation.NonNull;
 
 public class UserFollowerDTOSetAdapter extends ViewDTOSetAdapter<UserFollowerDTO, FollowerListItemView>
 {

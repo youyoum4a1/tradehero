@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.billing.store;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.system.SystemStatusDTO;
@@ -10,7 +11,6 @@ import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 

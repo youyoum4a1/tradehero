@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.news;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class NewsDialogFactory extends ShareDialogFactory
 {

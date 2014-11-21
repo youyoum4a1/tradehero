@@ -1,6 +1,8 @@
 package com.tradehero.th.api.translation;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -10,8 +12,6 @@ import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.io.IOException;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class UserTranslationSettingDTOFactory

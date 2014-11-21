@@ -1,5 +1,7 @@
 package com.tradehero.th.persistence.translation;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
@@ -12,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class TranslationKeyFactory
 {

@@ -1,10 +1,10 @@
 package com.tradehero.th.api.security.compact;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantType;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class WarrantDTO extends SecurityCompactDTO
 {

@@ -4,25 +4,13 @@ import android.view.LayoutInflater;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
-import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import static org.mockito.Mockito.mock;
 import org.robolectric.Robolectric;
 import org.robolectric.util.ActivityController;
-import retrofit.Callback;
-import retrofit.client.Header;
-import retrofit.client.Response;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(THRobolectricTestRunner.class)
 public class NotificationsViewTest

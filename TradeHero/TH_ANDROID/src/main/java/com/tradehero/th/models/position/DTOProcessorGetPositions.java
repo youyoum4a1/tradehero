@@ -1,8 +1,8 @@
 package com.tradehero.th.models.position;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import android.support.annotation.NonNull;
 import rx.functions.Func1;
 
 public class DTOProcessorGetPositions implements Func1<GetPositionsDTO, GetPositionsDTO>

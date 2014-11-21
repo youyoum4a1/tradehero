@@ -1,8 +1,8 @@
 package com.tradehero.th.models.number;
 
-import com.tradehero.th.utils.SecurityUtils;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.utils.SecurityUtils;
 
 public class THSignedMoney extends THSignedNumber
 {

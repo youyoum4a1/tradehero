@@ -4,18 +4,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
 import com.tradehero.common.billing.request.UIBillingRequest;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import timber.log.Timber;
 
 abstract public class BaseBillingInteractor<

@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 {

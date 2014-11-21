@@ -1,9 +1,9 @@
 package com.tradehero.th.models.notification;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.persistence.notification.NotificationListCacheRx;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class RunnableInvalidateNotificationList implements Runnable
 {

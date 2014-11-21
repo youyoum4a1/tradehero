@@ -1,10 +1,10 @@
 package com.tradehero.th.api.portfolio;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.io.IOException;
-import android.support.annotation.Nullable;
 
 public class DisplayablePortfolioDTO implements Comparable
 {

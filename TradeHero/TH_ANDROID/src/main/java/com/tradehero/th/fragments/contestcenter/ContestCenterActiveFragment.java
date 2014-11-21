@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ContestCenterActiveFragment extends ContestCenterBaseFragment
 {

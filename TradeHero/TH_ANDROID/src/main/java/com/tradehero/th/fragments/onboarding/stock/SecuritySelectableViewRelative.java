@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.onboarding.stock;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import com.tradehero.th.api.DTOView;
-import android.support.annotation.NonNull;
 
 public class SecuritySelectableViewRelative extends RelativeLayout
     implements DTOView<SelectableSecurityDTO>

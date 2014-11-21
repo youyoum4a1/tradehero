@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.widget.TextHolder;
-import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, AlertItemView>

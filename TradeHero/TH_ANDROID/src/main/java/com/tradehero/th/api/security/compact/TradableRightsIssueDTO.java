@@ -1,8 +1,8 @@
 package com.tradehero.th.api.security.compact;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import android.support.annotation.NonNull;
 
 public class TradableRightsIssueDTO extends SecurityCompactDTO
 {

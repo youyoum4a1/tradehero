@@ -1,5 +1,7 @@
 package com.tradehero.th.api.translation;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
@@ -7,8 +9,6 @@ import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 import timber.log.Timber;
 

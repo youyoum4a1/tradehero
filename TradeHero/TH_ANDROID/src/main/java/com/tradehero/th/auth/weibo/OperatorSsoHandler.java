@@ -3,11 +3,11 @@ package com.tradehero.th.auth.weibo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 

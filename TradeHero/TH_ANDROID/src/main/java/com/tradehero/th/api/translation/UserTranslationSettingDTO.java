@@ -1,13 +1,13 @@
 package com.tradehero.th.api.translation;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

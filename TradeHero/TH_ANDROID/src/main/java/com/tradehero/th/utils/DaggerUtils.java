@@ -1,7 +1,7 @@
 package com.tradehero.th.utils;
 
-import dagger.ObjectGraph;
 import android.support.annotation.NonNull;
+import dagger.ObjectGraph;
 
 /**
  * This class is deprecated, please use HierarchyInjector instead

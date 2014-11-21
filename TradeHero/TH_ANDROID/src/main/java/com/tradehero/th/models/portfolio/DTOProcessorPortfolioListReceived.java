@@ -1,12 +1,11 @@
 package com.tradehero.th.models.portfolio;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
 import com.tradehero.th.models.ThroughDTOProcessor;
-import rx.functions.Func1;
 
 public class DTOProcessorPortfolioListReceived<PortfolioCompactListType extends PortfolioCompactDTOList>
     extends ThroughDTOProcessor<PortfolioCompactListType>

@@ -1,7 +1,7 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.th.R;
 import android.support.annotation.NonNull;
+import com.tradehero.th.R;
 
 public class UserFriendsTwitterDTO extends UserFriendsDTO
 {

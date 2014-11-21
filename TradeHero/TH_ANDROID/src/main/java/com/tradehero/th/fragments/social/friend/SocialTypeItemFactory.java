@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SocialTypeItemFactory
 {

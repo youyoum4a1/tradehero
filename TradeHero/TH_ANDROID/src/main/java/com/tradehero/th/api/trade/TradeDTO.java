@@ -1,10 +1,10 @@
 package com.tradehero.th.api.trade;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class TradeDTO implements DTO
 {

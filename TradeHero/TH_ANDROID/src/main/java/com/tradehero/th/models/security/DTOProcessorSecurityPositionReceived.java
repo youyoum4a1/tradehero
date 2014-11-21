@@ -1,10 +1,10 @@
 package com.tradehero.th.models.security;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.position.SecurityPositionDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.ThroughDTOProcessor;
-import android.support.annotation.NonNull;
 
 public class DTOProcessorSecurityPositionReceived<SecurityPositionDTOType extends SecurityPositionDTO>
         extends ThroughDTOProcessor<SecurityPositionDTOType>

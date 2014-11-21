@@ -2,6 +2,7 @@ package com.tradehero.th.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.ConsumerKey;
@@ -13,7 +14,6 @@ import javax.inject.Singleton;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

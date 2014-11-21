@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.settings;
 
 import android.preference.PreferenceCategory;
+import android.support.annotation.NonNull;
 import android.support.v4.preference.PreferenceFragment;
-
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -10,14 +10,9 @@ import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.MarketSegment;
-
-import android.support.annotation.NonNull;
-
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
-
 import timber.log.Timber;
 
 public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder

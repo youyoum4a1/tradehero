@@ -1,7 +1,7 @@
 package com.tradehero.th.api.competition.key;
 
-import com.tradehero.th.api.competition.ProviderId;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.competition.ProviderId;
 
 public class SearchProviderSecurityListType extends ProviderSecurityListType
 {

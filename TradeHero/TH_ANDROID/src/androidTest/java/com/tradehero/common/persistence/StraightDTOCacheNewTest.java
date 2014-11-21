@@ -4,12 +4,11 @@ import android.support.annotation.NonNull;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class StraightDTOCacheNewTest

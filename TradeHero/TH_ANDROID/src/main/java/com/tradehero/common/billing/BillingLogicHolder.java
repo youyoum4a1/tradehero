@@ -2,11 +2,9 @@ package com.tradehero.common.billing;
 
 import android.content.Intent;
 import android.content.res.Resources;
-
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BillingRequest;
-
-import android.support.annotation.NonNull;
 
 public interface BillingLogicHolder<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,

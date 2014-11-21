@@ -1,14 +1,13 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
-import android.support.v4.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class FaqViewHolder extends OneSettingViewHolder
 {

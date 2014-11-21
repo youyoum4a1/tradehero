@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.social;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class HeroCacheRx extends BaseDTOCacheRx<FollowerHeroRelationId, HeroDTO>
 {

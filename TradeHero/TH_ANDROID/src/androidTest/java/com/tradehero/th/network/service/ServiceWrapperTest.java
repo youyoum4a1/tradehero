@@ -9,12 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import timber.log.Timber;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class ServiceWrapperTest extends AbstractServiceTestBase

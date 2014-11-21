@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.position;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -8,7 +9,6 @@ import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @UserCache public class PositionCompactCacheRx extends BaseDTOCacheRx<PositionCompactId, PositionDTOCompact>
 {

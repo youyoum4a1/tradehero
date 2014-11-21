@@ -1,14 +1,14 @@
 package com.tradehero.th.fragments.social.facebook;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.widget.WebDialog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.Constants;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 
 public class SubscriberOnCompleteListener implements WebDialog.OnCompleteListener

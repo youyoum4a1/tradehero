@@ -1,5 +1,6 @@
 package com.tradehero.th.models.timeline;
 
+import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.api.timeline.TimelineDTO;
@@ -8,7 +9,6 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class TimelineDTOProcessor implements Action1<TimelineDTO>

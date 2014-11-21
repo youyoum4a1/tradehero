@@ -1,8 +1,8 @@
 package com.tradehero.th.api.share;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum TrackShareStatus
 {

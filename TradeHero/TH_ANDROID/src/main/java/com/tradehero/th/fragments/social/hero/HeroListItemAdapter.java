@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 // TODO refactor with DTOAdapterNew and getItemTypeCount

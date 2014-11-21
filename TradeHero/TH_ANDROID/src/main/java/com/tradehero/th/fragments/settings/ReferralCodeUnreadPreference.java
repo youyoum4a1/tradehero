@@ -1,12 +1,12 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ReferralCodeUnreadPreference extends BaseShowUnreadPreference
 {

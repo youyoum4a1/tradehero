@@ -1,11 +1,11 @@
 package com.tradehero.th.api.level;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import java.util.Collections;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LevelDefDTOList extends BaseArrayList<LevelDefDTO>
         implements DTO

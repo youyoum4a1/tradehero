@@ -1,9 +1,9 @@
 package com.tradehero.th.api.watchlist;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import android.support.annotation.NonNull;
 
 public class WatchlistPositionFormDTO
 {

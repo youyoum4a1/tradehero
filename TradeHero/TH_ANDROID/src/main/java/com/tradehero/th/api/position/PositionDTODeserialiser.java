@@ -1,12 +1,12 @@
 package com.tradehero.th.api.position;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.th.api.UniqueFieldDTODeserialiser;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class PositionDTODeserialiser extends UniqueFieldDTODeserialiser<PositionDTO>
 {

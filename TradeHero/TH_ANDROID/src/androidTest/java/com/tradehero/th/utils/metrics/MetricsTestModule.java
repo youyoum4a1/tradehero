@@ -5,7 +5,6 @@ import com.tradehero.metrics.Analytics;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
-
 import static org.mockito.Mockito.mock;
 
 @Module(

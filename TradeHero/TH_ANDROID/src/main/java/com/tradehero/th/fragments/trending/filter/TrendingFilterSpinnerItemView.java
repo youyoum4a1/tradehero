@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,7 +12,6 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import android.support.annotation.Nullable;
 
 public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<ExchangeCompactSpinnerDTO>

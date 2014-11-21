@@ -1,10 +1,10 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import java.util.Iterator;
-import java.util.Set;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.Iterator;
+import java.util.Set;
 
 public class PagedLeaderboardKey extends LeaderboardKey
 {

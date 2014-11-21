@@ -1,8 +1,8 @@
 package com.tradehero.th.api.competition.key;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
-import android.support.annotation.NonNull;
 
 public class ProviderDisplayCellListKey implements DTOKey
 {

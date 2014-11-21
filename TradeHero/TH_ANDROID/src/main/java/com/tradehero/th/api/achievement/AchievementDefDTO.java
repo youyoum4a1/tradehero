@@ -1,11 +1,11 @@
 package com.tradehero.th.api.achievement;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.AchievementDefId;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class AchievementDefDTO implements DTO
 {

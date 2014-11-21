@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.contestcenter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
-import android.support.annotation.NonNull;
 
 public enum ContestCenterTabType
 {

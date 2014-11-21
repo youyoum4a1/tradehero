@@ -1,9 +1,9 @@
 package com.tradehero.th.api.translation;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.i18n.LanguageDTOList;
-import android.support.annotation.NonNull;
 
 /**
  * Given a translation service, not all languages known to Android may be translatable.

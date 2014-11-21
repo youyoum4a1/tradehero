@@ -1,5 +1,6 @@
 package com.tradehero.th.api;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
 abstract public class UniqueFieldDTODeserialiser<DTOType> extends StdDeserializer<DTOType>
 {

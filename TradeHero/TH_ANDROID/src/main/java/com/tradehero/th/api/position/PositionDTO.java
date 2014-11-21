@@ -1,5 +1,7 @@
 package com.tradehero.th.api.position;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -7,8 +9,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class PositionDTO extends PositionDTOCompact
 {

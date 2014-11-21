@@ -1,8 +1,8 @@
 package com.tradehero.th.api.achievement.key;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 public class AchievementDefId extends AbstractIntegerDTOKey
 {

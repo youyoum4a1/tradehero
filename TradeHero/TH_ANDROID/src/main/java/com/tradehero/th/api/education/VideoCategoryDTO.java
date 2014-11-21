@@ -1,9 +1,8 @@
 package com.tradehero.th.api.education;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-
-import android.support.annotation.NonNull;
 
 public class VideoCategoryDTO implements DTO
 {

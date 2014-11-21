@@ -1,10 +1,10 @@
 package com.tradehero.th.models.push.handlers;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public abstract class PrecacheNotificationHandler implements PushNotificationHandler

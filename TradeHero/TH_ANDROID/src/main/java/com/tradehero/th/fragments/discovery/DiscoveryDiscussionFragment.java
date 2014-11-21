@@ -33,6 +33,8 @@ import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
+import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -45,9 +47,6 @@ import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
-import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
 {

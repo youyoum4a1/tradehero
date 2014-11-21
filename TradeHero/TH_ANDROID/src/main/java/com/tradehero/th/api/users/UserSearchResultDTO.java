@@ -1,8 +1,8 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
-import android.support.annotation.Nullable;
 
 public class UserSearchResultDTO implements DTO
 {

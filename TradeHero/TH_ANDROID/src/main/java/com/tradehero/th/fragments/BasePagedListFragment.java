@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,17 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class BasePagedListFragment<

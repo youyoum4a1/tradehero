@@ -1,8 +1,7 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.persistence.DTO;
-
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTO;
 
 public interface ProductPurchase<
         ProductIdentifierType extends ProductIdentifier,

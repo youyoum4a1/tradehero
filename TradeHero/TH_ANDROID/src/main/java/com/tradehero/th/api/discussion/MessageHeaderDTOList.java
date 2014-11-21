@@ -1,8 +1,8 @@
 package com.tradehero.th.api.discussion;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import android.support.annotation.NonNull;
 
 public class MessageHeaderDTOList extends BaseArrayList<MessageHeaderDTO>
     implements DTO

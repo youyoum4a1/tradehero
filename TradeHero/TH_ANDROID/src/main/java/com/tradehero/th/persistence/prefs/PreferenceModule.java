@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -14,16 +15,14 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
+import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 import com.urbanairship.push.PushManager;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
-
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
-import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 @Module(
         injects = {

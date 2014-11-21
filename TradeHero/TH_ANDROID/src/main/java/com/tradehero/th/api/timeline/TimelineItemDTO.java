@@ -1,5 +1,6 @@
 package com.tradehero.th.api.timeline;
 
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.security.SecurityMediaDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;
-import android.support.annotation.Nullable;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO
 {

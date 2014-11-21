@@ -2,11 +2,11 @@ package com.tradehero.th.models.intent.competition;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ProviderIntentFactory extends THIntentSubFactory<ProviderIntent>
 {

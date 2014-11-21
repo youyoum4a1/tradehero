@@ -1,10 +1,8 @@
 package com.tradehero.th.persistence.timing;
 
 import android.content.SharedPreferences;
-
-import com.tradehero.common.persistence.prefs.LongPreference;
-
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.prefs.LongPreference;
 
 public class TimingIntervalPreference extends LongPreference
 {

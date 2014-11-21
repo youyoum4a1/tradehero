@@ -1,10 +1,10 @@
 package com.tradehero.th.api.achievement;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.HasSocialNetworkEnumList;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.Collections;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class AchievementShareReqFormDTO implements HasSocialNetworkEnumList
 {

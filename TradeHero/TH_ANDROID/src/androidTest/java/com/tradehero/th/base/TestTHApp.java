@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
+import android.support.annotation.NonNull;
 import com.facebook.LoginActivity;
 import com.tradehero.TestModule;
 import com.tradehero.common.log.SystemOutTree;
@@ -12,13 +13,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import android.support.annotation.NonNull;
 import org.robolectric.Robolectric;
+import static org.robolectric.Robolectric.shadowOf;
 import org.robolectric.TestLifecycleApplication;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import timber.log.Timber;
-
-import static org.robolectric.Robolectric.shadowOf;
 
 public class TestTHApp extends THApp
         implements TestLifecycleApplication

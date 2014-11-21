@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.alert;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -13,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import timber.log.Timber;
 

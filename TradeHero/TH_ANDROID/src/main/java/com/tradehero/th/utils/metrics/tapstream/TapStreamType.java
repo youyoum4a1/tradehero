@@ -1,9 +1,9 @@
 package com.tradehero.th.utils.metrics.tapstream;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
-import android.support.annotation.NonNull;
 
 public enum TapStreamType
 {

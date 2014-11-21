@@ -1,9 +1,9 @@
 package com.tradehero.th.api.discussion.form;
 
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.timeline.form.PublishableFormDTO;
-import android.support.annotation.Nullable;
 
 public class DiscussionFormDTO extends PublishableFormDTO
 {

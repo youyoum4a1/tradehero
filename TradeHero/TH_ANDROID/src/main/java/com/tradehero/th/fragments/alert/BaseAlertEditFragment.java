@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
@@ -50,11 +51,9 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment

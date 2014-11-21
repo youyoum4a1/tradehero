@@ -1,10 +1,10 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class SecurityIntegerIdListForm
 {

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -15,7 +16,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.list.ItemClickDTO;
 import com.tradehero.th.rx.view.list.ListViewObservable;
 import com.tradehero.th.utils.SecurityUtils;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class FollowerManagerViewContainer

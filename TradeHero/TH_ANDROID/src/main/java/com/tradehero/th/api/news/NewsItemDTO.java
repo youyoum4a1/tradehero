@@ -1,10 +1,8 @@
 package com.tradehero.th.api.news;
 
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
-
-import android.support.annotation.Nullable;
-
 import java.util.Collections;
 import java.util.List;
 

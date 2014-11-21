@@ -1,9 +1,9 @@
 package com.tradehero.th.api.social.key;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.DTOKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.persistence.DTOKey;
 
 public class FollowerHeroRelationId implements Comparable, DTOKey
 {

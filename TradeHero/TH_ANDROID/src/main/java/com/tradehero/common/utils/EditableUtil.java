@@ -1,10 +1,10 @@
 package com.tradehero.common.utils;
 
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import com.tradehero.common.text.Span;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class EditableUtil
 {

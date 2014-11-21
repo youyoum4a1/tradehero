@@ -1,7 +1,7 @@
 package com.tradehero.common.api;
 
-import com.tradehero.common.persistence.DTO;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTO;
 
 public class SelectableDTO<DTOType extends DTO>
     implements DTO

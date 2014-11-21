@@ -2,9 +2,9 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class NumberDisplayUtils
 {

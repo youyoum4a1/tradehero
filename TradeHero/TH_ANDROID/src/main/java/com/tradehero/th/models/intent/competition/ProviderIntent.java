@@ -1,10 +1,10 @@
 package com.tradehero.th.models.intent.competition;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.models.intent.THIntent;
-import android.support.annotation.NonNull;
 
 public class ProviderIntent extends THIntent
 {
