@@ -14,7 +14,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
@@ -25,8 +24,6 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LeaderboardDefView extends RelativeLayout
@@ -98,7 +95,7 @@ public class LeaderboardDefView extends RelativeLayout
     private void fetchUserRank()
     {
         detachFetchUserRanking();
-        if (dto.id > 0)
+/*        if (dto.id > 0)
         {
             fetchUserRankingSubscription = leaderboardCache.get(new UserOnLeaderboardKey(dto.id, currentUserId.get()))
                     .doOnError(toastOnError)
@@ -113,7 +110,8 @@ public class LeaderboardDefView extends RelativeLayout
         else
         {
             leaderboardDefUserRankWrapper.setVisibility(GONE);
-        }
+        }*/
+        leaderboardDefUserRankWrapper.setVisibility(GONE);
     }
 
     private void showUserBestROI(LeaderboardUserDTO leaderboardUserDTO)
