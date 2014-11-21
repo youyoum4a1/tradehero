@@ -81,7 +81,7 @@ public class AchievementServiceWrapper
     {
         return achievementServiceRx.shareUserAchievement(
                 achievementShareFormDTO.userAchievementId.key,
-                achievementShareFormDTO.achievementShareReqFormDTO);
+                achievementShareFormDTO.socialShareReqFormDTO);
     }
     //</editor-fold>
 }

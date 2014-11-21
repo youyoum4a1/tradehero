@@ -1,6 +1,6 @@
 package com.tradehero.th.api.share.achievement;
 
-import com.tradehero.th.api.achievement.AchievementShareReqFormDTO;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.List;
@@ -30,7 +30,7 @@ public class AchievementShareFormDTOFactory
             @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
             @NonNull UserAchievementDTO userAchievementDTO)
     {
-        timelineItemShareFormDTO.achievementShareReqFormDTO = new AchievementShareReqFormDTO(shareDestinationWithEnums);
+        timelineItemShareFormDTO.socialShareReqFormDTO = new SocialShareReqFormDTO(shareDestinationWithEnums);
         timelineItemShareFormDTO.userAchievementId = userAchievementDTO.getUserAchievementId();
     }
 }

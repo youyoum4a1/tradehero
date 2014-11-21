@@ -1,6 +1,8 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
+import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -15,6 +17,7 @@ import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
@@ -192,6 +195,11 @@ import rx.Observable;
     public Observable<CompetitionPreSeasonDTO> getPreseasonDetails(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getPreseasonDetails(providerId.key);
+    }
+
+    public Observable<BaseResponseDTO> sharePreSeason(CompetitionPreseasonShareFormDTO competitionPreseasonShareFormDTO)
+    {
+        return this.providerServiceRx.sharePreseason(competitionPreseasonShareFormDTO.socialShareReqFormDTO);
     }
     //</editor-fold>
 }

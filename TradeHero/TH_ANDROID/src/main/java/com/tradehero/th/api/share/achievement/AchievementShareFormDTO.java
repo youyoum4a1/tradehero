@@ -1,7 +1,7 @@
 package com.tradehero.th.api.share.achievement;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.achievement.AchievementShareReqFormDTO;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.share.SocialShareFormDTO;
 import com.tradehero.th.api.social.HasSocialNetworkEnumList;
@@ -11,7 +11,7 @@ import java.util.List;
 public class AchievementShareFormDTO implements SocialShareFormDTO, HasSocialNetworkEnumList
 {
     @NonNull public UserAchievementId userAchievementId;
-    @NonNull public AchievementShareReqFormDTO achievementShareReqFormDTO;
+    @NonNull public SocialShareReqFormDTO socialShareReqFormDTO;
 
     //<editor-fold desc="Constructors">
     AchievementShareFormDTO()
@@ -20,15 +20,15 @@ public class AchievementShareFormDTO implements SocialShareFormDTO, HasSocialNet
 
     public AchievementShareFormDTO(
             @NonNull UserAchievementId userAchievementId,
-            @NonNull AchievementShareReqFormDTO achievementShareReqFormDTO)
+            @NonNull SocialShareReqFormDTO socialShareReqFormDTO)
     {
         this.userAchievementId = userAchievementId;
-        this.achievementShareReqFormDTO = achievementShareReqFormDTO;
+        this.socialShareReqFormDTO = socialShareReqFormDTO;
     }
     //</editor-fold>
 
     @NonNull @Override public List<SocialNetworkEnum> getSocialNetworkEnumList()
     {
-        return achievementShareReqFormDTO.getSocialNetworkEnumList();
+        return socialShareReqFormDTO.getSocialNetworkEnumList();
     }
 }

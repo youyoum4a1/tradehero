@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -7,7 +9,9 @@ import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
@@ -71,5 +75,11 @@ public interface ProviderServiceRx
     @GET("/providers/{providerId}/preSeason")
     Observable<CompetitionPreSeasonDTO> getPreseasonDetails(
             @Path("providerId") int providerId);
+    //</editor-fold>
+
+    //<editor-fold desc="Share Preseason">
+    @POST("/social/prizeShare")
+    Observable<BaseResponseDTO> sharePreseason(
+            @Body SocialShareReqFormDTO achievementShareFormDTO);
     //</editor-fold>
 }

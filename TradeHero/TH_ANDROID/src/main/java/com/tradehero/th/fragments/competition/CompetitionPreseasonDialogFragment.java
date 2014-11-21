@@ -15,14 +15,19 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
+import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTOFactory;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.widget.MarkdownTextView;
+import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
@@ -41,6 +46,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Inject ProviderCacheRx providerCacheRx;
     @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
     @Inject DashboardNavigator navigator;
+    @Inject ProviderServiceWrapper providerServiceWrapper;
+    @Inject Lazy<CompetitionPreseasonShareFormDTOFactory> competitionPreseasonShareFormDTOFactoryLazy;
 
     @InjectView(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
     @InjectView(R.id.preseason_title_image) ImageView imgTitle;
@@ -76,7 +83,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @OnClick(R.id.preseason_share)
     public void onShareClicked()
     {
-        if (getEnabledSharePreferences().isEmpty())
+        List<SocialNetworkEnum> shareList = getEnabledSharePreferences();
+        if (shareList.isEmpty())
         {
             alertDialogUtil.popWithNegativeButton(
                     getActivity(),
@@ -86,11 +94,26 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         }
         else if (providerDTO == null)
         {
-            share();
+            share(shareList);
         }
     }
 
-    private void share()
+    private void share(List<SocialNetworkEnum> shareList)
+    {
+        if (shareList.contains(SocialNetworkEnum.WECHAT))
+        {
+            //We handle WeChat separately since it's share locally on the client side.
+            shareList.remove(SocialNetworkEnum.WECHAT);
+            shareToWeChat();
+        }
+
+        if (!shareList.isEmpty())
+        {
+            providerServiceWrapper.sharePreSeason(competitionPreseasonShareFormDTOFactoryLazy.get().createFrom(shareList, providerId));
+        }
+    }
+
+    private void shareToWeChat()
     {
         //TODO
     }
