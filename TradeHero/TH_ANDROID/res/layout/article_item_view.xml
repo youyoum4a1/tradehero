@@ -5,10 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
+    style="@style/TH.ListItem"
     >
   <LinearLayout
       android:layout_width="match_parent"
