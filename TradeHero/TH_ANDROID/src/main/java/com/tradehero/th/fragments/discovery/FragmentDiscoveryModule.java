@@ -22,6 +22,8 @@ import dagger.Provides;
 
                 DiscoveryGameFragment.class,
                 MiniGameDefItemView.class,
+
+                DiscoveryArticleFragment.class,
         },
         library = true,
         complete = false

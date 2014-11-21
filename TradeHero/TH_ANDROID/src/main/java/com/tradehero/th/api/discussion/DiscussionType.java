@@ -1,9 +1,8 @@
 package com.tradehero.th.api.discussion;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import android.support.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum DiscussionType
 {
@@ -13,7 +12,8 @@ public enum DiscussionType
     SECURITY(3, "security"),
     NEWS(4, "news"),
     PRIVATE_MESSAGE(5, "private-message"),
-    BROADCAST_MESSAGE(6, "broadcast-message");
+    BROADCAST_MESSAGE(6, "broadcast-message"),
+    ARTICLE(7, "article");
 
     public final int value;
     @NonNull public final String description;

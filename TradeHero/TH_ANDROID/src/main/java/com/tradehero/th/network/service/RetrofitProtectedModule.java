@@ -181,5 +181,9 @@ public class RetrofitProtectedModule
     {
         return adapter.create(MiniGameServiceRx.class);
     }
+    @Provides @Singleton ArticleServiceRx provideArticleServiceRx(RestAdapter adapter)
+    {
+        return adapter.create(ArticleServiceRx.class);
+    }
     //</editor-fold>
 }
