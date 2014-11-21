@@ -33,6 +33,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -93,7 +94,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
-        setActionBarSubtitle(userInteractor.getName());
+        if (!Constants.RELEASE)
+        {
+            setActionBarSubtitle(userInteractor.getName());
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
