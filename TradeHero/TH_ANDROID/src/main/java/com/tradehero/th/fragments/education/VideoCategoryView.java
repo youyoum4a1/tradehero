@@ -133,6 +133,7 @@ public class VideoCategoryView extends RelativeLayout
         this.mCategoryDTO = dto;
         textName.setText(dto.name);
         galleryAdapter.clear();
+        galleryAdapter.notifyDataSetChanged();
         attachListenerAndFetch();
         showProgressView();
         hideEmptyView();
