@@ -62,7 +62,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     {
         super(context, zoneItemLayoutResId);
 
-        this.viewTypeToResId = new Integer[7];
+        this.viewTypeToResId = new Integer[8];
         this.viewTypeToResId[ITEM_TYPE_ADS] = adsResId;
         this.viewTypeToResId[ITEM_TYPE_HEADER] = headerResId;
         this.viewTypeToResId[ITEM_TYPE_PRIZE_POOL] = prizeResId;

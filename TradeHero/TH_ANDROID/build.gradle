@@ -70,7 +70,7 @@ android {
   compileSdkVersion 20
 
   buildToolsVersion "20.0.0"
-  useOldManifestMerger=true
+  //useOldManifestMerger=true
 
   dexOptions {
     // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
@@ -102,15 +102,15 @@ android {
 
   buildTypes {
     debug {
-        runProguard "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
+      minifyEnabled "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
       proguardFile 'proguard/proguard-android-fast.txt'
       //zipAlign true
       // versionNameSuffix interferes with the version the server receives
-//      applicationIdSuffix '.dev'
-//      versionNameSuffix '-dev'
+      applicationIdSuffix '.dev'
+      versionNameSuffix '-dev'
     }
     release {
-        runProguard true
+      minifyEnabled true
       proguardFile 'proguard/proguard-android.txt'
       shrinkResources false
       signingConfig signingConfigs.release
