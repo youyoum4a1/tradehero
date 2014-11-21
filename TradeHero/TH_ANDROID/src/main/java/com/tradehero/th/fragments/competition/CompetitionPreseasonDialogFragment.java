@@ -103,6 +103,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
             Bundle b = new Bundle();
             WebViewFragment.putUrl(b, competitionPreSeasonDTO.tncUrl);
             navigator.pushFragment(WebViewFragment.class, b);
+            dismiss();
         }
     }
 
