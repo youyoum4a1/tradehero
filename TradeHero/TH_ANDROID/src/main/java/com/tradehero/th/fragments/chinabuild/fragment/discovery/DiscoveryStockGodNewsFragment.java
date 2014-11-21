@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -42,11 +40,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /*
 股神动态
@@ -76,12 +74,6 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         adapter = new UserTimeLineAdapter(getActivity());
         adapter.isShowHeadAndName = true;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -115,21 +107,19 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         {
             @Override public void OnTimeLineItemClicked(int position)
             {
-                Timber.d("Item position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 enterTimeLineDetail(dto);
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_DISCOVERY_GOD, String.valueOf(position)));
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
             {
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE));
-                Timber.d("Praise position = " + position);
             }
 
             @Override public void OnTimeLineCommentsClicked(int position)
             {
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_COMMENT));
-                Timber.d("Comments position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 comments(dto);
             }
@@ -137,7 +127,6 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
             @Override public void OnTimeLineShareClied(int position)
             {
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_SHARE));
-                Timber.d("Share position = " + position);
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 //share(dto.text);
                 shareToWechatMoment(dto.text);
@@ -148,13 +137,11 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 fetchTimeLine();
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("上拉加载更多");
                 fetchTimeLineMore();
             }
         });
@@ -275,11 +262,6 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         }
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onPause()
     {
         super.onPause();
@@ -294,15 +276,5 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         ButterKnife.reset(this);
         detachTimeLineMiddleCallback();
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
     }
 }

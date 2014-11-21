@@ -18,16 +18,23 @@ import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryHotTopi
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
 
+import javax.inject.Inject;
 
-public class MainTabFragmentDiscovery extends AbsBaseFragment
+
+public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPager.OnPageChangeListener
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     private FragmentPagerAdapter adapter;
 
     @InjectView(R.id.tvCreateTimeLine) TextView tvCreateTimeLine;
+
+    @Inject Analytics analytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -55,6 +62,32 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment
     private static final String[] CONTENT = new String[] {"最新动态"
               , "热门话题", "股神动态"
     };
+
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {
+        if(i == 0){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_LATEST));
+            return;
+        }
+        if(i == 1){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_HOT));
+            return;
+        }
+        if(i == 2){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_GOD));
+            return;
+        }
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
+    }
 
     class CustomAdapter extends FragmentPagerAdapter
     {

@@ -88,6 +88,11 @@ public class AnalyticsConstants
     public static final String ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM = "ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM";
     public static final String ANONYMOUS_TO_REAL_ACCOUNT_CANCEL = "ANONYMOUS_TO_REAL_ACCOUNT_CANCEL";
 
+    //股神动态，热门话题,最新动态
+    public final static String BUTTON_DISCOVERY_LATEST = "BUTTON_DISCOVERY_LATEST";
+    public final static String BUTTON_DISCOVERY_HOT = "BUTTON_DISCOVERY_HOT";
+    public final static String BUTTON_DISCOVERY_GOD = "BUTTON_DISCOVERY_GOD";
+
     //Palmer
 
 
@@ -109,7 +114,6 @@ public class AnalyticsConstants
     public static final String BUTTON_COMPETITION_DETAIL_SEARCH = "BUTTON_COMPETITION_DETAIL_SEARCH";
 
     //竞赛中所有比赛的，官方比赛和热点比赛的点击量，创建比赛的点击量，右上角的搜索量
-    //竞赛中我的比赛的，官方比赛和热点比赛的点击量，创建比赛的点击量，右上角的搜索量
     public static final String BUTTON_COMPETITION_DETAIL_LIST_ITEM = "BUTTON_COMPETITION_DETAIL_LIST_ITEM";
     public static final String BUTTON_COMPETITION_DETAIL_CREATE = "BUTTON_COMPETITION_DETAIL_CREATE";
 
@@ -118,6 +122,7 @@ public class AnalyticsConstants
     public static final String BUTTON_COMPETITION_DETAIL_GOTO = "BUTTON_COMPETITION_DETAIL_GOTO";
     public static final String BUTTON_COMPETITION_DETAIL_INVITE = "BUTTON_COMPETITION_DETAIL_INVITE";
     public static final String BUTTON_COMPETITION_DETAIL_RANK_POSITION = "BUTTON_COMPETITION_DETAIL_RANK_POSITION";
+
     //个股页面右上角点击+自选股，取消自选 ,1天，5天，3个月，1年，讨论tab，资讯tab的点击量，最下方购买，出售，讨论的点击量。讨论tab和资讯tab下方的点击加载更多,抢沙发 的点击量
     public static final String BUTTON_STOCK_DETAIL_ADDWATCH = "BUTTON_STOCK_DETAIL_ADDWATCH";
     public static final String BUTTON_STOCK_DETAIL_CANCELWATCH = "BUTTON_STOCK_DETAIL_CANCELWATCH";

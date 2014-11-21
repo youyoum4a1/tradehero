@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.notification.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.misc.exception.THException;
@@ -378,6 +379,13 @@ public class NotificationFragment extends DashboardFragment
             }
         }
 
+        if(dto.pushTypeId !=null && dto.relatesToCompetitionId!=null){
+            if(dto.pushTypeId == 30){
+                jumpCompetitionDetailPage(dto.relatesToCompetitionId);
+                return;
+            }
+        }
+
     }
 
     private void jumpTimeLine(int replyableId, DiscussionType type){
@@ -394,6 +402,12 @@ public class NotificationFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, referencedUserId);
         pushFragment(UserMainPage.class, bundle);
+    }
+
+    private void jumpCompetitionDetailPage(int competitionId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
+        pushFragment(CompetitionDetailFragment.class, bundle);
     }
 
 }

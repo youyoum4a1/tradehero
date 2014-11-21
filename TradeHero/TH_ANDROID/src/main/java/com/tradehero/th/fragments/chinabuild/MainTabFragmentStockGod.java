@@ -19,8 +19,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPager.OnPageChangeListener
 {
@@ -28,12 +28,6 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
     @InjectView(R.id.indicator) TabPageIndicator indicator;
     FragmentPagerAdapter adapter;
     @Inject Analytics analytics;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -53,26 +47,10 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         indicator.setOutsideListener(this);
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        Timber.d("onResume MainTabFragmentStockGod!");
     }
 
     private static final String[] CONTENT = new String[] {"推荐榜", "人气榜", "土豪榜", "更多榜"};
@@ -132,12 +110,10 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
 
     @Override public void onPageScrolled(int i, float v, int i2)
     {
-        //Timber.d("WINDY: onPageScrolled" + i);
     }
 
     @Override public void onPageSelected(int i)
     {
-        //Timber.d("WINDY: 股神 ：onPageSelected" + i);
         if (i == 0)
         {
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_ROI));
@@ -158,7 +134,6 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
 
     @Override public void onPageScrollStateChanged(int i)
     {
-        //Timber.d("WINDY: onPageScrollStateChanged" + i);
     }
 
 }

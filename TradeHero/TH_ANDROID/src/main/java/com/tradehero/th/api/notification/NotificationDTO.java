@@ -25,6 +25,7 @@ public class NotificationDTO implements DTO, KeyGenerator
     public NotificationStockAlertDTO stockAlert;
     public Integer providerId;
     public Integer pushTypeId;
+    public Integer relatesToCompetitionId;
 
     public boolean useSysIcon;
     public boolean unread;
