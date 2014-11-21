@@ -50,6 +50,7 @@ public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
 
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.timeline_list_view) ListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
@@ -154,6 +155,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         private void refreshComplete()
         {
+            progressBar.setVisibility(View.INVISIBLE);
             mBottomLoadingView.setVisibility(View.INVISIBLE);
             swipeRefreshLayout.setRefreshing(false);
         }
