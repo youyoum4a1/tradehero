@@ -22,7 +22,6 @@ import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.api.games.MiniGameDefKey;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.games.MiniGameDefCache;
 import javax.inject.Inject;
 import rx.Observer;
@@ -112,13 +111,13 @@ public class HowToPlayDialogFragment extends BaseDialogSupportFragment
         @Override public Fragment getItem(int position)
         {
             Bundle args = new Bundle();
-            BaseWebViewFragment.putUrl(args, miniGameDefDTO.howToPlayUrls.get(position));
-            return Fragment.instantiate(getActivity(), WebViewFragment.class.getName(), args);
+            BaseWebViewFragment.putUrl(args, miniGameDefDTO.howToPlayUrl);
+            return Fragment.instantiate(getActivity(), BaseWebViewFragment.class.getName(), args);
         }
 
         @Override public int getCount()
         {
-            return miniGameDefDTO.howToPlayUrls.size();
+            return 1;
         }
     }
 
@@ -164,7 +163,7 @@ public class HowToPlayDialogFragment extends BaseDialogSupportFragment
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
-    @OnClick(android.R.id.button1)
+    @OnClick({android.R.id.button1, android.R.id.button2})
     protected void playNowClicked(View view)
     {
         dismiss();

@@ -2,7 +2,6 @@ package com.tradehero.th.api.games;
 
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
-import java.util.List;
 
 public class MiniGameDefDTO implements DTO, KeyGenerator
 {
@@ -13,7 +12,7 @@ public class MiniGameDefDTO implements DTO, KeyGenerator
     public String image;
     public String url;
     public boolean comingSoon;
-    public List<String> howToPlayUrls;
+    public String howToPlayUrl;
 
     //<editor-fold desc="Constructors">
     public MiniGameDefDTO()

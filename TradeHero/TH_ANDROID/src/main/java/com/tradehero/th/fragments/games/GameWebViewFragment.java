@@ -5,7 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Menu;
-import android.view.View;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -82,15 +83,29 @@ public class GameWebViewFragment extends BaseWebViewFragment
         miniGameDefKey = getGameId(getArguments());
     }
 
-    @Override protected int getLayoutResId()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        return R.layout.fragment_webview;
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.mini_game_webview_menu, menu);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
         displayName();
+        boolean hasHowTo = miniGameDefDTO != null && miniGameDefDTO.howToPlayUrl != null;
+        menu.findItem(R.id.how_to_menu).setVisible(hasHowTo);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.how_to_menu:
+                displayHowToPlay();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStart()
@@ -163,7 +178,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
     {
         this.miniGameDefDTO = miniGameDefDTO;
         displayName();
-        if (miniGameDefDTO.howToPlayUrls != null && !showedHowToPlay)
+        if (miniGameDefDTO.howToPlayUrl != null && !showedHowToPlay)
         {
             displayHowToPlay();
         }

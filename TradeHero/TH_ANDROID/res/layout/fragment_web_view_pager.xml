@@ -32,6 +32,13 @@
         android:layout_above="@android:id/button1"
         />
 
+    <ImageView
+        android:id="@android:id/button2"
+        style="@style/TH.Btn_Popup_Close"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
+
   </RelativeLayout>
 
 </LinearLayout>
