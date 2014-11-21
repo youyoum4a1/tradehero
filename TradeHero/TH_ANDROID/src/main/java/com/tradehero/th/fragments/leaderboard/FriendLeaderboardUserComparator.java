@@ -1,9 +1,8 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import java.util.Comparator;
-import android.support.annotation.NonNull;
 
 public class FriendLeaderboardUserComparator implements Comparator<FriendLeaderboardUserDTO>
 {
@@ -37,10 +36,7 @@ public class FriendLeaderboardUserComparator implements Comparator<FriendLeaderb
         if (lhs instanceof FriendLeaderboardMarkedUserDTO &&
                 rhs instanceof FriendLeaderboardMarkedUserDTO)
         {
-            LeaderboardUserDTO lhl = ((FriendLeaderboardMarkedUserDTO) lhs).leaderboardUserDTO;
-            LeaderboardUserDTO rhl = ((FriendLeaderboardMarkedUserDTO) rhs).leaderboardUserDTO;
-
-            return lhl.getPosition().compareTo(rhl.getPosition());
+            return Integer.valueOf(lhs.getPosition()).compareTo(rhs.getPosition());
         }
 
         throw new IllegalArgumentException("Unhandled " + lhs.getClass() + " with " + rhs.getClass());

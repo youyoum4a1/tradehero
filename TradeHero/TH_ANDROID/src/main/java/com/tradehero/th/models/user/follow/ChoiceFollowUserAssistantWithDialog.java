@@ -31,7 +31,6 @@ public class ChoiceFollowUserAssistantWithDialog
     @NonNull protected final FollowUserAssistant followUserAssistant;
     @Nullable protected FollowDialogCombo followDialogCombo;
     @Nullable protected Subscription currentUserProfileSubscription;
-    @Nullable protected UserProfileDTO currentUserProfile;
     @Nullable protected Subscription heroSubscription;
     @Nullable protected UserBaseDTO heroBaseInfo;
 
