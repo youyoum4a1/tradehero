@@ -143,13 +143,6 @@ public class NotificationListAdapter extends BaseAdapter
                 holder.tvNotificationContent.setTextColor(readColor);
             }
 
-            holder.tvNotificationContent.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    listener.OnNotificationItemClicked(position);
-                }
-            });
             holder.llNotificationItem.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
