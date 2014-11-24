@@ -4,5 +4,5 @@
   <string name="contest_center_tab_joined">Joined</string>
   <string name="contest_no_joined">Oops!\n You have not joined any competition yet.\nChoose one from the active tab and start playing!</string>
     <string name="current_prize_pool">Current prize pool :</string>
-    <string name="new_players_need">New players need\n to unlock extra %1$s :</string>
+    <string name="new_players_need">New players needed to unlock extra %1$s :</string>
 </resources>

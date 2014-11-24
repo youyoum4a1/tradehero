@@ -37,8 +37,8 @@ public class CompetitionZoneDTOUtil
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
             @Nullable ProviderPrizePoolDTO providerPrizePoolDTO,
-            @Nullable List<Integer> preparedOrderedTypes,
-            @Nullable List<CompetitionZoneDTO> preparedOrderedItems)
+            @NonNull List<Integer> preparedOrderedTypes,
+            @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
     {
         if (providerDTO != null)
         {
@@ -58,6 +58,9 @@ public class CompetitionZoneDTOUtil
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
                 preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(providerPrizePoolDTO));
+
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+                preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
             }
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)

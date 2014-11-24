@@ -87,17 +87,18 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
 
     private void displayText() {
         picasso.load(providerPrizePoolDTO.background)
+                .fit()
                 .into(background, new Callback() {
                     @Override
                     public void onSuccess() {
                         Timber.d("lyl success");
-                        setBackground(background.getDrawable());
+                        setBackgroundColor(getResources().getColor(android.R.color.transparent));
                     }
 
                     @Override
                     public void onError() {
                         Timber.d("lyl fail");
-
+                        setBackgroundColor(getResources().getColor(R.color.white));
                     }
                 });
         value.setText(providerPrizePoolDTO.current);
