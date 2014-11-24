@@ -20,7 +20,9 @@
       android:shadowColor="@color/light_grey"
       android:shadowDy="1"
       android:shadowRadius="1"
-      android:ellipsize="middle"
+      android:ellipsize="marquee"
+      android:marqueeRepeatLimit="10"
+      android:singleLine="true"
       android:layout_centerVertical="true"
       tools:text="1"
       />

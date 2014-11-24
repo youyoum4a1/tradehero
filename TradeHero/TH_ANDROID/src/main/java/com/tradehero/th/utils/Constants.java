@@ -19,6 +19,7 @@ public class Constants
     public static final int TIMELINE_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
 
     public static final int LEADERBOARD_MARK_USER_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
+    public static final int MAX_OWN_LEADER_RANKING = -1;
 
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it

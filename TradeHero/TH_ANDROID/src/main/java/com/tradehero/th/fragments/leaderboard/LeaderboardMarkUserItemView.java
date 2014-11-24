@@ -62,12 +62,12 @@ import rx.Observer;
 import rx.Subscription;
 import timber.log.Timber;
 
+import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
+
 public class LeaderboardMarkUserItemView extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
-    public static final int MAX_OWN_RANKING = 1000;
-
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
@@ -642,13 +642,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             // TODO decide
             return;
         }
-        else if (currentRank <= MAX_OWN_RANKING)
+        else if (MAX_OWN_LEADER_RANKING < 0 || currentRank <= MAX_OWN_LEADER_RANKING)
         {
             lbmuPosition.setText("" + currentRank);
         }
         else
         {
-            lbmuPosition.setText(R.string.leaderboard_max_ranked_position);
+            lbmuPosition.setText(getContext().getString(R.string.leaderboard_max_ranked_position, MAX_OWN_LEADER_RANKING));
         }
 
         //Add touch feedback
