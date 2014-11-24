@@ -148,4 +148,7 @@
   <!-- Residemenu -->
   <string name="residemenu_footer_title">内容合作商:</string>
     <string name="coming_soon">稍后推出!</string>
+
+  <string name="content_shared">完成!</string>
+
 </resources>

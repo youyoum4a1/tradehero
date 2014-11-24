@@ -7,6 +7,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -14,6 +15,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTOFactory;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -29,7 +31,9 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
@@ -41,6 +45,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     private static final int CONTENT_VIEW_INDEX = 0;
     private static final int LOADING_VIEW_INDEX = 1;
     private static final int ERROR_VIEW_INDEX = 2;
+    private static final int SHARED_SUCCESFUL_VIEW_INDEX = 3;
+    private static final int SHARED_ERROR_VIEW_INDEX = 4;
 
     @Inject Picasso picasso;
     @Inject ProviderCacheRx providerCacheRx;
@@ -58,6 +64,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     private ProviderId providerId;
     private ProviderDTO providerDTO;
     private CompetitionPreSeasonDTO competitionPreSeasonDTO;
+    private Subscription shareSubscription;
 
     public static CompetitionPreseasonDialogFragment newInstance(ProviderId providerId)
     {
@@ -92,7 +99,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
                     R.string.link_select_one_social_description,
                     R.string.ok);
         }
-        else if (providerDTO == null)
+        else if (providerDTO != null)
         {
             share(shareList);
         }
@@ -109,7 +116,30 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
         if (!shareList.isEmpty())
         {
-            providerServiceWrapper.sharePreSeason(competitionPreseasonShareFormDTOFactoryLazy.get().createFrom(shareList, providerId));
+            shareSubscription = AndroidObservable.bindFragment(this,
+                    providerServiceWrapper.sharePreSeason(competitionPreseasonShareFormDTOFactoryLazy.get().createFrom(shareList, providerId)))
+                    .subscribe(new Observer<BaseResponseDTO>()
+                    {
+                        @Override public void onCompleted()
+                        {
+
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            showShareFailed();
+                        }
+
+                        @Override public void onNext(BaseResponseDTO baseResponseDTO)
+                        {
+                            showShareSuccess();
+                        }
+                    });
+            showLoadingDialog();
+        }
+        else
+        {
+            showShareSuccess();
         }
     }
 
@@ -128,6 +158,12 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
             navigator.pushFragment(WebViewFragment.class, b);
             dismiss();
         }
+    }
+
+    @OnClick(R.id.preseason_share_retry)
+    public void onRetryClicked()
+    {
+        share(getEnabledSharePreferences());
     }
 
     private void getProviderIdFromArgs()
@@ -204,6 +240,16 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         showViewAtIndex(ERROR_VIEW_INDEX);
     }
 
+    private void showShareSuccess()
+    {
+        showViewAtIndex(SHARED_SUCCESFUL_VIEW_INDEX);
+    }
+
+    private void showShareFailed()
+    {
+        showViewAtIndex(SHARED_ERROR_VIEW_INDEX);
+    }
+
     private void showViewAtIndex(int index)
     {
         if (viewFlipper.getDisplayedChild() != index)
@@ -235,5 +281,11 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         }
         textDescription.setText(competitionPreSeasonDTO.content);
         textTitle.setText(competitionPreSeasonDTO.headline);
+    }
+
+    @Override public void onDestroyView()
+    {
+        unsubscribe(shareSubscription);
+        super.onDestroyView();
     }
 }
