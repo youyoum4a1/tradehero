@@ -66,7 +66,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     @InjectView(android.R.id.progress) public ProgressBar progressBar;
     @InjectView(R.id.heros_list) public ListView heroListView;
-    @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout pullToRefreshListView;
+    @InjectView(R.id.swipe_to_refresh_layout) public SwipeRefreshLayout swipeRefreshLayout;
     private Subscription heroesSubscription;
 
     //<editor-fold desc="Argument Passing">
@@ -107,10 +107,10 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
                 R.layout.hero_list_header);
         this.heroListAdapter.setHeroStatusButtonClickedListener(createHeroStatusButtonClickedListener());
         this.heroListAdapter.setFollowerId(followerId);
-        this.heroListAdapter.setMostSkilledClicked(createHeroListMostSkiledClickedListener());
-        if (this.pullToRefreshListView != null)
+        this.heroListAdapter.setMostSkilledClicked(createHeroListMostSkilledClickedListener());
+        if (this.swipeRefreshLayout != null)
         {
-            this.pullToRefreshListView.setOnRefreshListener(this);
+            this.swipeRefreshLayout.setOnRefreshListener(this);
         }
         if (this.heroListView != null)
         {
@@ -151,7 +151,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Override public void onResume()
     {
         super.onResume();
-        enablePullToRefresh(false);
+        enableSwipeRefresh(false);
         displayProgress(true);
         fetchHeroes();
     }
@@ -377,23 +377,23 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void onRefreshCompleted()
     {
-        if (pullToRefreshListView != null)
+        if (swipeRefreshLayout != null)
         {
-            pullToRefreshListView.setRefreshing(false);
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
-    private void enablePullToRefresh(boolean enable)
+    private void enableSwipeRefresh(boolean enable)
     {
-        if (pullToRefreshListView != null)
+        if (swipeRefreshLayout != null)
         {
             if (!enable)
             {
-                pullToRefreshListView.setEnabled(false);
+                swipeRefreshLayout.setEnabled(false);
             }
             else
             {
-                pullToRefreshListView.setEnabled(true);
+                swipeRefreshLayout.setEnabled(true);
             }
         }
     }
@@ -414,7 +414,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
     }
 
-    private HeroListMostSkilledClickedListener createHeroListMostSkiledClickedListener()
+    private HeroListMostSkilledClickedListener createHeroListMostSkilledClickedListener()
     {
         return new HeroListMostSkilledClickedListener();
     }
@@ -428,7 +428,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             onRefreshCompleted();
             setListShown(true);
             display(pair.second);
-            enablePullToRefresh(true);
+            enableSwipeRefresh(true);
             notifyHeroesLoaded(pair.second);
         }
 
@@ -440,7 +440,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         {
             displayProgress(false);
             setListShown(true);
-            enablePullToRefresh(true);
+            enableSwipeRefresh(true);
             Timber.e(e, "Could not fetch heroes");
             THToast.show(R.string.error_fetch_hero);
         }

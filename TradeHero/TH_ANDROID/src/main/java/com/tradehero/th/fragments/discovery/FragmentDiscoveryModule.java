@@ -22,6 +22,9 @@ import javax.inject.Singleton;
 
                 DiscoveryGameFragment.class,
                 MiniGameDefItemView.class,
+
+                DiscoveryArticleFragment.class,
+                ArticleItemView.class,
         },
         library = true,
         complete = false

@@ -275,10 +275,6 @@ dependencies {
   }
   compile('com.android.support:support-v13:21.0.0')
   provided 'proguard:annotations:4.6'
-  compile('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
-    exclude group: 'commons-codec', module: 'android'
-    // exclude group: 'com.android.support', module: 'appcompat-v7'
-  }
   compile('se.emilsjolander:stickylistheaders:2.4.1@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
   }

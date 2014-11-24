@@ -60,6 +60,9 @@ public class CompetitionZoneDTOUtil
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
                 preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(providerPrizePoolDTO));
+
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
+                preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
             }
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
