@@ -8,12 +8,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AbsListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
@@ -37,7 +36,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
     @Inject ToastOnErrorAction toastOnErrorAction;
 
     @InjectView(R.id.manage_followers_header) View headerView;
-    @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
+    @InjectView(R.id.follower_list) AbsListView followerListView;
     private FollowerManagerViewContainer followerManagerViewContainer;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -84,7 +83,6 @@ public class FollowerRevenueReportFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         headerView.removeCallbacks(null);
-        pullToRefreshListView.setOnScrollChangedListener(null);
         ButterKnife.reset(this);
         followerManagerViewContainer.onDestroyView();
         super.onDestroyView();
@@ -103,21 +101,20 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 
     protected void adjustListPadding()
     {
-        if (headerView != null && pullToRefreshListView != null)
+        if (headerView != null && followerListView != null)
         {
             int headerHeight = headerView.getMeasuredHeight();
             QuickReturnListViewOnScrollListener headerQuickReturnScrollListener =
                     new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, headerView,
                             -headerHeight, null, 0);
 
-            ListView listView = pullToRefreshListView.getRefreshableView();
-            listView.setPadding(
-                    listView.getPaddingLeft(),
+            followerListView.setPadding(
+                    followerListView.getPaddingLeft(),
                     headerHeight,
-                    listView.getPaddingRight(),
-                    listView.getPaddingBottom());
+                    followerListView.getPaddingRight(),
+                    followerListView.getPaddingBottom());
 
-            pullToRefreshListView.setOnScrollListener(new MultiScrollListener(
+            followerListView.setOnScrollListener(new MultiScrollListener(
                     dashboardBottomTabsListViewScrollListener.get(),
                     headerQuickReturnScrollListener));
         }
