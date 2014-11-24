@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -34,6 +35,10 @@ public class WeChatDTOFactory
         else if (whatToShare instanceof ReferralCodeDTO)
         {
             return createFrom(context, (ReferralCodeDTO) whatToShare);
+        }
+        else if (whatToShare instanceof CompetitionPreSeasonDTO)
+        {
+            return createFrom((CompetitionPreSeasonDTO) whatToShare);
         }
         throw new IllegalArgumentException("Unknown element to share " + whatToShare);
     }
@@ -112,5 +117,19 @@ public class WeChatDTOFactory
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.Invite;
         weChatDTO.title = context.getString(WeChatMessageType.Invite.getTitleResId(), referralCodeDTO.referralCode);
+    }
+
+    @NonNull public WeChatDTO createFrom(@NonNull CompetitionPreSeasonDTO preSeasonDTO)
+    {
+        WeChatDTO weChatDTO = new WeChatDTO();
+        populateWith(weChatDTO, preSeasonDTO);
+        return weChatDTO;
+    }
+
+    protected void populateWith(@NonNull WeChatDTO weChatDTO, @NonNull CompetitionPreSeasonDTO preSeasonDTO)
+    {
+        weChatDTO.id = 0;
+        weChatDTO.type = WeChatMessageType.PreSeason;
+        weChatDTO.title = preSeasonDTO.title;
     }
 }

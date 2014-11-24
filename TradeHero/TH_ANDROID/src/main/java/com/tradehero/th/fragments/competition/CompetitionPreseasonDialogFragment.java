@@ -20,11 +20,14 @@ import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTOFactory;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -54,6 +57,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Inject DashboardNavigator navigator;
     @Inject ProviderServiceWrapper providerServiceWrapper;
     @Inject Lazy<CompetitionPreseasonShareFormDTOFactory> competitionPreseasonShareFormDTOFactoryLazy;
+    @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
+    @Inject Lazy<SocialSharer> socialSharerLazy;
 
     @InjectView(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
     @InjectView(R.id.preseason_title_image) ImageView imgTitle;
@@ -145,7 +150,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void shareToWeChat()
     {
-        //TODO
+        WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), competitionPreSeasonDTO);
+        socialSharerLazy.get().share(weChatDTO);
     }
 
     @OnClick(R.id.preseason_prize_tncs)
