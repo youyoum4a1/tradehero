@@ -23,10 +23,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -35,17 +36,18 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.th.fragments.trade.AlertDialogUtilBuySell;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import com.tradehero.th.network.service.PositionServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
@@ -57,6 +59,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
@@ -398,7 +401,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
             if (shared != 0 && avPrice != 0)
             {
                 tvBuySaleShared.setText(String.valueOf(shared));
-                tvBuySaleALLAV.setText(securityCompactDTO.getCurrencyDisplay()+ " " + PositionDTOCompact.getShortDouble(avPrice));
+                tvBuySaleALLAV.setText(securityCompactDTO.getCurrencyDisplay() + " " + PositionDTOCompact.getShortDouble(avPrice));
                 llBuySaleLine8.setVisibility(View.VISIBLE);
                 llBuySaleLine9.setVisibility(View.VISIBLE);
                 isNeedShowMore = true;
@@ -775,7 +778,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         @Override
         public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response)
         {
-            onFinish();
+            //onFinish();
 
             if (securityPositionDetailDTO == null)
             {
@@ -824,17 +827,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             profitLoss);
                 }
             }
-            popCurrentFragment();
-        }
-
-        private void onFinish()
-        {
-            if (mTransactionDialog != null)
-            {
-                mTransactionDialog.dismiss();
-            }
-            mTransactionDialog.dismiss();
-            isSending = false;
+            ExitBuySellFragment();
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -852,6 +845,21 @@ public class BuySaleSecurityFragment extends DashboardFragment
             //    buySellTransactionListener.onTransactionFailed(isBuy, thException);
             //}
         }
+    }
+
+    private void onFinish()
+    {
+        if (mTransactionDialog != null)
+        {
+            mTransactionDialog.dismiss();
+        }
+        mTransactionDialog.dismiss();
+        isSending = false;
+    }
+
+    public void ExitBuySellFragment()
+    {
+        getPositionDirectly(currentUserId.toUserBaseKey());
     }
 
     public TransactionFormDTO getBuySellOrder()
@@ -904,18 +912,55 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 && securityId.getSecuritySymbol() != null && mTransactionQuantity != 0;
     }
 
-    public void enterSecurity(SecurityId securityId, String securityName)
+    //public void enterSecurity(SecurityId securityId, String securityName)
+    //{
+    //    Bundle bundle = new Bundle();
+    //    bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+    //    bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+    //    bundle.putBoolean(PositionDetailFragment.BUNLDE_KEY_NEED_SHOW_MORE, false);
+    //    if (portfolioCompactDTO != null && positionDTOCompactList != null)
+    //    {
+    //        PositionDetailFragment.putPositionDTOKey(bundle, new OwnedPositionId(currentUserId.toUserBaseKey().getUserId(), portfolioCompactDTO.id,
+    //                positionDTOCompactList.getPositionId(portfolioCompactDTO.getPortfolioId())));
+    //        PositionDetailFragment.putApplicablePortfolioId(bundle, portfolioCompactDTO.getOwnedPortfolioId());
+    //        pushFragment(PositionDetailFragment.class, bundle);
+    //    }
+    //}
+
+    private MiddleCallback<GetPositionsDTO> getPositionDTOCallback;
+    @Inject Lazy<PositionServiceWrapper> positionServiceWrapper;
+
+    protected void getPositionDirectly(@NotNull UserBaseKey heroId)
     {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        bundle.putBoolean(PositionDetailFragment.BUNLDE_KEY_NEED_SHOW_MORE, false);
-        if (portfolioCompactDTO != null && positionDTOCompactList != null)
+        detachGetPositionMiddleCallback();
+        getPositionDTOCallback =
+                positionServiceWrapper.get()
+                        .getPositionsDirect(heroId.key, new GetPositionCallback());
+    }
+
+    private void detachGetPositionMiddleCallback()
+    {
+        if (getPositionDTOCallback != null)
         {
-            PositionDetailFragment.putPositionDTOKey(bundle, new OwnedPositionId(currentUserId.toUserBaseKey().getUserId(), portfolioCompactDTO.id,
-                    positionDTOCompactList.getPositionId(portfolioCompactDTO.getPortfolioId())));
-            PositionDetailFragment.putApplicablePortfolioId(bundle, portfolioCompactDTO.getOwnedPortfolioId());
-            pushFragment(PositionDetailFragment.class, bundle);
+            getPositionDTOCallback.setPrimaryCallback(null);
+        }
+        getPositionDTOCallback = null;
+    }
+
+    public class GetPositionCallback implements Callback<GetPositionsDTO>
+    {
+        @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
+        {
+            onFinish();
+            Timber.d("WINDY : GetPositionsDTO success");
+            MainActivity.setGetPositionDTO(getPositionsDTO);
+            popCurrentFragment();
+        }
+
+        @Override public void failure(RetrofitError retrofitError)
+        {
+            onFinish();
+            popCurrentFragment();
         }
     }
 }

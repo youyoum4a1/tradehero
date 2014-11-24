@@ -639,7 +639,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
         {
             Timber.d("WINDY : GetPositionsDTO success");
-            MainActivity.getPositionsDTO = getPositionsDTO;
+            setGetPositionDTO(getPositionsDTO);
         }
 
         @Override public void failure(RetrofitError retrofitError)

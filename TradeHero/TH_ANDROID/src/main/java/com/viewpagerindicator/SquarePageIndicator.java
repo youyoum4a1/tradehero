@@ -86,7 +86,7 @@ public class SquarePageIndicator extends View implements PageIndicator
         final int defaultOrientation = res.getInteger(R.integer.default_circle_indicator_orientation);
         final int defaultStrokeColor = res.getColor(R.color.default_circle_indicator_stroke_color);
         final float defaultStrokeWidth = res.getDimension(R.dimen.default_circle_indicator_stroke_width);
-        final float defaultRadius = res.getDimension(R.dimen.default_circle_indicator_radius);
+        final float defaultRadius = res.getDimension(R.dimen.default_square_indicator_radius);
         final boolean defaultCentered = res.getBoolean(R.bool.default_circle_indicator_centered);
         final boolean defaultSnap = res.getBoolean(R.bool.default_circle_indicator_snap);
 
@@ -97,7 +97,7 @@ public class SquarePageIndicator extends View implements PageIndicator
         mOrientation = a.getInt(R.styleable.CirclePageIndicator_android_orientation, defaultOrientation);
         mPaintPageFill.setStyle(Style.FILL);
         mPaintPageFill.setColor(a.getColor(R.styleable.CirclePageIndicator_pageColor, defaultPageColor));
-        mPaintStroke.setStyle(Style.STROKE);
+        mPaintStroke.setStyle(Style.FILL);
         mPaintStroke.setColor(a.getColor(R.styleable.CirclePageIndicator_strokeColor, defaultStrokeColor));
         mPaintStroke.setStrokeWidth(a.getDimension(R.styleable.CirclePageIndicator_strokeWidth, defaultStrokeWidth));
         mPaintFill.setStyle(Style.FILL);
@@ -254,11 +254,11 @@ public class SquarePageIndicator extends View implements PageIndicator
             shortPaddingBefore = getPaddingLeft();
         }
 
-        final float threeRadius = mRadius * 8;
-        final float halfwidth = 12;
-        final float halfheight = 6;
-        final float shortOffset = shortPaddingBefore + mRadius;
-        float longOffset = longPaddingBefore + mRadius;
+        final float threeRadius = mRadius * 3;
+        final float halfwidth = 8;
+        final float halfheight = 4;
+        final float shortOffset = shortPaddingBefore + mRadius ;
+        float longOffset = longPaddingBefore + mRadius + 8;
         if (mCentered)
         {
             longOffset += ((longSize - longPaddingBefore - longPaddingAfter) / 2.0f) - ((count * threeRadius) / 2.0f);

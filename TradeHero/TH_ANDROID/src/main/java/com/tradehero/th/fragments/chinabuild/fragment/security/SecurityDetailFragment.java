@@ -722,25 +722,61 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void getTradeTabDetail()
     {
         com.tradehero.th.api.position.PositionDTOKey positionDTOKey = getPositionDTOKey(getArguments(), positionDTOKeyFactory);
-        if (positionDTOKey == null && securityId != null)
+
+        if(competitionID==0)//普通进来
         {
-            positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityId);
-        }
-        if (positionDTOKey == null && securityCompactDTO != null)
-        {
-            positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityCompactDTO.id);
-        }
-        if (positionDTOKey != null)
-        {
-            linkWith(positionDTOKey);
-        }
-        else //显示没有交易记录
-        {
-            if (betterViewAnimatorPortfolio != null)
+            if (positionDTOKey == null && securityId != null)
             {
-                betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+                positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityId);
+            }
+            if (positionDTOKey == null && securityCompactDTO != null)
+            {
+                positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityCompactDTO.id);
+            }
+            if (positionDTOKey != null)
+            {
+                linkWith(positionDTOKey);
+            }
+            else //显示没有交易记录
+            {
+                if (betterViewAnimatorPortfolio != null)
+                {
+                    betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+                }
             }
         }
+        else//比赛进来
+        {
+            if (positionDTOKey != null)
+            {
+                linkWith(positionDTOKey);
+            }
+            else //显示没有交易记录
+            {
+                if (betterViewAnimatorPortfolio != null)
+                {
+                    betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+                }
+            }
+        }
+
+    }
+
+    public void getTradeTabDetail2()
+    {
+        com.tradehero.th.api.position.PositionDTOKey positionDTOKey = getPositionDTOKey(getArguments(), positionDTOKeyFactory);
+
+            if (positionDTOKey != null)
+            {
+                linkWith(positionDTOKey);
+            }
+            else //显示没有交易记录
+            {
+                if (betterViewAnimatorPortfolio != null)
+                {
+                    betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
+                }
+            }
     }
 
     public void initArgment()
@@ -840,7 +876,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         @Override public void onFreshQuote(QuoteDTO quoteDTO)
         {
-            if(quoteDTO!=null&&(quoteDTO.ask==0||quoteDTO.bid==0))return ;
+            if(quoteDTO==null)return;
+            if(quoteDTO.ask!=null&&quoteDTO.ask==0)return;
+            if(quoteDTO.bid!=null&&quoteDTO.bid==0)return;
             linkWith(quoteDTO, true);
         }
     }

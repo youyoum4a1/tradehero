@@ -25,8 +25,17 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.cache.*;
-import com.tradehero.th.fragments.chinabuild.data.*;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeOffical;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeUser;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeVip;
+import com.tradehero.th.fragments.chinabuild.cache.CompetitionNewCache;
+import com.tradehero.th.fragments.chinabuild.data.CompetitionDataItem;
+import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
+import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -34,12 +43,11 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-9. 显示所有比赛和我参加的比赛
@@ -55,7 +63,7 @@ public class CompetitionBaseFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.tradeheroprogressbar_competition)TradeHeroProgressBar progressBar;
+    @InjectView(R.id.tradeheroprogressbar_competition) TradeHeroProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
     @InjectView(R.id.listCompetitions) SecurityListView listCompetitions;//比赛列表
@@ -126,7 +134,7 @@ public class CompetitionBaseFragment extends DashboardFragment
                 {
                     gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
 
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_LIST_ITEM, ""+position));
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_LIST_ITEM, "" + position));
                 }
             }
         });
@@ -178,8 +186,7 @@ public class CompetitionBaseFragment extends DashboardFragment
                     int position = pager.getCurrentItem();
                     gotoCompetitionDetailFragment(userCompetitionVipDTOs.get(position));
 
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_BANNER, ""+position));
-
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.BUTTON_COMPETITION_DETAIL_BANNER, "" + position));
                 }
             });
         }
@@ -292,8 +299,11 @@ public class CompetitionBaseFragment extends DashboardFragment
         }
     };
 
+    public int count;
+    public boolean isStartedScroll = false;
     public void startScrol()
     {
+        if(isStartedScroll)return;
         final Handler handler = new Handler();
         Runnable runnable = new Runnable()
         {
@@ -302,7 +312,7 @@ public class CompetitionBaseFragment extends DashboardFragment
             {
                 try
                 {
-                    pager.setCurrentItem(((pageAdapter.getCount() + 1)) % 2, true);
+                    pager.setCurrentItem(count++ % pageAdapter.getCount(), true);
                     handler.postDelayed(this, 3000);
                 } catch (Exception e)
                 {
@@ -310,6 +320,7 @@ public class CompetitionBaseFragment extends DashboardFragment
             }
         };
         handler.postDelayed(runnable, 3000);
+        isStartedScroll = true;
     }
 
     protected void detachOfficalCompetition()
@@ -496,13 +507,11 @@ public class CompetitionBaseFragment extends DashboardFragment
             onFinish(true);
         }
 
-
-
         public void onFinish(boolean closeLoading)
         {
             try
             {
-                if(closeLoading)
+                if (closeLoading)
                 {
                     betterViewAnimator.setDisplayedChildByLayoutId(R.id.listCompetitions);
                 }
@@ -511,7 +520,8 @@ public class CompetitionBaseFragment extends DashboardFragment
                 {
                     listCompetitions.onRefreshComplete();
                 }
-                if(progressBar!=null){
+                if (progressBar != null)
+                {
                     progressBar.stopLoading();
                 }
             } catch (Exception e)
@@ -520,13 +530,18 @@ public class CompetitionBaseFragment extends DashboardFragment
         }
     }
 
-    protected void showGuideView(){
-        if(!THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION)){
+    protected void showGuideView()
+    {
+        if (!THSharePreferenceManager.isGuideAvailable(getActivity(), THSharePreferenceManager.GUIDE_COMPETITION))
+        {
             return;
         }
-        if(getCompetitionPageType()==CompetitionUtils.COMPETITION_PAGE_ALL){
-            if (adapterList != null) {
-                if (adapterList.getOfficialCompetitions() > 0 || adapterList.getUserCompetitions() > 0) {
+        if (getCompetitionPageType() == CompetitionUtils.COMPETITION_PAGE_ALL)
+        {
+            if (adapterList != null)
+            {
+                if (adapterList.getOfficialCompetitions() > 0 || adapterList.getUserCompetitions() > 0)
+                {
                     ((MainActivity) getActivity()).showGuideView(MainActivity.GUIDE_TYPE_COMPETITION);
                 }
             }

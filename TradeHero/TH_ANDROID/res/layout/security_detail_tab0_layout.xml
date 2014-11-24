@@ -12,8 +12,10 @@
       android:layout_marginLeft="10dp"
       android:layout_marginRight="10dp"
       android:id="@+id/ic_info_data"
+      android:layout_marginTop="5dp"
+      android:layout_marginBottom="5dp"
       android:layout_width="fill_parent"
-      android:layout_height="72dp"
+      android:layout_height="wrap_content"
       layout="@layout/security_info_data"/>
 
   <ScrollView android:layout_width="fill_parent"
@@ -30,7 +32,7 @@
       <include
           android:layout_marginLeft="10dp"
           android:layout_marginRight="10dp"
-          android:layout_marginTop="10dp"
+          android:layout_marginTop="5dp"
           android:id="@+id/ic_info_chart"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
