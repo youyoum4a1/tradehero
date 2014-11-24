@@ -1,9 +1,9 @@
 package com.tradehero.th.api.news.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import android.support.annotation.NonNull;
 
 public class NewsItemDTOKey extends DiscussionKey<NewsItemDTOKey>
 {

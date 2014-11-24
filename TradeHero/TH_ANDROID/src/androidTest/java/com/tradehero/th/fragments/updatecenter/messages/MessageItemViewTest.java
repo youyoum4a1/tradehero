@@ -12,14 +12,13 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import java.io.IOException;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.util.ActivityController;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class MessageItemViewTest

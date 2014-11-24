@@ -3,11 +3,13 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
@@ -24,7 +26,6 @@ import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
@@ -78,6 +79,11 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider">
+    @NonNull public Observable<ProviderPrizePoolDTO> getProviderPrizePoolRx(@NonNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getProviderPrizePool(providerId.key);
+    }
+
     @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)

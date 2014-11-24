@@ -1,8 +1,8 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
-import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 public class SectorId extends AbstractIntegerDTOKey
 {

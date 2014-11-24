@@ -1,11 +1,11 @@
 package com.tradehero.th.rx;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.misc.exception.KnownServerErrors;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.AlertDialogUtil;
-import android.support.annotation.NonNull;
 import rx.Observer;
 
 abstract public class AlertDialogObserver<T> implements Observer<T>

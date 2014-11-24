@@ -1,14 +1,13 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.json.JSONException;
 
 public class THIABProductDetail

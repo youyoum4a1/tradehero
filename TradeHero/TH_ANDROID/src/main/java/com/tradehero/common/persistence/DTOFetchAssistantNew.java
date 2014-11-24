@@ -1,8 +1,8 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class DTOFetchAssistantNew<DTOKeyType extends DTOKey, DTOType extends DTO>

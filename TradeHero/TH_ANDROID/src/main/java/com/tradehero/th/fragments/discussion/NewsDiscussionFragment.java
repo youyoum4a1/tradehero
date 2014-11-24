@@ -2,19 +2,19 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.fragments.news.NewsViewLinear;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class NewsDiscussionFragment extends AbstractDiscussionFragment

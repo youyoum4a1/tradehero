@@ -1,10 +1,9 @@
 package com.tradehero.th.models.number;
 
-import com.tradehero.th.R;
-import com.tradehero.th.utils.THColorUtils;
-import com.tradehero.th.base.THApp;
 import android.support.annotation.NonNull;
-
+import com.tradehero.th.R;
+import com.tradehero.th.base.THApp;
+import com.tradehero.th.utils.THColorUtils;
 import java.text.DecimalFormat;
 
 public class THSignedNumber

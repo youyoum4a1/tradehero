@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trending;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class ExtraTileAdapter extends BaseAdapter

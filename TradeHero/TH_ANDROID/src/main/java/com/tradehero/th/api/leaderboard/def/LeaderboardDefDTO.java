@@ -1,5 +1,6 @@
 package com.tradehero.th.api.leaderboard.def;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.CountryCodeList;
 import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTO;
@@ -13,7 +14,6 @@ import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import com.tradehero.th.fragments.leaderboard.LeaderboardSortType;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class LeaderboardDefDTO implements DTO
 {

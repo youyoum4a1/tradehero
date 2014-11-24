@@ -1,11 +1,11 @@
 package com.tradehero.th.utils;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class AdapterViewUtils
 {

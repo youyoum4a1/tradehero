@@ -1,11 +1,9 @@
 package com.tradehero.th.models.leaderboard.key;
 
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
+import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import javax.inject.Inject;
 
 public class LeaderboardDefKeyKnowledge

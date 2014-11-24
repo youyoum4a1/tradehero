@@ -1,8 +1,8 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
-import android.support.annotation.NonNull;
 
 @Deprecated
 public class UserTransactionHistoryIdList extends DTOKeyIdList<UserTransactionHistoryId>

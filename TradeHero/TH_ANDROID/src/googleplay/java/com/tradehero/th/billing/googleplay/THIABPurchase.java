@@ -15,6 +15,8 @@
 
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -23,11 +25,7 @@ import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THProductPurchase;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.json.JSONException;
-
 import timber.log.Timber;
 
 public class THIABPurchase

@@ -15,6 +15,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.Pair;
 import android.view.View;
@@ -66,10 +68,9 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
@@ -133,8 +134,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private ValueAnimator mAnim;
     @NonNull private LevelDefListId mLevelDefListId = new LevelDefListId();
     private Callback mBadgeCallback;
+    @Nullable Subscription levelDefSubscription;
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Achievement_Dialog);
@@ -177,7 +179,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(new LevelUpListener());
-        AndroidObservable.bindFragment(
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        unsubscribe(levelDefSubscription);
+        levelDefSubscription = AndroidObservable.bindFragment(
                 this,
                 levelDefListCache.get(mLevelDefListId))
                 .subscribe(createLevelDefCacheObserver());
@@ -509,6 +517,13 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         super.onPause();
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(levelDefSubscription);
+        levelDefSubscription = null;
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         if (colorValueAnimator != null)
@@ -610,7 +625,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         @Override public void onError(Throwable e)
         {
-
         }
     }
 

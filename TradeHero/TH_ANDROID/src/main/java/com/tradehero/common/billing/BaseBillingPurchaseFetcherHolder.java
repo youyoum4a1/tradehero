@@ -1,10 +1,8 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.exception.BillingException;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
+import com.tradehero.common.billing.exception.BillingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

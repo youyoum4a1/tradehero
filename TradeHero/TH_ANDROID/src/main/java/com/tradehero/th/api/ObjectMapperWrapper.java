@@ -1,5 +1,6 @@
 package com.tradehero.th.api;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {

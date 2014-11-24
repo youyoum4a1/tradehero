@@ -1,8 +1,8 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import java.util.Calendar;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class BaseHasExpiration implements HasExpiration
 {

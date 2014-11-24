@@ -1,11 +1,11 @@
 package com.tradehero.th.utils.broadcast;
 
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import java.util.ArrayDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton public class BroadcastUtils implements BroadcastTaskNew.TaskListener
 {

@@ -2,8 +2,8 @@ package com.tradehero.th.models.intent;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import java.util.List;
 import android.support.annotation.NonNull;
+import java.util.List;
 
 abstract public class THIntentSubFactory<THIntentType extends THIntent> extends THIntentFactory<THIntentType>
 {

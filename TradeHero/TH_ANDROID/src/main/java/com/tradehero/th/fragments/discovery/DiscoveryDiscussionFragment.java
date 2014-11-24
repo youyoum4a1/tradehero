@@ -25,13 +25,18 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
 import com.tradehero.th.fragments.timeline.TimelineItemViewLinear;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
+import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -43,13 +48,11 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
-import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
-
 public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
 
+    @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.timeline_list_view) ListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
@@ -57,6 +60,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject CurrentUserId currentUserId;
     @Inject UserTimelineServiceWrapper userTimelineServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
+    @Inject Lazy<DashboardNavigator> navigator;
 
     private ProgressBar mBottomLoadingView;
 
@@ -91,6 +95,23 @@ public class DiscoveryDiscussionFragment extends Fragment
         }
     }
 
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (item.getItemId() == R.id.discussion_edit_post)
+        {
+            DiscussionEditPostFragment discussionEditPostFragment = navigator.get().pushFragment(DiscussionEditPostFragment.class);
+            discussionEditPostFragment.setCommentPostedListener(this::refresh);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void refresh()
+    {
+        currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
+        subscribes();
+    }
+
     private Observable<RangeDTO> createPaginationObservable()
     {
         Observable<RangeDTO> pullFromStartObservable = Observable.create(subscriber ->
@@ -117,12 +138,20 @@ public class DiscoveryDiscussionFragment extends Fragment
         mTimelineListView.addFooterView(mBottomLoadingView);
         mTimelineListView.setAdapter(discoveryDiscussionAdapter);
 
+        subscribes();
+    }
+
+    private void subscribes()
+    {
+        timelineSubscriptions.clear();
+
         PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
         timelineSubscriptions.add(timelineSubject.subscribe(discoveryDiscussionAdapter::setItems));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
+        progressBar.setVisibility(View.VISIBLE);
         timelineSubscriptions.add(rxLoaderManager.create(
                 DISCOVERY_LIST_LOADER_ID,
                 PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
@@ -134,6 +163,10 @@ public class DiscoveryDiscussionFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(toastOnErrorAction)
                 .onErrorResumeNext(Observable.empty())
+                .doOnUnsubscribe(() ->
+                {
+                    if (progressBar != null) progressBar.setVisibility(View.INVISIBLE);
+                })
                 .subscribe(timelineSubject));
     }
 
@@ -154,6 +187,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         private void refreshComplete()
         {
+            progressBar.setVisibility(View.INVISIBLE);
             mBottomLoadingView.setVisibility(View.INVISIBLE);
             swipeRefreshLayout.setRefreshing(false);
         }

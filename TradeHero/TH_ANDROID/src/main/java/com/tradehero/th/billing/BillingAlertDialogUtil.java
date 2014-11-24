@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.metrics.Analytics;
@@ -20,7 +21,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,

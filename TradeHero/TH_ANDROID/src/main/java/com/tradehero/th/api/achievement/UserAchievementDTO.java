@@ -1,11 +1,11 @@
 package com.tradehero.th.api.achievement;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.users.UserBaseKey;
 import java.util.Date;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class UserAchievementDTO implements DTO
 {

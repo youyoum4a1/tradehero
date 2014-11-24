@@ -1,8 +1,8 @@
 package com.tradehero.common.persistence;
 
-import java.util.Map;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.Map;
 
 abstract public class StraightDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         extends PartialDTOCacheNew<DTOKeyType, DTOType>

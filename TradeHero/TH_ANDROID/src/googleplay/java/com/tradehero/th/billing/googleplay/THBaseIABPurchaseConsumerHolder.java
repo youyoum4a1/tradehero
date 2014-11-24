@@ -1,10 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABPurchaseConsumerHolder;
 import com.tradehero.common.billing.googleplay.IABSKU;
-
-import android.support.annotation.NonNull;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 

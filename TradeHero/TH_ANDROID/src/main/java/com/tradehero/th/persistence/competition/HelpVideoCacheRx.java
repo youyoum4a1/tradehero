@@ -1,15 +1,14 @@
 package com.tradehero.th.persistence.competition;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.competition.HelpVideoDTO;
 import com.tradehero.th.api.competition.key.HelpVideoId;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class HelpVideoCacheRx extends BaseDTOCacheRx<HelpVideoId, HelpVideoDTO>

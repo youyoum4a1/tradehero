@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -16,7 +17,6 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
 {

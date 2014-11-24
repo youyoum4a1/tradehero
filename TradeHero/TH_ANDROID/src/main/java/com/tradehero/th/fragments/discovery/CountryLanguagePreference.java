@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class CountryLanguagePreference extends AbstractPreference<CountryLanguagePairDTO>
 {

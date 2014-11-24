@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.alert;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -11,7 +12,6 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class AlertCompactCacheRx extends BaseDTOCacheRx<AlertId, AlertCompactDTO>

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.competition;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.Collection;
-import android.support.annotation.NonNull;
 
 public class ProviderIdList extends DTOKeyIdList<ProviderId>
 {

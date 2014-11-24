@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.leaderboard;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @UserCache
 public class LeaderboardUserCacheRx extends BaseDTOCacheRx<LeaderboardUserId, LeaderboardUserDTO>

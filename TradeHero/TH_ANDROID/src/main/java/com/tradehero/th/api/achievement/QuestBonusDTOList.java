@@ -1,12 +1,12 @@
 package com.tradehero.th.api.achievement;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements DTO
 {

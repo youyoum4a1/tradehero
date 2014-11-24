@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +17,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
 
 public class ContestContentView extends RelativeLayout
         implements DTOView<ContestPageDTO>

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -34,7 +35,6 @@ import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

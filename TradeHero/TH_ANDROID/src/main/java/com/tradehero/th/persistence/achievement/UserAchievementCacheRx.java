@@ -1,5 +1,7 @@
 package com.tradehero.th.persistence.achievement;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -16,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observable;
 import timber.log.Timber;
 

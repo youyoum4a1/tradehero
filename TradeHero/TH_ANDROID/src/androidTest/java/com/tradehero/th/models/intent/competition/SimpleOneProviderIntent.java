@@ -1,10 +1,10 @@
 package com.tradehero.th.models.intent.competition;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import android.support.annotation.NonNull;
 
 public class SimpleOneProviderIntent extends OneProviderIntent
 {

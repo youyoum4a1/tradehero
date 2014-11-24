@@ -1,6 +1,7 @@
 package com.tradehero.th.widget.time;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -14,7 +15,6 @@ import com.tradehero.common.time.TimeUnitSecondInMinute;
 import com.tradehero.th.R;
 import java.util.Date;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import org.ocpsoft.prettytime.Duration;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;

@@ -1,11 +1,11 @@
 package com.tradehero.th.models.share.preference;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import java.util.HashSet;
 import java.util.Set;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.json.JSONException;
 import timber.log.Timber;
 

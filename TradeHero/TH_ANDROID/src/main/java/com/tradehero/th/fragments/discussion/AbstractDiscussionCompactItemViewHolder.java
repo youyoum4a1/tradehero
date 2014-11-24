@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.discussion;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -21,8 +23,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>

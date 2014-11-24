@@ -1,8 +1,8 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.NonNull;
 import java.util.Collections;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class SocialShareReqFormDTO implements HasSocialNetworkEnumList
 {

@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 
 public class FriendLeaderboardMarkedUserDTO extends FriendLeaderboardUserDTO
 {

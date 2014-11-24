@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.key.MockQuestBonusId;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class AchievementMockServiceWrapper extends AchievementServiceWrapper

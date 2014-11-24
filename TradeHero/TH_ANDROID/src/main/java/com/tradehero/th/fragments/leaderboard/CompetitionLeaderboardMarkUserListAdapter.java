@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.AdView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import java.util.Arrays;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter

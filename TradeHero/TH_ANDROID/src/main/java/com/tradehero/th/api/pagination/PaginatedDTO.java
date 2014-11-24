@@ -3,7 +3,6 @@ package com.tradehero.th.api.pagination;
 import com.tradehero.common.persistence.DTO;
 import java.util.Collections;
 import java.util.List;
-import android.support.annotation.Nullable;
 
 public class PaginatedDTO<ListedType> implements DTO
 {

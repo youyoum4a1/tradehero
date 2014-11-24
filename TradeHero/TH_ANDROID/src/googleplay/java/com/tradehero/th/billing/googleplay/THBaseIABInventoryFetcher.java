@@ -1,13 +1,13 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import org.json.JSONException;
 
 public class THBaseIABInventoryFetcher

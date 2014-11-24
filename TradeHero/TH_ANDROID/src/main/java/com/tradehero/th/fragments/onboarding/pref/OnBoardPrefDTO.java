@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.onboarding.pref;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
-import android.support.annotation.NonNull;
 
 public class OnBoardPrefDTO implements DTO
 {

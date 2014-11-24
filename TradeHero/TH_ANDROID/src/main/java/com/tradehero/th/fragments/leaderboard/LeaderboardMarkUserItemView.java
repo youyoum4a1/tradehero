@@ -20,6 +20,7 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -49,7 +50,6 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -665,9 +665,20 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     protected void displayUserIsLoading()
     {
-        lbmuPosition.setText("-");
-        lbmuRoi.setText("-");
-        lbmuDisplayName.setText(R.string.loading_required_information);
+        // Strangely, those may be null
+        // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/546d39eb65f8dfea1521d9f6
+        if (lbmuPosition != null)
+        {
+            lbmuPosition.setText("-");
+        }
+        if (lbmuRoi != null)
+        {
+            lbmuRoi.setText("-");
+        }
+        if (lbmuDisplayName != null)
+        {
+            lbmuDisplayName.setText(R.string.loading_required_information);
+        }
     }
 
     protected void displayUserIsNotRanked()

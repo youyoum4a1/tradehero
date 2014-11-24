@@ -1,19 +1,16 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdAsc;
-import com.tradehero.th.api.discussion.key.DiscussionKeyComparatorIdDesc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 abstract public class DiscussionSetAdapter
         extends ViewDTOSetAdapter<DiscussionKey, AbstractDiscussionCompactItemViewLinear<DiscussionKey>>

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.social;
 
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UserFriendsDTOFactory

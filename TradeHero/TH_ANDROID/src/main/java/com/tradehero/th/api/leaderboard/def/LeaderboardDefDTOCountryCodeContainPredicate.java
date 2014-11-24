@@ -1,9 +1,9 @@
 package com.tradehero.th.api.leaderboard.def;
 
-import com.android.internal.util.Predicate;
-import com.tradehero.th.api.leaderboard.CountryCodeListContainCodePredicate;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
+import com.tradehero.th.api.leaderboard.CountryCodeListContainCodePredicate;
 
 public class LeaderboardDefDTOCountryCodeContainPredicate implements Predicate<LeaderboardDefDTO>
 {

@@ -8,6 +8,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -81,5 +82,10 @@ public interface ProviderServiceRx
     @POST("/social/prizeShare")
     Observable<BaseResponseDTO> sharePreseason(
             @Body SocialShareReqFormDTO achievementShareFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Get ProviderPrizePool">
+    @GET("/providers/{providerId}/prizepool")
+    Observable<ProviderPrizePoolDTO> getProviderPrizePool(@Path("providerId") int providerId);
     //</editor-fold>
 }

@@ -1,13 +1,13 @@
 package com.tradehero.th.api.position;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDTO> implements DTO
 {

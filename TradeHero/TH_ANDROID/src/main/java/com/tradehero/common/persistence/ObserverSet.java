@@ -2,7 +2,6 @@ package com.tradehero.common.persistence;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscriber;
 

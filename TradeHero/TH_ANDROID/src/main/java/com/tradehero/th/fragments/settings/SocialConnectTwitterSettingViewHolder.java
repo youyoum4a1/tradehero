@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.support.annotation.IntegerRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -15,7 +16,6 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingViewHolder
 {

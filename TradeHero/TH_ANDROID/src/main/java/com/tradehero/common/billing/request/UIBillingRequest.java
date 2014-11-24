@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.request;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.BillingInventoryFetcher;
@@ -14,8 +15,6 @@ import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
-
-import android.support.annotation.Nullable;
 
 public interface UIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,

@@ -31,6 +31,7 @@ import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -59,6 +60,7 @@ import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
@@ -94,6 +96,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject THIntentFactory thIntentFactory;
     @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @Inject ProviderServiceWrapper providerServiceWrapper;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -102,6 +105,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Nullable private Subscription competitionListCacheSubscription;
     protected CompetitionDTOList competitionDTOs;
     @Nullable private Subscription displayCellListCacheFetchSubscription;
+    @Nullable private Subscription displayPrizePoolSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
     @Nullable private Subscription competitionPreseasonSubscription;
     private CompetitionPreSeasonDTO competitionPreSeasonDTO;
@@ -167,6 +171,20 @@ public class MainCompetitionFragment extends CompetitionFragment
                 this,
                 competitionPreseasonCacheRx.get(providerId))
                 .subscribe(createCompetitionPreseasonListCacheObserver());
+
+        fetchPrizePool();
+    }
+
+    private void fetchPrizePool() {
+        Timber.d("lyl fetchPrizePool provider.id="+providerId.toString());
+        //only for sgx
+        if (providerId.key == 24)
+        {
+            unsubscribe(displayPrizePoolSubscription);
+            displayPrizePoolSubscription = AndroidObservable.bindFragment(
+                    this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
+                    .subscribe(new CompetitionFragmentProviderPrizePoolObserver());
+        }
     }
 
     @Override public void onResume()
@@ -195,6 +213,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionListCacheSubscription = null;
         unsubscribe(displayCellListCacheFetchSubscription);
         displayCellListCacheFetchSubscription = null;
+        unsubscribe(displayPrizePoolSubscription);
+        displayPrizePoolSubscription = null;
         super.onStop();
     }
 
@@ -221,6 +241,7 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_item,
                 R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
+                R.layout.competition_zone_prize_pool,
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
@@ -679,6 +700,33 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override protected Class<?> getClassToPop()
         {
             return MainCompetitionFragment.class;
+        }
+    }
+
+    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<ProviderPrizePoolDTO>
+//    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<Pair<ProviderId, ProviderPrizePoolDTO>>
+    {
+        @Override public void onNext(ProviderPrizePoolDTO dto)
+//        @Override public void onNext(Pair<ProviderId, ProviderPrizePoolDTO> pair)
+        {
+//            linkWith(pair.second, true);
+            Timber.d("lyl "+dto.toString());
+            providerPrizePoolDTO = dto;
+            competitionZoneListItemAdapter.setPrizePoolDTO(providerPrizePoolDTO);
+            displayListView();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (providerPrizePoolDTO == null)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            }
+            Timber.e("Error fetching the provider info", e);
         }
     }
 }

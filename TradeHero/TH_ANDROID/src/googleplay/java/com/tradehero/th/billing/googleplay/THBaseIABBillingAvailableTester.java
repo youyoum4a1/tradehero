@@ -1,11 +1,11 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class THBaseIABBillingAvailableTester
     extends BaseIABBillingAvailableTester

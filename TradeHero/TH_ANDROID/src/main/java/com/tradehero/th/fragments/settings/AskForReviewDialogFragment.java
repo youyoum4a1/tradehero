@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {

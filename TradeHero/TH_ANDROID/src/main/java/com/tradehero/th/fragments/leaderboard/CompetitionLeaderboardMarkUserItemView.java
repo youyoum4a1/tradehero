@@ -2,10 +2,13 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -13,8 +16,6 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.models.number.THSignedMoney;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
@@ -85,6 +86,11 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
 
     @Override protected void pushLeaderboardPositionListFragment(GetPositionsDTOKey getPositionsDTOKey, LeaderboardDefDTO leaderboardDefDTO)
     {
+        if (leaderboardItem == null || providerDTO == null)
+        {
+            THToast.show(R.string.error_incomplete_info_message);
+            return;
+        }
         // leaderboard mark user id, to get marking user information
         Bundle bundle = new Bundle();
 

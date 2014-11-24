@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.news.yahoo;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -19,7 +20,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import android.support.annotation.NonNull;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;

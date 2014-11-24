@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
 import com.tradehero.th.R;
@@ -11,8 +13,6 @@ import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

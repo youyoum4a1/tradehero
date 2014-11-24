@@ -2,10 +2,10 @@ package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.Button;
 import com.tradehero.th.R;
-import android.support.annotation.NonNull;
 
 public class QuickPriceButton extends Button
 {

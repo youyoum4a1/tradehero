@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
-import com.tradehero.th.api.BaseResponseDTO;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.BaseResponseDTO;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 

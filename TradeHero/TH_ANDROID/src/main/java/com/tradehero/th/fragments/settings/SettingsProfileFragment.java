@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -38,10 +38,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
+import rx.observers.EmptyObserver;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
@@ -56,14 +55,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Provider<AuthDataAction> authDataActionProvider;
 
+    @Nullable Subscription userProfileSubscription;
+    @Nullable Subscription userProfileUpdateSubscription;
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_settings_profile, container, false);
-
         initSetup(view);
         setHasOptionsMenu(true);
-
-        populateCurrentUser();
         return view;
     }
 
@@ -77,6 +76,21 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         referralCodeEditText.setVisibility(View.GONE);
 
         scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        populateCurrentUser();
+    }
+
+    @Override public void onStop()
+    {
+        unsubscribe(userProfileUpdateSubscription);
+        userProfileUpdateSubscription = null;
+        unsubscribe(userProfileSubscription);
+        userProfileSubscription = null;
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -121,14 +135,16 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void populateCurrentUser()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(userProfileSubscription);
+        userProfileSubscription = AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileCacheObserver());
     }
 
     private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
     {
-        return new Observer<Pair<UserBaseKey,UserProfileDTO>>()
+        return new Observer<Pair<UserBaseKey, UserProfileDTO>>()
         {
             @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
             {
@@ -166,29 +182,24 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
 
-            AndroidObservable.bindFragment(this,
-                    profileView.obtainUserFormDTO())
-                    .flatMap(new Func1<UserFormDTO, Observable<Pair<AuthData, UserProfileDTO>>>()
-                    {
-                        @Override public Observable<Pair<AuthData, UserProfileDTO>> call(UserFormDTO userFormDTO)
-                        {
-                            final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
-                            Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
-                                .toUserBaseKey(), userFormDTO);
-                            return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<>());
-                        }
+            unsubscribe(userProfileUpdateSubscription);
+            userProfileUpdateSubscription = AndroidObservable.bindFragment(
+                    this,
+                    profileView.obtainUserFormDTO()
+                            .flatMap(userFormDTO -> {
+                                final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
+                                Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
+                                        .toUserBaseKey(), userFormDTO);
+                                return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<>());
+                            }))
+                    .doOnNext(pair -> {
+                        profileView.progressDialog.hide(); // Before otherwise it is reset
+                        THToast.show(R.string.settings_update_profile_successful);
+                        authDataActionProvider.get().call(pair);
+                        navigator.get().popFragment();
                     })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
-                    {
-                        @Override public void call(Pair<AuthData, UserProfileDTO> userProfileDTO)
-                        {
-                            profileView.progressDialog.hide(); // Before otherwise it is reset
-                            THToast.show(R.string.settings_update_profile_successful);
-                            navigator.get().popFragment();
-                        }
-                    })
-                    .subscribe(authDataActionProvider.get()); // FIXME use Observer to avoid crash
+                    .doOnError(error -> THToast.show(R.string.error_update_your_user_profile))
+                    .subscribe(new EmptyObserver<>());
         }
     }
 
@@ -209,8 +220,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         try
         {
             startActivityForResult(libraryIntent, ImagePickerView.REQUEST_GALLERY);
-        }
-        catch (ActivityNotFoundException e)
+        } catch (ActivityNotFoundException e)
         {
             THToast.show(R.string.error_launch_photo_library);
         }

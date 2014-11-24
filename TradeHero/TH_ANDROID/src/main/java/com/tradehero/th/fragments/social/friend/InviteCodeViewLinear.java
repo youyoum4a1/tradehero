@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -16,7 +17,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
 import retrofit.Callback;
 import rx.Observer;
 import rx.Subscription;

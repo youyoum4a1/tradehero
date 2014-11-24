@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.discussion.stock;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -34,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

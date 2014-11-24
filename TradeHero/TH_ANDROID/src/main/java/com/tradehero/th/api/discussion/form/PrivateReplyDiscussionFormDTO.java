@@ -1,9 +1,9 @@
 package com.tradehero.th.api.discussion.form;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
-import android.support.annotation.NonNull;
 
 public class PrivateReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {

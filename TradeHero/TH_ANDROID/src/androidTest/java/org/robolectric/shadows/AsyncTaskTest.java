@@ -1,23 +1,21 @@
 package org.robolectric.shadows;
 
 import android.os.AsyncTask;
-import com.tradehero.THRobolectricTestRunner;
 import android.support.annotation.NonNull;
+import com.tradehero.THRobolectricTestRunner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.util.Join;
 import org.robolectric.util.Transcript;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
 public class AsyncTaskTest {

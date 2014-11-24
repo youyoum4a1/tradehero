@@ -2,10 +2,10 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import java.util.Collection;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import java.util.Collection;
 
 public class SingleViewDiscussionSetAdapter extends DiscussionSetAdapter
 {

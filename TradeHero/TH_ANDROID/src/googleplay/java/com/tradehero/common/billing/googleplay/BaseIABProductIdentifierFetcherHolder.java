@@ -1,11 +1,9 @@
 package com.tradehero.common.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierFetcherHolder;
 import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-
-import android.support.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.Map;
 

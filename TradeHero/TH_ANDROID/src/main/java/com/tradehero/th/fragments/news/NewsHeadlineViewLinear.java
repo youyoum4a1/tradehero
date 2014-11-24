@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -14,8 +16,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.observers.EmptyObserver;
 

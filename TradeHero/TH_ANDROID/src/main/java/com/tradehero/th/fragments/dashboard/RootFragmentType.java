@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
@@ -18,7 +17,6 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

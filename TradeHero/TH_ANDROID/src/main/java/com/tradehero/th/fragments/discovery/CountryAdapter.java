@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -15,7 +16,6 @@ import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class CountryAdapter extends GenericArrayAdapter<CountryLanguagePairDTO>
         implements Filterable

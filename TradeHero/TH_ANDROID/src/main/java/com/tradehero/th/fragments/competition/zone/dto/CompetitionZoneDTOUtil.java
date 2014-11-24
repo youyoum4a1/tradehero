@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
@@ -8,14 +10,13 @@ import com.tradehero.th.api.competition.CompetitionDTORestrictionComparator;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
@@ -37,6 +38,7 @@ public class CompetitionZoneDTOUtil
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
             CompetitionPreSeasonDTO preSeasonDTO,
+            @Nullable ProviderPrizePoolDTO providerPrizePoolDTO,
             @NonNull List<Integer> preparedOrderedTypes,
             @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
     {
@@ -52,6 +54,13 @@ public class CompetitionZoneDTOUtil
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
+
+            //prize pool
+            if (providerPrizePoolDTO != null)
+            {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
+                preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(providerPrizePoolDTO));
+            }
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
             {

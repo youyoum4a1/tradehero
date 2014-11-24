@@ -1,7 +1,7 @@
 package com.tradehero.th.api.timeline;
 
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.social.SocialNetworkEnum;
 
 public class TimelineItemShareRequestDTO
 {

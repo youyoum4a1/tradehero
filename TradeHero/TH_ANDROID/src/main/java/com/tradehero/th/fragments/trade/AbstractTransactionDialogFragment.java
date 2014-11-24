@@ -3,11 +3,12 @@ package com.tradehero.th.fragments.trade;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.ActionMode;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,11 +21,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -63,14 +64,11 @@ import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observer;
@@ -206,7 +204,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
     }
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         return d;

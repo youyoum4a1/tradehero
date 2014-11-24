@@ -1,7 +1,7 @@
 package com.tradehero.th.api.position;
 
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 
 public class SecurityPositionTransactionDTO extends SecurityPositionDTO
 {

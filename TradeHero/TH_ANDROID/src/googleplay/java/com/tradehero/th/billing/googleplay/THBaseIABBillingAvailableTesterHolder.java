@@ -1,10 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABBillingAvailableTesterHolder;
 import com.tradehero.common.billing.googleplay.exception.IABException;
-
-import android.support.annotation.NonNull;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 

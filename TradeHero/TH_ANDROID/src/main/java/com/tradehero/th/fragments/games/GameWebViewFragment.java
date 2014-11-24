@@ -3,6 +3,11 @@ package com.tradehero.th.fragments.games;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -15,13 +20,17 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.MiniGameServiceWrapper;
+import com.tradehero.th.persistence.games.MiniGameDefCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 @Routable({
@@ -31,25 +40,39 @@ import timber.log.Timber;
 })
 public class GameWebViewFragment extends BaseWebViewFragment
 {
+    static final String GAME_ID_ARG_KEY = GameWebViewFragment.class.getName() + ".gameId";
     static final String GAME_ID_KEY = "gameId";
     static final String GAME_SCORE_KEY = "scoreNum";
     static final String GAME_LEVEL_KEY = "levelNum";
-    static final String GAME_NAME_KEY = "gameName";
 
     @Inject THRouter thRouter;
+    @Inject MiniGameDefCache miniGameDefCache;
     @Inject MiniGameServiceWrapper gamesServiceWrapper;
     @Inject Analytics analytics;
 
+    protected MiniGameDefKey miniGameDefKey;
     @RouteProperty(GAME_ID_KEY) protected Integer gameId;
     @RouteProperty(GAME_SCORE_KEY) protected Integer score;
     @RouteProperty(GAME_LEVEL_KEY) protected Integer level;
 
     private long beginTime;
-    private String gameName;
-    
+    @Nullable Subscription miniGameDefSubscription;
+    protected MiniGameDefDTO miniGameDefDTO;
+    protected boolean showedHowToPlay = false;
+
     public static void putUrl(@NonNull Bundle args, @NonNull MiniGameDefDTO miniGameDefDTO, @NonNull UserBaseKey userBaseKey)
     {
         putUrl(args, miniGameDefDTO.url + "?userId=" + userBaseKey.getUserId());
+    }
+
+    public static void putGameId(@NonNull Bundle args, @NonNull MiniGameDefKey miniGameDefKey)
+    {
+        args.putBundle(GAME_ID_ARG_KEY, miniGameDefKey.getArgs());
+    }
+
+    @NonNull public static MiniGameDefKey getGameId(@NonNull Bundle args)
+    {
+        return new MiniGameDefKey(args.getBundle(GAME_ID_ARG_KEY));
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -57,12 +80,38 @@ public class GameWebViewFragment extends BaseWebViewFragment
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         thRouter.inject(this);
-        gameName = getGameName(getArguments());
+        miniGameDefKey = getGameId(getArguments());
     }
 
-    @Override protected int getLayoutResId()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        return R.layout.fragment_webview;
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.mini_game_webview_menu, menu);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        displayName();
+        boolean hasHowTo = miniGameDefDTO != null && miniGameDefDTO.howToPlayUrl != null;
+        menu.findItem(R.id.how_to_menu).setVisible(hasHowTo);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.how_to_menu:
+                displayHowToPlay();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        fetchMiniGameDef();
     }
 
     @Override public void onResume()
@@ -79,57 +128,109 @@ public class GameWebViewFragment extends BaseWebViewFragment
         super.onPause();
     }
 
-    private void reportAnalytics() {
-        long duration = (System.currentTimeMillis()-beginTime)/1000;
-        String s = AnalyticsConstants.Time10M;
-        if (duration <= 10)
-        {
-            s = AnalyticsConstants.Time1T10S;
-        }
-        else if (duration <= 30)
-        {
-            s = AnalyticsConstants.Time11T30S;
-        }
-        else if (duration <= 60)
-        {
-            s = AnalyticsConstants.Time31T60S;
-        }
-        else if (duration <= 180)
-        {
-            s = AnalyticsConstants.Time1T3M;
-        }
-        else if (duration <= 600)
-        {
-            s = AnalyticsConstants.Time3T10M;
-        }
+    @Override public void onStop()
+    {
+        unsubscribe(miniGameDefSubscription);
+        miniGameDefSubscription = null;
+        super.onStop();
+    }
+
+    private void reportAnalytics()
+    {
+        AnalyticsDuration duration = AnalyticsDuration.sinceTimeMillis(beginTime);
         Map<String, String> map = new HashMap<>();
-        map.put(AnalyticsConstants.GamePlayed, gameName);
-        map.put(AnalyticsConstants.TimeInGame, s);
+        map.put(AnalyticsConstants.GamePlayed, miniGameDefKey.key.toString());
+        map.put(AnalyticsConstants.TimeInGame, duration.toString());
         analytics.fireEvent(new AttributesEvent(AnalyticsConstants.GamePlaySummary, map));
+    }
+
+    protected void fetchMiniGameDef()
+    {
+        unsubscribe(miniGameDefSubscription);
+        miniGameDefSubscription = AndroidObservable.bindFragment(
+                this,
+                miniGameDefCache.get(miniGameDefKey))
+                .subscribe(createMiniGameDefObserver());
+    }
+
+    @NonNull protected Observer<Pair<MiniGameDefKey, MiniGameDefDTO>> createMiniGameDefObserver()
+    {
+        return new MiniGameDefObserver();
+    }
+
+    protected class MiniGameDefObserver implements Observer<Pair<MiniGameDefKey, MiniGameDefDTO>>
+    {
+        @Override public void onNext(Pair<MiniGameDefKey, MiniGameDefDTO> pair)
+        {
+            linkWith(pair.second);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+        }
+    }
+
+    protected void linkWith(@NonNull MiniGameDefDTO miniGameDefDTO)
+    {
+        this.miniGameDefDTO = miniGameDefDTO;
+        displayName();
+        if (miniGameDefDTO.howToPlayUrl != null && !showedHowToPlay)
+        {
+            displayHowToPlay();
+        }
+    }
+
+    protected void displayName()
+    {
+        if (miniGameDefDTO != null)
+        {
+            setActionBarTitle(miniGameDefDTO.name);
+        }
+    }
+
+    protected void displayHowToPlay()
+    {
+        HowToPlayDialogFragment.newInstance(miniGameDefKey)
+                .show(getFragmentManager(),
+                        HowToPlayDialogFragment.class.getName());
+        showedHowToPlay = true;
     }
 
     protected void submitScore()
     {
         if (gameId != null && score != null && level != null)
         {
-            gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level))
-                    .subscribe(new Observer<BaseResponseDTO>()
-                    {
-                        @Override public void onNext(BaseResponseDTO baseResponseDTO)
+            if (!gameId.equals(miniGameDefKey.key))
+            {
+                Timber.e(new IllegalArgumentException("Got gameId " + gameId + ", while it is for " + miniGameDefKey.key),
+                        "Got gameId %d, while it is for %d", gameId, miniGameDefKey.key);
+                THToast.show(R.string.error_submit_score_game_id_mismatch);
+            }
+            else
+            {
+                gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level))
+                        .subscribe(new Observer<BaseResponseDTO>()
                         {
-                            Timber.d("Received %s", baseResponseDTO);
-                        }
+                            @Override public void onNext(BaseResponseDTO baseResponseDTO)
+                            {
+                                Timber.d("Received %s", baseResponseDTO);
+                            }
 
-                        @Override public void onCompleted()
-                        {
-                            clearScore();
-                        }
+                            @Override public void onCompleted()
+                            {
+                                clearScore();
+                            }
 
-                        @Override public void onError(Throwable e)
-                        {
-                            Timber.e(e, "Failed to report score");
-                        }
-                    });
+                            @Override public void onError(Throwable e)
+                            {
+                                Timber.e(e, "Failed to report score");
+                            }
+                        });
+            }
         }
     }
 
@@ -141,20 +242,5 @@ public class GameWebViewFragment extends BaseWebViewFragment
         getArguments().remove(GAME_ID_KEY);
         getArguments().remove(GAME_SCORE_KEY);
         getArguments().remove(GAME_LEVEL_KEY);
-    }
-
-    public static void putGameName(@NonNull Bundle args, @NonNull String url)
-    {
-        args.putString(GAME_NAME_KEY, url);
-    }
-
-
-    public static String getGameName(@Nullable Bundle args)
-    {
-        if (args != null)
-        {
-            return args.getString(GAME_NAME_KEY);
-        }
-        return "";
     }
 }

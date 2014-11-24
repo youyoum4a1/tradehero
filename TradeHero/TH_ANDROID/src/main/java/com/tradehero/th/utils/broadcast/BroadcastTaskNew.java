@@ -1,11 +1,11 @@
 package com.tradehero.th.utils.broadcast;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import com.google.common.annotations.VisibleForTesting;
 import java.util.Timer;
 import java.util.TimerTask;
-import android.support.annotation.NonNull;
 
 public class BroadcastTaskNew
 {

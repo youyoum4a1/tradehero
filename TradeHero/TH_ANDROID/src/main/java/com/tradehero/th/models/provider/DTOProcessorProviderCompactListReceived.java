@@ -1,9 +1,9 @@
 package com.tradehero.th.models.provider;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
 
 public class DTOProcessorProviderCompactListReceived
     extends DTOProcessorProviderCompactListReceivedBase<ProviderDTO, ProviderDTOList>

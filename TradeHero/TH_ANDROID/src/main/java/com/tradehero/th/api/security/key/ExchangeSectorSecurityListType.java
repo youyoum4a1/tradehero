@@ -1,11 +1,11 @@
 package com.tradehero.th.api.security.key;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorId;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class ExchangeSectorSecurityListType extends SecurityListType
 {

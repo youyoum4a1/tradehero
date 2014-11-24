@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.widget.EditText;
@@ -11,7 +12,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class MentionTaggedStockHandler

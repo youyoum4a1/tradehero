@@ -1,12 +1,12 @@
 package com.tradehero.th.api.level;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.broadcast.BroadcastData;
 import com.tradehero.th.utils.level.XpModule;
 import java.util.ArrayList;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData

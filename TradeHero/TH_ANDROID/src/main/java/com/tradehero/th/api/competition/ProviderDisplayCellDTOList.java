@@ -1,10 +1,9 @@
 package com.tradehero.th.api.competition;
 
-import com.tradehero.common.api.BaseArrayList;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseArrayListHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class ProviderDisplayCellDTOList extends BaseArrayListHasExpiration<ProviderDisplayCellDTO>
         implements DTO

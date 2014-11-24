@@ -1,10 +1,10 @@
 package com.tradehero.th.api.achievement.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastData;
-import android.support.annotation.NonNull;
 
 public class UserAchievementId extends AbstractIntegerDTOKey implements BroadcastData
 {

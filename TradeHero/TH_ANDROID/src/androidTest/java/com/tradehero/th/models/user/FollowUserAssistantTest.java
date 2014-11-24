@@ -1,6 +1,7 @@
 package com.tradehero.th.models.user;
 
 import com.tradehero.THRobolectric;
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -15,22 +16,20 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import retrofit.RetrofitError;
-
-import static com.tradehero.THRobolectric.runBgUiTasks;
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import retrofit.RetrofitError;
 
 @RunWith(THRobolectricTestRunner.class)
 public class FollowUserAssistantTest extends FollowUserAssistantTestBase

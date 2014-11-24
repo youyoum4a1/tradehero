@@ -1,9 +1,9 @@
 package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
-import android.support.annotation.NonNull;
 
 public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
     implements GetPositionsDTOKey

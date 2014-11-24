@@ -1,5 +1,6 @@
 package com.tradehero.th.api;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.achievement.key.QuestBonusId;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
@@ -50,8 +51,6 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import java.util.Random;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-
 import static org.mockito.Mockito.mock;
 
 public class ValidMocker

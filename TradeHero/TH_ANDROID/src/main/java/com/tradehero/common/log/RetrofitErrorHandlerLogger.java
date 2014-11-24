@@ -1,6 +1,7 @@
 package com.tradehero.common.log;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.common.utils.THToast;
@@ -15,7 +16,6 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import android.support.annotation.NonNull;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Header;

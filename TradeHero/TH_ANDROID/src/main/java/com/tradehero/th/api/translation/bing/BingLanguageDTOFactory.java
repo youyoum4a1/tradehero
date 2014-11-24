@@ -2,11 +2,11 @@ package com.tradehero.th.api.translation.bing;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.TranslatableLanguageDTOFactory;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class BingLanguageDTOFactory extends TranslatableLanguageDTOFactory
 {

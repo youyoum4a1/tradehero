@@ -1,8 +1,8 @@
 package com.tradehero.th.api.security.key;
 
-import com.tradehero.common.api.PagedDTOKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.api.PagedDTOKey;
 
 abstract public class SecurityListType implements Comparable<SecurityListType>, PagedDTOKey
 {

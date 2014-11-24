@@ -1,12 +1,12 @@
 package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.View;
 import android.widget.PopupMenu;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import java.util.Set;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 

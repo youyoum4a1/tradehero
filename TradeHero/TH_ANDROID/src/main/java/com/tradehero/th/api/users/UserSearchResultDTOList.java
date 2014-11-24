@@ -1,9 +1,9 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import android.support.annotation.NonNull;
 
 public class UserSearchResultDTOList extends BaseArrayList<UserSearchResultDTO>
     implements DTO, ContainerDTO<UserSearchResultDTO, UserSearchResultDTOList>

@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -10,8 +12,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LeaderboardMarkUserListAdapter extends
         LoaderDTOAdapter<

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.translation;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,6 @@ import com.tradehero.th.persistence.translation.UserTranslationSettingPreference
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;

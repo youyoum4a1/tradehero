@@ -26,13 +26,13 @@ import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class RegionalNewsSelectorView extends LinearLayout
 {
     @InjectView(R.id.discovery_news_carousel_spinner_wrapper) Spinner mCountryDropdown;
     private Subscription countryLanguagePairsSubscription;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnItemSelected(R.id.discovery_news_carousel_spinner_wrapper)
     void handleItemSelected(AdapterView<?> adapterView, View view, int position, long id)
     {
@@ -82,31 +82,29 @@ public class RegionalNewsSelectorView extends LinearLayout
                 .map(userProfileDTOPair -> userProfileDTOPair.second.countryCode);
         countryLanguagePairsSubscription = mNewsServiceWrapper.getCountryLanguagePairsRx()
                 .map(PaginatedDTO::getData)
-                .doOnError(toastOnErrorAction.get())
                 .zipWith(countryCodeObservable, Pair::create)
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(Observable.empty())
                 .subscribe(countryLanguageListPair -> {
-                    List<CountryLanguagePairDTO> countryLanguagePairDTOs = countryLanguageListPair.first;
-                    String userCountryCode = countryLanguageListPair.second;
-                    CountryLanguagePairDTO savedCountryLanguagePair = countryLanguagePreference.get();
-                    if (savedCountryLanguagePair.countryCode == null)
-                    {
-                        savedCountryLanguagePair.countryCode = userCountryCode;
-                        countryLanguagePreference.set(savedCountryLanguagePair);
-                    }
-                    for (int i = 0; i < countryLanguagePairDTOs.size(); ++i)
-                    {
-                        if (savedCountryLanguagePair.languageCode.equals(countryLanguagePairDTOs.get(i).languageCode) &&
-                                savedCountryLanguagePair.countryCode.equals(countryLanguagePairDTOs.get(i).countryCode))
-                        {
-                            mCountryDropdown.setSelection(i);
-                            break;
-                        }
-                    }
-                    mCountryAdapter.setItems(countryLanguageListPair.first);
-                });
+                            List<CountryLanguagePairDTO> countryLanguagePairDTOs = countryLanguageListPair.first;
+                            String userCountryCode = countryLanguageListPair.second;
+                            CountryLanguagePairDTO savedCountryLanguagePair = countryLanguagePreference.get();
+                            if (savedCountryLanguagePair.countryCode == null)
+                            {
+                                savedCountryLanguagePair.countryCode = userCountryCode;
+                                countryLanguagePreference.set(savedCountryLanguagePair);
+                            }
+                            for (int i = 0; i < countryLanguagePairDTOs.size(); ++i)
+                            {
+                                if (savedCountryLanguagePair.languageCode.equals(countryLanguagePairDTOs.get(i).languageCode) &&
+                                        savedCountryLanguagePair.countryCode.equals(countryLanguagePairDTOs.get(i).countryCode))
+                                {
+                                    mCountryDropdown.setSelection(i);
+                                    break;
+                                }
+                            }
+                            mCountryAdapter.setItems(countryLanguageListPair.first);
+                        },
+                        toastOnErrorAction.get());
     }
 
     @Override protected void onDetachedFromWindow()

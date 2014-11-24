@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -29,8 +31,6 @@ import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observer;
 import rx.Subscription;

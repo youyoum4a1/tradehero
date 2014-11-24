@@ -93,9 +93,11 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
         Observable<List<LeaderboardDefDTO>> leaderboardDefObservable = leaderboardDefListCache.get().get(key)
                 .map(pair -> pair.second);
 
-        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(this, leaderboardDefObservable)
-                .doOnError((e) -> THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key)))
-                .onErrorResumeNext(Observable.empty())
-                .subscribe(leaderboardDefListAdapter::setItems);
+        leaderboardDefListCacheFetchSubscription = AndroidObservable.bindFragment(
+                this,
+                leaderboardDefObservable)
+                .subscribe(
+                        leaderboardDefListAdapter::setItems,
+                        (e) -> THToast.show(getString(R.string.error_fetch_leaderboard_def_list_key)));
     }
 }

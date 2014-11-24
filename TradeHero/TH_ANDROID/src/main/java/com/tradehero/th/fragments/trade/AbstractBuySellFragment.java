@@ -31,6 +31,7 @@ import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
@@ -60,6 +61,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     protected ProviderId providerId;
     @InjectRoute protected SecurityId securityId;
@@ -211,7 +213,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(MILLISEC_QUOTE_REFRESH, TimeUnit.MILLISECONDS)))
-                .subscribe(quoteDTO -> linkWith(quoteDTO, true));
+                .subscribe(quoteDTO -> linkWith(quoteDTO, true), toastOnErrorAction);
     }
 
     protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)

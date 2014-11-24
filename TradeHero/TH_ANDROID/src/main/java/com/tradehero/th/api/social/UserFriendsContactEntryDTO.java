@@ -1,9 +1,9 @@
 package com.tradehero.th.api.social;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.loaders.ContactEntry;
-import android.support.annotation.NonNull;
 
 public class UserFriendsContactEntryDTO extends UserFriendsDTO
 {

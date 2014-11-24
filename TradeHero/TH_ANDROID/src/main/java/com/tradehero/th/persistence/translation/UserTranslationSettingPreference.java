@@ -1,6 +1,8 @@
 package com.tradehero.th.persistence.translation;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -11,8 +13,6 @@ import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class UserTranslationSettingPreference extends StringSetPreference
 {

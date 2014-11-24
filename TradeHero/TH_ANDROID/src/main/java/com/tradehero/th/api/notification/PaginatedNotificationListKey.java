@@ -1,10 +1,10 @@
 package com.tradehero.th.api.notification;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.pagination.PaginatedKey;
 import java.util.HashMap;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
 public class PaginatedNotificationListKey extends NotificationListKey
     implements PaginatedKey

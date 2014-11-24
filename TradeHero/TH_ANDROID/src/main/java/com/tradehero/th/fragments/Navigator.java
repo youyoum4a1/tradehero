@@ -3,6 +3,8 @@ package com.tradehero.th.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,8 +14,6 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.settings.DashboardPreferenceFragment;
 import com.tradehero.th.utils.DeviceUtil;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>

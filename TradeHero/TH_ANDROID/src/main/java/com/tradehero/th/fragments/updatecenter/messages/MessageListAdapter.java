@@ -2,14 +2,14 @@ package com.tradehero.th.fragments.updatecenter.messages;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import java.util.Collection;
 import java.util.Comparator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class MessageListAdapter extends ViewDTOSetAdapter<MessageHeaderDTO, MessageItemViewWrapper>
 {

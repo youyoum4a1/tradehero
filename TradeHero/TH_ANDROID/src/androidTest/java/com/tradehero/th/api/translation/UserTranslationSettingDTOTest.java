@@ -1,16 +1,15 @@
 package com.tradehero.th.api.translation;
 
+import android.support.annotation.NonNull;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class UserTranslationSettingDTOTest

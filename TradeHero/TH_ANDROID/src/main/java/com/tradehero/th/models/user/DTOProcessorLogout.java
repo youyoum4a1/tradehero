@@ -1,11 +1,11 @@
 package com.tradehero.th.models.user;
 
 import android.app.NotificationManager;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.DTOProcessor;
-import android.support.annotation.NonNull;
 import rx.functions.Action1;
 
 public class DTOProcessorLogout implements DTOProcessor<UserProfileDTO>,

@@ -1,9 +1,9 @@
 package com.tradehero.th.api.leaderboard.def;
 
+import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import android.support.annotation.NonNull;
 
 public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
     implements DTO

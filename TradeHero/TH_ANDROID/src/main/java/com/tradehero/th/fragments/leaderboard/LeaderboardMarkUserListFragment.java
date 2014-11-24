@@ -19,6 +19,7 @@ import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -44,7 +45,6 @@ import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPr
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,7 +27,6 @@ import com.tradehero.th.api.level.key.LevelDefId;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.persistence.level.LevelDefCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -69,7 +69,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         return new LevelDefId(bundle.getBundle(key));
     }
 
-    @Override public Dialog onCreateDialog(Bundle savedInstanceState)
+    @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);

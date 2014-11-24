@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.market;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.SystemCache;
@@ -9,7 +10,6 @@ import com.tradehero.th.api.market.ExchangeStringId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton @SystemCache
 public class ExchangeIdCacheRx extends BaseDTOCacheRx<ExchangeStringId, ExchangeIntegerId>

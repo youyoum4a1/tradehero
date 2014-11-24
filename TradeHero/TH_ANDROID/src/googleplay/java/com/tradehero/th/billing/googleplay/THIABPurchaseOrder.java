@@ -1,5 +1,7 @@
 package com.tradehero.th.billing.googleplay;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -9,12 +11,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.googleplay.exception.IABInvalidQuantityException;
 import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.io.IOException;
-
 import timber.log.Timber;
 
 public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseOrder<IABSKU>

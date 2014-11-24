@@ -2,7 +2,10 @@ package com.tradehero.th.fragments.competition;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
@@ -27,6 +30,9 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.observers.EmptyObserver;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class AdView extends RelativeLayout
@@ -39,6 +45,7 @@ public class AdView extends RelativeLayout
     private int providerId;
     @Inject DashboardNavigator navigator;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.banner) void onBannerClicked(ImageView banner)
     {
         if (adDTO != null)
@@ -108,12 +115,11 @@ public class AdView extends RelativeLayout
                 try
                 {
                     bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
-                }
-                catch (StringIndexOutOfBoundsException e)
+                } catch (StringIndexOutOfBoundsException e)
                 {
                     Timber.e(e, "When getting %s", adDTO.bannerImageUrl);
                 }
-                int bannerResourceId = 0;
+                int bannerResourceId;
                 if (bannerResourceFileName != null &&
                         (bannerResourceId = getResources().getIdentifier(bannerResourceFileName, "drawable", getContext().getPackageName())) != 0)
                 {
@@ -135,35 +141,38 @@ public class AdView extends RelativeLayout
         }
     }
 
-    private void sendAnalytics(final AdDTO adDTO, final String event)
+    private void sendAnalytics(@NonNull final AdDTO adDTO, @Nullable final String event)
     {
-        Thread thread = new Thread(new Runnable()
-        {
-            @Override public void run()
-            {
-                try
-                {
-                    AnalyticsEventForm analyticsEventForm = new AnalyticsEventForm(event,
-                            DateUtils.getFormattedUtcDateFromDate(context.getResources(),
-                                    new Date(System.currentTimeMillis())), adDTO.id, providerId,
-                            currentUserId.toUserBaseKey().getUserId());
-                    BatchAnalyticsEventForm batchAnalyticsEventForm = new BatchAnalyticsEventForm();
-                    batchAnalyticsEventForm.events = new ArrayList<>();
-                    batchAnalyticsEventForm.events.add(analyticsEventForm);
-                    userServiceWrapper.sendAnalyticsRx(batchAnalyticsEventForm)
-                            .subscribe();
-                }
-                catch (Throwable e)
-                {
-                    THToast.show(e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
+        Observable.just(Pair.create(adDTO, event))
+                .subscribeOn(Schedulers.computation())
+                .map(this::createBatchForm)
+                .flatMap(userServiceWrapper::sendAnalyticsRx)
+                .doOnError(e -> THToast.show(e.getMessage()))
+                .subscribe(new EmptyObserver<>());
     }
 
-    private String getResourceFileName(String url)
+    @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull Pair<AdDTO, String> pair)
+    {
+        return createBatchForm(pair.first, pair.second);
+    }
+
+    @NonNull private BatchAnalyticsEventForm createBatchForm(@NonNull AdDTO adDTO, @Nullable String event)
+    {
+        AnalyticsEventForm analyticsEventForm = new AnalyticsEventForm(
+                event,
+                DateUtils.getFormattedUtcDateFromDate(
+                        context.getResources(),
+                        new Date(System.currentTimeMillis())),
+                adDTO.id,
+                providerId,
+                currentUserId.toUserBaseKey().getUserId());
+        BatchAnalyticsEventForm batchAnalyticsEventForm = new BatchAnalyticsEventForm();
+        batchAnalyticsEventForm.events = new ArrayList<>();
+        batchAnalyticsEventForm.events.add(analyticsEventForm);
+        return batchAnalyticsEventForm;
+    }
+
+    @Nullable private String getResourceFileName(@Nullable String url)
     {
         if (url != null)
         {

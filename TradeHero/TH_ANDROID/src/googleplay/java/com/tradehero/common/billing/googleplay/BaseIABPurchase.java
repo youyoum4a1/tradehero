@@ -15,9 +15,8 @@
 
 package com.tradehero.common.billing.googleplay;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import android.support.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
@@ -12,7 +13,6 @@ import com.tradehero.th.models.timeline.TimelineDTOProcessor;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class UserTimelineServiceWrapper

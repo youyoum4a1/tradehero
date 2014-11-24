@@ -1,5 +1,7 @@
 package com.tradehero.th.billing.googleplay.request;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.BaseIABSKUList;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABProductDetail;
@@ -12,9 +14,6 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.th.billing.THProductPurchase;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.request.THBillingRequest;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THIABBillingRequest<
         IABSKUListKeyType extends IABSKUListKey,

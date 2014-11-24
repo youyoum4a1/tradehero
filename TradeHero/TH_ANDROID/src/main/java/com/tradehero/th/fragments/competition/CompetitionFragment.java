@@ -1,19 +1,20 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -29,6 +30,7 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     @InjectRoute protected ProviderId providerId;
     @Nullable private Subscription providerCacheSubscription;
     protected ProviderDTO providerDTO;
+    protected ProviderPrizePoolDTO providerPrizePoolDTO;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -113,4 +115,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
             Timber.e("Error fetching the provider info", e);
         }
     }
+
+
 }

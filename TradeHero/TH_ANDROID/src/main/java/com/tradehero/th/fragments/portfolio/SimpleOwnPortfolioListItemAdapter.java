@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<DisplayablePortfolioDTO, PortfolioListItemView>

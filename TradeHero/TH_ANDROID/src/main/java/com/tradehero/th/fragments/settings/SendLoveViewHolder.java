@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class SendLoveViewHolder extends OneSettingViewHolder
 {

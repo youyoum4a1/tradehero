@@ -1,9 +1,9 @@
 package com.tradehero.th.models.discussion;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.utils.DaggerUtils;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class RunnableInvalidateMessageList implements Runnable
 {

@@ -2,10 +2,10 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import com.tradehero.th.api.security.key.TrendingSecurityListType;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 
 abstract public class TrendingFilterTypeDTO
 {

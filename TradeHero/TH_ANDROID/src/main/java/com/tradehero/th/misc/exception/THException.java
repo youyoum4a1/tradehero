@@ -8,7 +8,6 @@ import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
-import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;

@@ -1,8 +1,8 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import retrofit.client.Response;
 import rx.Observable;
 

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
@@ -11,7 +12,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import java.util.Date;
 import java.util.Random;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class MessageHeaderDTO implements DTO, KeyGenerator
 {

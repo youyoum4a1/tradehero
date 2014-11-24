@@ -1,9 +1,9 @@
 package com.tradehero.th.api.position;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import android.support.annotation.NonNull;
 
 public class SecurityPositionDetailDTO extends SecurityPositionDTO
 {

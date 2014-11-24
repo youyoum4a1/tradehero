@@ -1,7 +1,7 @@
 package com.tradehero.th.api.i18n;
 
-import java.util.HashMap;
 import android.support.annotation.NonNull;
+import java.util.HashMap;
 
 public class LanguageDTOMap extends HashMap<String, LanguageDTO>
 {

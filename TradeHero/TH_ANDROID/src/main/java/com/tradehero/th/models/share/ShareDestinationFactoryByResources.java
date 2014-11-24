@@ -2,11 +2,11 @@ package com.tradehero.th.models.share;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ShareDestinationFactoryByResources implements ShareDestinationFactory
 {

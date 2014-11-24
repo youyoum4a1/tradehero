@@ -1,6 +1,7 @@
 package com.tradehero.th.api.share.wechat;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
@@ -10,9 +11,7 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.social.ReferralCodeDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class WeChatDTOFactory
 {

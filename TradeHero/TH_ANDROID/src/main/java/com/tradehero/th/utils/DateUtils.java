@@ -1,12 +1,12 @@
 package com.tradehero.th.utils;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class DateUtils
 {

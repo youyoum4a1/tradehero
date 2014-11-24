@@ -1,8 +1,9 @@
 package com.tradehero.th.utils.route;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import com.tradehero.route.Routable;
 import com.tradehero.route.Router;
@@ -13,8 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 @Singleton

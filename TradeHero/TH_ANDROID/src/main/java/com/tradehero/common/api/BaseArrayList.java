@@ -1,10 +1,10 @@
 package com.tradehero.common.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class BaseArrayList<T> extends ArrayList<T>
 {

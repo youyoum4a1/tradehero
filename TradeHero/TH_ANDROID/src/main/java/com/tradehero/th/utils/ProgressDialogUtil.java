@@ -2,12 +2,12 @@ package com.tradehero.th.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class ProgressDialogUtil
 {

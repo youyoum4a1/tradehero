@@ -12,12 +12,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
+import static butterknife.ButterKnife.findById;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
@@ -28,12 +30,14 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -46,9 +50,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
-
-import static butterknife.ButterKnife.findById;
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
 public class NewsHeadlineFragment extends Fragment
 {
@@ -136,7 +137,7 @@ public class NewsHeadlineFragment extends Fragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_featured_news, container, false);
+        View view = inflater.inflate(R.layout.discovery_news, container, false);
         initView(view);
         return view;
     }
@@ -148,12 +149,12 @@ public class NewsHeadlineFragment extends Fragment
         scrollListener = new QuickReturnListViewOnScrollListener(
                 QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        NewsHeadlineAdapter mFeaturedNewsAdapter = new NewsHeadlineAdapter(getActivity(), R.layout.news_headline_item_view);
+        ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear> mNewsAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
         mNewsListView.addFooterView(mBottomLoadingView);
-        mNewsListView.setAdapter(mFeaturedNewsAdapter);
+        mNewsListView.setAdapter(mNewsAdapter);
         swipeRefreshLayout.setProgressViewOffset(false,
                 headerHeight,
                 headerHeight + (int) getResources().getDimension(R.dimen.discovery_news_swipe_indicator_height));
@@ -167,7 +168,7 @@ public class NewsHeadlineFragment extends Fragment
 
         newsSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
-        subscriptions.add(newsSubject.subscribe(mFeaturedNewsAdapter::setItems));
+        subscriptions.add(newsSubject.subscribe(mNewsAdapter::setItems));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();

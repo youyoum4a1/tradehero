@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -21,7 +22,6 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class DiscussionPostActionButtonsView extends LinearLayout

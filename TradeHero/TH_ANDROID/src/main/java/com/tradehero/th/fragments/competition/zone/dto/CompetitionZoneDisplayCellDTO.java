@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
-import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 
 public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
 {
