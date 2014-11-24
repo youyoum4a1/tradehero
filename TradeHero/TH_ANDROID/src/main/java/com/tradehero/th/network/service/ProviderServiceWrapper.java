@@ -205,7 +205,7 @@ import rx.Observable;
 
     public Observable<BaseResponseDTO> sharePreSeason(CompetitionPreseasonShareFormDTO competitionPreseasonShareFormDTO)
     {
-        return this.providerServiceRx.sharePreseason(competitionPreseasonShareFormDTO.socialShareReqFormDTO);
+        return this.providerServiceRx.sharePreseason(competitionPreseasonShareFormDTO);
     }
     //</editor-fold>
 }

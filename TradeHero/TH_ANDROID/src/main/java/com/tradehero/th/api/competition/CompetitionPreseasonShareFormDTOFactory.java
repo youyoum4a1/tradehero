@@ -19,17 +19,6 @@ public class CompetitionPreseasonShareFormDTOFactory
             @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
             @NonNull ProviderId providerId)
     {
-        CompetitionPreseasonShareFormDTO timelineItemShareFormDTO = new CompetitionPreseasonShareFormDTO();
-        populateWith(timelineItemShareFormDTO, shareDestinationWithEnums, providerId);
-        return timelineItemShareFormDTO;
-    }
-
-    protected void populateWith(
-            @NonNull CompetitionPreseasonShareFormDTO timelineItemShareFormDTO,
-            @NonNull List<SocialNetworkEnum> shareDestinationWithEnums,
-            @NonNull ProviderId providerId)
-    {
-        timelineItemShareFormDTO.socialShareReqFormDTO = new SocialShareReqFormDTO(shareDestinationWithEnums);
-        timelineItemShareFormDTO.providerId = providerId;
+        return new CompetitionPreseasonShareFormDTO(providerId, shareDestinationWithEnums);
     }
 }
