@@ -105,15 +105,13 @@ public class NotificationListAdapter extends BaseAdapter
         NotificationDTO item = (NotificationDTO) getItem(position);
         if (item != null)
         {
-            ViewHolder holder = new ViewHolder();
+            final ViewHolder holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.notification_list_item, viewGroup, false);
             holder.llNotificationItem = (LinearLayout) convertView.findViewById(R.id.llNotificationItem);
             holder.imgNotificationHeader = (ImageView) convertView.findViewById(R.id.imgNotificationHeader);
             holder.tvNotificationTimer = (TextView) convertView.findViewById(R.id.tvNotificationTimer);
             holder.tvNotificationContent = (MarkdownTextView) convertView.findViewById(R.id.tvNotificationContent);
             holder.tvNotificationUser = (TextView) convertView.findViewById(R.id.tvNotificationUser);
-            convertView.setTag(holder);
-            holder = (ViewHolder) convertView.getTag();
             if(item.useSysIcon){
                 holder.imgNotificationHeader.setImageResource(R.drawable.offical_logo);
             }else {
@@ -143,6 +141,15 @@ public class NotificationListAdapter extends BaseAdapter
                 holder.tvNotificationContent.setTextColor(readColor);
             }
 
+            holder.tvNotificationContent.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    if(!holder.tvNotificationContent.isClicked) {
+                        listener.OnNotificationItemClicked(position);
+                    }
+                }
+            });
             holder.llNotificationItem.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
