@@ -13,7 +13,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.fragments.chinabuild.data.EmptyDiscussionCompactDTO;
-import com.tradehero.th.utils.ABCLogger;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -56,7 +55,6 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         {
             return null;
         }
-        ABCLogger.d("listData size a " + listData.size());
         return listData.get(i);
     }
 
@@ -92,6 +90,9 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
             holder.allContent.setVisibility(View.GONE);
             holder.avatar.setVisibility(View.GONE);
             return convertView;
+        }else{
+            holder.allContent.setVisibility(View.VISIBLE);
+            holder.avatar.setVisibility(View.VISIBLE);
         }
 
         holder.moment.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
@@ -144,8 +145,8 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         {
             listCompactDTO.add(new EmptyDiscussionCompactDTO());
         }
-        listData = listCompactDTO;
-        ABCLogger.d("listData size b " + listData.size());
+        listData.clear();
+        listData.addAll(listCompactDTO);
         notifyDataSetChanged();
     }
 
