@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -21,7 +22,6 @@ import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
@@ -80,7 +80,7 @@ import rx.Observable;
         return this.providerServiceRx.getProviderPrizePool(providerId.key);
     }
 
-    @NotNull public Observable<ProviderDTO> getProviderRx(@NotNull ProviderId providerId)
+    @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)
                 .doOnNext(providerDTO -> {

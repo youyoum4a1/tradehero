@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
@@ -14,8 +16,6 @@ import com.tradehero.th.fragments.competition.CompetitionZoneListItemAdapter;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
