@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.chinabuild.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import com.tradehero.th.utils.Constants;
 
 /**
  * Created by palmer on 14-10-21.
@@ -12,6 +13,7 @@ public class THSharePreferenceManager {
     //SharePreference Name
     private final static String TH_SP_NAME = "th_sp_name_app_version";
     private final static String TH_SP_GUIDE_NAME = "th_sp_guide_name";
+    private final static String TH_SP_SHARE_ENDPOINT = "th_sp_share_endpoint";
 
     //The latest version
     public final static String KEY_APP_NEW_VERSION_DOWNLOAD_URL = "key_app_new_version_download_url";
@@ -263,4 +265,19 @@ public class THSharePreferenceManager {
         }
         return isOn;
     }
+
+    //Share End Point
+    public final static String KEY_SHARE_ENDPOINT = "key_share_end_point";
+
+    public static String getShareEndPoint(Context context){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_SHARE_ENDPOINT, Context.MODE_PRIVATE);
+        String endPoint = sp.getString(KEY_SHARE_ENDPOINT, Constants.DEFAULT_SHARE_ENDPOINT);
+        return endPoint;
+    }
+
+    public static void setShareEndpoint(Context context, String endPoint){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_SHARE_ENDPOINT, Context.MODE_PRIVATE);
+        sp.edit().putString(endPoint, Constants.DEFAULT_SHARE_ENDPOINT).commit();
+    }
+
 }

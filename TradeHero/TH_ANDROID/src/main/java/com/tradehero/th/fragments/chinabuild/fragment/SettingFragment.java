@@ -188,16 +188,6 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         }
     }
 
-    private void gotoShareScoreDialog() {
-        if (mShareDialogKeyPreference.get() && mShareDialogAfterScoreKeyPreference.get()) {
-            mShareDialogKeyPreference.set(false);
-            mShareDialogAfterScoreKeyPreference.set(false);
-            mShareSheetTitleCache.set(getString(R.string.share_score_summary));
-            ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
-                    getString(R.string.share_score_title), getString(R.string.share_score_summary));
-        }
-    }
-
     private void gotoDownloadAppInfo(){
         userServiceWrapper.get().downloadAppVersionInfo(createDownloadAppInfoCallback());
     }

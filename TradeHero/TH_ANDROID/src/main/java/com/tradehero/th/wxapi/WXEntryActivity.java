@@ -25,6 +25,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -92,7 +93,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         // WeChatDTO method to read from Intent.
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        traget_user_millionaire_page = getResources().getString(R.string.target_user_millionaire_page);
+        String endPoint = THSharePreferenceManager.getShareEndPoint(this);
+        traget_user_millionaire_page = getResources().getString(R.string.target_user_millionaire_page, endPoint);
 
         weChatDTO = getWeChatDTO(getIntent());
         if (weChatDTO == null) {

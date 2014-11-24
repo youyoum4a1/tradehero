@@ -3,12 +3,11 @@ package com.tradehero.th.network.service;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.retrofit.RequestHeaders;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;
+
+import javax.inject.Singleton;
 
 @Module(
         injects = {
@@ -124,6 +123,11 @@ public class RetrofitProtectedModule
     @Provides @Singleton UserServiceAsync provideUserService(RestAdapter adapter)
     {
         return adapter.create(UserServiceAsync.class);
+    }
+
+    @Provides @Singleton ShareServiceAsync provideShareService(RestAdapter adapter)
+    {
+        return adapter.create(ShareServiceAsync.class);
     }
 
     @Provides @Singleton UserTimelineServiceAsync provideUserTimelineServiceAsync(RestAdapter adapter)
