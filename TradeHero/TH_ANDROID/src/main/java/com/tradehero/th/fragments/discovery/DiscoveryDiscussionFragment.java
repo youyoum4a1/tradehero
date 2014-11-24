@@ -164,6 +164,10 @@ public class DiscoveryDiscussionFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(toastOnErrorAction)
                 .onErrorResumeNext(Observable.empty())
+                .doOnUnsubscribe(() ->
+                {
+                    if (progressBar != null) progressBar.setVisibility(View.INVISIBLE);
+                })
                 .subscribe(timelineSubject));
     }
 
