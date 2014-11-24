@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
         android:drawableLeft="@drawable/accounts_glyph_email_default"
         app:invalidDrawable="@drawable/accounts_glyph_email_error"
         app:validDrawable="@drawable/accounts_glyph_email_ok"
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
         />
 
     <com.tradehero.th.widget.ServerValidatedEmailText
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|bottom"
         android:imeOptions="actionNext"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
         app:minTextLength="1"
         />
 

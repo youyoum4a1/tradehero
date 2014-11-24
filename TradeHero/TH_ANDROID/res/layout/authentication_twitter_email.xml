@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_centerHorizontal="true"
-    style="@style/TradeHero.Authentication">
+    style="@style/TH.Authentication">
 
   <TextView
       android:layout_width="fill_parent"
@@ -24,7 +24,7 @@
       android:layout_marginBottom="5dip"
       android:inputType="textEmailAddress"
       android:drawableLeft="@drawable/accounts_glyph_email_default"
-      style="@style/TradeHero.Authentication.EditText"/>
+      style="@style/TH.Authentication.EditText"/>
 
   <Button
       android:id="@+id/authentication_twitter_email_button"

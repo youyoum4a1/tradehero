@@ -9,7 +9,7 @@
 
   <com.tradehero.common.widget.AuthenticationButton
       android:id="@+id/btn_facebook_signin"
-      style="@style/TradeHero.SocialAuthenticationButton"
+      style="@style/TH.SocialAuthenticationButton"
       android:drawableLeft="@drawable/settings_fb_normal"
       android:drawableStart="@drawable/settings_fb_normal"
       android:background="@drawable/btn_background_social_facebook"

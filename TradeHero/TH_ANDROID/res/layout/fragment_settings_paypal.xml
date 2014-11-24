@@ -32,7 +32,7 @@
         android:layout_gravity="left|bottom"
         android:inputType="textEmailAddress"
         android:imeOptions="actionNext"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
 
         android:drawableLeft="@drawable/accounts_glyph_email_default"
         app:invalidDrawable="@drawable/accounts_glyph_email_error"
