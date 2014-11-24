@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.leaderboard;
 
-import com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityAdapter;
@@ -32,7 +31,6 @@ import dagger.Module;
                 LeaderboardCommunityFragment.class,
                 LeaderboardFilterFragment.class,
                 LeaderboardFilterSliderContainer.class,
-                CompetitionZonePrizePoolView.class
         },
         library = true,
         complete = false
