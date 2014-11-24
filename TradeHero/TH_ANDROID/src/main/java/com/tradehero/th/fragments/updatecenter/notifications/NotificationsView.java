@@ -61,7 +61,7 @@ public class NotificationsView extends BetterViewAnimator
     @NonNull private SubscriptionList subscriptionList;
     private NotificationListKey notificationListKey;
     private NotificationListAdapter notificationListAdapter;
-    private SwipeRefreshLayout.OnRefreshListener notificationPullToRefreshListener;
+    private SwipeRefreshLayout.OnRefreshListener notificationRefreshListener;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -117,7 +117,7 @@ public class NotificationsView extends BetterViewAnimator
                 new MultiScrollListener(new NotificationListOnScrollListener(), dashboardBottomTabsListViewScrollListener));
 
         createOnRefreshListener();
-        swipeRefreshLayout.setOnRefreshListener(notificationPullToRefreshListener);
+        swipeRefreshLayout.setOnRefreshListener(notificationRefreshListener);
 
         fetchNextPageIfNecessary();
 
@@ -136,7 +136,7 @@ public class NotificationsView extends BetterViewAnimator
 
     private void createOnRefreshListener()
     {
-        notificationPullToRefreshListener = new NotificationRefreshRequestListener();
+        notificationRefreshListener = new NotificationRefreshRequestListener();
     }
 
     @Override protected void onDetachedFromWindow()
