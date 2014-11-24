@@ -4,17 +4,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ActionMode;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,6 +28,7 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.portfolio.PositionDetailFragment;
@@ -55,11 +47,12 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-2.
@@ -797,13 +790,17 @@ public class BuySaleSecurityFragment extends DashboardFragment
                 if (isBuy)
                 {
                     //buy share
+                    if(getActivity()==null){
+                        return;
+                    }
+                    String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
                     mShareSheetTitleCache.set(getString(R.string.share_buy_dialog_summary,
                             securityId.getDisplayName(), currentUserId.get().toString(),
-                            securityCompactDTO.id.toString()));
+                            securityCompactDTO.id.toString(), endPoint));
                     ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_buy_dialog_title, securityId.getDisplayName()), getString(R.string.share_buy_dialog_summary,
                             securityId.getDisplayName(), currentUserId.get().toString(),
-                            securityCompactDTO.id.toString()));
+                            securityCompactDTO.id.toString(), endPoint));
                 }
                 else
                 {
@@ -811,7 +808,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
                     {
                         return;
                     }
-                    Timber.d("------> " + securityPositionDetailDTO.positionId);
                     int positionId = securityPositionDetailDTO.positionId;
                     Double profitLoss = getProfitOrLoss(isBuy);
                     //sell share

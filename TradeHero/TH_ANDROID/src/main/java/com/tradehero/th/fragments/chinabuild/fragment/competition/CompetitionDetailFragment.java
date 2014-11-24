@@ -909,8 +909,12 @@ public class CompetitionDetailFragment extends DashboardFragment
         {
             return;
         }
+        if(getActivity()==null){
+            return;
+        }
+        String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
         mShareSheetTitleCache.set(getString(R.string.share_detial_contest,
-                currentUserId.get().toString(), userCompetitionDTO.id, userCompetitionDTO.name));
+                currentUserId.get().toString(), userCompetitionDTO.id, userCompetitionDTO.name, endPoint));
         ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.share_sheet_local_dialog_layout, null);
         contentView.setLocalSocialClickedListener(

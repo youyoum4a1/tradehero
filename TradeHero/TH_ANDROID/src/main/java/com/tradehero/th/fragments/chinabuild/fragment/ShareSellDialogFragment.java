@@ -17,6 +17,7 @@ import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.social.WeiboSocialLinkHelper;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerWeibo;
@@ -126,10 +127,14 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSell;
+        if(getActivity()==null){
+            return;
+        }
+        String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
         if(!mGetMoney.startsWith("-")){
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title,/* mStockNum, mStockName, mStockCode, mStockUp, mGetMoney,*/ mUserId, mPositionId, mTradeId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, endPoint, mUserId, mPositionId, mTradeId);
         }else{
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney,endPoint, mUserId, mPositionId, mTradeId);
         }
         socialSharerLazy.get().share(weChatDTO);
     }
@@ -140,10 +145,14 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.ShareSellToTimeline;
+        if(getActivity()==null){
+            return;
+        }
+        String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
         if(!mGetMoney.startsWith("-")){
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title, /*mStockNum, mStockName, mStockCode, mStockUp, mGetMoney,*/ mUserId, mPositionId, mTradeId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title,endPoint, mUserId, mPositionId, mTradeId);
         }else{
-            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId);
+            weChatDTO.title = getString(R.string.share_sell_to_wechat_title_losemoney, endPoint, mUserId, mPositionId, mTradeId);
         }
         socialSharerLazy.get().share(weChatDTO);
     }
@@ -156,13 +165,17 @@ public class ShareSellDialogFragment extends BaseDialogFragment
         {
             if (updatedUserProfileDTO.wbLinked)
             {
+                if(getActivity()==null){
+                    return;
+                }
+                String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
                 if(!mGetMoney.startsWith("-")){
                     weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(
-                        getString(R.string.share_sell_to_wechat_title, /*mStockNum, mStockName, mStockCode, mStockUp, mGetMoney,*/ mUserId, mPositionId, mTradeId),
+                        getString(R.string.share_sell_to_wechat_title, endPoint, mUserId, mPositionId, mTradeId),
                         currentUserId.toUserBaseKey(), new InviteFriendCallback());
                 }else{
                     weiboSocialFriendHandlerProvider.get().inviteWeiboFriends(
-                            getString(R.string.share_sell_to_wechat_title_losemoney, mUserId, mPositionId, mTradeId),
+                            getString(R.string.share_sell_to_wechat_title_losemoney, endPoint, mUserId, mPositionId, mTradeId),
                             currentUserId.toUserBaseKey(), new InviteFriendCallback());
                 }
             }

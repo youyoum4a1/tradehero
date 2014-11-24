@@ -24,6 +24,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
@@ -277,8 +278,12 @@ public class CompetitionCreateFragment extends DashboardFragment
                 CompetitionBaseFragment.needRefresh = true;
                 if (cbCompetitionInvite.isChecked())
                 {
+                    if(getActivity()==null){
+                        return;
+                    }
+                    String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
                     mShareSheetTitleCache.set(getString(R.string.share_create_contest, currentUserId.get().toString(),
-                            userCompetitionDTO.id, userCompetitionDTO.name));
+                            userCompetitionDTO.id, userCompetitionDTO.name, endPoint));
                     ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
                             .inflate(R.layout.share_sheet_local_dialog_layout, null);
                     contentView.setLocalSocialClickedListener(

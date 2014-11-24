@@ -5,12 +5,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -59,12 +54,13 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     交易－我的交易
@@ -518,12 +514,16 @@ public class TradeOfMineFragment extends DashboardFragment
         //总资产数达到15w
         if (cached.totalValue > 150000 && getActivity() != null && availableShowDialog)
         {
+            if(getActivity()==null){
+                return;
+            }
+            String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
             int userId = currentUserId.toUserBaseKey().getUserId();
             if (THSharePreferenceManager.isShareDialogMoreThanFifteenAvailable(userId, getActivity()))
             {
                 ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                         getString(R.string.share_amount_total_value_title), getString(R.string.share_amount_total_value_summary,
-                        currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
+                        currentUserId.get().toString(), endPoint), THSharePreferenceManager.PROPERTY_MORE_THAN_FIFTEEN, userId);
                 time_stamp = System.currentTimeMillis();
                 THSharePreferenceManager.isMoreThanFifteenShowed = true;
             }
@@ -535,7 +535,7 @@ public class TradeOfMineFragment extends DashboardFragment
                     {
                         ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                                 getString(R.string.share_amount_total_value_title25), getString(R.string.share_amount_total_value_summary25,
-                                currentUserId.get().toString()), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
+                                currentUserId.get().toString(), endPoint), THSharePreferenceManager.PROPERTY_MORE_THAN_TWENTY_FIVE, userId);
                         time_stamp = -1;
                         THSharePreferenceManager.isMoreThanTwentyShowed = true;
                     }
@@ -596,15 +596,19 @@ public class TradeOfMineFragment extends DashboardFragment
                     {
                         if (mShareDialogKeyPreference.get() && mShareDialogROIValueKeyPreference.get())
                         {
+                            if(getActivity()==null){
+                                return;
+                            }
+                            String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
                             mShareDialogKeyPreference.set(false);
                             mShareDialogROIValueKeyPreference.set(false);
                             mShareSheetTitleCache.set(getString(
                                     R.string.share_amount_roi_value_summary, currentUserId.get().toString(),
-                                    String.valueOf(listData.get(i).id)));
+                                    String.valueOf(listData.get(i).id), endPoint));
                             ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                                     getString(R.string.share_amount_roi_value_title), getString(
                                     R.string.share_amount_roi_value_summary, currentUserId.get().toString(),
-                                    String.valueOf(listData.get(i).id)));
+                                    String.valueOf(listData.get(i).id), endPoint));
                         }
                     }
                 }

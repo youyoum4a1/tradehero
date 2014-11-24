@@ -56,4 +56,6 @@ public class Constants
     public static final int SHARE_WEIBO_CONTENT_LENGTH_LIMIT = 140;
 
     public final static String EMAIL_FEEDBACK = "support@tradehero.mobi";
+
+    public final static String DEFAULT_SHARE_ENDPOINT = "cn.tradehero.mobi";
 }

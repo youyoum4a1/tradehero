@@ -8,15 +8,12 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -37,11 +34,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentCompetition;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentMe;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentStockGod;
-import com.tradehero.th.fragments.chinabuild.MainTabFragmentTrade;
+import com.tradehero.th.fragments.chinabuild.*;
 import com.tradehero.th.fragments.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.models.push.DeviceTokenHelper;
@@ -49,27 +42,24 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
+import com.tradehero.th.network.service.ShareServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.ConstantsChinaBuild;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.Date;
 
 public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
 {
@@ -116,6 +106,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.imageview_main_tab0_record) ImageView guideTab0IV;
     @InjectView(R.id.imageview_main_tab2_record) ImageView guideTab2IV;
     @InjectView(R.id.imageview_main_tab3_record) ImageView guideTab3IV;
+
+    @Inject ShareServiceWrapper shareServiceWrapper;
 
     private FragmentTabHost frg_tabHost;
     private static GetPositionsDTO getPositionsDTO;
@@ -182,6 +174,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
         getPositionDirectly(currentUserId.toUserBaseKey());
         fetchWatchPositionList(false);
+
+        downloadEndPoint();
     }
 
     public void fetchUserProfile(boolean force)
@@ -638,7 +632,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         @Override public void success(GetPositionsDTO getPositionsDTO, Response response)
         {
-            Timber.d("WINDY : GetPositionsDTO success");
             MainActivity.getPositionsDTO = getPositionsDTO;
         }
 
@@ -657,7 +650,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
-            Timber.d("WINDY : WatchlistListener success");
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
@@ -682,4 +674,24 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
+
+    private void downloadEndPoint(){
+        shareServiceWrapper.getShareEndPoint(new Callback<String>() {
+            @Override
+            public void success(String endpoint, Response response) {
+                if(TextUtils.isEmpty(endpoint)){
+                    return;
+                }
+                if(MainActivity.this != null) {
+                    ABCLogger.d("Share End Point " + endpoint);
+                    THSharePreferenceManager.setShareEndpoint(MainActivity.this, endpoint);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+            }
+        });
+    }
+
 }
