@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.LinearLayout;
+import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -25,7 +26,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-abstract public class AbstractDiscussionCompactItemViewLinear<T extends DiscussionKey>
+abstract public class AbstractDiscussionCompactItemViewLinear<T>
         extends LinearLayout
         implements DTOView<T>
 {
@@ -93,21 +94,28 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
 
     private void fetchDiscussionDetail()
     {
-        AbstractDiscussionCompactDTO value = discussionCache.getValue(discussionKey);
-        if (value != null)
+        if (discussionKey instanceof DTOKey)
         {
-            linkWith(value, true);
+            AbstractDiscussionCompactDTO value = discussionCache.getValue(((DiscussionKey) discussionKey));
+            if (value != null)
+            {
+                linkWith(value, true);
+            }
+            else
+            {
+                refresh();
+            }
         }
-        else
+        else if (discussionKey instanceof AbstractDiscussionCompactDTO)
         {
-            refresh();
+            linkWith((AbstractDiscussionCompactDTO) discussionKey, true);
         }
     }
 
     public void refresh()
     {
         detachFetchDiscussionTask();
-        discussionFetchSubscription = discussionCache.get(discussionKey)
+        discussionFetchSubscription = discussionCache.get((DiscussionKey) discussionKey)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createDiscussionFetchObserver());
     }
