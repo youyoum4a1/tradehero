@@ -25,6 +25,8 @@ import javax.inject.Singleton;
 
                 DiscoveryArticleFragment.class,
                 ArticleItemView.class,
+
+                DiscoveryFaqWebFragment.class,
         },
         library = true,
         complete = false
