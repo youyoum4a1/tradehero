@@ -35,7 +35,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     @InjectView(R.id.trending_filter_title_icon) public ImageView mTitleIcon;
     @InjectView(R.id.description) public TextView mDescription;
     @InjectView(R.id.exchange_selection) public ExchangeSpinner mExchangeSelection;
-    private TrendingFilterSpinnerIconSetAdapter mExchangeSelectionAdapter;
+    private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
@@ -48,7 +48,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         HierarchyInjector.inject(this);
         trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
         trendingTypeBehavior = BehaviorSubject.create(trendingFilterTypeDTO);
-        mExchangeSelectionAdapter = new TrendingFilterSpinnerIconSetAdapter(
+        mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
                 getContext(),
                 R.layout.trending_filter_spinner_item);
         mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
@@ -68,7 +68,8 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
         if (exchangeCompactSpinnerDTOs != null)
         {
-            mExchangeSelectionAdapter.appendTail(exchangeCompactSpinnerDTOs);
+            mExchangeSelectionAdapter.clear();
+            mExchangeSelectionAdapter.addAll(exchangeCompactSpinnerDTOs);
         }
     }
 
@@ -86,7 +87,8 @@ public class TrendingFilterSelectorView extends RelativeLayout
     public void setUpExchangeSpinner(@NonNull ExchangeCompactSpinnerDTOList items)
     {
         exchangeCompactSpinnerDTOs = items;
-        mExchangeSelectionAdapter.appendTail(items);
+        mExchangeSelectionAdapter.clear();
+        mExchangeSelectionAdapter.addAll(items);
         mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
     }
 
