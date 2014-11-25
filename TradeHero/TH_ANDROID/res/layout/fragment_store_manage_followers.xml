@@ -21,7 +21,7 @@
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
         android:background="@null"
-        android:paddingBottom="@dimen/discussion_list_padding"
+        android:paddingBottom="@dimen/discussion_list_padding_bottom"
         />
   </android.support.v4.widget.SwipeRefreshLayout>
 
