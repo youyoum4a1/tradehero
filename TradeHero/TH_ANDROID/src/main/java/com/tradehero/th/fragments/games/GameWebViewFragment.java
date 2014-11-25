@@ -12,10 +12,10 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.games.GameScore;
 import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.api.games.MiniGameDefKey;
+import com.tradehero.th.api.games.MiniGameScoreResponseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -213,11 +213,12 @@ public class GameWebViewFragment extends BaseWebViewFragment
             else
             {
                 gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level))
-                        .subscribe(new Observer<BaseResponseDTO>()
+                        .subscribe(new Observer<MiniGameScoreResponseDTO>()
                         {
-                            @Override public void onNext(BaseResponseDTO baseResponseDTO)
+                            @Override public void onNext(MiniGameScoreResponseDTO scoreResponse)
                             {
-                                Timber.d("Received %s", baseResponseDTO);
+                                Timber.d("Received %s", scoreResponse);
+                                THToast.show("Temp show score dialog");
                             }
 
                             @Override public void onCompleted()
