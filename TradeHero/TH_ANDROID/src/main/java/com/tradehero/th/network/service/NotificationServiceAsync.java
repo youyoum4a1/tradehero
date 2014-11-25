@@ -2,13 +2,11 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.PaginatedNotificationDTO;
-import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
+import retrofit.http.*;
+
+import java.util.Map;
 
 interface NotificationServiceAsync
 {
@@ -29,4 +27,9 @@ interface NotificationServiceAsync
 
     @POST("/notifications/read/-1")
     void markAsReadAll(Callback<Response> callback);
+
+    @DELETE("/notifications/{pushId}")
+    void deleteNotification(
+            @Path("pushId") int pushId,
+            Callback<String> callback);
 }

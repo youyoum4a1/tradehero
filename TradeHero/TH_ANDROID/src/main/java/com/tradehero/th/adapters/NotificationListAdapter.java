@@ -178,8 +178,14 @@ public class NotificationListAdapter extends BaseAdapter
         return convertView;
     }
 
-    public ArrayList<NotificationDTO> getAllData(){
-        return dataList;
+    public void removeNotification(int pushId){
+        for(NotificationDTO dto: dataList){
+            if(dto.pushId == pushId){
+                dataList.remove(dto);
+                break;
+            }
+        }
+        notifyDataSetChanged();
     }
 
     static class ViewHolder

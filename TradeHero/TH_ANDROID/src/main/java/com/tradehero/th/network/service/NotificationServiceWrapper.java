@@ -13,12 +13,13 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton
 public class NotificationServiceWrapper
@@ -129,4 +130,9 @@ public class NotificationServiceWrapper
         return readMiddleCallback;
     }
     //</editor-fold>
+
+    public void deleteNotification(int pushId, Callback<String> callback){
+        notificationServiceAsync.deleteNotification(pushId, callback);
+    }
+
 }

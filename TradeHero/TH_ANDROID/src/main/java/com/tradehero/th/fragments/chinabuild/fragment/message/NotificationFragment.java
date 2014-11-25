@@ -130,7 +130,19 @@ public class NotificationFragment extends DashboardFragment
 
             @Override
             public void OnNotificationItemLongClicked(int position) {
+                NotificationDTO notificationDTO = (NotificationDTO)adapter.getItem(position);
+                adapter.removeNotification(notificationDTO.pushId);
+                notificationServiceWrapper.deleteNotification(notificationDTO.pushId, new Callback<String>() {
+                    @Override
+                    public void success(String s, Response response) {
 
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+
+                    }
+                });
             }
         });
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -148,11 +160,6 @@ public class NotificationFragment extends DashboardFragment
 
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         detachNotificationListFetchTask();
@@ -160,16 +167,6 @@ public class NotificationFragment extends DashboardFragment
 
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
     }
 
     private void initListData(PaginatedNotificationDTO value, NotificationListKey key)
