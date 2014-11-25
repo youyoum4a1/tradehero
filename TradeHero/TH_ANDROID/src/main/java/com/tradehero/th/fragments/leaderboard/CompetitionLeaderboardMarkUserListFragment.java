@@ -211,6 +211,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         {
             providerDTO = pair.second;
             setupCompetitionAdapter();
+            updateCurrentRankHeaderViewWithProvider();
         }
 
         @Override public void onCompleted()
@@ -220,6 +221,15 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_provider_info);
+        }
+    }
+
+    private void updateCurrentRankHeaderViewWithProvider()
+    {
+        if (getRankHeaderView() != null && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
+        {
+            CompetitionLeaderboardMarkUserOwnRankingView rankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
+            rankingView.setProviderDTO(providerDTO);
         }
     }
 
@@ -276,7 +286,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         {
             competitionLeaderboardDTO = pair.second;
             setupCompetitionAdapter();
-            updateCurrentRankHeaderView();
+            updateCurrentRankHeaderViewWithLeaderboard();
         }
 
         @Override public void onCompleted()
@@ -305,9 +315,9 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         super.setupOwnRankingView(userRankingHeaderView);
     }
 
-    @Override protected void updateCurrentRankHeaderView()
+    @Override protected void updateCurrentRankHeaderViewWithLeaderboard()
     {
-        super.updateCurrentRankHeaderView();
+        super.updateCurrentRankHeaderViewWithLeaderboard();
         if (competitionLeaderboardDTO != null
                 && getRankHeaderView() != null
                 && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserItemView)
