@@ -11,7 +11,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
@@ -29,7 +28,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTOKey>
+public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTO>
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
@@ -42,7 +41,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     @Override protected TimelineItemViewHolder createViewHolder()
     {
-        return new TimelineItemViewHolder<TimelineItemDTO>(getContext());
+        return new TimelineItemViewHolder<>(getContext());
     }
 
     protected PopupMenu.OnMenuItemClickListener createMonitorPopupMenuItemClickListener()
@@ -120,7 +119,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         if (discussionKey != null)
         {
             Bundle args = new Bundle();
-            TimelineDiscussionFragment.putDiscussionKey(args, discussionKey);
+            TimelineDiscussionFragment.putDiscussionKey(args, discussionKey.getDiscussionKey());
             getNavigator().pushFragment(TimelineDiscussionFragment.class, args);
         }
     }
