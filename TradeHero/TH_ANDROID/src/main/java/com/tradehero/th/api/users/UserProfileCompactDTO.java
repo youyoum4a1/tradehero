@@ -1,6 +1,6 @@
 package com.tradehero.th.api.users;
 
-public class UserProfileCompactDTO extends UserBaseDTO
+public class UserProfileCompactDTO extends UserBaseDTO implements Comparable<UserProfileCompactDTO>
 {
     public String largePicture;
     public boolean fbLinked;
@@ -12,5 +12,10 @@ public class UserProfileCompactDTO extends UserBaseDTO
 
     public UserProfileCompactDTO()
     {
+    }
+
+    @Override
+    public int compareTo(UserProfileCompactDTO o) {
+        return this.displayName.compareTo(o.displayName);
     }
 }

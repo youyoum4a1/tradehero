@@ -1,6 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.text.TextUtils;
+import net.sourceforge.pinyin4j.PinyinHelper;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -70,4 +71,13 @@ public class StringUtils
         return m.find();
     }
 
+    public static String getCharacterPinYin(char c)
+    {
+        String[] pinyin = null;
+        pinyin = PinyinHelper.toHanyuPinyinStringArray(c);
+        if(pinyin == null) {
+            return null;
+        }
+        return pinyin[0];
+    }
 }

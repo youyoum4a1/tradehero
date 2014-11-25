@@ -25,7 +25,7 @@ public class NotificationListAdapter extends BaseAdapter
     @Inject Lazy<Picasso> picasso;
     private Context context;
     private LayoutInflater inflater;
-    private ArrayList<NotificationDTO> dataList;
+    private ArrayList<NotificationDTO> dataList = new ArrayList<>();
     @Inject Lazy<PrettyTime> prettyTime;
 
     private NotificationClickListener listener;
@@ -50,7 +50,10 @@ public class NotificationListAdapter extends BaseAdapter
 
     public void setListData(ArrayList<NotificationDTO> list)
     {
-        this.dataList = list;
+        if(list==null){
+            dataList = new ArrayList<>();
+        }
+        dataList = list;
         notifyDataSetChanged();
     }
 
@@ -141,11 +144,10 @@ public class NotificationListAdapter extends BaseAdapter
                 holder.tvNotificationContent.setTextColor(readColor);
             }
 
-            holder.tvNotificationContent.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    if(!holder.tvNotificationContent.isClicked) {
+            holder.tvNotificationContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!holder.tvNotificationContent.isClicked) {
                         listener.OnNotificationItemClicked(position);
                     }
                 }
@@ -157,8 +159,27 @@ public class NotificationListAdapter extends BaseAdapter
                     listener.OnNotificationItemClicked(position);
                 }
             });
+            holder.llNotificationItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.OnNotificationItemLongClicked(position);
+                    return true;
+                }
+            });
+
+            holder.tvNotificationContent.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.OnNotificationItemLongClicked(position);
+                    return true;
+                }
+            });
         }
         return convertView;
+    }
+
+    public ArrayList<NotificationDTO> getAllData(){
+        return dataList;
     }
 
     static class ViewHolder
@@ -173,5 +194,7 @@ public class NotificationListAdapter extends BaseAdapter
     public static interface NotificationClickListener
     {
         void OnNotificationItemClicked(int position);
+
+        void OnNotificationItemLongClicked(int position);
     }
 }

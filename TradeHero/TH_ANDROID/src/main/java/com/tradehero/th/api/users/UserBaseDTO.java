@@ -4,17 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Country;
-import java.io.IOException;
-import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import java.io.IOException;
+import java.util.Date;
 
 public class UserBaseDTO extends ExtendedDTO
 {
     public int id;
     @Nullable public String picture;
     public String displayName;
+    public String displayNamePinYinFirstChar;
     public String school;
     public String firstName;
     public String lastName;

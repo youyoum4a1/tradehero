@@ -1,72 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="72dp"
-    android:background="@drawable/listview_item_selector"
-    android:paddingLeft="10dp"
-    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+    <TextView android:layout_width="match_parent" android:layout_height="26dp"
+              android:id="@+id/textview_users_divider"
+              android:text="#"
+              android:textColor="#979797"
+              android:textSize="12sp"
+              android:gravity="center_vertical"
+              android:paddingLeft="15dp"
+              android:paddingRight="10dp"
+              android:background="@color/gray_1"
+              android:visibility="gone"/>
+    <RelativeLayout
+            android:id="@+id/relativelayout_user_item"
+            android:layout_width="fill_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/listview_item_selector"
+            android:layout_marginLeft="10dp">
+
+        <ImageView
+                android:id="@+id/imgUserHead"
+                android:layout_toRightOf="@id/llRank"
+                android:layout_margin="5dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="fitXY"
+                android:layout_centerVertical="true"
+                />
+
+        <TextView
+                android:id="@+id/tvUserName"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="Durex"
+                android:layout_toLeftOf="@+id/imgRightArrow"
+                android:layout_toRightOf="@id/imgUserHead"
+                android:layout_alignTop="@id/imgUserHead"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"/>
+
+        <LinearLayout
+                android:layout_toRightOf="@id/imgUserHead"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="2dp"
+                android:layout_alignBottom="@id/imgUserHead"
+                >
+            <TextView
+                    android:id="@+id/tvUserExtraTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_gray_normal"
+                    android:text="收益率："
+                    android:textSize="14sp"/>
+
+            <TextView
+                    android:id="@+id/tvUserExtraValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_gray_normal"
+                    android:text=" - -"
+                    android:textSize="14sp"/>
+        </LinearLayout>
 
 
-  <ImageView
-      android:id="@+id/imgRightArrow"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_alignParentRight="true"
-      android:layout_marginRight="@dimen/right_arrow_margin"
-      android:background="@drawable/icon_arrow_right"
-      />
-
-  <ImageView
-      android:id="@+id/imgUserHead"
-      android:layout_toRightOf="@id/llRank"
-      android:layout_margin="5dp"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
-      android:scaleType="fitXY"
-      android:layout_centerVertical="true"
-      />
-
-  <TextView
-      android:id="@+id/tvUserName"
-      android:layout_height="wrap_content"
-      android:singleLine="true"
-      android:text="Durex"
-      android:layout_toLeftOf="@+id/imgRightArrow"
-      android:layout_toRightOf="@id/imgUserHead"
-      android:layout_alignTop="@id/imgUserHead"
-      android:layout_marginTop="1dp"
-      android:textColor="@color/black"
-      android:textSize="18sp"
-      android:layout_width="wrap_content"/>
-
-  <LinearLayout
-      android:layout_toRightOf="@id/imgUserHead"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:orientation="horizontal"
-      android:layout_marginTop="2dp"
-      android:layout_alignBottom="@id/imgUserHead"
-      >
-    <TextView
-        android:id="@+id/tvUserExtraTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_gray_normal"
-        android:text="收益率："
-        android:textSize="14sp"/>
-
-    <TextView
-        android:id="@+id/tvUserExtraValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_gray_normal"
-        android:text=" - -"
-        android:textSize="14sp"/>
-  </LinearLayout>
-
-
-</RelativeLayout>
-
+    </RelativeLayout>
+</LinearLayout>

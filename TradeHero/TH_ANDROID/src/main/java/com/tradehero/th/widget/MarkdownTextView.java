@@ -21,8 +21,9 @@ import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
@@ -92,22 +93,19 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                 int competitionId = Integer.parseInt(matchStrings[2]);
                 openCompetition(competitionId);
                 isClicked = true;
-                break;
-
+                return;
             case "user":
                 int userId = Integer.parseInt(matchStrings[2]);
                 openUserProfile(userId);
                 isClicked = true;
-                break;
-
+                return;
             case "security":
                 if (matchStrings.length < 3) break;
                 String exchange = matchStrings[1];
                 String symbol = matchStrings[2];
                 openSecurityProfile(exchange, symbol);
                 isClicked = true;
-                break;
-
+                return;
             case "link":
                 isClicked = true;
                 String USER = "tradehero://user/";
@@ -129,7 +127,7 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
                     int uid = Integer.parseInt(link2.substring(USER.length()));
                     openUserProfile(uid);
                 }
-                break;
+                return;
         }
     }
 

@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -27,9 +27,9 @@ import com.tradehero.th.fragments.chinabuild.fragment.message.DiscussSendFragmen
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
+import com.tradehero.th.widget.ABCDView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -58,6 +58,10 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     @InjectView(R.id.tradeheroprogressbar_users) TradeHeroProgressBar progressBar;
     @InjectView(R.id.imgEmpty) ImageView imgEmpty;
 
+    //Divider View
+    private ABCDView dividerABCDView;
+    private TextView showDividerView;
+
     protected UserProfileCompactDTO selectedItem;
 
     private UserFriendsListAdapter adapter;
@@ -83,8 +87,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     {
         View view = inflater.inflate(R.layout.user_friends_list_fragment, container, false);
         ButterKnife.inject(this, view);
-        this.heroInfoFetcher.setHeroListListener(new HeroManagerHeroListCacheListener());
-
+        heroInfoFetcher.setHeroListListener(new HeroManagerHeroListCacheListener());
         initView();
         fetchUserFriendList();
 
@@ -95,9 +98,50 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         }
         else
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.relativelayout_listfriends);
         }
+        showDividerView = (TextView)view.findViewById(R.id.textview_show_divider);
+        dividerABCDView = (ABCDView)view.findViewById(R.id.abcdview_divider);
+        dividerABCDView.setListener(new ABCDView.OnCharTouchListener() {
+            @Override
+            public void onTouchDown(String divider) {
+                int position = adapter.getPosition(divider);
+                if(position==-1){
+                    return;
+                }
+                listView.getRefreshableView().setSelection(position + 1);
+                showDividerView.setVisibility(View.VISIBLE);
+                showDividerView.setText(divider);
+            }
 
+            @Override
+            public void onTouchUp(String divider) {
+                int position = adapter.getPosition(divider);
+                if(position==-1){
+                    return;
+                }
+                showDividerView.setText(divider);
+                showDividerView.setVisibility(View.GONE);
+                listView.getRefreshableView().setSelection(position + 1);
+            }
+
+            @Override
+            public void onTouchCancel() {
+                showDividerView.setVisibility(View.GONE);
+                showDividerView.setText("");
+            }
+
+            @Override
+            public void onTouchMove(String divider) {
+                int position = adapter.getPosition(divider);
+                if(position==-1){
+                    return;
+                }
+                listView.getRefreshableView().setSelection(position + 1);
+                showDividerView.setVisibility(View.VISIBLE);
+                showDividerView.setText(divider);
+            }
+        });
         return view;
     }
 
@@ -121,7 +165,6 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 fetchUserFriendList(true);
             }
 
@@ -130,11 +173,9 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
             }
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> adapterView, View view, int i, long position)
-            {
+        adapter.setOnUserItemClickListener(new UserFriendsListAdapter.OnUserItemClickListener() {
+            @Override
+            public void onUserItemClick(int position) {
                 UserProfileCompactDTO dto = (UserProfileCompactDTO) adapter.getItem((int) position);
                 enterUserMainPage(dto.id, dto);
             }
@@ -204,7 +245,6 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
     protected void fetchHeros(boolean force)
     {
-        detachHeroFetcher();
         if(force)
         {
             this.heroInfoFetcher.reloadHeroes(showUserBaseKey);
@@ -253,7 +293,6 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             {
                 adapter.setListData(list);
             }
-
             adapter.notifyDataSetChanged();
         }
     }
@@ -285,7 +324,6 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             {
                 adapter.setListData(list);
             }
-
             adapter.notifyDataSetChanged();
         }
     }
@@ -310,7 +348,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         private void onFinish()
         {
             listView.onRefreshComplete();
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+            betterViewAnimator.setDisplayedChildByLayoutId(R.id.relativelayout_listfriends);
             if(progressBar != null){
                 progressBar.stopLoading();
             }
@@ -322,8 +360,6 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
     {
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull HeroDTOExtWrapper value)
         {
-            //displayProgress(false);
-            Timber.d("");
             initHeroData(value);
             onFinish();
         }
@@ -337,20 +373,14 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
 
         private void onFinish()
         {
-            try
-            {
+            try {
                 listView.onRefreshComplete();
-                betterViewAnimator.setDisplayedChildByLayoutId(R.id.listFriends);
+                betterViewAnimator.setDisplayedChildByLayoutId(R.id.relativelayout_listfriends);
             } catch (Exception e)
             {
+                e.printStackTrace();
             }
         }
-    }
-
-    @Override public void onStop()
-    {
-
-        super.onStop();
     }
 
     protected void detachFollowerFetcher()
@@ -362,35 +392,17 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         this.followerInfoFetcher = null;
     }
 
-    protected void detachHeroFetcher()
-    {
-        //if (this.heroInfoFetcher != null)
-        //{
-        //    this.heroInfoFetcher.onDestroyView();
-        //}
-        //this.heroInfoFetcher = null;
-    }
-
     @Override public void onDestroyView()
     {
         detachFollowerFetcher();
-        detachHeroFetcher();
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
     }
 
     @Override public Object getSelectedItem()
     {
         return selectedItem;
     }
+
+
 }

@@ -35,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -87,7 +86,6 @@ public class NotificationFragment extends DashboardFragment
     @Override
     public void onClickHeadRight0()
     {
-        Timber.d("全部已读");
         reportNotificationReadAll();
     }
 
@@ -129,18 +127,21 @@ public class NotificationFragment extends DashboardFragment
                 }
                 jumpToTarget(dto);
             }
+
+            @Override
+            public void OnNotificationItemLongClicked(int position) {
+
+            }
         });
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
             @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 refresh();
             }
 
             @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("上拉加载更多");
                 fetchNextPageIfNecessary();
             }
         });
@@ -240,7 +241,6 @@ public class NotificationFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull NotificationListKey key, @NotNull Throwable error)
         {
             onFinish();
-            Timber.e("NotificationRefreshListener onErrorThrown");
         }
 
         private void onFinish()
@@ -273,7 +273,7 @@ public class NotificationFragment extends DashboardFragment
     {
         @Override public void success(Response response, Response response2)
         {
-            Timber.d("已读");
+
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -290,14 +290,11 @@ public class NotificationFragment extends DashboardFragment
     {
         @Override public void success(Response response, Response response2)
         {
-            Timber.d("NotificationMarkAsReadAllCallback success");
-            Timber.d("全部已读");
             adapter.setAllRead();
         }
 
         @Override public void failure(RetrofitError retrofitError)
         {
-            Timber.d("NotificationMarkAsReadAllCallback failure");
         }
     }
 
