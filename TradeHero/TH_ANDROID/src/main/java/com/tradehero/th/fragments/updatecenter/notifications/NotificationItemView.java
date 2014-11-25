@@ -72,6 +72,12 @@ public class NotificationItemView
         HierarchyInjector.inject(this);
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         resetView();

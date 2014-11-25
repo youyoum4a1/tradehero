@@ -263,7 +263,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     protected class LeaderboardMarkUserListFollowRequestedListener
             implements LeaderboardMarkUserItemView.OnFollowRequestedListener
     {
-        @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
+        @Override public void onFollowRequested(@NonNull UserBaseDTO userBaseDTO)
         {
             handleFollowRequested(userBaseDTO);
         }

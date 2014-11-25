@@ -314,7 +314,7 @@ public class PrivateDiscussionView extends DiscussionView
     {
         protected PrivateDiscussionViewDiscussionSetAdapter()
         {
-            super(getContext(),
+            super(PrivateDiscussionView.this.getContext(),
                     discussionCache,
                     currentUserId,
                     R.layout.private_message_bubble_mine,

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,11 +22,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
@@ -42,7 +39,6 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -57,8 +53,6 @@ import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import retrofit.client.Response;
-import rx.Observer;
 import rx.Subscription;
 import timber.log.Timber;
 
@@ -495,6 +489,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_open_profile)
     protected void handleProfileClicked()
     {
@@ -502,6 +497,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenProfileButtonClicked();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_open_positions_list)
     protected void handlePositionButtonClicked()
     {
@@ -509,6 +505,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         handleOpenPositionListClicked();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_follow)
     protected void handleFollowButtonClicked()
     {
@@ -516,6 +513,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         follow(leaderboardItem);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_profile_picture)
     protected void handleUserIconClicked()
     {
@@ -620,11 +618,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    protected void handleSuccess(UserProfileDTO userProfileDTO, Response response)
-    {
-        linkWith(userProfileDTO, true);
-    }
-
     protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
         OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
@@ -696,35 +689,5 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     public static interface OnFollowRequestedListener
     {
         void onFollowRequested(@NonNull UserBaseDTO userBaseKey);
-    }
-
-    protected Observer<Pair<LeaderboardKey, LeaderboardDTO>> createLeaderboardUserRankingObserver()
-    {
-        return new LeaderboardUserRankingCacheObserver();
-    }
-
-    protected class LeaderboardUserRankingCacheObserver implements Observer<Pair<LeaderboardKey, LeaderboardDTO>>
-    {
-        @Override public void onNext(Pair<LeaderboardKey, LeaderboardDTO> pair)
-        {
-            if (pair.second.users != null && !pair.second.users.isEmpty())
-            {
-                LeaderboardUserDTO ownLeaderboardUserDTO = pair.second.users.get(0);
-                display(ownLeaderboardUserDTO);
-            }
-            else
-            {
-                displayUserIsNotRanked();
-            }
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
     }
 }
