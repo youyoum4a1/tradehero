@@ -123,6 +123,8 @@ public class UserFriendsListAdapter extends BaseAdapter
                 UserProfileCompactDTO itemAfter = (UserProfileCompactDTO) getItem(afterPosition);
                 if(!item.displayNamePinYinFirstChar.equalsIgnoreCase(itemAfter.displayNamePinYinFirstChar)){
                     holder.footView.setVisibility(View.GONE);
+                }else{
+                    holder.footView.setVisibility(View.VISIBLE);
                 }
             }
             picasso.get()
