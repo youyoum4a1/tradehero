@@ -92,6 +92,8 @@ public class UserFriendsListAdapter extends BaseAdapter
                 holder.tvUserExtraValue = (TextView) convertView.findViewById(R.id.tvUserExtraValue);
                 holder.dividerTV = (TextView)convertView.findViewById(R.id.textview_users_divider);
                 holder.userRL = (RelativeLayout)convertView.findViewById(R.id.relativelayout_user_item);
+                holder.footView = (View)convertView.findViewById(R.id.view_divider_foot);
+                holder.headView = (View)convertView.findViewById(R.id.view_divider_head);
                 convertView.setTag(holder);
             }
             else
@@ -102,15 +104,25 @@ public class UserFriendsListAdapter extends BaseAdapter
             if(position == 0){
                 holder.dividerTV.setVisibility(View.VISIBLE);
                 holder.dividerTV.setText(item.displayNamePinYinFirstChar.toUpperCase());
+                holder.headView.setVisibility(View.VISIBLE);
             }else{
                 int beforePosition = position - 1;
                 UserProfileCompactDTO itemBefore = (UserProfileCompactDTO) getItem(beforePosition);
                 if(item.displayNamePinYinFirstChar.equalsIgnoreCase(itemBefore.displayNamePinYinFirstChar)){
                     holder.dividerTV.setVisibility(View.GONE);
                     holder.dividerTV.setText("");
+                    holder.headView.setVisibility(View.GONE);
                 }else{
                     holder.dividerTV.setVisibility(View.VISIBLE);
                     holder.dividerTV.setText(item.displayNamePinYinFirstChar.toUpperCase());
+                    holder.headView.setVisibility(View.VISIBLE);
+                }
+            }
+            if(position<(getCount()-1)){
+                int afterPosition = position + 1;
+                UserProfileCompactDTO itemAfter = (UserProfileCompactDTO) getItem(afterPosition);
+                if(!item.displayNamePinYinFirstChar.equalsIgnoreCase(itemAfter.displayNamePinYinFirstChar)){
+                    holder.footView.setVisibility(View.GONE);
                 }
             }
             picasso.get()
@@ -248,6 +260,8 @@ public class UserFriendsListAdapter extends BaseAdapter
         public TextView tvUserExtraValue;
         public TextView dividerTV;
         public RelativeLayout userRL;
+        public View headView;
+        public View footView;
     }
 
     public void setOnUserItemClickListener(OnUserItemClickListener listener){

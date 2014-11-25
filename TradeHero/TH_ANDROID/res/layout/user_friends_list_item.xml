@@ -4,6 +4,8 @@
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
+    <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/gray_normal"
+            android:id="@+id/view_divider_head"/>
     <TextView android:layout_width="match_parent" android:layout_height="26dp"
               android:id="@+id/textview_users_divider"
               android:text="#"
@@ -69,6 +71,9 @@
                     android:textSize="14sp"/>
         </LinearLayout>
 
-
+        <View android:layout_width="match_parent" android:layout_height="1px"
+              android:layout_marginLeft="58dp" android:background="@color/gray_normal"
+              android:layout_alignParentBottom="true"
+              android:id="@+id/view_divider_foot"/>
     </RelativeLayout>
 </LinearLayout>

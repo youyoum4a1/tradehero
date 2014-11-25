@@ -41,6 +41,7 @@
                     android:id="@+id/abcdview_divider"
                     android:background="@android:color/transparent"
                     android:layout_width="30dp" android:layout_height="match_parent"
+                    android:visibility="gone"
                     android:layout_alignParentRight="true"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:background="@drawable/issue_xml"

@@ -46,7 +46,7 @@ public class ABCDView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getX()<0||event.getY()<0){
+        if(event.getX()<0||event.getY()<0||event.getY()>getHeight()||event.getX()>getWidth()){
             listener.onTouchCancel();
             return true;
         }

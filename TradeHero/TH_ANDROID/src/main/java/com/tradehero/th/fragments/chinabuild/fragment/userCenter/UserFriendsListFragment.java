@@ -99,6 +99,7 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
         else
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.relativelayout_listfriends);
+            dividerABCDView.setVisibility(View.VISIBLE);
         }
         showDividerView = (TextView)view.findViewById(R.id.textview_show_divider);
         dividerABCDView = (ABCDView)view.findViewById(R.id.abcdview_divider);
@@ -106,22 +107,22 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             @Override
             public void onTouchDown(String divider) {
                 int position = adapter.getPosition(divider);
+                showDividerView.setVisibility(View.VISIBLE);
+                showDividerView.setText(divider);
                 if(position==-1){
                     return;
                 }
                 listView.getRefreshableView().setSelection(position + 1);
-                showDividerView.setVisibility(View.VISIBLE);
-                showDividerView.setText(divider);
             }
 
             @Override
             public void onTouchUp(String divider) {
                 int position = adapter.getPosition(divider);
+                showDividerView.setVisibility(View.GONE);
+                showDividerView.setText(divider);
                 if(position==-1){
                     return;
                 }
-                showDividerView.setText(divider);
-                showDividerView.setVisibility(View.GONE);
                 listView.getRefreshableView().setSelection(position + 1);
             }
 
@@ -134,12 +135,12 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             @Override
             public void onTouchMove(String divider) {
                 int position = adapter.getPosition(divider);
+                showDividerView.setVisibility(View.VISIBLE);
+                showDividerView.setText(divider);
                 if(position==-1){
                     return;
                 }
                 listView.getRefreshableView().setSelection(position + 1);
-                showDividerView.setVisibility(View.VISIBLE);
-                showDividerView.setText(divider);
             }
         });
         return view;
@@ -293,6 +294,15 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             {
                 adapter.setListData(list);
             }
+            if(adapter.getCount()<=0){
+                if(dividerABCDView!=null) {
+                    dividerABCDView.setVisibility(View.GONE);
+                }
+            }else{
+                if(dividerABCDView!=null) {
+                    dividerABCDView.setVisibility(View.VISIBLE);
+                }
+            }
             adapter.notifyDataSetChanged();
         }
     }
@@ -323,6 +333,15 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             else
             {
                 adapter.setListData(list);
+            }
+            if(adapter.getCount()<=0){
+                if(dividerABCDView!=null) {
+                    dividerABCDView.setVisibility(View.GONE);
+                }
+            }else{
+                if(dividerABCDView!=null) {
+                    dividerABCDView.setVisibility(View.VISIBLE);
+                }
             }
             adapter.notifyDataSetChanged();
         }
