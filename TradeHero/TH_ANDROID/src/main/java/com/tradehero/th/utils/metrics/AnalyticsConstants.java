@@ -12,6 +12,7 @@ public class AnalyticsConstants
     public static final String TabBar_Academy = "TabBar/Academy";
     public static final String TabBar_Portfolio = "TabBar/Portfolio";
     public static final String TabBar_Store = "TabBar/Store";
+    public static final String TabBar_FriendReferral = "TabBar/FriendReferral";
     public static final String TabBar_Settings = "TabBar/Settings";
     public static final String TabBar_AdminSettings = "TabBar/AdminSettings";
     public static final String TabBar_Divider = "TabBar/Divider";

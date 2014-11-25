@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.utils.Constants;
@@ -46,6 +47,9 @@ public enum RootFragmentType
     STORE(R.layout.residemenu_item_store,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class, AnalyticsConstants.TabBar_Store),
+    FRIEND_REFERRAL(R.layout.tab_indicator_holo,
+            R.string.dashboard_referral, R.string.dashboard_referral_key,
+            R.drawable.icn_menu_referral, FriendsInvitationFragment.class, AnalyticsConstants.TabBar_FriendReferral),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
             R.drawable.icn_menu_settings, SettingsFragment.class, AnalyticsConstants.TabBar_Settings),
@@ -89,7 +93,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, STORE, SETTING
+                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, STORE, FRIEND_REFERRAL, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
