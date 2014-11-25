@@ -8,6 +8,7 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import rx.Observable;
 
 public class SecurityMultiFetchAssistant
@@ -17,7 +18,7 @@ public class SecurityMultiFetchAssistant
     @NonNull private final SecurityServiceWrapper securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    public SecurityMultiFetchAssistant(
+    @Inject public SecurityMultiFetchAssistant(
             @NonNull SecurityIdCache securityIdCache,
             @NonNull SecurityCompactCacheRx securityCompactCache,
             @NonNull SecurityServiceWrapper securityServiceWrapper)
