@@ -10,8 +10,8 @@ enum DiscoveryTabType
     NEWS(R.string.discovery_news, NewsPagerFragment.class),
     DISCUSSION(R.string.discovery_discussions, DiscoveryDiscussionFragment.class),
     LEARNING(R.string.discovery_learning, LearningFragment.class),
-    ARTICLE(R.string.discovery_articles, DiscoveryArticleFragment.class),
     GAMES(R.string.discovery_games, DiscoveryGameFragment.class),
+    ARTICLE(R.string.discovery_articles, DiscoveryArticleFragment.class),
     ;
 
     @StringRes public final int titleStringResId;
