@@ -37,7 +37,7 @@ public class DiscoveryGameAdapter extends ArrayDTOAdapter<MiniGameDefDTO, MiniGa
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {
-        if (position >= 0)
+        if (getHeaderId(position) >= 0)
         {
             TextHolder holder;
             if (convertView == null)
