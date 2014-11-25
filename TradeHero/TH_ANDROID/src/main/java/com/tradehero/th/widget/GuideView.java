@@ -24,6 +24,9 @@ public class GuideView extends View {
     private Canvas mCanvas = null;
 
     private Bitmap bitmap_a = null;
+    private Bitmap bitmap_b = null;
+    private Rect src = new Rect();
+    private Rect dst = new Rect();
 
     private int current_type = -1;
 
@@ -50,18 +53,19 @@ public class GuideView extends View {
         this.screen_height = screen_height;
         this.screen_width = screen_width;
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.guide_bg);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.guide_bg);
         bitmap = Bitmap.createBitmap(screen_width, screen_height, Bitmap.Config.ARGB_8888);
         mCanvas = new Canvas();
         mCanvas.setBitmap(bitmap);
-        mCanvas.drawBitmap(bm, new Rect(0,0,bm.getWidth(), bm.getHeight()),new Rect(0,0,screen_width,screen_height), null);
+        mCanvas.drawBitmap(bm, new Rect(0, 0, bm.getWidth(), bm.getHeight()), new Rect(0, 0, screen_width, screen_height), null);
 
-        if(type == TYPE_GUIDE_COMPETITION_JOIN ){
-            bitmap_a = BitmapFactory.decodeResource(getResources(),R.drawable.guide_competition_goto);
+        if (type == TYPE_GUIDE_COMPETITION_JOIN) {
+            bitmap_a = BitmapFactory.decodeResource(getResources(), R.drawable.guide_competition_goto);
         }
 
-        if(type == TYPE_GUIDE_STOCK_BUG){
-            bitmap_a = BitmapFactory.decodeResource(getResources(),R.drawable.guide_stock_buy);
+        if (type == TYPE_GUIDE_STOCK_BUG) {
+            bitmap_a = BitmapFactory.decodeResource(getResources(), R.drawable.guide_stock_buy);
+            bitmap_b = BitmapFactory.decodeResource(getResources(), R.drawable.guide_stock_bug_gesture);
         }
 
         invalidate();
@@ -80,12 +84,20 @@ public class GuideView extends View {
             mCanvas.drawRect(new Rect(0, position_y_a - radius_a, screen_width, position_y_a + radius_a), mPaint);
             canvas.drawBitmap(bitmap, 0, 0, null);
             int position_bitmap_a_x = position_x_a - 20;
-            int position_bitmap_a_y = position_y_a - radius_a  - bitmap_a.getHeight();
+            int position_bitmap_a_y = position_y_a - radius_a - bitmap_a.getHeight();
             canvas.drawBitmap(bitmap_a, position_bitmap_a_x, position_bitmap_a_y, null);
+
+            int bitmapBWidth = bitmap_b.getWidth();
+            int bitmapBHeight = bitmap_b.getHeight();
+            int beginY = getHeight()/4;
+            int beginX = (getWidth() - bitmapBWidth/2)/2;
+            src.set(0,0, bitmapBWidth, bitmapBHeight);
+            dst.set(beginX, beginY, beginX + bitmapBWidth/2, beginY + bitmapBHeight/2);
+            canvas.drawBitmap(bitmap_b, src, dst, null);
         }
     }
 
-    public int getType(){
+    public int getType() {
         return current_type;
     }
 
