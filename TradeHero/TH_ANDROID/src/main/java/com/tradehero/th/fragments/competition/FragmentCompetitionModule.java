@@ -20,7 +20,6 @@ import dagger.Module;
                 ProviderVideoListFragment.class,
                 ProviderVideoListItemView.class,
                 ProviderSecurityListFragment.class,
-                CompetitionZonePrizePoolView.class,
                 AdView.class,
         },
         library = true,

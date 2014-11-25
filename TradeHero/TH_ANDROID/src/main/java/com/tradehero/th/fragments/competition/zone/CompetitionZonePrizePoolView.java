@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,7 +22,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePrizePoolD
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView
 {
@@ -91,18 +94,18 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
                 .into(background, new Callback() {
                     @Override
                     public void onSuccess() {
-                        Timber.d("lyl success");
                         setBackgroundColor(getResources().getColor(android.R.color.transparent));
                     }
 
                     @Override
                     public void onError() {
-                        Timber.d("lyl fail");
                         setBackgroundColor(getResources().getColor(R.color.white));
                     }
                 });
         value.setText(providerPrizePoolDTO.current);
-        text2.setText(getContext().getString(R.string.new_players_need, providerPrizePoolDTO.extra));
+        Spannable spannable = new SpannableString(getContext().getString(R.string.new_players_need, providerPrizePoolDTO.extra));
+        spannable.setSpan(new StyleSpan(Typeface.BOLD), spannable.length() - providerPrizePoolDTO.extra.length() - 2, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text2.setText(spannable);
         value2.setText(providerPrizePoolDTO.newPlayerNeeded);
     }
 

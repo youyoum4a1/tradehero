@@ -176,7 +176,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
 
     private void fetchPrizePool() {
-        Timber.d("lyl fetchPrizePool provider.id="+providerId.toString());
         //only for sgx
         if (providerId.key == 24)
         {
@@ -704,13 +703,9 @@ public class MainCompetitionFragment extends CompetitionFragment
     }
 
     protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<ProviderPrizePoolDTO>
-//    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<Pair<ProviderId, ProviderPrizePoolDTO>>
     {
         @Override public void onNext(ProviderPrizePoolDTO dto)
-//        @Override public void onNext(Pair<ProviderId, ProviderPrizePoolDTO> pair)
         {
-//            linkWith(pair.second, true);
-            Timber.d("lyl "+dto.toString());
             providerPrizePoolDTO = dto;
             competitionZoneListItemAdapter.setPrizePoolDTO(providerPrizePoolDTO);
             displayListView();
