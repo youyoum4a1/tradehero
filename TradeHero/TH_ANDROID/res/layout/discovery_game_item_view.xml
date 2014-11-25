@@ -18,7 +18,7 @@
       android:id="@+id/minigame_item_background"
       android:layout_width="match_parent"
       android:layout_height="@dimen/discovery_minigame_item_image_height"
-      android:scaleType="fitXY"
+      android:scaleType="centerCrop"
       android:contentDescription="@null"/>
 
 </com.tradehero.th.fragments.discovery.MiniGameDefItemView>
