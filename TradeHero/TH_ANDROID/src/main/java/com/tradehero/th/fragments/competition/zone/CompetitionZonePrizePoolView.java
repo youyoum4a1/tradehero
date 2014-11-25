@@ -1,10 +1,6 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,9 +23,9 @@ import javax.inject.Inject;
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView
 {
     @InjectView(R.id.background) ImageView background;
-    @InjectView(R.id.value) TextView value;
-    @InjectView(R.id.text2) TextView text2;
-    @InjectView(R.id.value2) TextView value2;
+    @InjectView(R.id.prize_pool_current_prize) TextView value;
+    @InjectView(R.id.prize_pool_next_prize) TextView text2;
+    @InjectView(R.id.prize_pool_player_needed) TextView value2;
     @Inject Picasso picasso;
     @Inject DashboardNavigator navigator;
     private ProviderPrizePoolDTO providerPrizePoolDTO;
@@ -107,9 +103,7 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
                     }
                 });
         value.setText(providerPrizePoolDTO.current);
-        Spannable spannable = new SpannableString(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
-        spannable.setSpan(new StyleSpan(Typeface.BOLD), spannable.length() - providerPrizePoolDTO.extra.length() - 2, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        text2.setText(spannable);
+        text2.setText(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
         value2.setText(THSignedNumber.builder(providerPrizePoolDTO.newPlayerNeeded).build().toString());
     }
 

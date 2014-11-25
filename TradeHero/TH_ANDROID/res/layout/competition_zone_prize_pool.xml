@@ -22,7 +22,7 @@
       />
 
   <LinearLayout
-      android:id="@+id/linear"
+      android:id="@+id/prize_pool_current_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingLeft="@dimen/margin_small"
@@ -31,7 +31,7 @@
       >
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/prize_pool_current"
         style="@style/TH.Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         />
 
     <TextView
-        android:id="@+id/value"
+        android:id="@+id/prize_pool_current_prize"
         style="@style/TH.Headline.Accented"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -53,17 +53,17 @@
   </LinearLayout>
 
   <LinearLayout
-      android:id="@+id/linear2"
+      android:id="@+id/prize_pool_next_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/linear"
+      android:layout_below="@+id/prize_pool_current_container"
       android:paddingLeft="@dimen/margin_small"
       android:paddingRight="@dimen/margin_small"
       android:orientation="horizontal"
       >
 
-    <TextView
-        android:id="@+id/text2"
+    <com.tradehero.th.widget.MarkdownTextView
+        android:id="@+id/prize_pool_next_prize"
         style="@style/TH.Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
         />
 
     <TextView
-        android:id="@+id/value2"
+        android:id="@+id/prize_pool_player_needed"
         style="@style/TH.Headline.Accented"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_small"
-      android:layout_below="@+id/linear2"
+      android:layout_below="@+id/prize_pool_next_container"
       android:layout_centerHorizontal="true"
       android:text="@string/invite_your_friends_now"
       />
