@@ -256,7 +256,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                 }
             }
             adapter.setSecurityId(securityId);
-            adapter.setItems(data);
+            adapter.setItems(newsItemDTOKeyList);
             adapter.notifyDataSetChanged();
         }
     }

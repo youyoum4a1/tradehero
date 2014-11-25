@@ -12,7 +12,7 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;
 
-public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
+public class TimelineItemDTO extends AbstractDiscussionDTO
 {
     public int type;
     public Date userViewedAtUtc;

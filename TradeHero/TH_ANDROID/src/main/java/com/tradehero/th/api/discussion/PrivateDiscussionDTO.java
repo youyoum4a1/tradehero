@@ -4,7 +4,7 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.PrivateMessageKey;
 
-public class PrivateDiscussionDTO extends DiscussionDTO<PrivateDiscussionDTO>
+public class PrivateDiscussionDTO extends DiscussionDTO
 {
     //<editor-fold desc="Constructors">
     public PrivateDiscussionDTO()

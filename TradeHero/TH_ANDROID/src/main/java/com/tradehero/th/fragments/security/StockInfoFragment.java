@@ -10,11 +10,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
@@ -26,8 +26,9 @@ import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -271,11 +272,20 @@ public class StockInfoFragment extends DashboardFragment
     {
         if (newsHeadlineAdapter != null && newsHeadlineList !=null)
         {
+            List<NewsItemDTO> data = newsHeadlineList.getData();
+            List<NewsItemDTOKey> newsItemDTOKeyList = new ArrayList<>();
+
+            if (data != null)
+            {
+                for (NewsItemDTO newsItemDTO: data)
+                {
+                    newsItemDTOKeyList.add(newsItemDTO.getDiscussionKey());
+                }
+            }
+
             newsHeadlineAdapter.setSecurityId(securityId);
-            Observable.from(newsHeadlineList.getData())
-                    .cast(NewsItemCompactDTO.class)
-                    .toList()
-                    .subscribe(newsHeadlineAdapter::setItems);
+            newsHeadlineAdapter.setItems(newsItemDTOKeyList);
+            newsHeadlineAdapter.notifyDataSetChanged();
         }
     }
 

@@ -5,7 +5,7 @@ import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
-public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO<NewsItemCompactDTO>
+public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO
 {
     public String title;
     public String caption;

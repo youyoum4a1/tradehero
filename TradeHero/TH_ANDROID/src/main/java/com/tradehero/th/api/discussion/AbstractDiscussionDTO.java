@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 
-public abstract class AbstractDiscussionDTO<T extends AbstractDiscussionDTO> extends AbstractDiscussionCompactDTO<T>
+public abstract class AbstractDiscussionDTO extends AbstractDiscussionCompactDTO
 {
     public int userId;
     @Nullable public String text;

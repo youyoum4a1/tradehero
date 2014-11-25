@@ -6,13 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
 
-public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear>
+public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear>
 {
 
     public Integer[] backgrounds = null;
@@ -23,7 +23,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
     public NewsHeadlineAdapter(Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
-        setItems(new ArrayList<>());
+        setItems(new ArrayList<NewsItemDTOKey>());
         loadBackground();
     }
 
@@ -67,7 +67,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
     }
 
     @Override
-    public void setItems(@NonNull List<NewsItemCompactDTO> items)
+    public void setItems(@NonNull List<NewsItemDTOKey> items)
     {
         super.setItems(items);
         setBackgroundsArray();
@@ -79,7 +79,7 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
     }
 
     @Override
-    protected void fineTune(final int position, NewsItemCompactDTO dto, final NewsHeadlineViewLinear dtoView)
+    protected void fineTune(final int position, NewsItemDTOKey dto, final NewsHeadlineViewLinear dtoView)
     {
         dtoView.linkWithSecurityId(securityId);
         try
