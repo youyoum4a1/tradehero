@@ -23,6 +23,7 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -85,6 +86,7 @@ public class DiscoveryGameFragment extends DashboardFragment
         subscriptions = new CompositeSubscription();
         PublishSubject<List<MiniGameDefDTO>> miniGamesSubject = PublishSubject.create();
         subscriptions.add(miniGamesSubject.subscribe(adapter::setItems));
+        subscriptions.add(miniGamesSubject.subscribe(new UpdateUIObserver()));
 
         subscriptions.add(
                 rxLoaderManager.create(
@@ -94,7 +96,6 @@ public class DiscoveryGameFragment extends DashboardFragment
                                 miniGameDefListCache.get(new MiniGameDefListKey()).map(pair -> pair.second)))
                         .doOnError(toastOnErrorAction)
                         .onErrorResumeNext(Observable.empty())
-                        .doOnNext(miniGameDefDTOs -> switcher.setDisplayedChildByLayoutId(R.id.game_list))
                         .subscribe(miniGamesSubject));
     }
 
@@ -103,5 +104,28 @@ public class DiscoveryGameFragment extends DashboardFragment
         subscriptions.unsubscribe();
         rxLoaderManager.remove(MINIGAMES_LIST_LOADER_ID);
         super.onDestroyView();
+    }
+
+    private class UpdateUIObserver implements Observer<List<MiniGameDefDTO>>
+    {
+        private void showListView()
+        {
+            switcher.setDisplayedChildByLayoutId(R.id.game_list);
+        }
+
+        @Override public void onCompleted()
+        {
+            showListView();
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            showListView();
+        }
+
+        @Override public void onNext(List<MiniGameDefDTO> miniGameDefDTOs)
+        {
+            showListView();
+        }
     }
 }
