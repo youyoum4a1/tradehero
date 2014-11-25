@@ -64,7 +64,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
 
     @Override public void onDestroyView()
     {
-        detachSubscription(securityCompactCacheSubscription);
+        unsubscribe(securityCompactCacheSubscription);
         securityCompactCacheSubscription = null;
         super.onDestroyView();
     }
@@ -79,7 +79,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            detachSubscription(securityCompactCacheSubscription);
+            unsubscribe(securityCompactCacheSubscription);
             securityCompactCacheSubscription = securityCompactCache.get(securityId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()

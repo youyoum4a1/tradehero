@@ -90,7 +90,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     @Override public void onDestroyView()
     {
-        detachSubscription(securityCompactCacheSubscription);
+        unsubscribe(securityCompactCacheSubscription);
         securityCompactCacheSubscription = null;
         if (mHelpVideoLink != null)
         {
@@ -134,7 +134,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            detachSubscription(securityCompactCacheSubscription);
+            unsubscribe(securityCompactCacheSubscription);
             securityCompactCacheSubscription = AndroidObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))

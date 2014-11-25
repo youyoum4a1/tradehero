@@ -205,7 +205,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
 
     @Override public void onDestroyView()
     {
-        detachSubscription(securityCompactCacheSubscription);
+        unsubscribe(securityCompactCacheSubscription);
         securityCompactCacheSubscription = null;
         if (chartImage != null)
         {
@@ -261,7 +261,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactD
         super.linkWith(securityId, andDisplay);
         if (securityId != null)
         {
-            detachSubscription(securityCompactCacheSubscription);
+            unsubscribe(securityCompactCacheSubscription);
             securityCompactCacheSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                     .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                     {

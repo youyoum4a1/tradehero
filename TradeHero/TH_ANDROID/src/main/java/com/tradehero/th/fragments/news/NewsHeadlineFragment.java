@@ -8,10 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
@@ -39,8 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 /**
@@ -63,7 +65,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     private NewsHeadlineAdapter adapter;
     private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
 
+    @Nullable Subscription securitySubscription;
+    @Nullable Subscription securityNewsSubscription;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
+    @Nullable Subscription newsSusbcription;
 
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
@@ -76,75 +81,50 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         start = System.currentTimeMillis();
+        adapter = new NewsHeadlineAdapter(getActivity(),
+                R.layout.news_headline_item_view);
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_news_headline_list, container, false);
+        return inflater.inflate(R.layout.fragment_news_headline_list, container, false);
+    }
 
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-        return view;
-    }
-
-    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
-    {
-        return new DiscussionFetchObserver();
-    }
-
-    private class DiscussionFetchObserver
-            implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
-    {
-        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-    }
-
-    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
-    {
-        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
-        Bundle bundle = new Bundle();
-        if (abstractDiscussionCompactDTO != null
-                && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url != null)
-        {
-            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
-            navigator.get().pushFragment(WebViewFragment.class, bundle);
-        }
-        else
-        {
-            handleNewClicked(tempPosition, tempDto);
-        }
-    }
-
-    private void initViews(View view)
-    {
-        adapter = new NewsHeadlineAdapter(getActivity(),
-                R.layout.news_headline_item_view);
-
         showLoadingNews();
+        listView.setAdapter(adapter);
+        listView.setOnScrollListener(dashboardTabListViewScrollListener);
+    }
+
+    @Override public void onStop()
+    {
+        unsubscribe(securitySubscription);
+        securitySubscription = null;
+        unsubscribe(securityNewsSubscription);
+        securityNewsSubscription = null;
+        unsubscribe(newsSusbcription);
+        newsSusbcription = null;
+        super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
         if (listView != null)
         {
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener((adapterView, view1, position, l) -> {
-                Object o = adapterView.getItemAtPosition(position);
-                if (o instanceof NewsItemDTOKey)
-                {
-                    handleNewsClicked(position, (NewsItemDTOKey) o);
-                }
-            });
-            listView.setOnScrollListener(dashboardTabListViewScrollListener);
+            listView.setOnScrollListener(null);
         }
+        ButterKnife.reset(this);
+        super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        adapter = null;
+        super.onDestroy();
     }
 
     private void showNewsList()
@@ -155,19 +135,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     private void showLoadingNews()
     {
         listViewWrapper.setDisplayedChildByLayoutId(progressBar.getId());
-    }
-
-    @Override public void onDestroyView()
-    {
-        if (listView != null)
-        {
-            listView.setOnItemClickListener(null);
-            listView.setOnScrollListener(null);
-        }
-        listView = null;
-        adapter = null;
-
-        super.onDestroyView();
     }
 
     @Override protected SecurityCompactCacheRx getInfoCache()
@@ -181,20 +148,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         fetchSecurity(securityId);
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
-    {
-        value = securityCompactDTO;
-
-        if (this.value != null)
-        {
-            fetchSecurityNews();
-        }
-    }
-
     protected void fetchSecurity(@NonNull SecurityId securityId)
     {
-        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(securitySubscription);
+        securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                 {
                     @Override public void onCompleted()
@@ -212,22 +169,26 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
                 });
     }
 
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        value = securityCompactDTO;
+
+        if (this.value != null)
+        {
+            fetchSecurityNews();
+        }
+    }
+
     private void fetchSecurityNews()
     {
         Timber.d("%s fetchSecurityNews,consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
 
+        unsubscribe(securityNewsSubscription);
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
-        AndroidObservable.bindFragment(this, newsTitleCache.get(listKey))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createNewsCacheObserver());
-    }
-
-    @Override public void display()
-    {
-        Timber.d("%s display consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
-        displayNewsListView();
-
-        showNewsList();
+        securityNewsSubscription = AndroidObservable.bindFragment(this, newsTitleCache.get(listKey))
+                .subscribe(
+                        pair -> linkWith(pair.second, true),
+                        e -> THToast.show(R.string.error_fetch_security_info));
     }
 
     public void linkWith(PaginatedDTO<NewsItemCompactDTO> news, boolean andDisplay)
@@ -239,6 +200,14 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
             displayNewsListView();
             showNewsList();
         }
+    }
+
+    @Override public void display()
+    {
+        Timber.d("%s display consume: %s", TEST_KEY, (System.currentTimeMillis() - start));
+        displayNewsListView();
+
+        showNewsList();
     }
 
     public void displayNewsListView()
@@ -261,13 +230,71 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
     }
 
+    @SuppressWarnings({"UnusedDeclaration", "UnusedParameters"})
+    @OnItemClick(R.id.list_news_headline)
+    protected void listItemClicked(AdapterView<?> parent, View view, int position, long id)
+    {
+        Object o = parent.getItemAtPosition(position);
+        if (o instanceof NewsItemDTOKey)
+        {
+            handleNewsClicked(position, (NewsItemDTOKey) o);
+        }
+    }
+
     protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
     {
         tempPosition = position;
         tempDto = news;
         if (news != null)
         {
-            fetchDiscussionDetail(true, news);
+            fetchDiscussionDetail(news);
+        }
+    }
+
+    private void fetchDiscussionDetail(NewsItemDTOKey discussionKey)
+    {
+        unsubscribe(newsSusbcription);
+        newsSusbcription = AndroidObservable.bindFragment(this, discussionCache.get(discussionKey))
+                .take(1)
+                .subscribe(createDiscussionFetchObserver());
+    }
+
+    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
+    {
+        return new DiscussionFetchObserver();
+    }
+
+    private class DiscussionFetchObserver
+            implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
+    {
+        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
+        {
+            linkWith(pair.second);
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(new THException(e));
+        }
+    }
+
+    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO)
+    {
+        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
+        Bundle bundle = new Bundle();
+        if (abstractDiscussionCompactDTO != null
+                && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url != null)
+        {
+            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
+            navigator.get().pushFragment(WebViewFragment.class, bundle);
+        }
+        else
+        {
+            handleNewClicked(tempPosition, tempDto);
         }
     }
 
@@ -281,35 +308,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
             NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
             NewsDiscussionFragment.putDiscussionKey(bundle, news);
             navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
-        }
-    }
-
-    private void fetchDiscussionDetail(boolean force, NewsItemDTOKey discussionKey)
-    {
-        AndroidObservable.bindFragment(this, discussionCache.get(discussionKey))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(createDiscussionFetchObserver());
-    }
-
-    @NonNull protected Observer<Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>> createNewsCacheObserver()
-    {
-        return new NewsHeadlineNewsListObserver();
-    }
-
-    protected class NewsHeadlineNewsListObserver implements Observer<Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>>
-    {
-        @Override public void onNext(Pair<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_security_info);
         }
     }
 }
