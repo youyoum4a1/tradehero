@@ -2,7 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.achievement.AchievementShareReqFormDTO;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
@@ -45,6 +45,6 @@ interface AchievementServiceRx
     @POST("/achievements/share/{userAchievementId}")
     Observable<BaseResponseDTO> shareUserAchievement(
             @Path("userAchievementId") int userAchievementId,
-            @Body AchievementShareReqFormDTO achievementShareFormDTO);
+            @Body SocialShareReqFormDTO achievementShareFormDTO);
     //</editor-fold>
 }

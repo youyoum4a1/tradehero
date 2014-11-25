@@ -27,6 +27,7 @@ import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
@@ -47,6 +48,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCel
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
@@ -60,6 +62,7 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
+import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
@@ -91,6 +94,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject ProviderUtil providerUtil;
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
+    @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject ProviderServiceWrapper providerServiceWrapper;
 
@@ -103,6 +107,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Nullable private Subscription displayCellListCacheFetchSubscription;
     @Nullable private Subscription displayPrizePoolSubscription;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
+    @Nullable private Subscription competitionPreseasonSubscription;
+    private CompetitionPreSeasonDTO competitionPreSeasonDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -160,6 +166,11 @@ public class MainCompetitionFragment extends CompetitionFragment
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId)))
                 .subscribe(createDisplayCellListCacheObserver());
+        unsubscribe(competitionPreseasonSubscription);
+        competitionPreseasonSubscription = AndroidObservable.bindFragment(
+                this,
+                competitionPreseasonCacheRx.get(providerId))
+                .subscribe(createCompetitionPreseasonListCacheObserver());
 
         fetchPrizePool();
     }
@@ -351,6 +362,40 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
+    private Observer<Pair<ProviderId, CompetitionPreSeasonDTO>> createCompetitionPreseasonListCacheObserver()
+    {
+        return new CompetitionPreseasonCacheObserver();
+    }
+
+    protected class CompetitionPreseasonCacheObserver implements Observer<Pair<ProviderId, CompetitionPreSeasonDTO>>
+    {
+
+        @Override public void onCompleted()
+        {
+
+        }
+
+        @Override public void onError(Throwable e)
+        {
+
+        }
+
+        @Override public void onNext(Pair<ProviderId, CompetitionPreSeasonDTO> providerIdCompetitionPreSeasonDTOPair)
+        {
+            linkWith(providerIdCompetitionPreSeasonDTOPair.second, true);
+        }
+    }
+
+    private void linkWith(CompetitionPreSeasonDTO preSeasonDTO, boolean display)
+    {
+        this.competitionPreSeasonDTO = preSeasonDTO;
+        competitionZoneListItemAdapter.setPreseasonDTO(preSeasonDTO);
+        if (display)
+        {
+            displayListView();
+        }
+    }
+
     protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
     {
         this.providerDisplayCellDTOList = providerDisplayCellDTOList;
@@ -461,7 +506,17 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             handleDisplayCellClicked((CompetitionZoneDisplayCellDTO) competitionZoneDTO);
         }
+        else if (competitionZoneDTO instanceof CompetitionZonePreSeasonDTO)
+        {
+            handlePreSeasonCellClicked();
+        }
         // TODO others?
+    }
+
+    private void handlePreSeasonCellClicked()
+    {
+        CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(providerId);
+        dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
     }
 
     private void pushAdvertisement(@NonNull CompetitionZoneAdvertisementDTO competitionZoneDTO)

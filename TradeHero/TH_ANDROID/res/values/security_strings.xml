@@ -53,6 +53,7 @@
   <string name="share_to_wechat_quest_bonus">I\'ve just completed a quest on tradehero, come and join us.</string>
   <string name="share_to_wechat_quest_bonus_text">Completed \"%1$s\"</string>
   <string name="share_success">Your share is success</string>
+  <string name="share_to_wechat_preseason">I\'ve just entered a competition on tradehero, come and join us.</string>
   <!--do not thanslate-->
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
 

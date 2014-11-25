@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.competition;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLeaderboardListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneListItemView;
 import com.tradehero.th.fragments.competition.zone.CompetitionZonePortfolioView;
-import com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView;
 import dagger.Module;
 
 @Module(
@@ -14,7 +13,7 @@ import dagger.Module;
                 CompetitionZoneListItemView.class,
                 CompetitionZoneLeaderboardListItemView.class,
                 CompetitionZonePortfolioView.class,
-                CompetitionZonePrizePoolView.class,
+                CompetitionPreseasonDialogFragment.class,
                 MainCompetitionFragment.class,
                 ProviderVideoListFragment.class,
                 ProviderVideoListItemView.class,

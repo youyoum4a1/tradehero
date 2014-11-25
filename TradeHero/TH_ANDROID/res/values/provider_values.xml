@@ -11,5 +11,10 @@
   <dimen name="provider_legal_horizontal_padding">@dimen/margin_small</dimen>
   <dimen name="provider_legal_text_size">@dimen/text_caption</dimen>
   <dimen name="provider_legal_mid_spacing">24dp</dimen>
+
+  <dimen name="provider_preseason_popup_width">304dp</dimen>
+  <dimen name="provider_preseason_prize_image_w_h">128dp</dimen>
+  <dimen name="provider_preseason_title_image_w">272dp</dimen>
+  <dimen name="provider_preseason_title_image_h">56dp</dimen>
   
 </resources>

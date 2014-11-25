@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.CompetitionDTO;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
@@ -43,6 +44,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     private ProviderDTO providerDTO;
     private List<CompetitionDTO> competitionDTOs;
     private List<ProviderDisplayCellDTO> providerDisplayCellDTOs;
+    private CompetitionPreSeasonDTO preSeasonDTO;
     private ProviderPrizePoolDTO providerPrizePoolDTO;
 
     //<editor-fold desc="Constructors">
@@ -123,6 +125,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
                     providerDTO,
                     competitionDTOs,
                     providerDisplayCellDTOs,
+                    preSeasonDTO,
                     providerPrizePoolDTO,
                     preparedOrderedTypes,
                     preparedOrderedItems);
@@ -210,5 +213,10 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public void setParentOnLegalElementClicked(CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked)
     {
         this.parentOnLegalElementClicked = parentOnLegalElementClicked;
+    }
+
+    public void setPreseasonDTO(CompetitionPreSeasonDTO preSeasonDTO)
+    {
+        this.preSeasonDTO = preSeasonDTO;
     }
 }

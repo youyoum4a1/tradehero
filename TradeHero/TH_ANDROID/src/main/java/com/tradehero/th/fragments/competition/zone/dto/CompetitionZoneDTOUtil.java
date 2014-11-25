@@ -7,6 +7,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTORestrictionComparator;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
@@ -36,6 +37,7 @@ public class CompetitionZoneDTOUtil
             @Nullable ProviderDTO providerDTO,
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
+            CompetitionPreSeasonDTO preSeasonDTO,
             @Nullable ProviderPrizePoolDTO providerPrizePoolDTO,
             @NonNull List<Integer> preparedOrderedTypes,
             @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
@@ -77,6 +79,12 @@ public class CompetitionZoneDTOUtil
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
                 preparedOrderedItems.add(new CompetitionZoneVideoDTO(providerDTO.helpVideoText, null));
+            }
+
+            if (preSeasonDTO != null)
+            {
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
+                preparedOrderedItems.add(new CompetitionZonePreSeasonDTO(preSeasonDTO));
             }
 
             if (providerDisplayCellDTOs != null)
