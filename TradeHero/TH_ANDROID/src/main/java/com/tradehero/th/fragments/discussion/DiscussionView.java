@@ -30,7 +30,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.social.message.PrivatePostCommentView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +60,6 @@ public class DiscussionView extends FrameLayout
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected DiscussionListCacheRx discussionListCache;
-    @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     @NonNull private List<Subscription> discussionListCacheSubscriptions;

@@ -91,7 +91,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         fetchDiscussionDetail();
     }
 
-    private void fetchDiscussionDetail()
+    protected void fetchDiscussionDetail()
     {
         AbstractDiscussionCompactDTO value = discussionCache.getValue(discussionKey);
         if (value != null)
