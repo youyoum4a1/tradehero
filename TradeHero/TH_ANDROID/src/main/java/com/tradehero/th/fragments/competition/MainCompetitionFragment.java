@@ -44,6 +44,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
@@ -92,6 +93,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject CompetitionListCacheRx competitionListCache;
     @Inject ProviderDisplayCellListCacheRx providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
+    @Inject CompetitionZoneDTOUtil competitionZoneDTOUtil;
     @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
@@ -170,20 +172,9 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionPreseasonSubscription = AndroidObservable.bindFragment(
                 this,
                 competitionPreseasonCacheRx.get(providerId))
-                .subscribe(createCompetitionPreseasonListCacheObserver());
+                .subscribe(createCompetitionPreSeasonListCacheObserver());
 
         fetchPrizePool();
-    }
-
-    private void fetchPrizePool() {
-        //only for sgx
-        if (providerId.key == 24)
-        {
-            unsubscribe(displayPrizePoolSubscription);
-            displayPrizePoolSubscription = AndroidObservable.bindFragment(
-                    this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
-                    .subscribe(new CompetitionFragmentProviderPrizePoolObserver());
-        }
     }
 
     @Override public void onResume()
@@ -237,6 +228,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
                 getActivity(),
+                competitionZoneDTOUtil,
                 R.layout.competition_zone_item,
                 R.layout.competition_zone_ads,
                 R.layout.competition_zone_header,
@@ -245,6 +237,14 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
         competitionZoneListItemAdapter.setParentOnLegalElementClicked(this::handleItemClicked);
+    }
+
+    private void fetchPrizePool()
+    {
+        unsubscribe(displayPrizePoolSubscription);
+        displayPrizePoolSubscription = AndroidObservable.bindFragment(
+                this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
+                .subscribe(new CompetitionFragmentProviderPrizePoolObserver());
     }
 
     @Override protected void linkWith(@NonNull ProviderDTO providerDTO, boolean andDisplay)
@@ -361,12 +361,22 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    private Observer<Pair<ProviderId, CompetitionPreSeasonDTO>> createCompetitionPreseasonListCacheObserver()
+    protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
     {
-        return new CompetitionPreseasonCacheObserver();
+        this.providerDisplayCellDTOList = providerDisplayCellDTOList;
+        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
+        if (andDisplay)
+        {
+            displayListView();
+        }
     }
 
-    protected class CompetitionPreseasonCacheObserver implements Observer<Pair<ProviderId, CompetitionPreSeasonDTO>>
+    private Observer<Pair<ProviderId, CompetitionPreSeasonDTO>> createCompetitionPreSeasonListCacheObserver()
+    {
+        return new CompetitionPreSeasonCacheObserver();
+    }
+
+    protected class CompetitionPreSeasonCacheObserver implements Observer<Pair<ProviderId, CompetitionPreSeasonDTO>>
     {
 
         @Override public void onCompleted()
@@ -395,13 +405,26 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
     }
 
-    protected void linkWith(ProviderDisplayCellDTOList providerDisplayCellDTOList, boolean andDisplay)
+    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<ProviderPrizePoolDTO>
     {
-        this.providerDisplayCellDTOList = providerDisplayCellDTOList;
-        competitionZoneListItemAdapter.setDisplayCellDTOS(providerDisplayCellDTOList);
-        if (andDisplay)
+        @Override public void onNext(ProviderPrizePoolDTO dto)
         {
+            providerPrizePoolDTO = dto;
+            competitionZoneListItemAdapter.setPrizePoolDTO(providerPrizePoolDTO);
             displayListView();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            if (providerPrizePoolDTO == null)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            }
+            Timber.e(e, "Error fetching the provider info");
         }
     }
 
@@ -699,29 +722,6 @@ public class MainCompetitionFragment extends CompetitionFragment
         @Override protected Class<?> getClassToPop()
         {
             return MainCompetitionFragment.class;
-        }
-    }
-
-    protected class CompetitionFragmentProviderPrizePoolObserver implements Observer<ProviderPrizePoolDTO>
-    {
-        @Override public void onNext(ProviderPrizePoolDTO dto)
-        {
-            providerPrizePoolDTO = dto;
-            competitionZoneListItemAdapter.setPrizePoolDTO(providerPrizePoolDTO);
-            displayListView();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            if (providerPrizePoolDTO == null)
-            {
-                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
-            }
-            Timber.e("Error fetching the provider info", e);
         }
     }
 }

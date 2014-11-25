@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,7 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="@string/current_prize_pool"
+        android:text="@string/provider_current_prize_pool"
         android:layout_weight="1"
         />
 
@@ -48,6 +49,7 @@
         android:layout_weight="1"
         tools:text="S$ 15,000"
         />
+
   </LinearLayout>
 
   <LinearLayout
@@ -66,7 +68,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="@string/new_players_need"
+        android:text="@string/provider_prize_pool_new_players_need"
         android:layout_weight="0.5"
         />
 

@@ -10,7 +10,6 @@ import dagger.Module;
         injects = {
                 CompetitionWebViewFragment.class,
                 CompetitionEnrollmentWebViewFragment.class,
-                CompetitionZoneListItemAdapter.class,
                 CompetitionZoneListItemView.class,
                 CompetitionZoneLeaderboardListItemView.class,
                 CompetitionZonePortfolioView.class,

@@ -6,7 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -21,6 +21,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePrizePoolDTO;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView
@@ -29,7 +30,6 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     @InjectView(R.id.value) TextView value;
     @InjectView(R.id.text2) TextView text2;
     @InjectView(R.id.value2) TextView value2;
-    @InjectView(R.id.invite_friend) Button inviteFriendButton;
     @Inject Picasso picasso;
     @Inject DashboardNavigator navigator;
     private ProviderPrizePoolDTO providerPrizePoolDTO;
@@ -77,7 +77,7 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     {
         if (!(competitionZoneDTO instanceof CompetitionZonePrizePoolDTO))
         {
-            throw new IllegalArgumentException("Only accepts CompetitionZoneLegalDTO");
+            throw new IllegalArgumentException("Only accepts CompetitionZonePrizePoolDTO");
         }
         super.linkWith(competitionZoneDTO, andDisplay);
         providerPrizePoolDTO = ((CompetitionZonePrizePoolDTO) competitionZoneDTO).providerPrizePoolDTO;
@@ -88,35 +88,34 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
         }
     }
 
-    private void displayText() {
+    private void displayText()
+    {
         picasso.load(providerPrizePoolDTO.background)
                 .fit()
-                .into(background, new Callback() {
+                .into(background, new Callback()
+                {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess()
+                    {
                         setBackgroundColor(getResources().getColor(android.R.color.transparent));
                     }
 
                     @Override
-                    public void onError() {
+                    public void onError()
+                    {
                         setBackgroundColor(getResources().getColor(R.color.white));
                     }
                 });
         value.setText(providerPrizePoolDTO.current);
-        Spannable spannable = new SpannableString(getContext().getString(R.string.new_players_need, providerPrizePoolDTO.extra));
+        Spannable spannable = new SpannableString(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
         spannable.setSpan(new StyleSpan(Typeface.BOLD), spannable.length() - providerPrizePoolDTO.extra.length() - 2, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         text2.setText(spannable);
-        value2.setText(providerPrizePoolDTO.newPlayerNeeded);
+        value2.setText(THSignedNumber.builder(providerPrizePoolDTO.newPlayerNeeded).build().toString());
     }
 
-    //<editor-fold desc="Display Methods">
-    public void display()
-    {
-        displayText();
-    }
-
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.invite_friend)
-    public void clickInviteFriend()
+    public void inviteFriendClicked(View view)
     {
         pushInvitationFragment();
     }
@@ -125,7 +124,4 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     {
         navigator.pushFragment(FriendsInvitationFragment.class);
     }
-
-    //</editor-fold>
-
 }

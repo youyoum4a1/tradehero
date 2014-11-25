@@ -17,10 +17,8 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTOUtil;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
@@ -37,7 +35,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     private List<Integer> orderedTypes;
     private List<CompetitionZoneDTO> orderedItems;
 
-    @Inject protected CompetitionZoneDTOUtil competitionZoneDTOUtil;
+    @NonNull private final CompetitionZoneDTOUtil competitionZoneDTOUtil;
     private CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked;
 
     private UserProfileCompactDTO portfolioUserProfileCompactDTO;
@@ -50,6 +48,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     //<editor-fold desc="Constructors">
     public CompetitionZoneListItemAdapter(
             @NonNull Context context,
+            @NonNull CompetitionZoneDTOUtil competitionZoneDTOUtil,
             int zoneItemLayoutResId,
             int adsResId,
             int headerResId,
@@ -59,6 +58,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
             int legalResId)
     {
         super(context, zoneItemLayoutResId);
+        this.competitionZoneDTOUtil = competitionZoneDTOUtil;
 
         this.viewTypeToResId = new Integer[8];
         this.viewTypeToResId[ITEM_TYPE_ADS] = adsResId;
@@ -72,7 +72,6 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
 
         orderedTypes = new ArrayList<>();
         orderedItems = new ArrayList<>();
-        HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
 
@@ -104,6 +103,11 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public void setPrizePoolDTO(@Nullable ProviderPrizePoolDTO providerPrizePoolDTO)
     {
         this.providerPrizePoolDTO = providerPrizePoolDTO;
+    }
+
+    public void setPreseasonDTO(CompetitionPreSeasonDTO preSeasonDTO)
+    {
+        this.preSeasonDTO = preSeasonDTO;
     }
 
     @Override public void notifyDataSetChanged()
@@ -213,10 +217,5 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public void setParentOnLegalElementClicked(CompetitionZoneLegalMentionsView.OnElementClickedListener parentOnLegalElementClicked)
     {
         this.parentOnLegalElementClicked = parentOnLegalElementClicked;
-    }
-
-    public void setPreseasonDTO(CompetitionPreSeasonDTO preSeasonDTO)
-    {
-        this.preSeasonDTO = preSeasonDTO;
     }
 }
