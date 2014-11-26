@@ -273,6 +273,7 @@
   <string name="coming_soon">Coming soon!</string>
   <string name="articles">Articles</string>
   <string name="best_roi">ROI:</string>
+  <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>
   <string name="retry">Retry</string>
 </resources>

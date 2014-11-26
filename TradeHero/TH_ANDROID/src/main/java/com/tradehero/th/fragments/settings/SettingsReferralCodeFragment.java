@@ -120,6 +120,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        socialShareHelper.setMenuClickedListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -188,7 +189,6 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         return new SystemCacheObserver();
     }
 
-
     protected class SystemCacheObserver extends EmptyObserver<Pair<SystemStatusKey, SystemStatusDTO>>
     {
         @Override public void onNext(Pair<SystemStatusKey, SystemStatusDTO> args)
@@ -241,6 +241,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
         {
             // Nothing to do
+            THToast.show(R.string.content_sharing_started);
         }
 
         @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
@@ -251,6 +252,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO)
         {
             // Nothing to do?
+            THToast.show(R.string.content_shared);
         }
 
         @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
