@@ -22,10 +22,12 @@
       android:layout_height="wrap_content"
       android:layout_width="match_parent"
       >
+
     <ListView
+        android:id="@+id/leaderboard_mark_user_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/leaderboard_mark_user_listview"
+        android:paddingBottom="@dimen/dashboard_tabhost_height"
         android:cacheColorHint="#00000000"
         android:divider="#00000000"
         android:dividerHeight="1dip"
@@ -38,5 +40,7 @@
         android:listSelector="@color/transparent"
         tools:background="@color/red"
         />
+
   </android.support.v4.widget.SwipeRefreshLayout>
+
 </com.tradehero.common.widget.BetterViewAnimator>
