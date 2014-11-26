@@ -131,6 +131,7 @@ public class NotificationsView extends BetterViewAnimator
     @OnClick(R.id.readAllLayout)
     protected void onReadAllLayoutClicked()
     {
+        readAllLayout.setVisibility(View.GONE);
         reportNotificationReadAll();
     }
 
@@ -342,7 +343,7 @@ public class NotificationsView extends BetterViewAnimator
 
     private void setReadAllLayoutVisible()
     {
-        boolean haveUnread = true;
+        boolean haveUnread = false;
         int itemCount = notificationListAdapter.getCount();
         for (int i = 0; i < itemCount; i++)
         {
