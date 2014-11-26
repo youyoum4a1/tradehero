@@ -121,7 +121,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
-        createAdapter();
+        competitionZoneListItemAdapter = createAdapter();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -137,6 +137,8 @@ public class MainCompetitionFragment extends CompetitionFragment
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
+        competitionZoneListItemAdapter.setParentOnLegalElementClicked(this::handleItemClicked);
+        competitionZoneDTOUtil.randomiseAd();
     }
 
     //<editor-fold desc="ActionBar">
@@ -211,6 +213,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Override public void onDestroyView()
     {
         this.listView.setOnScrollListener(null);
+        this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -219,14 +222,13 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         this.webViewTHIntentPassedListener = null;
         this.competitionZoneListItemAdapter.clear();
-        this.competitionZoneListItemAdapter.setParentOnLegalElementClicked(null);
         this.competitionZoneListItemAdapter = null;
         super.onDestroy();
     }
 
-    protected void createAdapter()
+    protected CompetitionZoneListItemAdapter createAdapter()
     {
-        this.competitionZoneListItemAdapter = new CompetitionZoneListItemAdapter(
+        return new CompetitionZoneListItemAdapter(
                 getActivity(),
                 competitionZoneDTOUtil,
                 R.layout.competition_zone_item,
@@ -236,7 +238,6 @@ public class MainCompetitionFragment extends CompetitionFragment
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item,
                 R.layout.competition_zone_legal_mentions);
-        competitionZoneListItemAdapter.setParentOnLegalElementClicked(this::handleItemClicked);
     }
 
     private void fetchPrizePool()

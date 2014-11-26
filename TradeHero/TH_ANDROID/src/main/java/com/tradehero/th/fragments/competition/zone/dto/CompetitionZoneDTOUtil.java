@@ -23,13 +23,21 @@ public class CompetitionZoneDTOUtil
 {
     @NonNull private final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
 
+    private double randomAd;
+
     //<editor-fold desc="Constructors">
     @Inject public CompetitionZoneDTOUtil(@NonNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
     {
         super();
         this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
+        randomiseAd();
     }
     //</editor-fold>
+
+    public void randomiseAd()
+    {
+        randomAd = Math.random();
+    }
 
     public void populateLists(
             @NonNull Context context,
@@ -47,7 +55,7 @@ public class CompetitionZoneDTOUtil
             if (providerDTO.hasAdvertisement())
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
-                int randomAds = (int) (Math.random() * providerDTO.advertisements.size());
+                int randomAds = (int) (randomAd * providerDTO.advertisements.size());
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
                 preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(null, null, 0, pickedAdDTO));
             }
