@@ -131,7 +131,6 @@ public class NotificationsView extends BetterViewAnimator
     @OnClick(R.id.readAllLayout)
     protected void onReadAllLayoutClicked()
     {
-        readAllLayout.setVisibility(View.GONE);
         reportNotificationReadAll();
     }
 
@@ -226,6 +225,9 @@ public class NotificationsView extends BetterViewAnimator
                         currentUserId.toUserBaseKey())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(createMarkNotificationAsReadAllObserver()));
+
+        //Mark this locally as read, makes the user feels it's marked instantly for better experience
+        updateAllAsRead();
     }
 
     protected Observer<Pair<NotificationListKey, PaginatedNotificationDTO>> createNotificationFetchObserver()
@@ -309,10 +311,15 @@ public class NotificationsView extends BetterViewAnimator
         @Override public void onNext(BaseResponseDTO baseResponseDTO)
         {
             Timber.d("NotificationMarkAsReadAllCallback success");
-            setAllNotificationRead();
-            setReadAllLayoutVisible();
-            requestUpdateTabCounter();
+            updateAllAsRead();
         }
+    }
+
+    private void updateAllAsRead()
+    {
+        setAllNotificationRead();
+        setReadAllLayoutVisible();
+        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()

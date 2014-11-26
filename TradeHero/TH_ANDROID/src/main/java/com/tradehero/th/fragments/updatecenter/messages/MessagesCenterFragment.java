@@ -627,6 +627,9 @@ public class MessagesCenterFragment extends DashboardFragment
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))
                         .subscribe(createMessageAsReadAllObserver()));
+
+        //Mark this locally as read, makes the user feels it's marked instantly for better experience
+        updateAllAsRead();
     }
 
     @NonNull private Observer<BaseResponseDTO> createMessageAsReadObserver(MessageHeaderDTO messageHeaderDTO)
@@ -668,10 +671,15 @@ public class MessagesCenterFragment extends DashboardFragment
         @Override public void onNext(BaseResponseDTO args)
         {
             Timber.d("Message are reported as read all ");
-            setAllMessageRead();
-            setReadAllLayoutVisable();
-            requestUpdateTabCounter();
+            updateAllAsRead();
         }
+    }
+
+    private void updateAllAsRead()
+    {
+        setAllMessageRead();
+        setReadAllLayoutVisable();
+        requestUpdateTabCounter();
     }
 
     private void requestUpdateTabCounter()
@@ -732,14 +740,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         if (messagesView != null && messagesView.readAllLayout != null)
         {
-            messagesView.readAllLayout.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    view.setVisibility(View.GONE);
-                    reportMessageAllRead();
-                }
-            });
+            messagesView.readAllLayout.setOnClickListener(view -> reportMessageAllRead());
         }
     }
 
