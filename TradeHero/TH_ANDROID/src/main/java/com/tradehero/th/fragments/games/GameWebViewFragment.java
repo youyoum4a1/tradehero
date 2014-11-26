@@ -212,13 +212,14 @@ public class GameWebViewFragment extends BaseWebViewFragment
             }
             else
             {
-                gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level))
+                AndroidObservable.bindFragment(
+                        this,
+                        gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
                         .subscribe(new Observer<MiniGameScoreResponseDTO>()
                         {
                             @Override public void onNext(MiniGameScoreResponseDTO scoreResponse)
                             {
-                                Timber.d("Received %s", scoreResponse);
-                                THToast.show("Temp show score dialog");
+                                showScore(scoreResponse);
                             }
 
                             @Override public void onCompleted()
@@ -233,6 +234,14 @@ public class GameWebViewFragment extends BaseWebViewFragment
                         });
             }
         }
+    }
+
+    protected void showScore(@NonNull MiniGameScoreResponseDTO scoreResponse)
+    {
+        Timber.d("Received %s", scoreResponse);
+        MiniGameScoreDialogFragment dialog = MiniGameScoreDialogFragment.newInstance();
+        dialog.display(scoreResponse);
+        dialog.show(getActivity().getFragmentManager(), MiniGameScoreDialogFragment.class.getName());
     }
 
     protected void clearScore()

@@ -6,6 +6,7 @@ import dagger.Module;
         injects = {
                 GameWebViewFragment.class,
                 HowToPlayDialogFragment.class,
+                MiniGameScoreDialogFragment.class,
         },
         library = true,
         complete = false

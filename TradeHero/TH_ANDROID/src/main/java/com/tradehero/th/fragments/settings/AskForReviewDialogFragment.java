@@ -16,7 +16,7 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
 {
     @Inject MarketUtil marketUtil;
 
-    @NonNull public static AskForReviewDialogFragment showReviewDialog(FragmentManager fragmentManager)
+    @NonNull public static AskForReviewDialogFragment showReviewDialog(@NonNull FragmentManager fragmentManager)
     {
         AskForReviewDialogFragment dialogFragment = new AskForReviewDialogFragment();
         dialogFragment.show(fragmentManager, AskForReviewDialogFragment.class.getName());
