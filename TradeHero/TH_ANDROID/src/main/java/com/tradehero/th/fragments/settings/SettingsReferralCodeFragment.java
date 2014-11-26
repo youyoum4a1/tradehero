@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -27,7 +26,6 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
@@ -36,10 +34,9 @@ import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -100,9 +97,9 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         setActionBarTitle(R.string.settings_primary_referral_code);
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
         fetchProfile();
         fetchSystemStatus();
     }
@@ -127,31 +124,12 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void fetchProfile()
     {
-        if (profileCacheSubscription == null)
-        {
-            profileCacheSubscription = AndroidObservable.bindFragment(this,
-                    userProfileCache.get(currentUserId.toUserBaseKey()))
-                    .subscribe(createProfileCacheObserver());
-        }
-    }
-
-    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
-    {
-        return new SettingsReferralUserProfileObserver();
-    }
-
-    protected class SettingsReferralUserProfileObserver extends EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-            Timber.e("Failed to fetch profile info", e);
-        }
+        profileCacheSubscription = AndroidObservable.bindFragment(this,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        this::handleFetchUserProfileFailed);
     }
 
     protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
@@ -173,28 +151,21 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         }
     }
 
+    protected void handleFetchUserProfileFailed(@NonNull Throwable e)
+    {
+        THToast.show(R.string.error_fetch_your_user_profile);
+        Timber.e("Failed to fetch profile info", e);
+    }
+
     protected void fetchSystemStatus()
     {
-        if (systemStatusSubscription == null)
-        {
-            systemStatusSubscription = AndroidObservable.bindFragment(
-                    this,
-                    systemStatusCache.get(new SystemStatusKey()))
-                    .subscribe(createSystemStatusCacheObserver());
-        }
-    }
-
-    @NonNull protected Observer<Pair<SystemStatusKey, SystemStatusDTO>> createSystemStatusCacheObserver()
-    {
-        return new SystemCacheObserver();
-    }
-
-    protected class SystemCacheObserver extends EmptyObserver<Pair<SystemStatusKey, SystemStatusDTO>>
-    {
-        @Override public void onNext(Pair<SystemStatusKey, SystemStatusDTO> args)
-        {
-            linkWith(args.second);
-        }
+        systemStatusSubscription = AndroidObservable.bindFragment(
+                this,
+                systemStatusCache.get(new SystemStatusKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        Actions.empty());
     }
 
     protected void linkWith(@NonNull SystemStatusDTO statusDTO)
