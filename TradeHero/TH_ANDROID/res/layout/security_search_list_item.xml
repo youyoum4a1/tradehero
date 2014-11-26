@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="60dp"
-    android:padding="3dp"
     android:background="@drawable/listview_item_selector"
     >
 
   <TextView
+      android:layout_weight="3"
+      android:layout_marginLeft="15dp"
+      android:gravity="center_vertical"
+      android:singleLine="true"
+      android:maxLength="15"
+      android:ellipsize="end"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:id="@+id/tvSecurityExchange"
+      android:textSize="16sp"
+      android:textColor="@color/black"
+      android:layout_alignParentLeft="true"
+      android:text="SHA-600000"/>
+
+  <TextView
+      android:layout_weight="3"
       android:id="@+id/tvSecurityName"
       android:layout_marginLeft="15dp"
       android:gravity="center_vertical"
       android:singleLine="true"
       android:maxLength="15"
       android:ellipsize="end"
-      android:layout_width="wrap_content"
+      android:layout_toRightOf="@id/tvSecurityExchange"
+      android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:textSize="16sp"
       android:textColor="@color/black"
       android:text="京东"/>
 
   <TextView
-      android:layout_marginRight="15dp"
-      android:gravity="center_vertical|right"
+      android:gravity="center_vertical"
+      android:layout_weight="4"
+      android:layout_marginRight="10dp"
       android:layout_centerVertical="true"
       android:layout_alignParentRight="true"
-      android:layout_width="80dp"
-      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
       android:text="+10%"
       android:id="@+id/tvSecurityRate"/>
 
-  <TextView
-      android:layout_marginLeft="15dp"
-      android:gravity="center_vertical"
-      android:singleLine="true"
-      android:maxLength="15"
-      android:ellipsize="end"
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent"
-      android:id="@+id/tvSecurityExchange"
-      android:textSize="16sp"
-      android:textColor="@color/black"
-      android:layout_toRightOf="@id/tvSecurityName"
-      android:layout_toLeftOf="@id/tvSecurityRate"
-      android:text="SHA-600000"/>
 
-
-</RelativeLayout>
+</LinearLayout>
 

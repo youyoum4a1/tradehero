@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="72dp"
+    android:background="@drawable/listview_item_selector"
+    android:paddingLeft="10dp"
+    >
+
+
+  <ImageView
+      android:id="@+id/imgUserHead"
+      android:layout_toRightOf="@id/llRank"
+      android:layout_margin="5dp"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:scaleType="fitXY"
+      android:layout_centerVertical="true"
+      android:visibility="visible"
+      />
+
+  <TextView
+      android:id="@+id/tvUserName"
+      android:layout_height="wrap_content"
+      android:singleLine="true"
+      android:text="Durex"
+      android:textColor="@color/black"
+      android:layout_toRightOf="@id/imgUserHead"
+      android:layout_toLeftOf="@id/tvUserExtraValue"
+      android:textSize="18sp"
+      android:layout_centerVertical="true"
+      android:layout_width="wrap_content"/>
+
+
+  <TextView
+      android:id="@+id/tvUserExtraValue"
+      android:layout_width="80dp"
+      android:layout_height="wrap_content"
+      android:textColor="@color/text_gray_normal"
+      android:layout_centerVertical="true"
+      android:layout_alignParentRight="true"
+      android:text=" - -"
+      android:textSize="14sp"/>
+
+
+  <!--<TextView-->
+      <!--android:id="@+id/tvUserExtraTitle"-->
+      <!--android:layout_toLeftOf="@id/tvUserExtraValue"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:textColor="@color/text_gray_normal"-->
+      <!--android:layout_centerVertical="true"-->
+      <!--android:text=""-->
+      <!--android:textSize="14sp"/>-->
+
+
+</RelativeLayout>
+

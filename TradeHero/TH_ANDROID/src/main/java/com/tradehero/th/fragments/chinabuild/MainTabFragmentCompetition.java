@@ -18,14 +18,13 @@ import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionAllFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionCreateFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionMineFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionSearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.search.SearchUniteFragment;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-import timber.log.Timber;
-
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class MainTabFragmentCompetition extends AbsBaseFragment
 {
@@ -78,8 +77,8 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     public void CompetitionSearchClicked()
     {
         Timber.d("CompetitionSearchClicked!");
-        gotoDashboard(CompetitionSearchFragment.class.getName());
-
+        //gotoDashboard(CompetitionSearchFragment.class.getName());
+        gotoDashboard(SearchUniteFragment.class.getName());
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED,AnalyticsConstants.BUTTON_COMPETITION_DETAIL_SEARCH));
     }
 

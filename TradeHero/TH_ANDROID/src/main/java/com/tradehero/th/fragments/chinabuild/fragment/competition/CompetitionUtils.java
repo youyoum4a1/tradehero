@@ -28,7 +28,7 @@ public class CompetitionUtils
                     "二个周",
                     "一个月",
                     "二个月",
-                    "三个周",
+                    "三个月",
             };
 
     public static final int[] strDuration =
