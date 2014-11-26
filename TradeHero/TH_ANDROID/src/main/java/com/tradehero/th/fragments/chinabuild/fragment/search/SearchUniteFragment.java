@@ -73,6 +73,9 @@ import timber.log.Timber;
  */
 public class SearchUniteFragment extends DashboardFragment
 {
+
+    public static final String BUNDLE_DEFAULT_TAB_PAGE = "bundle_default_tab_page";
+
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserServiceWrapper userServiceWrapper;
@@ -118,10 +121,13 @@ public class SearchUniteFragment extends DashboardFragment
     public CompetitionListAdapter adapterCompetition;
     public SearchUserListAdapter adapterUser;
 
+    boolean isFristLunch;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        isFristLunch = true;
         securityListTypeCacheListener = createSecurityListFetchListener();
         securityListTypeHotCacheListener = createSecurityListFetchListener();
 
@@ -544,9 +550,6 @@ public class SearchUniteFragment extends DashboardFragment
             @Override public void onPageSelected(int i)
             {
                 setSelectTabView(i);
-
-
-
             }
 
             @Override public void onPageScrollStateChanged(int i)
@@ -555,6 +558,14 @@ public class SearchUniteFragment extends DashboardFragment
             }
         });
         getRecommandData();
+
+
+        if (isFristLunch && getArguments() != null)
+        {
+            int index = getArguments().getInt(BUNDLE_DEFAULT_TAB_PAGE,0);
+            pager.setCurrentItem(tabSelect = index);
+            isFristLunch = false;
+        }
     }
 
     public void getRecommandData()
@@ -621,29 +632,29 @@ public class SearchUniteFragment extends DashboardFragment
 
     public AdapterView.OnItemClickListener competitionItemClickListner =
             new AdapterView.OnItemClickListener()
-    {
-        @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-        {
-            CompetitionInterface item = adapterCompetition.getItem((int) position);
-            if (item instanceof CompetitionDataItem)
             {
-                gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
-            }
-        }
-    };
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
+                {
+                    CompetitionInterface item = adapterCompetition.getItem((int) position);
+                    if (item instanceof CompetitionDataItem)
+                    {
+                        gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
+                    }
+                }
+            };
 
     public AdapterView.OnItemClickListener userItemClickListner =
-    new AdapterView.OnItemClickListener()
-    {
-        @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-        {
-            UserSearchResultDTO item = adapterUser.getItem((int) position);
-            if (item instanceof UserSearchResultDTO)
+            new AdapterView.OnItemClickListener()
             {
-                gotoUserDetailFragment(((UserSearchResultDTO) item).userId);
-            }
-        }
-    };
+                @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
+                {
+                    UserSearchResultDTO item = adapterUser.getItem((int) position);
+                    if (item instanceof UserSearchResultDTO)
+                    {
+                        gotoUserDetailFragment(((UserSearchResultDTO) item).userId);
+                    }
+                }
+            };
 
     public void initRootViewTab0(View view)
     {
@@ -724,7 +735,6 @@ public class SearchUniteFragment extends DashboardFragment
         listUser.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
         listUser.setOnItemClickListener(userItemClickListner);
-
 
         listUser.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
         {
