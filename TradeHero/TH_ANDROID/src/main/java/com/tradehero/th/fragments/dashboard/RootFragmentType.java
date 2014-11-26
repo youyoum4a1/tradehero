@@ -47,7 +47,7 @@ public enum RootFragmentType
     STORE(R.layout.residemenu_item_store,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class, AnalyticsConstants.TabBar_Store),
-    FRIEND_REFERRAL(R.layout.tab_indicator_holo,
+    FRIEND_REFERRAL(R.layout.residemenu_item_refererral,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
             R.drawable.icn_menu_referral, FriendsInvitationFragment.class, AnalyticsConstants.TabBar_FriendReferral),
     SETTING(R.layout.residemenu_item_settings,
@@ -93,7 +93,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, STORE, FRIEND_REFERRAL, SETTING
+                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, FRIEND_REFERRAL, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);
