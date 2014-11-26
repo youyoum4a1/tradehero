@@ -45,8 +45,8 @@ public class CompetitionZoneDTOUtil
             @Nullable ProviderDTO providerDTO,
             @Nullable List<CompetitionDTO> competitionDTOs,
             @Nullable List<ProviderDisplayCellDTO> providerDisplayCellDTOs,
-            CompetitionPreSeasonDTO preSeasonDTO,
-            @Nullable ProviderPrizePoolDTO providerPrizePoolDTO,
+            @Nullable List<CompetitionPreSeasonDTO> preSeasonDTOs,
+            @Nullable List<ProviderPrizePoolDTO> providerPrizePoolDTOs,
             @NonNull List<Integer> preparedOrderedTypes,
             @NonNull List<CompetitionZoneDTO> preparedOrderedItems)
     {
@@ -64,10 +64,18 @@ public class CompetitionZoneDTOUtil
             preparedOrderedItems.add(new CompetitionZoneDTO(providerDTO.ruleText, null));
 
             //prize pool
-            if (providerPrizePoolDTO != null)
+            if (providerPrizePoolDTOs == null)
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
-                preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(providerPrizePoolDTO));
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
+                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
+            }
+            else if (!providerPrizePoolDTOs.isEmpty())
+            {
+                for (ProviderPrizePoolDTO poolDTO : providerPrizePoolDTOs)
+                {
+                    preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PRIZE_POOL);
+                    preparedOrderedItems.add(new CompetitionZonePrizePoolDTO(poolDTO));
+                }
 
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);
                 preparedOrderedItems.add(new CompetitionZoneDTO(null, null));
@@ -89,10 +97,18 @@ public class CompetitionZoneDTOUtil
                 preparedOrderedItems.add(new CompetitionZoneVideoDTO(providerDTO.helpVideoText, null));
             }
 
-            if (preSeasonDTO != null)
+            if (preSeasonDTOs == null)
             {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-                preparedOrderedItems.add(new CompetitionZonePreSeasonDTO(preSeasonDTO));
+                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
+                preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
+            }
+            else
+            {
+                for (CompetitionPreSeasonDTO preSeasonDTO : preSeasonDTOs)
+                {
+                    preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
+                    preparedOrderedItems.add(new CompetitionZonePreSeasonDTO(preSeasonDTO));
+                }
             }
 
             if (providerDisplayCellDTOs != null)

@@ -9,7 +9,6 @@ import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
@@ -30,7 +29,6 @@ abstract public class CompetitionFragment extends BasePurchaseManagerFragment
     @InjectRoute protected ProviderId providerId;
     @Nullable private Subscription providerCacheSubscription;
     protected ProviderDTO providerDTO;
-    protected ProviderPrizePoolDTO providerPrizePoolDTO;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {

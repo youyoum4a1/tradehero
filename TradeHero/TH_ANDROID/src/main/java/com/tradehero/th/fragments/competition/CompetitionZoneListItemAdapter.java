@@ -40,10 +40,10 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
 
     private UserProfileCompactDTO portfolioUserProfileCompactDTO;
     private ProviderDTO providerDTO;
-    private List<CompetitionDTO> competitionDTOs;
-    private List<ProviderDisplayCellDTO> providerDisplayCellDTOs;
-    private CompetitionPreSeasonDTO preSeasonDTO;
-    private ProviderPrizePoolDTO providerPrizePoolDTO;
+    @Nullable private List<CompetitionDTO> competitionDTOs;
+    @Nullable private List<ProviderDisplayCellDTO> providerDisplayCellDTOs;
+    @Nullable private List<CompetitionPreSeasonDTO> preSeasonDTOs;
+    @Nullable private List<ProviderPrizePoolDTO> providerPrizePoolDTOs;
 
     //<editor-fold desc="Constructors">
     public CompetitionZoneListItemAdapter(
@@ -90,7 +90,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.providerDTO = providerDTO;
     }
 
-    public void setCompetitionDTOs(List<CompetitionDTO> competitionDTOs)
+    public void setCompetitionDTOs(@Nullable List<CompetitionDTO> competitionDTOs)
     {
         this.competitionDTOs = competitionDTOs;
     }
@@ -100,14 +100,14 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.providerDisplayCellDTOs = providerDisplayCellDTOList;
     }
 
-    public void setPrizePoolDTO(@Nullable ProviderPrizePoolDTO providerPrizePoolDTO)
+    public void setPrizePoolDTO(@Nullable List<ProviderPrizePoolDTO> providerPrizePoolDTOs)
     {
-        this.providerPrizePoolDTO = providerPrizePoolDTO;
+        this.providerPrizePoolDTOs = providerPrizePoolDTOs;
     }
 
-    public void setPreseasonDTO(CompetitionPreSeasonDTO preSeasonDTO)
+    public void setPreseasonDTO(@Nullable List<CompetitionPreSeasonDTO> preSeasonDTOs)
     {
-        this.preSeasonDTO = preSeasonDTO;
+        this.preSeasonDTOs = preSeasonDTOs;
     }
 
     @Override public void notifyDataSetChanged()
@@ -129,8 +129,8 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
                     providerDTO,
                     competitionDTOs,
                     providerDisplayCellDTOs,
-                    preSeasonDTO,
-                    providerPrizePoolDTO,
+                    preSeasonDTOs,
+                    providerPrizePoolDTOs,
                     preparedOrderedTypes,
                     preparedOrderedItems);
 
