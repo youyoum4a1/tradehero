@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -263,6 +264,12 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         {
             viewFlipper.setDisplayedChild(index);
         }
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        unsubscribe(shareSubscription);
+        super.onDismiss(dialog);
     }
 
     private void linkAndShowLogo(ProviderDTO providerDTO)
