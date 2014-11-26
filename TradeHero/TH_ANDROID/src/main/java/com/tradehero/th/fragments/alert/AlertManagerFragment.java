@@ -20,7 +20,6 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -50,7 +49,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     protected BaseListHeaderView footerView;
 
     @Inject protected AlertCompactListCacheRx alertCompactListCache;
-    @Inject protected CurrentUserId currentUserId;
     @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 

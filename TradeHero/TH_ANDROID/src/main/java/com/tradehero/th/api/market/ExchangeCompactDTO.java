@@ -161,4 +161,11 @@ public class ExchangeCompactDTO implements DTO
         }
         return name.equals(((ExchangeDTO) other).name);
     }
+
+    /** Since equals methods does not use hashCode (rule: 2 objects that equal --> same hashCode) */
+    @Override public int hashCode()
+    {
+        assert false: "hashCode not designed";
+        return 42;
+    }
 }

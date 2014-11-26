@@ -3,7 +3,6 @@ package com.tradehero.th.api.notification;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.pagination.PaginatedKey;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PaginatedNotificationListKey extends NotificationListKey
@@ -60,6 +59,11 @@ public class PaginatedNotificationListKey extends NotificationListKey
         return pagedOther.page == page && pagedOther.perPage == perPage;
     }
 
+    @Override public int hashCode()
+    {
+        return (page * 31) + perPage;
+    }
+
     //<editor-fold desc="PaginatedKey">
     @Override public Integer getPage()
     {
@@ -94,10 +98,6 @@ public class PaginatedNotificationListKey extends NotificationListKey
     @Override public Map<String, Object> toMap()
     {
         Map<String, Object> generatedMap = super.toMap();
-        if (generatedMap == null)
-        {
-            generatedMap = new HashMap<>();
-        }
 
         generatedMap.put(PaginatedKey.JSON_PAGE, page);
         generatedMap.put(PaginatedKey.JSON_PERPAGE, DEFAULT_PER_PAGE);
