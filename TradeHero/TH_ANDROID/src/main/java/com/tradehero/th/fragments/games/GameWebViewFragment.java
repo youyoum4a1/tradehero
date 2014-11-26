@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.games;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +28,6 @@ import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -59,6 +58,8 @@ public class GameWebViewFragment extends BaseWebViewFragment
     @Nullable Subscription miniGameDefSubscription;
     protected MiniGameDefDTO miniGameDefDTO;
     protected boolean showedHowToPlay = false;
+    @Nullable Subscription scoreSubmitSubscription;
+    @Nullable Subscription scoreWindowSubscription;
 
     public static void putUrl(@NonNull Bundle args, @NonNull MiniGameDefDTO miniGameDefDTO, @NonNull UserBaseKey userBaseKey)
     {
@@ -132,6 +133,10 @@ public class GameWebViewFragment extends BaseWebViewFragment
     {
         unsubscribe(miniGameDefSubscription);
         miniGameDefSubscription = null;
+        unsubscribe(scoreSubmitSubscription);
+        scoreSubmitSubscription = null;
+        unsubscribe(scoreWindowSubscription);
+        scoreWindowSubscription = null;
         super.onStop();
     }
 
@@ -150,28 +155,10 @@ public class GameWebViewFragment extends BaseWebViewFragment
         miniGameDefSubscription = AndroidObservable.bindFragment(
                 this,
                 miniGameDefCache.get(miniGameDefKey))
-                .subscribe(createMiniGameDefObserver());
-    }
-
-    @NonNull protected Observer<Pair<MiniGameDefKey, MiniGameDefDTO>> createMiniGameDefObserver()
-    {
-        return new MiniGameDefObserver();
-    }
-
-    protected class MiniGameDefObserver implements Observer<Pair<MiniGameDefKey, MiniGameDefDTO>>
-    {
-        @Override public void onNext(Pair<MiniGameDefKey, MiniGameDefDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-        }
+                .map(pair -> pair.second)
+                .subscribe(
+                        this::linkWith,
+                        this::handleFailedDef);
     }
 
     protected void linkWith(@NonNull MiniGameDefDTO miniGameDefDTO)
@@ -182,6 +169,11 @@ public class GameWebViewFragment extends BaseWebViewFragment
         {
             displayHowToPlay();
         }
+    }
+
+    protected void handleFailedDef(@NonNull Throwable e)
+    {
+        Timber.e(e, "Failed to get %s", miniGameDefKey);
     }
 
     protected void displayName()
@@ -212,26 +204,14 @@ public class GameWebViewFragment extends BaseWebViewFragment
             }
             else
             {
-                AndroidObservable.bindFragment(
+                unsubscribe(scoreSubmitSubscription);
+                scoreSubmitSubscription = AndroidObservable.bindFragment(
                         this,
                         gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
-                        .subscribe(new Observer<MiniGameScoreResponseDTO>()
-                        {
-                            @Override public void onNext(MiniGameScoreResponseDTO scoreResponse)
-                            {
-                                showScore(scoreResponse);
-                            }
-
-                            @Override public void onCompleted()
-                            {
-                                clearScore();
-                            }
-
-                            @Override public void onError(Throwable e)
-                            {
-                                Timber.e(e, "Failed to report score");
-                            }
-                        });
+                        .subscribe(
+                                this::showScore,
+                                this::showFailedReportScore,
+                                this::clearScore);
             }
         }
     }
@@ -240,8 +220,32 @@ public class GameWebViewFragment extends BaseWebViewFragment
     {
         Timber.d("Received %s", scoreResponse);
         MiniGameScoreDialogFragment dialog = MiniGameScoreDialogFragment.newInstance();
+        unsubscribe(scoreWindowSubscription);
+        scoreWindowSubscription = dialog.getButtonClickedObservable().subscribe(
+                this::handleScoreWindowClicked,
+                this::handleScoreWindowError);
         dialog.display(scoreResponse);
         dialog.show(getActivity().getFragmentManager(), MiniGameScoreDialogFragment.class.getName());
+    }
+
+    protected void handleScoreWindowClicked(@NonNull @IdRes Integer buttonId)
+    {
+        switch (buttonId)
+        {
+            case MiniGameScoreDialogFragment.PLAY_AGAIN_BUTTON_ID:
+                loadUrl(getLoadingUrl());
+                break;
+        }
+    }
+
+    protected void handleScoreWindowError(@NonNull Throwable e)
+    {
+        Timber.e(e, "Error from score window");
+    }
+
+    protected void showFailedReportScore(@NonNull Throwable e)
+    {
+        Timber.e(e, "Failed to report score");
     }
 
     protected void clearScore()

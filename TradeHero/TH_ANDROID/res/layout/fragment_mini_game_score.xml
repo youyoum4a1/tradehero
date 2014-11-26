@@ -17,7 +17,9 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_large"
         android:layout_alignParentTop="true"
+        tools:src="@drawable/lb_friends_bg"
         />
 
     <LinearLayout
@@ -26,12 +28,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/banner"
         android:gravity="center_horizontal"
+        android:showDividers="middle"
+        android:dividerPadding="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/margin_xsmall"
         >
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/game_score_header"
+          style="@style/TH.Title"
           />
 
       <TextView
@@ -39,6 +45,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="1,300"
+          android:textStyle="bold"
+          style="@style/TH.Title"
           />
 
     </LinearLayout>
@@ -49,12 +57,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/score_wrapper"
         android:gravity="center_horizontal"
+        android:showDividers="middle"
+        android:dividerPadding="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/margin_small"
         >
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/game_reward_header"
+          style="@style/TH.Title"
           />
 
       <TextView
@@ -63,6 +75,7 @@
           android:layout_height="wrap_content"
           tools:text="100,000 TH Dollars"
           android:textStyle="bold"
+          style="@style/TH.Title"
           />
 
     </LinearLayout>
@@ -70,7 +83,7 @@
     <TextView
         android:id="@android:id/button1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="@dimen/margin_small"
         android:layout_alignParentBottom="true"
         style="@style/TH.Button.Inverse"
@@ -78,12 +91,14 @@
         android:text="@string/game_play_again"
         />
 
-    <TextView
+    <android.webkit.WebView
         android:id="@+id/description"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/reward_wrapper"
         android:layout_above="@android:id/button1"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
         />
 
     <ImageView
