@@ -14,6 +14,7 @@ import android.widget.ViewFlipper;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
@@ -48,8 +49,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     private static final int CONTENT_VIEW_INDEX = 0;
     private static final int LOADING_VIEW_INDEX = 1;
     private static final int ERROR_VIEW_INDEX = 2;
-    private static final int SHARED_SUCCESFUL_VIEW_INDEX = 3;
-    private static final int SHARED_ERROR_VIEW_INDEX = 4;
+    private static final int SHARED_ERROR_VIEW_INDEX = 3;
 
     @Inject Picasso picasso;
     @Inject ProviderCacheRx providerCacheRx;
@@ -248,7 +248,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void showShareSuccess()
     {
-        showViewAtIndex(SHARED_SUCCESFUL_VIEW_INDEX);
+        getDialog().dismiss();
+        THToast.show(R.string.content_shared);
     }
 
     private void showShareFailed()
