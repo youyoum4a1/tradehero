@@ -65,6 +65,7 @@ import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -326,6 +327,12 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     protected void handleFetchPreSeasonFailed(@NonNull Throwable e)
     {
+        if (this.competitionPreSeasonDTOs == null)
+        {
+            this.competitionPreSeasonDTOs = new ArrayList<>();
+            competitionZoneListItemAdapter.setPreseasonDTO(competitionPreSeasonDTOs);
+            displayListView();
+        }
         Timber.e(e, "Failed fetching preseason for %s", providerId);
     }
 
