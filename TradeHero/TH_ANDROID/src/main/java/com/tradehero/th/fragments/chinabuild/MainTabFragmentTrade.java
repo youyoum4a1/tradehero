@@ -15,7 +15,7 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.search.SearchFragment;
+import com.tradehero.th.fragments.chinabuild.fragment.search.SearchUniteFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.trade.TradeOfMineFragment;
@@ -70,7 +70,7 @@ public class MainTabFragmentTrade extends AbsBaseFragment implements ViewPager.O
     public void onSearchClicked()
     {
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.TRADE_PAGE_SEARCH));
-        gotoDashboard(SearchFragment.class.getName());
+        gotoDashboard(SearchUniteFragment.class.getName());
     }
 
     @Override public void onStop()
