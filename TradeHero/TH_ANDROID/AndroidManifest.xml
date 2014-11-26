@@ -155,25 +155,6 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
     </activity>
 
-    <!-- Samsung IAP
-    <activity
-        android:name="com.sec.android.iap.lib.activity.InboxActivity"
-        android:theme="@style/Theme.Empty"
-        android:configChanges="orientation|screenSize"/>
-    <activity
-        android:name="com.sec.android.iap.lib.activity.PaymentActivity"
-        android:theme="@style/Theme.Empty"
-        android:configChanges="orientation|screenSize"/>
-    <activity
-        android:name="com.sec.android.iap.lib.activity.ItemActivity"
-        android:theme="@style/Theme.Empty"
-        android:configChanges="orientation|screenSize"/>
-    -->
-
-
-
-
-
 
     <receiver android:name="com.tradehero.th.models.push.baidu.BaiduIntentReceiver">
       <intent-filter>
