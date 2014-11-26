@@ -145,7 +145,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         }
         else
         {
-            showShareSuccess();
+            dismiss();
         }
     }
 
@@ -249,8 +249,8 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void showShareSuccess()
     {
-        getDialog().dismiss();
         THToast.show(R.string.content_shared);
+        dismiss();
     }
 
     private void showShareFailed()
