@@ -115,8 +115,8 @@ public class WeChatDTOFactory
     protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull ReferralCodeDTO referralCodeDTO)
     {
         weChatDTO.id = 0;
-        weChatDTO.type = WeChatMessageType.Invite;
-        weChatDTO.title = context.getString(WeChatMessageType.Invite.getTitleResId(), referralCodeDTO.referralCode);
+        weChatDTO.type = WeChatMessageType.Referral;
+        weChatDTO.title = context.getString(R.string.share_to_wechat_invite_friends, referralCodeDTO.referralCode);
     }
 
     @NonNull public WeChatDTO createFrom(@NonNull CompetitionPreSeasonDTO preSeasonDTO)

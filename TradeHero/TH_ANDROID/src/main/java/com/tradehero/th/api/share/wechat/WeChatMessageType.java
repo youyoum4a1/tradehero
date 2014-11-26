@@ -12,7 +12,8 @@ public enum WeChatMessageType
     Invite(6, R.string.share_to_wechat_invite_friends),
     Achievement(7, R.string.share_to_wechat_achievement),
     QuestBonus(8, R.string.share_to_wechat_quest_bonus),
-    PreSeason(9, R.string.share_to_wechat_preseason);
+    PreSeason(9, R.string.share_to_wechat_preseason),
+    Referral(10, R.string.share_to_wechat_referral);
 
     private final int value;
     private final int titleResId;
