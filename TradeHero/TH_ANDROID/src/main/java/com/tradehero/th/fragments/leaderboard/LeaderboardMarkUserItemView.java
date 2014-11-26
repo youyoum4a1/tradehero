@@ -40,7 +40,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
@@ -83,26 +82,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
 
     // expanding view
-    @InjectView(R.id.lbmu_pl) TextView lbmuPl;
-    @InjectView(R.id.leaderboard_user_item_hq) TextView lbmuHeroQuotient;
-    @InjectView(R.id.lbmu_comments_count) TextView lbmuCommentsCount;
-    @InjectView(R.id.lbmu_benchmark_roi) TextView lbmuBenchmarkRoi;
-    @InjectView(R.id.lbmu_sharpe_ratio) TextView lbmuSharpeRatio;
-    @InjectView(R.id.lbmu_positions_count) TextView lbmuPositionsCount;
-    @InjectView(R.id.lbmu_avg_days_held) TextView lbmuAvgDaysHeld;
-    @InjectView(R.id.lbmu_followers_count) TextView lbmuFollowersCount;
+    @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
-    @InjectView(R.id.lbmu_win_ratio) TextView lbmuWinRatio;
-    @InjectView(R.id.lbmu_volatility) TextView lbmuVolatility;
-    @InjectView(R.id.lbmu_number_of_trades) TextView lbmuNumberOfTrades;
-    @InjectView(R.id.lbmu_period) TextView lbmuPeriod;
     @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
-    @InjectView(R.id.lbmu_number_trades_in_period) @Optional @Nullable TextView lbmuNumberTradesInPeriod;
     @InjectView(R.id.leaderboard_user_item_follow) @Optional @Nullable View lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) @Optional @Nullable View lbmuFollowingUser;
-
-    @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
+
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
 
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
@@ -251,8 +237,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
             lbmuPosition.setText("" + (leaderboardItem.getPosition() + 1));
         }
 
-        lbmuHeroQuotient.setText(leaderboardItem.getHeroQuotientFormatted());
-
         if (lbmuFoF != null)
         {
             lbmuFoF.setVisibility(
@@ -320,20 +304,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
     }
 
-    private void displayExpandableSection()
+    protected void displayExpandableSection()
     {
-        // display P&L
-        displayLbmuPl();
-
-        // display period
-        String periodFormat = getContext().getString(R.string.leaderboard_ranking_period);
-        SimpleDateFormat sdf =
-                new SimpleDateFormat(getContext().getString(R.string.leaderboard_datetime_format));
-        String formattedStartPeriodUtc = sdf.format(leaderboardItem.periodStartUtc);
-        String formattedEndPeriodUtc = sdf.format(leaderboardItem.periodEndUtc);
-        String period = String.format(periodFormat, formattedStartPeriodUtc, formattedEndPeriodUtc);
-        lbmuPeriod.setText(period);
-
         // display Roi
         THSignedNumber roi = THSignedPercentage
                 .builder(leaderboardItem.roiInPeriod * 100)
@@ -354,74 +326,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
-
-        // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage
-                .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
-                .withSign()
-                .signTypeArrow()
-                .relevantDigitCount(3)
-                .build();
-        String benchmarkRoiInPeriodFormat =
-                getContext().getString(R.string.leaderboard_benchmark_roi_format);
-        String benchmarkRoiInPeriod =
-                String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
-        lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
-
-        // sharpe ratio
-        if (leaderboardItem.sharpeRatioInPeriodVsSP500 != null)
-        {
-            lbmuSharpeRatio.setText(THSignedNumber
-                    .builder(leaderboardItem.sharpeRatioInPeriodVsSP500)
-                    .build()
-                    .toString());
-        }
-        else
-        {
-            lbmuSharpeRatio.setText("0");
-        }
-
-        // volatility
-        String volatility = getContext().getString(R.string.leaderboard_volatility, leaderboardItem.getVolatility());
-        lbmuVolatility.setText(Html.fromHtml(volatility));
-
-        // number of positions holding
-        lbmuPositionsCount.setText("" + leaderboardItem.numberOfPositionsInPeriod);
-
-        // number of trades
-        String numberOfTradeFormat = getContext().getString(
-                leaderboardItem.getNumberOfTrades() > 1
-                        ? R.string.leaderboard_number_of_trades_plural
-                        : R.string.leaderboard_number_of_trade);
-        String numberOfTrades =
-                String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
-        lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
-
-        // Number of trades in Period
-        if (lbmuNumberTradesInPeriod != null)
-        {
-            lbmuNumberTradesInPeriod.setText(THSignedNumber
-                    .builder(leaderboardItem.numberOfTradesInPeriod)
-                    .build().toString());
-        }
-
-        // average days held
-        lbmuAvgDaysHeld.setText(THSignedNumber
-                .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
-                .relevantDigitCount(3)
-                .build().toString());
-        lbmuWinRatio.setText(THSignedPercentage
-                .builder(leaderboardItem.getWinRatio() * 100)
-                .relevantDigitCount(3)
-                .build().toString());
-
-        // followers & comments count
-        lbmuFollowersCount.setText(THSignedNumber
-                .builder(leaderboardItem.getTotalFollowersCount())
-                .build().toString());
-        lbmuCommentsCount.setText(THSignedNumber
-                .builder(leaderboardItem.getCommentsCount())
-                .build().toString());
     }
 
     @Override public void onExpand(boolean expand)
@@ -437,19 +341,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
                 userStatisticView.display(null);
                 Timber.d("clearExpandAnimation");
             }
-        }
-    }
-
-    protected void displayLbmuPl()
-    {
-        if (lbmuPl != null && leaderboardItem != null)
-        {
-            THSignedNumber formattedNumber = THSignedMoney
-                    .builder(leaderboardItem.PLinPeriodRefCcy)
-                    .withOutSign()
-                    .currency(getLbmuPlCurrencyDisplay())
-                    .build();
-            lbmuPl.setText(formattedNumber.toString());
         }
     }
 
@@ -491,7 +382,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_open_profile)
-    protected void handleProfileClicked()
+    protected void handleProfileClicked(View view)
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
         handleOpenProfileButtonClicked();
@@ -499,7 +390,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_open_positions_list)
-    protected void handlePositionButtonClicked()
+    protected void handlePositionButtonClicked(View view)
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
         handleOpenPositionListClicked();
@@ -507,7 +398,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_follow)
-    protected void handleFollowButtonClicked()
+    protected void handleFollowButtonClicked(View view)
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
         follow(leaderboardItem);
@@ -515,7 +406,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.leaderboard_user_item_profile_picture)
-    protected void handleUserIconClicked()
+    protected void handleUserIconClicked(View view)
     {
         handleOpenProfileButtonClicked();
     }

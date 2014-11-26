@@ -271,32 +271,22 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
         competitionLeaderboardSubscription = AndroidObservable.bindFragment(
                 this,
-                competitionLeaderboardCache.get(key))
-                .subscribe(createCompetitionLeaderboardObserver());
+                competitionLeaderboardCache.get(key)
+                        .map(pair -> pair.second))
+                .subscribe(this::linkWith,
+                        this::handleFetchCompetitionLeaderboardFailed);
     }
 
-    protected Observer<Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>> createCompetitionLeaderboardObserver()
+    protected void linkWith(@NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
     {
-        return new CompetitionLeaderboardObserver();
+        this.competitionLeaderboardDTO = competitionLeaderboardDTO;
+        setupCompetitionAdapter();
+        updateCurrentRankHeaderViewWithLeaderboard();
     }
 
-    protected class CompetitionLeaderboardObserver implements Observer<Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>>
+    protected void handleFetchCompetitionLeaderboardFailed(@NonNull Throwable e)
     {
-        @Override public void onNext(Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> pair)
-        {
-            competitionLeaderboardDTO = pair.second;
-            setupCompetitionAdapter();
-            updateCurrentRankHeaderViewWithLeaderboard();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.d("ProviderPrizeAdsCallBack failure!");
-        }
+        Timber.d("ProviderPrizeAdsCallBack failure!");
     }
 
     @Override @LayoutRes protected int getCurrentRankLayoutResId()
@@ -304,7 +294,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         return R.layout.lbmu_item_own_ranking_competition_mode;
     }
 
-    @Override protected void setupOwnRankingView(View userRankingHeaderView)
+    @Override protected void setupOwnRankingView(@NonNull View userRankingHeaderView)
     {
         if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserItemView)
         {
