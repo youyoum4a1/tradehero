@@ -1,6 +1,10 @@
 package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -103,7 +107,12 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
                     }
                 });
         value.setText(providerPrizePoolDTO.current);
-        text2.setText(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
+        Spannable spannable = new SpannableString(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
+        if (spannable.length() - providerPrizePoolDTO.extra.length() - 2 > 0)
+        {
+            spannable.setSpan(new StyleSpan(Typeface.BOLD), spannable.length() - providerPrizePoolDTO.extra.length() - 2, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        text2.setText(spannable);
         value2.setText(THSignedNumber.builder(providerPrizePoolDTO.newPlayerNeeded).build().toString());
     }
 
