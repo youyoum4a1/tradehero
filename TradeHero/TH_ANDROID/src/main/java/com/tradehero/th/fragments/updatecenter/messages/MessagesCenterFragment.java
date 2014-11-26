@@ -618,20 +618,6 @@ public class MessagesCenterFragment extends DashboardFragment
         }
     }
 
-    private void reportMessageRead(@NonNull MessageHeaderDTO messageHeaderDTO)
-    {
-        listSubscriptions.add(
-                AndroidObservable.bindFragment(
-                        this,
-                        messageServiceWrapper.get().readMessageRx(
-                                messageHeaderDTO.getDTOKey(),
-                                messageHeaderDTO.getSenderId(),
-                                messageHeaderDTO.getRecipientId(),
-                                messageHeaderDTO.getDTOKey(),
-                                currentUserId.toUserBaseKey()))
-                        .subscribe(createMessageAsReadObserver(messageHeaderDTO)));
-    }
-
     private void reportMessageAllRead()
     {
         Timber.d("reportMessageAllRead...");
@@ -750,6 +736,7 @@ public class MessagesCenterFragment extends DashboardFragment
             {
                 @Override public void onClick(View view)
                 {
+                    view.setVisibility(View.GONE);
                     reportMessageAllRead();
                 }
             });

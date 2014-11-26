@@ -260,35 +260,6 @@ public class UpdateCenterFragment extends DashboardFragment
         return mTabHost;
     }
 
-    private void clearTabs()
-    {
-        if (mTabHost != null)
-        {
-            android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
-            List<Fragment> fragmentList = fm.getFragments();
-            Timber.d("fragmentList %s", fragmentList);
-            if (fragmentList != null && fragmentList.size() > 0)
-            {
-                FragmentTransaction ft = fm.beginTransaction();
-                for (Fragment f : fragmentList)
-                {
-                    if (f != null)
-                    {
-                        ft.remove(f);
-                    }
-                }
-                //java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-                //TODO this will crash when onDestroy alex
-                ft.commitAllowingStateLoss();
-                fm.executePendingTransactions();
-            }
-
-            mTabHost.clearAllTabs();
-            int tabCount = mTabHost.getTabWidget().getTabCount();
-            mTabHost = null;
-        }
-    }
-
     public Fragment getCurrentFragment()
     {
         if (mTabHost == null)
