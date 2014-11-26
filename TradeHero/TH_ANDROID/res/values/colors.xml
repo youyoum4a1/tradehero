@@ -208,4 +208,5 @@
     <color name="divider_text_color">#8d8d8d</color>
     <!-- Divider -->
 
+    <color name="text_default_color">@color/black</color>
 </resources>

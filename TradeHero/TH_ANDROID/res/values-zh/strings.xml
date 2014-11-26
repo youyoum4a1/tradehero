@@ -218,5 +218,7 @@
   <string name="notification_title">通知</string>
   <string name="notification_empty">清空</string>
   <string name="notification_list_empty">您还没有任何通知。\n请下拉刷新通知列表!</string>
+  <string name="notification_empty_confirm">确定要清空全部通知？</string>
+  <string name="notification_delete_confirm">删除</string>
   <!-- Notification -->
 </resources>

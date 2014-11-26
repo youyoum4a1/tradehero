@@ -1,14 +1,13 @@
 package com.tradehero.th.fragments.chinabuild.fragment.message;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -73,6 +72,10 @@ public class NotificationFragment extends DashboardFragment
     private TextView dialogTitleATV;
     private TextView dialogTitleBTV;
 
+    //Notification Delete Pop Window
+    private PopupWindow popWin;
+    private RelativeLayout deleteNotificationLL;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -122,35 +125,22 @@ public class NotificationFragment extends DashboardFragment
         listView.setMode(PullToRefreshBase.Mode.BOTH);
         listView.setAdapter(adapter);
         listView.setEmptyView(imgEmpty);
-        adapter.setNotificationLister(new NotificationListAdapter.NotificationClickListener()
-        {
-            @Override public void OnNotificationItemClicked(int position)
-            {
-                NotificationDTO dto = (NotificationDTO) adapter.getItem((int) position);
-                if(dto==null){
+        adapter.setNotificationLister(new NotificationListAdapter.NotificationClickListener() {
+            @Override
+            public void OnNotificationItemClicked(int position) {
+                NotificationDTO dto = (NotificationDTO) adapter.getItem(position);
+                if (dto == null) {
                     return;
                 }
-                if(dto.unread){
+                if (dto.unread) {
                     reportNotificationRead(((NotificationDTO) adapter.getItem(position)).pushId);
                 }
                 jumpToTarget(dto);
             }
 
             @Override
-            public void OnNotificationItemLongClicked(int position) {
-                NotificationDTO notificationDTO = (NotificationDTO)adapter.getItem(position);
-                adapter.removeNotification(notificationDTO.pushId);
-                notificationServiceWrapper.deleteNotification(notificationDTO.pushId, new Callback<String>() {
-                    @Override
-                    public void success(String s, Response response) {
-
-                    }
-
-                    @Override
-                    public void failure(RetrofitError retrofitError) {
-
-                    }
-                });
+            public void OnNotificationItemLongClicked(int position, View view) {
+                showDeleteNotificationPopWindow(position, view);
             }
         });
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -430,6 +420,44 @@ public class NotificationFragment extends DashboardFragment
         if(!notificationClearAllDialog.isShowing()){
             notificationClearAllDialog.show();
         }
-
     }
+
+    //Show pop window about delete notifications
+    private void showDeleteNotificationPopWindow(final int positionId, final View parent){
+        if(getActivity()==null){
+            return;
+        }
+        if(popWin==null){
+            LayoutInflater lay = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = lay.inflate(R.layout.popwindow_notification_delete, null);
+            deleteNotificationLL = (RelativeLayout)v.findViewById(R.id.relativelayout_delete_notification);
+            popWin = new PopupWindow(v,(int)getActivity().getResources().getDimension(R.dimen.notification_popwindow_width), (int)getActivity().getResources().getDimension(R.dimen.notification_popwindow_height));
+            popWin.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.popwindow_notification_delete_layout_bg));
+            popWin.setOutsideTouchable(true);
+        }
+        deleteNotificationLL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationDTO notificationDTO = (NotificationDTO) adapter.getItem(positionId);
+                popWin.dismiss();
+                adapter.removeNotification(notificationDTO.pushId);
+                notificationServiceWrapper.deleteNotification(notificationDTO.pushId, new Callback<String>() {
+                    @Override
+                    public void success(String s, Response response) {
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+
+                    }
+                });
+            }
+        });
+        popWin.setFocusable(true);
+        popWin.update();
+        popWin.showAsDropDown(parent, 400, -50);
+    }
+
+
 }

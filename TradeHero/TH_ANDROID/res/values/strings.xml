@@ -437,6 +437,7 @@
   <string name="notification_title">NOTIFICATION</string>
   <string name="notification_empty">Empty</string>
   <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
-  <string name="notification_empty_confirm">确定要清空全部通知？</string>
+  <string name="notification_empty_confirm">Confirm clear all notifications?</string>
+  <string name="notification_delete_confirm">Delete</string>
   <!-- Notification -->
 </resources>

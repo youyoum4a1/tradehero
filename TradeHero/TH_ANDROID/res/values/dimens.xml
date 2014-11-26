@@ -195,7 +195,6 @@
 
   <dimen name="tab_main_indicator_height">48dp</dimen>
   <dimen name="tab_menu_height">48dp</dimen>
-  <dimen name="text_default_color">@color/black</dimen>
   <dimen name="more_bang_text_size">16sp</dimen>
   <dimen name="more_bang_item_height">56dp</dimen>
   <dimen name="right_arrow_margin">15dp</dimen>
@@ -222,4 +221,9 @@
   <dimen name="loading_logo_width">61dp</dimen>
   <dimen name="loading_logo_height">58dp</dimen>
   <!--Loading -->
+
+  <!--Notification -->
+  <dimen name="notification_popwindow_width">61dp</dimen>
+  <dimen name="notification_popwindow_height">36dp</dimen>
+  <!--Notification -->
 </resources>

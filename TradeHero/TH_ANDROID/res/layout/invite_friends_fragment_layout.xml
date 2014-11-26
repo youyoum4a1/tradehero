@@ -29,7 +29,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/invite_friends_input"/>
     <ImageView
         android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/invite_friends_me"/>
     <TextView
         android:id="@+id/my_invite_code"
@@ -103,7 +103,7 @@
         android:layout_toRightOf="@+id/icon_weChat"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/wechat_login_in"/>
     <ImageView
         android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
         android:layout_toRightOf="@+id/icon_weibo"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/weibo_login_in"/>
     <ImageView
         android:layout_width="wrap_content"

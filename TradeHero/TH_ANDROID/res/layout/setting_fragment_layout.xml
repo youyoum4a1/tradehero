@@ -20,7 +20,7 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/more_bang_text_size"
-                    android:textColor="@dimen/text_default_color"
+                    android:textColor="@color/text_default_color"
                     android:text="@string/settings_score"/>
             <ImageView
                     android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/more_bang_text_size"
-                    android:textColor="@dimen/text_default_color"
+                    android:textColor="@color/text_default_color"
                     android:text="@string/settings_primary_faq"/>
             <ImageView
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/more_bang_text_size"
-                    android:textColor="@dimen/text_default_color"
+                    android:textColor="@color/text_default_color"
                     android:text="@string/settings_primary_send_feedback"/>
             <ImageView
                     android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/more_bang_text_size"
                     android:clickable="false"
-                    android:textColor="@dimen/text_default_color"
+                    android:textColor="@color/text_default_color"
                     android:text="@string/settings_notification"/>
 
             <ToggleButton android:id="@+id/togglebutton_setting_notifications" android:layout_width="51dp"
@@ -138,7 +138,7 @@
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/more_bang_text_size"
                     android:clickable="false"
-                    android:textColor="@dimen/text_default_color"
+                    android:textColor="@color/text_default_color"
                     android:text="@string/settings_version"/>
             <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:layout_centerVertical="true"
@@ -180,7 +180,7 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_centerVertical="true"
                     android:textSize="@dimen/more_bang_text_size"
-                    android:textColor="@dimen/text_default_color"
+                    android:textColor="@color/text_default_color"
                     android:text="@string/settings_about_title"/>
             <ImageView
                     android:layout_width="wrap_content"

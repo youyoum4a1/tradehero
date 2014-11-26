@@ -95,7 +95,13 @@ public class NotificationListAdapter extends BaseAdapter
 
     @Override public Object getItem(int i)
     {
-        return dataList == null ? null : dataList.get(i);
+        if(dataList==null){
+            return null;
+        }
+        if(i>=dataList.size()){
+            return dataList.get(dataList.size()-1);
+        }
+        return dataList.get(i);
     }
 
     @Override public long getItemId(int i)
@@ -162,7 +168,7 @@ public class NotificationListAdapter extends BaseAdapter
             holder.llNotificationItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    listener.OnNotificationItemLongClicked(position);
+                    listener.OnNotificationItemLongClicked(position, holder.llNotificationItem);
                     return true;
                 }
             });
@@ -170,7 +176,7 @@ public class NotificationListAdapter extends BaseAdapter
             holder.tvNotificationContent.setOnLongClickListener(new View.OnLongClickListener(){
                 @Override
                 public boolean onLongClick(View view) {
-                    listener.OnNotificationItemLongClicked(position);
+                    listener.OnNotificationItemLongClicked(position, holder.llNotificationItem);
                     return true;
                 }
             });
@@ -206,6 +212,6 @@ public class NotificationListAdapter extends BaseAdapter
     {
         void OnNotificationItemClicked(int position);
 
-        void OnNotificationItemLongClicked(int position);
+        void OnNotificationItemLongClicked(int position, View view);
     }
 }

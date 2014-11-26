@@ -45,7 +45,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/img_me_dynamic"
                         android:textSize="@dimen/more_bang_text_size"
-                        android:textColor="@dimen/text_default_color"
+                        android:textColor="@color/text_default_color"
                         android:text="@string/my_dynamic"/>
 
                 <View
@@ -76,7 +76,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/imageview_me_messages"
                         android:textSize="@dimen/more_bang_text_size"
-                        android:textColor="@dimen/text_default_color"
+                        android:textColor="@color/text_default_color"
                         android:text="@string/my_message_center"/>
                 <TextView
                         android:id="@+id/textview_me_notification_count" android:background="@drawable/icon_bg_count"
@@ -109,7 +109,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/img_me_invite_friends"
                         android:textSize="@dimen/more_bang_text_size"
-                        android:textColor="@dimen/text_default_color"
+                        android:textColor="@color/text_default_color"
                         android:text="@string/my_invite_friends"/>
 
                 <View
@@ -140,7 +140,7 @@
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@id/img_me_setting"
                         android:textSize="@dimen/more_bang_text_size"
-                        android:textColor="@dimen/text_default_color"
+                        android:textColor="@color/text_default_color"
                         android:text="@string/my_setting"/>
             </RelativeLayout>
         </LinearLayout>

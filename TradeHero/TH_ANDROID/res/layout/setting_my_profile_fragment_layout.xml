@@ -18,7 +18,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/settings_my_photo"/>
     <ImageView
         android:id="@+id/photo"
@@ -46,7 +46,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/settings_my_name"/>
     <TextView
         android:id="@+id/name"
@@ -83,7 +83,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/settings_my_account"/>
     <ImageView
         android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_centerVertical="true"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/settings_my_social"/>
     <ImageView
         android:layout_width="wrap_content"

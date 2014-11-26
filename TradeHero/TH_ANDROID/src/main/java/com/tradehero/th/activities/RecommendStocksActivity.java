@@ -257,7 +257,6 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
         userServiceWrapper.get().followBatchFree(followFriendsForm, new Callback<UserProfileDTO>() {
             @Override
             public void success(UserProfileDTO userProfileDTO, Response response) {
-                ABCLogger.d("upload recommended heroes successfully");
                 if(listAdapter.getSecuritiesSelected().size()>0){
                     uploadStocks();
                 }else{
@@ -270,7 +269,6 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                ABCLogger.d("upload recommended heroes failed");
                 progressDialogUtil.dismiss(RecommendStocksActivity.this);
                 gotoNextActivity();
             }
@@ -287,7 +285,6 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             userServiceWrapper.get().followStocks(followStockForm, new Callback<List<WatchlistPositionDTO>>() {
             @Override
             public void success(List<WatchlistPositionDTO> o, Response response) {
-                ABCLogger.d("upload recommended stock successfully");
                 THSharePreferenceManager.setRecommendedStock(userId, RecommendStocksActivity.this);
                 progressDialogUtil.dismiss(RecommendStocksActivity.this);
                 gotoNextActivity();
@@ -295,8 +292,6 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                ABCLogger.d("upload recommended stock failed");
-                ABCLogger.d(retrofitError.toString());
                 progressDialogUtil.dismiss(RecommendStocksActivity.this);
                 gotoNextActivity();
             }

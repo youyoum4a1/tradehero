@@ -29,7 +29,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/img_bang_all"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/stockgod_leaderboard_all"></TextView>
 
     <ImageView
@@ -68,7 +68,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/img_bang_season"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/stockgod_leaderboard_season"></TextView>
 
     <ImageView
@@ -107,7 +107,7 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/img_bang_6month"
         android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@dimen/text_default_color"
+        android:textColor="@color/text_default_color"
         android:text="@string/stockgod_leaderboard_6month"></TextView>
 
     <ImageView
