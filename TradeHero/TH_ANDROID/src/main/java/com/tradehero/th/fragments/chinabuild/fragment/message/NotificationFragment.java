@@ -21,6 +21,7 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.notification.*;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
@@ -403,6 +404,7 @@ public class NotificationFragment extends DashboardFragment
                         }
 
                         private void onFinish(){
+                            setReadAllNotifcations();
                             adapter.removeAllNotifications();
                             notificationClearAllDialog.dismiss();
                         }
@@ -441,6 +443,7 @@ public class NotificationFragment extends DashboardFragment
                 NotificationDTO notificationDTO = (NotificationDTO) adapter.getItem(positionId);
                 popWin.dismiss();
                 adapter.removeNotification(notificationDTO.pushId);
+                setReadOneNotification(notificationDTO);
                 notificationServiceWrapper.deleteNotification(notificationDTO.pushId, new Callback<String>() {
                     @Override
                     public void success(String s, Response response) {
@@ -458,6 +461,23 @@ public class NotificationFragment extends DashboardFragment
         popWin.update();
         popWin.showAsDropDown(parent, 400, -50);
     }
+
+    private void setReadOneNotification(NotificationDTO notificationDTO){
+        if(notificationDTO.unread){
+            UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if(userProfileDTO.unreadNotificationsCount>0){
+                userProfileDTO.unreadNotificationsCount-- ;
+            }
+            userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+        }
+    }
+
+    private void setReadAllNotifcations(){
+        UserProfileDTO userProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        userProfileDTO.unreadNotificationsCount=0;
+        userProfileCache.getOrFetchAsync(currentUserId.toUserBaseKey(), true);
+    }
+
 
 
 }
