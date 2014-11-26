@@ -186,6 +186,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingBottom="2dp"
+        android:gravity="center_vertical"
         >
 
       <TextView
@@ -194,7 +195,6 @@
           android:layout_height="wrap_content"
           android:text="@string/leaderboard_number_trades_in_period_title"
           android:gravity="right"
-          android:lines="1"
           style="@style/TH.InfoKey"
           />
 
