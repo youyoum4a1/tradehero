@@ -64,7 +64,6 @@
   <string name="common_loading_error">Sorry, there is something wrong</string>
   <string name="no_message">You don\'t have any message yet.</string>
   <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
-  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
   <string name="security_discussion_add">+ Start a New Discussion</string>
   <string name="post">Post</string>
   <string name="discussion_new_post_hint">how do you feel about %s?</string>
@@ -392,7 +391,7 @@
   <string name="dialog_competition_choose_college_b">，确定选择以后不可更改</string>
   <string name="dialog_competition_suggest_login">您当前是游客身份，不能参加比赛，请升级为正式用户</string>
 
-
+  <string name="please_to_reply">评论一下吧...</string>
 
   <string name="quickly_to_get_first">快来抢沙发</string>
   <string name="no_useful_data">空空如也</string>
@@ -411,7 +410,7 @@
   <!-- Recommend Items (Stock & Hero)-->
   <string name="recommend_title">RECOMMEND</string>
   <string name="recommend_follow">Follow</string>
-  <string name="recommend_next">Next</string>
+  <string name="recommend_next">Skip</string>
   <string name="recommend_recommend_stock">Stock</string>
   <string name="recommend_recommend_hero">Hero</string>
   <string name="recommend_stock_rate_of_return">Rate: </string>
@@ -432,5 +431,12 @@
   <string name="sign_in_weibo">Weibo</string>
   <!--Sign in & Sign up -->
 
-  <string name="please_to_reply">评论一下吧...</string>
+
+
+  <!-- Notification -->
+  <string name="notification_title">NOTIFICATION</string>
+  <string name="notification_empty">Empty</string>
+  <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
+  <string name="notification_empty_confirm">确定要清空全部通知？</string>
+  <!-- Notification -->
 </resources>

@@ -32,4 +32,8 @@ interface NotificationServiceAsync
     void deleteNotification(
             @Path("pushId") int pushId,
             Callback<String> callback);
+
+    @DELETE("/notifications/-1")
+    void deleteAllNotifications(
+            Callback<String> callback);
 }

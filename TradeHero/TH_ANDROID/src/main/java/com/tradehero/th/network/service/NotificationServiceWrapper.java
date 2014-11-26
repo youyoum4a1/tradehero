@@ -135,4 +135,7 @@ public class NotificationServiceWrapper
         notificationServiceAsync.deleteNotification(pushId, callback);
     }
 
+    public void deleteAllNotification(Callback<String> callback){
+        notificationServiceAsync.deleteAllNotifications(callback);
+    }
 }

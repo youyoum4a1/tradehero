@@ -188,6 +188,11 @@ public class NotificationListAdapter extends BaseAdapter
         notifyDataSetChanged();
     }
 
+    public void removeAllNotifications(){
+        dataList.clear();
+        notifyDataSetChanged();
+    }
+
     static class ViewHolder
     {
         public LinearLayout llNotificationItem = null;

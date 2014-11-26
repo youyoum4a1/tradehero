@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
@@ -18,7 +17,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
-import com.tradehero.th.fragments.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.th.fragments.social.WeiboSocialLinkHelper;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerWeibo;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -211,12 +209,6 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         if (mType.equals(THSharePreferenceManager.LOGIN_CONTINUALLY)){
             THSharePreferenceManager.recordShareDialogLoginContinually(mUserId, true, getActivity());
         }
-    }
-
-    private void showWeiboWechatWechatmoment() {
-        ShareSheetDialogLayout contentView = (ShareSheetDialogLayout) LayoutInflater.from(getActivity())
-                .inflate(R.layout.share_sheet_dialog_layout, null);
-        THDialog.showUpDialog(getActivity(), contentView);
     }
 
     //Share to WeChat moment and share to WeiBo on the background

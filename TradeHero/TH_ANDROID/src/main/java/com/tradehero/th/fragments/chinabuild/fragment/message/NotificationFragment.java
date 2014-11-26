@@ -1,18 +1,20 @@
 package com.tradehero.th.fragments.chinabuild.fragment.message;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.NotificationListAdapter;
@@ -24,7 +26,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallbackWeakList;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCache;
@@ -65,6 +66,13 @@ public class NotificationFragment extends DashboardFragment
 
     private NotificationListAdapter adapter;
 
+    //Notification Dialog
+    private Dialog notificationClearAllDialog;
+    private TextView dialogOKBtn;
+    private TextView dialogCancelBtn;
+    private TextView dialogTitleATV;
+    private TextView dialogTitleBTV;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -79,14 +87,14 @@ public class NotificationFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain("通知");
-        setHeadViewRight0("全部已读");
+        setHeadViewMiddleMain(getActivity().getString(R.string.notification_title));
+        setHeadViewRight0(getActivity().getString(R.string.notification_empty));
     }
 
     @Override
     public void onClickHeadRight0()
     {
-        reportNotificationReadAll();
+        showEmptyAllNotificationsDialog();
     }
 
     @Override
@@ -211,7 +219,6 @@ public class NotificationFragment extends DashboardFragment
         @Override public void onErrorThrown(@NotNull NotificationListKey key, @NotNull Throwable error)
         {
             onFinish();
-            THToast.show(new THException(error));
         }
 
         private void onFinish()
@@ -261,33 +268,11 @@ public class NotificationFragment extends DashboardFragment
         paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 1);
     }
 
-    protected Callback<Response> createMarkNotificationAsReadCallback()
-    {
-        return new NotificationMarkAsReadCallback();
-    }
-
     protected class NotificationMarkAsReadCallback implements Callback<Response>
     {
         @Override public void success(Response response, Response response2)
         {
 
-        }
-
-        @Override public void failure(RetrofitError retrofitError)
-        {
-        }
-    }
-
-    protected Callback<Response> createMarkNotificationAsReadAllCallback()
-    {
-        return new NotificationMarkAsReadAllCallback();
-    }
-
-    protected class NotificationMarkAsReadAllCallback implements Callback<Response>
-    {
-        @Override public void success(Response response, Response response2)
-        {
-            adapter.setAllRead();
         }
 
         @Override public void failure(RetrofitError retrofitError)
@@ -341,17 +326,9 @@ public class NotificationFragment extends DashboardFragment
                 notificationServiceWrapper.markAsRead(
                         currentUserId.toUserBaseKey(),
                         new NotificationKey(pushId),
-                        createMarkNotificationAsReadCallback()));
+                        new NotificationMarkAsReadCallback()));
 
         adapter.setHasRead(pushId);
-    }
-
-    protected void reportNotificationReadAll()
-    {
-        middleCallbacks.add(
-                notificationServiceWrapper.markAsReadAll(
-                        currentUserId.toUserBaseKey(),
-                        createMarkNotificationAsReadAllCallback()));
     }
 
     private void jumpToTarget(NotificationDTO dto){
@@ -404,4 +381,55 @@ public class NotificationFragment extends DashboardFragment
         pushFragment(CompetitionDetailFragment.class, bundle);
     }
 
+
+    //Empty All Notifications Dialog
+    private void showEmptyAllNotificationsDialog(){
+        if(getActivity()==null){
+            return;
+        }
+        if(notificationClearAllDialog==null){
+            notificationClearAllDialog = new Dialog(getActivity());
+            notificationClearAllDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            notificationClearAllDialog.setCanceledOnTouchOutside(false);
+            notificationClearAllDialog.setContentView(R.layout.share_dialog_layout);
+            dialogOKBtn = (TextView)notificationClearAllDialog.findViewById(R.id.btn_ok);
+            dialogCancelBtn = (TextView)notificationClearAllDialog.findViewById(R.id.btn_cancel);
+            dialogTitleATV = (TextView)notificationClearAllDialog.findViewById(R.id.title);
+            dialogTitleATV.setText(getActivity().getResources().getString(R.string.notification_empty_confirm));
+            dialogTitleBTV = (TextView)notificationClearAllDialog.findViewById(R.id.title2);
+            dialogTitleBTV.setVisibility(View.GONE);
+            dialogOKBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    notificationServiceWrapper.deleteAllNotification(new Callback<String>() {
+                        @Override
+                        public void success(String s, Response response) {
+                            onFinish();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError retrofitError) {
+                            onFinish();
+                        }
+
+                        private void onFinish(){
+                            adapter.removeAllNotifications();
+                            notificationClearAllDialog.dismiss();
+                        }
+                    });
+                }
+            });
+
+            dialogCancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    notificationClearAllDialog.dismiss();
+                }
+            });
+        }
+        if(!notificationClearAllDialog.isShowing()){
+            notificationClearAllDialog.show();
+        }
+
+    }
 }
