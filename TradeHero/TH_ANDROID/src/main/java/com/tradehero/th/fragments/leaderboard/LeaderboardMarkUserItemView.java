@@ -85,8 +85,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
     @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
-    @InjectView(R.id.leaderboard_user_item_follow) @Optional @Nullable View lbmuFollowUser;
-    @InjectView(R.id.leaderboard_user_item_following) @Optional @Nullable View lbmuFollowingUser;
+    @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
+    @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
 
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
