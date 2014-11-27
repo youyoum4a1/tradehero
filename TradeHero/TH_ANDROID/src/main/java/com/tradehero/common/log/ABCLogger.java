@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.tradehero.common.log;
 
 import android.text.TextUtils;
 import android.util.Log;

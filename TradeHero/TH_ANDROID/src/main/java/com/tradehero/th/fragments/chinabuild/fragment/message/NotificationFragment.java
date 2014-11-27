@@ -392,6 +392,8 @@ public class NotificationFragment extends DashboardFragment
             dialogOKBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    notificationClearAllDialog.dismiss();
+
                     notificationServiceWrapper.deleteAllNotification(new Callback<String>() {
                         @Override
                         public void success(String s, Response response) {
@@ -406,7 +408,6 @@ public class NotificationFragment extends DashboardFragment
                         private void onFinish(){
                             setReadAllNotifcations();
                             adapter.removeAllNotifications();
-                            notificationClearAllDialog.dismiss();
                         }
                     });
                 }

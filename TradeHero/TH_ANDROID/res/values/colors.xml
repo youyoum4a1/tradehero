@@ -209,4 +209,9 @@
     <!-- Divider -->
 
     <color name="text_default_color">@color/black</color>
+
+    <!-- Buy Sell -->
+    <color name="buy_sell_button_background">#889e9e9e</color>
+    <!-- Buy Sell -->
+
 </resources>

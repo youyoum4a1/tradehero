@@ -1,17 +1,17 @@
 package com.tradehero.th.persistence.timeline;
 
-import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.Query;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import dagger.Lazy;
-import java.io.IOException;
-import java.util.List;
-import javax.inject.Inject;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimelineManager
 {
-    @Inject DatabaseCache dbCache;
     @Inject Lazy<TimelineStore.Factory> allTimelineStores;
 
     public List<TimelineItemDTOKey> getTimeline(Query query, boolean forceReload) throws IOException
@@ -34,7 +34,7 @@ public class TimelineManager
             return null;
         }
         timelineStore.setQuery(query);
-        return forceReload ? dbCache.requestAndStore(timelineStore) : dbCache.loadOrRequest(timelineStore);
+        return new ArrayList<TimelineItemDTOKey>();
         // and unlock the scope
     }
 }

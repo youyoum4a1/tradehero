@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <color name="buy_sell_button_background">#889e9e9e</color>
-  <dimen name="buy_sell_button_container_height">60dp</dimen>
-  <dimen name="share_button_w_h">28dp</dimen>
-  <dimen name="share_button_horizontal_margin">8dp</dimen>
-  <dimen name="share_container_vertical_padding">4dp</dimen>
-</resources>

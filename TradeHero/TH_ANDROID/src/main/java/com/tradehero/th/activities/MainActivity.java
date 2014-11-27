@@ -19,6 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.crashlytics.android.Crashlytics;
+import com.tradehero.common.log.ABCLogger;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;

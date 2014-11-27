@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <string name="contest_center_tab_active">活动中</string>
-  <string name="contest_center_tab_joined">已参加</string>
-  <string name="contest_no_joined">糟糕!\n 你还没有参加任何比赛. \n请从开放的比赛页签中选择然后开始玩吧!</string>
-</resources>

@@ -431,8 +431,6 @@
   <string name="sign_in_weibo">Weibo</string>
   <!--Sign in & Sign up -->
 
-
-
   <!-- Notification -->
   <string name="notification_title">NOTIFICATION</string>
   <string name="notification_empty">Empty</string>
@@ -440,4 +438,10 @@
   <string name="notification_empty_confirm">Confirm clear all notifications?</string>
   <string name="notification_delete_confirm">Delete</string>
   <!-- Notification -->
+
+  <!-- Contest Center -->
+  <string name="contest_center_tab_active">Active</string>
+  <string name="contest_center_tab_joined">Joined</string>
+  <string name="contest_no_joined">Oops!\n You have not joined any competition yet.\nChoose one from the active tab and start playing!</string>
+  <!-- Contest Center -->
 </resources>
