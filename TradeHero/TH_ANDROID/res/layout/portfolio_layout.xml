@@ -24,8 +24,7 @@
       android:id="@+id/listPortfilio"
       android:scrollingCache="false"
       android:fadingEdge="none"
-      android:dividerHeight="1px"
-      android:divider="@color/separate_line_color"
+      android:divider="@null"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
   </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
