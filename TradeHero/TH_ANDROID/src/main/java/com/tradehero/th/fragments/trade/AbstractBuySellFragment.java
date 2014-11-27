@@ -194,8 +194,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onDestroyView()
     {
         querying = false;
-        securityPositionDetailObservable = null;
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        securityPositionDetailObservable = null;
+        super.onDestroy();
     }
 
     protected void collectFromParameters(Bundle args)

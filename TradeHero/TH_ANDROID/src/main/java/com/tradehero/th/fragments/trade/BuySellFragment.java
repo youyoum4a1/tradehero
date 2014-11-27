@@ -690,7 +690,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         if (portfolioChangedSubscription == null)
         {
-            Timber.e(new Exception(), "conditionalDisplayPortfolioChanged");
             portfolioChangedSubscription = Observable.combineLatest(
                     Observable.just(purchaseApplicablePortfolioId),
                     currentUserPortfolioCompactListObservable,
