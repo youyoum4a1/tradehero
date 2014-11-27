@@ -21,6 +21,7 @@ import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
+import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
@@ -137,7 +138,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         if(prizeDTOSize != 0 && this.getCurrentRank() != null && this.getCurrentRank() > prizeDTOSize)
         {
             int needed = getCurrentRank() - prizeDTOSize;
-            infoText.setText(getContext().getString(R.string.leaderboard_ranks_needed, needed));
+            infoText.setText(getContext().getString(R.string.leaderboard_ranks_needed, THSignedNumber.builder(needed).build().toString()));
             infoButtonContainer.setVisibility(View.VISIBLE);
         }
         else
