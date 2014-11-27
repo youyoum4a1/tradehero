@@ -254,9 +254,13 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     }
 
     private void seedFeedback(){
-        Intent data=new Intent(Intent.ACTION_SENDTO);
-        data.setData(Uri.parse("mailto:" + Constants.EMAIL_FEEDBACK));
-        startActivity(data);
+        try {
+            Intent data = new Intent(Intent.ACTION_SENDTO);
+            data.setData(Uri.parse("mailto:" + Constants.EMAIL_FEEDBACK));
+            startActivity(data);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
