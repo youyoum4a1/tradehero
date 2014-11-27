@@ -47,7 +47,7 @@ public class DateUtils
 
     public static int getNumberOfDaysBetweenDates(@NonNull Date start, @NonNull Date end)
     {
-           return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
+           return (int) ((end.getTime() - start.getTime()) / MILLISECOND_PER_DAY);
     }
 
     public static String getFormattedDate(@NonNull Resources resources, @NonNull Date utcDate)
