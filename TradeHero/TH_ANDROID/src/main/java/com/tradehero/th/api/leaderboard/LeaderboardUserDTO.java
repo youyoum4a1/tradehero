@@ -23,7 +23,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     private static final String LEADERBOARD_INCLUDE_FOF = "LEADERBOARD_INCLUDE_FOF";
     public static final Double MIN_CONSISTENCY = 0.004;
 
-    public long lbmuId;    // leaderboardMarkUser.id ...
+    public long lbmuId;    // leaderboardMarkUser.id ..., will be null if user not ranked
     public int portfolioId;    // ...OR portfolioId --> messy
 
     @JsonProperty("friendOf_UserIds")

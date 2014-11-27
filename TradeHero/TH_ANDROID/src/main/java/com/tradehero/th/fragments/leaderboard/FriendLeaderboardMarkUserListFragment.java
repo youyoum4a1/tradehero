@@ -242,6 +242,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     protected void handleFriendsLeaderboardReceived(@NonNull Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO> pair)
     {
+        mProgress.setVisibility(View.INVISIBLE);
         Date markingTime = pair.second.leaderboard.markUtc;
         if (markingTime != null && leaderboardMarkUserMarkingTime != null)
         {

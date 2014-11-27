@@ -33,7 +33,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
-    @NonNull private Map<Object, Boolean> expandedStatuses;
+    @NonNull private Map<Object, Boolean> expandedStatues;
 
     //<editor-fold desc="Constructors">
     public LeaderboardFriendsSetAdapter(
@@ -44,7 +44,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
         super(context, new FriendLeaderboardUserComparator());
         this.markedLayoutResId = markedLayoutResId;
         this.socialLayoutResId = socialLayoutResId;
-        this.expandedStatuses = new HashMap<>();
+        this.expandedStatues = new HashMap<>();
     }
     //</editor-fold>
 
@@ -118,18 +118,18 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     {
         public SavingFriendLeaderboardMarkedUserDTO(@NonNull LeaderboardUserDTO leaderboardUserDTO)
         {
-            this(expandedStatuses.get(leaderboardUserDTO.getLeaderboardMarkUserId()), leaderboardUserDTO);
+            this(expandedStatues.get(leaderboardUserDTO.id), leaderboardUserDTO);
         }
 
         public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
         {
-            super(expanded != null ? expanded : false, leaderboardUserDTO);
+            super(expanded == null ? false : expanded, leaderboardUserDTO);
         }
 
         @Override public void setExpanded(boolean expanded)
         {
             super.setExpanded(expanded);
-            LeaderboardFriendsSetAdapter.this.expandedStatuses.put(leaderboardUserDTO.getLeaderboardMarkUserId(), expanded);
+            LeaderboardFriendsSetAdapter.this.expandedStatues.put(leaderboardUserDTO.id, expanded);
         }
     }
 
