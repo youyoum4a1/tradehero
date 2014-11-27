@@ -691,11 +691,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         @Override public void onNext(AlertCompactDTO alertCompactDTO)
         {
             navigator.get().popFragment();
+            hideDialog();
         }
 
         @Override public void onCompleted()
         {
-            hideDialog();
         }
 
         @Override public void onError(Throwable e)
