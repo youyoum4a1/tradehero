@@ -406,7 +406,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected void updateCurrentRankHeaderViewWithLeaderboard()
+    protected void updateCurrentRankHeaderViewWithLeaderboardUser()
     {
         if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
@@ -473,7 +473,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         this.currentLeaderboardUserDTO = leaderboardDTO;
         if (andDisplay)
         {
-            updateCurrentRankHeaderViewWithLeaderboard();
+            updateCurrentRankHeaderViewWithLeaderboardUser();
         }
     }
 

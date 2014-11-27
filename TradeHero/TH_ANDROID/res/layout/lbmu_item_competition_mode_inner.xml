@@ -11,17 +11,18 @@
     android:background="@drawable/basic_white_selector"
     >
 
-  <TextView
+  <ImageView
       android:id="@+id/leaderboard_prize_amount"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="@dimen/small_image_w_h"
+      android:layout_height="@dimen/small_image_w_h"
       android:layout_alignParentRight="true"
       android:layout_gravity="center_vertical"
-      android:drawableLeft="@drawable/icn_competition_prize"
+      android:scaleType="fitCenter"
+      android:src="@drawable/icn_competition_prize"
       android:visibility="gone"
       android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginEnd="@dimen/margin_small"
       android:gravity="center"
-      android:text=""
       />
 
   <include
@@ -39,7 +40,7 @@
       android:layout_below="@+id/leaderboard_user_item_basic_info"
       android:orientation="vertical"
       android:padding="@dimen/margin_xsmall"
-      android:visibility="visible"
+      android:visibility="gone"
       tools:ignore="UnknownIdInLayout"
       >
 

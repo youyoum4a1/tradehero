@@ -281,7 +281,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         this.competitionLeaderboardDTO = competitionLeaderboardDTO;
         setupCompetitionAdapter();
-        updateCurrentRankHeaderViewWithLeaderboard();
+        updateCurrentRankHeaderViewWithCompetitionLeaderboard();
     }
 
     protected void handleFetchCompetitionLeaderboardFailed(@NonNull Throwable e)
@@ -305,18 +305,14 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         super.setupOwnRankingView(userRankingHeaderView);
     }
 
-    @Override protected void updateCurrentRankHeaderViewWithLeaderboard()
+    protected void updateCurrentRankHeaderViewWithCompetitionLeaderboard()
     {
-        super.updateCurrentRankHeaderViewWithLeaderboard();
         if (competitionLeaderboardDTO != null
                 && getRankHeaderView() != null
-                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserItemView)
+                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
         {
-            CompetitionLeaderboardMarkUserItemView ownRankingView = (CompetitionLeaderboardMarkUserItemView) getRankHeaderView();
-            if (ownRankingView.leaderboardItem != null)
-            {
-                ownRankingView.setPrizeDTO(competitionLeaderboardDTO.getPrizeAt(ownRankingView.leaderboardItem.ordinalPosition));
-            }
+            CompetitionLeaderboardMarkUserOwnRankingView ownRankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
+            ownRankingView.setPrizeDTOSize(competitionLeaderboardDTO.prizes != null? competitionLeaderboardDTO.prizes.size() : 0);
         }
     }
 

@@ -557,11 +557,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         }
         if (lbmuRoi != null)
         {
-            lbmuRoi.setText("-");
-        }
-        if (lbmuDisplayName != null)
-        {
-            lbmuDisplayName.setText(R.string.loading_required_information);
+            lbmuRoi.setText(R.string.loading_required_information);
         }
     }
 

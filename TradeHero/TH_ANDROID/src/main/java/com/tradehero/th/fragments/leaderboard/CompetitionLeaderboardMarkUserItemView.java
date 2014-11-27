@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 
 public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
-    @InjectView(R.id.leaderboard_prize_amount) TextView prizeAmount;
+    @InjectView(R.id.leaderboard_prize_amount) View prizeIndicator;
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;
     @InjectView(R.id.lbmu_comments_count) TextView lbmuCommentsCount;
     @InjectView(R.id.lbmu_benchmark_roi) TextView lbmuBenchmarkRoi;
@@ -37,7 +37,7 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     @InjectView(R.id.lbmu_number_trades_in_period) @Optional @Nullable TextView lbmuNumberTradesInPeriod;
 
     @Nullable protected ProviderDTO providerDTO;
-    @Nullable private PrizeDTO prizeDTO;
+    protected int prizeDTOSize;
 
     //<editor-fold desc="Constructors">
     public CompetitionLeaderboardMarkUserItemView(Context context)
@@ -60,15 +60,15 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     {
         this.providerDTO = providerDTO;
         displayLbmuPl();
-        if(countryLogo!=null)
+        if (countryLogo != null)
         {
             countryLogo.setVisibility(View.GONE);
         }
     }
 
-    public void setPrizeDTO(@Nullable PrizeDTO prizeDTO)
+    public void setPrizeDTOSize(int i)
     {
-        this.prizeDTO = prizeDTO;
+        this.prizeDTOSize = i;
         displayPrize();
     }
 
@@ -155,16 +155,13 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
 
     protected void displayPrize()
     {
-        if (prizeDTO == null)
+        if (prizeDTOSize != 0 && this.getCurrentRank() != null && this.getCurrentRank() <= prizeDTOSize)
         {
-            prizeAmount.setVisibility(View.GONE);
+            prizeIndicator.setVisibility(View.VISIBLE);
         }
         else
         {
-            prizeAmount.setVisibility(View.VISIBLE);
-            prizeAmount.setText(THSignedMoney.builder(prizeDTO.amount)
-                    .currency(prizeDTO.prizeCcy)
-                    .build().toString());
+            prizeIndicator.setVisibility(View.GONE);
         }
     }
 

@@ -73,4 +73,6 @@
 
   <string name="leaderboard_max_ranked_position" translatable="false"><![CDATA[>%d]]></string>
   <string name="leaderboard_empty">Start trading now to be the first trader on this leaderboard</string>
+
+  <string name="leaderboard_ranks_needed">Move up by %d ranks to win!</string>
 </resources>
