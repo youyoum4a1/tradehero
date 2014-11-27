@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.data.sp.THSharePreferenceManager;
 
 public class ActivityHelper
 {

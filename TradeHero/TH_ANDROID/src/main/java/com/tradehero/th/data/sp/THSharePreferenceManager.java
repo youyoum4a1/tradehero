@@ -1,8 +1,9 @@
-package com.tradehero.th.fragments.chinabuild.data;
+package com.tradehero.th.data.sp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import com.tradehero.th.fragments.chinabuild.data.AppInfoDTO;
 import com.tradehero.th.utils.Constants;
 
 /**

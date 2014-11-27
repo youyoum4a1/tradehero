@@ -15,7 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.persistence.notification.NotificationCache;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;

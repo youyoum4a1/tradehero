@@ -8,8 +8,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -20,10 +18,10 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
+import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInFragment;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.dashboard.DashboardTabType;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.time.AppTiming;
@@ -32,18 +30,15 @@ import com.tradehero.th.persistence.prefs.FirstShowReferralCodeDialog;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.ui.AppContainer;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.GuideView;
 import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.Date;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity

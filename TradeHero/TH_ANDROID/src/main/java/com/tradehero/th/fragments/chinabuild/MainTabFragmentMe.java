@@ -22,7 +22,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
+import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.fragment.*;
 import com.tradehero.th.fragments.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserAccountPage;

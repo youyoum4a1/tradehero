@@ -24,16 +24,11 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
+import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListType;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeMine;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeOffical;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeUser;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionListTypeVip;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionNewCache;
+import com.tradehero.th.fragments.chinabuild.cache.*;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionDataItem;
 import com.tradehero.th.fragments.chinabuild.data.CompetitionInterface;
-import com.tradehero.th.fragments.chinabuild.data.THSharePreferenceManager;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
@@ -43,11 +38,12 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huhaiping on 14-9-9. 显示所有比赛和我参加的比赛
