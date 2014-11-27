@@ -68,6 +68,7 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
     {
         unsubscribe(profileCacheSubscription);
         profileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createProfileCacheObserver());
     }
