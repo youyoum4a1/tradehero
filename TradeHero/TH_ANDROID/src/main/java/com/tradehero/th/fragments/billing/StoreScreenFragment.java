@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +19,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -186,7 +184,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return request.build();
     }
 
-    @Override protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
+    @Override protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
     {
         return new StoreScreenFragmentPortfolioCompactListObserver();
     }
@@ -198,9 +196,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             super();
         }
 
-        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+        @Override public void onNext(PortfolioCompactDTOList list)
         {
-            super.onNext(pair);
+            super.onNext(list);
             launchRoutedAction();
         }
     }

@@ -36,6 +36,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -69,8 +70,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Nullable protected QuoteDTO quoteDTO;
     @Nullable protected Subscription securityCompactSubscription;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
+
+    protected Observable<SecurityPositionDetailDTO> securityPositionDetailObservable;
     @Nullable protected Subscription securityPositionDetailSubscription;
     @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
+
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     @Nullable private Subscription userProfileSubscription;
@@ -108,6 +112,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             thRouter.inject(this);
         }
+        securityPositionDetailObservable = securityPositionDetailCache
+                        .get(this.securityId)
+                        .map(pair -> pair.second)
+                        .share()
+                        .cache(1);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -133,9 +142,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         displayMarketClose();
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
         fetchSecurityCompact();
         fetchSecurityPositionDetail();
         fetchUserProfile();
@@ -167,7 +176,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    @Override public void onDestroyView()
+    @Override public void onStop()
     {
         unsubscribe(quoteSubscription);
         quoteSubscription = null;
@@ -179,8 +188,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         userProfileSubscription = null;
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = null;
-        querying = false;
+        super.onStop();
+    }
 
+    @Override public void onDestroyView()
+    {
+        querying = false;
+        securityPositionDetailObservable = null;
         super.onDestroyView();
     }
 
@@ -262,32 +276,17 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         unsubscribe(securityPositionDetailSubscription);
         securityPositionDetailSubscription = AndroidObservable.bindFragment(
                 this,
-                securityPositionDetailCache
-                        .get(this.securityId))
-                .subscribe(new EmptyObserver<Pair<SecurityId, SecurityPositionDetailDTO>>()
-                {
-                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
-                    {
-                        linkWith(pair.second, true);
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        Timber.e(e, "getting %s", securityId);
-                    }
-                });
+                securityPositionDetailObservable)
+                .subscribe(
+                        this::linkWith,
+                        e -> Timber.e(e, "getting %s", securityId));
     }
 
-    public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO, boolean andDisplay)
+    public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
-        linkWith(securityPositionDetailDTO.security, andDisplay);
-        linkWith(securityPositionDetailDTO.positions, andDisplay);
-
-        if (andDisplay)
-        {
-            // Nothing to do in this class
-        }
+        linkWith(securityPositionDetailDTO.security, true);
+        linkWith(securityPositionDetailDTO.positions, true);
     }
 
     protected void fetchUserProfile()

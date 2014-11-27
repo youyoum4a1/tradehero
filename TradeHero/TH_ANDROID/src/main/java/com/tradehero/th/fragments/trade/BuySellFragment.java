@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.android.common.SlidingTabLayout;
-import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -41,6 +40,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -89,6 +89,7 @@ import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -116,7 +117,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @InjectView(R.id.vprice_as_of) protected TextView mVpriceAsOf;
     @InjectView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
 
-    @Inject ResideMenu resideMenu;
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
@@ -146,7 +146,10 @@ public class BuySellFragment extends AbstractBuySellFragment
 
     @Nullable protected Subscription userWatchlistPositionCacheSubscription;
     @Nullable protected WatchlistPositionDTOList watchedList;
+
+    protected Observable<PortfolioDTO> portfolioObservable;
     @Nullable protected Subscription portfolioCacheSubscription;
+    @Nullable protected Subscription portfolioChangedSubscription;
 
     private Animation progressAnimation;
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
@@ -278,6 +281,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         portfolioCacheSubscription = null;
         unsubscribe(alertCompactListCacheSubscription);
         alertCompactListCacheSubscription = null;
+        unsubscribe(portfolioChangedSubscription);
+        portfolioChangedSubscription = null;
         detachPortfolioMenuSubscription();
         stopListeningToBuySellDialog();
 
@@ -310,6 +315,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         userWatchlistPositionCacheSubscription = null;
         chartImageButtonClickReceiver = null;
         abstractTransactionDialogFragment = null;
+        portfolioObservable = null;
         super.onDestroy();
     }
 
@@ -430,10 +436,9 @@ public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO,
-            boolean andDisplay)
+    @Override public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
     {
-        super.linkWith(securityPositionDetailDTO, andDisplay);
+        super.linkWith(securityPositionDetailDTO);
 
         ProviderDTOList providerDTOs = securityPositionDetailDTO.providers;
         if (providerDTOs != null)
@@ -452,13 +457,9 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         setInitialSellQuantityIfCan();
 
-        if (andDisplay)
-        {
-            displayBuySellSwitch();
-            displayBuySellPrice();
-            displayBuySellContainer();
-            conditionalDisplayPortfolioChanged();
-        }
+        displayBuySellSwitch();
+        displayBuySellPrice();
+        displayBuySellContainer();
     }
 
     @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -518,7 +519,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         super.linkWithApplicable(purchaseApplicablePortfolioId, andDisplay);
         if (purchaseApplicablePortfolioId != null)
         {
+            portfolioObservable = portfolioCache.get(purchaseApplicablePortfolioId)
+                    .map(pair -> pair.second)
+                    .publish()
+                    .refCount();
             fetchPortfolio(purchaseApplicablePortfolioId);
+            conditionalDisplayPortfolioChanged(purchaseApplicablePortfolioId);
         }
         else
         {
@@ -535,13 +541,12 @@ public class BuySellFragment extends AbstractBuySellFragment
         unsubscribe(portfolioMenuSubscription);
         portfolioCacheSubscription = AndroidObservable.bindFragment(
                 this,
-                portfolioCache.get(purchaseApplicablePortfolioId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<Pair<OwnedPortfolioId, PortfolioDTO>>()
+                portfolioObservable)
+                .subscribe(new EmptyObserver<PortfolioDTO>()
                 {
-                    @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
+                    @Override public void onNext(PortfolioDTO portfolioDTO)
                     {
-                        linkWith(pair.second, true);
+                        linkWith(portfolioDTO, true);
                     }
                 });
     }
@@ -555,7 +560,6 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             // TODO max purchasable shares
             displayBuySellPrice();
-            conditionalDisplayPortfolioChanged();
             displayBuySellSwitch();
         }
     }
@@ -682,17 +686,70 @@ public class BuySellFragment extends AbstractBuySellFragment
         return quoteDTO != null && securityPositionDetailDTO != null;
     }
 
-    public void conditionalDisplayPortfolioChanged()
+    public void conditionalDisplayPortfolioChanged(@NonNull OwnedPortfolioId purchaseApplicablePortfolioId)
     {
-        if (securityPositionDetailDTO != null
-                && portfolioCompactDTO != null
-                && mSelectedPortfolioContainer != null
-                && mSelectedPortfolioContainer.defaultMenuIsNotDefaultPortfolio())
+        if (portfolioChangedSubscription == null)
+        {
+            Timber.e(new Exception(), "conditionalDisplayPortfolioChanged");
+            portfolioChangedSubscription = Observable.combineLatest(
+                    Observable.just(purchaseApplicablePortfolioId),
+                    currentUserPortfolioCompactListObservable,
+                    securityPositionDetailObservable,
+                    PortfolioChangedHelper::new)
+                    .map(PortfolioChangedHelper::isPortfolioChanged)
+                    .take(1)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            this::conditionalDisplayPortfolioChanged,
+                            e -> Timber.e(e, "Failed to check for portfolio changed")
+                    );
+        }
+    }
+
+    protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
+    {
+        if (isPortfolioChanged)
         {
             alertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.buy_sell_portfolio_changed_title,
                     R.string.buy_sell_portfolio_changed_message,
                     R.string.ok);
+        }
+    }
+
+    private static class PortfolioChangedHelper
+    {
+        @NonNull public final OwnedPortfolioId applicable;
+        @NonNull public final PortfolioCompactDTOList portfolioCompactDTOs;
+        @NonNull public final SecurityPositionDetailDTO securityPositionDetailDTO;
+
+        //<editor-fold desc="Constructors">
+        private PortfolioChangedHelper(
+                @NonNull OwnedPortfolioId applicable,
+                @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
+                @NonNull SecurityPositionDetailDTO securityPositionDetailDTO)
+        {
+            this.applicable = applicable;
+            this.portfolioCompactDTOs = portfolioCompactDTOs;
+            this.securityPositionDetailDTO = securityPositionDetailDTO;
+        }
+        //</editor-fold>
+
+        @NonNull public Boolean isPortfolioChanged()
+        {
+            PortfolioCompactDTO defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
+            if (defaultPortfolio != null && defaultPortfolio.getOwnedPortfolioId().equals(applicable))
+            {
+                // Default portfolio is without surprise
+                return false;
+            }
+            ProviderDTOList providers = securityPositionDetailDTO.providers;
+            if (providers == null)
+            {
+                return true;
+            }
+            OwnedPortfolioIdList providerPortfolioIds = providers.getAssociatedOwnedPortfolioIds();
+            return !providerPortfolioIds.contains(applicable);
         }
     }
 
@@ -1175,17 +1232,17 @@ public class BuySellFragment extends AbstractBuySellFragment
         fetchPortfolioCompactList();
     }
 
-    @Override @NonNull protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
+    @Override @NonNull protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
     {
         return new BuySellPortfolioCompactListObserver();
     }
 
     protected class BuySellPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
     {
-        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+        @Override public void onNext(PortfolioCompactDTOList list)
         {
-            super.onNext(pair);
-            PortfolioCompactDTO defaultPortfolio = pair.second.getDefaultPortfolio();
+            super.onNext(list);
+            PortfolioCompactDTO defaultPortfolio = list.getDefaultPortfolio();
             if (defaultPortfolio != null)
             {
                 mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BaseUIBillingRequest;
@@ -26,6 +25,7 @@ import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -46,6 +46,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
+    protected Observable<PortfolioCompactDTOList> currentUserPortfolioCompactListObservable;
     @Nullable protected Subscription portfolioCompactListCacheSubscription;
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
@@ -71,12 +72,16 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
+        currentUserPortfolioCompactListObservable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second)
+                        .publish()
+                        .refCount()
+                        .cache(1);
     }
 
     @Override public void onResume()
     {
         super.onResume();
-
         softFetchPortfolioCompactList();
     }
 
@@ -87,6 +92,12 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = null;
         super.onStop();
+    }
+
+    @Override public void onDestroy()
+    {
+        currentUserPortfolioCompactListObservable = null;
+        super.onDestroy();
     }
 
     protected void detachRequestCode()
@@ -125,8 +136,8 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = AndroidObservable.bindFragment(
                 this,
-                portfolioCompactListCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createPortfolioCompactListObserver());
+                currentUserPortfolioCompactListObservable)
+                .subscribe(createCurrentUserPortfolioCompactListObserver());
     }
 
     protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
@@ -203,21 +214,21 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     }
     //endregion
 
-    protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
+    protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
     {
         return new BasePurchaseManagementPortfolioCompactListObserver();
     }
 
-    protected class BasePurchaseManagementPortfolioCompactListObserver implements Observer<Pair<UserBaseKey, PortfolioCompactDTOList>>
+    protected class BasePurchaseManagementPortfolioCompactListObserver implements Observer<PortfolioCompactDTOList>
     {
         protected BasePurchaseManagementPortfolioCompactListObserver()
         {
             // no unexpected creation
         }
 
-        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+        @Override public void onNext(PortfolioCompactDTOList list)
         {
-            prepareApplicableOwnedPortolioId(pair.second.getDefaultPortfolio());
+            prepareApplicableOwnedPortolioId(list.getDefaultPortfolio());
         }
 
         @Override public void onCompleted()
