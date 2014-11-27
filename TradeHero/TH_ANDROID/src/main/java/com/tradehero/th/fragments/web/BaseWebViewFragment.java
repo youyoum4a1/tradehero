@@ -205,4 +205,9 @@ public class BaseWebViewFragment extends DashboardFragment
     {
         return webView;
     }
+
+    public boolean shouldDisplayTitleInActionBar()
+    {
+        return true;
+    }
 }

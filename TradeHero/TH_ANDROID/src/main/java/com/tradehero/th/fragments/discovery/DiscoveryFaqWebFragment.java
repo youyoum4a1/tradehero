@@ -20,4 +20,9 @@ public class DiscoveryFaqWebFragment extends WebViewFragment
         }
         putUrl(args, getString(R.string.th_faq_url));
     }
+
+    public boolean shouldDisplayTitleInActionBar()
+    {
+        return false;
+    }
 }
