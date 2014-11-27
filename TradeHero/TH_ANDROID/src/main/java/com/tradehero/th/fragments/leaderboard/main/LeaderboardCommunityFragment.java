@@ -17,14 +17,12 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.SectorContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
@@ -69,11 +67,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         {
             DrillDownLeaderboardDefDTO drillDownLeaderboardDefDTO = (DrillDownLeaderboardDefDTO) leaderboardDefDTO;
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_DrillDown));
-            if (drillDownLeaderboardDefDTO instanceof SectorContainerLeaderboardDefDTO)
-            {
-                pushLeaderboardDefSector(drillDownLeaderboardDefDTO);
-            }
-            else if (drillDownLeaderboardDefDTO instanceof ExchangeContainerLeaderboardDefDTO)
+            if (drillDownLeaderboardDefDTO instanceof ExchangeContainerLeaderboardDefDTO)
             {
                 pushLeaderboardDefExchange(drillDownLeaderboardDefDTO);
             }
@@ -279,17 +273,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             //FollowerManagerFragment.putApplicablePortfolioId(bundle, applicablePortfolio);
         }
         navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
-    }
-
-    private void pushLeaderboardDefSector(LeaderboardDefDTO leaderboardDefDTOSector)
-    {
-        Bundle bundle = new Bundle(getArguments());
-        (new SectorLeaderboardDefListKey()).putParameters(bundle);
-        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOSector.getLeaderboardDefKey());
-        if (navigator != null)
-        {
-            navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
-        }
     }
 
     private void pushLeaderboardDefExchange(LeaderboardDefDTO leaderboardDefDTOExchange)
