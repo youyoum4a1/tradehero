@@ -262,6 +262,9 @@ public class SecurityDiscussionView extends BetterViewAnimator
     {
         loading = false;
 
-        setDisplayedChildByLayoutId(securityDiscussionList.getId());
+        if (securityDiscussionList != null)
+        {
+            setDisplayedChildByLayoutId(securityDiscussionList.getId());
+        }
     }
 }
