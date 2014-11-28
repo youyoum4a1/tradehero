@@ -36,11 +36,9 @@ public class SecurityItemView extends RelativeLayout
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
     @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
-    @Inject @ForSecurityItemBackground2 Transformation backgroundTransformation;
 
     @Inject protected Picasso mPicasso;
 
-    @InjectView(R.id.stock_bg_logo) @Optional ImageView stockBgLogo;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
@@ -54,7 +52,6 @@ public class SecurityItemView extends RelativeLayout
 
     protected SecurityCompactDTO securityCompactDTO;
     private Target myLogoImageTarget;
-    private Target myBgImageTarget;
 
     //<editor-fold desc="Constructors">
     public SecurityItemView(Context context)
@@ -78,7 +75,6 @@ public class SecurityItemView extends RelativeLayout
         super.onFinishInflate();
         init();
         myLogoImageTarget = createLogoImageTarget();
-        myBgImageTarget = createBGImageTarget();
     }
 
     protected void init()
@@ -96,16 +92,6 @@ public class SecurityItemView extends RelativeLayout
         {
             myLogoImageTarget = createLogoImageTarget();
         }
-        if (getMyBgImageTarget() == null)
-        {
-            myBgImageTarget = createBGImageTarget();
-        }
-
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setVisibility(View.GONE);
-        }
-
         if (mPicasso != null)
         {
             loadImage();
@@ -115,10 +101,8 @@ public class SecurityItemView extends RelativeLayout
     @Override protected void onDetachedFromWindow()
     {
         mPicasso.cancelRequest(myLogoImageTarget);
-        mPicasso.cancelRequest(myBgImageTarget);
 
         myLogoImageTarget = null;
-        myBgImageTarget = null;
 
         if (mPicasso != null)
         {
@@ -127,10 +111,6 @@ public class SecurityItemView extends RelativeLayout
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
-        }
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setImageDrawable(null);
         }
         if (countryLogo != null)
         {
@@ -405,16 +385,6 @@ public class SecurityItemView extends RelativeLayout
         {
             stockLogo.setImageBitmap(null);
         }
-
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setImageBitmap(null);
-        }
-    }
-
-    public Target getMyBgImageTarget()
-    {
-        return this.myBgImageTarget;
     }
 
     public Target getMyLogoImageTarget()
@@ -429,7 +399,6 @@ public class SecurityItemView extends RelativeLayout
         if (isMyUrlOk())
         {
             picassoSetupLogoParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyLogoImageTarget());
-            picassoSetupBGParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyBgImageTarget());
         }
         else
         {
@@ -446,7 +415,6 @@ public class SecurityItemView extends RelativeLayout
                 Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
 
                 mPicasso.load(exchange.logoId).into(getMyLogoImageTarget());
-                picassoSetupBGParam(mPicasso.load(exchange.logoId)).into(getMyBgImageTarget());
             } catch (IllegalArgumentException e)
             {
                 Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
@@ -466,10 +434,6 @@ public class SecurityItemView extends RelativeLayout
             stockLogo.setVisibility(View.VISIBLE);
             stockLogo.setImageResource(R.drawable.default_image);
         }
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setVisibility(View.GONE);
-        }
     }
 
     private RequestCreator picassoSetupLogoParam(@NonNull RequestCreator creator)
@@ -477,19 +441,6 @@ public class SecurityItemView extends RelativeLayout
         return creator.transform(foregroundTransformation)
                 .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
                 .centerInside();
-    }
-
-    private RequestCreator picassoSetupBGParam(@NonNull RequestCreator creator)
-    {
-        return creator.transform(backgroundTransformation)
-                .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-                .centerCrop();
-    }
-
-    protected Target createBGImageTarget()
-
-    {
-        return new SecurityItemViewBgImageTarget();
     }
 
     protected Target createLogoImageTarget()
@@ -520,29 +471,4 @@ public class SecurityItemView extends RelativeLayout
         }
     }
 
-    protected class SecurityItemViewBgImageTarget
-            implements Target
-    {
-
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
-            if (stockBgLogo != null)
-            {
-                stockBgLogo.setImageBitmap(bitmap);
-                stockBgLogo.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-            }
-        }
-
-        @Override public void onBitmapFailed(Drawable errorDrawable)
-        {
-        }
-
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
-        {
-
-        }
-    }
 }
