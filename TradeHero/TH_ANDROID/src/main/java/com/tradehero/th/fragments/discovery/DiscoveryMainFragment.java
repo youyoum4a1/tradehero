@@ -17,7 +17,6 @@ import com.android.common.SlidingTabLayout;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
@@ -25,13 +24,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 @Routable({"news", "discussion", "academy"})
 public class DiscoveryMainFragment extends DashboardFragment
 {
-    @Inject Lazy<DashboardNavigator> navigator;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @InjectView(R.id.pager) ViewPager tabViewPager;
