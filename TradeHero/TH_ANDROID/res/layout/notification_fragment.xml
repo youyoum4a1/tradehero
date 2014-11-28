@@ -20,7 +20,7 @@
               android:layout_gravity="center"
               android:background="@drawable/logo"
               />
-    <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+    <com.tradehero.chinabuild.listview.SecurityListView
         android:id="@+id/listNotification"
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         ptr:ptrHeaderTextColor="@color/black"
@@ -31,7 +31,7 @@
         android:background="@color/bg_fragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-    </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+    </com.tradehero.chinabuild.listview.SecurityListView>
     <ImageView android:id="@+id/imgEmpty"
         android:background="@drawable/empty"
         android:layout_gravity="center"

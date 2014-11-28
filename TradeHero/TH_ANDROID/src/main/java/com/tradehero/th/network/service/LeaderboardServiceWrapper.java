@@ -1,5 +1,7 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.UserTrendingDTO;
+import com.tradehero.chinabuild.data.UserTrendingDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
@@ -17,8 +19,6 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;

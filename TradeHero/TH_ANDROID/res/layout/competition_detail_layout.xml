@@ -133,7 +133,7 @@
           android:layout_width="150dp"
           android:layout_height="150dp"/>
 
-      <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      <com.tradehero.chinabuild.listview.SecurityListView
           android:id="@+id/listRanks"
           xmlns:ptr="http://schemas.android.com/apk/res-auto"
           ptr:ptrHeaderTextColor="@color/black"
@@ -143,7 +143,7 @@
           android:divider="@color/transparent"
           android:layout_width="fill_parent"
           android:layout_height="fill_parent">
-      </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+      </com.tradehero.chinabuild.listview.SecurityListView>
 
       <Button android:layout_height="48dp"
           android:visibility="gone"

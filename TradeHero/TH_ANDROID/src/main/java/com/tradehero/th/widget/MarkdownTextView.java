@@ -7,6 +7,9 @@ import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
+import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.activities.ActivityHelper;
@@ -15,15 +18,11 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionDetailFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.route.THRouter;
-import timber.log.Timber;
-
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {

@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
@@ -11,7 +12,6 @@ import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.fragments.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;

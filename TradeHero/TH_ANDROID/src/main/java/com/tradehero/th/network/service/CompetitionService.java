@@ -1,12 +1,12 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionDTO;
 import com.tradehero.th.api.competition.CompetitionDTOList;
 import com.tradehero.th.api.competition.CompetitionFormDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

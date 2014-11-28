@@ -1,10 +1,10 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.UserTrendingDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.fragments.chinabuild.data.UserTrendingDTOList;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

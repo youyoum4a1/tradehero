@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.data.RecommendHero;
+import com.tradehero.chinabuild.data.RecommendStock;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.RecommendStocksActivity;
-import com.tradehero.th.fragments.chinabuild.data.RecommendHero;
-import com.tradehero.th.fragments.chinabuild.data.RecommendStock;
 import com.tradehero.th.utils.ColorUtils;
 import java.util.ArrayList;
 

@@ -26,7 +26,7 @@
 
 
   <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
-    <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+    <com.tradehero.chinabuild.listview.SecurityListView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         ptr:ptrHeaderTextColor="@color/black"
         android:id="@+id/listSecurity"
@@ -36,7 +36,7 @@
         android:divider="@color/separate_line_color"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-    </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+    </com.tradehero.chinabuild.listview.SecurityListView>
     <com.tradehero.th.widget.TradeHeroProgressBar
         android:id="@+id/tradeheroprogressbar_hothold"
         android:layout_width="@dimen/loading_logo_width"

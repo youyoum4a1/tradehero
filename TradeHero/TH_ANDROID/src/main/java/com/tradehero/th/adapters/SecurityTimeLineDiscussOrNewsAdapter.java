@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.data.EmptyDiscussionCompactDTO;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -19,19 +21,16 @@ import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.chinabuild.data.EmptyDiscussionCompactDTO;
-import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 {

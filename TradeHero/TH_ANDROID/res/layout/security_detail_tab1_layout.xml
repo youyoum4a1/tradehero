@@ -144,7 +144,7 @@
           android:layout_gravity="center"
           android:background="@drawable/logo"
           />
-      <com.tradehero.th.fragments.chinabuild.listview.SecurityListView
+      <com.tradehero.chinabuild.listview.SecurityListView
           xmlns:ptr="http://schemas.android.com/apk/res-auto"
           ptr:ptrHeaderTextColor="@color/black"
           android:id="@+id/listTrade"
@@ -154,7 +154,7 @@
           android:divider="@color/separate_line_color"
           android:layout_width="fill_parent"
           android:layout_height="fill_parent">
-      </com.tradehero.th.fragments.chinabuild.listview.SecurityListView>
+      </com.tradehero.chinabuild.listview.SecurityListView>
 
       <TextView
           android:id="@+id/tvEmpty"

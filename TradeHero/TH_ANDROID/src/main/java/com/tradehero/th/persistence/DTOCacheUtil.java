@@ -1,6 +1,9 @@
 package com.tradehero.th.persistence;
 
 import android.content.Context;
+import com.tradehero.chinabuild.cache.CompetitionNewCache;
+import com.tradehero.chinabuild.cache.PortfolioCompactNewCache;
+import com.tradehero.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.common.billing.ProductPurchaseCache;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -10,9 +13,6 @@ import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.chinabuild.cache.CompetitionNewCache;
-import com.tradehero.th.fragments.chinabuild.cache.PortfolioCompactNewCache;
-import com.tradehero.th.fragments.chinabuild.cache.PositionCompactNewCache;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
