@@ -1,5 +1,7 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.tradehero.th.R;
@@ -11,12 +13,12 @@ import com.tradehero.th.R;
  */
 public enum SocialNetworkEnum
 {
-    TH("Basic", "TradeHero", R.string.app_name),
-    FB("TH-Facebook", "Facebook", "facebook_access_token", R.string.facebook),
+    TH("Basic", "TradeHero", null, null, R.string.app_name),
+    FB("TH-Facebook", "Facebook", "facebook_access_token", null, R.string.facebook),
     TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret", R.string.twitter),
     LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret", R.string.linkedin),
-    WECHAT("TH-WeChat", "WeChat", R.string.wechat),
-    WB("TH-Weibo", "WeiBo", "weibo_access_token", R.string.sina_weibo),
+    WECHAT("TH-WeChat", "WeChat", null, null, R.string.wechat),
+    WB("TH-Weibo", "WeiBo", "weibo_access_token", null, R.string.sina_weibo),
     QQ("TH-QQ", "QQ", "qq_openid", "qq_access_token", R.string.tencent_qq);
 
     private final String authHeader;
@@ -25,25 +27,11 @@ public enum SocialNetworkEnum
     private final String accessTokenSecretName;
     @StringRes public final int nameResId;
 
-    SocialNetworkEnum(String authHeader,
-            String name,
-            @StringRes int nameResId)
-    {
-        this(authHeader, name, null, nameResId);
-    }
-
-    SocialNetworkEnum(String authHeader,
-            String name,
-            String accessTokenName,
-            @StringRes int nameResId)
-    {
-        this(authHeader, name, accessTokenName, null, nameResId);
-    }
-
-    SocialNetworkEnum(String authHeader,
-            String name,
-            String accessTokenName,
-            String accessTokenSecretName,
+    //<editor-fold desc="Constructors">
+    SocialNetworkEnum(@NonNull String authHeader,
+            @NonNull String name,
+            @Nullable String accessTokenName,
+            @Nullable String accessTokenSecretName,
             @StringRes int nameResId)
     {
         this.authHeader = authHeader;
@@ -52,6 +40,7 @@ public enum SocialNetworkEnum
         this.accessTokenSecretName = accessTokenSecretName;
         this.nameResId = nameResId;
     }
+    //</editor-fold>
 
     public String getAuthHeader()
     {

@@ -41,7 +41,6 @@
   <color name="btn_authentication_login_color_disabled">@color/light_grey</color>
   <color name="btn_email_color_start">#dceaff</color>
 
-
   <color name="dark_gray">#505050</color>
 
   <color name="read_all_layout_color_dark">#0274b4</color>
@@ -57,13 +56,6 @@
   <color name="font_roi">#00CC00</color>
 
   <color name="gray_3_bg_trans">#EEF3F3F3</color>
-
-  <color name="fbook_color1">#4E6DAE</color>
-  <color name="fbook_color2">#2B4170</color>
-  <color name="twit_color1">#00CCED</color>
-  <color name="twit_color2">#0087CE</color>
-  <color name="linkd_color1">#009CDA</color>
-  <color name="linkd_color2">#0167A3</color>
 
   <!-- What's Trending -->
   <color name="trending_grid_item_bg">#FFFFFFFF</color>
