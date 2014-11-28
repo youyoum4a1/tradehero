@@ -10,8 +10,8 @@
   <com.tradehero.common.widget.AuthenticationButton
       android:id="@+id/btn_twitter_signin"
       style="@style/TH.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_twitter_normal"
-      android:drawableStart="@drawable/settings_twitter_normal"
+      android:drawableLeft="@drawable/icn_tw_white"
+      android:drawableStart="@drawable/icn_tw_white"
       android:background="@drawable/btn_background_social_twitter"
       android:text="@string/twitter_login_in"
       app:type="twitter"

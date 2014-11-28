@@ -10,8 +10,8 @@
   <com.tradehero.common.widget.AuthenticationButton
       android:id="@+id/btn_weibo_signin"
       style="@style/TH.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_weibo_normal"
-      android:drawableStart="@drawable/settings_weibo_normal"
+      android:drawableLeft="@drawable/icn_wb_white"
+      android:drawableStart="@drawable/icn_wb_white"
       android:background="@drawable/btn_background_social_weibo"
       android:text="@string/weibo_login_in"
       app:type="weibo"

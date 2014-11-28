@@ -14,13 +14,10 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -30,9 +27,6 @@ public class LeaderboardDefView extends RelativeLayout
         implements DTOView<LeaderboardDefDTO>
 {
     @Inject protected LeaderboardDefDTOKnowledge leaderboardDefDTOKnowledge;
-    @Inject LeaderboardCacheRx leaderboardCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject ToastOnErrorAction toastOnError;
 
     @InjectView(R.id.leaderboard_def_item_icon_container) View leaderboardDefIconContainer;
     @InjectView(R.id.leaderboard_def_item_icon) ImageView leaderboardDefIcon;

@@ -10,8 +10,8 @@
   <com.tradehero.common.widget.AuthenticationButton
       android:id="@+id/btn_linkedin_signin"
       style="@style/TH.SocialAuthenticationButton"
-      android:drawableLeft="@drawable/settings_linkedin_normal"
-      android:drawableStart="@drawable/settings_linkedin_normal"
+      android:drawableLeft="@drawable/icn_li_white"
+      android:drawableStart="@drawable/icn_li_white"
       android:background="@drawable/btn_background_social_linkedin"
       android:text="@string/linkedin_login_in"
       app:type="linkedin"
