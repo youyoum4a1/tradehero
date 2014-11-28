@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.chinabuild.data;
 
 import org.jetbrains.annotations.NotNull;
-import retrofit.http.Query;
 
 /**
  * Created by huhaiping on 14-9-10.

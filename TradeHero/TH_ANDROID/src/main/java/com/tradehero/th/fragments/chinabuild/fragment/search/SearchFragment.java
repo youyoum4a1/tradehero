@@ -340,8 +340,6 @@ public class SearchFragment extends DashboardFragment implements HasSelectedItem
             key.page += 1;
         }
 
-        adapter.notifyDataSetChanged();
-
         if (adapter.getCount() > 0)
         {
             tvResult.setVisibility(View.GONE);

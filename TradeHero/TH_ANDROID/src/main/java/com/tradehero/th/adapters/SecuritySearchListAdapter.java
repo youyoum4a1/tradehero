@@ -12,6 +12,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
+import java.util.ArrayList;
 
 /*
 搜索出来的股票显示
@@ -40,11 +41,21 @@ public class SecuritySearchListAdapter extends BaseAdapter
     public void setSecurityList(SecurityCompactDTOList list)
     {
         this.securityCompactDTOs = list;
+        notifyDataSetChanged();
+    }
+
+    public void setSecurityList(ArrayList<SecurityCompactDTO> list)
+    {
+        if(list ==  null )return;
+        this.securityCompactDTOs = new SecurityCompactDTOList();
+        this.securityCompactDTOs.addAll(list);
+        notifyDataSetChanged();
     }
 
     public void addItems(SecurityCompactDTOList listAdd)
     {
         this.securityCompactDTOs.addAll(listAdd);
+        notifyDataSetChanged();
     }
 
     @Override public int getCount()

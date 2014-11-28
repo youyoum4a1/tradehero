@@ -1,10 +1,11 @@
 package com.tradehero.th.api.users;
 
 import com.tradehero.common.persistence.DTO;
+import java.io.Serializable;
 import java.util.Date;
 import org.jetbrains.annotations.Nullable;
 
-public class UserSearchResultDTO implements DTO
+public class UserSearchResultDTO implements DTO,Serializable
 {
     public String userFirstName;
     public String userLastName;

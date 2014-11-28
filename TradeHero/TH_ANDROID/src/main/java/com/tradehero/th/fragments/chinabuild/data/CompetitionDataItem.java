@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.chinabuild.data;
 
-public class CompetitionDataItem implements CompetitionInterface
+import java.io.Serializable;
+
+public class CompetitionDataItem implements CompetitionInterface,Serializable
 {
     public UserCompetitionDTO userCompetitionDTO;
 

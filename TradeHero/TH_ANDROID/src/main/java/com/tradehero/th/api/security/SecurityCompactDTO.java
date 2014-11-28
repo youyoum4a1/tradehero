@@ -17,6 +17,7 @@ import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
 import com.tradehero.th.api.security.compact.UnitCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +45,7 @@ import timber.log.Timber;
         @JsonSubTypes.Type(value = PreferredSecurityDTO.class, name = PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = StapledSecurityDTO.class, name = StapledSecurityDTO.DTO_DESERIALISING_TYPE),
 })
-public class SecurityCompactDTO extends ExtendedDTO
+public class SecurityCompactDTO extends ExtendedDTO implements Serializable
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 

@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.chinabuild.cache;
 
 import com.tradehero.common.persistence.StraightDTOCacheNew;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.fragments.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.th.network.service.CompetitionServiceWrapper;
 import dagger.Lazy;

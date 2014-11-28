@@ -78,7 +78,6 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
     {
         Timber.d("CompetitionSearchClicked!");
         //gotoDashboard(CompetitionSearchFragment.class.getName());
-
         Bundle bundle =  new Bundle();
         bundle.putInt(SearchUniteFragment.BUNDLE_DEFAULT_TAB_PAGE,SearchUniteFragment.TAB_SEARCH_COMPETITION);
         gotoDashboard(SearchUniteFragment.class.getName(),bundle);

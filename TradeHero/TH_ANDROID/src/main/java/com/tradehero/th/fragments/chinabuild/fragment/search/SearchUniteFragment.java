@@ -53,6 +53,7 @@ import com.tradehero.th.fragments.chinabuild.fragment.competition.CompetitionUti
 import com.tradehero.th.fragments.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.th.fragments.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.fragments.chinabuild.listview.SecurityListView;
+import com.tradehero.th.fragments.chinabuild.saveload.SearchResultSave;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.user.UserBaseKeyListCache;
@@ -113,6 +114,9 @@ public class SearchUniteFragment extends DashboardFragment
     @InjectView(R.id.viewLine0) View viewLine0;
     @InjectView(R.id.viewLine1) View viewLine1;
     @InjectView(R.id.viewLine2) View viewLine2;
+    private TradeHeroProgressBar progressBar0;
+    private TradeHeroProgressBar progressBar1;
+    private TradeHeroProgressBar progressBar2;
 
     public SecurityListView listStock;
     public SecurityListView listCompetition;
@@ -160,13 +164,6 @@ public class SearchUniteFragment extends DashboardFragment
     {
         searchStr = getActivity().getResources().getString(R.string.search_search);
         searchCancelStr = getActivity().getResources().getString(R.string.search_cancel);
-        //if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()) && !isUserSearch)
-        //{
-        //    if (adapter != null && adapter.getCount() == 0)
-        //    {
-        //        fetchHotSecuritySearchList(true);
-        //    }
-        //}
 
         tvSearchInput.addTextChangedListener(new TextWatcher()
         {
@@ -214,58 +211,6 @@ public class SearchUniteFragment extends DashboardFragment
                 return true;
             }
         });
-
-        //listSearch.setMode(PullToRefreshBase.Mode.BOTH);
-        //listSearch.setAdapter(adapter);
-        //listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        //{
-        //    @Override
-        //    public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-        //    {
-        //        Timber.d("下拉刷新");
-        //        if (isUserSearch && (!StringUtils.isNullOrEmpty(getSearchString())))
-        //        {
-        //            fetchSecuritySearchList(true);
-        //        }
-        //        else
-        //        {
-        //            fetchHotSecuritySearchList(true);
-        //        }
-        //    }
-        //
-        //    @Override
-        //    public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-        //    {
-        //        Timber.d("上拉加载更多");
-        //        if (isUserSearch)
-        //        {
-        //            fetchSecuritySearchListMore();
-        //        }
-        //        else
-        //        {
-        //            fetchHotSecuritySearchListMore();
-        //        }
-        //    }
-        //});
-        //
-        //listSearch.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        //{
-        //    @Override
-        //    public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-        //    {
-        //        SecurityCompactDTO dto = (SecurityCompactDTO) adapter.getItem((int) position);
-        //        if (dto != null)
-        //        {
-        //            Timber.d("list item clicked %s", dto.name);
-        //            enterSecurity(dto.getSecurityId(), dto.name, dto);
-        //            if (isUserSearch)
-        //            {
-        //                sendAnalytics(dto);
-        //            }
-        //        }
-        //    }
-        //});
-        //listSearch.setEmptyView(tvResult);
     }
 
     public void enterSecurity(SecurityId securityId, String securityName, SecurityCompactDTO dto)
@@ -419,21 +364,6 @@ public class SearchUniteFragment extends DashboardFragment
         securityCompactListCache.get().getOrFetchAsync(keyHot, force);
     }
 
-    //private void fetchSecuritySearchListMore()
-    //{
-    //    if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
-    //    detachSecurityListCache();
-    //    securityCompactListCache.get().register(keySearch, securityListTypeCacheListener);
-    //    securityCompactListCache.get().getOrFetchAsync(keySearch, true);
-    //}
-    //
-    //private void fetchHotSecuritySearchListMore()
-    //{
-    //    detachSecurityHotListCache();
-    //    securityCompactListCache.get().register(keyHot, securityListTypeHotCacheListener);
-    //    securityCompactListCache.get().getOrFetchAsync(keyHot, true);
-    //}
-
     public String getSearchString()
     {
         String strSearch = tvSearchInput.getText().toString();
@@ -557,28 +487,46 @@ public class SearchUniteFragment extends DashboardFragment
 
             }
         });
-        getRecommandData();
-
+        loadRecommandData();
 
         if (isFristLunch && getArguments() != null)
         {
-            int index = getArguments().getInt(BUNDLE_DEFAULT_TAB_PAGE,0);
+            int index = getArguments().getInt(BUNDLE_DEFAULT_TAB_PAGE, 0);
             pager.setCurrentItem(tabSelect = index);
             isFristLunch = false;
         }
     }
 
-    public void getRecommandData()
+    public void loadRecommandData()
     {
         if (adapterStock != null && adapterUser.getCount() == 0)
         {
-            fetchHotSecuritySearchList(true);
+            //fetchHotSecuritySearchList(true);
+            ArrayList<SecurityCompactDTO> securies = SearchResultSave.loadSearchSecurity(getActivity());
+            if (securies != null)
+            {
+                adapterStock.setSecurityList(securies);
+            }
+        }
+
+        if (adapterUser != null && adapterUser.getCount() == 0)
+        {
+            ArrayList<UserSearchResultDTO> users = SearchResultSave.loadSearchUsers(getActivity());
+            if (users != null)
+            {
+                adapterUser.setListData(users);
+            }
+        }
+
+        if (adapterCompetition != null && adapterCompetition.getCount() == 0)
+        {
+            ArrayList<CompetitionDataItem> competitions = SearchResultSave.loadSearchCompetitions(getActivity());
+            if (competitions != null)
+            {
+                adapterCompetition.setUserCompetitionDataList(competitions);
+            }
         }
     }
-
-    TradeHeroProgressBar progressBar0;
-    TradeHeroProgressBar progressBar1;
-    TradeHeroProgressBar progressBar2;
 
     public void controlLoading(int index, boolean isShow)
     {
@@ -624,6 +572,7 @@ public class SearchUniteFragment extends DashboardFragment
                         enterSecurity(dto.getSecurityId(), dto.name, dto);
                         if (isUserSearch)
                         {
+                            SearchResultSave.saveSearchSecurity(getActivity(), (SecurityCompactDTO) dto);
                             sendAnalytics(dto);
                         }
                     }
@@ -638,6 +587,7 @@ public class SearchUniteFragment extends DashboardFragment
                     CompetitionInterface item = adapterCompetition.getItem((int) position);
                     if (item instanceof CompetitionDataItem)
                     {
+                        SearchResultSave.saveSearchCompetitons(getActivity(), (CompetitionDataItem) item);
                         gotoCompetitionDetailFragment(((CompetitionDataItem) item).userCompetitionDTO);
                     }
                 }
@@ -651,7 +601,8 @@ public class SearchUniteFragment extends DashboardFragment
                     UserSearchResultDTO item = adapterUser.getItem((int) position);
                     if (item instanceof UserSearchResultDTO)
                     {
-                        gotoUserDetailFragment(((UserSearchResultDTO) item).userId);
+                        SearchResultSave.saveSearchUsers(getActivity(), item);
+                        gotoUserDetailFragment(item.userId);
                     }
                 }
             };
