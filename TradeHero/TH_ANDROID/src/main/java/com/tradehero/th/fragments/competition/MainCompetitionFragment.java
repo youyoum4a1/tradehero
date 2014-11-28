@@ -69,6 +69,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -357,7 +359,18 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (providerPrizePoolDTOs == null)
         {
-            THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            // When there is no prize pool, server returns HTTP404, which is a valid response
+            boolean is404 = false;
+            if (e instanceof RetrofitError)
+            {
+                Response response = ((RetrofitError) e).getResponse();
+                is404 = response != null && response.getStatus() == 404;
+            }
+            if (!is404)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            }
+            competitionZoneListItemAdapter.setPrizePoolDTO(new ArrayList<>());
         }
         Timber.e(e, "Error fetching the provider info");
     }
