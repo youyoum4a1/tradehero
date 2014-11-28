@@ -13,6 +13,7 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
@@ -49,7 +50,7 @@ public enum RootFragmentType
             R.drawable.icn_menu_store, StoreScreenFragment.class, AnalyticsConstants.TabBar_Store),
     FRIEND_REFERRAL(R.layout.residemenu_item_refererral,
             R.string.dashboard_referral, R.string.dashboard_referral_key,
-            R.drawable.icn_menu_referral, FriendsInvitationFragment.class, AnalyticsConstants.TabBar_FriendReferral),
+            R.drawable.icn_menu_referral, SettingsReferralCodeFragment.class, AnalyticsConstants.TabBar_FriendReferral),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
             R.drawable.icn_menu_settings, SettingsFragment.class, AnalyticsConstants.TabBar_Settings),
