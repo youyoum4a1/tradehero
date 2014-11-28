@@ -8,6 +8,7 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CustomXmlConverter;
 import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.api.competition.*;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTODeserialiser;
@@ -24,7 +25,6 @@ import com.tradehero.th.network.FriendlyUrlConnectionClient;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.*;
-import com.tradehero.th.utils.RetrofitConstants;
 import com.tradehero.th.widget.VotePair;
 import dagger.Module;
 import dagger.Provides;
@@ -262,31 +262,12 @@ public class RetrofitModule
                 .setConverter(converter)
                 .setClient(client)
                 .setErrorHandler(errorHandler)
-                .setLogLevel(RetrofitConstants.DEFAULT_SERVICE_LOG_LEVEL);
+                .setLogLevel(RetrofitHelper.DEFAULT_SERVICE_LOG_LEVEL);
     }
 
     @Provides @Singleton RestAdapter provideRestAdapter(RestAdapter.Builder builder, Endpoint server, RequestHeaders requestHeaders)
     {
         return builder.setEndpoint(server).setRequestInterceptor(requestHeaders).build();
     }
-
-    //@Provides Client provideOkClient(Context context)
-    //{
-    //    File httpCacheDirectory = new File(context.getCacheDir(), "HttpCache");
-    //
-    //    HttpResponseCache httpResponseCache = null;
-    //    try
-    //    {
-    //        httpResponseCache = new HttpResponseCache(httpCacheDirectory, 10 * 1024);
-    //    } catch (IOException e)
-    //    {
-    //        Timber.e("Could not create http cache", e);
-    //    }
-    //
-    //    OkHttpClient okHttpClient = new OkHttpClient();
-    //    okHttpClient.setResponseCache(httpResponseCache);
-    //    okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
-    //    return new OkClient(okHttpClient);
-    //}
 
 }

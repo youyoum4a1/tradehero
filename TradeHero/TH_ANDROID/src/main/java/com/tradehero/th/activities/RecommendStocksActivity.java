@@ -13,7 +13,6 @@ import butterknife.InjectView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
-import com.tradehero.common.log.ABCLogger;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.RecommendListAdapter;
@@ -178,11 +177,9 @@ public class RecommendStocksActivity extends SherlockActivity implements View.On
             heroes.clear();
             for(RecommendStock stock: recommendItems.securities){
                 securities.add(stock);
-                ABCLogger.d(stock.toString());
             }
             for(RecommendHero hero: recommendItems.users){
                 heroes.add(hero);
-                ABCLogger.d(hero.toString());
             }
             //If not recommend heroes and stocks, go to the main activity directly.
             if(heroes.size()==0 && securities.size()==0){

@@ -1,4 +1,4 @@
-package com.tradehero.common.log;
+package com.tradehero.common.timber;
 
 import android.text.TextUtils;
 import com.crashlytics.android.Crashlytics;

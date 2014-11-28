@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import com.tradehero.th.R;
 import com.tradehero.th.base.Application;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class NumberDisplayUtils
 {
@@ -28,11 +29,6 @@ public class NumberDisplayUtils
         this.context = context;
     }
     //</editor-fold>
-
-    public static String formatWithRelevantDigits(double number, int relevantDigits)
-    {
-        return formatWithRelevantDigits(number, relevantDigits, null);
-    }
 
     public static String formatWithRelevantDigits(double number, int relevantDigits, String prefix)
     {

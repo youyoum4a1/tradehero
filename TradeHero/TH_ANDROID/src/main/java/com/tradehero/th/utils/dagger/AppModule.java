@@ -123,7 +123,6 @@ import com.tradehero.th.persistence.user.UserProfileRetrievedMilestone;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.ui.UIModule;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.TradeHeroProgressBar;
@@ -140,7 +139,6 @@ import java.util.Locale;
                 NetworkModule.class,
                 SocialNetworkModule.class,
                 UIModule.class,
-                MetricsModule.class,
                 ModelsModule.class,
                 UserModule.class,
                 PreferenceModule.class,

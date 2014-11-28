@@ -18,7 +18,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.log.ABCLogger;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -501,7 +500,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     }
 
     private void startPhotoZoom(Uri data, int size){
-        ABCLogger.d(data.toString());
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(data, "image/*");
         intent.putExtra("crop", "true");

@@ -3,9 +3,9 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Intent;
 import com.tradehero.common.application.PApplication;
-import com.tradehero.common.log.CrashReportingTree;
-import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
+import com.tradehero.common.timber.CrashReportingTree;
+import com.tradehero.common.timber.EasyDebugTree;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.filter.FilterModule;
@@ -34,12 +34,13 @@ import com.tradehero.th.utils.DeviceSignUtils;
 import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.route.THRouter;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class Application extends PApplication
 {

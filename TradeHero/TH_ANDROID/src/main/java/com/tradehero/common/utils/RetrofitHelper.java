@@ -1,10 +1,13 @@
 package com.tradehero.common.utils;
 
-import java.util.Collection;
-import javax.inject.Inject;
+import com.tradehero.th.utils.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit.RestAdapter;
 import retrofit.client.Header;
+
+import javax.inject.Inject;
+import java.util.Collection;
 
 public class RetrofitHelper
 {
@@ -14,6 +17,9 @@ public class RetrofitHelper
         super();
     }
     //</editor-fold>
+
+    public static final RestAdapter.LogLevel DEFAULT_SERVICE_LOG_LEVEL =
+            Constants.RELEASE ? RestAdapter.LogLevel.NONE : RestAdapter.LogLevel.FULL;
 
     @Nullable public Header findHeaderByName(
             @NotNull Collection<? extends Header> headers,

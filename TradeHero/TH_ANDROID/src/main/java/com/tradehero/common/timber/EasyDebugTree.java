@@ -1,9 +1,10 @@
-package com.tradehero.common.log;
+package com.tradehero.common.timber;
 
 import android.util.Log;
+import timber.log.Timber;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import timber.log.Timber;
 
 public class EasyDebugTree implements Timber.Tree, Timber.TaggedTree
 {

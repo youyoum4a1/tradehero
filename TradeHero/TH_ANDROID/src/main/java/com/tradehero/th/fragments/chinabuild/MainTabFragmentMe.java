@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.common.log.ABCLogger;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -351,7 +350,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
             return;
         }
         int count = value.unreadNotificationsCount;
-        ABCLogger.d(" unreadNotificationsCount " + count);
         if(count<=0){
             tvMeNotificationCount.setVisibility(View.GONE);
             return;

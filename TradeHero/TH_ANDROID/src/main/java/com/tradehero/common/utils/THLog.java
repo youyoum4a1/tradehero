@@ -3,12 +3,15 @@ package com.tradehero.common.utils;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.Constants;
+import timber.log.Timber;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import timber.log.Timber;
 
 public class THLog
 {
@@ -34,5 +37,21 @@ public class THLog
                 Timber.d("KeyHash Error", e.getMessage());
             }
         }
+    }
+
+
+    private final static boolean isDebug = true;
+    private final static String TAG = "abc";
+
+
+    public static void d(String logStr){
+        if(!isDebug){
+            return;
+        }
+        if(TextUtils.isEmpty(logStr)){
+            Log.d(TAG, "");
+            return;
+        }
+        Log.d(TAG, logStr);
     }
 }
