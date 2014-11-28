@@ -89,6 +89,7 @@ abstract public class BasePagedListRxFragment<
         listView.setOnScrollListener(createListViewScrollListener());
         listView.setEmptyView(emptyContainer);
         listView.setAdapter(itemViewAdapter);
+        initViews(view);
     }
 
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()

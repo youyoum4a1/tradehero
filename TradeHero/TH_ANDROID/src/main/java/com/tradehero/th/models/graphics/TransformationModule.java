@@ -86,22 +86,6 @@ public class TransformationModule
         return transformation;
     }
 
-    @Provides @ForSecurityItemBackground2 @Singleton
-    public Transformation provideSecurityItemBackgroundTransformation2(Context context, Picasso picasso)
-    {
-        AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
-        {
-            @Override public String key()
-            {
-                return "toFastBlurGrayScale2";
-            }
-        };
-        transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new StackBlurTransformation(10));
-        transformation.add(new AlphaTransformation(0.2f));
-        return transformation;
-    }
-
     @Provides @ForSecurityItemForeground @Singleton
     public Transformation provideSecurityItemForegroundTransformation()
     {

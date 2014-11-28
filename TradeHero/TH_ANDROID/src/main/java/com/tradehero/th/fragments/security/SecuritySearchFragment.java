@@ -42,6 +42,9 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     {
         super.onViewCreated(view, savedInstanceState);
         searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+
+        //We set this to true so that the item will show selected state when pressed.
+        listView.setDrawSelectorOnTop(true);
     }
 
     //<editor-fold desc="ActionBar">

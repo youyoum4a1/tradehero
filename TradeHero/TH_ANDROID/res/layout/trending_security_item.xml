@@ -9,22 +9,9 @@
     android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
     android:gravity="center_vertical"
-    android:padding="@dimen/grid_item_bg_border_width"
+    android:padding="@dimen/margin_xsmall"
     android:background="@drawable/grid_item_bg"
     >
-
-  <com.makeramen.RoundedImageView
-      android:id="@+id/stock_bg_logo"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
-      android:contentDescription="@null"
-      app:oval="false"
-      app:corner_radius="@dimen/grid_item_bg_radius"
-      android:scaleType="centerCrop"
-      tools:background="@color/red"
-      android:visibility="gone"
-      />
 
   <TextView
       android:id="@+id/stock_name"
