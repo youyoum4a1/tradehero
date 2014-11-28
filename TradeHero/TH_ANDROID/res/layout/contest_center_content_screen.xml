@@ -23,7 +23,8 @@
       android:dividerHeight="@dimen/margin_xsmall"
       android:divider="@color/transparent"
       android:clipToPadding="false"
-      app:hasStickyHeaders="false"
+      android:listSelector="@drawable/basic_transparent_selector"
+      android:drawSelectorOnTop="true"
       />
 
   <TextView
