@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tradehero.th">
 
+  <supports-screens
+      android:smallScreens="false"
+      />
+
   <!-- Samsung IAP -->
   <uses-permission android:name="com.sec.android.iap.permission.BILLING"/>
 
