@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClickSticky;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
@@ -284,7 +285,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
         });
         //timelineListView.setOnLastItemVisibleListener(new TimelineLastItemVisibleListener());
-        timelineListView.setOnItemClickListener(this::onMainItemClick);
 
         if (userProfileView != null && displayingProfileHeaderLayoutId != 0)
         {
@@ -323,7 +323,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mainTimelineAdapter.setOnLoadFinishedListener(null);
         timelineListView.setOnScrollListener(null);
         swipeRefreshContainer.setOnRefreshListener(null);
-        timelineListView.setOnItemClickListener(null);
         super.onPause();
     }
 
@@ -502,7 +501,9 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     /** item of Portfolio tab is clicked */
-    private void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemClickSticky(R.id.timeline_list_view)
+    protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Object item = adapterView.getItemAtPosition(i);
         if (item instanceof DisplayablePortfolioDTO)

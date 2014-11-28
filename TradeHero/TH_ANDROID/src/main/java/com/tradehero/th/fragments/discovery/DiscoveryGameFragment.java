@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClickSticky;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
@@ -38,7 +39,9 @@ public class DiscoveryGameFragment extends DashboardFragment
     @InjectView(android.R.id.empty) View emptyView;
     @Inject CurrentUserId currentUserId;
 
-    /*@OnItemClick(android.R.id.list) */void handleItemClick(AdapterView<?> parent, View view, int position, long id)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemClickSticky(R.id.game_list)
+    void handleItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
         if (item instanceof MiniGameDefDTO)
@@ -80,7 +83,6 @@ public class DiscoveryGameFragment extends DashboardFragment
 
         DiscoveryGameAdapter adapter = new DiscoveryGameAdapter(getActivity(), R.layout.discovery_game_item_view);
         stickyListHeadersListView.setAdapter(adapter);
-        stickyListHeadersListView.setOnItemClickListener(this::handleItemClick);
         stickyListHeadersListView.setEmptyView(emptyView);
 
         subscriptions = new CompositeSubscription();
