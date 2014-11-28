@@ -35,8 +35,6 @@ public class SecurityItemView extends RelativeLayout
 {
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
-    @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
-
     @Inject protected Picasso mPicasso;
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
@@ -438,7 +436,7 @@ public class SecurityItemView extends RelativeLayout
 
     private RequestCreator picassoSetupLogoParam(@NonNull RequestCreator creator)
     {
-        return creator.transform(foregroundTransformation)
+        return creator
                 .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
                 .centerInside();
     }
