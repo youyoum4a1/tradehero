@@ -24,7 +24,7 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
 
     @Override public int getNetworkLabelImage()
     {
-        return R.drawable.icn_weibo_round;
+        return R.drawable.icn_wb_white;
     }
 
     @Override public String getProfilePictureURL()

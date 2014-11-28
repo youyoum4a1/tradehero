@@ -7,6 +7,6 @@ public class SocialTypeItemFacebook extends SocialTypeItem
 {
     public SocialTypeItemFacebook()
     {
-        super(R.drawable.icn_fb_round, R.string.invite_from_facebook, R.drawable.social_item_fb, SocialNetworkEnum.FB);
+        super(R.drawable.icn_fb_white, R.string.invite_from_facebook, R.drawable.social_item_fb, SocialNetworkEnum.FB);
     }
 }

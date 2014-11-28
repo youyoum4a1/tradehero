@@ -7,6 +7,6 @@ public class SocialTypeItemLinkedin extends SocialTypeItem
 {
     public SocialTypeItemLinkedin()
     {
-        super(R.drawable.icn_linkedin_round, R.string.invite_from_linkedIn, R.drawable.social_item_ln, SocialNetworkEnum.LN);
+        super(R.drawable.icn_li_white, R.string.invite_from_linkedIn, R.drawable.social_item_ln, SocialNetworkEnum.LN);
     }
 }

@@ -65,7 +65,6 @@ public class SecurityItemView extends RelativeLayout
     public SecurityItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        //setBackgroundResource(R.drawable.trending_grid_item_bg);
     }
 
     public SecurityItemView(Context context, AttributeSet attrs, int defStyle)

@@ -112,15 +112,14 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_invite_friends, container, false);
-        ButterKnife.inject(this, v);
-        return v;
+        return inflater.inflate(R.layout.fragment_invite_friends, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         initView(view);
         restoreSavedData(savedInstanceState);
     }
@@ -135,7 +134,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     @Override public void onStop()
     {
         unsubscribe(searchSubscription);
-        searchSubscription= null;
+        searchSubscription = null;
         super.onStop();
     }
 
@@ -222,7 +221,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         final SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
-        if(item.socialNetwork == SocialNetworkEnum.WECHAT)
+        if (item.socialNetwork == SocialNetworkEnum.WECHAT)
         {
             inviteWeChatFriends();
             return;
@@ -399,7 +398,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         UserProfileDTO updatedUserProfileDTO =
                 userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         return updatedUserProfileDTO != null &&
-            userProfileDTOUtil.get().checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
+                userProfileDTOUtil.get().checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
     }
 
     @Override
