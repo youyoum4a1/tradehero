@@ -15,7 +15,7 @@ import java.util.List;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class DiscoveryGameAdapter extends ArrayDTOAdapter<MiniGameDefDTO, MiniGameDefItemView>
-    implements StickyListHeadersAdapter
+        implements StickyListHeadersAdapter
 {
     public DiscoveryGameAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
@@ -71,5 +71,16 @@ public class DiscoveryGameAdapter extends ArrayDTOAdapter<MiniGameDefDTO, MiniGa
             }
         }
         return -1;
+    }
+
+    @Override public boolean areAllItemsEnabled()
+    {
+        return false;
+    }
+
+    @Override public boolean isEnabled(int position)
+    {
+        MiniGameDefDTO item = (MiniGameDefDTO) getItem(position);
+        return !item.comingSoon;
     }
 }
