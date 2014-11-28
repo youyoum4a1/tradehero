@@ -159,8 +159,5 @@
   <dimen name="dashboard_tabhost_height">@dimen/size_6</dimen>
   <dimen name="dashboard_red_dot_dimen">5dp</dimen>
   <dimen name="discovery_news_swipe_indicator_height">24dp</dimen>
-  <dimen name="discovery_minigame_item_image_height">80dp</dimen>
-  <dimen name="minigame_title_vertical_padding">5dp</dimen>
-  <dimen name="minigame_title_horizontal_padding">5dp</dimen>
-  <dimen name="minigame_title_end_padding">30dp</dimen>
+  <dimen name="discovery_minigame_item_image_height">@dimen/size_12</dimen>
 </resources>

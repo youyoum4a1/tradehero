@@ -16,13 +16,10 @@ import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
-public class MiniGameDefItemView extends FrameLayout
+public class MiniGameDefItemView extends ImageView
         implements DTOView<MiniGameDefDTO>
 {
     @NonNull private MiniGameDefDTO miniGameDefDTO;
-    @InjectView(R.id.minigame_item_background) ImageView gameBackground;
-    @InjectView(R.id.minigame_item_title) TextView title;
-
     @Inject Picasso picasso;
 
     public MiniGameDefItemView(Context context, AttributeSet attrs)
@@ -47,7 +44,7 @@ public class MiniGameDefItemView extends FrameLayout
     {
         super.onDetachedFromWindow();
 
-        picasso.cancelRequest(gameBackground);
+        picasso.cancelRequest(this);
     }
 
     @Override public void display(@NonNull MiniGameDefDTO miniGameDefDTO)
@@ -55,22 +52,14 @@ public class MiniGameDefItemView extends FrameLayout
         this.miniGameDefDTO = miniGameDefDTO;
 
         displayImage();
-        displayTitle();
-    }
-
-    private void displayTitle()
-    {
-        title.setText(miniGameDefDTO.name);
     }
 
     private void displayImage()
     {
         picasso.load(miniGameDefDTO.image)
-                .placeholder(miniGameDefDTO.comingSoon ? R.color.gray_3 : R.color.tradehero_blue)
-                .into(gameBackground);
-        if (miniGameDefDTO.comingSoon && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        {
-            gameBackground.setImageAlpha(80);
-        }
+                .fit()
+                .centerCrop()
+                .placeholder(R.color.gray_3)
+                .into(this);
     }
 }

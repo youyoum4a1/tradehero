@@ -22,7 +22,9 @@
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/game_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:listSelector="@drawable/basic_transparent_selector"
+        android:drawSelectorOnTop="true"/>
 
   </com.tradehero.common.widget.BetterViewAnimator>
 
@@ -31,6 +33,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/game_nothing_description"
+      style="@style/TH.Loading_Empty_Text"
+      android:visibility="gone"
       />
 
 </FrameLayout>
