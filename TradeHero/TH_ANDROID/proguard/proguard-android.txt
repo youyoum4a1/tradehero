@@ -48,6 +48,12 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
     @com.fasterxml.jackson.annotation.JsonCreator public static ** **(**);
+    ** **();
+    final ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue final ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue @android.support.annotation.NonNull ** **();
+    @com.fasterxml.jackson.annotation.@JsonValue @android.support.annotation.NonNull final ** **();
 }
 
 -keep class * implements android.os.Parcelable {

@@ -1,7 +1,7 @@
 package com.tradehero.th.utils.metrics;
 
-import com.tradehero.th.api.misc.DeviceType;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.misc.DeviceType;
 
 public enum MarketSegment
 {

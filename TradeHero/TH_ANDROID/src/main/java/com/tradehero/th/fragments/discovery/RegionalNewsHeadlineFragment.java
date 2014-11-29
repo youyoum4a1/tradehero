@@ -3,13 +3,15 @@ package com.tradehero.th.fragments.discovery;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.View;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.key.NewsItemListKey;
 import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 import rx.functions.Func1;
 import rx.operators.OperatorLocalBroadcastRegister;
 import rx.schedulers.Schedulers;
@@ -20,28 +22,39 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
 
     @Inject Locale locale;
     @Inject @RegionalNews CountryLanguagePreference countryLanguagePreference;
-    @Override protected Observable<NewsItemListKey> createNewsItemListKeyObservable()
+    @Inject ToastOnErrorAction toastOnErrorAction;
+
+    @Override protected void initView(View view)
     {
-        return super.createNewsItemListKeyObservable()
-                .mergeWith(createNewsItemListRegionalKeyObservable());
+        super.initView(view);
+
+        subscriptions.add(
+                AndroidObservable.bindFragment(
+                        this,
+                        Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
+                                .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
+                                .subscribeOn(Schedulers.io()))
+                        .onErrorResumeNext(Observable.empty())
+                        .subscribe(this::replaceNewsItemListView, toastOnErrorAction));
     }
 
-    private Observable<NewsItemListKey> createNewsItemListRegionalKeyObservable()
+    private NewsItemListRegionalKey newsItemListKeyFromPref()
     {
-        return Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
-                .map((Func1<Intent, NewsItemListKey>) intent -> {
-                    CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
-                    return new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null);
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(this::replaceNewsItemListView);
+        CountryLanguagePairDTO countryLanguagePairDTO = countryLanguagePreference.get();
+        return new NewsItemListRegionalKey(countryLanguagePairDTO.countryCode, countryLanguagePairDTO.languageCode, null, null);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
+        if (countryLanguagePreference.isSet())
+        {
+            newsItemListKey = newsItemListKeyFromPref();
+        }
+        else
+        {
+            newsItemListKey = new NewsItemListRegionalKey(locale.getCountry(), locale.getLanguage(), null, null);
+        }
     }
 }

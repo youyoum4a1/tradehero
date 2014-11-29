@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="afterDescendants"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    >
+
+  <ImageView
+      android:id="@+id/background"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignBottom="@+id/bottom_spacing"
+      android:layout_alignParentTop="true"
+      android:scaleType="centerCrop"
+      android:src="@drawable/launcher"
+      android:background="@color/white"
+      />
+
+  <LinearLayout
+      android:id="@+id/prize_pool_current_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
+      android:orientation="horizontal"
+      >
+
+    <TextView
+        android:id="@+id/prize_pool_current"
+        style="@style/TH.Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/provider_current_prize_pool"
+        android:layout_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/prize_pool_current_prize"
+        style="@style/TH.Headline.Accented"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical|end"
+        android:layout_weight="1"
+        tools:text="S$ 15,000"
+        />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/prize_pool_next_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/prize_pool_current_container"
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
+      android:orientation="horizontal"
+      >
+
+    <com.tradehero.th.widget.MarkdownTextView
+        android:id="@+id/prize_pool_next_prize"
+        style="@style/TH.Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/provider_prize_pool_new_players_need"
+        android:layout_weight="0.5"
+        />
+
+    <TextView
+        android:id="@+id/prize_pool_player_needed"
+        style="@style/TH.Headline.Accented"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|right|end"
+        android:layout_weight="0.5"
+        tools:text="3,656"
+        />
+
+  </LinearLayout>
+
+  <Button
+      android:id="@+id/invite_friend"
+      style="@style/Leaderboard_ActionButton_Blue"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_below="@+id/prize_pool_next_container"
+      android:layout_centerHorizontal="true"
+      android:text="@string/invite_your_friends_now"
+      />
+
+  <Space
+      android:id="@+id/bottom_spacing"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/margin_small"
+      android:layout_below="@id/invite_friend"
+      />
+
+</com.tradehero.th.fragments.competition.zone.CompetitionZonePrizePoolView>

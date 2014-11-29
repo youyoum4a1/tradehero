@@ -1,10 +1,8 @@
 package com.tradehero.common.persistence.prefs;
 
 import android.content.SharedPreferences;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.market;
 
-import java.util.Comparator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.Comparator;
 
 public class ExchangeCompactDTODescriptionNameComparator<ExchangeCompactDTOType extends ExchangeCompactDTO>
         implements Comparator<ExchangeCompactDTOType>

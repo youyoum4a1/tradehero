@@ -16,7 +16,8 @@
       android:id="@android:id/list"
       android:listSelector="@color/transparent"
       android:divider="@color/transparent"
-      android:paddingBottom="@dimen/discussion_comment_box_height"
+      android:paddingBottom="@dimen/discussion_list_padding_bottom"
+      android:clipToPadding="false"
       />
 
   <include layout="@layout/post_comment_widget"/>

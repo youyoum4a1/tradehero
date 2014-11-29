@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class CountryLanguagePreference extends AbstractPreference<CountryLanguagePairDTO>
 {
@@ -46,6 +46,20 @@ public class CountryLanguagePreference extends AbstractPreference<CountryLanguag
                 .putString(nameKey, value.name)
                 .putString(countryKey, value.countryCode)
                 .putString(languageKey, value.languageCode)
+                .apply();
+    }
+
+    @Override public boolean isSet()
+    {
+        return preference.contains(nameKey) && preference.contains(countryKey) && preference.contains(languageKey);
+    }
+
+    @Override public void delete()
+    {
+        preference.edit()
+                .remove(nameKey)
+                .remove(countryKey)
+                .remove(languageKey)
                 .apply();
     }
 }

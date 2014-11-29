@@ -10,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -36,13 +38,11 @@ import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
+import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -104,11 +104,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Override protected void onProgressChanged(WebView view, int newProgress)
     {
         super.onProgressChanged(view, newProgress);
-        Activity activity = getActivity();
-        if (activity != null)
-        {
-            activity.setProgress(newProgress * 100);
-        }
 
         if (mainContentWrapper != null && newProgress > 50)
         {

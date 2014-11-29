@@ -2,24 +2,29 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
-import com.tradehero.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -28,15 +33,12 @@ public class TrendingFilterSelectorView extends RelativeLayout
 {
     @Inject Analytics analytics;
 
-    @InjectView(R.id.previous_filter) public ImageButton mPrevious;
-    @InjectView(R.id.next_filter) public ImageButton mNext;
     @InjectView(R.id.title) public TextView mTitle;
     @InjectView(R.id.trending_filter_title_icon) public ImageView mTitleIcon;
     @InjectView(R.id.description) public TextView mDescription;
     @InjectView(R.id.exchange_selection) public ExchangeSpinner mExchangeSelection;
-    private TrendingFilterSpinnerIconAdapterNew mExchangeSelectionAdapter;
 
-    private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
+    @Nullable private SpinnerAdapter exchangeAdapter;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
     @NonNull private BehaviorSubject<TrendingFilterTypeDTO> trendingTypeBehavior;
 
@@ -47,10 +49,6 @@ public class TrendingFilterSelectorView extends RelativeLayout
         HierarchyInjector.inject(this);
         trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
         trendingTypeBehavior = BehaviorSubject.create(trendingFilterTypeDTO);
-        mExchangeSelectionAdapter = new TrendingFilterSpinnerIconAdapterNew(
-                getContext(),
-                R.layout.trending_filter_spinner_item);
-        mExchangeSelectionAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
     }
     //</editor-fold>
 
@@ -64,11 +62,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        mExchangeSelection.setAdapter(mExchangeSelectionAdapter);
-        if (exchangeCompactSpinnerDTOs != null)
-        {
-            mExchangeSelectionAdapter.addAll(exchangeCompactSpinnerDTOs);
-        }
+        mExchangeSelection.setAdapter(exchangeAdapter);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -77,16 +71,30 @@ public class TrendingFilterSelectorView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
+    public void setExchangeAdapter(@Nullable SpinnerAdapter exchangeAdapter)
+    {
+        this.exchangeAdapter = exchangeAdapter;
+        mExchangeSelection.setAdapter(exchangeAdapter);
+        mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
+    }
+
     @NonNull public Observable<TrendingFilterTypeDTO> getObservableFilter()
     {
         return trendingTypeBehavior.asObservable();
     }
 
-    public void setUpExchangeSpinner(@NonNull ExchangeCompactSpinnerDTOList items)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.previous_filter)
+    protected void handlePreviousClicked(View view)
     {
-        exchangeCompactSpinnerDTOs = items;
-        mExchangeSelectionAdapter.addAll(items);
-        mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
+        apply(trendingFilterTypeDTO.getPrevious());
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.next_filter)
+    protected void handleNextClicked(View view)
+    {
+        apply(trendingFilterTypeDTO.getNext());
     }
 
     public void apply(@NonNull TrendingFilterTypeDTO typeDTO)
@@ -95,21 +103,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
         mTitle.setText(typeDTO.titleResId);
         mTitleIcon.setImageResource(typeDTO.titleIconResId);
         mDescription.setText(typeDTO.descriptionResId);
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.previous_filter)
-    protected void handlePreviousClicked(View view)
-    {
-        apply(trendingFilterTypeDTO.getPrevious());
-        notifyObserver();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.next_filter)
-    protected void handleNextClicked(View view)
-    {
-        apply(trendingFilterTypeDTO.getNext());
+        mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
         notifyObserver();
     }
 
@@ -119,6 +113,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         trendingFilterTypeDTO.exchange = (ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i);
         notifyObserver();
+        reportAnalytics();
     }
 
     private void notifyObserver()
@@ -130,5 +125,12 @@ public class TrendingFilterSelectorView extends RelativeLayout
     private void trackChangeEvent(TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
         analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
+    }
+
+    private void reportAnalytics()
+    {
+        analytics.fireProfileEvent(new ProfileEvent(
+                AnalyticsConstants.InterestedExchange,
+                Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
     }
 }

@@ -40,7 +40,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
 
     abstract protected DTOCacheRx<SecurityId, InfoType> getInfoCache();
 
-    protected void detachSubscription(@Nullable Subscription subscription)
+    protected void unsubscribe(@Nullable Subscription subscription)
     {
         if (subscription != null)
         {

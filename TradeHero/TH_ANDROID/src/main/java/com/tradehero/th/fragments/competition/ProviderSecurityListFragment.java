@@ -79,9 +79,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_provider_security_list, container, false);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

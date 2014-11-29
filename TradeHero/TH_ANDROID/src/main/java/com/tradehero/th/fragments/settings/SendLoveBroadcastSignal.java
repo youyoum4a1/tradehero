@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
-import com.tradehero.th.utils.broadcast.BroadcastData;
 import android.support.annotation.NonNull;
+import com.tradehero.th.utils.broadcast.BroadcastData;
 
 public class SendLoveBroadcastSignal implements BroadcastData
 {

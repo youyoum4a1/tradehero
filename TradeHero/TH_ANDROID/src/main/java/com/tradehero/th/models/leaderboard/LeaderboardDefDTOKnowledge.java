@@ -1,12 +1,12 @@
 package com.tradehero.th.models.leaderboard;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class LeaderboardDefDTOKnowledge
 {

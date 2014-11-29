@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.message;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
@@ -30,8 +32,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
@@ -314,7 +314,7 @@ public class PrivateDiscussionView extends DiscussionView
     {
         protected PrivateDiscussionViewDiscussionSetAdapter()
         {
-            super(getContext(),
+            super(PrivateDiscussionView.this.getContext(),
                     discussionCache,
                     currentUserId,
                     R.layout.private_message_bubble_mine,

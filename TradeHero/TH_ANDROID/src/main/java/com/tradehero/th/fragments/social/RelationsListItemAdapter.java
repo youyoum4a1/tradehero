@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
@@ -8,7 +9,6 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import android.support.annotation.NonNull;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipientDTO, RelationsListItemView>
 {

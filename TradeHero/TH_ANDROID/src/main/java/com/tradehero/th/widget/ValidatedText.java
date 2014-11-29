@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import com.tradehero.th.R;
-import android.support.annotation.Nullable;
 
 public class ValidatedText extends EditText
         implements ValidatedView

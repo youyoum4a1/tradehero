@@ -1,12 +1,12 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class FollowerServiceWrapper

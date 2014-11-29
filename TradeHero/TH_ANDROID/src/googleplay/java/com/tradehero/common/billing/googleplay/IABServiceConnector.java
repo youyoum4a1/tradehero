@@ -7,6 +7,8 @@ import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.RequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
@@ -14,8 +16,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class IABServiceConnector implements ServiceConnection, IABServiceListenerHolder, RequestCodeActor

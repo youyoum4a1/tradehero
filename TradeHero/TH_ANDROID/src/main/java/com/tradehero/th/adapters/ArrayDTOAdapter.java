@@ -2,12 +2,12 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
-import android.support.annotation.NonNull;
 
-public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapter<T>
+public class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapter<T>
 {
     public ArrayDTOAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
@@ -16,7 +16,7 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericAr
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        convertView = conditionalInflate(position, convertView, viewGroup);
+        convertView = super.getView(position, convertView, viewGroup);
 
         @SuppressWarnings("unchecked")
         V dtoView = (V) convertView;
@@ -27,5 +27,8 @@ public abstract class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericAr
         return convertView;
     }
 
-    protected abstract void fineTune(int position, T dto, V dtoView);
+    protected void fineTune(int position, T dto, V dtoView)
+    {
+        // to be overwritten
+    }
 }

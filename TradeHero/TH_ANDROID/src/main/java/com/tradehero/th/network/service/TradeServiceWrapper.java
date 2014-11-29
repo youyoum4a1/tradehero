@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.trade.OwnedTradeId;
 import com.tradehero.th.api.trade.TradeDTO;
@@ -8,7 +9,6 @@ import com.tradehero.th.models.trade.DTOProcessorTradeListReceived;
 import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class TradeServiceWrapper

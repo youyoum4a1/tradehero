@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.preference.PreferenceFragment;
 import com.squareup.picasso.LruCache;
@@ -10,8 +12,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.dagger.ForPicasso;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class ClearCacheViewHolder extends OneSettingViewHolder
 {

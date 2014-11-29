@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.competition;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.th.fragments.onboarding.FragmentOnBoardModule;
 import com.tradehero.th.utils.broadcast.BroadcastData;
-import android.support.annotation.NonNull;
 
 public class CompetitionEnrollmentBroadcastSignal implements BroadcastData
 {

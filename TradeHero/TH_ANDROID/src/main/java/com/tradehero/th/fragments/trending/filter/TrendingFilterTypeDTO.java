@@ -2,10 +2,12 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import com.tradehero.th.api.security.key.TrendingSecurityListType;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import com.tradehero.th.api.security.key.TrendingSecurityListType;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 
 abstract public class TrendingFilterTypeDTO
 {
@@ -15,14 +17,18 @@ abstract public class TrendingFilterTypeDTO
     public static final String BUNDLE_KEY_DESCRIPTION_RES_ID = TrendingFilterTypeDTO.class.getName() + ".descriptionResId";
     public static final String BUNDLE_KEY_EXCHANGE = TrendingFilterTypeDTO.class.getName() + ".exchange";
 
-    public final int titleResId;
-    public final int titleIconResId;
-    public final int descriptionResId;
+    @StringRes public final int titleResId;
+    @DrawableRes public final int titleIconResId;
+    @StringRes public final int descriptionResId;
 
     @NonNull public ExchangeCompactSpinnerDTO exchange;
 
     //<editor-fold desc="Constructors">
-    public TrendingFilterTypeDTO(@NonNull Resources resources, int titleResId, int titleIconResId, int descriptionResId)
+    public TrendingFilterTypeDTO(
+            @NonNull Resources resources,
+            @StringRes int titleResId,
+            @DrawableRes int titleIconResId,
+            @StringRes int descriptionResId)
     {
         this.titleResId = titleResId;
         this.titleIconResId = titleIconResId;
@@ -30,7 +36,10 @@ abstract public class TrendingFilterTypeDTO
         this.exchange = new ExchangeCompactSpinnerDTO(resources);
     }
 
-    public TrendingFilterTypeDTO(int titleResId, int titleIconResId, int descriptionResId,
+    public TrendingFilterTypeDTO(
+            @StringRes int titleResId,
+            @DrawableRes int titleIconResId,
+            @StringRes int descriptionResId,
             @NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
     {
         this.titleResId = titleResId;

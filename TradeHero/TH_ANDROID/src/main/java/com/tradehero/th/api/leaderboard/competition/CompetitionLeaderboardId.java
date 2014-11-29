@@ -1,10 +1,10 @@
 package com.tradehero.th.api.leaderboard.competition;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class CompetitionLeaderboardId implements DTOKey
 {

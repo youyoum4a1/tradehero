@@ -1,10 +1,9 @@
 package com.tradehero.th.api.achievement.key;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
-import com.tradehero.th.api.achievement.QuestBonusDTOList;
 import java.util.Collection;
-import android.support.annotation.Nullable;
 
 public class QuestBonusIdList extends DTOKeyIdList<QuestBonusId>
 {

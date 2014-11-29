@@ -1,10 +1,10 @@
 package com.tradehero.th.auth.tencent_qq;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
-import android.support.annotation.NonNull;
 import org.json.JSONException;
 import rx.Observable;
 import rx.Subscriber;

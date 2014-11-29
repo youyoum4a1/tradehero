@@ -4,11 +4,10 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import java.io.File;
 import android.support.annotation.NonNull;
+import java.io.File;
 
 public class FileUtils
 {

@@ -1,5 +1,7 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -7,12 +9,11 @@ import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.purchase.UserCreditPlanDTO;
+import com.tradehero.th.api.system.PriceDTO;
 import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class UserProfileDTO extends UserProfileCompactDTO
 {
@@ -73,6 +74,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public int achievementCount;
     public int currentXP;
+
+    public PriceDTO accumulatedReferralAwards;
 
     public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {

@@ -1,11 +1,11 @@
 package com.tradehero.th.api.leaderboard.key;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.Collection;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LeaderboardUserIdList extends BaseArrayList<LeaderboardUserId>
     implements DTO

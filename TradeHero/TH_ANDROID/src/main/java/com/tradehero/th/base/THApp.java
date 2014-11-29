@@ -3,6 +3,7 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
@@ -16,7 +17,6 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class THApp extends PApplication

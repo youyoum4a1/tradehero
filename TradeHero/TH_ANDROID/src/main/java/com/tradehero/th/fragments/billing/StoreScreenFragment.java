@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,13 +12,13 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -33,7 +32,6 @@ import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -82,11 +80,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
         listView.setAdapter(storeItemAdapter);
         listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
@@ -186,7 +179,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         return request.build();
     }
 
-    @Override protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListObserver()
+    @Override protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
     {
         return new StoreScreenFragmentPortfolioCompactListObserver();
     }
@@ -198,9 +191,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             super();
         }
 
-        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+        @Override public void onNext(PortfolioCompactDTOList list)
         {
-            super.onNext(pair);
+            super.onNext(list);
             launchRoutedAction();
         }
     }

@@ -1,5 +1,6 @@
 package com.tradehero.th.models.discussion;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.key.MessageHeaderId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -7,7 +8,6 @@ import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
 
 public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
 {

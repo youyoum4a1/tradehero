@@ -1,10 +1,15 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
+import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
@@ -14,13 +19,13 @@ import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
@@ -74,6 +79,11 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider">
+    @NonNull public Observable<ProviderPrizePoolDTO> getProviderPrizePoolRx(@NonNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getProviderPrizePool(providerId.key);
+    }
+
     @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)
@@ -186,6 +196,16 @@ import rx.Observable;
     public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getDisplayCells(providerId.key);
+    }
+
+    public Observable<CompetitionPreSeasonDTO> getPreseasonDetails(@NonNull ProviderId providerId)
+    {
+        return this.providerServiceRx.getPreseasonDetails(providerId.key);
+    }
+
+    public Observable<BaseResponseDTO> sharePreSeason(CompetitionPreseasonShareFormDTO competitionPreseasonShareFormDTO)
+    {
+        return this.providerServiceRx.sharePreseason(competitionPreseasonShareFormDTO);
     }
     //</editor-fold>
 }

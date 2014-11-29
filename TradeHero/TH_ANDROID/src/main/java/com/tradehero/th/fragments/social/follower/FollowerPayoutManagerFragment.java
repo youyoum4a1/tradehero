@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,6 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -76,14 +77,12 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view =
-                inflater.inflate(R.layout.fragment_store_manage_follower_revenue, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_store_manage_follower_revenue, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         followerPaymentListView.setAdapter(followerPaymentListAdapter);
     }

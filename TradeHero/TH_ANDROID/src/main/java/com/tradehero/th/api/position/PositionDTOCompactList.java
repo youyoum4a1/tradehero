@@ -1,12 +1,12 @@
 package com.tradehero.th.api.position;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.utils.SecurityUtils;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>

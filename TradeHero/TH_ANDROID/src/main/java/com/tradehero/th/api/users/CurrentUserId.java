@@ -3,12 +3,12 @@ package com.tradehero.th.api.users;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton
 public class CurrentUserId extends IntPreference

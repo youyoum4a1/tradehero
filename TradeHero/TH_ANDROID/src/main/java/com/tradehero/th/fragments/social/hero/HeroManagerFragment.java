@@ -70,11 +70,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         return addTabs();
     }
 
-    @Override protected void initViews(View view)
-    {
-        // Nothing to do
-    }
-
     private View addTabs()
     {
         mTabHost = new FragmentTabHost(getActivity());

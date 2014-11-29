@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +20,9 @@ import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
-import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
@@ -47,10 +44,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
@@ -59,9 +54,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
-    @Inject UserProfileCacheRx userProfileCache;
-    @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
-    @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject BroadcastUtils broadcastUtils;
 
@@ -71,15 +63,22 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @InjectView(R.id.hero_switcher) ViewSwitcher mHeroSwitcher;
     @InjectView(R.id.stock_switcher) ViewSwitcher mStockSwitcher;
 
+    @Inject UserProfileCacheRx userProfileCache;
+    @Nullable Subscription userProfileSubscription;
+
     //exchange
+    @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
     @NonNull OnBoardPickExchangeSectorViewHolder exchangeSectorViewHolder;
+    @Nullable Subscription exchangeSectorSubscription;
 
     //hero
-    @NonNull OnBoardPickHeroViewHolder heroViewHolder;
+    @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
     @Nullable private Subscription leaderboardUserListCacheSubscription;
+    @NonNull OnBoardPickHeroViewHolder heroViewHolder;
 
     //stock
     @Inject SecurityCompactListCacheRx securityCompactListCache;
+    @Nullable Subscription securitiesSubscription;
     @NonNull OnBoardPickStockViewHolder stockViewHolder;
 
     public static OnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
@@ -112,130 +111,24 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         exchangeSectorViewHolder.attachView(view);
         heroViewHolder.attachView(view);
         stockViewHolder.attachView(view);
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
         fetchUserProfile();
         fetchExchangeSectors();
     }
 
-    protected void fetchUserProfile()
+    @Override public void onStop()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnBoardPickExchangeUserProfileObserver());
-    }
-
-    protected class OnBoardPickExchangeUserProfileObserver
-            implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            exchangeSectorViewHolder.setUserProfile(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-        }
-    }
-
-    protected void fetchExchangeSectors()
-    {
-        ExchangeSectorCompactKey key = new ExchangeSectorCompactKey();
-        AndroidObservable.bindFragment(
-                this,
-                exchangeSectorCompactListCache.get(key))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new OnBoardPickExchangeSectorObserver());
-    }
-
-    protected class OnBoardPickExchangeSectorObserver
-            implements Observer<Pair<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO>>
-    {
-        @Override public void onNext(
-                Pair<ExchangeSectorCompactKey, ExchangeSectorCompactListDTO> pair)
-        {
-            exchangeSectorViewHolder.setExchangeSector(pair.second);
-            mExchangeSwitcher.setDisplayedChild(1);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.market_on_board_error_fetch_exchange_sector);
-        }
-    }
-
-    @NonNull public OnBoardPrefDTO getOnBoardPrefs()
-    {
-        return exchangeSectorViewHolder.getOnBoardPrefs();
-    }
-
-    protected class OnBoardPickHeroLeaderboardCacheObserver implements Observer<Pair<SuggestHeroesListType, LeaderboardUserDTOList>>
-    {
-        @Override public void onNext(Pair<SuggestHeroesListType, LeaderboardUserDTOList> pair)
-        {
-            mHeroSwitcher.setDisplayedChild(1);
-            heroViewHolder.setUsers(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_leaderboard_info);
-        }
-    }
-
-    protected void fetchSuggestedUsers(ExchangeSectorSecurityListType exchangeSectorSecurityListType)
-    {
-        if (exchangeSectorSecurityListType != null)
-        {
-            SuggestHeroesListType key = new SuggestHeroesListType(
-                    exchangeSectorSecurityListType.exchangeId,
-                    exchangeSectorSecurityListType.sectorId,
-                    1, null);
-            unsubscribe(leaderboardUserListCacheSubscription);
-            leaderboardUserListCacheSubscription = AndroidObservable.bindFragment(
-                    this,
-                    leaderboardUserListCache.get(key))
-                    .subscribe(new OnBoardPickHeroLeaderboardCacheObserver());
-        }
-    }
-
-    protected void fetchExchangeSectorSecurities(ExchangeSectorSecurityListType exchangeSectorSecurityListType)
-    {
-        if (exchangeSectorSecurityListType != null)
-        {
-            AndroidObservable.bindFragment(this,
-                    securityCompactListCache.get(exchangeSectorSecurityListType))
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Pair<SecurityListType, SecurityCompactDTOList>>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            THToast.show(R.string.error_fetch_security_list_info);
-                        }
-
-                        @Override public void onNext(Pair<SecurityListType, SecurityCompactDTOList> pair)
-                        {
-                            mStockSwitcher.setDisplayedChild(1);
-                            stockViewHolder.setStocks(pair.second);
-                            submitHeroes();
-                        }
-                    });
-        }
+        unsubscribe(userProfileSubscription);
+        userProfileSubscription = null;
+        unsubscribe(exchangeSectorSubscription);
+        exchangeSectorSubscription = null;
+        unsubscribe(securitiesSubscription);
+        securitiesSubscription = null;
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -268,47 +161,46 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onDestroy();
     }
 
+    protected void fetchUserProfile()
+    {
+        userProfileSubscription = AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_your_user_profile));
+    }
+
+    protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
+    {
+        exchangeSectorViewHolder.setUserProfile(userProfileDTO);
+    }
+
+    protected void fetchExchangeSectors()
+    {
+        ExchangeSectorCompactKey key = new ExchangeSectorCompactKey();
+        exchangeSectorSubscription = AndroidObservable.bindFragment(
+                this,
+                exchangeSectorCompactListCache.get(key)
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(R.string.market_on_board_error_fetch_exchange_sector));
+    }
+
+    protected void linkWith(@NonNull ExchangeSectorCompactListDTO exchangeSectorCompacts)
+    {
+        exchangeSectorViewHolder.setExchangeSector(exchangeSectorCompacts);
+        mExchangeSwitcher.setDisplayedChild(1);
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.close)
     public void onCloseClicked(View view)
     {
         dismiss();
         firstShowOnBoardDialogPreference.justHandled();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.done_button)
-    public void onDoneClicked(View view)
-    {
-        dismiss();
-        submitStockWatchlist();
-        userProfileCache.invalidate(currentUserId.toUserBaseKey());
-        navigator.get().goToTab(RootFragmentType.ME);
-        firstShowOnBoardDialogPreference.justHandled();
-    }
-
-    public void submitHeroes()
-    {
-        // Follow heroes if any
-        LeaderboardUserDTOList heroesList = heroViewHolder.getSelectedHeroes();
-        if (!heroesList.isEmpty())
-        {
-            userServiceWrapper.followBatchFreeRx(
-                    new BatchFollowFormDTO(heroesList, new UserBaseDTO()))
-                    .subscribe(new EmptyObserver<>());
-        }
-    }
-
-    public void submitStockWatchlist()
-    {
-        // Watch stocks if any
-        SecurityCompactDTOList stocksList = stockViewHolder.getSelectedStocks();
-        if (!stocksList.isEmpty())
-        {
-            watchlistServiceWrapper.batchCreateRx(
-                    new SecurityIntegerIdListForm(stocksList, null))
-                    .subscribe(new EmptyObserver<>());
-        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -321,6 +213,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             mStockSwitcher.setVisibility(View.VISIBLE);
             mStockSwitcher.setDisplayedChild(1);
             fetchExchangeSectorSecurities(getOnBoardPrefs().createExchangeSectorSecurityListType());
+            submitHeroes();
             if (nextButton != null)
             {
                 nextButton.setVisibility(View.GONE);
@@ -336,6 +229,87 @@ public class OnBoardDialogFragment extends BaseDialogFragment
             mHeroSwitcher.setVisibility(View.VISIBLE);
             mHeroSwitcher.setDisplayedChild(1);
             fetchSuggestedUsers(getOnBoardPrefs().createExchangeSectorSecurityListType());
+        }
+    }
+
+    @NonNull public OnBoardPrefDTO getOnBoardPrefs()
+    {
+        return exchangeSectorViewHolder.getOnBoardPrefs();
+    }
+
+    protected void fetchSuggestedUsers(ExchangeSectorSecurityListType exchangeSectorSecurityListType)
+    {
+        if (exchangeSectorSecurityListType != null)
+        {
+            SuggestHeroesListType key = new SuggestHeroesListType(
+                    exchangeSectorSecurityListType.exchangeId,
+                    exchangeSectorSecurityListType.sectorId,
+                    1, null);
+            leaderboardUserListCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    leaderboardUserListCache.get(key)
+                            .map(pair -> pair.second))
+                    .subscribe(this::linkWith,
+                            e -> THToast.show(R.string.error_fetch_leaderboard_info));
+        }
+    }
+
+    protected void linkWith(@NonNull LeaderboardUserDTOList leaderboardUserDTOs)
+    {
+        mHeroSwitcher.setDisplayedChild(1);
+        heroViewHolder.setUsers(leaderboardUserDTOs);
+    }
+
+    protected void fetchExchangeSectorSecurities(ExchangeSectorSecurityListType exchangeSectorSecurityListType)
+    {
+        if (exchangeSectorSecurityListType != null)
+        {
+            securitiesSubscription = AndroidObservable.bindFragment(this,
+                    securityCompactListCache.get(exchangeSectorSecurityListType)
+                            .map(pair -> pair.second))
+                    .subscribe(
+                            this::linkWith,
+                            e -> THToast.show(R.string.error_fetch_security_list_info));
+        }
+    }
+
+    protected void linkWith(@NonNull SecurityCompactDTOList securityCompactDTOs)
+    {
+        mStockSwitcher.setDisplayedChild(1);
+        stockViewHolder.setStocks(securityCompactDTOs);
+    }
+
+    public void submitHeroes()
+    {
+        // Follow heroes if any
+        LeaderboardUserDTOList heroesList = heroViewHolder.getSelectedHeroes();
+        if (!heroesList.isEmpty())
+        {
+            userServiceWrapper.followBatchFreeRx(
+                    new BatchFollowFormDTO(heroesList, new UserBaseDTO()))
+                    .subscribe(new EmptyObserver<>());
+        }
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.done_button)
+    public void onDoneClicked(View view)
+    {
+        dismiss();
+        submitStockWatchlist();
+        navigator.get().goToTab(RootFragmentType.ME);
+        firstShowOnBoardDialogPreference.justHandled();
+    }
+
+    public void submitStockWatchlist()
+    {
+        // Watch stocks if any
+        SecurityCompactDTOList stocksList = stockViewHolder.getSelectedStocks();
+        if (!stocksList.isEmpty())
+        {
+            watchlistServiceWrapper.batchCreateRx(
+                    new SecurityIntegerIdListForm(stocksList, null))
+                    .subscribe(new EmptyObserver<>());
         }
     }
 }

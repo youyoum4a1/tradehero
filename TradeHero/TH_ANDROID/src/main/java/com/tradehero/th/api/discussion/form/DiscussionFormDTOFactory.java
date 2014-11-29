@@ -1,10 +1,10 @@
 package com.tradehero.th.api.discussion.form;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.news.form.NewsItemReplyDiscussionFormDTO;
 import com.tradehero.th.api.timeline.form.TimelineItemReplyCommentFormDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class DiscussionFormDTOFactory
 {

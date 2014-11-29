@@ -7,9 +7,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import com.squareup.picasso.Transformation;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class RoundedShapeTransformation implements Transformation

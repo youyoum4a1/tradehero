@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;

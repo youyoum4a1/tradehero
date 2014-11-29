@@ -1,11 +1,11 @@
 package com.tradehero.th.models.user;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import android.support.annotation.NonNull;
 
 public class DTOProcessorSignInUpUserProfile extends DTOProcessorUpdateUserProfile
 {

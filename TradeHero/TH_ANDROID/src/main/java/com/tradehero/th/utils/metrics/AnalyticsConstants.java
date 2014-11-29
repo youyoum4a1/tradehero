@@ -12,6 +12,7 @@ public class AnalyticsConstants
     public static final String TabBar_Academy = "TabBar/Academy";
     public static final String TabBar_Portfolio = "TabBar/Portfolio";
     public static final String TabBar_Store = "TabBar/Store";
+    public static final String TabBar_FriendReferral = "TabBar/FriendReferral";
     public static final String TabBar_Settings = "TabBar/Settings";
     public static final String TabBar_AdminSettings = "TabBar/AdminSettings";
     public static final String TabBar_Divider = "TabBar/Divider";
@@ -135,16 +136,22 @@ public class AnalyticsConstants
     public static final String DiscoverNewsViewed = "DiscoverNewsViewed";//
     public static final String DiscoverDiscussionsViewed = "DiscoverDiscussionsViewed";//
     public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
+    public static final String GamePlaySummary = "GamePlaySummary";
 
     //Attribute
     public static final String ClickedFrom = "ClickedFrom";//
     public static final String Bottom = "Bottom";//
     public static final String Side = "Side";//
     public static final String TimeOnScreen = "TimeOnScreen";//
+    public static final long MaxTime10Sec = 10;
     public static final String Time1T10S = "1 to 10 seconds";//
+    public static final long MaxTime30Sec = 30;
     public static final String Time11T30S = "11 to 30 seconds";//
+    public static final long MaxTime60Sec = 60;
     public static final String Time31T60S = "31 to 60 seconds";//
+    public static final long MaxTime3Min = 180;
     public static final String Time1T3M = "1 to 3 minutes";//
+    public static final long MaxTime10Min = 600;
     public static final String Time3T10M = "3 to 10 minutes";//
     public static final String Time10M = "more than 10 minutes";//
     public static final String Trigger = "Trigger";//
@@ -152,4 +159,7 @@ public class AnalyticsConstants
     public static final String Level = "Level";//
     public static final String Type = "Type";//
     public static final String CompetitionJoined = "CompetitionJoined";//
+    public static final String InterestedExchange = "InterestedExchange";//
+    public static final String GamePlayed = "GamePlayed";//
+    public static final String TimeInGame = "TimeInGame";//
 }

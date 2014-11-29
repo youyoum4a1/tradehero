@@ -1,8 +1,8 @@
 package com.tradehero.th.auth.facebook;
 
 import android.os.Bundle;
-import com.facebook.widget.WebDialog;
 import android.support.annotation.NonNull;
+import com.facebook.widget.WebDialog;
 import rx.Observable;
 
 public class ObservableWebDialog

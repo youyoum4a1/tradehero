@@ -7,6 +7,6 @@ public class SocialTypeItemWeibo extends SocialTypeItem
 {
     public SocialTypeItemWeibo()
     {
-        super(R.drawable.icn_weibo_round, R.string.invite_from_weibo, R.drawable.social_item_weibo, SocialNetworkEnum.WB);
+        super(R.drawable.icn_wb_white, R.string.invite_from_weibo, R.drawable.social_item_weibo, SocialNetworkEnum.WB);
     }
 }

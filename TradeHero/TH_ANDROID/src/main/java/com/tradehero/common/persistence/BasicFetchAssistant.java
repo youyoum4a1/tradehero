@@ -1,10 +1,10 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
 abstract public class BasicFetchAssistant<DTOKeyType, DTOType> implements FetchAssistant<DTOKeyType, DTOType>
 {

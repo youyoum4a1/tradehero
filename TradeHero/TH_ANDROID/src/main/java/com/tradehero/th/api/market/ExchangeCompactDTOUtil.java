@@ -1,10 +1,10 @@
 package com.tradehero.th.api.market;
 
+import android.support.annotation.NonNull;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ExchangeCompactDTOUtil
 {

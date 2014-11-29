@@ -3,13 +3,13 @@ package com.tradehero.th.models.market;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence

@@ -1,10 +1,10 @@
 package com.tradehero.common.persistence;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.api.BaseArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class BaseArrayListHasExpiration<T> extends BaseArrayList<T>
     implements HasExpiration

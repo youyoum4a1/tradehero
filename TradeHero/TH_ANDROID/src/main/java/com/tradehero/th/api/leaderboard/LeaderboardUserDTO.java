@@ -1,5 +1,7 @@
 package com.tradehero.th.api.leaderboard;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.adapters.ExpandableItem;
@@ -8,12 +10,10 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LeaderboardUserDTO extends UserBaseDTO
         implements ExpandableItem
@@ -23,7 +23,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     private static final String LEADERBOARD_INCLUDE_FOF = "LEADERBOARD_INCLUDE_FOF";
     public static final Double MIN_CONSISTENCY = 0.004;
 
-    public long lbmuId;    // leaderboardMarkUser.id ...
+    public long lbmuId;    // leaderboardMarkUser.id ..., will be null if user not ranked
     public int portfolioId;    // ...OR portfolioId --> messy
 
     @JsonProperty("friendOf_UserIds")

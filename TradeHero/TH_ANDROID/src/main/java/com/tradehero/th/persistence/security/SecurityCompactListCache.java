@@ -1,5 +1,7 @@
 package com.tradehero.th.persistence.security;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.StraightCutDTOCacheNew;
 import com.tradehero.common.persistence.UserCache;
@@ -12,8 +14,6 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 @Singleton @UserCache @Deprecated
 public class SecurityCompactListCache extends StraightCutDTOCacheNew<

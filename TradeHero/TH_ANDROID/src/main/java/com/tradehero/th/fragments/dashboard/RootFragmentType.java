@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
@@ -14,11 +13,11 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
+import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,6 +47,9 @@ public enum RootFragmentType
     STORE(R.layout.residemenu_item_store,
             R.string.dashboard_store, R.string.dashboard_store_key,
             R.drawable.icn_menu_store, StoreScreenFragment.class, AnalyticsConstants.TabBar_Store),
+    FRIEND_REFERRAL(R.layout.residemenu_item_refererral,
+            R.string.dashboard_referral, R.string.dashboard_referral_key,
+            R.drawable.icn_menu_referral, SettingsReferralCodeFragment.class, AnalyticsConstants.TabBar_FriendReferral),
     SETTING(R.layout.residemenu_item_settings,
             R.string.dashboard_menu_settings, R.string.dashboard_menu_settings_key,
             R.drawable.icn_menu_settings, SettingsFragment.class, AnalyticsConstants.TabBar_Settings),
@@ -91,7 +93,7 @@ public enum RootFragmentType
     public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
-                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, STORE, SETTING
+                TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, FRIEND_REFERRAL, STORE, SETTING
         ));
         addAdminMenuIfNeeded(forResideMenu);
         return Collections.unmodifiableCollection(forResideMenu);

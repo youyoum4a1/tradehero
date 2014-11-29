@@ -1,10 +1,10 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.common.persistence.DTO;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.common.persistence.DTO;
 import timber.log.Timber;
 
 public class ExchangeCompactDTO implements DTO
@@ -160,5 +160,12 @@ public class ExchangeCompactDTO implements DTO
             return false;
         }
         return name.equals(((ExchangeDTO) other).name);
+    }
+
+    /** Since equals methods does not use hashCode (rule: 2 objects that equal --> same hashCode) */
+    @Override public int hashCode()
+    {
+        assert false: "hashCode not designed";
+        return 42;
     }
 }

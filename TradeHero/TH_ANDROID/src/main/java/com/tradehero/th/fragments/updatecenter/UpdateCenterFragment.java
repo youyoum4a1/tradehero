@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +21,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -37,7 +38,6 @@ import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
 import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
@@ -45,7 +45,6 @@ import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -259,35 +258,6 @@ public class UpdateCenterFragment extends DashboardFragment
         }
 
         return mTabHost;
-    }
-
-    private void clearTabs()
-    {
-        if (mTabHost != null)
-        {
-            android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
-            List<Fragment> fragmentList = fm.getFragments();
-            Timber.d("fragmentList %s", fragmentList);
-            if (fragmentList != null && fragmentList.size() > 0)
-            {
-                FragmentTransaction ft = fm.beginTransaction();
-                for (Fragment f : fragmentList)
-                {
-                    if (f != null)
-                    {
-                        ft.remove(f);
-                    }
-                }
-                //java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState
-                //TODO this will crash when onDestroy alex
-                ft.commitAllowingStateLoss();
-                fm.executePendingTransactions();
-            }
-
-            mTabHost.clearAllTabs();
-            int tabCount = mTabHost.getTabWidget().getTabCount();
-            mTabHost = null;
-        }
     }
 
     public Fragment getCurrentFragment()

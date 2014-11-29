@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.Field;
@@ -255,7 +256,7 @@ public interface UserService
 
     //<editor-fold desc="Send Analytics">
     @POST("/analytics")
-    BaseResponseDTO sendAnalytics(
+    Response sendAnalytics(
             @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
     //</editor-fold>
 }

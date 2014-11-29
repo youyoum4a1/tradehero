@@ -3,6 +3,7 @@ package com.tradehero.th.models.push.handlers;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.notification.NotificationKey;
@@ -12,7 +13,6 @@ import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler
 {

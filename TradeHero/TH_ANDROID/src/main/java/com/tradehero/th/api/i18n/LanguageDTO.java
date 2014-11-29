@@ -1,8 +1,8 @@
 package com.tradehero.th.api.i18n;
 
-import java.util.Locale;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.Locale;
 
 public class LanguageDTO
 {

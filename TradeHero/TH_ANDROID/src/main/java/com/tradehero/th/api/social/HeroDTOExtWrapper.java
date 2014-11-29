@@ -1,7 +1,7 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.common.persistence.DTO;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTO;
 
 public class HeroDTOExtWrapper implements DTO
 {

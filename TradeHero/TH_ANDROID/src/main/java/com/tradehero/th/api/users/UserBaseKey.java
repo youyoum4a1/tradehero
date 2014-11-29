@@ -1,11 +1,11 @@
 package com.tradehero.th.api.users;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
-import android.support.annotation.NonNull;
 
 public class UserBaseKey extends AbstractIntegerDTOKey
 {

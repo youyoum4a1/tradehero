@@ -1,8 +1,7 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.exception.BillingException;
-
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.exception.BillingException;
 
 public interface BillingPurchaser<
         ProductIdentifierType extends ProductIdentifier,

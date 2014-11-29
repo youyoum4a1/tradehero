@@ -1,8 +1,7 @@
 package com.tradehero.common.billing;
 
-import com.tradehero.common.billing.exception.BillingException;
-
 import android.support.annotation.Nullable;
+import com.tradehero.common.billing.exception.BillingException;
 
 public interface BillingAvailableTesterHolder<BillingExceptionType extends BillingException>
     extends RequestCodeHolder

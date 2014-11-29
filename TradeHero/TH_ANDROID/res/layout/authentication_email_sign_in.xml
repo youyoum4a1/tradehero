@@ -27,7 +27,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TradeHero.Authentication"
+        style="@style/TH.Authentication"
         >
 
       <ImageView
@@ -47,7 +47,7 @@
           android:layout_marginTop="@dimen/margin_small"
           android:textColorHint="@color/red"
           android:inputType="textEmailAddress"
-          style="@style/TradeHero.Authentication.EditText"
+          style="@style/TH.Authentication.EditText"
           app:minTextLength="3"
           android:background="@drawable/authentication_edit_text"
           >
@@ -66,7 +66,7 @@
           android:layout_marginTop="@dimen/margin_small"
           android:textColorHint="@color/red"
           android:inputType="textPassword"
-          style="@style/TradeHero.Authentication.EditText"
+          style="@style/TH.Authentication.EditText"
           android:background="@drawable/authentication_edit_text"
           />
 

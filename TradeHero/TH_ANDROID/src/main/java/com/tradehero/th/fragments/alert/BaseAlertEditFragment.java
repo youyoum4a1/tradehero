@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.alert;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Pair;
@@ -49,10 +51,9 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
@@ -89,7 +90,9 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected SecurityId securityId;
     protected AlertDTO alertDTO;
+    @Nullable protected Subscription securitySubscription;
     protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected Subscription alertSlotSubscription;
     protected ProgressDialog progressDialog;
 
     protected CompoundButton.OnCheckedChangeListener createTargetPriceCheckedChangeListener()
@@ -148,17 +151,19 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
-        initViews(view);
-        resideMenu.addIgnoredView(targetPriceSeekBar);
-        resideMenu.addIgnoredView(percentageSeekBar);
-        return view;
+        return inflater.inflate(R.layout.alert_edit_fragment, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
+        alertToggle.setVisibility(View.GONE);
+        targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
+        targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
+        resideMenu.addIgnoredView(targetPriceSeekBar);
+        resideMenu.addIgnoredView(percentageSeekBar);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -166,14 +171,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.alert_edit_menu, menu);
         displayActionBarTitle();
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        alertToggle.setVisibility(View.GONE);
-        targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
-        targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -185,6 +182,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override public void onStop()
+    {
+        unsubscribe(securitySubscription);
+        securitySubscription = null;
+        unsubscribe(alertSlotSubscription);
+        alertSlotSubscription = null;
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -201,11 +207,21 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
     {
+        if (!securityId.equals(this.securityId))
+        {
+            unsubscribe(securitySubscription);
+            securitySubscription = null;
+        }
         this.securityId = securityId;
 
         progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
-        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .observeOn(AndroidSchedulers.mainThread())
+        fetchSecurityCompact();
+    }
+
+    protected void fetchSecurityCompact()
+    {
+        unsubscribe(securitySubscription);
+        securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                 {
                     @Override public void onCompleted()
@@ -259,7 +275,8 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            AndroidObservable.bindFragment(
+            unsubscribe(alertSlotSubscription);
+            alertSlotSubscription = AndroidObservable.bindFragment(
                     this,
                     securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()))
                     .take(1)
@@ -668,11 +685,11 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         @Override public void onNext(AlertCompactDTO alertCompactDTO)
         {
             navigator.get().popFragment();
+            hideDialog();
         }
 
         @Override public void onCompleted()
         {
-            hideDialog();
         }
 
         @Override public void onError(Throwable e)

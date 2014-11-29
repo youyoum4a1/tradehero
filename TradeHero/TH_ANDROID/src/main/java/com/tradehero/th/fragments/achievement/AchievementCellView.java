@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.achievement;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +17,6 @@ import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.StringUtils;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
 
 public class AchievementCellView extends RelativeLayout implements DTOView<AchievementCategoryDTO>
 {

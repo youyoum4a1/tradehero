@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
 import com.tradehero.th.api.alert.AlertDTO;
@@ -8,7 +9,6 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class AlertServiceWrapper

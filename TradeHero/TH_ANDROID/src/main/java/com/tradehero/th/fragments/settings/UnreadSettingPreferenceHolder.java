@@ -1,9 +1,9 @@
 package com.tradehero.th.fragments.settings;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class UnreadSettingPreferenceHolder
 {

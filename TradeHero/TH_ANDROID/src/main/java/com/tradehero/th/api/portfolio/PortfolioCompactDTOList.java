@@ -1,9 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class PortfolioCompactDTOList extends BaseArrayList<PortfolioCompactDTO>
     implements DTO

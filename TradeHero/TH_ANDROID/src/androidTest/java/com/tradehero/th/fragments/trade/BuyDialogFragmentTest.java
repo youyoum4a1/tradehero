@@ -1,8 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -28,12 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @RunWith(THRobolectricTestRunner.class)

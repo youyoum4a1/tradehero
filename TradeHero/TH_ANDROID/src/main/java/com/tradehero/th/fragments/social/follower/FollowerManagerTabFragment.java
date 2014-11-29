@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -46,7 +47,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.follower_list) ListView pullToRefreshListView;
+    @InjectView(R.id.follower_list) ListView followerList;
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     private FollowerListItemAdapter followerListAdapter;
@@ -68,15 +69,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view =
-                inflater.inflate(R.layout.fragment_store_manage_followers, container, false);
-        initViews(view);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_store_manage_followers, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         if (followerListAdapter == null)
         {
@@ -86,10 +84,10 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             );
         }
         swipeRefreshLayout.setOnRefreshListener(this);
-        pullToRefreshListView.setAdapter(followerListAdapter);
-        pullToRefreshListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        pullToRefreshListView.setOnItemClickListener((parent, view1, position, id) -> {
-            ListView listView = (ListView)parent;
+        followerList.setAdapter(followerListAdapter);
+        followerList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        followerList.setOnItemClickListener((parent, view1, position, id) -> {
+            ListView listView = (ListView) parent;
             handleFollowerItemClicked(view1, position - listView.getHeaderViewsCount(), id);
         });
         displayProgress(true);
@@ -220,7 +218,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     public void displayProgress(boolean running)
     {
         progressBar.setVisibility(running ? View.VISIBLE : View.GONE);
-        pullToRefreshListView.setVisibility(running ? View.GONE : View.VISIBLE);
+        followerList.setVisibility(running ? View.GONE : View.VISIBLE);
         swipeRefreshLayout.setRefreshing(running);
     }
 

@@ -1,8 +1,8 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
+import javax.inject.Inject;
 
 public class LeaderboardDefListKeyFactory
 {

@@ -1,8 +1,8 @@
 package com.tradehero.th.auth.facebook;
 
+import android.support.annotation.NonNull;
 import com.facebook.Session;
 import com.facebook.SessionState;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.Subscriber;
 

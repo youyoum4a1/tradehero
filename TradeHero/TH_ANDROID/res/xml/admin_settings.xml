@@ -63,4 +63,9 @@
       android:icon="@drawable/icn_lb_6m"
       />
 
+  <Preference
+    android:key="show_preseason_dialog"
+    android:title="Show Preseason Dialog"
+    android:icon="@drawable/icn_competition_prize"/>
+
 </PreferenceScreen>

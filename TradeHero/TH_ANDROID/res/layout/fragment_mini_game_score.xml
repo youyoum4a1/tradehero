@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <RelativeLayout
+      android:id="@+id/container"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:ignore="UselessParent">  <!-- Used for dismiss -->
+
+    <com.maurycy.ScaleImageView
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_alignParentTop="true"
+        tools:src="@drawable/lb_friends_bg"
+        />
+
+    <LinearLayout
+        android:id="@+id/score_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/banner"
+        android:gravity="center_horizontal"
+        android:showDividers="middle"
+        android:dividerPadding="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/game_score_header"
+          style="@style/TH.Title"
+          />
+
+      <TextView
+          android:id="@+id/score"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="1,300"
+          android:textStyle="bold"
+          style="@style/TH.Title"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/reward_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/score_wrapper"
+        android:gravity="center_horizontal"
+        android:showDividers="middle"
+        android:dividerPadding="@dimen/margin_xsmall"
+        android:layout_marginBottom="@dimen/margin_small"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/game_reward_header"
+          style="@style/TH.Title"
+          />
+
+      <TextView
+          android:id="@+id/reward"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="100,000 TH Dollars"
+          android:textStyle="bold"
+          style="@style/TH.Title"
+          />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@android:id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_small"
+        android:layout_alignParentBottom="true"
+        style="@style/TH.Button.Inverse"
+        android:background="@drawable/blue_rounded_button_selector"
+        android:text="@string/game_play_again"
+        />
+
+    <android.webkit.WebView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reward_wrapper"
+        android:layout_above="@android:id/button1"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
+        />
+
+    <ImageView
+        android:id="@android:id/button2"
+        style="@style/TH.Btn_Popup_Close"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        />
+
+  </RelativeLayout>
+
+</LinearLayout>

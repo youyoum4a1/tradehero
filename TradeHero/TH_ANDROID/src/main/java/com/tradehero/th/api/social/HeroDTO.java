@@ -1,10 +1,10 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.key.FollowerHeroRelationId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class HeroDTO extends UserProfileCompactDTO
 {

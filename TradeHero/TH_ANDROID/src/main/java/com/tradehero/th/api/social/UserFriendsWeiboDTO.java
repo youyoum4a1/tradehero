@@ -1,7 +1,7 @@
 package com.tradehero.th.api.social;
 
-import com.tradehero.th.R;
 import android.support.annotation.NonNull;
+import com.tradehero.th.R;
 
 public class UserFriendsWeiboDTO extends UserFriendsDTO
 {
@@ -24,7 +24,7 @@ public class UserFriendsWeiboDTO extends UserFriendsDTO
 
     @Override public int getNetworkLabelImage()
     {
-        return R.drawable.icn_weibo_round;
+        return R.drawable.icn_wb_white;
     }
 
     @Override public String getProfilePictureURL()

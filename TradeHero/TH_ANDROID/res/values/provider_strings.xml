@@ -43,4 +43,16 @@
   <!-- eToro specific strings, providerId == 22 -->
   <string name="competition_e_toro_portfolio_title" translatable="false">eToro</string>
 
+  <!-- Preseason Popup-->
+  <string name="share_now">Share Now!</string>
+  <string name="tncs_apply">Terms and conditions apply</string>
+  <string name="preseason_giveaway">Pre-season Giveaway</string>
+  <string name="preseason_error_message">There\'s an error in fetching pre-season details.</string>
+  <string name="preseason_share_error_message">There\'s an error in sharing pre-season details.</string>
+
+  <!-- Prize pool group -->
+  <string name="error_fetch_provider_prize_pool_info">There was an error when fetching the competition provider prize pool info.</string>
+  <string name="provider_current_prize_pool">Current prize pool :</string>
+  <string name="provider_prize_pool_new_players_need">New players needed to unlock extra **%1$s** :</string>
+
 </resources>

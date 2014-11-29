@@ -2,16 +2,14 @@ package com.tradehero.th.fragments.contestcenter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import android.support.annotation.NonNull;
-import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
 {

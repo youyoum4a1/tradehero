@@ -2,11 +2,11 @@ package com.tradehero.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ToggleButton;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import android.support.annotation.NonNull;
 
 public class SocialLinkToggleButton extends ToggleButton
 {

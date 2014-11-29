@@ -22,7 +22,7 @@
         android:textColorHint="@color/red"
         android:inputType="textEmailAddress"
         android:imeOptions="actionNext"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
@@ -46,7 +46,7 @@
         android:hint="@string/user_profile_password"
         android:textColorHint="@color/red"
         android:inputType="textPassword"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
@@ -66,7 +66,7 @@
         android:hint="@string/user_profile_confirm_pwd"
         android:textColorHint="@color/red"
         android:inputType="textPassword"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
 
         android:drawableRight="@drawable/accounts_glyph_transparent_default"
         app:invalidDrawableRight="@drawable/warning_red"
@@ -90,7 +90,7 @@
           android:hint="@string/user_profile_display_name"
           android:textColorHint="@color/red"
           android:inputType="text"
-          style="@style/TradeHero.Authentication.EditText"
+          style="@style/TH.Authentication.EditText"
 
           android:drawableRight="@drawable/accounts_glyph_transparent_default"
           app:invalidDrawableRight="@drawable/warning_red"
@@ -121,7 +121,7 @@
         android:layout_marginTop="@dimen/margin_small"
         android:hint="@string/user_profile_referral_code"
         android:inputType="text"
-        style="@style/TradeHero.Authentication.EditText"
+        style="@style/TH.Authentication.EditText"
         android:background="@drawable/authentication_edit_text"/>
 
     <RelativeLayout
@@ -156,7 +156,7 @@
             android:hint="@string/user_profile_first_name"
             android:inputType="text"
 
-            style="@style/TradeHero.Authentication.EditText"
+            style="@style/TH.Authentication.EditText"
             android:background="@drawable/authentication_edit_text"/>
 
         <EditText
@@ -166,7 +166,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:hint="@string/user_profile_last_name"
             android:inputType="text"
-            style="@style/TradeHero.Authentication.EditText"
+            style="@style/TH.Authentication.EditText"
             android:background="@drawable/authentication_edit_text"/>
 
       </LinearLayout>

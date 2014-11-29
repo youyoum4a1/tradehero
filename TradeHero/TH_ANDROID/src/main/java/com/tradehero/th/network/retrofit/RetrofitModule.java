@@ -194,7 +194,7 @@ public class RetrofitModule
     @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator, HostnameVerifier hostNameVerifier)
     {
         OkHttpClient okHttpClient = new OkHttpClient();
-        //okHttpClient.setCache(cache);
+        okHttpClient.setCache(cache);
         okHttpClient.setHostnameVerifier(hostNameVerifier);
         okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
         okHttpClient.setAuthenticator(authenticator);

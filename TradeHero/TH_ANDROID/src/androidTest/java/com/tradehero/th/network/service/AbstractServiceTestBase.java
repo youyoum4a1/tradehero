@@ -1,25 +1,21 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.util.TestUtil;
-
-import android.support.annotation.NonNull;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.Callback;
-import timber.log.Timber;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import retrofit.Callback;
+import timber.log.Timber;
 
 abstract public class AbstractServiceTestBase
 {

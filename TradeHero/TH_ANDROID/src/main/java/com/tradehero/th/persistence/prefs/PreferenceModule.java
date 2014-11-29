@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -19,7 +20,6 @@ import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;

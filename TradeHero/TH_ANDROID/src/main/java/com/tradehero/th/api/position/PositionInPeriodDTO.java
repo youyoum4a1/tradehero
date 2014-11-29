@@ -1,11 +1,11 @@
 package com.tradehero.th.api.position;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
 import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class PositionInPeriodDTO extends PositionDTO
 {

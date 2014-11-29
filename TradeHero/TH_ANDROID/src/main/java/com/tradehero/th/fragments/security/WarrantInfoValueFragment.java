@@ -29,7 +29,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -90,7 +90,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
 
     @Override public void onDestroyView()
     {
-        detachSubscription(securityCompactCacheSubscription);
+        unsubscribe(securityCompactCacheSubscription);
         securityCompactCacheSubscription = null;
         if (mHelpVideoLink != null)
         {
@@ -134,9 +134,10 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         super.linkWith(securityId, andDisplay);
         if (this.securityId != null)
         {
-            detachSubscription(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = securityCompactCache.get(securityId)
-                    .observeOn(AndroidSchedulers.mainThread())
+            unsubscribe(securityCompactCacheSubscription);
+            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    securityCompactCache.get(securityId))
                     .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
                     {
                         @Override public void onCompleted()

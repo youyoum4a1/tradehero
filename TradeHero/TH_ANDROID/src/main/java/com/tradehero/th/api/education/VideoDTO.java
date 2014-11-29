@@ -1,8 +1,7 @@
 package com.tradehero.th.api.education;
 
-import com.tradehero.common.persistence.DTO;
-
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTO;
 
 public class VideoDTO implements DTO
 {

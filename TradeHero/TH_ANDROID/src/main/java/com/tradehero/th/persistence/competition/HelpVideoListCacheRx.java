@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.competition;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -8,7 +9,6 @@ import com.tradehero.th.api.competition.key.HelpVideoListKey;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton @UserCache

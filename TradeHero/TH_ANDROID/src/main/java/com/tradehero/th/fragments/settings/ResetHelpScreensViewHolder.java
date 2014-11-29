@@ -2,13 +2,13 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ResetHelpScreensViewHolder extends OneSettingViewHolder
 {

@@ -7,6 +7,6 @@ public class SocialTypeItemTwitter extends SocialTypeItem
 {
     public SocialTypeItemTwitter()
     {
-        super(R.drawable.icn_twitter_round, R.string.invite_from_twitter, R.drawable.social_item_tw, SocialNetworkEnum.TW);
+        super(R.drawable.icn_tw_white, R.string.invite_from_twitter, R.drawable.social_item_tw, SocialNetworkEnum.TW);
     }
 }

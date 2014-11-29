@@ -1,12 +1,12 @@
 package com.tradehero.th.api.quote;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.SignatureContainer;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;

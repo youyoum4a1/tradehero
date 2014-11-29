@@ -21,7 +21,6 @@ import dagger.Module;
                 CompetitionLeaderboardMarkUserItemView.class,
                 CompetitionLeaderboardMarkUserOwnRankingView.class,
                 LeaderboardMarkUserListAdapter.class,
-                LeaderboardMarkUserListView.class,
                 LeaderboardMarkUserOwnRankingView.class,
                 FriendLeaderboardMarkUserListFragment.class,
                 CompetitionLeaderboardMarkUserListFragment.class,
@@ -31,7 +30,7 @@ import dagger.Module;
                 LeaderboardCommunityAdapter.class,
                 LeaderboardCommunityFragment.class,
                 LeaderboardFilterFragment.class,
-                LeaderboardFilterSliderContainer.class
+                LeaderboardFilterSliderContainer.class,
         },
         library = true,
         complete = false

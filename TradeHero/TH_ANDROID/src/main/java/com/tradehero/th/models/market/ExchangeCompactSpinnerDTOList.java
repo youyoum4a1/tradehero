@@ -1,10 +1,10 @@
 package com.tradehero.th.models.market;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.market.BaseExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
 import java.util.Collection;
-import android.support.annotation.NonNull;
 
 public class ExchangeCompactSpinnerDTOList extends BaseExchangeCompactDTOList<ExchangeCompactSpinnerDTO>
 {

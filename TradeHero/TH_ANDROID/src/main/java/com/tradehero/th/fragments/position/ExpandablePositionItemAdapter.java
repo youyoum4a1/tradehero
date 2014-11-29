@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.position.PositionDTO;
@@ -9,7 +10,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
 public class ExpandablePositionItemAdapter extends PositionItemAdapter
         implements ExpandableListReporter

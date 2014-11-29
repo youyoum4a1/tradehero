@@ -1,12 +1,12 @@
 package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.Querylizable;
 import com.tradehero.th.api.discussion.DiscussionType;
 import java.util.HashMap;
 import java.util.Map;
-import android.support.annotation.Nullable;
 
 public class DiscussionListKey
         implements DTOKey, Querylizable<String>

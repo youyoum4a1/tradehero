@@ -1,11 +1,11 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorCompactDTOList;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 @Singleton public class MarketServiceWrapperStub extends MarketServiceWrapper

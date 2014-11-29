@@ -2,14 +2,14 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
 import java.util.Collection;
 import java.util.Comparator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 abstract public class ViewDTOSetAdapter<T, ViewType extends View & DTOView<T>>
         extends DTOSetAdapter<T>
@@ -45,15 +45,9 @@ abstract public class ViewDTOSetAdapter<T, ViewType extends View & DTOView<T>>
 
         //noinspection unchecked
         ViewType dtoView = (ViewType) convertView;
-        fineTune(position, getItem(position), dtoView);
-
+        dtoView.display(getItem(position));
         return dtoView;
     }
 
     @LayoutRes abstract protected int getViewResId(int position);
-
-    protected void fineTune(int position, T dto, ViewType dtoView)
-    {
-        dtoView.display(dto);
-    }
 }

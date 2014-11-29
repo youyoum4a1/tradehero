@@ -1,5 +1,7 @@
 package com.tradehero.th.billing.request;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
@@ -13,9 +15,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.THPurchaseReporter;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public interface THUIBillingRequest<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,

@@ -12,7 +12,7 @@ import timber.log.Timber;
 
 public class CompetitionEnrollmentWebViewFragment extends CompetitionWebViewFragment
 {
-    @Inject Context dummyContextDoNotRemove;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context dummyContextDoNotRemove;
     @Inject BroadcastUtils broadcastUtils;
 
     @Override public void onAttach(Activity activity)

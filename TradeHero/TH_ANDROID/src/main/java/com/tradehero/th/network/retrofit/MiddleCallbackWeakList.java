@@ -1,9 +1,8 @@
 package com.tradehero.th.network.retrofit;
 
+import android.support.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class MiddleCallbackWeakList<DTOType> extends ArrayList<WeakReference<MiddleCallback<DTOType>>>
 {

@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
@@ -41,6 +40,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     @NonNull protected LeaderboardDefKey leaderboardDefKey;
     @Nullable protected Subscription leaderboardDefCacheSubscription;
     protected LeaderboardDefDTO leaderboardDefDTO;
+    @Nullable protected Subscription currentUserProfileSubscription;
     protected UserProfileDTO currentUserProfileDTO;
 
     public static void putLeaderboardDefKey(@NonNull Bundle args, @NonNull LeaderboardDefKey leaderboardDefKey)
@@ -67,9 +67,9 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     }
     //</editor-fold>
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
         fetchLeaderboardDef();
         fetchCurrentUserProfile();
     }
@@ -78,23 +78,34 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
     {
         unsubscribe(leaderboardDefCacheSubscription);
         leaderboardDefCacheSubscription = null;
+        unsubscribe(currentUserProfileSubscription);
+        currentUserProfileSubscription = null;
         super.onStop();
     }
 
     protected void fetchLeaderboardDef()
     {
         unsubscribe(leaderboardDefCacheSubscription);
-        leaderboardDefCacheSubscription = AndroidObservable.bindFragment(
-                this,
-                leaderboardDefCache.get(leaderboardDefKey))
-        .subscribe(createLeaderboardDefCacheObserver()
-        );
+        if (leaderboardDefKey.key > 0)
+        {
+            leaderboardDefCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    leaderboardDefCache.get(leaderboardDefKey))
+                    .subscribe(createLeaderboardDefCacheObserver()
+                    );
+        }
+        else
+        {
+            Timber.d("Skipping fetching leaderboardDef for key %d", leaderboardDefKey.key);
+        }
     }
 
     protected void fetchCurrentUserProfile()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(currentUserProfileSubscription);
+        currentUserProfileSubscription = AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileObserver());
     }
 

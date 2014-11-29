@@ -42,6 +42,7 @@
   <string name="error_launch_camera">There was an error launching the camera</string>
   <string name="error_fetch_user_profile">There was an error when fetching the user profile information</string>
   <string name="error_fetch_your_user_profile">There was an error when fetching your profile information</string>
+  <string name="error_update_your_user_profile">There was an error when updating your profile information</string>
   <string name="error_fetch_people_list_info">There was an error when fetching the list of people</string>
 
 </resources>

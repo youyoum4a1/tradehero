@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.contestcenter;
 
-import com.tradehero.th.api.competition.ProviderDTO;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.competition.ProviderDTO;
 
 class ProviderContestPageDTO implements ContestPageDTO
 {

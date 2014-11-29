@@ -1,12 +1,12 @@
 package com.tradehero.th.utils;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class DateUtils
 {
@@ -47,7 +47,7 @@ public class DateUtils
 
     public static int getNumberOfDaysBetweenDates(@NonNull Date start, @NonNull Date end)
     {
-           return (int) (end.getTime() - start.getTime()) / MILLISECOND_PER_DAY;
+           return (int) ((end.getTime() - start.getTime()) / MILLISECOND_PER_DAY);
     }
 
     public static String getFormattedDate(@NonNull Resources resources, @NonNull Date utcDate)

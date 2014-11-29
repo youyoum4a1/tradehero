@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +12,6 @@ import com.tradehero.th.adapters.DTOSetAdapter;
 import com.tradehero.th.models.share.ShareDestination;
 import java.util.Collection;
 import java.util.Comparator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class ShareDestinationSetAdapter extends DTOSetAdapter<ShareDestination>
 {

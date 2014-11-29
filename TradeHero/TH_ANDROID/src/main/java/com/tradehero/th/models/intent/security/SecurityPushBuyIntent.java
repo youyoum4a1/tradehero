@@ -3,6 +3,7 @@ package com.tradehero.th.models.intent.security;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -13,7 +14,6 @@ import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class SecurityPushBuyIntent extends THIntent
 {

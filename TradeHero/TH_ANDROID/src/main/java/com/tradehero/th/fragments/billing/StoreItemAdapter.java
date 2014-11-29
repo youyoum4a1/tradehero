@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 import java.util.HashMap;
-import android.support.annotation.NonNull;
 
 public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
 {

@@ -1,5 +1,6 @@
 package com.tradehero.th.models.security;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -7,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import android.support.annotation.NonNull;
 
 @Singleton public class WarrantSpecificKnowledgeFactory
 {

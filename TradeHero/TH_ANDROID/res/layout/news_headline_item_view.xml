@@ -6,10 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="6dp"
-    android:paddingBottom="6dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
+    style="@style/TH.ListItem"
     >
 
   <FrameLayout

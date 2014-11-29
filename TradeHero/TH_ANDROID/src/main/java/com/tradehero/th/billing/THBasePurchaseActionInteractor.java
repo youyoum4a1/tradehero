@@ -1,6 +1,8 @@
 package com.tradehero.th.billing;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -8,10 +10,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

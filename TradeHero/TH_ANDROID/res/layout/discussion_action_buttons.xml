@@ -2,8 +2,7 @@
 
 <merge>
 
-  <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView
-      xmlns:android="http://schemas.android.com/apk/res/android"
+  <com.tradehero.th.fragments.discussion.DiscussionActionButtonsView xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       android:id="@+id/discussion_action_buttons"
       android:layout_width="match_parent"
@@ -11,7 +10,7 @@
       android:background="@drawable/discussion_action_buttons_background"
       >
 
-    <include layout="@layout/vote_pair"/>
+    <include layout="@layout/vote_pair" />
 
     <com.tradehero.th.widget.CommentActionView
         android:id="@+id/discussion_action_button_comment_count"
@@ -30,16 +29,23 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:src="@drawable/icn_actions_share"
-        android:contentDescription="@null"/>
+        android:contentDescription="@null"
+        />
 
-    <TextView
-        android:id="@+id/discussion_action_button_more"
-        style="@style/TH.DiscussionActionButtons.Text"
+    <Space
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="@string/more_character"
-        android:gravity="right|center_vertical"
+        />
+
+    <ImageView
+        android:id="@+id/discussion_action_button_more"
+        android:layout_width="@dimen/small_image_w_h"
+        android:layout_height="@dimen/small_image_w_h"
+        android:layout_marginLeft="@dimen/comment_action_buttons_horizontal_padding"
+        android:src="@drawable/ic_action_navigation_more_horiz"
+        android:background="@drawable/basic_transparent_selector"
+        android:layout_gravity="center_vertical"
         />
 
   </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>

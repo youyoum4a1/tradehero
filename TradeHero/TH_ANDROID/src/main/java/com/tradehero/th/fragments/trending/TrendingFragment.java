@@ -16,8 +16,10 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
@@ -44,6 +46,7 @@ import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -53,7 +56,6 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
@@ -78,6 +80,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     @Inject Analytics analytics;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
+    private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
 
     private SubscriptionList subscriptions;
     private UserProfileDTO userProfileDTO;
@@ -91,14 +94,20 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getActivity().getResources());
+        this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
         defaultFilterSelected = false;
         wrapperAdapter = createSecurityItemViewAdapter();
+
+        exchangeAdapter = new TrendingFilterSpinnerIconAdapterNew(
+                getActivity(),
+                R.layout.trending_filter_spinner_item);
+        exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        this.filterSelectorView.setExchangeAdapter(exchangeAdapter);
         this.filterSelectorView.apply(this.trendingFilterTypeDTO);
         this.listView.setAdapter(wrapperAdapter);
     }
@@ -107,9 +116,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     {
         super.onStart();
         subscriptions = new SubscriptionList();
-        subscriptions.add(AndroidObservable.bindFragment(this,
-                this.filterSelectorView.getObservableFilter())
-                .subscribe(createTrendingFilterChangedObserver()));
+        fetchFilter();
         fetchExchangeList();
         fetchUserProfile();
         fetchProviderList();
@@ -150,6 +157,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
 
     @Override public void onDestroy()
     {
+        exchangeAdapter = null;
         wrapperAdapter = null;
         super.onDestroy();
     }
@@ -185,13 +193,35 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         return new MultiScrollListener(super.createListViewScrollListener(), filterQuickReturnScrollListener);
     }
 
+    private void fetchFilter()
+    {
+        subscriptions.add(
+                AndroidObservable.bindFragment(
+                        this,
+                        this.filterSelectorView.getObservableFilter())
+                        .subscribe(
+                                this::onNext,
+                                this::onErrorFilter));
+    }
+
+    protected void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
+    {
+        TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
+        // TODO
+        scheduleRequestData();
+    }
+
+    protected void onErrorFilter(@NonNull Throwable e)
+    {
+        Timber.e(e, "Error with filter");
+    }
+
     private void fetchExchangeList()
     {
         ExchangeListType key = new ExchangeListType();
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createExchangeListTypeFetchObserver()));
     }
 
@@ -205,7 +235,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         @Override public void onNext(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
         {
             Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()
@@ -219,7 +249,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         }
     }
 
-    private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs, boolean andDisplay)
+    private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)
     {
         ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
                 getResources(),
@@ -228,10 +258,10 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
                         new ExchangeCompactDTODescriptionNameComparator<>()));
         // Adding the "All" choice
         spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
-        linkWith(spinnerList, andDisplay);
+        linkWith(spinnerList);
     }
 
-    private void linkWith(@NonNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs, boolean andDisplay)
+    private void linkWith(@NonNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs)
     {
         this.exchangeCompactSpinnerDTOs = exchangeCompactSpinnerDTOs;
         setUpFilterSelectorView();
@@ -242,7 +272,6 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileFetchObserver()));
     }
 
@@ -256,7 +285,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
             Timber.d("Retrieve user with surveyUrl=%s", pair.second.activeSurveyImageURL);
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()
@@ -269,7 +298,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         }
     }
 
-    private void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    private void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
         setUpFilterSelectorView();
@@ -281,7 +310,6 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey()))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createProviderListFetchObserver()));
     }
 
@@ -305,22 +333,6 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
-        }
-    }
-
-    protected Observer<TrendingFilterTypeDTO> createTrendingFilterChangedObserver()
-    {
-        return new TrendingOnFilterTypeChangedObserver();
-    }
-
-    protected class TrendingOnFilterTypeChangedObserver extends EmptyObserver<TrendingFilterTypeDTO>
-    {
-        @Override public void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
-        {
-            Timber.d("Filter onFilterTypeChanged");
-            TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
-            // TODO
-            scheduleRequestData();
         }
     }
 
@@ -377,7 +389,9 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         setDefaultExchange();
         if (exchangeCompactSpinnerDTOs != null)
         {
-            filterSelectorView.setUpExchangeSpinner(exchangeCompactSpinnerDTOs);
+            exchangeAdapter.clear();
+            exchangeAdapter.addAll(exchangeCompactSpinnerDTOs);
+            exchangeAdapter.notifyDataSetChanged();
         }
         filterSelectorView.apply(trendingFilterTypeDTO);
     }

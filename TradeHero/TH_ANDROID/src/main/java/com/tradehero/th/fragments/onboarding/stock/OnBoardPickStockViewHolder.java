@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.stock;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -15,7 +16,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import java.util.ArrayList;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class OnBoardPickStockViewHolder
 {

@@ -1,7 +1,7 @@
 package com.squareup.widgets;
 
-import com.squareup.picasso.Callback;
 import android.support.annotation.NonNull;
+import com.squareup.picasso.Callback;
 
 public class AspectRatioImageViewCallback implements Callback
 {

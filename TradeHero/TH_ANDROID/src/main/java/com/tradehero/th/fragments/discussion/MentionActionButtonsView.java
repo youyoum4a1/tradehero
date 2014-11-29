@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -15,7 +16,6 @@ import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.functions.Func1;
 

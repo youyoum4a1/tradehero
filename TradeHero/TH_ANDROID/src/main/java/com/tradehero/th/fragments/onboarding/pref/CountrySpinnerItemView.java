@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.onboarding.pref;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -10,7 +11,6 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
-import android.support.annotation.Nullable;
 
 public class CountrySpinnerItemView extends RelativeLayout
     implements DTOView<Country>

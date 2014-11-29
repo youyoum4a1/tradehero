@@ -1,9 +1,9 @@
 package com.tradehero.th.api.competition;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
 import java.util.Date;
-import android.support.annotation.NonNull;
 
 public class ProviderDisplayCellIdList extends DTOKeyIdList<ProviderDisplayCellId>
 {

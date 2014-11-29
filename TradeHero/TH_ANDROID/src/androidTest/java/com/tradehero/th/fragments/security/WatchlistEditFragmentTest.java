@@ -21,18 +21,17 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.util.ActivityController;
-
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @RunWith(THRobolectricTestRunner.class)
 public class WatchlistEditFragmentTest

@@ -1,5 +1,7 @@
 package com.tradehero.th.models.discussion;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
@@ -8,8 +10,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
 {

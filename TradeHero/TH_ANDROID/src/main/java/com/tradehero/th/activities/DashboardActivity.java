@@ -70,6 +70,8 @@ import com.tradehero.th.fragments.competition.ForCompetitionEnrollment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.onboarding.ForOnBoard;
@@ -91,6 +93,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -211,7 +214,11 @@ public class DashboardActivity extends BaseActivity
                 restoreRequestCode = null;
             }
         };
-        launchBilling();
+
+        if (Constants.RELEASE)
+        {
+            launchBilling();
+        }
 
         // TODO better staggering of starting popups.
         suggestUpgradeIfNecessary();
@@ -815,7 +822,10 @@ public class DashboardActivity extends BaseActivity
                     PositionListFragment.class,
                     TradeListFragment.class,
                     HomeFragment.class,
-                    ProviderVideoListFragment.class
+                    ProviderVideoListFragment.class,
+                    WebViewFragment.class,
+                    GameWebViewFragment.class,
+                    DiscoveryMainFragment.class
             );
             router.registerAlias("messages", "updatecenter/0");
             router.registerAlias("notifications", "updatecenter/1");

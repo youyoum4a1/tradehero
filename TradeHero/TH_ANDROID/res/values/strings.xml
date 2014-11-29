@@ -12,7 +12,7 @@
   <string name="action_invite">Invite Friends</string>
   <string name="update">Update</string>
   <string name="empty_video_list">There is no learning video at the moment.</string>
-  <string name="loading_required_information">Loading Required Information</string>
+  <string name="loading_required_information">Loading Required Information&#8230;</string>
   <string name="server_response">"Server response: "</string>
   <string name="link">Link %1$s</string>
   <string name="link_description">You need to link your %1$s account before sharing…</string>
@@ -244,7 +244,9 @@
   <string name="discovery_news">News</string>
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
-  <string name="discovery_learning">Academy</string>
+  <string name="discovery_learning">Videos</string>
+  <string name="discovery_games">@string/games</string>
+  <string name="discovery_articles">@string/articles</string>
   <string name="onboard_exchange_title">To Help Get You Started</string>
   <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
   <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
@@ -265,4 +267,13 @@
 
   <!-- Residemenu -->
   <string name="residemenu_footer_title">Content Partners:</string>
+
+  <!-- Discovery games -->
+  <string name="games">Games</string>
+  <string name="coming_soon">Coming soon!</string>
+  <string name="articles">Articles</string>
+  <string name="best_roi">ROI:</string>
+  <string name="content_sharing_started">Sharing&#8230;</string>
+  <string name="content_shared">Shared!</string>
+  <string name="retry">Retry</string>
 </resources>

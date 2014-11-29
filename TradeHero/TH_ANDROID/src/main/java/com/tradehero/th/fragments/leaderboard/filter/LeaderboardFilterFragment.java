@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.leaderboard.filter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,17 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LeaderboardFilterFragment extends DashboardFragment
 {

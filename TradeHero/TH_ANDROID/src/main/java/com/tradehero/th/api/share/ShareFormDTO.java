@@ -1,9 +1,9 @@
 package com.tradehero.th.api.share;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
-import android.support.annotation.NonNull;
 
 public class ShareFormDTO implements DTO
 {

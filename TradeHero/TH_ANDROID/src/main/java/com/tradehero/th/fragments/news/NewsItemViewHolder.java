@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -23,13 +24,14 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHo
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
+public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> extends
         NewsItemCompactViewHolder<DiscussionType>
 {
     @InjectView(R.id.news_detail_wrapper) @Optional protected BetterViewAnimator mNewsContentWrapper;
@@ -91,14 +93,16 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
     protected void fetchMultipleSecurities()
     {
         if (mNewsDetailReference != null &&
-                discussionDTO != null &&
-                discussionDTO.securityIds != null &&
-                !discussionDTO.securityIds.isEmpty())
+                discussionDTO instanceof NewsItemDTO)
         {
-            detachMultiFetchAssistant();
-            multiFetchSubscription = multiFetchAssistant.get(new SecurityIntegerIdList(discussionDTO.securityIds, 0))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(createMultiSecurityObserver());
+            List<Integer> securityIds = ((NewsItemDTO) discussionDTO).securityIds;
+            if (securityIds != null && !securityIds.isEmpty())
+            {
+                detachMultiFetchAssistant();
+                multiFetchSubscription = multiFetchAssistant.get(new SecurityIntegerIdList(securityIds, 0))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(createMultiSecurityObserver());
+            }
         }
     }
 
@@ -148,16 +152,16 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
             case ORIGINAL:
             case TRANSLATING:
             case FAILED:
-                if (discussionDTO != null)
+                if (discussionDTO instanceof NewsItemDTO)
                 {
-                    return discussionDTO.text;
+                    return ((NewsItemDTO) discussionDTO).text;
                 }
                 return null;
 
             case TRANSLATED:
-                if (translatedDiscussionDTO != null)
+                if (translatedDiscussionDTO instanceof NewsItemDTO)
                 {
-                    return translatedDiscussionDTO.text;
+                    return ((NewsItemDTO) translatedDiscussionDTO).text;
                 }
                 return null;
         }
@@ -174,7 +178,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemDTO> extends
 
     protected int getContentViewIdToShow()
     {
-        if (loadingTextContent != null && (discussionDTO == null || discussionDTO.text == null))
+        if (loadingTextContent != null && (!(discussionDTO instanceof NewsItemDTO) || ((NewsItemDTO) discussionDTO).text == null))
         {
             return loadingTextContent.getId();
         }

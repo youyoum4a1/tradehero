@@ -1,9 +1,9 @@
 package com.tradehero.th.api.competition;
 
 import android.os.Bundle;
-import com.tradehero.route.RouteProperty;
-import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.route.RouteProperty;
 
 public class ProviderId extends AbstractIntegerDTOKey
 {

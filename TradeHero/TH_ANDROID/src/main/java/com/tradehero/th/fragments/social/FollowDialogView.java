@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -16,12 +17,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
-import com.tradehero.th.inject.HierarchyInjector;
 import dagger.Lazy;
 import javax.inject.Inject;
-import android.support.annotation.Nullable;
 
 /**
  * Refactor the code inside AlertDialogUtil

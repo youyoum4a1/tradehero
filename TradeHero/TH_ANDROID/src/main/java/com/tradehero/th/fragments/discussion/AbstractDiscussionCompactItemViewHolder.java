@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.discussion;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -11,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.share.SocialShareFormDTO;
@@ -21,8 +24,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends AbstractDiscussionCompactDTO>
@@ -348,6 +349,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
             @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
             {
                 // Nothing to do
+                THToast.show(R.string.content_sharing_started);
             }
 
             @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
@@ -359,6 +361,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
                     @NonNull SocialShareResultDTO socialShareResultDTO)
             {
                 // Nothing to do
+                THToast.show(R.string.content_shared);
             }
 
             @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO,

@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;

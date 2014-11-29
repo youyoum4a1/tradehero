@@ -7,6 +7,8 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -26,8 +28,6 @@ import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class UserLevelProgressBar extends RelativeLayout
 {

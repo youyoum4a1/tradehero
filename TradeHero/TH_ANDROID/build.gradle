@@ -267,29 +267,15 @@ dependencies {
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   // This does not work as we would hope. Second "setProperty" wins
-  def fbGoogproj = project(':facebook-android-sdk:facebook')
-  fbGoogproj.ext.TEST_GOOGLE_PLAY = "true"
-  googleplayCompile(fbGoogproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
   def fbproj = project(':facebook-android-sdk:facebook')
-  fbproj.ext.TEST_GOOGLE_PLAY = "false"
-  amazonCompile(fbproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-  chinaCompile(fbproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
-  samsungCompile(fbproj) {
+  fbproj.ext.TEST_GOOGLE_PLAY = "true" // Swap to this one for others
+  //fbproj.ext.TEST_GOOGLE_PLAY = "false" // Swap to this one for Amazon
+  compile(fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
   compile('com.android.support:support-v13:21.0.0')
   provided 'proguard:annotations:4.6'
-  compile('com.github.chrisbanes.pulltorefresh:library:2.1.2-SNAPSHOT@aar') {
-    exclude group: 'commons-codec', module: 'android'
-    // exclude group: 'com.android.support', module: 'appcompat-v7'
-  }
-  compile('se.emilsjolander:stickylistheaders:2.4.1@aar') {
+  compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
@@ -302,16 +288,17 @@ dependencies {
     exclude group: 'com.squareup.picasso', module: 'picasso'
     exclude group: 'com.nineoldandroids', module: 'library'
   }
-  compile('com.squareup.picasso:picasso:2.3.3') {
+  compile('com.squareup.picasso:picasso:2.4.0') {
     exclude group: "com.squareup.okhttp", module: "okhttp"
     exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
   }
-  compile 'com.squareup.okhttp:okhttp:2.0.0'
-  compile('com.squareup.okhttp:okhttp-urlconnection:2.0.0') {
+  compile 'com.squareup.okhttp:okhttp:2.1.0'
+  compile('com.squareup.okhttp:okhttp-urlconnection:2.1.0') {
     exclude group: "com.squareup.okhttp", module: "okhttp"
   }
-  compile('com.squareup.retrofit:retrofit:1.6.1') {
+  compile('com.squareup.retrofit:retrofit:1.8.0') {
     exclude module: 'gson'
+    exclude module: 'rxjava'
   }
   compile('com.squareup.retrofit:converter-simplexml:1.6.1') {
     exclude module: 'stax'
@@ -345,7 +332,11 @@ dependencies {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'
-  compile 'com.jakewharton:butterknife:6.0.0'
+  compile ('com.jakewharton:butterknife:6.0.1.TH-SNAPSHOT') {
+    exclude group: 'se.emilsjolander', module: 'stickylistheaders'
+  }
+  compile 'com.appsflyer:library:2.3.1.12'
+
   // For Test
   androidTestCompile 'junit:junit:4.10'
   androidTestCompile('org.robolectric:robolectric:2.3') {
@@ -373,7 +364,6 @@ dependencies {
   if (project.ext.isIntelliJ) {
     androidTestCompile files('build/test-classes')
   }
-  compile project(':facebook-android-sdk:facebook')
 
   releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }

@@ -1,10 +1,10 @@
 package com.tradehero.th.api.portfolio;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.quote.UpdatePricesQuoteDTO;
 import java.util.Date;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {

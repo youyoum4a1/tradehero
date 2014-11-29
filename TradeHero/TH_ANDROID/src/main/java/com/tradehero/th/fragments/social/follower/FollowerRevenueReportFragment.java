@@ -1,18 +1,18 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AbsListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
@@ -22,9 +22,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,9 +33,10 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 {
     @Inject CurrentUserId currentUserId;
     @Inject FollowerSummaryCacheRx followerSummaryCache;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @InjectView(R.id.manage_followers_header) View headerView;
-    @InjectView(R.id.follower_list) PullToRefreshListView pullToRefreshListView;
+    @InjectView(R.id.follower_list) AbsListView followerListView;
     private FollowerManagerViewContainer followerManagerViewContainer;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -76,13 +77,12 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         AndroidObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
-                .subscribe(this::onListItemClick);
+                .subscribe(this::onListItemClick, toastOnErrorAction);
     }
 
     @Override public void onDestroyView()
     {
         headerView.removeCallbacks(null);
-        pullToRefreshListView.setOnScrollChangedListener(null);
         ButterKnife.reset(this);
         followerManagerViewContainer.onDestroyView();
         super.onDestroyView();
@@ -101,21 +101,20 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 
     protected void adjustListPadding()
     {
-        if (headerView != null && pullToRefreshListView != null)
+        if (headerView != null && followerListView != null)
         {
             int headerHeight = headerView.getMeasuredHeight();
             QuickReturnListViewOnScrollListener headerQuickReturnScrollListener =
                     new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, headerView,
                             -headerHeight, null, 0);
 
-            ListView listView = pullToRefreshListView.getRefreshableView();
-            listView.setPadding(
-                    listView.getPaddingLeft(),
+            followerListView.setPadding(
+                    followerListView.getPaddingLeft(),
                     headerHeight,
-                    listView.getPaddingRight(),
-                    listView.getPaddingBottom());
+                    followerListView.getPaddingRight(),
+                    followerListView.getPaddingBottom());
 
-            pullToRefreshListView.setOnScrollListener(new MultiScrollListener(
+            followerListView.setOnScrollListener(new MultiScrollListener(
                     dashboardBottomTabsListViewScrollListener.get(),
                     headerQuickReturnScrollListener));
         }

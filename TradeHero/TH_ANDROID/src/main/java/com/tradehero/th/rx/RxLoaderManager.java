@@ -47,12 +47,12 @@ public class RxLoaderManager
         {
             @Override public void onCompleted()
             {
-                cachedRequests.remove(key);
+                remove(key);
             }
 
             @Override public void onError(Throwable e)
             {
-                cachedRequests.remove(key);
+                remove(key);
             }
 
             @Override public void onNext(V v)
@@ -76,7 +76,7 @@ public class RxLoaderManager
         if (subscription != null)
         {
             subscription.unsubscribe();
-            taskSubscriptions.remove(subscription);
+            taskSubscriptions.remove(key);
         }
     }
 

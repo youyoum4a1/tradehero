@@ -11,7 +11,6 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 DiscoveryMainFragment.class,
-                NewsPagerFragment.class,
 
                 NewsHeadlineFragment.class,
                 RegionalNewsHeadlineFragment.class,
@@ -19,7 +18,15 @@ import javax.inject.Singleton;
                 LearningFragment.class,
 
                 RegionalNewsSelectorView.class,
-                RegionalNewsSearchableSelectorView.class
+                RegionalNewsSearchableSelectorView.class,
+
+                DiscoveryGameFragment.class,
+                MiniGameDefItemView.class,
+
+                DiscoveryArticleFragment.class,
+                ArticleItemView.class,
+
+                DiscoveryFaqWebFragment.class,
         },
         library = true,
         complete = false

@@ -5,20 +5,21 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -44,11 +45,11 @@ import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPr
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.BaseExpandingItemListener;
+import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import dagger.Lazy;
 import java.util.Date;
 import java.util.List;
@@ -68,8 +69,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
     @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
+    @Inject SingleExpandingListViewListener singleExpandingListViewListener;
 
-    @InjectView(R.id.leaderboard_mark_user_listview) LeaderboardMarkUserListView leaderboardMarkUserListView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeContainer;
+    @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
     @InjectView(R.id.leaderboard_mark_user_screen) BetterViewAnimator leaderboardMarkUserScreen;
     protected View headerView;
 
@@ -112,7 +115,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
-        initViews(view);
+        ButterKnife.inject(this, view);
+        leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         inflateHeaderView(inflater, container);
 
         if (leaderboardMarkUserListView != null)
@@ -140,14 +145,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             headerView = inflater.inflate(getHeaderViewResId(), null);
             if (headerView != null)
             {
-                leaderboardMarkUserListView.getRefreshableView().addHeaderView(headerView, null, false);
+                leaderboardMarkUserListView.addHeaderView(headerView, null, false);
                 initHeaderView();
             }
 
             View userRankingHeaderView = inflateAndGetUserRankHeaderView();
             setupOwnRankingView(userRankingHeaderView);
 
-            leaderboardMarkUserListView.getRefreshableView().addHeaderView(userRankingHeaderView);
+            leaderboardMarkUserListView.addHeaderView(userRankingHeaderView);
         }
     }
 
@@ -219,12 +224,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     }
     //</editor-fold>
 
-    @Override protected void initViews(View view)
-    {
-        ButterKnife.inject(this, view);
-        leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-    }
-
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
@@ -248,7 +247,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
         leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
-        leaderboardMarkUserListView.setOnRefreshListener(leaderboardMarkUserListAdapter);
+        swipeContainer.setOnRefreshListener(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
 
         Bundle loaderBundle = new Bundle(getArguments());
@@ -269,7 +268,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             if (!newLeaderboardKey.equals(currentLeaderboardKey))
             {
                 currentLeaderboardKey = newLeaderboardKey;
-                leaderboardMarkUserListView.setRefreshing();
+                swipeContainer.setRefreshing(true);
                 initialLoad();
             }
             getActivity().invalidateOptionsMenu();
@@ -300,7 +299,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
         leaderboardMarkUserListAdapter = null;
 
-        leaderboardMarkUserListView.setOnRefreshListener((LeaderboardMarkUserListAdapter) null);
+        swipeContainer.setOnRefreshListener(null);
         leaderboardMarkUserListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -402,7 +401,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected void updateCurrentRankHeaderView()
+    protected void updateCurrentRankHeaderViewWithLeaderboardUser()
     {
         if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
@@ -469,7 +468,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         this.currentLeaderboardUserDTO = leaderboardDTO;
         if (andDisplay)
         {
-            updateCurrentRankHeaderView();
+            updateCurrentRankHeaderViewWithLeaderboardUser();
         }
     }
 
@@ -483,14 +482,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     private void updateListViewRow(@NonNull final UserBaseKey heroId)
     {
-        AdapterView list = leaderboardMarkUserListView.getRefreshableView();
-        adapterViewUtilsLazy.get().updateSingleRowWhere(list, UserBaseDTO.class, new Predicate<UserBaseDTO>()
-        {
-            @Override public boolean apply(@NonNull UserBaseDTO userBaseDTO)
-            {
-                return userBaseDTO.getBaseKey().equals(heroId);
-            }
-        });
+        adapterViewUtilsLazy.get().updateSingleRowWhere(leaderboardMarkUserListView, UserBaseDTO.class,
+                userBaseDTO -> userBaseDTO.getBaseKey().equals(heroId));
     }
 
     protected void pushFilterFragmentIn()
@@ -540,14 +533,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             {
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
-            leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.leaderboard_mark_user_listview);
-            leaderboardMarkUserListView.onRefreshComplete();
+            leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.swipe_container);
+            swipeContainer.setRefreshing(false);
         }
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardMarkUserItemView.OnFollowRequestedListener
     {
-        @Override public void onFollowRequested(UserBaseDTO userBaseDTO)
+        @Override public void onFollowRequested(@NonNull UserBaseDTO userBaseDTO)
         {
             handleFollowRequested(userBaseDTO);
         }

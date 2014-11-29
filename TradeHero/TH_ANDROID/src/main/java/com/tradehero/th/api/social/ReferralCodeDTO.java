@@ -7,4 +7,11 @@ import com.tradehero.common.persistence.DTO;
  */
 public class ReferralCodeDTO implements DTO
 {
+    public String referralCode;
+
+    public ReferralCodeDTO(String referralCode)
+    {
+        super();
+        this.referralCode = referralCode;
+    }
 }

@@ -211,6 +211,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         {
             providerDTO = pair.second;
             setupCompetitionAdapter();
+            updateCurrentRankHeaderViewWithProvider();
         }
 
         @Override public void onCompleted()
@@ -220,6 +221,15 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         @Override public void onError(Throwable e)
         {
             THToast.show(R.string.error_fetch_provider_info);
+        }
+    }
+
+    private void updateCurrentRankHeaderViewWithProvider()
+    {
+        if (getRankHeaderView() != null && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
+        {
+            CompetitionLeaderboardMarkUserOwnRankingView rankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
+            rankingView.setProviderDTO(providerDTO);
         }
     }
 
@@ -261,32 +271,22 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
         competitionLeaderboardSubscription = AndroidObservable.bindFragment(
                 this,
-                competitionLeaderboardCache.get(key))
-                .subscribe(createCompetitionLeaderboardObserver());
+                competitionLeaderboardCache.get(key)
+                        .map(pair -> pair.second))
+                .subscribe(this::linkWith,
+                        this::handleFetchCompetitionLeaderboardFailed);
     }
 
-    protected Observer<Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>> createCompetitionLeaderboardObserver()
+    protected void linkWith(@NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)
     {
-        return new CompetitionLeaderboardObserver();
+        this.competitionLeaderboardDTO = competitionLeaderboardDTO;
+        setupCompetitionAdapter();
+        updateCurrentRankHeaderViewWithCompetitionLeaderboard();
     }
 
-    protected class CompetitionLeaderboardObserver implements Observer<Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO>>
+    protected void handleFetchCompetitionLeaderboardFailed(@NonNull Throwable e)
     {
-        @Override public void onNext(Pair<CompetitionLeaderboardId, CompetitionLeaderboardDTO> pair)
-        {
-            competitionLeaderboardDTO = pair.second;
-            setupCompetitionAdapter();
-            updateCurrentRankHeaderView();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.d("ProviderPrizeAdsCallBack failure!");
-        }
+        Timber.d("ProviderPrizeAdsCallBack failure!");
     }
 
     @Override @LayoutRes protected int getCurrentRankLayoutResId()
@@ -294,7 +294,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         return R.layout.lbmu_item_own_ranking_competition_mode;
     }
 
-    @Override protected void setupOwnRankingView(View userRankingHeaderView)
+    @Override protected void setupOwnRankingView(@NonNull View userRankingHeaderView)
     {
         if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserItemView)
         {
@@ -305,18 +305,14 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         super.setupOwnRankingView(userRankingHeaderView);
     }
 
-    @Override protected void updateCurrentRankHeaderView()
+    protected void updateCurrentRankHeaderViewWithCompetitionLeaderboard()
     {
-        super.updateCurrentRankHeaderView();
         if (competitionLeaderboardDTO != null
                 && getRankHeaderView() != null
-                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserItemView)
+                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
         {
-            CompetitionLeaderboardMarkUserItemView ownRankingView = (CompetitionLeaderboardMarkUserItemView) getRankHeaderView();
-            if (ownRankingView.leaderboardItem != null)
-            {
-                ownRankingView.setPrizeDTO(competitionLeaderboardDTO.getPrizeAt(ownRankingView.leaderboardItem.ordinalPosition));
-            }
+            CompetitionLeaderboardMarkUserOwnRankingView ownRankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
+            ownRankingView.setPrizeDTOSize(competitionLeaderboardDTO.prizes != null? competitionLeaderboardDTO.prizes.size() : 0);
         }
     }
 

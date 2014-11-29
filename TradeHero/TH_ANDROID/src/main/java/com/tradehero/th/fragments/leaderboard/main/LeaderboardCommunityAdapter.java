@@ -1,32 +1,28 @@
 package com.tradehero.th.fragments.leaderboard.main;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
+import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-public class LeaderboardCommunityAdapter extends ArrayAdapter<LeaderboardDefDTO>
+public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
     @Inject LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
 
-    private final int leaderboardDefViewResourceId;
-
     //<editor-fold desc="Constructors">
-    public LeaderboardCommunityAdapter(
-            @NonNull Context context,
-            int leaderboardDefViewResourceId)
+    public LeaderboardCommunityAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
-        super(context, 0);
-        this.leaderboardDefViewResourceId = leaderboardDefViewResourceId;
+        super(context, layoutResourceId);
         HierarchyInjector.inject(context, this);
     }
     //</editor-fold>
@@ -38,23 +34,8 @@ public class LeaderboardCommunityAdapter extends ArrayAdapter<LeaderboardDefDTO>
 
     @Override public int getItemViewType(int position)
     {
-        return leaderboardCommunityTypeFactory.createFrom(getItem(position)).ordinal();
-    }
-
-    public int getItemViewResId(@SuppressWarnings("UnusedParameters") int position)
-    {
-        return leaderboardDefViewResourceId;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
-    {
-        if (convertView == null)
-        {
-            convertView = LayoutInflater.from(getContext()).inflate(getItemViewResId(position), viewGroup, false);
-        }
-        ((DTOView<LeaderboardDefDTO>) convertView).display(getItem(position));
-        return convertView;
+        LeaderboardDefDTO leaderboardDefDTO = (LeaderboardDefDTO) getItem(position);
+        return leaderboardCommunityTypeFactory.createFrom(leaderboardDefDTO).ordinal();
     }
 
     //<editor-fold desc="For headers">

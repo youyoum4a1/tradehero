@@ -1,8 +1,8 @@
 package com.tradehero.common.utils;
 
 import android.net.Uri;
-import java.util.List;
 import android.support.annotation.NonNull;
+import java.util.List;
 
 /**
  * This class is actually part of KitKat(19).

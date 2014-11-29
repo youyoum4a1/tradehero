@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.LinearLayout;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -91,7 +92,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         fetchDiscussionDetail();
     }
 
-    private void fetchDiscussionDetail()
+    protected void fetchDiscussionDetail()
     {
         AbstractDiscussionCompactDTO value = discussionCache.getValue(discussionKey);
         if (value != null)
@@ -206,6 +207,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
 
         @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
         {
+            THToast.show(R.string.content_sharing_started);
         }
 
         @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
@@ -215,6 +217,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T extends Discussi
         @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
                 @NonNull SocialShareResultDTO socialShareResultDTO)
         {
+            THToast.show(R.string.content_shared);
         }
 
         @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)

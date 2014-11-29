@@ -1,12 +1,12 @@
 package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import android.support.annotation.NonNull;
 
 public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, WatchlistItemView>
 {

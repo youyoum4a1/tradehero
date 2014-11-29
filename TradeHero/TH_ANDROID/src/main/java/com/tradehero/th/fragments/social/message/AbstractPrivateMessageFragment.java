@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -60,6 +61,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserBaseKey correspondentId;
     protected UserProfileDTO correspondentProfile;
 
+    @InjectView(android.R.id.list) protected ListView discussionList;
     @InjectView(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
     @InjectView(R.id.private_message_empty) protected TextView emptyHint;
     @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
@@ -100,13 +102,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
-        super.initViews(view);
-
         messageToSend.setHint(R.string.private_message_message_hint);
         buttonSend.setText(R.string.private_message_btn_send);
         if (discussionView != null)
@@ -142,6 +137,8 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             @Override public void onTranslate(float x, float y)
             {
                 postWidget.setTranslationY(y);
+                int bottomElementsHeight = dashboardTabHost.get().getMeasuredHeight() + postWidget.getMeasuredHeight();
+                discussionList.setPadding(0, 0, 0, (int) (bottomElementsHeight - y + getResources().getDimension(R.dimen.margin_small)));
             }
         });
     }

@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.settings;
 
-import java.util.ArrayList;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.util.ArrayList;
 
 public class SettingViewHolderList extends ArrayList<SettingViewHolder>
 {

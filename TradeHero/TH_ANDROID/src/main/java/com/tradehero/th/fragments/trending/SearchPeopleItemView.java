@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.trending;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,13 +15,11 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForSearchPeopleItemBackground;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.DateUtils;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>
 {

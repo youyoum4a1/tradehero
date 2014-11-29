@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import android.support.annotation.NonNull;
 
 public class TrendingFilterSpinnerIconAdapterNew
         extends ArrayDTOAdapterNew<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>

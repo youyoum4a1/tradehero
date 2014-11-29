@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.onboarding.hero;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,8 +16,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
 {

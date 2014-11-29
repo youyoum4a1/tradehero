@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SectionIndexer;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import android.support.annotation.NonNull;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class FriendListAdapter extends ArrayDTOAdapter<UserFriendsDTO, UserFriendDTOView>

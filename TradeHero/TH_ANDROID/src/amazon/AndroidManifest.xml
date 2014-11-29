@@ -67,6 +67,7 @@
       </intent-filter>
     </receiver>
 
+      <meta-data android:name="CHANNEL" android:value="amazon" />
   </application>
 
 </manifest>

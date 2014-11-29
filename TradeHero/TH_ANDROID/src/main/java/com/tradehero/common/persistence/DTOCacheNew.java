@@ -1,11 +1,11 @@
 package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 /**
  * See DTOKeyIdList to avoid duplicating data in caches.

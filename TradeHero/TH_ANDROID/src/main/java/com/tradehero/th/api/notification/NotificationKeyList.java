@@ -1,8 +1,8 @@
 package com.tradehero.th.api.notification;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKeyIdList;
 import java.util.List;
-import android.support.annotation.NonNull;
 
 public class NotificationKeyList extends DTOKeyIdList<NotificationKey>
 {

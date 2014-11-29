@@ -31,7 +31,7 @@ public class THLog
             }
             catch (NullPointerException | PackageManager.NameNotFoundException | NoSuchAlgorithmException e)
             {
-                Timber.e(e, "KeyHash Error" + e.getMessage());
+                Timber.e(e, "KeyHash Error %s", e.getMessage());
             }
         }
     }

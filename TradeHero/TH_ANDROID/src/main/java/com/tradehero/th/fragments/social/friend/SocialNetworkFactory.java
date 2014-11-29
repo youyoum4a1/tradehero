@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.friend;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import javax.inject.Inject;
 
@@ -11,7 +12,7 @@ public class SocialNetworkFactory
     }
     //</editor-fold>
 
-    public Class<? extends SocialFriendsFragment> findProperTargetFragment(SocialNetworkEnum socialNetworkEnum)
+    public Class<? extends SocialFriendsFragment> findProperTargetFragment(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         switch (socialNetworkEnum)
         {

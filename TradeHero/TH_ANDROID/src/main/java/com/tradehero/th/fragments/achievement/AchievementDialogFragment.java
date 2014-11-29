@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
@@ -23,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import butterknife.InjectView;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 

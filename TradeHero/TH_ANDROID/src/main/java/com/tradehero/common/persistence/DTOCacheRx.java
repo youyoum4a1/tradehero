@@ -1,7 +1,7 @@
 package com.tradehero.common.persistence;
 
-import android.util.Pair;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import rx.Observable;
 
 public interface DTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>

@@ -26,7 +26,12 @@ public class NewsViewLinear extends AbstractDiscussionCompactItemViewLinear<News
 
     @Override protected NewsItemViewHolder createViewHolder()
     {
-        return new NewsItemViewHolder<NewsItemDTO>(getContext());
+        return new NewsItemViewHolder<>(getContext());
+    }
+
+    @Override protected void fetchDiscussionDetail()
+    {
+        refresh(); // Just to make sure we get the complete NewsItemDTO if it was not fetched yet.
     }
 
     public void setTitleBackground(int resId)

@@ -1,11 +1,11 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Country;
 import java.util.Date;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 // TODO remove ExtendedDTO

@@ -2,13 +2,16 @@ package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
@@ -22,17 +25,9 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
-
-import android.support.annotation.NonNull;
-
-import java.util.Date;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
 import dagger.Lazy;
+import java.util.Date;
+import javax.inject.Inject;
 
 public class AlertItemView extends RelativeLayout
         implements DTOView<AlertCompactDTO>

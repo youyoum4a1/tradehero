@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.location;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.market.Country;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 class ListedLocationDTOFactory
 {

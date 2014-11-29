@@ -1,10 +1,10 @@
 package com.tradehero.th.api.market;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import java.util.Collection;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class BaseExchangeCompactDTOList<ExchangeCompactDTOType extends ExchangeCompactDTO>
     extends BaseArrayList<ExchangeCompactDTOType>

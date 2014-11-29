@@ -2,9 +2,9 @@ package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.support.annotation.StringRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 abstract public class BaseOneCheckboxSettingViewHolder extends BaseSettingViewHolder
 {

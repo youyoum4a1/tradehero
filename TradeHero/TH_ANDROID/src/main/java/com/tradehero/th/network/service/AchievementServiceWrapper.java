@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
@@ -12,7 +13,6 @@ import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 import rx.Observable;
 
 public class AchievementServiceWrapper
@@ -81,7 +81,7 @@ public class AchievementServiceWrapper
     {
         return achievementServiceRx.shareUserAchievement(
                 achievementShareFormDTO.userAchievementId.key,
-                achievementShareFormDTO.achievementShareReqFormDTO);
+                achievementShareFormDTO.socialShareReqFormDTO);
     }
     //</editor-fold>
 }

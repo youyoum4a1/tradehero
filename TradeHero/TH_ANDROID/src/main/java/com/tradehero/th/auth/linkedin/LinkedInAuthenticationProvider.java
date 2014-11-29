@@ -1,6 +1,7 @@
 package com.tradehero.th.auth.linkedin;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.webkit.CookieSyncManager;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
@@ -15,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import android.support.annotation.NonNull;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;

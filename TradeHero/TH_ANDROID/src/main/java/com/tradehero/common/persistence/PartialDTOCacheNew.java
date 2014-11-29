@@ -1,8 +1,8 @@
 package com.tradehero.common.persistence;
 
-import java.lang.ref.WeakReference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 abstract public class PartialDTOCacheNew<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheNew<DTOKeyType, DTOType>

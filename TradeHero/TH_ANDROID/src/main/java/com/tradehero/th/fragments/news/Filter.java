@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.news;
 
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
 
 // TODO this file needs some serious cleanup
 public interface Filter

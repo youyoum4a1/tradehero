@@ -5,12 +5,11 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.base.TestTHApp;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class SecurityCompactListCacheTest

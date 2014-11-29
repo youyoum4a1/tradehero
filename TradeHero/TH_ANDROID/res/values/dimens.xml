@@ -20,6 +20,8 @@
   <dimen name="margin_medium">@dimen/size_3</dimen>
   <dimen name="margin_large">@dimen/size_4</dimen>
   <dimen name="margin_xlarge">@dimen/size_5</dimen>
+  <dimen name="margin_xxlarge">@dimen/size_6</dimen>
+  <dimen name="margin_xxxlarge">@dimen/size_7</dimen>
 
   <!-- Size is a multiple of 8dp as suggested by Google Design Spec -->
   <!-- http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
@@ -145,7 +147,8 @@
   <dimen name="button_height_small">@dimen/size_4</dimen>
 
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
-  <dimen name="discussion_list_padding">@dimen/size_7</dimen>
+  <dimen name="discussion_list_padding_top">@dimen/size_7</dimen>
+  <dimen name="discussion_list_padding_bottom">@dimen/size_12</dimen>
   <dimen name="leaderboard_position_width">@dimen/size_7</dimen>
 
   <dimen name="message_read_all_button_radius">@dimen/global_corner_radius</dimen>
@@ -155,4 +158,6 @@
   <dimen name="discovery_news_carousel_spinner_width">250dp</dimen>
   <dimen name="dashboard_tabhost_height">@dimen/size_6</dimen>
   <dimen name="dashboard_red_dot_dimen">5dp</dimen>
+  <dimen name="discovery_news_swipe_indicator_height">24dp</dimen>
+  <dimen name="discovery_minigame_item_image_height">@dimen/size_12</dimen>
 </resources>

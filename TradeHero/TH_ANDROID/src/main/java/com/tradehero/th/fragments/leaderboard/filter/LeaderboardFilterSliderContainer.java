@@ -2,21 +2,21 @@ package com.tradehero.th.fragments.leaderboard.filter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {

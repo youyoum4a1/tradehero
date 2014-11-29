@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import static com.tradehero.THRobolectric.runBgUiTasks;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.activities.DashboardActivity;
@@ -18,14 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import javax.inject.Inject;
+import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-
-import static com.tradehero.THRobolectric.runBgUiTasks;
-import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
 public class AlertViewFragmentTest

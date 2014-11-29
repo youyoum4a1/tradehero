@@ -1,8 +1,8 @@
 package com.tradehero.th.api.market;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import android.support.annotation.NonNull;
 
 public class SectorCompactDTO implements DTO
 {

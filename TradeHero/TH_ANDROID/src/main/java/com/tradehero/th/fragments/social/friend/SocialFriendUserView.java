@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,8 +21,6 @@ import com.tradehero.th.api.social.UserFriendsWeiboDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
 public class SocialFriendUserView extends SocialFriendItemView
@@ -71,6 +71,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         super.onDetachedFromWindow();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.social_item_action_btn)
     public void onActionButtonClick()
     {
@@ -87,6 +88,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.social_item_action_cb)
     public void onActionCheckBoxClick()
     {
@@ -97,6 +99,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.social_friend_item_ll)
     public void onActionItemViewClick()
     {

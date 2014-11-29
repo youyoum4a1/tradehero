@@ -1,12 +1,12 @@
 package com.tradehero.th.fragments.translation;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import android.support.annotation.Nullable;
 
 public class TranslatableLanguageItemAdapter extends ArrayDTOAdapterNew<LanguageDTO, TranslatableLanguageItemLinearView>
 {

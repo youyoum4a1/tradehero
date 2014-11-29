@@ -1,5 +1,6 @@
 package com.tradehero.th.persistence.security;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
@@ -7,7 +8,7 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.support.annotation.NonNull;
+import javax.inject.Inject;
 import rx.Observable;
 
 public class SecurityMultiFetchAssistant
@@ -17,7 +18,7 @@ public class SecurityMultiFetchAssistant
     @NonNull private final SecurityServiceWrapper securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
-    public SecurityMultiFetchAssistant(
+    @Inject public SecurityMultiFetchAssistant(
             @NonNull SecurityIdCache securityIdCache,
             @NonNull SecurityCompactCacheRx securityCompactCache,
             @NonNull SecurityServiceWrapper securityServiceWrapper)

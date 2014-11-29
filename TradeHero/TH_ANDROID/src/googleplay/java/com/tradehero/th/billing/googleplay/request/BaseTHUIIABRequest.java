@@ -1,5 +1,7 @@
 package com.tradehero.th.billing.googleplay.request;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.IABPurchaseConsumer;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
@@ -10,9 +12,6 @@ import com.tradehero.th.billing.googleplay.THIABProductDetail;
 import com.tradehero.th.billing.googleplay.THIABPurchase;
 import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class BaseTHUIIABRequest
         extends BaseTHUIBillingRequest<

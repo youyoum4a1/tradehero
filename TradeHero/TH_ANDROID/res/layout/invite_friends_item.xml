@@ -16,6 +16,7 @@
       android:layout_width="@dimen/medium_image_w_h"
       android:layout_height="@dimen/medium_image_w_h"
       tools:src="@drawable/superman_facebook"
+      android:contentDescription="@null"
       />
 
   <TextView
@@ -24,7 +25,8 @@
       android:layout_weight="1"
       android:layout_height="wrap_content"
       tools:text="Invite from Facebook"
-      android:layout_marginLeft="10dp"
+      android:layout_marginLeft="@dimen/size_1"
+      android:layout_marginStart="@dimen/size_1"
       style="@style/TH.Subhead.Inverse"
       android:singleLine="true"
 
@@ -32,7 +34,8 @@
 
   <ImageView
       android:layout_width="@dimen/small_image_w_h"
-      android:layout_height="@dimen/small_image_w_h"
+      android:layout_height="@dimen/size_2"
       android:src="@drawable/white_arrow"
+      android:contentDescription="@null"
       />
 </LinearLayout>

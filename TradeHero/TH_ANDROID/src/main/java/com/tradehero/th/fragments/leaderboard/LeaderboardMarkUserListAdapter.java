@@ -1,22 +1,21 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
-import android.widget.ListView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class LeaderboardMarkUserListAdapter extends
         LoaderDTOAdapter<
                 LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
-    implements PullToRefreshBase.OnRefreshListener<ListView>
+    implements SwipeRefreshLayout.OnRefreshListener
 {
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
@@ -77,7 +76,7 @@ public class LeaderboardMarkUserListAdapter extends
         }
     }
 
-    @Override public void onRefresh(PullToRefreshBase<ListView> refreshView)
+    @Override public void onRefresh()
     {
         getLoader().loadPrevious();
     }
