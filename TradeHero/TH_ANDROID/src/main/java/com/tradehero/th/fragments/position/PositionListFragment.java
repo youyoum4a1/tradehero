@@ -185,10 +185,6 @@ public class PositionListFragment
         portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
     }
 
-    @Override protected void initViews(@NonNull View view)
-    {
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.position_list)
     protected void handlePositionItemClicked(AdapterView<?> parent, View view, int position, long id)

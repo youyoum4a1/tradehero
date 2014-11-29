@@ -128,13 +128,12 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_main_competition, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_main_competition, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());

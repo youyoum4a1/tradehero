@@ -65,14 +65,13 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_all_relations, container, false);
-        ButterKnife.inject(this, view);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_all_relations, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         mRelationsListItemAdapter = new RelationsListItemAdapter(
                 getActivity(),
                 R.layout.relations_list_item);

@@ -177,19 +177,13 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         View view = inflater.inflate(R.layout.timeline_screen, container, false);
         userProfileView = (UserProfileView) inflater.inflate(R.layout.user_profile_view, null);
         loadingView = new ProgressBar(getActivity());
-        ButterKnife.inject(this, view);
-        initViews(view);
         return view;
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        displayActionBarTitle();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override protected void initViews(View view)
-    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         if (userProfileView != null)
         {
             //TODO now only one view, userProfileView useless, need cancel, alex
@@ -205,6 +199,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         timelineListView.setAdapter(mainTimelineAdapter);
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         fetchPortfolioList();
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        displayActionBarTitle();
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private class FollowerSummaryObserver implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>

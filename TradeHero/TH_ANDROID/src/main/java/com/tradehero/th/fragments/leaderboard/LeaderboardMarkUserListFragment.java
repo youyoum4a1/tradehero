@@ -115,7 +115,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
-        initViews(view);
+        ButterKnife.inject(this, view);
+        leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         inflateHeaderView(inflater, container);
 
         if (leaderboardMarkUserListView != null)
@@ -221,13 +223,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
-
-    @Override protected void initViews(View view)
-    {
-        ButterKnife.inject(this, view);
-        leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
-    }
 
     @Override public void onActivityCreated(Bundle savedInstanceState)
     {

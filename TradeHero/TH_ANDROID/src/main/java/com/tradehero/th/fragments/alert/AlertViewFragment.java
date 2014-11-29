@@ -115,10 +115,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         priceChangeHistoryList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
-    @Override protected void initViews(View view)
-    {
-    }
-
     @Override public void onResume()
     {
         super.onResume();

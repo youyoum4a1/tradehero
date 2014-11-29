@@ -106,10 +106,6 @@ abstract public class BasePagedListRxFragment<
 
     abstract protected int getFragmentLayoutResId();
 
-    protected void initViews(View view)
-    {
-    }
-
     @Override public void onResume()
     {
         super.onResume();

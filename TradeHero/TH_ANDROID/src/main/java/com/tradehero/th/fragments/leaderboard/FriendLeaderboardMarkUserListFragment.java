@@ -78,35 +78,36 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
         ButterKnife.inject(this, view);
-        initViews(view);
-        inflateHeaderView(inflater, container);
 
         if (leaderboardMarkUserListView != null)
         {
+            headerView = inflateHeaderView(inflater, container);
             leaderboardMarkUserListView.setEmptyView(inflateEmptyView(inflater, container));
-            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
-            leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
-            leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         }
-        leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
         return view;
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-    }
+        super.onViewCreated(view, savedInstanceState);
 
-    protected void inflateHeaderView(@NonNull LayoutInflater inflater, ViewGroup container)
-    {
         if (leaderboardMarkUserListView != null)
         {
-            headerView = inflater.inflate(R.layout.leaderboard_listview_header, null);
+            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
+            leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
+            leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
             if (headerView != null)
             {
                 leaderboardMarkUserListView.addHeaderView(headerView, null, false);
                 initHeaderView();
             }
         }
+        leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+    }
+
+    protected View inflateHeaderView(@NonNull LayoutInflater inflater, ViewGroup container)
+    {
+        return inflater.inflate(R.layout.leaderboard_listview_header, null);
     }
 
     protected void initHeaderView()

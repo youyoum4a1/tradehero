@@ -179,12 +179,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
-        super.initViews(view);
         ButterKnife.inject(this, view);
 
         bottomViewPagerAdapter =

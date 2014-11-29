@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.common.utils.THToast;
@@ -65,8 +64,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         return null;
     }
-
-    abstract protected void initViews(View view);
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

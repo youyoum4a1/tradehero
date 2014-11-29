@@ -151,17 +151,19 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.alert_edit_fragment, container, false);
-        initViews(view);
-        resideMenu.addIgnoredView(targetPriceSeekBar);
-        resideMenu.addIgnoredView(percentageSeekBar);
-        return view;
+        return inflater.inflate(R.layout.alert_edit_fragment, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
+        alertToggle.setVisibility(View.GONE);
+        targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
+        targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
+        resideMenu.addIgnoredView(targetPriceSeekBar);
+        resideMenu.addIgnoredView(percentageSeekBar);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -169,14 +171,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.alert_edit_menu, menu);
         displayActionBarTitle();
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        alertToggle.setVisibility(View.GONE);
-        targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
-        targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

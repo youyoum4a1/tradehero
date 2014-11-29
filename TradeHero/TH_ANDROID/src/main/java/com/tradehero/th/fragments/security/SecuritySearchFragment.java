@@ -38,9 +38,9 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     @Inject SecurityCompactListCacheRx securityCompactListCache;
     @Inject Analytics analytics;
 
-    protected void initViews(View view)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.initViews(view);
+        super.onViewCreated(view, savedInstanceState);
         searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
     }
 

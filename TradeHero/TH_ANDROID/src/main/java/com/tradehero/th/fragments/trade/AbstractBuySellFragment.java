@@ -131,10 +131,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         fetchQuote();
     }
 
-    @Override protected void initViews(View view)
-    {
-    }
-
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);

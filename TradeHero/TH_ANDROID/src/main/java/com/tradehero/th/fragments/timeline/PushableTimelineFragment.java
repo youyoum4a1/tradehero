@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.timeline;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,9 +25,9 @@ public class PushableTimelineFragment extends TimelineFragment
 {
     @Inject HeroAlertDialogUtil heroAlertDialogUtil;
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        super.initViews(view);
+        super.onViewCreated(view, savedInstanceState);
         mIsOtherProfile = true;
     }
 

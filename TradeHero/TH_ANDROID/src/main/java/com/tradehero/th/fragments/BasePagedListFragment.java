@@ -2,6 +2,7 @@ package com.tradehero.th.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,15 +89,14 @@ abstract public class BasePagedListFragment<
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(getFragmentLayoutResId(), container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(getFragmentLayoutResId(), container, false);
     }
 
     abstract protected int getFragmentLayoutResId();
 
-    protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
 

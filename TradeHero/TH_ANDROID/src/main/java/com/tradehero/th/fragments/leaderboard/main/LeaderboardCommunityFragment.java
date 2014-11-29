@@ -105,11 +105,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
         leaderboardDefListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
     }

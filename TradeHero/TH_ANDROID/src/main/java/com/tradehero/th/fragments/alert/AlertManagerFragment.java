@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,19 +68,13 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_alerts, container, false);
         footerView = (BaseListHeaderView) inflater.inflate(R.layout.alert_manage_subscription_view, null);
-        ButterKnife.inject(this, view);
-        initViews(view);
         return view;
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        setActionBarTitle(getString(R.string.stock_alerts));
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override protected void initViews(View view)
-    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         alertListView.setAdapter(alertListItemAdapter);
         alertListView.addFooterView(footerView);
         alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
@@ -96,6 +91,12 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         });
 
         footerView.setOnClickListener(view1 -> handleManageSubscriptionClicked());
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        setActionBarTitle(getString(R.string.stock_alerts));
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onResume()
