@@ -10,7 +10,7 @@ import java.util.List;
 public class UserFriendsDTOList extends BaseArrayListHasExpiration<UserFriendsDTO>
         implements DTO
 {
-    public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 20;
+    public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 60;
 
     //<editor-fold desc="Constructors">
     public UserFriendsDTOList()

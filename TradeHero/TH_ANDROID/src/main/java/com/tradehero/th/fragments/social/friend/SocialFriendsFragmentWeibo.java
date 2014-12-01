@@ -1,6 +1,9 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.app.AlertDialog;
+import android.support.annotation.NonNull;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +13,9 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -18,8 +23,16 @@ import timber.log.Timber;
 
 public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
 {
+    private final int MAX_TEXT_LENGTH = 140;
+
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject Provider<SocialFriendHandlerWeibo> weiboSocialFriendHandlerProvider;
     private AlertDialog mWeiboInviteDialog;
+    protected EditText edtMessageInvite;
+    protected TextView tvMessageCount;
+    protected Button btnMessageCancel;
+    protected Button btnMessageComfirm;
+
 
     @Override
     protected SocialNetworkEnum getSocialNetwork()
@@ -39,37 +52,40 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         return true;
     }
 
-    @Override
-    protected boolean canInvite()
+    @Override @NonNull
+    protected SocialFriendHandlerWeibo createFriendHandler()
     {
-        return true;
+        return weiboSocialFriendHandlerProvider.get();
     }
 
-    @Override
-    protected void createFriendHandler()
+    @Override @NonNull protected SocialFriendListItemDTOList createListedItems(@NonNull UserFriendsDTOList value)
     {
-        if (socialFriendHandler == null)
-        {
-            socialFriendHandler = weiboSocialFriendHandlerProvider.get();
-        }
-    }
+        SocialFriendListItemDTOList created = super.createListedItems(value);
 
-    @Override protected void bindNormalData()
-    {
-        int countOfUnFollowed = getCountOfUnFollowed();
-        int countOfUnInvited = getCountOfUnInvited();
+        int countOfUnFollowed = getCountFollowable();
+        int countOfUnInvited = getCountInvitable();
 
         if (countOfUnFollowed != 0)
         {
-            listedSocialItems.add(0, new SocialFriendListItemHeaderDTO(getString(R.string.friends_can_be_follow, countOfUnFollowed)));
+            created.add(0, new SocialFriendListItemHeaderDTO(getString(R.string.friends_can_be_follow, countOfUnFollowed)));
         }
         if (countOfUnInvited != 0)
         {
-            listedSocialItems.add(countOfUnFollowed + (countOfUnFollowed == 0 ? 0 : 1),
+            created.add(countOfUnFollowed + (countOfUnFollowed == 0 ? 0 : 1),
                     new SocialFriendListItemHeaderDTO(getString(R.string.friends_can_be_invite, countOfUnInvited)));
         }
 
-        super.bindNormalData();
+        return created;
+    }
+
+    protected int getCountFollowable()
+    {
+        return followableFriends == null ? 0 : followableFriends.size();
+    }
+
+    protected int getCountInvitable()
+    {
+        return invitableFriends == null ? 0 : invitableFriends.size();
     }
 
     @Override protected void inviteAll(View view)
@@ -126,6 +142,56 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         }
     }
 
+    protected void addMessageTextListener()
+    {
+        if (edtMessageInvite != null)
+        {
+            edtMessageInvite.addTextChangedListener(new TextWatcher()
+            {
+                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                {
+                }
+
+                @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
+                {
+                    setMessageTextLength();
+                }
+
+                @Override public void afterTextChanged(Editable editable)
+                {
+                }
+            });
+        }
+    }
+
+    protected void setMessageTextLength()
+    {
+        int length = edtMessageInvite.getText().toString().length();
+        tvMessageCount.setText(getString(R.string.weibo_message_text_limit, length));
+    }
+
+    protected boolean checkMessageLengthLimit()
+    {
+        return edtMessageInvite.getText().toString().length() > MAX_TEXT_LENGTH ? false : true;
+    }
+
+    protected String getStrMessageOfAtList(List<UserFriendsDTO> usersToInvite)
+    {
+        if (usersToInvite == null)
+        {
+            return "";
+        }
+        else
+        {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < usersToInvite.size(); i++)
+            {
+                sb.append(" @" + usersToInvite.get(i).name);
+            }
+            return sb.toString();
+        }
+    }
+
     protected String getWeiboInviteMessage()
     {
         if (edtMessageInvite != null)
@@ -135,7 +201,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         return null;
     }
 
-    @Override protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
+    @Override protected void handleInviteUsers(@NonNull List<UserFriendsDTO> usersToInvite)
     {
         showWeiboInviteDialog(usersToInvite);
     }
@@ -162,8 +228,9 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
     protected void handleInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey() /*, usersToInvite*/, createInviteObserver(
-                usersToInvite));
+        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey() /*, usersToInvite*/,
+                createInviteObserver(
+                        usersToInvite));
     }
 
     @Override protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)

@@ -23,15 +23,6 @@
       android:orientation="vertical"
       >
 
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/TH.Loading_Empty_Text"
-        android:text="@string/social_friend_empty"
-        android:visibility="gone"
-        />
-
     <EditText
         android:id="@+id/search_social_friends"
         android:layout_width="match_parent"
@@ -50,6 +41,15 @@
           android:layout_height="match_parent"
           android:clipToPadding="false"
           android:paddingBottom="@dimen/buy_sell_button_container_height"
+          />
+
+      <TextView
+          android:id="@android:id/empty"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          style="@style/TH.Loading_Empty_Text"
+          android:text="@string/social_friend_empty"
+          android:visibility="visible"
           />
 
       <LinearLayout
@@ -75,6 +75,7 @@
             android:minHeight="@dimen/clickable_element_min_dimen"
             android:background="@drawable/leaderboard_user_item_follow_action_button"
             android:text="@string/follow_all"
+            android:enabled="false"
             />
 
         <Button
@@ -86,6 +87,7 @@
             android:minHeight="@dimen/clickable_element_min_dimen"
             android:background="@drawable/yellow_rounded_button_selector"
             android:text="@string/invite_all"
+            android:enabled="false"
             />
 
       </LinearLayout>

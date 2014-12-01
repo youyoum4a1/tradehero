@@ -4,20 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabs;
@@ -31,52 +30,63 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import rx.Observer;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
+import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public abstract class SocialFriendsFragment extends DashboardFragment
         implements SocialFriendUserView.OnElementClickListener
 {
     @InjectView(R.id.friends_root_view) BetterViewAnimator friendsRootView;
-    @InjectView(R.id.search_social_friends) EditText searchEdit;
     @InjectView(R.id.social_follow_invite_all_container) View inviteFollowAllContainer;
     @InjectView(R.id.social_follow_all) TextView followAllView;
     @InjectView(R.id.social_invite_all) TextView inviteAllView;
     @InjectView(R.id.social_friends_list) ListView listView;
     @InjectView(android.R.id.empty) TextView emptyView;
+    @InjectView(R.id.search_social_friends) EditText filterTextView;
 
     @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCacheRx userProfileCache;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
-    @Nullable protected Subscription followFriendsSubscription;
-    @Nullable protected Subscription inviteFriendsSubscription;
-
-    protected EditText edtMessageInvite;
-    protected TextView tvMessageCount;
-    protected Button btnMessageCancel;
-    protected Button btnMessageComfirm;
+    @NonNull protected SubscriptionList requestSubscriptions;
 
     private FriendsListKey friendsListKey;
-    protected UserFriendsDTOList friendDTOList;
-    protected SocialFriendListItemDTOList listedSocialItems;
+    @Nullable protected UserFriendsDTOList friendDTOList;
+    protected List<UserFriendsDTO> followableFriends;
+    protected List<UserFriendsDTO> invitableFriends;
+    protected List<SocialFriendListItemDTO> listedSocialItems;
     @Nullable private Subscription friendsListCacheSubscription;
     protected SocialFriendsAdapter socialFriendsListAdapter;
-    private final int MAX_TEXT_LENGTH = 140;
+    protected String filterText = "";
+    @Nullable private Subscription filteringSubscription;
+
+    BehaviorSubject<Pair<String, List<SocialFriendListItemDTO>>> filterSubject;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
+        socialFriendsListAdapter = createSocialFriendsAdapter();
+        socialFriendHandler = createFriendHandler();
+        requestSubscriptions = new SubscriptionList();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -90,16 +100,18 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         listView.setEmptyView(emptyView);
-        searchEdit.addTextChangedListener(new SearchChangeListener());
-        followAllView.setVisibility(canFollow() ? View.VISIBLE : View.GONE);
-        inviteAllView.setVisibility(canInviteAll() ? View.VISIBLE : View.GONE);
         listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        displayLoadingView();
-
-        if (friendsListKey == null)
+        listView.setAdapter(socialFriendsListAdapter);
+        if (listedSocialItems != null)
         {
-            friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
+            filterSubject = BehaviorSubject.create(new Pair<>(filterText, listedSocialItems));
         }
+        else
+        {
+            filterSubject = BehaviorSubject.create();
+        }
+        filterTextView.setText(filterText);
+        listenToFilterSubject();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -111,22 +123,20 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-        unsubscribe(friendsListCacheSubscription);
-        friendsListCacheSubscription = AndroidObservable.bindFragment(
-                this,
-                friendsListCache.get(friendsListKey))
-                .subscribe(createFriendsFetchObserver());
+        fetchAllFriends();
     }
 
     @Override public void onResume()
     {
         super.onResume();
         dashboardTabHost.get().setOnTranslate((x, y) -> inviteFollowAllContainer.setTranslationY(y));
+        socialFriendsListAdapter.setOnElementClickedListener(this);
     }
 
     @Override public void onPause()
     {
         super.onPause();
+        socialFriendsListAdapter.setOnElementClickedListener(null);
         dashboardTabHost.get().setOnTranslate(null);
         DeviceUtil.dismissKeyboard(getActivity());
     }
@@ -135,30 +145,161 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         unsubscribe(friendsListCacheSubscription);
         friendsListCacheSubscription = null;
-        unsubscribe(followFriendsSubscription);
-        followFriendsSubscription = null;
-        unsubscribe(inviteFriendsSubscription);
-        inviteFriendsSubscription = null;
+        requestSubscriptions.unsubscribe();
         super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        this.friendsListCacheSubscription = null;
-        super.onDestroy();
     }
 
     @Override public void onDestroyView()
     {
+        unsubscribe(filteringSubscription);
+        filteringSubscription = null;
         listView.setOnScrollListener(null);
+        filterSubject = null;
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        socialFriendsListAdapter = null;
+        super.onDestroy();
+    }
+
+    protected abstract SocialNetworkEnum getSocialNetwork();
+
+    @NonNull protected SocialFriendsAdapter createSocialFriendsAdapter()
+    {
+        return new SocialFriendsAdapter(
+                getActivity(),
+                new ArrayList<>(),
+                R.layout.social_friends_item,
+                R.layout.social_friends_item_header);
+    }
+
+    @NonNull protected SocialFriendHandler createFriendHandler()
+    {
+        return socialFriendHandlerProvider.get();
+    }
+
+    protected abstract String getTitle();
+
+    protected void listenToFilterSubject()
+    {
+        filteringSubscription = AndroidObservable.bindFragment(
+                this,
+                filterSubject
+                        .doOnNext(pair -> {
+                            filterText = pair.first;
+                            listedSocialItems = pair.second;
+                        })
+                        .flatMap(this::getFilteredObservable))
+                .doOnNext(list -> displayContentView())
+                .subscribe(
+                        socialFriendsListAdapter::setItemsToShow,
+                        e -> Timber.e(e, "error when filtering"));
+    }
+
+    @NonNull protected Observable<List<SocialFriendListItemDTO>> getFilteredObservable(
+            @NonNull Pair<String, List<SocialFriendListItemDTO>> pair)
+    {
+        if (pair.first.trim().length() > 0)
+        {
+            return Observable.from(pair.second)
+                    .subscribeOn(Schedulers.computation())
+                    .filter(item -> item.toString().toLowerCase().contains(pair.first.toLowerCase()))
+                    .toList();
+        }
+        else
+        {
+            return Observable.just(pair.second);
+        }
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnTextChanged(value = R.id.search_social_friends, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    protected void filterTextChanged(Editable editText)
+    {
+        if (listedSocialItems != null)
+        {
+            filterSubject.onNext(new Pair<>(editText.toString(), listedSocialItems));
+        }
+    }
+
+    protected void fetchAllFriends()
+    {
+        unsubscribe(friendsListCacheSubscription);
+        friendsListCacheSubscription = AndroidObservable.bindFragment(
+                this,
+                friendsListCache.get(friendsListKey)
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        this::handleFriendListError);
+    }
+
+    protected void linkWith(@NonNull UserFriendsDTOList value)
+    {
+        this.friendDTOList = new UserFriendsDTOList(new TreeSet<>(value)); // HACK to remove duplicates
+        this.followableFriends = value.getTradeHeroUsers();
+        this.invitableFriends = value.getNonTradeHeroUsers();
+        filterSubject.onNext(new Pair<>(filterText, createListedItems(value)));
+        displayFollowAll();
+        displayInviteAll();
+    }
+
+    @NonNull protected SocialFriendListItemDTOList createListedItems(@NonNull UserFriendsDTOList value)
+    {
+        return new SocialFriendListItemDTOList(value, null);
+    }
+
+    protected void handleFriendListError(@NonNull Throwable e)
+    {
+        //when already fetched the data, do not show error view
+        if (listedSocialItems == null)
+        {
+            displayErrorView();
+        }
+    }
+
+    private void displayContentView()
+    {
+        friendsRootView.setDisplayedChildByLayoutId(R.id.content_wrapper);
+    }
+
+    protected void displayErrorView()
+    {
+        friendsRootView.setDisplayedChildByLayoutId(R.id.error);
+    }
+
+    private void displayFollowAll()
+    {
+        if (followAllView != null)
+        {
+            followAllView.setEnabled(canFollowAll());
+        }
+    }
+
+    protected boolean canFollowAll()
+    {
+        return followableFriends != null && followableFriends.size() > 0;
+    }
+
+    private void displayInviteAll()
+    {
+        if (inviteAllView != null)
+        {
+            inviteAllView.setEnabled(canInviteAll());
+        }
+    }
+
+    protected boolean canInviteAll()
+    {
+        return invitableFriends != null && invitableFriends.size() > 0;
     }
 
     @Override
     public void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
-        List<UserFriendsDTO> usersToInvite = Arrays.asList(userFriendsDTO);
-        handleInviteUsers(usersToInvite);
+        handleInviteUsers(Arrays.asList(userFriendsDTO));
         Timber.d("onInviteButtonClick %s", userFriendsDTO);
     }
 
@@ -166,8 +307,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     public void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO)
     {
         Timber.d("onFollowButtonClick %s", userFriendsDTO);
-        List<UserFriendsDTO> usersToFollow = Arrays.asList(userFriendsDTO);
-        handleFollowUsers(usersToFollow);
+        handleFollowUsers(Arrays.asList(userFriendsDTO));
     }
 
     @Override
@@ -181,7 +321,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         if (count > 0)
         {
-            inviteAllView.setText(getString(R.string.invite) + "(" + count + ")");
+            inviteAllView.setText(getString(R.string.invite_number, THSignedNumber.builder(count).build().toString()));
         }
         else
         {
@@ -189,96 +329,76 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
+    protected void handleFollowUsers(@NonNull List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        unsubscribe(followFriendsSubscription);
-        followFriendsSubscription = socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver(usersToFollow));
+        requestSubscriptions.add(AndroidObservable.bindFragment(
+                this,
+                socialFriendHandler.followFriends(usersToFollow))
+                .subscribe(new FollowFriendObserver(usersToFollow)));
     }
 
-    // TODO subclass like FacebookSocialFriendsFragment should override this method because the logic of inviting friends is finished on the client side
-    protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
+    class FollowFriendObserver extends RequestObserver<UserProfileDTO>
     {
-        createFriendHandler();
-        unsubscribe(inviteFriendsSubscription);
-        inviteFriendsSubscription =
-                socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteObserver(usersToInvite));
-    }
+        final List<UserFriendsDTO> usersToFollow;
 
-    protected void setMessageTextLength()
-    {
-        int length = edtMessageInvite.getText().toString().length();
-        tvMessageCount.setText(getString(R.string.weibo_message_text_limit, length));
-    }
-
-    protected boolean checkMessageLengthLimit()
-    {
-        return edtMessageInvite.getText().toString().length() > MAX_TEXT_LENGTH ? false : true;
-    }
-
-    protected void addMessageTextListener()
-    {
-        if (edtMessageInvite != null)
+        private FollowFriendObserver(List<UserFriendsDTO> usersToFollow)
         {
-            edtMessageInvite.addTextChangedListener(new TextWatcher()
-            {
-                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-                {
-                }
+            super(getActivity());
+            this.usersToFollow = usersToFollow;
+            onRequestStart();
+        }
 
-                @Override public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
-                {
-                    setMessageTextLength();
-                }
+        @Override public void onNext(UserProfileDTO userProfileDTO)
+        {
+            super.onNext(userProfileDTO);
+            handleFollowSuccess(usersToFollow);
+        }
 
-                @Override public void afterTextChanged(Editable editable)
-                {
-                }
-            });
+        @Override public void onError(Throwable e)
+        {
+            super.onError(e);
+            handleFollowError();
         }
     }
 
-    protected String getStrMessageOfAtList(List<UserFriendsDTO> usersToInvite)
+    private void handleFollowSuccess(@Nullable List<UserFriendsDTO> usersFollowed)
     {
-        if (usersToInvite == null)
-        {
-            return "";
-        }
-        else
-        {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < usersToInvite.size(); i++)
-            {
-                sb.append(" @" + usersToInvite.get(i).name);
-            }
-            return sb.toString();
-        }
+        friendsListCache.get(friendsListKey);
     }
 
-    protected RequestObserver<BaseResponseDTO> createInviteObserver(List<UserFriendsDTO> usersToInvite)
+    protected void handleFollowError()
     {
-        return new InviteFriendObserver(usersToInvite);
-    }
-
-    protected void createFriendHandler()
-    {
-        if (socialFriendHandler == null)
-        {
-            socialFriendHandler = socialFriendHandlerProvider.get();
-        }
+        // TODO
+        THToast.show(R.string.follow_friend_request_error);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     @OnClick(R.id.social_invite_all)
     protected void inviteAll(View view)
     {
-        List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
-        if (usersUnInvited == null || usersUnInvited.size() == 0)
+        if (invitableFriends == null)
         {
-            THToast.show(R.string.social_no_friend_to_invite);
-            return;
+            throw new IllegalArgumentException("We should not have enabled invite all");
         }
-        handleInviteUsers(usersUnInvited);
+        else
+        {
+            handleInviteUsers(invitableFriends);
+        }
+    }
+
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.social_follow_all)
+    protected void followAll(View view)
+    {
+        if (followableFriends == null)
+        {
+            throw new IllegalArgumentException("We should not have enabled follow all");
+        }
+        else
+        {
+            handleFollowUsers(followableFriends);
+        }
     }
 
     protected void inviteAllSelected()
@@ -290,28 +410,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
             return;
         }
         handleInviteUsers(usersCheckBoxInvited.getUserFriends());
-    }
-
-    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
-    @OnClick(R.id.social_follow_all)
-    protected void followAll(View view)
-    {
-        List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
-        if (usersUnfollowed == null || usersUnfollowed.size() == 0)
-        {
-            THToast.show(R.string.social_no_friend_to_follow);
-            return;
-        }
-        handleFollowUsers(usersUnfollowed);
-    }
-
-    @Nullable private List<UserFriendsDTO> findAllUsersUnfollowed()
-    {
-        if (friendDTOList != null)
-        {
-            return friendDTOList.getTradeHeroUsers();
-        }
-        return null;
     }
 
     @Nullable protected SocialFriendListItemDTOList findAllUsersCheckBoxInvited()
@@ -332,134 +430,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return null;
     }
 
-    protected abstract SocialNetworkEnum getSocialNetwork();
-
-    protected abstract String getTitle();
-
-    private void displayErrorView()
-    {
-        friendsRootView.setDisplayedChildByLayoutId(R.id.error);
-    }
-
-    private void displayLoadingView()
-    {
-        friendsRootView.setDisplayedChildByLayoutId(android.R.id.progress);
-    }
-
-    private void displayContentView()
-    {
-        if (friendDTOList != null)
-        {
-            displayContentView(friendDTOList);
-        }
-    }
-
-    private void displayContentView(@Nullable UserFriendsDTOList value)
-    {
-        this.friendDTOList = filterTheDuplicated(value);
-        checkUserType();
-        if (value == null || value.size() == 0)
-        {
-            friendsRootView.setDisplayedChildByLayoutId(android.R.id.empty);
-        }
-        else
-        {
-            bindData();
-            friendsRootView.setDisplayedChildByLayoutId(R.id.content_wrapper);
-        }
-    }
-
-    @NonNull private UserFriendsDTOList filterTheDuplicated(UserFriendsDTOList friendDTOList)
-    {
-        TreeSet<UserFriendsDTO> hashSet = new TreeSet<>();
-        hashSet.addAll(friendDTOList);
-        UserFriendsDTOList list = new UserFriendsDTOList();
-        list.addAll(hashSet);
-        return list;
-    }
-
-    private void checkUserType()
-    {
-        int size = friendDTOList.size();
-        boolean hasUserToFollow = false;
-        boolean hasUserToInvite = false;
-        for (int i = 0; i < size; i++)
-        {
-            if (hasUserToFollow && hasUserToInvite)
-            {
-                break;
-            }
-            if (friendDTOList.get(i).isTradeHeroUser())
-            {
-                hasUserToFollow = true;
-            }
-            else
-            {
-                hasUserToInvite = true;
-            }
-        }
-        if (!canFollow() || !hasUserToFollow)
-        {
-            followAllView.setVisibility(View.GONE);
-        }
-
-        if (!canInviteAll() || !hasUserToInvite)
-        {
-            inviteAllView.setVisibility(View.GONE);
-        }
-    }
-
-    /**
-     * Cannot invite Weibo friends, so hide 'invite all' and remove the one that cannot be invited.
-     */
-    protected boolean canInvite()
-    {
-        return true;
-    }
-
-    /**
-     * Invite all friends of facebook is a bit of complex, so just hide 'invite all'.
-     */
-    protected boolean canInviteAll()
-    {
-        if (!canInvite())
-        {
-            return false;
-        }
-        return true;
-    }
-
-    protected boolean canFollow()
-    {
-        return true;
-    }
-
-    protected int getCountOfUnFollowed()
-    {
-        List list = findAllUsersUnfollowed();
-        if (list != null) return list.size();
-        return 0;
-    }
-
-    protected int getCountOfUnInvited()
-    {
-        List<UserFriendsDTO> list = findAllUsersUnInvited();
-        if (list != null)
-        {
-            return list.size();
-        }
-        return 0;
-    }
-
-    @Nullable private List<UserFriendsDTO> findAllUsersUnInvited()
-    {
-        if (friendDTOList != null)
-        {
-            return friendDTOList.getNonTradeHeroUsers();
-        }
-        return null;
-    }
-
     protected int getCountOfCheckBoxInvited()
     {
         List list = findAllUsersCheckBoxInvited();
@@ -470,139 +440,18 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return 0;
     }
 
-    private void bindData()
+    protected void handleInviteUsers(@NonNull List<UserFriendsDTO> usersToInvite)
     {
-        listedSocialItems = new SocialFriendListItemDTOList(friendDTOList, (UserFriendsDTO) null);
-        bindNormalData();
+        createFriendHandler();
+        requestSubscriptions.add(AndroidObservable.bindFragment(
+                this,
+                socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite))
+                .subscribe(createInviteObserver(usersToInvite)));
     }
 
-    protected void bindNormalData()
+    protected RequestObserver<BaseResponseDTO> createInviteObserver(List<UserFriendsDTO> usersToInvite)
     {
-        //List<SocialFriendListItemDTO> socialItemsCopy = new ArrayList<>(listedSocialItems);
-        socialFriendsListAdapter =
-                new SocialFriendsAdapter(
-                        getActivity(),
-                        listedSocialItems,
-                        R.layout.social_friends_item,
-                        R.layout.social_friends_item_header);
-        socialFriendsListAdapter.setOnElementClickedListener(this);
-        listView.setAdapter(socialFriendsListAdapter);
-    }
-
-    private boolean hasView()
-    {
-        if (isDetached())
-        {
-            return false;
-        }
-
-        return getView() != null;
-    }
-
-    private boolean hasListData()
-    {
-        return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
-    }
-
-    @NonNull protected Observer<Pair<FriendsListKey, UserFriendsDTOList>> createFriendsFetchObserver()
-    {
-        return new FriendFetchObserver();
-    }
-
-    class SearchChangeListener implements TextWatcher
-    {
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count)
-        {
-        }
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after)
-        {
-        }
-
-        @Override
-        public void afterTextChanged(@Nullable Editable s)
-        {
-            if (socialFriendsListAdapter != null)
-            {
-                if (s != null && s.toString().trim().length() > 0)
-                {
-                    socialFriendsListAdapter.getFilter().filter(s.toString());
-                }
-                else
-                {
-                    socialFriendsListAdapter.getFilter().filter(s.toString());
-                }
-            }
-        }
-    }
-
-    protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
-    {
-        THToast.show(R.string.invite_friend_request_sent);
-        checkUserType();
-    }
-
-    private void handleFollowSuccess(@Nullable List<UserFriendsDTO> usersToFollow)
-    {
-        if (friendDTOList != null && usersToFollow != null)
-        {
-            for (UserFriendsDTO userFriendsDTO : usersToFollow)
-            {
-                boolean removed = friendDTOList.remove(userFriendsDTO);
-                Timber.d("handleFollowSuccess remove: %s, result: %s", userFriendsDTO, removed);
-            }
-        }
-
-        notifyChangeData();
-        // TODO
-        THToast.show("Follow success");
-
-        checkUserType();
-    }
-
-    private void notifyChangeData()
-    {
-        socialFriendsListAdapter.clear();
-        bindData();
-    }
-
-    protected void handleFollowError()
-    {
-        // TODO
-        THToast.show(R.string.follow_friend_request_error);
-    }
-
-    protected void handleInviteError()
-    {
-        // TODO
-        THToast.show(R.string.invite_friend_request_error);
-    }
-
-    class FollowFriendObserver extends RequestObserver<UserProfileDTO>
-    {
-        final List<UserFriendsDTO> usersToFollow;
-
-        private FollowFriendObserver(List<UserFriendsDTO> usersToFollow)
-        {
-            super(getActivity());
-            this.usersToFollow = usersToFollow;
-        }
-
-        @Override public void onNext(UserProfileDTO userProfileDTO)
-        {
-            super.onNext(userProfileDTO);
-            handleFollowSuccess(usersToFollow);
-            userProfileCache.onNext(userProfileDTO.getBaseKey(), userProfileDTO);
-            return;
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            super.onError(e);
-            handleFollowError();
-        }
+        return new InviteFriendObserver(usersToInvite);
     }
 
     class InviteFriendObserver extends RequestObserver<BaseResponseDTO>
@@ -613,6 +462,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         {
             super(getActivity());
             this.usersToInvite = usersToInvite;
+            onRequestStart();
         }
 
         @Override public void onNext(BaseResponseDTO baseResponseDTO)
@@ -624,32 +474,19 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         @Override public void onError(Throwable e)
         {
             super.onError(e);
-            handleInviteError();
+            handleInviteError(e);
         }
     }
 
-    class FriendFetchObserver implements Observer<Pair<FriendsListKey, UserFriendsDTOList>>
+    protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
     {
-        @Override public void onNext(Pair<FriendsListKey, UserFriendsDTOList> pair)
-        {
-            displayContentView(pair.second);
-        }
+        THToast.show(R.string.invite_friend_request_sent);
+        friendsListCache.get(friendsListKey);
+    }
 
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            if (hasListData())
-            {
-                //when already fetch the data,do not show error view
-                displayContentView();
-            }
-            else
-            {
-                displayErrorView();
-            }
-        }
+    @SuppressWarnings("UnusedParameters")
+    protected void handleInviteError(@NonNull Throwable e)
+    {
+        THToast.show(R.string.invite_friend_request_error);
     }
 }

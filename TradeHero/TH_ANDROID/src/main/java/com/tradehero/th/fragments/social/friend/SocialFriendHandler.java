@@ -12,6 +12,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -26,18 +27,37 @@ import rx.android.schedulers.AndroidSchedulers;
     }
     //</editor-fold>
 
-    public Subscription followFriends(@NonNull List<UserFriendsDTO> users, @Nullable RequestObserver<UserProfileDTO> observer)
+    @NonNull public Observable<UserProfileDTO> followFriends(@NonNull List<UserFriendsDTO> users)
+    {
+        return userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(users, (UserFriendsDTO) null));
+    }
+
+    @NonNull public Subscription followFriends(@NonNull List<UserFriendsDTO> users, @Nullable RequestObserver<UserProfileDTO> observer)
     {
         if (observer != null)
         {
             observer.onRequestStart();
         }
-        return userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(users, (UserFriendsDTO) null))
+        return followFriends(users)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
     }
 
-    public Subscription inviteFriends(
+    @NonNull public Observable<BaseResponseDTO> inviteFriends(
+            @NonNull UserBaseKey userKey,
+            @NonNull List<UserFriendsDTO> users)
+    {
+        return inviteFriends(userKey, new InviteFormUserDTO(users));
+    }
+
+    @NonNull public Observable<BaseResponseDTO> inviteFriends(
+            @NonNull UserBaseKey userKey,
+            @NonNull InviteFormDTO inviteFormDTO)
+    {
+        return userServiceWrapper.inviteFriendsRx(userKey, inviteFormDTO);
+    }
+
+    @NonNull public Subscription inviteFriends(
             @NonNull UserBaseKey userKey,
             @NonNull List<UserFriendsDTO> users,
             @Nullable RequestObserver<BaseResponseDTO> observer)
@@ -45,7 +65,7 @@ import rx.android.schedulers.AndroidSchedulers;
         return inviteFriends(userKey, new InviteFormUserDTO(users), observer);
     }
 
-    public Subscription inviteFriends(
+    @NonNull public Subscription inviteFriends(
             @NonNull UserBaseKey userKey,
             @NonNull InviteFormDTO inviteFormDTO,
             @Nullable RequestObserver<BaseResponseDTO> observer)
@@ -54,7 +74,7 @@ import rx.android.schedulers.AndroidSchedulers;
         {
             observer.onRequestStart();
         }
-        return userServiceWrapper.inviteFriendsRx(userKey, inviteFormDTO)
+        return inviteFriends(userKey, inviteFormDTO)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
     }
