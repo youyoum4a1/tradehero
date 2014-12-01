@@ -30,4 +30,9 @@ public class AmazonMarketUtil implements MarketUtil
     {
         showAppOnMarket(activity);
     }
+
+    @Override public String getAppMarketUrl()
+    {
+        return "TODO open Amazon market";
+    }
 }

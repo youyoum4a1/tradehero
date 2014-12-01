@@ -55,8 +55,9 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         filterTextWatcher = new SecurityListOnFilterTextWatcher();
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
         showProgressSpinner(false);

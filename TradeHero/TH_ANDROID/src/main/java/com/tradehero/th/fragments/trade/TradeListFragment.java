@@ -136,10 +136,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         tradeListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
-    @Override protected void initViews(View view)
-    {
-    }
-
     @Override public void onStart()
     {
         super.onStart();

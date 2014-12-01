@@ -43,7 +43,7 @@ abstract public class BasePagedListRxFragment<
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
-    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 1000;
+    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 400;
 
     @InjectView(R.id.search_empty_container) protected View emptyContainer;
     @InjectView(R.id.listview) protected AbsListView listView;
@@ -106,10 +106,6 @@ abstract public class BasePagedListRxFragment<
     }
 
     abstract protected int getFragmentLayoutResId();
-
-    protected void initViews(View view)
-    {
-    }
 
     @Override public void onResume()
     {
@@ -264,13 +260,9 @@ abstract public class BasePagedListRxFragment<
                 view.removeCallbacks(requestDataTask);
             }
 
-            requestDataTask = new Runnable()
-            {
-                @Override public void run()
-                {
-                    startAnew();
-                    requestDtos();
-                }
+            requestDataTask = () -> {
+                startAnew();
+                requestDtos();
             };
             view.postDelayed(requestDataTask, DELAY_REQUEST_DATA_MILLI_SEC);
         }

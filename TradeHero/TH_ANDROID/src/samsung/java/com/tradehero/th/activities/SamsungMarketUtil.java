@@ -28,4 +28,9 @@ public class SamsungMarketUtil implements MarketUtil
     {
         showAppOnMarket(activity);
     }
+
+    @Override public String getAppMarketUrl()
+    {
+        return "TODO open Samsung market";
+    }
 }

@@ -1,17 +1,20 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClickSticky;
 import com.tradehero.common.billing.BillingConstants;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -65,26 +68,13 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_alerts, container, false);
         footerView = (BaseListHeaderView) inflater.inflate(R.layout.alert_manage_subscription_view, null);
-        ButterKnife.inject(this, view);
-        initViews(view);
         return view;
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        setActionBarTitle(getString(R.string.stock_alerts));
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override protected void initViews(View view)
-    {
-        alertListView.setOnItemClickListener((parent, view1, position, id) -> {
-            AlertCompactDTO alertCompactDTO = (AlertCompactDTO) parent.getItemAtPosition(position);
-            if (alertCompactDTO != null)
-            {
-                handleAlertItemClicked(alertCompactDTO);
-            }
-        });
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         alertListView.setAdapter(alertListItemAdapter);
         alertListView.addFooterView(footerView);
         alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
@@ -101,6 +91,12 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         });
 
         footerView.setOnClickListener(view1 -> handleManageSubscriptionClicked());
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        setActionBarTitle(getString(R.string.stock_alerts));
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onResume()
@@ -123,7 +119,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         if (alertListView != null)
         {
-            alertListView.setOnItemClickListener(null);
             alertListView.setOnScrollListener(null);
         }
         alertListView = null;
@@ -139,6 +134,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             footerView.setOnClickListener(null);
         }
         footerView = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -209,6 +205,16 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
             int count = currentUserProfile.getUserAlertPlansAlertCount();
             alertPlanCountIcon.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
             alertPlanCountIcon.setImageResource(securityAlertKnowledge.getStockAlertIcon(count));
+        }
+    }
+
+    @OnItemClickSticky(R.id.alerts_list)
+    protected void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        AlertCompactDTO alertCompactDTO = (AlertCompactDTO) parent.getItemAtPosition(position);
+        if (alertCompactDTO != null)
+        {
+            handleAlertItemClicked(alertCompactDTO);
         }
     }
 

@@ -1,5 +1,10 @@
 package com.tradehero.th.utils;
 
+import android.support.annotation.NonNull;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import java.util.List;
 
 public class StringUtils
@@ -54,5 +59,23 @@ public class StringUtils
     public static boolean isNullOrEmptyOrSpaces(String str)
     {
         return str == null || str.trim().isEmpty();
+    }
+
+    public static String removeImageSpanObjects(@NonNull String inStr)
+    {
+        SpannableStringBuilder spannedStr = (SpannableStringBuilder) Html
+                .fromHtml(inStr.trim());
+        Object[] spannedObjects = spannedStr.getSpans(0, spannedStr.length(),
+                Object.class);
+        for (int i = 0; i < spannedObjects.length; i++)
+        {
+            if (spannedObjects[i] instanceof ImageSpan)
+            {
+                ImageSpan imageSpan = (ImageSpan) spannedObjects[i];
+                spannedStr.replace(spannedStr.getSpanStart(imageSpan),
+                        spannedStr.getSpanEnd(imageSpan), "");
+            }
+        }
+        return spannedStr.toString().trim();
     }
 }

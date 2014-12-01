@@ -275,7 +275,7 @@ dependencies {
   }
   compile('com.android.support:support-v13:21.0.0')
   provided 'proguard:annotations:4.6'
-  compile('se.emilsjolander:stickylistheaders:2.4.1@aar') {
+  compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
@@ -332,7 +332,9 @@ dependencies {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'
-  compile 'com.jakewharton:butterknife:6.0.0'
+  compile ('com.jakewharton:butterknife:6.0.1.TH-SNAPSHOT') {
+    exclude group: 'se.emilsjolander', module: 'stickylistheaders'
+  }
   compile 'com.appsflyer:library:2.3.1.12'
 
   // For Test

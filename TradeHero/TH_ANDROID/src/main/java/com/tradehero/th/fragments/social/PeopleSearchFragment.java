@@ -41,9 +41,9 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
 
-    protected void initViews(View view)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.initViews(view);
+        super.onViewCreated(view, savedInstanceState);
         searchEmptyTextView.setText(R.string.trending_search_no_people_found);
     }
 

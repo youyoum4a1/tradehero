@@ -62,15 +62,11 @@ abstract public class AbstractDiscussionFragment extends BasePurchaseManagerFrag
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         discussionView.discussionList.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         mentionTaggedStockHandler.setDiscussionPostContent(postCommentText);
         subscribeHasSelected();
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override protected void initViews(View view)
-    {
         if (discussionView != null)
         {
             discussionView.setCommentPostedListener(createCommentPostedListener());

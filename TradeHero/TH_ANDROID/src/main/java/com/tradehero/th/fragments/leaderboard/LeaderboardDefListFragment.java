@@ -50,11 +50,6 @@ public class LeaderboardDefListFragment extends BaseLeaderboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
         contentListView.setAdapter(leaderboardDefListAdapter);
         contentListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }

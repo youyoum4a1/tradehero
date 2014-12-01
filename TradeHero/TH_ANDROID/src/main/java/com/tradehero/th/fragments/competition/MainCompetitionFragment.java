@@ -69,6 +69,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -126,13 +128,12 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_main_competition, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_main_competition, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
@@ -357,7 +358,18 @@ public class MainCompetitionFragment extends CompetitionFragment
     {
         if (providerPrizePoolDTOs == null)
         {
-            THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            // When there is no prize pool, server returns HTTP404, which is a valid response
+            boolean is404 = false;
+            if (e instanceof RetrofitError)
+            {
+                Response response = ((RetrofitError) e).getResponse();
+                is404 = response != null && response.getStatus() == 404;
+            }
+            if (!is404)
+            {
+                THToast.show(getString(R.string.error_fetch_provider_prize_pool_info));
+            }
+            competitionZoneListItemAdapter.setPrizePoolDTO(new ArrayList<>());
         }
         Timber.e(e, "Error fetching the provider info");
     }

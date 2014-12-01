@@ -6,6 +6,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,13 +54,12 @@ public class ProviderVideoListFragment extends CompetitionFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_help_video_list, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_help_video_list, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
         providerVideoAdapter = new ProviderVideoAdapter(getActivity(), R.layout.help_video_item_view);
         videoListView.setAdapter(providerVideoAdapter);

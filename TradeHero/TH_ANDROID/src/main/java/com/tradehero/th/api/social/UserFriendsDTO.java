@@ -34,6 +34,11 @@ abstract public class UserFriendsDTO
         return thUserId > 0;
     }
 
+    public boolean isNonTradeHeroUser()
+    {
+        return !isTradeHeroUser();
+    }
+
     @Override public int hashCode()
     {
         return name == null ? 0 : name.hashCode();

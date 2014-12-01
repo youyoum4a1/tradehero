@@ -270,6 +270,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             detachFacebookSubscription();
             facebookInvitationSubscription = socialFriendHandlerFacebookLazy.get()
                     .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bundle>()
                     {
                         @Override public void onCompleted()

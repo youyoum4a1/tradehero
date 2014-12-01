@@ -80,11 +80,6 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
         listView.setAdapter(storeItemAdapter);
         listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }

@@ -72,7 +72,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         super.bindNormalData();
     }
 
-    @Override protected void inviteAll()
+    @Override protected void inviteAll(View view)
     {
         inviteAllSelected();
     }
@@ -124,6 +124,15 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
             mWeiboInviteDialog = builder.create();
             mWeiboInviteDialog.show();
         }
+    }
+
+    protected String getWeiboInviteMessage()
+    {
+        if (edtMessageInvite != null)
+        {
+            return edtMessageInvite.getText().toString();
+        }
+        return null;
     }
 
     @Override protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)

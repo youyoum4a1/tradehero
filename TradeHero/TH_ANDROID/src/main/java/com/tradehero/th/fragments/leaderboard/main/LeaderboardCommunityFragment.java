@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnItemClickSticky;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -59,7 +60,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
 
-    /*@OnItemClick(android.R.id.list) */
+    @SuppressWarnings("UnusedDeclaration")
+    @OnItemClickSticky(R.id.leaderboard_community_list)
     void handleLeaderboardItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         LeaderboardDefDTO leaderboardDefDTO = (LeaderboardDefDTO) parent.getItemAtPosition(position);
@@ -103,11 +105,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        initViews(view);
-    }
-
-    @Override protected void initViews(View view)
-    {
         leaderboardDefListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         leaderboardDefListView.setAdapter(leaderboardDefListAdapter);
     }
@@ -115,7 +112,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onStart()
     {
         super.onStart();
-        leaderboardDefListView.setOnItemClickListener(this::handleLeaderboardItemClicked);
         // show either progress bar or def list, whichever last seen on this screen
         if (currentDisplayedChildLayoutId != 0)
         {
@@ -138,8 +134,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         unsubscribe(leaderboardDefListFetchSubscription);
         leaderboardDefListFetchSubscription = null;
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
-        leaderboardDefListView.setOnItemClickListener(null);
         super.onStop();
+    }
+
+    @Override public void onDestroyView()
+    {
+        ButterKnife.reset(this);
+        super.onDestroyView();
     }
 
     @Override public void onDestroy()

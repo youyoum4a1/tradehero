@@ -1,11 +1,12 @@
 package com.tradehero.th.utils.metrics.events;
 
+import android.support.annotation.NonNull;
 import com.tradehero.metrics.AnalyticsProfileEvent;
 import java.util.Collection;
 
 public class ProfileEvent extends AnalyticsProfileEvent
 {
-    public ProfileEvent(String name, Collection<String> collection)
+    public ProfileEvent(@NonNull String name, Collection<String> collection)
     {
         super(name, collection);
     }

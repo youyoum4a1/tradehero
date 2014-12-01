@@ -46,6 +46,7 @@ import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -218,6 +219,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             socialFriendHandlerFacebookProvider.get()
                     .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO))
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bundle>()
                     {
                         @Override public void onCompleted()

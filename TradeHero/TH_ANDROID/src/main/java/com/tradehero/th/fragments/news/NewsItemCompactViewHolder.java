@@ -2,6 +2,9 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -9,6 +12,7 @@ import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.utils.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -118,7 +122,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
             String descriptionText = getDescriptionText();
             if (descriptionText != null)
             {
-                newsDescription.setText(Html.fromHtml(descriptionText).toString());
+                newsDescription.setText(StringUtils.removeImageSpanObjects(descriptionText));
             }
         }
     }

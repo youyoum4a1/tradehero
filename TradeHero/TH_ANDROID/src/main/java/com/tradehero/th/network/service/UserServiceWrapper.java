@@ -55,6 +55,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import retrofit.client.Response;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -575,7 +576,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Send Analytics">
-    @NonNull public Observable<BaseResponseDTO> sendAnalyticsRx(@NonNull BatchAnalyticsEventForm batchAnalyticsEventForm)
+    @NonNull public Observable<Response> sendAnalyticsRx(@NonNull BatchAnalyticsEventForm batchAnalyticsEventForm)
     {
         return userServiceRx.sendAnalytics(batchAnalyticsEventForm);
     }

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -90,13 +91,12 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_store_manage_heroes, container, false);
-        initViews(view);
-        return view;
+        return inflater.inflate(R.layout.fragment_store_manage_heroes, container, false);
     }
 
-    @Override protected void initViews(View view)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
         this.heroListAdapter = new HeroListItemAdapter(

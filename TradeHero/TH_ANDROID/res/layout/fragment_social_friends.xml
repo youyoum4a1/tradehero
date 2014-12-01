@@ -1,32 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.friend.SocialFriendsListView
+<com.tradehero.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/friends_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-
     >
+
+  <ProgressBar
+      android:id="@android:id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      />
 
   <LinearLayout
       android:id="@+id/content_wrapper"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical"
-      android:visibility="gone"
-
       >
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="@style/TH.Loading_Empty_Text"
+        android:text="@string/social_friend_empty"
+        android:visibility="gone"
+        />
+
     <EditText
         android:id="@+id/search_social_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_social_friend_hint"
         />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
       <ListView
           android:id="@+id/social_friends_list"
           android:layout_width="match_parent"
@@ -34,9 +51,11 @@
           android:clipToPadding="false"
           android:paddingBottom="@dimen/buy_sell_button_container_height"
           />
+
       <LinearLayout
           android:id="@+id/social_follow_invite_all_container"
-          android:layout_width="match_parent" android:layout_height="wrap_content"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
           android:orientation="horizontal"
           android:layout_alignParentBottom="true"
           android:paddingTop="@dimen/margin_xsmall"
@@ -68,20 +87,12 @@
             android:background="@drawable/yellow_rounded_button_selector"
             android:text="@string/invite_all"
             />
+
       </LinearLayout>
+
     </RelativeLayout>
 
-
   </LinearLayout>
-  <TextView
-      android:id="@android:id/empty"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_centerInParent="true"
-      style="@style/TH.Loading_Empty_Text"
-      android:text="@string/social_friend_empty"
-      android:visibility="gone"
-      />
 
   <TextView
       style="@style/TH.Loading_Error_Text"
@@ -92,12 +103,6 @@
       android:gravity="center"
       android:layout_centerInParent="true"
       android:text="@string/message_fetch_error"
-      android:visibility="gone"/>
+      />
 
-  <ProgressBar
-      android:id="@android:id/progress"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:visibility="gone"/>
-</com.tradehero.th.fragments.social.friend.SocialFriendsListView>
+</com.tradehero.common.widget.BetterViewAnimator>
