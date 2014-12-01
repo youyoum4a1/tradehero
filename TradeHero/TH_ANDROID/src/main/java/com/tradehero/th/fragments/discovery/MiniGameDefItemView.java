@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.maurycy.ScaleImageView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -16,7 +17,7 @@ import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 
-public class MiniGameDefItemView extends ImageView
+public class MiniGameDefItemView extends ScaleImageView
         implements DTOView<MiniGameDefDTO>
 {
     @NonNull private MiniGameDefDTO miniGameDefDTO;
@@ -58,7 +59,7 @@ public class MiniGameDefItemView extends ImageView
     {
         picasso.load(miniGameDefDTO.image)
                 .fit()
-                .centerCrop()
+                .centerInside()
                 .placeholder(R.color.gray_3)
                 .into(this);
     }
