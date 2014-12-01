@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.metrics.Analytics;
@@ -48,13 +50,13 @@ import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class SendMessageFragment extends DashboardFragment
-        implements AdapterView.OnItemSelectedListener, View.OnClickListener
+        implements AdapterView.OnItemSelectedListener
 {
     public static final String KEY_DISCUSSION_TYPE =
             SendMessageFragment.class.getName() + ".discussionType";
@@ -81,6 +83,8 @@ public class SendMessageFragment extends DashboardFragment
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
 
+    @Nullable Subscription userProfileSubscription;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -100,15 +104,9 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(getString(R.string.broadcast_message_title));
+        setActionBarTitle(R.string.broadcast_message_title);
         inflater.inflate(R.menu.send_message_menu, menu);
         Timber.d("onCreateOptionsMenu");
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        Timber.d("onDestroyOptionsMenu");
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -123,43 +121,31 @@ public class SendMessageFragment extends DashboardFragment
         }
     }
 
-    private void fetchFollowerForBroadcast()
-    {
-        if (!TextUtils.isEmpty(inputText.getText()))
-        {
-            progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
-            userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
-
-            AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(createUserProfileCacheObserver());
-        }
-        else
-        {
-            THToast.show(R.string.broadcast_message_content_length_hint);
-        }
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_broadcast, container, false);
-        ButterKnife.inject(this, v);
-        return v;
+        return inflater.inflate(R.layout.fragment_broadcast, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        initView();
+        ButterKnife.inject(this, view);
+        DeviceUtil.showKeyboardDelayed(inputText);
+        changeHeroType(messageType);
     }
 
-    private void initView()
+    @Override public void onStop()
     {
-        DeviceUtil.showKeyboardDelayed(inputText);
+        unsubscribe(userProfileSubscription);
+        userProfileSubscription = null;
+        super.onStop();
+    }
 
-        messageTypeView.setOnClickListener(this);
-        changeHeroType(messageType);
+    @Override public void onDestroyOptionsMenu()
+    {
+        super.onDestroyOptionsMenu();
+        Timber.d("onDestroyOptionsMenu");
     }
 
     @Override public void onDestroyView()
@@ -175,6 +161,23 @@ public class SendMessageFragment extends DashboardFragment
         super.onDestroy();
     }
 
+    private void fetchFollowerForBroadcast()
+    {
+        if (!TextUtils.isEmpty(inputText.getText()))
+        {
+            progressDialogUtilLazy.get().show(getActivity(), null, getString(R.string.loading_loading));
+            unsubscribe(userProfileSubscription);
+            userProfileSubscription = AndroidObservable.bindFragment(
+                    this,
+                    userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                    .subscribe(createUserProfileCacheObserver());
+        }
+        else
+        {
+            THToast.show(R.string.broadcast_message_content_length_hint);
+        }
+    }
+
     private void changeHeroType(MessageType messageType)
     {
         this.messageType = messageType;
@@ -182,7 +185,9 @@ public class SendMessageFragment extends DashboardFragment
         Timber.d("changeHeroType:%s, discussionType:%s", messageType, discussionType);
     }
 
-    private void showHeroTypeDialog()
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.message_type)
+    protected void showHeroTypeDialog(View view)
     {
         ListView listView = new ListView(getActivity());
         listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -198,7 +203,7 @@ public class SendMessageFragment extends DashboardFragment
         listView.setSelector(R.drawable.common_dialog_item_bg);
         listView.setCacheColorHint(android.R.color.transparent);
         listView.setAdapter(createMessageTypeAdapter());
-        listView.setOnItemClickListener(createMessageTypeItemClickListener());
+        listView.setOnItemClickListener(this::onHeroTypeItemClick);
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -214,7 +219,6 @@ public class SendMessageFragment extends DashboardFragment
                 R.id.popup_text,
                 MessageType.getShowingTypes())
         {
-
             @Override public View getView(int position, View convertView, ViewGroup parent)
             {
                 View view;
@@ -237,18 +241,10 @@ public class SendMessageFragment extends DashboardFragment
         };
     }
 
-    private AdapterView.OnItemClickListener createMessageTypeItemClickListener()
+    public void onHeroTypeItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        return new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                Object o = parent.getAdapter().getItem(position);
-                changeHeroType((MessageType) o);
-                dismissDialog(chooseDialog);
-            }
-        };
+        changeHeroType((MessageType) parent.getItemAtPosition(position));
+        dismissDialog(chooseDialog);
     }
 
     private void sendMessage(int count)
@@ -256,25 +252,26 @@ public class SendMessageFragment extends DashboardFragment
         progressDialogUtilLazy.get().dismiss(getActivity());
         if (count <= 0)
         {
-            THToast.show(getString(R.string.broadcast_message_no_follower_hint));
+            THToast.show(R.string.broadcast_message_no_follower_hint);
             return;
         }
 
         String text = inputText.getText().toString();
         if (TextUtils.isEmpty(text))
         {
-            THToast.show(getString(R.string.broadcast_message_content_length_hint));
+            THToast.show(R.string.broadcast_message_content_length_hint);
             return;
         }
         this.progressDialog =
                 progressDialogUtilLazy.get().show(getActivity(),
-                        getString(R.string.broadcast_message_waiting),
-                        getString(R.string.broadcast_message_sending_hint));
+                        R.string.broadcast_message_waiting,
+                        R.string.broadcast_message_sending_hint);
 
         sendMessageSubscriptions.add(
-                messageServiceWrapper.get().createMessageRx(
-                        createMessageForm(text))
-                        .observeOn(AndroidSchedulers.mainThread())
+                AndroidObservable.bindFragment(
+                        this,
+                        messageServiceWrapper.get().createMessageRx(
+                                createMessageForm(text)))
                         .subscribe(createSendMessageDiscussionObserver()));
     }
 
@@ -286,9 +283,8 @@ public class SendMessageFragment extends DashboardFragment
         return messageCreateFormDTO;
     }
 
-    private int getFollowerCountByUserProfile(MessageType messageType)
+    private int getFollowerCountByUserProfile(@NonNull MessageType messageType, @NonNull UserProfileDTO userProfileDTO)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
         int allFollowerCount = userProfileDTO.allFollowerCount;
         int followerCountFree = userProfileDTO.freeFollowerCount;
         int followerCountPaid = userProfileDTO.paidFollowerCount;
@@ -352,6 +348,7 @@ public class SendMessageFragment extends DashboardFragment
 
             @Override public void onError(Throwable e)
             {
+                Timber.e(e, "Error fetching profile");
                 THToast.show(new THException(e));
                 sendMessage(getCountFromCache(messageType));
             }
@@ -360,7 +357,7 @@ public class SendMessageFragment extends DashboardFragment
             {
                 if (pair.second != null)
                 {
-                    sendMessage(getFollowerCountByUserProfile(messageType));
+                    sendMessage(getFollowerCountByUserProfile(messageType, pair.second));
                 }
                 else
                 {
@@ -389,14 +386,6 @@ public class SendMessageFragment extends DashboardFragment
         messageListCache.get().invalidateAll();
     }
 
-    @Override public void onClick(View v)
-    {
-        if (v.getId() == R.id.message_type)
-        {
-            showHeroTypeDialog();
-        }
-    }
-
     @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
     }
@@ -421,7 +410,7 @@ public class SendMessageFragment extends DashboardFragment
         {
             dismissDialog(progressDialog);
             invalidateMessageCache();
-            THToast.show(getActivity().getString(R.string.broadcast_success));
+            THToast.show(R.string.broadcast_success);
             analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
             //TODO close me?
             closeMe();
@@ -433,6 +422,7 @@ public class SendMessageFragment extends DashboardFragment
 
         @Override public void onError(Throwable e)
         {
+            Timber.e(e, "Error posting message");
             dismissDialog(progressDialog);
             THToast.show(getString(R.string.broadcast_error));
         }

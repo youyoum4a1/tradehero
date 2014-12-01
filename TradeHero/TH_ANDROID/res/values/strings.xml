@@ -56,7 +56,7 @@
   <string name="error_not_enough_information">Not enough information, try again</string>
   <string name="via">" via "</string>
 
-  <string name="broadcast_success">Send message success</string>
+  <string name="broadcast_success">Message sent</string>
   <string name="broadcast_error">Send message error</string>
   <string name="broadcast_message_title">Broadcast Message</string>
   <string name="broadcast_message_action_send">Send</string>
