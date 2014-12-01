@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -47,9 +48,13 @@ import timber.log.Timber;
 public abstract class SocialFriendsFragment extends DashboardFragment
         implements SocialFriendUserView.OnElementClickListener
 {
-    @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
+    @InjectView(R.id.friends_root_view) BetterViewAnimator friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
     @InjectView(R.id.social_follow_invite_all_container) View inviteFollowAllContainer;
+    @InjectView(R.id.social_follow_all) TextView followAllView;
+    @InjectView(R.id.social_invite_all) TextView inviteAllView;
+    @InjectView(R.id.social_friends_list) ListView listView;
+    @InjectView(android.R.id.empty) TextView emptyView;
 
     @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;
@@ -84,10 +89,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+        listView.setEmptyView(emptyView);
         searchEdit.addTextChangedListener(new SearchChangeListener());
-        friendsRootView.setFollowAllViewVisible(canFollow());
-        friendsRootView.setInviteAllViewVisible(canInviteAll());
-        friendsRootView.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        followAllView.setVisibility(canFollow() ? View.VISIBLE : View.GONE);
+        inviteAllView.setVisibility(canInviteAll() ? View.VISIBLE : View.GONE);
+        listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         displayLoadingView();
 
         if (friendsListKey == null)
@@ -144,7 +150,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        friendsRootView.listView.setOnScrollListener(null);
+        listView.setOnScrollListener(null);
         super.onDestroyView();
     }
 
@@ -175,11 +181,11 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         if (count > 0)
         {
-            friendsRootView.setInviteAllViewText(getString(R.string.invite) + "(" + count + ")");
+            inviteAllView.setText(getString(R.string.invite) + "(" + count + ")");
         }
         else
         {
-            friendsRootView.setInviteAllViewText(getString(R.string.invite));
+            inviteAllView.setText(R.string.invite);
         }
     }
 
@@ -332,12 +338,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private void displayErrorView()
     {
-        friendsRootView.showErrorView();
+        friendsRootView.setDisplayedChildByLayoutId(R.id.error);
     }
 
     private void displayLoadingView()
     {
-        friendsRootView.showLoadingView();
+        friendsRootView.setDisplayedChildByLayoutId(android.R.id.progress);
     }
 
     private void displayContentView()
@@ -354,12 +360,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         checkUserType();
         if (value == null || value.size() == 0)
         {
-            friendsRootView.showEmptyView();
+            friendsRootView.setDisplayedChildByLayoutId(android.R.id.empty);
         }
         else
         {
             bindData();
-            friendsRootView.showContentView();
+            friendsRootView.setDisplayedChildByLayoutId(R.id.content_wrapper);
         }
     }
 
@@ -394,14 +400,12 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
         if (!canFollow() || !hasUserToFollow)
         {
-            //friendsRootView.setFollowAllViewEnable(false);
-            friendsRootView.setFollowAllViewVisible(false);
+            followAllView.setVisibility(View.GONE);
         }
 
         if (!canInviteAll() || !hasUserToInvite)
         {
-            //friendsRootView.setInviteAllViewEnable(false);
-            friendsRootView.setInviteAllViewVisible(false);
+            inviteAllView.setVisibility(View.GONE);
         }
     }
 
@@ -482,7 +486,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                         R.layout.social_friends_item,
                         R.layout.social_friends_item_header);
         socialFriendsListAdapter.setOnElementClickedListener(this);
-        friendsRootView.listView.setAdapter(socialFriendsListAdapter);
+        listView.setAdapter(socialFriendsListAdapter);
     }
 
     private boolean hasView()
@@ -497,7 +501,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     private boolean hasListData()
     {
-        ListView listView = friendsRootView.listView;
         return listView.getAdapter() != null && listView.getAdapter().getCount() > 0;
     }
 

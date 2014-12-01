@@ -30,6 +30,7 @@ import javax.inject.Provider;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -95,6 +96,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         facebookAuthenticationProvider.logIn(activityProvider.get())
                 .map(AccessTokenForm::new)
                 .flatMap(accessTokenForm -> socialServiceWrapper.connectRx(userKey, accessTokenForm))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SocialLinkingObserver());
     }
 
