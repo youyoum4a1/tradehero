@@ -116,7 +116,7 @@ public class WeChatDTOFactory
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.Referral;
-        weChatDTO.title = context.getString(R.string.share_to_wechat_invite_friends, referralCodeDTO.referralCode);
+        weChatDTO.title = context.getString(R.string.share_to_wechat_referral_text, referralCodeDTO.referralCode);
     }
 
     @NonNull public WeChatDTO createFrom(@NonNull CompetitionPreSeasonDTO preSeasonDTO)
