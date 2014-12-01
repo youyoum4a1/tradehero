@@ -121,7 +121,7 @@
   <dimen name="leaderboard_separator_height">@dimen/size_2</dimen>
   <dimen name="discussion_comment_box_height">@dimen/clickable_element_min_dimen</dimen>
 
-  <dimen name="grid_item_bg_border_width">1.2dp</dimen>
+  <dimen name="grid_item_bg_border_width">1dp</dimen>
   <dimen name="grid_item_bg_radius">@dimen/global_corner_radius</dimen>
   <dimen name="grid_item_height">@dimen/size_16</dimen>
 
