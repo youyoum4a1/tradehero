@@ -1,14 +1,8 @@
 package com.tradehero.th.fragments.discovery;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import com.maurycy.ScaleImageView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
@@ -27,13 +21,6 @@ public class MiniGameDefItemView extends ScaleImageView
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
-    }
-
-    @Override protected void onFinishInflate()
-    {
-        super.onFinishInflate();
-
-        ButterKnife.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
