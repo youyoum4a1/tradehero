@@ -1,7 +1,7 @@
 package com.tradehero.th.utils;
 
 import android.text.TextUtils;
-import net.sourceforge.pinyin4j.PinyinHelper;
+import pinyin.PinyinHelper;
 
 import java.util.List;
 import java.util.regex.Matcher;
