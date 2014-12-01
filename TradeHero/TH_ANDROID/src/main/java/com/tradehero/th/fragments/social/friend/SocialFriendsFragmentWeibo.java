@@ -126,6 +126,15 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         }
     }
 
+    protected String getWeiboInviteMessage()
+    {
+        if (edtMessageInvite != null)
+        {
+            return edtMessageInvite.getText().toString();
+        }
+        return null;
+    }
+
     @Override protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
         showWeiboInviteDialog(usersToInvite);

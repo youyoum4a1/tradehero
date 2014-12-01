@@ -2,6 +2,7 @@
 
 <com.tradehero.th.fragments.social.friend.SocialFriendsListView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/friends_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,18 +15,20 @@
       android:layout_height="match_parent"
       android:orientation="vertical"
       android:visibility="gone"
-
       >
+
     <EditText
         android:id="@+id/search_social_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_social_friend_hint"
         />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
       <ListView
           android:id="@+id/social_friends_list"
           android:layout_width="match_parent"
@@ -33,6 +36,7 @@
           android:clipToPadding="false"
           android:paddingBottom="@dimen/buy_sell_button_container_height"
           />
+
       <LinearLayout
           android:id="@+id/social_follow_invite_all_container"
           android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -67,11 +71,13 @@
             android:background="@drawable/yellow_rounded_button_selector"
             android:text="@string/invite_all"
             />
+
       </LinearLayout>
+
     </RelativeLayout>
 
-
   </LinearLayout>
+
   <TextView
       android:id="@android:id/empty"
       android:layout_width="match_parent"
@@ -99,4 +105,5 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
       android:visibility="gone"/>
+
 </com.tradehero.th.fragments.social.friend.SocialFriendsListView>

@@ -49,6 +49,8 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 {
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
+    @InjectView(R.id.social_follow_invite_all_container) View inviteFollowAllContainer;
+
     @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
@@ -113,7 +115,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate((x, y) -> friendsRootView.inviteFollowAllContainer.setTranslationY(y));
+        dashboardTabHost.get().setOnTranslate((x, y) -> inviteFollowAllContainer.setTranslationY(y));
     }
 
     @Override public void onPause()
@@ -195,15 +197,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         unsubscribe(inviteFriendsSubscription);
         inviteFriendsSubscription =
                 socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, createInviteObserver(usersToInvite));
-    }
-
-    protected String getWeiboInviteMessage()
-    {
-        if (edtMessageInvite != null)
-        {
-            return edtMessageInvite.getText().toString();
-        }
-        return null;
     }
 
     protected void setMessageTextLength()

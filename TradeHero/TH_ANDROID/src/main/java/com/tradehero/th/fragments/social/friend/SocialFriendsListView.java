@@ -21,7 +21,6 @@ public class SocialFriendsListView extends RelativeLayout
     @InjectView(android.R.id.progress) ProgressBar progressBar;
     @InjectView(android.R.id.empty) TextView emptyView;
     @InjectView(R.id.error) View errorView;
-    @InjectView(R.id.social_follow_invite_all_container) ViewGroup inviteFollowAllContainer;
 
     //<editor-fold desc="Constructors">
     public SocialFriendsListView(Context context)
