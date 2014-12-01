@@ -72,7 +72,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         super.bindNormalData();
     }
 
-    @Override protected void inviteAll()
+    @Override protected void inviteAll(View view)
     {
         inviteAllSelected();
     }

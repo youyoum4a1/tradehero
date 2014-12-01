@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -33,7 +34,6 @@ import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
@@ -45,7 +45,7 @@ import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public abstract class SocialFriendsFragment extends DashboardFragment
-        implements SocialFriendUserView.OnElementClickListener, View.OnClickListener
+        implements SocialFriendUserView.OnElementClickListener
 {
     @InjectView(R.id.friends_root_view) SocialFriendsListView friendsRootView;
     @InjectView(R.id.search_social_friends) EditText searchEdit;
@@ -71,26 +71,33 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected SocialFriendsAdapter socialFriendsListAdapter;
     private final int MAX_TEXT_LENGTH = 140;
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        setActionBarTitle(getTitle());
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_social_friends, container, false);
-        ButterKnife.inject(this, v);
-        return v;
+        return inflater.inflate(R.layout.fragment_social_friends, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        initView();
+        ButterKnife.inject(this, view);
+        searchEdit.addTextChangedListener(new SearchChangeListener());
+        friendsRootView.setFollowAllViewVisible(canFollow());
+        friendsRootView.setInviteAllViewVisible(canInviteAll());
+        friendsRootView.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
+        displayLoadingView();
+
+        if (friendsListKey == null)
+        {
+            friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
+        }
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        setActionBarTitle(getTitle());
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onStart()
@@ -101,6 +108,19 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 this,
                 friendsListCache.get(friendsListKey))
                 .subscribe(createFriendsFetchObserver());
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        dashboardTabHost.get().setOnTranslate((x, y) -> friendsRootView.inviteFollowAllContainer.setTranslationY(y));
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        dashboardTabHost.get().setOnTranslate(null);
+        DeviceUtil.dismissKeyboard(getActivity());
     }
 
     @Override public void onStop()
@@ -168,7 +188,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         followFriendsSubscription = socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver(usersToFollow));
     }
 
-    // TODO subclass like FacebookSocialFriendsFragment should override this methos because the logic of inviting friends is finished on the client side
+    // TODO subclass like FacebookSocialFriendsFragment should override this method because the logic of inviting friends is finished on the client side
     protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
@@ -249,20 +269,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         }
     }
 
-    @Override
-    public void onClick(@NonNull View v)
-    {
-        if (v.getId() == R.id.social_invite_all)
-        {
-            inviteAll();
-        }
-        else if (v.getId() == R.id.social_follow_all)
-        {
-            FollowAll();
-        }
-    }
-
-    protected void inviteAll()
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.social_invite_all)
+    protected void inviteAll(View view)
     {
         List<UserFriendsDTO> usersUnInvited = findAllUsersUnInvited();
         if (usersUnInvited == null || usersUnInvited.size() == 0)
@@ -284,7 +293,9 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         handleInviteUsers(usersCheckBoxInvited.getUserFriends());
     }
 
-    private void FollowAll()
+    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
+    @OnClick(R.id.social_follow_all)
+    protected void followAll(View view)
     {
         List<UserFriendsDTO> usersUnfollowed = findAllUsersUnfollowed();
         if (usersUnfollowed == null || usersUnfollowed.size() == 0)
@@ -299,32 +310,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     {
         if (friendDTOList != null)
         {
-            List<UserFriendsDTO> list = new ArrayList<>();
-            for (UserFriendsDTO o : friendDTOList)
-            {
-                if (o.isTradeHeroUser())
-                {
-                    list.add(o);
-                }
-            }
-            return list;
-        }
-        return null;
-    }
-
-    @Nullable private List<UserFriendsDTO> findAllUsersUnInvited()
-    {
-        if (friendDTOList != null)
-        {
-            List<UserFriendsDTO> list = new ArrayList<>();
-            for (UserFriendsDTO o : friendDTOList)
-            {
-                if (!o.isTradeHeroUser())
-                {
-                    list.add(o);
-                }
-            }
-            return list;
+            return friendDTOList.getTradeHeroUsers();
         }
         return null;
     }
@@ -350,21 +336,6 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     protected abstract SocialNetworkEnum getSocialNetwork();
 
     protected abstract String getTitle();
-
-    private void initView()
-    {
-        searchEdit.addTextChangedListener(new SearchChangeListener());
-        friendsRootView.setFollowAllViewVisible(canFollow());
-        friendsRootView.setInviteAllViewVisible(canInviteAll());
-        friendsRootView.setFollowOrInivteActionClickListener(this);
-        friendsRootView.listView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-        displayLoadingView();
-
-        if (friendsListKey == null)
-        {
-            friendsListKey = new FriendsListKey(currentUserId.toUserBaseKey(), getSocialNetwork());
-        }
-    }
 
     private void displayErrorView()
     {
@@ -475,15 +446,30 @@ public abstract class SocialFriendsFragment extends DashboardFragment
 
     protected int getCountOfUnInvited()
     {
-        List list = findAllUsersUnInvited();
-        if (list != null) return list.size();
+        List<UserFriendsDTO> list = findAllUsersUnInvited();
+        if (list != null)
+        {
+            return list.size();
+        }
         return 0;
+    }
+
+    @Nullable private List<UserFriendsDTO> findAllUsersUnInvited()
+    {
+        if (friendDTOList != null)
+        {
+            return friendDTOList.getNonTradeHeroUsers();
+        }
+        return null;
     }
 
     protected int getCountOfCheckBoxInvited()
     {
         List list = findAllUsersCheckBoxInvited();
-        if (list != null) return list.size();
+        if (list != null)
+        {
+            return list.size();
+        }
         return 0;
     }
 
@@ -669,18 +655,5 @@ public abstract class SocialFriendsFragment extends DashboardFragment
                 displayErrorView();
             }
         }
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        dashboardTabHost.get().setOnTranslate((x, y) -> friendsRootView.inviteFollowAllContainer.setTranslationY(y));
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-        dashboardTabHost.get().setOnTranslate(null);
-        DeviceUtil.dismissKeyboard(getActivity());
     }
 }
