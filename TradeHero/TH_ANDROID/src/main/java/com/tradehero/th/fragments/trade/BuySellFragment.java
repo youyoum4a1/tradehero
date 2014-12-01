@@ -82,6 +82,7 @@ import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
@@ -1170,6 +1171,8 @@ public class BuySellFragment extends AbstractBuySellFragment
         shareToWeChat();
         if (isResumed())
         {
+            DeviceUtil.dismissKeyboard(getActivity());
+
             // TODO find a better way to remove this fragment from the stack
             navigator.get().popFragment();
 
