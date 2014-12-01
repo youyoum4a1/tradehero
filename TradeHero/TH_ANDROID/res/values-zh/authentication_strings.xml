@@ -35,36 +35,26 @@
 
   <string name="facebook">Facebook</string>
   <string name="facebook_login_in">用 Facebook 登录</string>
-  <string name="facebook_register">用 Facebook 注册</string>
   <string name="authentication_connecting_to_facebook">连接 Facebook</string>
   <string name="linkedin">LinkedIn</string>
   <string name="linkedin_login_in">LinkedIn账号</string>
-  <string name="linkedin_register">用 LinkedIn 注册</string>
   <string name="authentication_connecting_to_linkedin">连接 LinkedIn</string>
   <string name="twitter">Twitter</string>
   <string name="twitter_login_in">用 Twitter 登录</string>
-  <string name="twitter_register">用 Twitter 注册</string>
   <string name="authentication_twitter_email">电子邮件</string>
   <string name="authentication_twitter_connecting">连接 Twitter</string>
   <string name="sina_weibo">微博</string>
   <string name="weibo_login_in">微博账号</string>
-  <string name="weibo_register">用 Weibo 注册</string>
   <string name="authentication_connecting_to_weibo">连接微博</string>
   <string name="tencent_qq">QQ</string>
   <string name="qq_login_in">QQ账号</string>
-  <string name="qq_register">用 QQ 注册</string>
   <string name="authentication_connecting_to_qq">连接QQ</string>
   <string name="authentication_connecting_to_wechat">连接微信</string>
   <string name="wechat">微信</string>
   <string name="wechat_login_in">微信账号</string>
   <string name="email_login_in">用 Email 登录</string>
-  <string name="email_register">用 Email 注册</string>
 
   <string name="authentication_error_creating_signup_form">生成注册信息有误</string>
-  <string name="new_to_tradehero">新用户？</string>
-  <string name="already_registered">已经有账号了？</string>
-  <string name="register_now">现在注册</string>
-  <string name="log_in_now">现在登录！</string>
 
   <string name="enter_phone_email_error">请输入正确的手机号或邮箱</string>
 

@@ -122,11 +122,6 @@
         android:screenOrientation="sensorLandscape"
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 -->
-    <activity
-        android:name="com.tradehero.th.activities.WeiboAuthAcitivity"
-        android:windowSoftInputMode="adjustResize"
-        android:screenOrientation="portrait"
-        />
 
     <activity
         android:name="com.tradehero.th.wxapi.WXEntryActivity"

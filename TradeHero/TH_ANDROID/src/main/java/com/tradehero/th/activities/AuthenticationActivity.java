@@ -1,14 +1,12 @@
 package com.tradehero.th.activities;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.actionbarsherlock.view.Menu;
 import com.tradehero.common.utils.THToast;
@@ -114,12 +112,8 @@ public class AuthenticationActivity extends DashboardActivity
     /** map view and the next fragment, which is appears when click on that view */
     private void setupViewFragmentMapping()
     {
-        //two buttons in WelcomeFragment
-        mapViewFragment.put(R.id.authentication_by_sign_in_button, SignInFragment.class);
         //button in SignInFragment
         mapViewFragment.put(R.id.authentication_email_sign_in_link, EmailSignInFragment.class);
-        //button in SignUpFragment
-        mapViewFragment.put(R.id.authentication_email_sign_up_link, EmailSignUpFragment.class);
         mapViewFragment.put(R.id.tvHeadRight0, EmailSignUpFragment.class);
     }
 
@@ -156,16 +150,7 @@ public class AuthenticationActivity extends DashboardActivity
         Class<?> fragmentClass = mapViewFragment.get(view.getId());
         if (fragmentClass != null)
         {
-            if (view.getId() == R.id.authentication_by_sign_in_button)
-            {
-                InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                setCurrentFragmentByPopBack(fragmentClass);
-            }
-            else
-            {
-                setCurrentFragmentByClass(fragmentClass);
-            }
+            setCurrentFragmentByClass(fragmentClass);
             if (currentFragment instanceof AuthenticationFragment)
             {
                 THUser.setAuthenticationMode(((AuthenticationFragment) currentFragment).getAuthenticationMode());
@@ -210,17 +195,6 @@ public class AuthenticationActivity extends DashboardActivity
                 } catch (android.content.ActivityNotFoundException anfe)
                 {
                     THToast.show("Unable to open url: " + uri);
-                }
-                break;
-            case R.id.txt_term_of_service_termsofuse:
-                Uri uri2 = Uri.parse(Constants.PRIVACY_TERMS_OF_USE);
-                Intent it2 = new Intent(Intent.ACTION_VIEW, uri2);
-                try
-                {
-                    startActivity(it2);
-                } catch (android.content.ActivityNotFoundException anfe)
-                {
-                    THToast.show("Unable to open url: " + uri2);
                 }
                 break;
             case R.id.tvHeadLeft:
