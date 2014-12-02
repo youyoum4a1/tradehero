@@ -41,6 +41,11 @@
   <dimen name="size_14">112dp</dimen>
   <dimen name="size_15">120dp</dimen>
   <dimen name="size_16">128dp</dimen>
+  <dimen name="size_17">136dp</dimen>
+  <dimen name="size_18">144dp</dimen>
+  <dimen name="size_19">152dp</dimen>
+  <dimen name="size_20">160dp</dimen>
+  <dimen name="size_21">168dp</dimen>
 
 
   <dimen name="activity_horizontal_margin">@dimen/size_2</dimen>
@@ -124,7 +129,7 @@
 
   <dimen name="grid_item_bg_border_width">0.5dp</dimen>
   <dimen name="grid_item_bg_radius">@dimen/global_corner_radius</dimen>
-  <dimen name="grid_item_height">160dp</dimen>
+  <dimen name="grid_item_height">@dimen/size_20</dimen>
 
   <dimen name="security_logo_width">@dimen/size_16</dimen>
   <dimen name="security_logo_height">@dimen/size_6</dimen>
