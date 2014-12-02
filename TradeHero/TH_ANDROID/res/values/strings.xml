@@ -429,6 +429,8 @@
   <string name="sign_in_display_name_no_blank">Display Name No Blank Space</string>
   <string name="sign_in_wechat">WeChat</string>
   <string name="sign_in_weibo">Weibo</string>
+  <string name="sign_in_reset_password">Reset Password</string>
+  <string name="reset_password_account_hint">Email</string>
   <!--Sign in & Sign up -->
 
   <!-- Notification -->

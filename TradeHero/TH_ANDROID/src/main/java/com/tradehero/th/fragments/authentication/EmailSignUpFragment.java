@@ -20,7 +20,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.form.UserFormFactory;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.DashboardNavigatorActivity;
@@ -35,6 +34,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.BitmapForProfileFactory;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.EmailSignUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -361,7 +361,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             THToast.show(R.string.register_error_password);
             return false;
         }
-        if(!isValidEmail(emailEditText.getText())&&!isValidPhoneNumber(emailEditText.getText())){
+        if(!EmailSignUtils.isValidEmail(emailEditText.getText())&&!isValidPhoneNumber(emailEditText.getText())){
             THToast.show(R.string.enter_phone_email_error);
             return false;
         }
@@ -416,7 +416,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         if (mSwitcher.getDisplayedChild() == 1) {
             mSwitcher.setDisplayedChild(0);
         } else {
-            ((AuthenticationActivity) getActivity()).onBackPressed();
+            getActivity().onBackPressed();
         }
     }
 
@@ -482,21 +482,6 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             sendCodeMiddleCallback.setPrimaryCallback(null);
         }
         sendCodeMiddleCallback = null;
-    }
-
-
-
-    private boolean isValidEmail(CharSequence charSequence) {
-        boolean isValid = false;
-        String str = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
-        Pattern p = Pattern.compile(str);
-        Matcher m = p.matcher(charSequence);
-        if (m.matches()) {
-            isValid = true;
-        } else {
-            isValid = false;
-        }
-        return isValid;
     }
 
     private void startPhotoZoom(Uri data, int size){

@@ -481,12 +481,17 @@ public class AuthenticationActivity extends DashboardActivity
 
     @Override public void onBackPressed()
     {
+        Fragment currentDashboardFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
+        if(currentDashboardFragment instanceof PasswordResetFragment){
+            super.onBackPressed();
+            return;
+        }
         if (currentFragment instanceof SignInFragment)
         {
             ActivityHelper.launchGuide(this);
             return;
         }
-        else if (currentFragment instanceof EmailSignInOrUpFragment)
+        if (currentFragment instanceof EmailSignInOrUpFragment)
         {
             getNavigator().popFragment();
             setCurrentFragmentByPopBack(SignInFragment.class);

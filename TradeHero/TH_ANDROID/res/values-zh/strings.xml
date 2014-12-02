@@ -208,6 +208,8 @@
   <string name="sign_in_display_name_no_blank">用户名不允许有空格。</string>
   <string name="sign_in_wechat">微信</string>
   <string name="sign_in_weibo">微博</string>
+  <string name="sign_in_reset_password">密码重置</string>
+  <string name="reset_password_account_hint">邮箱</string>
   <!--Sign in & Sign up -->
 
   <!-- Photo-->

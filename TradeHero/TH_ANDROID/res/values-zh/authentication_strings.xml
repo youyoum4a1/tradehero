@@ -23,7 +23,6 @@
   <string name="authentication_cancel">取消</string>
   <string name="authentication_not_registered">请返回登录页面</string>
   <string name="authentication_forgot_password">忘记密码?</string>
-  <string name="authentication_forgot_password_email">电子邮件</string>
   <string name="authentication_connecting_tradehero">正在验证 %s, 连线全民股神中</string>
   <string name="authentication_connecting_tradehero_only">处理中</string>
 

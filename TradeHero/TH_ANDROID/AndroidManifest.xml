@@ -116,12 +116,6 @@
         <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_web" android:pathPattern=".*"/>
       </intent-filter>
     </activity>
-<!--
-    <activity
-        android:name="com.tradehero.th.activities.StockChartActivity"
-        android:screenOrientation="sensorLandscape"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
--->
 
     <activity
         android:name="com.tradehero.th.wxapi.WXEntryActivity"

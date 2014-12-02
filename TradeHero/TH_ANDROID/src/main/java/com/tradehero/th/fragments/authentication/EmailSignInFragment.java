@@ -1,12 +1,8 @@
 package com.tradehero.th.fragments.authentication;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,15 +13,9 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.users.password.ForgotPasswordDTO;
-import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.base.THUser;
 import com.tradehero.th.data.sp.THSharePreferenceManager;
-import com.tradehero.th.misc.callback.THCallback;
-import com.tradehero.th.misc.callback.THResponse;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.DeviceUtil;
@@ -33,7 +23,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.widget.ServerValidatedEmailText;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -43,15 +32,11 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
     private EditText email;
     private EditText password;
     private TextView forgotPasswordLink;
-    private ProgressDialog mProgressDialog;
-    private View forgotDialogView;
     private ImageView backButton;
     @Inject Analytics analytics;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-
-    protected MiddleCallback<ForgotPasswordDTO> middleCallbackForgotPassword;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -119,7 +104,6 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override public void onDestroyView()
     {
-        detachMiddleCallbackForgotPassword();
         this.email = null;
 
         this.password = null;
@@ -143,14 +127,7 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         super.onDestroyView();
     }
 
-    protected void detachMiddleCallbackForgotPassword()
-    {
-        if (middleCallbackForgotPassword != null)
-        {
-            middleCallbackForgotPassword.setPrimaryCallback(null);
-        }
-        middleCallbackForgotPassword = null;
-    }
+
 
     @Override public void onClick(View view)
     {
@@ -176,12 +153,8 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
                     }
                 }
                 break;
-
             case R.id.authentication_sign_in_forgot_password:
-                showForgotPasswordUI();
-                break;
-
-            default:
+                gotoPasswordForgetFragment();
                 break;
         }
     }
@@ -203,13 +176,10 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
 
     @Override protected void forceValidateFields()
     {
-        //email.forceValidate();
-        //password.forceValidate();
     }
 
     @Override public boolean areFieldsValid()
     {
-        //return email.isValid() && password.isValid();
         return true;
     }
 
@@ -221,84 +191,14 @@ public class EmailSignInFragment extends EmailSignInOrUpFragment
         return map;
     }
 
-    private void showForgotPasswordUI()
-    {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
-
-        String message = getActivity().getString(R.string.authentication_ask_for_email);
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(message)
-                .setView(forgotDialogView)
-                .setNegativeButton(R.string.authentication_cancel, new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialogInterface, int which)
-                    {
-                        dialogInterface.cancel();
-                    }
-                })
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(final DialogInterface dialogInterface, int which)
-                    {
-
-                        ServerValidatedEmailText serverValidatedEmailText =
-                                (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
-                        if (serverValidatedEmailText == null)
-                        {
-                            return;
-                        }
-                        serverValidatedEmailText.forceValidate();
-
-                        if (!serverValidatedEmailText.isValid())
-                        {
-                            THToast.show(R.string.forgot_email_incorrect_input_email);
-                        }
-                        else
-                        {
-                            String email = serverValidatedEmailText.getText().toString();
-                            doForgotPassword(email);
-                            dialogInterface.dismiss();
-                        }
-                    }
-                }).create().show();
-    }
-
-    private void doForgotPassword(String email)
-    {
-        ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
-        forgotPasswordFormDTO.userEmail = email;
-
-        mProgressDialog = progressDialogUtil.show(
-                getActivity(),
-                R.string.alert_dialog_please_wait,
-                R.string.authentication_connecting_tradehero_only);
-
-        detachMiddleCallbackForgotPassword();
-        middleCallbackForgotPassword = userServiceWrapper
-                .forgotPassword(forgotPasswordFormDTO, createForgotPasswordCallback());
-    }
-
-    private THCallback<ForgotPasswordDTO> createForgotPasswordCallback()
-    {
-        return new THCallback<ForgotPasswordDTO>()
-        {
-            @Override protected void success(ForgotPasswordDTO forgotPasswordDTO, THResponse thResponse)
-            {
-                THToast.show(R.string.authentication_thank_you_message_email);
-            }
-
-            @Override public void failure(THException ex)
-            {
-                THToast.show(ex);
-            }
-
-            @Override protected void finish()
-            {
-                mProgressDialog.dismiss();
-            }
-        };
+    private void gotoPasswordForgetFragment(){
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in, R.anim.slide_left_out,
+                        R.anim.slide_left_in, R.anim.slide_right_out)
+                .replace(R.id.fragment_content, new PasswordResetFragment())
+                .addToBackStack(null)
+                .commitAllowingStateLoss();
     }
 
     @Override public AuthenticationMode getAuthenticationMode()

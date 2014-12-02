@@ -24,7 +24,6 @@
   <string name="authentication_not_registered">You need to go back and sign up</string>
 
   <string name="authentication_forgot_password">Forgot your password ?</string>
-  <string name="authentication_forgot_password_email">Email</string>
 
   <string name="authentication_connecting_tradehero">Authenticated with %s, connecting to TradeHero</string>
   <string name="authentication_connecting_tradehero_only">Processing</string>

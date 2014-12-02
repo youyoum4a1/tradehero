@@ -19,6 +19,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.regex.PatternSyntaxException;
 
 public class NotificationListAdapter extends BaseAdapter
 {
@@ -134,7 +135,11 @@ public class NotificationListAdapter extends BaseAdapter
             if(!TextUtils.isEmpty(item.referencedUserName)){
                 holder.tvNotificationUser.setText(item.referencedUserName);
                 if(!TextUtils.isEmpty(item.text)){
-                    text = text.replaceFirst(item.referencedUserName, "");
+                    try {
+                        text = text.replaceFirst(item.referencedUserName, "");
+                    }catch (PatternSyntaxException e){
+                        e.printStackTrace();
+                    }
                 }
             }
             holder.tvNotificationTimer.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
