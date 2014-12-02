@@ -6,7 +6,8 @@ import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import java.util.Date;
 
-abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
+abstract public class AbstractDiscussionCompactDTO<T extends AbstractDiscussionCompactDTO> extends ExtendedDTO
+    implements Comparable<T>
 {
     public int id;
     public Date createdAtUtc;
@@ -62,5 +63,15 @@ abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
                 ", langCode='" + langCode + '\'' +
                 ", stubKey=" + stubKey +
                 '}';
+    }
+
+
+    @Override public int compareTo(T another)
+    {
+        if (another == null)
+        {
+            return 1;
+        }
+        return id - another.id;
     }
 }

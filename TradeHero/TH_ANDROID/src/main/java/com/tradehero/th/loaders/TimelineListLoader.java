@@ -1,22 +1,19 @@
 package com.tradehero.th.loaders;
 
 import android.content.Context;
-import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.persistence.timeline.TimelineManager;
 import com.tradehero.th.persistence.timeline.TimelineQuery;
 import com.tradehero.th.persistence.timeline.TimelineStore;
-import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
+public class TimelineListLoader extends PaginationListLoader<TimelineItemDTO>
 {
     private final UserBaseKey userBaseKey;
     private final TimelineSection section;
@@ -34,7 +31,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         HierarchyInjector.inject(context, this);
     }
 
-    @Override public List<TimelineItemDTOKey> loadInBackground()
+    @Override public List<TimelineItemDTO> loadInBackground()
     {
         if (lowerItemId != null)
         {
@@ -56,26 +53,22 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
 
         try
         {
-            List<TimelineItemDTOKey> timelineResult = timelineManager.getTimeline(query, true);
+            List<TimelineItemDTO> timelineResult = timelineManager.getTimeline(query, true);
             if (timelineResult == null)
             {
                 return null;
             }
-            return CollectionUtils.filter(timelineResult, new Predicate<TimelineItemDTOKey>()
-            {
-                @Override public boolean apply(TimelineItemDTOKey timelineItemDTOKey)
+            return CollectionUtils.filter(timelineResult, timelineItemDTOKey -> {
+                boolean condition = true;
+                if (lowerItemId != null)
                 {
-                    boolean condition = true;
-                    if (lowerItemId != null)
-                    {
-                        condition = timelineItemDTOKey.id >= lowerItemId;
-                    }
-                    if (upperItemId != null)
-                    {
-                        condition &= timelineItemDTOKey.id <= upperItemId;
-                    }
-                    return condition;
+                    condition = timelineItemDTOKey.id >= lowerItemId;
                 }
+                if (upperItemId != null)
+                {
+                    condition &= timelineItemDTOKey.id <= upperItemId;
+                }
+                return condition;
             });
         }
         catch (Exception e)
@@ -85,7 +78,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         }
     }
 
-    @Override protected void onLoadNext(TimelineItemDTOKey firstVisible)
+    @Override protected void onLoadNext(TimelineItemDTO firstVisible)
     {
 
         upperItemId = null;
@@ -97,7 +90,7 @@ public class TimelineListLoader extends PaginationListLoader<TimelineItemDTOKey>
         forceLoad();
     }
 
-    @Override protected void onLoadPrevious(TimelineItemDTOKey startItem)
+    @Override protected void onLoadPrevious(TimelineItemDTO startItem)
     {
         resetQuery();
         if (startItem != null)

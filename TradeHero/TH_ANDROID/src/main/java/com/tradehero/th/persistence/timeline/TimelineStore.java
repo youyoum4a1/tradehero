@@ -17,7 +17,7 @@ import java.util.WeakHashMap;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
+public class TimelineStore implements PersistableResource<TimelineItemDTO>
 {
     public static final String PER_PAGE = "perpage";
     private TimelineQuery query;
@@ -31,7 +31,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
         this.discussionCache = discussionCache;
     }
 
-    @Override public List<TimelineItemDTOKey> request()
+    @Override public List<TimelineItemDTO> request()
     {
         TimelineDTO timelineDTO = timelineServiceWrapper.getTimelineBySection(
                 query.getSection(),
@@ -40,22 +40,21 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
                 query.getUpper(),
                 query.getLower());
 
-        List<TimelineItemDTOKey> timelineItemDTOKeys = new ArrayList<>();
-        if (timelineDTO.getEnhancedItems() != null)
+        List<TimelineItemDTO> timelineItemDTOs = timelineDTO.getEnhancedItems();
+        if (timelineItemDTOs != null)
         {
-            for (TimelineItemDTO itemDTO: timelineDTO.getEnhancedItems())
+            for (TimelineItemDTO itemDTO: timelineItemDTOs)
             {
                 itemDTO.setUser(timelineDTO.getUserById(itemDTO.userId));
                 TimelineItemDTOKey timelineKey = itemDTO.getDiscussionKey();
                 discussionCache.onNext(timelineKey, itemDTO);
-                timelineItemDTOKeys.add(timelineKey);
             }
         }
 
-        return timelineItemDTOKeys;
+        return timelineItemDTOs;
     }
 
-    @Override public void store(SQLiteDatabase db, List<TimelineItemDTOKey> items)
+    @Override public void store(SQLiteDatabase db, List<TimelineItemDTO> items)
     {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -65,7 +64,7 @@ public class TimelineStore implements PersistableResource<TimelineItemDTOKey>
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override public TimelineItemDTOKey loadFrom(Cursor cursor)
+    @Override public TimelineItemDTO loadFrom(Cursor cursor)
     {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
