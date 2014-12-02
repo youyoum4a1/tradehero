@@ -1,13 +1,11 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,16 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -49,6 +43,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -67,8 +62,6 @@ public class SendMessageFragment extends DashboardFragment
     private DiscussionType discussionType = DiscussionType.BROADCAST_MESSAGE;
     /** ProgressDialog to show progress when sending message */
     private Dialog progressDialog;
-    /** Dialog to change different type of follower */
-    private Dialog chooseDialog;
     @NonNull protected SubscriptionList sendMessageSubscriptions;
 
     @InjectView(R.id.message_input_edittext) EditText inputText;
@@ -82,6 +75,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
+    @Inject FollowerTypeDialogFactory followerTypeDialogFactory;
 
     @Nullable Subscription userProfileSubscription;
 
@@ -189,62 +183,14 @@ public class SendMessageFragment extends DashboardFragment
     @OnClick(R.id.message_type)
     protected void showHeroTypeDialog(View view)
     {
-        ListView listView = new ListView(getActivity());
-        listView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        TextView headerView = new TextView(getActivity());
-        headerView.setPadding(0, 20, 0, 20);
-        headerView.setGravity(Gravity.CENTER);
-        headerView.setText(getString(R.string.broadcast_message_change_type_hint)); //TODO
-        headerView.setClickable(false);
-        headerView.setBackgroundColor(getResources().getColor(android.R.color.white));
-        listView.addHeaderView(headerView, null, false);
-        listView.setBackgroundColor(getResources().getColor(android.R.color.white));
-        listView.setSelector(R.drawable.common_dialog_item_bg);
-        listView.setCacheColorHint(android.R.color.transparent);
-        listView.setAdapter(createMessageTypeAdapter());
-        listView.setOnItemClickListener(this::onHeroTypeItemClick);
-        LinearLayout linearLayout = new LinearLayout(getActivity());
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        linearLayout.addView(listView);
-        this.chooseDialog = THDialog.showUpDialog(getActivity(), linearLayout, null);
-    }
-
-    private ArrayAdapter createMessageTypeAdapter()
-    {
-        return new ArrayAdapter<MessageType>(
-                getActivity(),
-                R.layout.common_dialog_item_layout,
-                R.id.popup_text,
-                MessageType.getShowingTypes())
-        {
-            @Override public View getView(int position, View convertView, ViewGroup parent)
-            {
-                View view;
-                TextView text;
-                if (convertView == null)
-                {
-                    LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(
-                            Context.LAYOUT_INFLATER_SERVICE);
-                    view = mInflater.inflate(R.layout.common_dialog_item_layout, parent, false);
-                }
-                else
-                {
-                    view = convertView;
-                }
-                text = (TextView) view.findViewById(R.id.popup_text);
-                MessageType item = getItem(position);
-                text.setText(getString(item.titleResource));
-                return view;
-            }
-        };
-    }
-
-    public void onHeroTypeItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        changeHeroType((MessageType) parent.getItemAtPosition(position));
-        dismissDialog(chooseDialog);
+        Pair<Dialog, Observable<MessageType>> dialogPair = followerTypeDialogFactory.showHeroTypeDialog(getActivity());
+        dialogPair.second
+                .subscribe(
+                        messageType -> {
+                            changeHeroType(messageType);
+                            dismissDialog(dialogPair.first);
+                        },
+                        e -> Timber.e(e, "Failed with dialog"));
     }
 
     private void sendMessage(int count)
