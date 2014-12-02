@@ -20,18 +20,6 @@
 
     </TableLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/position_partial_bottom_open_container"
-        >
-
-      <include
-          layout="@layout/position_partial_shortcut_buttons"
-          />
-
-    </RelativeLayout>
-
   </com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView>
 
 </merge>

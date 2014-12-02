@@ -206,13 +206,7 @@ public class TradeListItemAdapter
                 }
 
                 ((PositionView) convertView).linkWith(this.shownPositionDTO, false);
-                ((PositionView) convertView).linkWithHasHistoryButton(false, false);
                 ((PositionView) convertView).display();
-                View buttons = convertView.findViewById(R.id.position_shortcuts);
-                if (buttons != null)
-                {
-                    buttons.setVisibility(View.GONE);
-                }
                 break;
 
             case ITEM_TYPE_POSITION_LOADING:
