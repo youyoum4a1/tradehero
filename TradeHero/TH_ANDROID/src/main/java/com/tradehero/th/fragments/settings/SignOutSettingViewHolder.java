@@ -19,11 +19,14 @@ import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
@@ -150,17 +153,17 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
         @Override public void onError(Throwable e)
         {
+            Timber.e(e, "Failed to sign out");
             ProgressDialog progressDialogCopy = progressDialog;
             if (progressDialogCopy != null)
             {
                 progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
                 progressDialog.setMessage("");
             }
-            PreferenceFragment preferenceFragmentCopy = preferenceFragment;
-            if (preferenceFragmentCopy != null)
-            {
-                preferenceFragmentCopy.getView().postDelayed(SignOutSettingViewHolder.this::dismissProgressDialog, 3000);
-            }
+            Observable.just(0)
+                    .delay(3000, TimeUnit.MILLISECONDS)
+                    .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
+                    .subscribe(new EmptyObserver<>());
         }
     }
 
