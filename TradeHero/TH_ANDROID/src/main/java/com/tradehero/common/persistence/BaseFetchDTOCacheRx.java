@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import rx.Observable;
 import rx.Subscription;
-import rx.observers.EmptyObserver;
 import rx.subjects.BehaviorSubject;
 
 abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
@@ -34,18 +33,10 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
         {
             cachedFetcherSubscriptions.put(key, fetch(key)
                     .doOnUnsubscribe(() -> removeFetcher(key))
-                    .subscribe(new EmptyObserver<DTOType>()
-                    {
-                        @Override public void onNext(DTOType value)
-                        {
-                            BaseFetchDTOCacheRx.this.onNext(key, value);
-                        }
-
-                        @Override public void onError(Throwable error)
-                        {
-                            BaseFetchDTOCacheRx.this.onError(key, error);
-                        }
-                    }));
+                    .subscribe(
+                            value -> BaseFetchDTOCacheRx.this.onNext(key, value),
+                            error -> BaseFetchDTOCacheRx.this.onError(key, error)
+                    ));
         }
         return cachedObservable;
     }
@@ -66,22 +57,22 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
 
     @Override public void invalidate(@NonNull DTOKeyType key)
     {
-        super.invalidate(key);
         Subscription subscription = cachedFetcherSubscriptions.remove(key);
         if (subscription != null)
         {
             subscription.unsubscribe();
         }
+        super.invalidate(key);
     }
 
     @Override public void invalidateAll()
     {
-        super.invalidateAll();
         Collection<Subscription> fetcherSubscriptions = cachedFetcherSubscriptions.values();
         cachedFetcherSubscriptions.clear();
         for (Subscription subscription : fetcherSubscriptions)
         {
             subscription.unsubscribe();
         }
+        super.invalidateAll();
     }
 }
