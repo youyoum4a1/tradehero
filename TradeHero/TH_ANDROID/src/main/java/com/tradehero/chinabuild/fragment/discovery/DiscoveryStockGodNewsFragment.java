@@ -73,6 +73,7 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         adapter = new UserTimeLineAdapter(getActivity());
         adapter.isShowHeadAndName = true;
+        adapter.isShowFollowBuy = true;
     }
 
     @Override
@@ -123,12 +124,17 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
                 comments(dto);
             }
 
-            @Override public void OnTimeLineShareClied(int position)
+            @Override public void OnTimeLineShareClicked(int position)
             {
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_SHARE));
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 //share(dto.text);
                 shareToWechatMoment(dto.text);
+            }
+
+            @Override public void OnTimeLineBuyClicked(int position)
+            {
+
             }
         });
 

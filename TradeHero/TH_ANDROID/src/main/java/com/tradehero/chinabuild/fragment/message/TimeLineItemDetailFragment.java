@@ -261,7 +261,13 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
 
             @Override
-            public void OnTimeLineShareClied(int position) {
+            public void OnTimeLineShareClicked(int position) {
+
+            }
+
+            @Override
+            public void OnTimeLineBuyClicked(int position)
+            {
 
             }
         });

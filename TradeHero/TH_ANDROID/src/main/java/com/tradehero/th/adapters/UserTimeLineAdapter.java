@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.R;
@@ -64,6 +65,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     //public boolean isSecurityAsUser = false;//是否是以股票为头像和名字
     public boolean isShowLastCommentUtc = false;//是否需要显示时间为最后回复的时间
     public boolean isMySelf = false;
+    public boolean isShowFollowBuy = false;
 
     @Inject Analytics analytics;
 
@@ -254,6 +256,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
                 holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
                 holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
+                holder.llTLBuy = (LinearLayout) convertView.findViewById(R.id.llTLBuy);
+                holder.btnTLBuy = (TextView) convertView.findViewById(R.id.btnTLBuy);
+                holder.tvTLBuy = (TextView) convertView.findViewById(R.id.tvTLBuy);
                 holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
                 holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
                 holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
@@ -271,6 +276,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             boolean isTrade = item.hasTrader();
 
             holder.llTLShare.setVisibility((!isMySelf && isTrade) ? View.GONE : View.VISIBLE);
+
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(isShowHeadAndName ? View.GONE : View.VISIBLE);
@@ -312,6 +318,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 }
 
                 TradeDTO tradeDTO = getTradeDTO(item.tradeId);
+                holder.llTLBuy.setVisibility((!isMySelf && isTrade && tradeDTO.isBuy() && isShowFollowBuy) ? View.VISIBLE : View.GONE);
                 if (tradeDTO != null)
                 {
                     holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.getUnitPriceCurrency());
@@ -326,6 +333,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             else
             {
                 holder.tvUserTLContent.setText("" + item.text);
+                holder.llTLBuy.setVisibility(View.GONE);
             }
 
             if (isShowHeadAndName)
@@ -405,6 +413,15 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     }
                 }
             });
+
+            holder.llTLBuy.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    timeLineOperater.OnTimeLineBuyClicked(position);
+                    clickedBuy(position);
+                }
+            });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
@@ -426,7 +443,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLineShareClied(position);
+                    timeLineOperater.OnTimeLineShareClicked(position);
                 }
             });
         }
@@ -517,9 +534,12 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
         //不是一个交易相关
         public LinearLayout llUserTLNoTrade = null;
+        public LinearLayout llTLBuy = null;
         public LinearLayout llTLPraise = null;
         public LinearLayout llTLComment = null;
         public LinearLayout llTLShare = null;
+        public TextView btnTLBuy = null;
+        public TextView tvTLBuy = null;
         public TextView btnTLPraise = null;
         public TextView tvTLPraise = null;
         public TextView btnTLComment = null;
@@ -538,6 +558,50 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         public TextView title1;//买入价格
         public TextView title2;//买入数量
     }
+
+    public void clickedBuy(int position)
+    {
+        SecurityId securityId = ((TimelineItemDTO) getItem(position)).getMedias().get(0).createSecurityId();
+        //SecurityId securityId = new SecurityId("SHA","600246");
+        //SecurityId securityId = new SecurityId("SHE","000887");
+        //SecurityId securityId = new SecurityId("SHE","000020");
+        Timber.d("跟买：POSITION ＝ " + securityId.toString());
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(BuySaleSecurityFragment.KEY_IS_BUY_DIRECTLY, true);
+        bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
+        bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, true);
+        bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityId.getDisplayName());
+
+        enterFragment(BuySaleSecurityFragment.class, bundle);
+    }
+
+    private void enterFragment(Class fragmentClass, Bundle args)
+    {
+        if (getNavigator() != null)
+        {
+            getNavigator().pushFragment(fragmentClass, args);
+        }
+        else
+        {
+            gotoDashboard(fragmentClass.getName(), args);
+        }
+    }
+
+    //public void enterBuySale(boolean isBuy)
+    //{
+    //
+    //    if (!isBuyOrSaleValid(isBuy)) return;
+    //    Bundle bundle = new Bundle();
+    //    bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
+    //    bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
+    //    bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
+    //    bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
+    //    bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
+    //    bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
+    //    bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
+    //    pushFragment(BuySaleSecurityFragment.class, bundle);
+    //}
 
     public void clickedPraise(int position)
     {

@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_height="40dp"
+    android:layout_height="54dp"
     android:layout_width="fill_parent">
   <RelativeLayout
       android:layout_weight="1"
@@ -11,7 +11,7 @@
     <View
         android:id="@+id/viewLine0"
         android:layout_alignParentBottom="true"
-        android:layout_height="1px"
+        android:layout_height="3px"
         android:layout_width="fill_parent"
         android:background="@color/tradehero_blue">
     </View>
@@ -19,7 +19,7 @@
         android:id="@+id/tvSearchTabStock"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:gravity="center"
         android:textColor="@color/tradehero_blue"
         android:text="股票">
@@ -33,7 +33,7 @@
     <View
         android:id="@+id/viewLine1"
         android:layout_alignParentBottom="true"
-        android:layout_height="1px"
+        android:layout_height="3px"
         android:layout_width="fill_parent"
         android:background="@color/gray_normal">
     </View>
@@ -41,7 +41,7 @@
         android:id="@+id/tvSearchTabCompetition"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:gravity="center"
         android:textColor="@color/black"
         android:text="比赛">
@@ -55,7 +55,7 @@
     <View
         android:id="@+id/viewLine2"
         android:layout_alignParentBottom="true"
-        android:layout_height="1px"
+        android:layout_height="3px"
         android:layout_width="fill_parent"
         android:background="@color/gray_normal">
     </View>
@@ -63,7 +63,7 @@
         android:id="@+id/tvSearchTabUser"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:gravity="center"
         android:textColor="@color/black"
         android:text="用户">

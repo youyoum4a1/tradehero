@@ -6,6 +6,32 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal">
+
+  <LinearLayout
+      android:paddingTop="10dp"
+      android:paddingBottom="10dp"
+      android:id="@+id/llTLBuy"
+      android:layout_marginLeft="0dp"
+      android:layout_marginRight="40dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+    <TextView android:id="@+id/btnTLBuy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true"
+        android:background="@drawable/icon_buy_xml"/>
+    <TextView
+        android:id="@+id/tvTLBuy"
+        android:layout_marginLeft="3dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/text_xsmall"
+        android:duplicateParentState="true"
+        android:layout_gravity="center_vertical"
+        android:textColor="#929292"
+        android:text="跟买"/>
+  </LinearLayout>
+
   <LinearLayout
       android:paddingTop="10dp"
       android:paddingBottom="10dp"

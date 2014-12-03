@@ -142,6 +142,7 @@ public class UserMainPage extends DashboardFragment
         userProfileCacheListener = createUserProfileFetchListener();
         currentUserProfileCacheListener = createCurrentUserProfileFetchListener();
         adapter = new UserTimeLineAdapter(getActivity(), isMyMainPage);
+        adapter.isShowFollowBuy = true;
     }
 
     @Override
@@ -232,10 +233,15 @@ public class UserMainPage extends DashboardFragment
             }
 
             @Override
-            public void OnTimeLineShareClied(int position)
+            public void OnTimeLineShareClicked(int position)
             {
                 Timber.d("Share position = " + position);
                 shareToWechatMoment(adapter.getItemString(position));
+            }
+
+            @Override public void OnTimeLineBuyClicked(int position)
+            {
+
             }
         });
 

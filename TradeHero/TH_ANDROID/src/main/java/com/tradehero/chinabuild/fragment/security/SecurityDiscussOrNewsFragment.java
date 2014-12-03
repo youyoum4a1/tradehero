@@ -191,10 +191,15 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 pushFragment(DiscussSendFragment.class, bundle);
             }
 
-            @Override public void OnTimeLineShareClied(int position)
+            @Override public void OnTimeLineShareClicked(int position)
             {
                 Timber.d("Share position = " + position);
                 shareToWechatMoment(adapter.getItemString(position));
+            }
+
+            @Override public void OnTimeLineBuyClicked(int position)
+            {
+
             }
         });
 

@@ -205,6 +205,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                         }
                     }
                 });
+
                 holder.tvUserTLContent.setOnClickListener(new View.OnClickListener(){
                     @Override public void onClick(View view)
                     {
@@ -214,6 +215,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                         }
                     }
                 });
+
                 holder.llTLPraise.setOnClickListener(new View.OnClickListener()
                 {
                     @Override public void onClick(View view)
@@ -243,7 +245,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                     {
                         if (timeLineOperater != null)
                         {
-                            timeLineOperater.OnTimeLineShareClied(position);
+                            timeLineOperater.OnTimeLineShareClicked(position);
                         }
                     }
                 });

@@ -27,13 +27,13 @@
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
         android:id="@+id/tvBuySalePrice"
-        android:text="$2.69"/>
+        android:text=""/>
 
     <TextView
         style="@style/buy_sale_title"
         android:id="@+id/tvBuySaleRate"
         android:layout_marginLeft="10dp"
-        android:text="+1.38%"/>
+        android:text="--"/>
 
   </LinearLayout>
 
@@ -95,7 +95,7 @@
         style="@style/buy_sale_title"
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
-        android:text="$299000"/>
+        android:text="- -"/>
 
   </LinearLayout>
 
@@ -115,7 +115,7 @@
         style="@style/buy_sale_title"
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
-        android:text="$3000"/>
+        android:text="- -"/>
 
   </LinearLayout>
 
@@ -135,7 +135,7 @@
         style="@style/buy_sale_title"
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
-        android:text="$9232.2"/>
+        android:text="- -"/>
 
   </LinearLayout>
 
@@ -156,13 +156,14 @@
         style="@style/buy_sale_title"
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
-        android:text=" - - "/>
+        android:text="- -"/>
 
   </LinearLayout>
 
   <LinearLayout
       android:id="@+id/llBuySaleLine8"
       style="@style/buy_sale_item"
+      android:visibility="gone"
       android:layout_below="@id/llBuySaleLine7"
       >
 
@@ -176,13 +177,14 @@
         style="@style/buy_sale_title"
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
-        android:text=" - - "/>
+        android:text="- -"/>
 
   </LinearLayout>
 
   <LinearLayout
       android:id="@+id/llBuySaleLine9"
       style="@style/buy_sale_item"
+      android:visibility="gone"
       android:layout_below="@id/llBuySaleLine8"
       >
 
@@ -196,7 +198,7 @@
         style="@style/buy_sale_title"
         android:layout_marginLeft="10dp"
         android:textColor="@color/black"
-        android:text=" - - "/>
+        android:text="- -"/>
 
   </LinearLayout>
 

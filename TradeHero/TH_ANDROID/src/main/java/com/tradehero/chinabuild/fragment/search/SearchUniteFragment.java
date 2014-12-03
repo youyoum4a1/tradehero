@@ -501,12 +501,12 @@ public class SearchUniteFragment extends DashboardFragment
     {
         if (adapterStock != null && adapterUser.getCount() == 0)
         {
-            //fetchHotSecuritySearchList(true);
-            ArrayList<SecurityCompactDTO> securies = SearchResultSave.loadSearchSecurity(getActivity());
-            if (securies != null)
-            {
-                adapterStock.setSecurityList(securies);
-            }
+            fetchHotSecuritySearchList(true);
+            //ArrayList<SecurityCompactDTO> securies = SearchResultSave.loadSearchSecurity(getActivity());
+            //if (securies != null)
+            //{
+            //    adapterStock.setSecurityList(securies);
+            //}
         }
 
         if (adapterUser != null && adapterUser.getCount() == 0)
