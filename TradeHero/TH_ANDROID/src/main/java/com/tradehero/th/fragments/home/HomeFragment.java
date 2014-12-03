@@ -218,7 +218,7 @@ public final class HomeFragment extends BaseWebViewFragment
         else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
         {
             socialFriendHandlerFacebookProvider.get()
-                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO))
+                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO), null)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bundle>()
                     {
@@ -300,7 +300,11 @@ public final class HomeFragment extends BaseWebViewFragment
     protected void handleFollowUsers(List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver());
+        RequestObserver<UserProfileDTO> observer = new FollowFriendObserver();
+        observer.onRequestStart();
+        socialFriendHandler.followFriends(usersToFollow)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     protected void createFriendHandler()

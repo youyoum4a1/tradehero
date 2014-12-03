@@ -421,21 +421,36 @@ public class FriendsInvitationFragment extends DashboardFragment
     protected void handleFollowUsers(UserFriendsDTO userToFollow)
     {
         List<UserFriendsDTO> usersToFollow = Arrays.asList(userToFollow);
-        socialFriendHandler.followFriends(usersToFollow, new FollowFriendObserver(usersToFollow));
+        RequestObserver<UserProfileDTO> observer = new FollowFriendObserver(usersToFollow);
+        observer.onRequestStart();
+        socialFriendHandler.followFriends(usersToFollow)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     // TODO via which social network to invite user?
     protected void handleInviteUsers(UserFriendsDTO userToInvite)
     {
         List<UserFriendsDTO> usersToInvite = Arrays.asList(userToInvite);
+        RequestObserver<BaseResponseDTO> observer = new InviteFriendObserver(usersToInvite);
         if (userToInvite instanceof UserFriendsLinkedinDTO || userToInvite instanceof UserFriendsTwitterDTO)
         {
-            socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendObserver(usersToInvite));
+            observer.onRequestStart();
+            socialFriendHandler.inviteFriends(
+                    currentUserId.toUserBaseKey(),
+                    usersToInvite)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
         }
         else if (userToInvite instanceof UserFriendsFacebookDTO)
         {
             //TODO do invite on the client side.
-            socialFriendHandlerFacebook.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite, new InviteFriendObserver(usersToInvite));
+            observer.onRequestStart();
+            socialFriendHandlerFacebook.inviteFriends(
+                    currentUserId.toUserBaseKey(),
+                    usersToInvite)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
         }
         else
         {

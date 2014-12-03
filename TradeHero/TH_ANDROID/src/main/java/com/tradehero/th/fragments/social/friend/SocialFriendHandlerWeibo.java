@@ -1,13 +1,12 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
-import rx.Subscription;
+import rx.Observable;
 
 public class SocialFriendHandlerWeibo extends SocialFriendHandler
 {
@@ -18,11 +17,10 @@ public class SocialFriendHandlerWeibo extends SocialFriendHandler
     }
     //</editor-fold>
 
-    public Subscription inviteWeiboFriends(
+    public Observable<BaseResponseDTO> inviteWeiboFriends(
             @NonNull String msg,
-            @NonNull UserBaseKey userKey,
-            @Nullable RequestObserver<BaseResponseDTO> observer)
+            @NonNull UserBaseKey userKey)
     {
-        return inviteFriends(userKey, new InviteFormWeiboDTO(msg), observer);
+        return inviteFriends(userKey, new InviteFormWeiboDTO(msg));
     }
 }
