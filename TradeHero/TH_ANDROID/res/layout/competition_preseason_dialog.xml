@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             style="@style/TH.Subhead"
             android:gravity="center"
-            tools:text="Spread the word and stand a chance to win an \niPhone 6!"
+            tools:text="Spread the word and stand a chance to win an \n**iPhone 6**!"
             android:layout_margin="@dimen/margin_small"
             />
 
