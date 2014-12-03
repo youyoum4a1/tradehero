@@ -15,6 +15,11 @@
       <solid android:color="#6e96fa"/>
     </shape>
   </item>
+  <item android:state_enabled="false">
+    <shape>
+      <solid android:color="@color/gray_normal"/>
+    </shape>
+  </item>
   <item>
     <shape>
       <solid android:color="#7ea9ff"/>

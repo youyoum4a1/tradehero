@@ -1,58 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:padding="@dimen/margin_small"
+    android:paddingBottom="@dimen/dashboard_tabhost_height"
+    android:clipToPadding="false"
     >
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:gravity="center"
+      android:orientation="vertical"
+      android:gravity="center_horizontal"
+      android:padding="@dimen/margin_small"
       >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/message_center_sending_to"
-        android:gravity="center_vertical|right"
-        style="@style/TH.Subhead"
-        />
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
 
-    <TextView
-        android:id="@+id/message_type"
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/message_center_sending_to"
+          android:gravity="center_vertical|right"
+          style="@style/TH.Subhead"
+          />
+
+      <TextView
+          android:id="@+id/message_type"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:gravity="center_vertical|left"
+          style="@style/TH.Spinner"
+          tools:text="Free Follower(s)"
+          />
+
+    </LinearLayout>
+
+    <com.tradehero.common.widget.BetterViewAnimator
+        android:id="@+id/follower_count_switcher"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:gravity="center_vertical|left"
-        style="@style/TH.Spinner"
-        tools:text="Free User"
-        />
+        android:visibility="gone"
+        >
+
+      <TextView
+          android:id="@+id/follower_count_hint"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="You have 10 free followers"
+          style="@style/TH.Body"
+          android:gravity="center"
+          android:textColor="@color/gray_normal"
+          />
+
+      <TextView
+          android:id="@+id/no_follower_hint"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="You have no free followers"
+          style="@style/TH.Body"
+          android:gravity="center"
+          android:textColor="@color/red"
+          />
+
+    </com.tradehero.common.widget.BetterViewAnimator>
+
+    <EditText
+        android:id="@+id/message_input_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="@dimen/size_10"
+        style="@style/TH.Body"
+        android:gravity="left|top"
+        android:padding="@dimen/margin_xsmall"
+        android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/textbox_light_background"
+        android:hint="@string/message_center_write_something"
+        >
+
+      <requestFocus />
+
+    </EditText>
 
   </LinearLayout>
 
-
-  <EditText
-      android:id="@+id/message_input_edittext"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="80dp"
-      style="@style/TH.Body"
-      android:gravity="left|top"
-      android:padding="5dp"
-      android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
-      android:focusable="true"
-      android:layout_marginTop="@dimen/margin_small"
-      tools:text="NASDAQ:GOOG"
-      android:background="@drawable/textbox_light_background"
-      >
-
-    <requestFocus />
-
-  </EditText>
-
-</LinearLayout>
+</ScrollView>

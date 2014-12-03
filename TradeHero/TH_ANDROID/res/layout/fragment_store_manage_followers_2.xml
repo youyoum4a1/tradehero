@@ -33,6 +33,7 @@
       android:paddingBottom="@dimen/margin_xsmall"
       android:text="@string/message_center_broadcast_message_menu"
       android:layout_marginBottom="@dimen/dashboard_tabhost_height"
+      android:enabled="false"
       />
 
 </RelativeLayout>

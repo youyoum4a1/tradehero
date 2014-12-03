@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -38,22 +40,23 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseManagerFragment*/
-        implements View.OnClickListener, OnFollowersLoadedListener
+        implements OnFollowersLoadedListener
 {
     static final int FRAGMENT_LAYOUT_ID = 10000;
     private static final String BUNDLE_KEY_HERO_ID =
             FollowerManagerFragment.class.getName() + ".heroId";
 
-    @InjectView(R.id.send_message_broadcast) View broadcastView;
-
     @Inject CurrentUserId currentUserId;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject GraphicUtil graphicUtil;
+    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     private UserBaseKey heroId;
     @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
-    @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+    @InjectView(R.id.send_message_broadcast) View broadcastView;
+
+    private FollowerSummaryDTO followerSummaryDTO;
 
     public static void putHeroId(Bundle args, UserBaseKey heroId)
     {
@@ -121,17 +124,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         super.onOptionsMenuClosed(menu);
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        Fragment f = getCurrentFragment();
-        if (f != null)
-        {
-            f.onDestroyOptionsMenu();
-        }
-
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -144,20 +136,13 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        setMessageLayoutShown(true);
         showSendMessageLayoutIfNecessary();
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        dashboardTabHost.get().setOnTranslate(new DashboardTabHost.OnTranslateListener()
-        {
-            @Override public void onTranslate(float x, float y)
-            {
-                broadcastView.setTranslationY(y);
-            }
-        });
+        dashboardTabHost.get().setOnTranslate((x, y) -> broadcastView.setTranslationY(y));
     }
 
     @Override public void onPause()
@@ -166,11 +151,22 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         super.onPause();
     }
 
+    @Override public void onDestroyOptionsMenu()
+    {
+        Fragment f = getCurrentFragment();
+        if (f != null)
+        {
+            f.onDestroyOptionsMenu();
+        }
+
+        super.onDestroyOptionsMenu();
+    }
+
     @Override public void onDestroyView()
     {
-        broadcastView.setOnClickListener(null);
+        mTabHost.setOnTabChangedListener(null);
         mTabHost = null;
-        Timber.d("onDestroyView");
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -196,19 +192,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         }
     }
 
-    private void setMessageLayoutShown(boolean shown)
-    {
-        if (shown)
-        {
-            broadcastView.setOnClickListener(this);
-        }
-        else
-        {
-            broadcastView.setOnClickListener(null);
-        }
-        broadcastView.setVisibility(shown ? View.VISIBLE : View.GONE);
-    }
-
     private Fragment getCurrentFragment()
     {
         if (mTabHost == null)
@@ -216,29 +199,30 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             return null;
         }
         String tag = mTabHost.getCurrentTabTag();
-        android.support.v4.app.FragmentManager fm = ((Fragment) this).getChildFragmentManager();
+        android.support.v4.app.FragmentManager fm = this.getChildFragmentManager();
         return fm.findFragmentByTag(tag);
     }
 
     private View addTabs()
     {
-        //TODO NestedFragments needs ChildFragmentManager
+        // Nested fragments need ChildFragmentManager
         //http://developer.android.com/about/versions/android-4.2.html#NestedFragments
-        mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
+        mTabHost.setup(getActivity(), this.getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
         for (HeroTypeResourceDTO resourceDTO : getTabResourceDTOs())
         {
             addTab(resourceDTO);
         }
         graphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
+        mTabHost.setOnTabChangedListener(this::onTabChanged);
         return mTabHost;
     }
 
-    protected ArrayList<HeroTypeResourceDTO> getTabResourceDTOs()
+    @NonNull protected ArrayList<HeroTypeResourceDTO> getTabResourceDTOs()
     {
         return heroTypeResourceDTOFactory.getListOfHeroType();
     }
 
-    private void addTab(HeroTypeResourceDTO resourceDTO)
+    private void addTab(@NonNull HeroTypeResourceDTO resourceDTO)
     {
         Bundle args = new Bundle();
         FollowerManagerTabFragment.putHeroId(args, heroId);
@@ -251,7 +235,43 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         mTabHost.addTab(tabSpec, resourceDTO.followerContentFragmentClass, args);
     }
 
-    private void changeTabTitle(HeroTypeResourceDTO resourceDTO, int count)
+    public void onTabChanged(String tabId)
+    {
+        displayBroadcastView();
+    }
+
+    public void displayBroadcastView()
+    {
+        if (followerSummaryDTO == null)
+        {
+            broadcastView.setVisibility(View.GONE);
+        }
+        else
+        {
+            broadcastView.setVisibility(View.VISIBLE);
+            HeroTypeResourceDTO heroTypeResourceDTO = getTabResourceDTOs().get(mTabHost.getCurrentTab());
+            int followerCount;
+            if (heroTypeResourceDTO instanceof FreeHeroTypeResourceDTO)
+            {
+                followerCount = followerSummaryDTO.getFreeFollowerCount();
+            }
+            else if (heroTypeResourceDTO instanceof PremiumHeroTypeResourceDTO)
+            {
+                followerCount = followerSummaryDTO.getPaidFollowerCount();
+            }
+            else if (heroTypeResourceDTO instanceof AllHeroTypeResourceDTO)
+            {
+                followerCount = followerSummaryDTO.getFreeFollowerCount() + followerSummaryDTO.getPaidFollowerCount();
+            }
+            else
+            {
+                throw new IllegalArgumentException("Unhandled " + heroTypeResourceDTO.getClass());
+            }
+            broadcastView.setEnabled(followerCount > 0);
+        }
+    }
+
+    private void changeTabTitle(@NonNull HeroTypeResourceDTO resourceDTO, int count)
     {
         THTabView titleView = (THTabView) mTabHost.getTabWidget()
                 .getChildTabViewAt(resourceDTO.followerTabIndex);
@@ -261,6 +281,8 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @Override public void onFollowerLoaded(int page, FollowerSummaryDTO value)
     {
+        this.followerSummaryDTO = value;
+        displayBroadcastView();
         if (!isDetached())
         {
             //remove the function to send message
@@ -290,16 +312,11 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         }
     }
 
-    @Override public void onClick(View v)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.send_message_broadcast)
+    protected void sendMessageBroadcastClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        switch (v.getId())
-        {
-            case R.id.send_message_broadcast:
-                goToMessagePage(DiscussionType.BROADCAST_MESSAGE);
-                break;
-            default:
-                break;
-        }
+        goToMessagePage(DiscussionType.BROADCAST_MESSAGE);
     }
 
     private void goToMessagePage(DiscussionType discussionType)
@@ -308,8 +325,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
         HeroType followerType = HeroType.fromId(page);
 
         Bundle args = new Bundle();
-
-        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE, discussionType.value);
         MessageType messageType;
         switch (followerType)
         {
@@ -326,7 +341,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
                 throw new IllegalStateException("unknown followerType!");
         }
 
-        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE, messageType.typeId);
+        SendMessageFragment.putMessageType(args, messageType);
         Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
                 page, followerType, discussionType);
         navigator.get().pushFragment(SendMessageFragment.class, args);
