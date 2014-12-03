@@ -487,6 +487,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
         @Override public void onError(Throwable e)
         {
+            Timber.e(e, "Failed fetching the list of porfolios");
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }

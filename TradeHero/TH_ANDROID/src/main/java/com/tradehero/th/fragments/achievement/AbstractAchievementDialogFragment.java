@@ -596,6 +596,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
         {
+            // TODO sometimes valueAnimator is null
+            // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/547d8cad65f8dfea153a2928
             int xp = (Integer) valueAnimator.getAnimatedValue(PROPERTY_XP_EARNED);
             displayXpEarned(xp);
         }

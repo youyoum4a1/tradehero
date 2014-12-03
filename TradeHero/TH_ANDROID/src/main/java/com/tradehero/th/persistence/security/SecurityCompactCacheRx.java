@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.security;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
@@ -29,7 +30,7 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
     }
     //</editor-fold>
 
-    @Override protected SecurityCompactDTO putValue(
+    @Override @Nullable protected SecurityCompactDTO putValue(
             @NonNull SecurityId key, @NonNull SecurityCompactDTO value)
     {
         SecurityCompactDTO previous = super.putValue(key, value);
