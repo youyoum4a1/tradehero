@@ -15,5 +15,5 @@
   <string name="share_to_wechat_quest_bonus_text">Completed \"%1$s\"</string>
   <string name="share_to_wechat_preseason">I\'ve just entered a competition on tradehero, come and join us.</string>
   <string name="share_to_wechat_referral">Trade stocks with virtual dollars.</string>
-  <string name="share_to_wechat_referral_text">Download TradeHero, referral code: %1$s </string>
+  <string name="share_to_wechat_referral_text">Download TradeHero, invite code: %1$s </string>
 </resources>
