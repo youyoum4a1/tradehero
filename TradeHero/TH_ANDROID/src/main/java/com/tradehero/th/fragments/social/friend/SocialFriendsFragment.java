@@ -25,6 +25,9 @@ import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
+import com.tradehero.th.api.social.UserFriendsTwitterDTO;
 import com.tradehero.th.api.social.key.FriendsListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -62,6 +65,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
     @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<SocialFriendHandler> socialFriendHandlerProvider;
+    @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     protected SocialFriendHandler socialFriendHandler;
@@ -440,13 +444,28 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         return 0;
     }
 
-    protected void handleInviteUsers(@NonNull List<UserFriendsDTO> usersToInvite)
+    protected void handleInviteUsers(@NonNull List<UserFriendsDTO> userToInvite)
     {
-        createFriendHandler();
-        requestSubscriptions.add(AndroidObservable.bindFragment(
-                this,
-                socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite))
-                .subscribe(createInviteObserver(usersToInvite)));
+        if (userToInvite.get(0) instanceof UserFriendsLinkedinDTO || userToInvite.get(0) instanceof UserFriendsTwitterDTO)
+        {
+            requestSubscriptions.add(AndroidObservable.bindFragment(
+                    this,
+                    socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), userToInvite))
+                    .subscribe(createInviteObserver(userToInvite)));
+        }
+        else if (userToInvite.get(0) instanceof UserFriendsFacebookDTO)
+        {
+            //TODO do invite on the client side.
+            facebookSocialFriendHandlerProvider.get().inviteFriends(currentUserId.toUserBaseKey(), userToInvite, new InviteFriendObserver(userToInvite));
+        }
+        else
+        {
+            //if all ids are empty or only wbId is not empty, how to do?
+            requestSubscriptions.add(AndroidObservable.bindFragment(
+                    this,
+                    socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), userToInvite))
+                    .subscribe(createInviteObserver(userToInvite)));
+        }
     }
 
     protected RequestObserver<BaseResponseDTO> createInviteObserver(List<UserFriendsDTO> usersToInvite)
