@@ -1,5 +1,6 @@
 package com.tradehero.th.models.social.follower;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.social.follower.PremiumFollowerFragment;
 import com.tradehero.th.fragments.social.hero.PremiumHeroFragment;
@@ -19,7 +20,7 @@ public class PremiumHeroTypeResourceDTO extends HeroTypeResourceDTO
                 PremiumFollowerFragment.class);
     }
 
-    @Override public HeroType getHeroType()
+    @Override @NonNull public HeroType getHeroType()
     {
         return HeroType.PREMIUM;
     }

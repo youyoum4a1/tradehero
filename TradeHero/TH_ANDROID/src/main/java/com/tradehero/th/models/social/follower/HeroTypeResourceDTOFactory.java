@@ -1,5 +1,6 @@
 package com.tradehero.th.models.social.follower;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.persistence.social.HeroType;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,12 +10,14 @@ import javax.inject.Inject;
 
 public class HeroTypeResourceDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public HeroTypeResourceDTOFactory()
     {
         super();
     }
+    //</editor-fold>
 
-    public HeroTypeResourceDTO create(HeroType heroType)
+    @NonNull public HeroTypeResourceDTO create(@NonNull HeroType heroType)
     {
         switch (heroType)
         {
@@ -29,7 +32,7 @@ public class HeroTypeResourceDTOFactory
         }
     }
 
-    public ArrayList<HeroTypeResourceDTO> getListOfHeroType()
+    @NonNull public ArrayList<HeroTypeResourceDTO> getListOfHeroType()
     {
         ArrayList<HeroTypeResourceDTO> list = new ArrayList<>();
         for (HeroType heroType : HeroType.values())
