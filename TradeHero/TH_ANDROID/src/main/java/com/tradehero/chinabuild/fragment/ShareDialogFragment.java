@@ -25,11 +25,12 @@ import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 
 public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener {
@@ -49,25 +50,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     private static String mType;
     private static int mUserId = -1;
 
-    private static boolean isDialogShowing = false;
-
-    public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title) {
-        if(isDialogShowing){
-            return null;
-        }
-        mTitle = title;
-        mShareContent = "";
-        mType = "";
-        mUserId = -1;
-        ShareDialogFragment dialogFragment = new ShareDialogFragment();
-        try {
-            dialogFragment.show(fragmentManager, ShareDialogFragment.class.getName());
-            isDialogShowing = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return dialogFragment;
-    }
+    public static boolean isDialogShowing = false;
 
     /**
      * Share to WeChat moment and share to WeiBo on the background

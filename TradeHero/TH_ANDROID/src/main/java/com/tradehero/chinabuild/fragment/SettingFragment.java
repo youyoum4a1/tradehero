@@ -11,11 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.ToggleButton;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -44,8 +40,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
+
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class SettingFragment extends DashboardFragment implements View.OnClickListener {
     @InjectView(R.id.settings_score) RelativeLayout mScoreLayout;
@@ -66,11 +62,6 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
 
     @Inject Analytics analytics;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -117,18 +108,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.settings_score:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_SCORE));
                 showAppOnMarket();
-                //评分后
-                //gotoShareScoreDialog()
                 break;
             case R.id.settings_faq:
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.SETTING_FAQ));
@@ -161,20 +145,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
     public void onDestroyView() {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     public void showAppOnMarket() {
         try {
@@ -191,41 +166,39 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         }
     }
 
+    //Download app info to check whether update TradeHero or not.
     private void gotoDownloadAppInfo(){
-        userServiceWrapper.get().downloadAppVersionInfo(createDownloadAppInfoCallback());
-    }
-
-    private THCallback<AppInfoDTO> createDownloadAppInfoCallback(){
-        return new THCallback<AppInfoDTO>() {
+        userServiceWrapper.get().downloadAppVersionInfo(new THCallback<AppInfoDTO>() {
             @Override
             protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
-                if(appInfoDTO==null){
-                    return;
-                }
-                Timber.d("------> " + appInfoDTO.toString());
-                boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
-                boolean forceUpdate = appInfoDTO.isForceUpgrade();
-                String url = appInfoDTO.getLatestVersionDownloadUrl();
-                THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(getActivity(), url, suggestUpdate,forceUpdate);
-                if(mVersionLayout==null||mNewVersionImageView==null||mVersionCode==null){
-                    return;
-                }
-                if(suggestUpdate){
-                    mVersionLayout.setClickable(true);
-                    mNewVersionImageView.setVisibility(View.VISIBLE);
-                    mVersionCode.setVisibility(View.GONE);
-                }else{
-                    mVersionLayout.setClickable(false);
-                    mNewVersionImageView.setVisibility(View.GONE);
-                    mVersionCode.setVisibility(View.VISIBLE);
+                {
+                    if(appInfoDTO==null){
+                        return;
+                    }
+                    boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
+                    boolean forceUpdate = appInfoDTO.isForceUpgrade();
+                    String url = appInfoDTO.getLatestVersionDownloadUrl();
+                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(getActivity(), url, suggestUpdate,forceUpdate);
+                    if(mVersionLayout==null||mNewVersionImageView==null||mVersionCode==null){
+                        return;
+                    }
+                    if(suggestUpdate){
+                        mVersionLayout.setClickable(true);
+                        mNewVersionImageView.setVisibility(View.VISIBLE);
+                        mVersionCode.setVisibility(View.GONE);
+                    }else{
+                        mVersionLayout.setClickable(false);
+                        mNewVersionImageView.setVisibility(View.GONE);
+                        mVersionCode.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
             @Override
             protected void failure(THException ex) {
-                THToast.show(ex.getMessage());
+
             }
-        };
+        });
     }
 
     private void gotoDownloadAppPage(){

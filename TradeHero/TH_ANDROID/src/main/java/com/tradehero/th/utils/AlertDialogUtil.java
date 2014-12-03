@@ -6,19 +6,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class AlertDialogUtil
 {
@@ -104,7 +101,6 @@ public class AlertDialogUtil
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder
-                .setIcon(R.drawable.logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelRes, cancelListener);
         if (titleRes != null)
@@ -201,7 +197,6 @@ public class AlertDialogUtil
         alertDialogBuilder
                 .setTitle(title)
                 .setMessage(description)
-                .setIcon(R.drawable.logo)
                 .setCancelable(true)
                 .setNegativeButton(cancelResId, cancelClickListener)
                 .setPositiveButton(okResId, okClickListener);

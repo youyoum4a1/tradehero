@@ -1,11 +1,7 @@
 package com.tradehero.th.base;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.net.Uri;
 import android.telephony.TelephonyManager;
 import com.tradehero.common.annotation.ForUser;
@@ -44,12 +40,13 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
+import org.json.JSONException;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Inject;
-import org.json.JSONException;
-import timber.log.Timber;
 
 //import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
 //import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
@@ -244,7 +241,6 @@ public class THUser
             @Override public void failure(THException error)
             {
                 checkNeedForUpgrade(error);
-                //checkNeedToRenewSocialToken(error, credentialsDTO);
                 callback.done(null, error);
             }
         };
@@ -267,7 +263,6 @@ public class THUser
                         {
                             try
                             {
-                                THToast.show(R.string.update_guide);
                                 currentActivity.startActivity(
                                         new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
                                 currentActivity.finish();

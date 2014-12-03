@@ -1,8 +1,9 @@
 package com.tradehero.th.activities;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -13,24 +14,18 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.crashlytics.android.Crashlytics;
-import com.tradehero.chinabuild.MainTabFragmentCompetition;
-import com.tradehero.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.chinabuild.MainTabFragmentMe;
-import com.tradehero.chinabuild.MainTabFragmentStockGod;
-import com.tradehero.chinabuild.MainTabFragmentTrade;
+import com.tradehero.chinabuild.*;
+import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -45,6 +40,9 @@ import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.DeviceTokenHelper;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
@@ -56,25 +54,20 @@ import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.ConstantsChinaBuild;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.util.Date;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import javax.inject.Inject;
+
 public class MainActivity extends SherlockFragmentActivity implements DashboardNavigatorActivity
 {
-    //@Inject Lazy<FacebookUtils> facebookUtils;
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
@@ -83,7 +76,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject DeviceTokenHelper deviceTokenHelper;
     @Inject SystemStatusCache systemStatusCache;
-    private ProgressDialog progressDialog;
     @Inject Analytics analytics;
     private DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
@@ -156,8 +148,14 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     //Guide View
     public final static int GUIDE_TYPE_COMPETITION = 1;
     public final static int GUIDE_TYPE_STOCK_DETAIL = 2;
-
     public static int guide_current = -1;
+
+    //Application Version Update Dialog
+    private Dialog updateAppDialog;
+    private TextView dialogOKBtn;
+    private TextView dialogCancelBtn;
+    private TextView dialogTitleATV;
+    private TextView dialogTitleBTV;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -170,22 +168,33 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);
         tabInit();
+
+
+        //Download TradeHero Version
+        gotoDownloadAppInfo();
+        ShareDialogFragment.isDialogShowing = true;
+
         userProfileCacheListener = createUserProfileFetchListener();
         userWatchlistPositionFetchListener = createWatchlistListener();
         fetchUserProfile(false);
+
         //enable baidu push
         pushNotificationManager.get().enablePush();
         mBindGuestUserPreference.set(false);
 
+        //Guide View
         initGuideView();
 
         analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.MAIN_PAGE_STOCK));
 
+
+        //Download number of days login continually.
         gotoGetTimesContinuallyLogin();
 
         getPositionDirectly(currentUserId.toUserBaseKey());
         fetchWatchPositionList(false);
 
+        //Download Endpoint
         downloadEndPoint();
     }
 
@@ -289,15 +298,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         userProfileCache.get().unregister(userProfileCacheListener);
     }
 
-    @Override public void onBackPressed()
-    {
-    }
-
-    @Override protected void onStart()
-    {
-        super.onStart();
-    }
-
     @Override protected void onResume()
     {
         super.onResume();
@@ -324,7 +324,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        //facebookUtils.get().finishAuthentication(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
@@ -361,16 +360,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
     }
 
-    @Override public void onLowMemory()
-    {
-        super.onLowMemory();
-        String currentFragmentName =
-                getSupportFragmentManager().findFragmentById(R.id.realtabcontent)
-                        .getClass()
-                        .getName();
-        Crashlytics.setString("LowMemoryAt", new Date().toString());
-    }
-
     @Override public boolean onKeyDown(int keyCode, KeyEvent event)
     {
         if (keyCode == KeyEvent.KEYCODE_BACK)
@@ -396,24 +385,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         }
         else
         {
-            killApp();
+            finish();
         }
-    }
-
-    private void killApp()
-    {
-        //System.exit(0);
-        ////sendAppToBackground();
-        //THUser.clearCurrentUser();
-        finish();
-    }
-
-    private void sendAppToBackground()
-    {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.startActivity(intent);
     }
 
     private void showBindGuestUserDialog()
@@ -704,5 +677,100 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             }
         });
     }
+
+    //Download app info to check whether update TradeHero or not.
+    private void gotoDownloadAppInfo(){
+        userServiceWrapper.get().downloadAppVersionInfo(new THCallback<AppInfoDTO>() {
+            @Override
+            protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
+                {
+                    if(appInfoDTO==null || MainActivity.this ==null){
+                        return;
+                    }
+                    boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
+                    THLog.d(appInfoDTO.toString());
+                    boolean forceUpdate = appInfoDTO.isForceUpgrade();
+                    String url = appInfoDTO.getLatestVersionDownloadUrl();
+                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(MainActivity.this, url, suggestUpdate,forceUpdate);
+                    if(suggestUpdate || forceUpdate){
+                        showUpdateDialog();
+                    }
+                }
+            }
+
+            @Override
+            protected void failure(THException ex) {
+
+            }
+        });
+    }
+
+    private void showUpdateDialog(){
+            if(updateAppDialog==null){
+                updateAppDialog = new Dialog(this);
+                updateAppDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                updateAppDialog.setCanceledOnTouchOutside(false);
+                updateAppDialog.setCancelable(false);
+                updateAppDialog.setContentView(R.layout.share_dialog_layout);
+                dialogOKBtn = (TextView)updateAppDialog.findViewById(R.id.btn_ok);
+                dialogCancelBtn = (TextView)updateAppDialog.findViewById(R.id.btn_cancel);
+                dialogTitleATV = (TextView)updateAppDialog.findViewById(R.id.title);
+                dialogTitleATV.setText(getResources().getString(R.string.app_update_hint));
+                dialogTitleBTV = (TextView)updateAppDialog.findViewById(R.id.title2);
+                final AppInfoDTO dto = THSharePreferenceManager.getAppVersionInfo(this);
+                if(dto.isForceUpgrade()){
+                    dialogTitleBTV.setText(getResources().getString(R.string.app_update_force_update));
+                }else {
+                    dialogTitleBTV.setVisibility(View.GONE);
+                }
+                dialogOKBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ShareDialogFragment.isDialogShowing = false;
+                        String url = dto.getLatestVersionDownloadUrl();
+                        if(dto.isForceUpgrade()){
+                            downloadApp(url, true);
+                        }else if(dto.isSuggestUpgrade()){
+                            downloadApp(url, false);
+                        }else{
+                            updateAppDialog.dismiss();
+                        }
+                    }
+                });
+
+                dialogCancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        updateAppDialog.dismiss();
+                        ShareDialogFragment.isDialogShowing = false;
+                        if(dto.isForceUpgrade()){
+                            finish();
+                        }
+                    }
+                });
+            }
+            if(!updateAppDialog.isShowing()){
+                updateAppDialog.show();
+            }
+    }
+
+    private void downloadApp(String url, boolean forceUpdate){
+        if(TextUtils.isEmpty(url)){
+            if(updateAppDialog!=null){
+                updateAppDialog.dismiss();
+            }
+        }else{
+            Uri uri = Uri.parse(url.trim());
+            Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(gotoWebIntent);
+            if(!forceUpdate){
+                if(updateAppDialog!=null){
+                    updateAppDialog.dismiss();
+                }
+            }
+        }
+        finish();
+    }
+
 
 }
