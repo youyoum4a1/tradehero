@@ -96,12 +96,6 @@ abstract public class BasePagedListRxFragment<
         return new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get());
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        loadAdapterWithAvailableData();
-    }
-
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
@@ -366,4 +360,5 @@ abstract public class BasePagedListRxFragment<
             }
         }
     }
+
 }

@@ -21,7 +21,7 @@ abstract public class TrendingFilterTypeDTO
     @DrawableRes public final int titleIconResId;
     @StringRes public final int descriptionResId;
 
-    @NonNull public ExchangeCompactSpinnerDTO exchange;
+    @NonNull public final ExchangeCompactSpinnerDTO exchange;
 
     //<editor-fold desc="Constructors">
     public TrendingFilterTypeDTO(
@@ -30,10 +30,10 @@ abstract public class TrendingFilterTypeDTO
             @DrawableRes int titleIconResId,
             @StringRes int descriptionResId)
     {
-        this.titleResId = titleResId;
-        this.titleIconResId = titleIconResId;
-        this.descriptionResId = descriptionResId;
-        this.exchange = new ExchangeCompactSpinnerDTO(resources);
+        this(titleResId,
+                titleIconResId,
+                descriptionResId,
+                new ExchangeCompactSpinnerDTO(resources));
     }
 
     public TrendingFilterTypeDTO(
@@ -62,6 +62,22 @@ abstract public class TrendingFilterTypeDTO
         return getSecurityListType(exchange.getApiName(), page, perPage);
     }
 
+    @Override public int hashCode()
+    {
+        return exchange.hashCode();
+    }
+
+    @Override public boolean equals(Object o)
+    {
+        return (o instanceof TrendingFilterTypeDTO) && equals((TrendingFilterTypeDTO) o);
+    }
+
+    protected boolean equals(@NonNull TrendingFilterTypeDTO other)
+    {
+        return other.exchange.equals(exchange);
+    }
+
+    @NonNull abstract public TrendingFilterTypeDTO getByExchange(@NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO);
     @NonNull abstract public TrendingFilterTypeDTO getPrevious();
     @NonNull abstract public TrendingFilterTypeDTO getNext();
     @NonNull abstract public TrendingSecurityListType getSecurityListType(@Nullable String usableExchangeName, @Nullable Integer page, @Nullable Integer perPage);

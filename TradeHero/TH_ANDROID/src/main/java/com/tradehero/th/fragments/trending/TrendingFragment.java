@@ -202,9 +202,12 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
 
     protected void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
-        TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
-        // TODO
-        scheduleRequestData();
+        boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
+        this.trendingFilterTypeDTO = trendingFilterTypeDTO;
+        if (hasChanged)
+        {
+            scheduleRequestData();
+        }
     }
 
     protected void onErrorFilter(@NonNull Throwable e)
@@ -382,8 +385,8 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
                     ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(userProfileDTO.getCountry());
                     if (initial != null)
                     {
-                        trendingFilterTypeDTO.exchange = initial;
                         defaultFilterSelected = true;
+                        onNext(trendingFilterTypeDTO.getByExchange(initial));
                     }
                 }
             }
