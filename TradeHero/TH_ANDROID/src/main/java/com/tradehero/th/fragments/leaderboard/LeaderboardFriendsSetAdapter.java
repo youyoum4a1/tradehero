@@ -159,10 +159,10 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
             ((LeaderboardFriendsItemView) convertView).display(((FriendLeaderboardSocialUserDTO) item).userFriendsDTO);
         }
 
-        final View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+        final ExpandingLayout expandingLayout = (ExpandingLayout) convertView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            expandingLayout.setVisibility(item.isExpanded() ? View.VISIBLE : View.GONE);
+            expandingLayout.expandWithNoAnimation(item.isExpanded());
             if (item.isExpanded() && convertView instanceof ExpandingLayout.OnExpandListener)
             {
                 ((ExpandingLayout.OnExpandListener) convertView).onExpand(true);

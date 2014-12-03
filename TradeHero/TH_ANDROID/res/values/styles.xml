@@ -227,6 +227,8 @@
     <item name="android:paddingLeft">@dimen/margin_small</item>
     <item name="android:paddingRight">@dimen/margin_small</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:clipToPadding">false</item>
+    <item name="android:clipChildren">false</item>
   </style>
 
   <style name="TH.ListItem.Clickable" parent="TH.ListItem">

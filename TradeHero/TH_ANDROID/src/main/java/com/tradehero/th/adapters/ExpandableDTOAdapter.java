@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 import java.util.List;
 
 public abstract class ExpandableDTOAdapter<
@@ -37,17 +38,10 @@ public abstract class ExpandableDTOAdapter<
 
     protected void toggleExpanded(WrappedDTOType expandableWrapper, View convertView)
     {
-        View expandingLayout = convertView.findViewById(RES_ID_EXPANDED_LAYOUT);
+        ExpandingLayout expandingLayout = (ExpandingLayout) convertView.findViewById(RES_ID_EXPANDED_LAYOUT);
         if (expandingLayout != null)
         {
-            if (!expandableWrapper.isExpanded())
-            {
-                expandingLayout.setVisibility(View.GONE);
-            }
-            else
-            {
-                expandingLayout.setVisibility(View.VISIBLE);
-            }
+            expandingLayout.expandWithNoAnimation(expandableWrapper.isExpanded());
         }
     }
 

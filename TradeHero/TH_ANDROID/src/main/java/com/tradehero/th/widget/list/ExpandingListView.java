@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableItem;
+import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
 
 /**
  * Listens for item clicks and expands or collapses the selected view depending on its current
@@ -38,40 +39,35 @@ public class ExpandingListView extends ListView
 
     private void init()
     {
-        super.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        super.setOnItemClickListener((parent, view, position, id) -> {
+            if (expandingListItemListener != null)
             {
+                expandingListItemListener.onItemClick(parent, view, position, id);
+            }
+
+            Object o = getItemAtPosition(getPositionForView(view));
+            if (o == null || !(o instanceof ExpandableItem))
+            {
+                return;
+            }
+
+            ExpandableItem viewObject = (ExpandableItem) o;
+            if (!viewObject.isExpanded())
+            {
+                expandView(view);
+                viewObject.setExpanded(true);
                 if (expandingListItemListener != null)
                 {
-                    expandingListItemListener.onItemClick(parent, view, position, id);
+                    expandingListItemListener.onItemExpanded(parent, view, position, id);
                 }
-
-                Object o = getItemAtPosition(getPositionForView(view));
-                if (o == null || !(o instanceof ExpandableItem))
+            }
+            else
+            {
+                collapseView(view);
+                viewObject.setExpanded(false);
+                if (expandingListItemListener != null)
                 {
-                    return;
-                }
-
-                ExpandableItem viewObject = (ExpandableItem) o;
-                if (!viewObject.isExpanded())
-                {
-                    expandView(view);
-                    viewObject.setExpanded(true);
-                    if (expandingListItemListener != null)
-                    {
-                        expandingListItemListener.onItemExpanded(parent, view, position, id);
-                    }
-                }
-                else
-                {
-                    collapseView(view);
-                    viewObject.setExpanded(false);
-                    if (expandingListItemListener != null)
-                    {
-                        expandingListItemListener.onItemCollapsed(parent, view, position, id);
-                    }
+                    expandingListItemListener.onItemCollapsed(parent, view, position, id);
                 }
             }
         });
@@ -84,19 +80,19 @@ public class ExpandingListView extends ListView
 
     private void expandView(View view)
     {
-        final View expandingLayout = view.findViewById(R.id.expanding_layout);
+        final ExpandingLayout expandingLayout = (ExpandingLayout) view.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            expandingLayout.setVisibility(View.VISIBLE);
+            expandingLayout.expand(true);
         }
     }
 
     private void collapseView(View view)
     {
-        final View expandingLayout = view.findViewById(R.id.expanding_layout);
+        final ExpandingLayout expandingLayout = (ExpandingLayout) view.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            expandingLayout.setVisibility(View.GONE);
+            expandingLayout.expand(false);
         }
     }
 
