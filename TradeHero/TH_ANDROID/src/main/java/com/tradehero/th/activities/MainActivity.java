@@ -738,11 +738,9 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                     public void onClick(View view) {
                         ShareDialogFragment.isDialogShowing = false;
                         String url = dto.getLatestVersionDownloadUrl();
-                        if(dto.isForceUpgrade()){
-                            downloadApp(url, true);
-                        }else if(dto.isSuggestUpgrade()){
-                            downloadApp(url, false);
-                        }else{
+                        if(dto.isForceUpgrade()||dto.isSuggestUpgrade()) {
+                            downloadApp(url);
+                        }else {
                             updateAppDialog.dismiss();
                         }
                     }
@@ -764,20 +762,14 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             }
     }
 
-    private void downloadApp(String url, boolean forceUpdate){
-        if(TextUtils.isEmpty(url)){
-            if(updateAppDialog!=null){
-                updateAppDialog.dismiss();
-            }
-        }else{
+    private void downloadApp(String url){
+        if(!TextUtils.isEmpty(url)){
             Uri uri = Uri.parse(url.trim());
             Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(gotoWebIntent);
-            if(!forceUpdate){
-                if(updateAppDialog!=null){
-                    updateAppDialog.dismiss();
-                }
-            }
+        }
+        if(updateAppDialog!=null){
+            updateAppDialog.dismiss();
         }
         finish();
     }
