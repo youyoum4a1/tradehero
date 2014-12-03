@@ -109,6 +109,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.imageview_main_tab0_record) ImageView guideTab0IV;
     @InjectView(R.id.imageview_main_tab2_record) ImageView guideTab2IV;
     @InjectView(R.id.imageview_main_tab3_record) ImageView guideTab3IV;
+    @InjectView(R.id.imageview_main_tab4_record) ImageView guideTab4IV;
 
     @Inject ShareServiceWrapper shareServiceWrapper;
 
@@ -302,6 +303,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         super.onResume();
         analytics.openSession();
+        showNewVersionRecord();
     }
 
     @Override protected void onPause()
@@ -694,13 +696,21 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                     THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(MainActivity.this, url, suggestUpdate,forceUpdate);
                     if(suggestUpdate || forceUpdate){
                         showUpdateDialog();
+                    }else{
+                        ShareDialogFragment.isDialogShowing = false;
                     }
+                    onFinish();
                 }
             }
 
             @Override
             protected void failure(THException ex) {
+                ShareDialogFragment.isDialogShowing = false;
+                onFinish();
+            }
 
+            private void onFinish(){
+                showNewVersionRecord();
             }
         });
     }
@@ -770,6 +780,15 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             }
         }
         finish();
+    }
+
+    private void showNewVersionRecord(){
+        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(this);
+        if(appInfoDTO.isForceUpgrade() || appInfoDTO.isSuggestUpgrade()){
+            guideTab4IV.setVisibility(View.VISIBLE);
+        }else{
+            guideTab4IV.setVisibility(View.INVISIBLE);
+        }
     }
 
 

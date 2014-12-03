@@ -13,11 +13,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.InviteFriendsFragment;
-import com.tradehero.chinabuild.fragment.MyProfileFragment;
-import com.tradehero.chinabuild.fragment.SettingFragment;
-import com.tradehero.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.chinabuild.data.AppInfoDTO;
+import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
@@ -41,8 +38,9 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class MainTabFragmentMe extends AbsBaseFragment
 {
@@ -66,6 +64,7 @@ public class MainTabFragmentMe extends AbsBaseFragment
     @InjectView(R.id.textview_me_notification_count) TextView tvMeNotificationCount;
     @InjectView(R.id.rlMeInviteFriends) RelativeLayout rlMeInviteFriends;
     @InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
+    @InjectView(R.id.imageview_me_new_version)ImageView ivNewVersion;
 
     @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
     @InjectView(R.id.llItemAllHero) LinearLayout llItemAllHero;
@@ -81,11 +80,6 @@ public class MainTabFragmentMe extends AbsBaseFragment
 
     @Inject Analytics analytics;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -267,6 +261,13 @@ public class MainTabFragmentMe extends AbsBaseFragment
         tvMeNotificationCount.setVisibility(View.GONE);
         fetchUserProfile();
         fetchPortfolio();
+
+        AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(getActivity());
+        if(appInfoDTO.isForceUpgrade() || appInfoDTO.isSuggestUpgrade()){
+            ivNewVersion.setVisibility(View.VISIBLE);
+        }else{
+            ivNewVersion.setVisibility(View.GONE);
+        }
     }
 
     @OnClick(R.id.tvHeadRight0)

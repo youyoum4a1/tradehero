@@ -142,6 +142,14 @@
                         android:textSize="@dimen/more_bang_text_size"
                         android:textColor="@color/text_default_color"
                         android:text="@string/my_setting"/>
+
+                <ImageView android:id="@+id/imageview_me_new_version" android:layout_width="46dp"
+                           android:layout_height="25dp"
+                           android:layout_alignParentRight="true"
+                           android:layout_centerVertical="true"
+                           android:layout_marginRight="@dimen/right_arrow_margin"
+                           android:background="@drawable/new_version"
+                           android:visibility="gone"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

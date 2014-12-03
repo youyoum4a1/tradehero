@@ -72,7 +72,6 @@
                 android:layout_centerHorizontal="true"
                 android:focusable="false"/>
             <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab0_record"
                 android:background="@drawable/icon_bg_count"
                 android:layout_alignTop="@id/imgTabMenu1"
                 android:visibility="invisible"
@@ -146,7 +145,7 @@
                 android:layout_centerHorizontal="true"
                 android:focusable="false"/>
             <ImageView android:layout_width="8dp" android:layout_height="8dp"
-                android:id="@+id/imageview_main_tab0_record"
+                android:id="@+id/imageview_main_tab4_record"
                 android:background="@drawable/icon_bg_count"
                 android:visibility="invisible"
                 android:layout_alignTop="@id/imgTabMenu4"
