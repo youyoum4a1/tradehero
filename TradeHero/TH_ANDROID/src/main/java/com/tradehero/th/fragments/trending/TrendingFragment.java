@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.InjectView;
@@ -104,6 +106,12 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
     }
 
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.fragment_trending, container, false);
+    }
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -170,11 +178,6 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     @NonNull protected ExtraTileAdapterNew createSecurityItemViewAdapter()
     {
         return new ExtraTileAdapterNew(getActivity(), itemViewAdapter);
-    }
-
-    @Override protected int getFragmentLayoutResId()
-    {
-        return R.layout.fragment_trending;
     }
 
     @Override @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
