@@ -275,7 +275,9 @@ public class StockInfoFragment extends DashboardFragment
             Observable.from(newsHeadlineList.getData())
                     .cast(NewsItemCompactDTO.class)
                     .toList()
-                    .subscribe(newsHeadlineAdapter::setItems);
+                    .subscribe(
+                            newsHeadlineAdapter::setItems,
+                            e -> Timber.e(e, "failed to setItems"));
         }
     }
 
