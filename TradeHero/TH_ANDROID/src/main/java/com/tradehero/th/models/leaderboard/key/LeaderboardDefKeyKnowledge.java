@@ -1,10 +1,9 @@
 package com.tradehero.th.models.leaderboard.key;
 
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.inject.Inject;
 
 public class LeaderboardDefKeyKnowledge
 {
@@ -20,6 +19,7 @@ public class LeaderboardDefKeyKnowledge
     public static final int MONTHS_6 = 285;
 
 
+    public static final int SEARCH_RECOMMEND = 4444;//综合搜索的默认推荐
     public static final int DAYS_ROI = 5555;//ROI
     public static final int POPULAR = 6666;//人气榜
     public static final int WEALTH = 8888;//土豪榜

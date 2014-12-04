@@ -24,6 +24,10 @@ public interface LeaderboardService
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
+    //整合搜索默认推荐榜单
+    @GET("/users/trendingSearch")
+    UserTrendingDTOList getLeaderboardSearchRecommend();
+
 
     //活跃ROI榜 推荐榜
     //<editor-fold desc="Get Leaderboard">

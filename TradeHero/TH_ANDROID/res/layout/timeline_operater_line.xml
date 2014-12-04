@@ -11,6 +11,7 @@
       android:paddingTop="10dp"
       android:paddingBottom="10dp"
       android:id="@+id/llTLBuy"
+      android:visibility="gone"
       android:layout_marginLeft="0dp"
       android:layout_marginRight="40dp"
       android:layout_width="wrap_content"

@@ -17,8 +17,8 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:id="@+id/tvSecurityExchange"
-      android:textSize="16sp"
-      android:textColor="@color/black"
+      android:textSize="15sp"
+      android:textColor="@color/black2"
       android:layout_alignParentLeft="true"
       android:text="SHA-600000"/>
 
@@ -33,8 +33,8 @@
       android:layout_toRightOf="@id/tvSecurityExchange"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:textSize="16sp"
-      android:textColor="@color/black"
+      android:textSize="15sp"
+      android:textColor="@color/black2"
       android:text="京东"/>
 
   <TextView

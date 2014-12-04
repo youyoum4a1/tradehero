@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import com.tradehero.chinabuild.cache.CompetitionListType;
 import com.tradehero.chinabuild.cache.CompetitionListTypeMine;
 import com.tradehero.chinabuild.cache.CompetitionListTypeOffical;
+import com.tradehero.chinabuild.cache.CompetitionListTypeRecommand;
 import com.tradehero.chinabuild.cache.CompetitionListTypeSearch;
 import com.tradehero.chinabuild.cache.CompetitionListTypeUser;
 import com.tradehero.chinabuild.cache.CompetitionListTypeVip;
@@ -207,6 +208,10 @@ import retrofit.Callback;
         else if (key instanceof CompetitionListTypeSearch)
         {
             return competitionService.getSearchCompetitions(((CompetitionListTypeSearch) key).name, key.page, key.PER_PAGE);
+        }
+        else if(key instanceof CompetitionListTypeRecommand)
+        {
+            return competitionService.getRecommandCompetitions();
         }
 
         return null;
