@@ -1,14 +1,16 @@
 package com.tradehero.th.base;
 
-import android.app.Activity;
-import android.content.*;
-import android.net.Uri;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -37,19 +39,13 @@ import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
 import org.json.JSONException;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-
-//import com.tradehero.th.models.user.auth.FacebookCredentialsDTO;
-//import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
 
 public class THUser
 {
@@ -68,7 +64,6 @@ public class THUser
     @Inject static Lazy<SessionServiceWrapper> sessionServiceWrapper;
     @Inject static Lazy<UserProfileCache> userProfileCache;
     @Inject static Lazy<DTOCacheUtil> dtoCacheUtil;
-    @Inject static Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject static Lazy<CurrentActivityHolder> currentActivityHolder;
     @Inject static CredentialsDTOFactory credentialsDTOFactory;
     @Inject static LoginSignUpFormDTOFactory loginSignUpFormDTOFactory;
@@ -116,7 +111,7 @@ public class THUser
             }
             catch (JSONException e)
             {
-                Timber.e(e, "Failed to convert credentials %s", savedCredentials);
+                e.printStackTrace();
             }
         }
         THAuthenticationProvider.THAuthenticationCallback outerCallback = createCallbackForLogInWithAsync (callback);
@@ -136,8 +131,6 @@ public class THUser
         {
             userFormDTO.deviceToken = deviceTokenHelper.getDeviceToken();
         }
-        Timber.d("APID: %s,authenticationMode :%s", userFormDTO.deviceToken,
-                authenticationMode);
 
         if (authenticationMode == null)
         {
@@ -191,7 +184,7 @@ public class THUser
                 }
                 catch (JSONException|ParseException ex)
                 {
-                    Timber.e(ex, "Failed to onsuccess");
+                    ex.printStackTrace();
                 }
             }
 
@@ -222,8 +215,14 @@ public class THUser
 
             @Override public void failure(THException error)
             {
-                checkNeedForUpgrade(error);
                 callback.done(null, error);
+                if (error.getCode() == ExceptionCode.DoNotRunBelow)
+                {
+                    Context context = Application.context();
+                    if(context!=null){
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(AuthenticationActivity.INTENT_APPLICATION_VERSION_UPDATE));
+                    }
+                }
             }
         };
     }
@@ -240,44 +239,16 @@ public class THUser
 
             @Override public void failure(THException error)
             {
-                checkNeedForUpgrade(error);
                 callback.done(null, error);
+                if (error.getCode() == ExceptionCode.DoNotRunBelow)
+                {
+                    Context context = Application.context();
+                    if(context!=null){
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(AuthenticationActivity.INTENT_APPLICATION_VERSION_UPDATE));
+                    }
+                }
             }
         };
-    }
-
-    private static void checkNeedForUpgrade(THException error)
-    {
-        if (error.getCode() == ExceptionCode.DoNotRunBelow)
-        {
-            final Activity currentActivity = currentActivityHolder.get().getCurrentActivity();
-            alertDialogUtil.get().popWithOkCancelButton(
-                    currentActivity,
-                    R.string.upgrade_needed,
-                    R.string.please_update,
-                    R.string.update_now,
-                    R.string.later,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            try
-                            {
-                                currentActivity.startActivity(
-                                        new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + Constants.PLAYSTORE_APP_ID)));
-                                currentActivity.finish();
-                            }
-                            catch (ActivityNotFoundException ex)
-                            {
-
-                                currentActivity.startActivity(
-                                        new Intent(Intent.ACTION_VIEW,
-                                                Uri.parse("https://play.google.com/store/apps/details?id=" + Constants.PLAYSTORE_APP_ID)));
-                                currentActivity.finish();
-                            }
-                        }
-                    });
-        }
     }
 
     public static void registerAuthenticationProvider(THAuthenticationProvider provider)
@@ -290,9 +261,7 @@ public class THUser
      */
     public static void saveCredentialsToUserDefaults(CredentialsDTO credentialsDTO)
     {
-        Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
-        //mainCredentialsPreference.setCredentials(credentialsDTO);
         mainCredentialsPreference.setCredentials(credentialsDTO);
         typedCredentials.put(credentialsDTO.getAuthType(), credentialsDTO);
         credentialsSetPreference.replaceOrAddCredentials(credentialsDTO);
@@ -337,11 +306,8 @@ public class THUser
     {
         if (typedCredentials == null)
         {
-            Timber.d("saveCredentialsToUserDefaults: Credentials were null");
             return;
         }
-
-        Timber.d("%d authentication tokens loaded", typedCredentials.size());
 
         typedCredentials.remove(authenticationHeader);
         credentialsSetPreference.delete();
@@ -369,4 +335,7 @@ public class THUser
         }
         return imei;
     }
+
+
+
 }

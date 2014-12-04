@@ -1,14 +1,23 @@
 package com.tradehero.th.activities;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
-import com.actionbarsherlock.view.Menu;
+import android.widget.TextView;
+import com.tradehero.chinabuild.data.AppInfoDTO;
+import com.tradehero.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -21,10 +30,13 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.authentication.*;
 import com.tradehero.th.misc.callback.LogInCallback;
+import com.tradehero.th.misc.callback.THCallback;
+import com.tradehero.th.misc.callback.THResponse;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.auth.CredentialsDTOFactory;
 import com.tradehero.th.models.user.auth.EmailCredentialsDTO;
 import com.tradehero.th.models.user.auth.TwitterCredentialsDTO;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.*;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -63,6 +75,26 @@ public class AuthenticationActivity extends DashboardActivity
 
     public boolean isClickedWeChat = false;//fixed bug for wechat 2 times clicked and crash.
 
+    //Application Version Update Dialog
+    private Dialog updateAppDialog;
+    private TextView dialogOKBtn;
+    private TextView dialogCancelBtn;
+    private TextView dialogTitleATV;
+    private TextView dialogTitleBTV;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    public final static String INTENT_APPLICATION_VERSION_UPDATE  = "intent_application_version_update";
+    private IntentFilter filter;
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(INTENT_APPLICATION_VERSION_UPDATE)){
+                gotoDownloadAppInfo();
+                return;
+            }
+        }
+    };
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -87,6 +119,8 @@ public class AuthenticationActivity extends DashboardActivity
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_content, currentFragment)
                 .commit();
+        filter = new IntentFilter();
+        filter.addAction(INTENT_APPLICATION_VERSION_UPDATE);
     }
 
     @Override protected void onResume()
@@ -95,6 +129,7 @@ public class AuthenticationActivity extends DashboardActivity
         analytics.openSession();
         getWeChatAccessToken();
         isClickedWeChat = false;
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, filter);
     }
 
     @Override protected void onPause()
@@ -107,6 +142,7 @@ public class AuthenticationActivity extends DashboardActivity
         analytics.closeSession();
 
         super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
 
     /** map view and the next fragment, which is appears when click on that view */
@@ -132,15 +168,9 @@ public class AuthenticationActivity extends DashboardActivity
         }
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu)
-    {
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
     }
 
@@ -509,5 +539,94 @@ public class AuthenticationActivity extends DashboardActivity
             authenticateWithWechat(wechatCode);
             WXEntryActivity.setWeChatCodeNull();
         }
+    }
+
+
+    //Download app info to check whether update TradeHero or not.
+    private void gotoDownloadAppInfo(){
+        userServiceWrapper.get().downloadAppVersionInfo(new THCallback<AppInfoDTO>() {
+            @Override
+            protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
+                {
+                    if(appInfoDTO==null || AuthenticationActivity.this ==null){
+                        return;
+                    }
+                    boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
+                    THLog.d(appInfoDTO.toString());
+                    boolean forceUpdate = appInfoDTO.isForceUpgrade();
+                    String url = appInfoDTO.getLatestVersionDownloadUrl();
+                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(AuthenticationActivity.this, url, suggestUpdate,forceUpdate);
+                    if(suggestUpdate || forceUpdate){
+                        showUpdateDialog();
+                    }else{
+                        ShareDialogFragment.isDialogShowing = false;
+                    }
+                }
+            }
+
+            @Override
+            protected void failure(THException ex) {
+                ShareDialogFragment.isDialogShowing = false;
+            }
+        });
+    }
+
+    private void showUpdateDialog(){
+        if(updateAppDialog==null){
+            updateAppDialog = new Dialog(this);
+            updateAppDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            updateAppDialog.setCanceledOnTouchOutside(false);
+            updateAppDialog.setCancelable(false);
+            updateAppDialog.setContentView(R.layout.share_dialog_layout);
+            dialogOKBtn = (TextView)updateAppDialog.findViewById(R.id.btn_ok);
+            dialogCancelBtn = (TextView)updateAppDialog.findViewById(R.id.btn_cancel);
+            dialogTitleATV = (TextView)updateAppDialog.findViewById(R.id.title);
+            dialogTitleATV.setText(getResources().getString(R.string.app_update_hint));
+            dialogTitleBTV = (TextView)updateAppDialog.findViewById(R.id.title2);
+            final AppInfoDTO dto = THSharePreferenceManager.getAppVersionInfo(this);
+            if(dto.isForceUpgrade()){
+                dialogTitleBTV.setText(getResources().getString(R.string.app_update_force_update));
+            }else {
+                dialogTitleBTV.setVisibility(View.GONE);
+            }
+            dialogOKBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ShareDialogFragment.isDialogShowing = false;
+                    String url = dto.getLatestVersionDownloadUrl();
+                    if(dto.isForceUpgrade()||dto.isSuggestUpgrade()) {
+                        downloadApp(url);
+                    }else {
+                        updateAppDialog.dismiss();
+                    }
+                }
+            });
+
+            dialogCancelBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    updateAppDialog.dismiss();
+                    ShareDialogFragment.isDialogShowing = false;
+                    if(dto.isForceUpgrade()){
+                        finish();
+                    }
+                }
+            });
+        }
+        if(!updateAppDialog.isShowing()){
+            updateAppDialog.show();
+        }
+    }
+
+    private void downloadApp(String url){
+        if(!TextUtils.isEmpty(url)){
+            Uri uri = Uri.parse(url.trim());
+            Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(gotoWebIntent);
+        }
+        if(updateAppDialog!=null){
+            updateAppDialog.dismiss();
+        }
+        finish();
     }
 }

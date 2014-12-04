@@ -6,12 +6,13 @@ import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.api.http.ResponseErrorCode;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.utils.Constants;
-import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Header;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import java.util.List;
 
 public class THException extends Exception
 {
@@ -119,7 +120,7 @@ public class THException extends Exception
         UserCanceled(true, R.string.error_canceled),
         UnknownError(R.string.error_unknown),
         NetworkError(R.string.error_network_connection),
-        DoNotRunBelow(R.string.please_update),
+        DoNotRunBelow(R.string.app_update_hint),
         RenewSocialToken(R.string.please_update_token_title),
         ;
 

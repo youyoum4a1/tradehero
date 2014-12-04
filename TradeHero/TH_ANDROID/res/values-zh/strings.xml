@@ -19,11 +19,6 @@
   <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
   <string name="link_now">现在连接!</string>
   <string name="later">晚点</string>
-  <string name="please_update">此版本已经过期，请升级至最新的版本</string>
-  <string name="upgrade_needed">需要升级</string>
-  <string name="update_now">现在升级</string>
-  <string name="update_guide">请重新安装全民股神</string>
-  <string name="suggest_to_upgrade">新的版本上线了，强烈推荐您立刻升级，现在就升级吗？</string>
   <string name="press_back_again_to_exit">点击返回以退出</string>
   <string name="discussion">讨论</string>
   <string name="more_character">. . .</string>
@@ -227,4 +222,9 @@
   <string name="contest_center_tab_active">活动中</string>
   <string name="contest_center_tab_joined">已参加</string>
   <string name="contest_no_joined">糟糕!\n 你还没有参加任何比赛. \n请从开放的比赛页签中选择然后开始玩吧!</string>
+
+  <!-- App Update -->
+  <string name="app_update_hint">发现新版本，是否更新至最新版</string>
+  <string name="app_update_force_update">（强制升级）</string>
+  <!-- App Update -->
 </resources>
