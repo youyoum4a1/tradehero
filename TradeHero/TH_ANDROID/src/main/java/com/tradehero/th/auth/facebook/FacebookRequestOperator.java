@@ -10,6 +10,9 @@ import com.facebook.Session;
 import rx.Observable;
 import rx.Subscriber;
 
+/**
+ * It should be noted that only one Facebook Request can run at a time
+ */
 public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
 {
     @NonNull private final Session session;
@@ -34,7 +37,9 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
                 graphPath,
                 parameters,
                 httpMethod,
-                subscriber::onNext,
+                response -> Observable
+                        .create(new FacebookResponseOperator(response))
+                        .subscribe(subscriber),
                 version)
                 .executeAsync();
     }

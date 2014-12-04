@@ -28,6 +28,7 @@ public class FacebookWebDialogOperator implements Observable.OnSubscribe<Bundle>
                     else
                     {
                         subscriber.onNext(values);
+                        subscriber.onCompleted();
                     }
                 })
                 .build()
