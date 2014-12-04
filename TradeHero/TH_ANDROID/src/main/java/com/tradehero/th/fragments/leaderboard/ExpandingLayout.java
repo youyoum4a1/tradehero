@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 
 public class ExpandingLayout extends LinearLayout
 {
+    private static final int EXPAND_COLLAPSE_MAX_DURATION = 300; //ms
+
     private OnExpandListener expandListener;
 
     private int mCurrentHeight = 0;
@@ -93,7 +95,7 @@ public class ExpandingLayout extends LinearLayout
             });
         }
 
-        int duration = 300 * distToTravel / measuredHeight;
+        int duration = EXPAND_COLLAPSE_MAX_DURATION * (distToTravel / measuredHeight);
         animator.setDuration(duration);
         animator.addUpdateListener(animation -> {
             mCurrentHeight = (int) animation.getAnimatedValue();
@@ -102,6 +104,10 @@ public class ExpandingLayout extends LinearLayout
         });
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.start();
+
+        //This is a hack to prevent the view being recycled while we are doing expand/collapse animation
+        //Another way to avoid this hack is by using View.setHasTransientState(true) but this API is only available
+        //for post JellyBean devices
         animate().alpha(1).setDuration(duration).start();
     }
 
