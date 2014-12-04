@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 public class ExpandingLayout extends LinearLayout
 {
-    private static final int EXPAND_COLLAPSE_MAX_DURATION = 300; //ms
+    private static final int EXPAND_COLLAPSE_MAX_DURATION = 200; //ms
 
     private OnExpandListener expandListener;
 
