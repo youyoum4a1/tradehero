@@ -46,13 +46,12 @@
             tools:src="@drawable/launcher"
             />
 
-        <TextView
+        <com.tradehero.th.widget.MarkdownTextView
             android:id="@+id/preseason_prize_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TH.Title"
             android:gravity="center"
-            android:textStyle="bold"
             android:text="@string/preseason_giveaway"
             android:layout_margin="@dimen/margin_small"
             />
