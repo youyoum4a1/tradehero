@@ -190,7 +190,10 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                                 final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
                                 Observable<UserProfileDTO> userProfileDTOObservable = userServiceWrapper.get().updateProfileRx(currentUserId
                                         .toUserBaseKey(), userFormDTO);
-                                return Observable.zip(Observable.just(authData), userProfileDTOObservable, new MakePairFunc2<>());
+                                return Observable.zip(
+                                        Observable.just(authData),
+                                        userProfileDTOObservable,
+                                        new MakePairFunc2<>());
                             }))
                     .doOnNext(pair -> {
                         profileView.progressDialog.hide(); // Before otherwise it is reset

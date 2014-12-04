@@ -404,7 +404,7 @@ public class BuySellFragment extends AbstractBuySellFragment
 
         @Override public void onError(Throwable e)
         {
-            Timber.e("Failed to fetch list of watch list items", e);
+            Timber.e(e, "Failed to fetch list of watch list items");
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }

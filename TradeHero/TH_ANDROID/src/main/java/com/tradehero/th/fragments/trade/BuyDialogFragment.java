@@ -4,13 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 
 public class BuyDialogFragment extends AbstractTransactionDialogFragment
 {
@@ -99,11 +99,12 @@ public class BuyDialogFragment extends AbstractTransactionDialogFragment
         return 0;
     }
 
-    @Override protected MiddleCallback<SecurityPositionTransactionDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO)
+    @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
-        return securityServiceWrapper.doTransaction(
-                securityId, transactionFormDTO, IS_BUY,
-                new BuySellCallback(IS_BUY));
+        return AndroidObservable.bindFragment(
+                this,
+                securityServiceWrapper.doTransactionRx(securityId, transactionFormDTO, IS_BUY))
+                .subscribe(new BuySellObserver(IS_BUY));
     }
 
     @Override public Double getPriceCcy()

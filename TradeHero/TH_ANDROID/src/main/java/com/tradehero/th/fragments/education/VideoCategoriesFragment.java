@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.education;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -27,6 +29,11 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
     @Inject PaginatedVideoCategoryCacheRx paginatedVideoCategoryCache;
     @Inject Analytics analytics;
 
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.fragment_video_categories, container, false);
+    }
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -37,11 +44,6 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
     {
         super.onResume();
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
-    }
-
-    @Override protected int getFragmentLayoutResId()
-    {
-        return R.layout.fragment_video_categories;
     }
 
     @Override @NonNull protected VideoCategoriesAdapter createItemViewAdapter()

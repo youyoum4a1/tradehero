@@ -34,6 +34,16 @@ public class TrendingFilterTypeVolumeDTO extends TrendingFilterTypeDTO
     }
     //</editor-fold>
 
+    @Override protected boolean equals(@NonNull TrendingFilterTypeDTO other)
+    {
+        return super.equals(other) && other instanceof TrendingFilterTypeVolumeDTO;
+    }
+
+    @NonNull @Override public TrendingFilterTypeDTO getByExchange(@NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
+    {
+        return new TrendingFilterTypeVolumeDTO(exchangeCompactSpinnerDTO);
+    }
+
     @Override @NonNull public TrendingFilterTypeDTO getPrevious()
     {
         return new TrendingFilterTypeBasicDTO(exchange);

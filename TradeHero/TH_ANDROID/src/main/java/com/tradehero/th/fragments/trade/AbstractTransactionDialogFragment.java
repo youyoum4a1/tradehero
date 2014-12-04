@@ -56,7 +56,6 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -69,9 +68,8 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -117,7 +115,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private ProgressDialog mTransactionDialog;
 
-    private MiddleCallback<SecurityPositionTransactionDTO> buySellMiddleCallback;
+    private Subscription buySellSubscription;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected PortfolioCompactDTOList portfolioCompactDTOs;
@@ -144,7 +142,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected abstract double getQuickButtonMaxValue();
 
-    protected abstract MiddleCallback<SecurityPositionTransactionDTO> getTransactionMiddleCallback(TransactionFormDTO transactionFormDTO);
+    abstract protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO);
 
     public abstract Double getPriceCcy();
 
@@ -247,7 +245,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         mQuantityTextWatcher = null;
         detachPurchaseRequestCode();
         destroyTransactionDialog();
-        detachBuySellMiddleCallback();
+        unsubscribe(buySellSubscription);
+        buySellSubscription = null;
         super.onDestroyView();
     }
 
@@ -487,6 +486,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
         @Override public void onError(Throwable e)
         {
+            Timber.e(e, "Failed fetching the list of porfolios");
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }
@@ -642,8 +642,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void launchBuySell()
     {
-        detachBuySellMiddleCallback();
-
         if (checkValidToTransact())
         {
             TransactionFormDTO transactionFormDTO = getBuySellOrder();
@@ -653,7 +651,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                 mTransactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
-                buySellMiddleCallback = getTransactionMiddleCallback(transactionFormDTO);
+                unsubscribe(buySellSubscription);
+                buySellSubscription = getTransactionSubscription(transactionFormDTO);
             }
             else
             {
@@ -688,15 +687,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                 mTransactionQuantity,
                 portfolioId.key
         );
-    }
-
-    private void detachBuySellMiddleCallback()
-    {
-        if (buySellMiddleCallback != null)
-        {
-            buySellMiddleCallback.setPrimaryCallback(null);
-            buySellMiddleCallback = null;
-        }
     }
 
     protected void fireBuySellReport()
@@ -876,20 +866,17 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         };
     }
 
-    protected class BuySellCallback implements retrofit.Callback<SecurityPositionTransactionDTO>
+    protected class BuySellObserver implements Observer<SecurityPositionTransactionDTO>
     {
         private final boolean isBuy;
 
-        public BuySellCallback(boolean isBuy)
+        public BuySellObserver(boolean isBuy)
         {
             this.isBuy = isBuy;
         }
 
-        @Override
-        public void success(SecurityPositionTransactionDTO securityPositionDetailDTO, Response response)
+        @Override public void onNext(SecurityPositionTransactionDTO securityPositionDetailDTO)
         {
-            onFinish();
-
             if (securityPositionDetailDTO == null)
             {
                 alertDialogUtilBuySell.informBuySellOrderReturnedNull(getActivity());
@@ -902,7 +889,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
             }
         }
 
-        private void onFinish()
+        @Override public void onCompleted()
         {
             if (mTransactionDialog != null)
             {
@@ -915,14 +902,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
             updateConfirmButton(false);
         }
 
-        @Override public void failure(RetrofitError retrofitError)
+        @Override public void onError(Throwable e)
         {
-            onFinish();
-            if (retrofitError != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
-            THException thException = new THException(retrofitError);
+            onCompleted();
+            Timber.e(e, "Reporting the error to Crashlytics");
+            THException thException = new THException(e);
             THToast.show(thException);
 
             if (buySellTransactionListener != null)

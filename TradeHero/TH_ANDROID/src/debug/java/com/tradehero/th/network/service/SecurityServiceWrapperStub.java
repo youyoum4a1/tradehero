@@ -7,7 +7,6 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -18,16 +17,14 @@ import javax.inject.Singleton;
     //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapperStub(
             @NonNull SecurityService securityService,
-            @NonNull SecurityServiceAsync securityServiceAsync,
             @NonNull SecurityServiceRx securityServiceRx,
             @NonNull ProviderServiceWrapper providerServiceWrapper,
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
-            @NonNull Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull CurrentUserId currentUserId)
     {
-        super(securityService, securityServiceAsync, securityServiceRx, providerServiceWrapper,
-                securityCompactCache, securityPositionDetailCache, portfolioCache,
+        super(securityService, securityServiceRx, providerServiceWrapper,
+                securityCompactCache, portfolioCache,
                 currentUserId);
     }
     //</editor-fold>

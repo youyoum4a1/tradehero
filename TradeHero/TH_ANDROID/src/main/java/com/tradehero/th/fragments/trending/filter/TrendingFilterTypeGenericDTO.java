@@ -34,6 +34,16 @@ public class TrendingFilterTypeGenericDTO extends TrendingFilterTypeDTO
     }
     //</editor-fold>
 
+    @Override protected boolean equals(@NonNull TrendingFilterTypeDTO other)
+    {
+        return super.equals(other) && other instanceof TrendingFilterTypeGenericDTO;
+    }
+
+    @NonNull @Override public TrendingFilterTypeDTO getByExchange(@NonNull ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
+    {
+        return new TrendingFilterTypeGenericDTO(exchangeCompactSpinnerDTO);
+    }
+
     @Override @NonNull public TrendingFilterTypeDTO getPrevious()
     {
         return new TrendingFilterTypePriceDTO(exchange);

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -25,7 +24,6 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -43,7 +41,6 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
-import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -201,10 +198,7 @@ public class UpdateCenterFragment extends DashboardFragment
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Notification_New_Broadcast));
         Bundle args = new Bundle();
-        args.putInt(SendMessageFragment.KEY_DISCUSSION_TYPE,
-                DiscussionType.BROADCAST_MESSAGE.value);
-        args.putInt(SendMessageFragment.KEY_MESSAGE_TYPE,
-                MessageType.BROADCAST_ALL_FOLLOWERS.typeId);
+        SendMessageFragment.putMessageType(args, MessageType.BROADCAST_ALL_FOLLOWERS);
         navigator.get().pushFragment(SendMessageFragment.class, args);
     }
 

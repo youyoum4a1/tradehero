@@ -8,15 +8,16 @@ import com.tapstream.sdk.Tapstream;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
-import static com.tradehero.th.utils.Constants.DOGFOOD_BUILD;
-import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
-import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_RELEASE;
-import static com.tradehero.th.utils.Constants.RELEASE;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Singleton;
+
+import static com.tradehero.th.utils.Constants.DOGFOOD_BUILD;
+import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
+import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_RELEASE;
+import static com.tradehero.th.utils.Constants.RELEASE;
 
 @Module(
         library = true,
@@ -30,6 +31,7 @@ public class MetricsModule
     private static final String MAT_APP_KEY = "c65b99d5b751944e3637593edd04ce01";
     private static final String LOCALYTICS_KEY =
             RELEASE ? (DOGFOOD_BUILD ? LOCALYTICS_APP_KEY_DEBUG : LOCALYTICS_APP_KEY_RELEASE) : null;
+    public static final boolean LOCALYTICS_PUSH_ENABLED = RELEASE;
     public static final String APP_FLYER_KEY = "pEuxjZE2GpyRXXwFjHHRRU";
 
     @Deprecated
@@ -46,7 +48,7 @@ public class MetricsModule
     @Provides @Singleton public Analytics provideAnalytics(Context context)
     {
         return Analytics.with(context)
-                .withLocalytics(LOCALYTICS_KEY)
+                .withLocalytics(LOCALYTICS_KEY, LOCALYTICS_PUSH_ENABLED)
                 .withTalkingData(TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name())
                 .build();
     }

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTOList;
@@ -19,6 +20,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
@@ -32,7 +34,6 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
     protected TextView tvMessageCount;
     protected Button btnMessageCancel;
     protected Button btnMessageComfirm;
-
 
     @Override
     protected SocialNetworkEnum getSocialNetwork()
@@ -228,9 +229,11 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
     protected void handleInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey() /*, usersToInvite*/,
-                createInviteObserver(
-                        usersToInvite));
+        RequestObserver<BaseResponseDTO> observer = createInviteObserver(usersToInvite);
+        observer.onRequestStart();
+        ((SocialFriendHandlerWeibo) socialFriendHandler).inviteWeiboFriends(msg, currentUserId.toUserBaseKey()) /*, usersToInvite*/
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
     }
 
     @Override protected void handleInviteSuccess(List<UserFriendsDTO> usersToInvite)
@@ -247,8 +250,10 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         {
             for (SocialFriendListItemDTO o : listedSocialItems)
             {
-                if(o instanceof SocialFriendListItemUserDTO)
-                ((SocialFriendListItemUserDTO) o).isSelected = false;
+                if (o instanceof SocialFriendListItemUserDTO)
+                {
+                    ((SocialFriendListItemUserDTO) o).isSelected = false;
+                }
             }
             if (socialFriendsListAdapter != null)
             {

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -48,6 +49,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.BaseExpandingItemListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import dagger.Lazy;
@@ -116,7 +118,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
-        leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
         leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
         inflateHeaderView(inflater, container);
 
@@ -248,7 +249,31 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
         leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
         swipeContainer.setOnRefreshListener(leaderboardMarkUserListAdapter);
-        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+        leaderboardMarkUserListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(),
+                new AbsListView.OnScrollListener() {
+                    private boolean scrollStateChanged;
+                    @Override
+                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+                        scrollStateChanged = true;
+                    }
+
+                    @Override
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                        if (view instanceof ListView && scrollStateChanged)
+                        {
+                            ListView listView = (ListView) view;
+                            int mTotalHeadersAndFooters = listView.getHeaderViewsCount() + listView.getFooterViewsCount();
+
+                            if (totalItemCount > mTotalHeadersAndFooters && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
+                            {
+                                scrollStateChanged = false;
+                                swipeContainer.setRefreshing(true);
+                                leaderboardMarkUserLoader.loadPrevious();
+                            }
+                        }
+                    }
+                }));
+                leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(

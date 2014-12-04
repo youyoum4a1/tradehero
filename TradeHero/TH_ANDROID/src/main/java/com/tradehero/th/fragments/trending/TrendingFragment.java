@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.InjectView;
@@ -89,7 +91,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     private boolean defaultFilterSelected;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
 
-    private ExtraTileAdapter wrapperAdapter;
+    private ExtraTileAdapterNew wrapperAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -102,6 +104,12 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
                 getActivity(),
                 R.layout.trending_filter_spinner_item);
         exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+    }
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.fragment_trending, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -164,24 +172,12 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
 
     @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_security_item)
-        {
-            @Override public void notifyDataSetChanged()
-            {
-                wrapperAdapter.notifyDataSetChanged();
-                super.notifyDataSetChanged();
-            }
-        };
+        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_security_item);
     }
 
-    @NonNull protected ExtraTileAdapter createSecurityItemViewAdapter()
+    @NonNull protected ExtraTileAdapterNew createSecurityItemViewAdapter()
     {
-        return new ExtraTileAdapter(getActivity(), itemViewAdapter);
-    }
-
-    @Override protected int getFragmentLayoutResId()
-    {
-        return R.layout.fragment_trending;
+        return new ExtraTileAdapterNew(getActivity(), itemViewAdapter);
     }
 
     @Override @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
@@ -206,9 +202,12 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
 
     protected void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
-        TrendingFragment.this.trendingFilterTypeDTO = trendingFilterTypeDTO;
-        // TODO
-        scheduleRequestData();
+        boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
+        this.trendingFilterTypeDTO = trendingFilterTypeDTO;
+        if (hasChanged)
+        {
+            scheduleRequestData();
+        }
     }
 
     protected void onErrorFilter(@NonNull Throwable e)
@@ -302,7 +301,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     {
         this.userProfileDTO = userProfileDTO;
         setUpFilterSelectorView();
-        refreshAdapterWithTiles(userProfileDTO.activeSurveyImageURL != null);
+        wrapperAdapter.setSurveyEnabled(userProfileDTO.activeSurveyImageURL != null);
     }
 
     private void fetchProviderList()
@@ -323,7 +322,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
         {
             providerDTOs = pair.second;
-            refreshAdapterWithTiles(true);
+            wrapperAdapter.setProviderEnabled(providerDTOs != null && !providerDTOs.isEmpty());
         }
 
         @Override public void onCompleted()
@@ -356,32 +355,10 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         return R.layout.tutorial_trending_screen;
     }
 
-    @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)
+    @Override protected void startAnew()
     {
-        return new TrendingFragmentListCacheObserver(key);
-    }
-
-    protected class TrendingFragmentListCacheObserver extends ListCacheObserver
-    {
-        protected TrendingFragmentListCacheObserver(@NonNull SecurityListType key)
-        {
-            super(key);
-        }
-
-        @Override public void onNext(Pair<SecurityListType, SecurityCompactDTOList> pair)
-        {
-            super.onNext(pair);
-            refreshAdapterWithTiles(false);
-        }
-    }
-
-    private void refreshAdapterWithTiles(boolean refreshTileTypes)
-    {
-        // TODO hack, experience some synchronization matter here, generateExtraTiles should be call inside wrapperAdapter
-        // when data is changed
-        // Note that this is just to minimize the chance of happening, need synchronize the data changes inside super class DTOAdapter
-        wrapperAdapter.regenerateExtraTiles(false, refreshTileTypes);
-        wrapperAdapter.notifyDataSetChanged();
+        wrapperAdapter.clearExtraTiles();
+        super.startAnew();
     }
 
     private void setUpFilterSelectorView()
@@ -408,8 +385,8 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
                     ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(userProfileDTO.getCountry());
                     if (initial != null)
                     {
-                        trendingFilterTypeDTO.exchange = initial;
                         defaultFilterSelected = true;
+                        onNext(trendingFilterTypeDTO.getByExchange(initial));
                     }
                 }
             }
