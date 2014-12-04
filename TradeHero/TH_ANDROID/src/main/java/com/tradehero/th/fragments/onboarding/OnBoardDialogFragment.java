@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -47,6 +48,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
@@ -287,7 +289,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         {
             userServiceWrapper.followBatchFreeRx(
                     new BatchFollowFormDTO(heroesList, new UserBaseDTO()))
-                    .subscribe(new EmptyObserver<>());
+                    .subscribe(new EmptyObserver<UserProfileDTO>()
+                    {
+                        @Override public void onError(Throwable e)
+                        {
+                            Timber.e(e, "Failed to add heroes");
+                        }
+                    });
         }
     }
 
@@ -309,7 +317,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         {
             watchlistServiceWrapper.batchCreateRx(
                     new SecurityIntegerIdListForm(stocksList, null))
-                    .subscribe(new EmptyObserver<>());
+                    .subscribe(new EmptyObserver<WatchlistPositionDTOList>()
+                    {
+                        @Override public void onError(Throwable e)
+                        {
+                            Timber.e(e, "Failed to add watchlist");
+                        }
+                    });
         }
     }
 }

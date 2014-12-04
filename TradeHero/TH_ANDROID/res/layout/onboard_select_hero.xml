@@ -4,13 +4,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_medium"
+    android:layout_height="wrap_content"
     >
 
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_medium"
+      android:layout_marginLeft="@dimen/margin_medium"
+      android:layout_marginRight="@dimen/margin_medium"
       android:orientation="vertical"
       >
 
@@ -19,7 +21,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/onboard_invitation_follow_hero_header"
-        style="@style/TH.Title"/>
+        style="@style/TH.Title"
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -35,7 +38,10 @@
   <ViewSwitcher
       android:id="@+id/switcher_hero"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_xsmall"
+      android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginRight="@dimen/margin_xsmall"
       >
 
     <ProgressBar
@@ -49,7 +55,8 @@
         android:id="@+id/heros_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:paddingBottom="@dimen/margin_xsmall"
+        android:clipToPadding="false"
         />
 
   </ViewSwitcher>
