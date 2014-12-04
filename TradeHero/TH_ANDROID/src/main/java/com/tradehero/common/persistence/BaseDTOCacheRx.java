@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import timber.log.Timber;
 
 public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheRx<DTOKeyType, DTOType>
@@ -165,6 +166,11 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         {
             cachedValuesLock.lock();
             cachedValues.evictAll();
+        } catch(IllegalStateException e)
+        {
+            // HACK because cannot find the reason of
+            // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/547fe02d65f8dfea153e0fa5
+            Timber.e(e, "on cache %s", getClass());
         } finally
         {
             cachedValuesLock.unlock();
