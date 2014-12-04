@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ import com.tradehero.th.persistence.prefs.ShareDialogAfterScoreKey;
 import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -139,7 +137,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 gotoSetNotifications();
                 break;
             case R.id.settings_send_feedback:
-                seedFeedback();
+                ActivityHelper.sendFeedback(getActivity());
                 break;
         }
     }
@@ -206,13 +204,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         if(dto==null){
             return;
         }
-        String url = dto.getLatestVersionDownloadUrl();
-        if(TextUtils.isEmpty(url)){
-            return;
-        }
-        Uri uri = Uri.parse(url.trim());
-        Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
-        getActivity().startActivity(gotoWebIntent);
+        ActivityHelper.launchBrowserDownloadApp(getActivity(), dto.getLatestVersionDownloadUrl());
     }
 
     private void gotoSetNotifications(){
@@ -226,16 +218,6 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
         }else{
             THSharePreferenceManager.setNotificaitonsStatus(context, true);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
-        }
-    }
-
-    private void seedFeedback(){
-        try {
-            Intent data = new Intent(Intent.ACTION_SENDTO);
-            data.setData(Uri.parse("mailto:" + Constants.EMAIL_FEEDBACK));
-            startActivity(data);
-        }catch (Exception e){
-            e.printStackTrace();
         }
     }
 

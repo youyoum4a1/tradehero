@@ -155,7 +155,6 @@ public class THUser
             case Device:
                 //use new DTO, combine login and social register
                 LoginSignUpFormDTO loginSignUpFormDTO = loginSignUpFormDTOFactory.create(userFormDTO);
-                // TODO save middle callback?
                 sessionServiceWrapper.get().signupAndLogin(authenticator.getAuthHeader(),
                         loginSignUpFormDTO,
                         createCallbackForSignInAsyncWithJson(credentialsDTO, callback));

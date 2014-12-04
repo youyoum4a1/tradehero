@@ -3,7 +3,6 @@ package com.tradehero.th.activities;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -763,11 +762,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     }
 
     private void downloadApp(String url){
-        if(!TextUtils.isEmpty(url)){
-            Uri uri = Uri.parse(url.trim());
-            Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(gotoWebIntent);
-        }
+        ActivityHelper.launchBrowserDownloadApp(this,  url);
         if(updateAppDialog!=null){
             updateAppDialog.dismiss();
         }

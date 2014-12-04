@@ -619,11 +619,7 @@ public class AuthenticationActivity extends DashboardActivity
     }
 
     private void downloadApp(String url){
-        if(!TextUtils.isEmpty(url)){
-            Uri uri = Uri.parse(url.trim());
-            Intent gotoWebIntent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(gotoWebIntent);
-        }
+        ActivityHelper.launchBrowserDownloadApp(this,  url);
         if(updateAppDialog!=null){
             updateAppDialog.dismiss();
         }
