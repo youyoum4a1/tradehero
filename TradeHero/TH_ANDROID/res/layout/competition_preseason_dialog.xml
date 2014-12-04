@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             style="@style/TH.Title"
             android:gravity="center"
+            android:textStyle="bold"
             android:text="@string/preseason_giveaway"
             android:layout_margin="@dimen/margin_small"
             />
