@@ -18,7 +18,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.th.auth.facebook.FacebookWebDialogOperator;
+import com.tradehero.common.social.facebook.FacebookWebDialogOperator;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;

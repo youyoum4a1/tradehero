@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.facebook;
+package com.tradehero.common.social.facebook;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

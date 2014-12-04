@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.facebook;
+package com.tradehero.common.social.facebook;
 
 import android.support.annotation.Nullable;
 import com.facebook.FacebookOperationCanceledException;
