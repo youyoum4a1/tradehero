@@ -7,7 +7,6 @@ import com.tradehero.common.billing.amazon.BaseAmazonPurchaseConsumer;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
-import javax.inject.Inject;
 
 public class THBaseAmazonPurchaseConsumer
         extends BaseAmazonPurchaseConsumer<
@@ -20,7 +19,7 @@ public class THBaseAmazonPurchaseConsumer
     @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonPurchaseConsumer(
+    public THBaseAmazonPurchaseConsumer(
             int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,

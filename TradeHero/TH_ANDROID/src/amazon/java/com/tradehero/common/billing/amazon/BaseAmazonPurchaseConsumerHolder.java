@@ -1,15 +1,14 @@
 package com.tradehero.common.billing.amazon;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import timber.log.Timber;
 
-public class BaseAmazonPurchaseConsumerHolder<
+abstract public class BaseAmazonPurchaseConsumerHolder<
         AmazonSKUType extends AmazonSKU,
         AmazonOrderIdType extends AmazonOrderId,
         AmazonPurchaseType extends AmazonPurchase<AmazonSKUType, AmazonOrderIdType>,
@@ -24,7 +23,6 @@ public class BaseAmazonPurchaseConsumerHolder<
         AmazonPurchaseType,
         AmazonException>
 {
-    @NonNull protected final Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider;
     @NonNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumerType> amazonPurchaseConsumers;
     @NonNull protected Map<Integer /*requestCode*/, AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<
             AmazonSKUType,
@@ -33,10 +31,9 @@ public class BaseAmazonPurchaseConsumerHolder<
             AmazonException>> parentConsumeFinishedHandlers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaseConsumerHolder(@NonNull Provider<AmazonPurchaseConsumerType> purchaseConsumerTypeProvider)
+    public BaseAmazonPurchaseConsumerHolder()
     {
         super();
-        this.purchaseConsumerTypeProvider = purchaseConsumerTypeProvider;
         amazonPurchaseConsumers = new HashMap<>();
         parentConsumeFinishedHandlers = new HashMap<>();
     }
@@ -82,11 +79,13 @@ public class BaseAmazonPurchaseConsumerHolder<
     @Override public void launchConsumeSequence(int requestCode, AmazonPurchaseType purchase)
     {
         AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException> consumeListener = createConsumptionFinishedListener();
-        AmazonPurchaseConsumerType iabPurchaseConsumer = purchaseConsumerTypeProvider.get();
+        AmazonPurchaseConsumerType iabPurchaseConsumer = createPurchaseConsumer(requestCode);
         iabPurchaseConsumer.setConsumptionFinishedListener(consumeListener);
         amazonPurchaseConsumers.put(requestCode, iabPurchaseConsumer);
         iabPurchaseConsumer.consume(purchase);
     }
+
+    @NonNull abstract protected AmazonPurchaseConsumerType createPurchaseConsumer(int request);
 
     @NonNull protected AmazonPurchaseConsumer.OnAmazonConsumptionFinishedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonException>
     createConsumptionFinishedListener()

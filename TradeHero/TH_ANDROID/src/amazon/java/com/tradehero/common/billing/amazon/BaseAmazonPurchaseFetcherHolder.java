@@ -1,12 +1,11 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingPurchaseFetcherHolder;
 import com.tradehero.common.billing.BillingPurchaseFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonPurchaseFetcherHolder<
         AmazonSKUType extends AmazonSKU,
@@ -29,15 +28,12 @@ abstract public class BaseAmazonPurchaseFetcherHolder<
             AmazonPurchaseType,
             AmazonExceptionType>
 {
-    @NonNull protected final Provider<AmazonPurchaseFetcherType> amazonPurchaseFetcherTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, AmazonPurchaseFetcherType> purchaseFetchers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaseFetcherHolder(
-            @NonNull Provider<AmazonPurchaseFetcherType> amazonPurchaseFetcherTypeProvider)
+    public BaseAmazonPurchaseFetcherHolder()
     {
         super();
-        this.amazonPurchaseFetcherTypeProvider = amazonPurchaseFetcherTypeProvider;
         purchaseFetchers = new HashMap<>();
     }
     //</editor-fold>
@@ -62,11 +58,13 @@ abstract public class BaseAmazonPurchaseFetcherHolder<
     @Override public void launchFetchPurchaseSequence(int requestCode)
     {
         BillingPurchaseFetcher.OnPurchaseFetchedListener<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> purchaseFetchedListener = createPurchaseFetchedListener();
-        AmazonPurchaseFetcherType purchaseFetcher = amazonPurchaseFetcherTypeProvider.get();
+        AmazonPurchaseFetcherType purchaseFetcher = createPurchaseFetcher(requestCode);
         purchaseFetcher.setPurchaseFetchedListener(purchaseFetchedListener);
         purchaseFetchers.put(requestCode, purchaseFetcher);
         purchaseFetcher.fetchPurchases();
     }
+
+    @NonNull protected abstract AmazonPurchaseFetcherType createPurchaseFetcher(int requestCode);
 
     @Override public void onDestroy()
     {

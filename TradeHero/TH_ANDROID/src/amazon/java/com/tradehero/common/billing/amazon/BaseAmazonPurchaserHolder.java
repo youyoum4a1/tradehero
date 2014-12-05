@@ -1,12 +1,11 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingPurchaserHolder;
 import com.tradehero.common.billing.BillingPurchaser;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
 
 abstract public class BaseAmazonPurchaserHolder<
         AmazonSKUType extends AmazonSKU,
@@ -33,14 +32,12 @@ abstract public class BaseAmazonPurchaserHolder<
             AmazonPurchaseType,
             AmazonExceptionType>
 {
-    @NonNull protected final Provider<AmazonPurchaserType> amazonPurchaserTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, AmazonPurchaserType> purchasers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonPurchaserHolder(@NonNull Provider<AmazonPurchaserType> amazonPurchaserTypeProvider)
+    public BaseAmazonPurchaserHolder()
     {
         super();
-        this.amazonPurchaserTypeProvider = amazonPurchaserTypeProvider;
         purchasers = new HashMap<>();
     }
     //</editor-fold>
@@ -65,11 +62,13 @@ abstract public class BaseAmazonPurchaserHolder<
     @Override public void launchPurchaseSequence(int requestCode, AmazonPurchaseOrderType purchaseOrder)
     {
         BillingPurchaser.OnPurchaseFinishedListener<AmazonSKUType, AmazonPurchaseOrderType, AmazonOrderIdType, AmazonPurchaseType, AmazonExceptionType> purchaseListener = createPurchaseFinishedListener();
-        AmazonPurchaserType iabPurchaser = amazonPurchaserTypeProvider.get();
+        AmazonPurchaserType iabPurchaser = createPurchaser(requestCode);
         iabPurchaser.setPurchaseFinishedListener(purchaseListener);
         purchasers.put(requestCode, iabPurchaser);
         iabPurchaser.purchase(purchaseOrder);
     }
+
+    @NonNull protected abstract AmazonPurchaserType createPurchaser(int requestCode);
 
     @Override public void onDestroy()
     {

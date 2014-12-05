@@ -6,7 +6,6 @@ import com.tradehero.common.billing.BillingAvailableTester;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
 
 abstract public class BaseAmazonBillingAvailableTesterHolder<
         AmazonBillingAvailableTesterType extends AmazonBillingAvailableTester<AmazonExceptionType>,
@@ -14,15 +13,12 @@ abstract public class BaseAmazonBillingAvailableTesterHolder<
     extends BaseBillingAvailableTesterHolder<AmazonExceptionType>
     implements AmazonBillingAvailableTesterHolder<AmazonExceptionType>
 {
-    @NonNull protected final Provider<AmazonBillingAvailableTesterType> amazonBillingAvailableTesterTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, AmazonBillingAvailableTesterType> testers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonBillingAvailableTesterHolder(
-            @NonNull Provider<AmazonBillingAvailableTesterType> amazonBillingAvailableTesterTypeProvider)
+    public BaseAmazonBillingAvailableTesterHolder()
     {
         super();
-        this.amazonBillingAvailableTesterTypeProvider = amazonBillingAvailableTesterTypeProvider;
         testers = new HashMap<>();
     }
     //</editor-fold>
@@ -30,11 +26,13 @@ abstract public class BaseAmazonBillingAvailableTesterHolder<
     @Override public void launchBillingAvailableTestSequence(int requestCode)
     {
         BillingAvailableTester.OnBillingAvailableListener<AmazonExceptionType> skuFetchedListener = createBillingAvailableListener();
-        AmazonBillingAvailableTesterType tester = amazonBillingAvailableTesterTypeProvider.get();
+        AmazonBillingAvailableTesterType tester = createTester(requestCode);
         tester.setBillingAvailableListener(skuFetchedListener);
         testers.put(requestCode, tester);
         tester.testBillingAvailable();
     }
+
+    @NonNull protected abstract AmazonBillingAvailableTesterType createTester(int requestCode);
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

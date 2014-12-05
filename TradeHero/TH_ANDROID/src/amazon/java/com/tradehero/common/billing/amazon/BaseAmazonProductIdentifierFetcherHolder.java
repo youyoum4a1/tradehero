@@ -6,7 +6,6 @@ import com.tradehero.common.billing.ProductIdentifierFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.inject.Provider;
 
 abstract public class BaseAmazonProductIdentifierFetcherHolder<
         AmazonSKUListKeyType extends AmazonSKUListKey,
@@ -29,15 +28,12 @@ abstract public class BaseAmazonProductIdentifierFetcherHolder<
             AmazonSKUListType,
             AmazonExceptionType>
 {
-    @NonNull protected final Provider<AmazonProductIdentifierFetcherType> amazonProductIdentifierFetcherTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, AmazonProductIdentifierFetcherType> skuFetchers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonProductIdentifierFetcherHolder(
-            @NonNull Provider<AmazonProductIdentifierFetcherType> amazonProductIdentifierFetcherTypeProvider)
+    public BaseAmazonProductIdentifierFetcherHolder()
     {
         super();
-        this.amazonProductIdentifierFetcherTypeProvider = amazonProductIdentifierFetcherTypeProvider;
         skuFetchers = new HashMap<>();
     }
     //</editor-fold>
@@ -45,11 +41,13 @@ abstract public class BaseAmazonProductIdentifierFetcherHolder<
     @Override public void launchProductIdentifierFetchSequence(int requestCode)
     {
         ProductIdentifierFetcher.OnProductIdentifierFetchedListener<AmazonSKUListKeyType, AmazonSKUType, AmazonSKUListType, AmazonExceptionType> skuFetchedListener = createProductIdentifierFetchedListener();
-        AmazonProductIdentifierFetcherType skuFetcher = amazonProductIdentifierFetcherTypeProvider.get();
+        AmazonProductIdentifierFetcherType skuFetcher = createSkuFetcher(requestCode);
         skuFetcher.setProductIdentifierListener(skuFetchedListener);
         skuFetchers.put(requestCode, skuFetcher);
         skuFetcher.fetchProductIdentifiers();
     }
+
+    @NonNull protected abstract AmazonProductIdentifierFetcherType createSkuFetcher(int requestCode);
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

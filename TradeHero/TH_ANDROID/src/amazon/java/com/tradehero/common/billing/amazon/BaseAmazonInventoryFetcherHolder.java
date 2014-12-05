@@ -1,13 +1,12 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingInventoryFetcherHolder;
 import com.tradehero.common.billing.BillingInventoryFetcher;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Provider;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 abstract public class BaseAmazonInventoryFetcherHolder<
@@ -27,15 +26,12 @@ abstract public class BaseAmazonInventoryFetcherHolder<
             AmazonProductDetailType,
             AmazonExceptionType>
 {
-    @NonNull protected final Provider<AmazonInventoryFetcherType> amazonInventoryFetcherTypeProvider;
     @NonNull protected final Map<Integer /*requestCode*/, AmazonInventoryFetcherType> inventoryFetchers;
 
     //<editor-fold desc="Constructors">
-    public BaseAmazonInventoryFetcherHolder(
-            @NonNull Provider<AmazonInventoryFetcherType> amazonInventoryFetcherTypeProvider)
+    public BaseAmazonInventoryFetcherHolder()
     {
         super();
-        this.amazonInventoryFetcherTypeProvider = amazonInventoryFetcherTypeProvider;
         inventoryFetchers = new HashMap<>();
     }
     //</editor-fold>
@@ -44,12 +40,14 @@ abstract public class BaseAmazonInventoryFetcherHolder<
     {
         Timber.d("Launching fetch sequence");
         BillingInventoryFetcher.OnInventoryFetchedListener<AmazonSKUType, AmazonProductDetailType, AmazonExceptionType> skuFetchedListener = createInventoryFetchedListener();
-        AmazonInventoryFetcherType inventoryFetcher = amazonInventoryFetcherTypeProvider.get();
+        AmazonInventoryFetcherType inventoryFetcher = createInventoryFetcher(requestCode);
         inventoryFetcher.setInventoryFetchedListener(skuFetchedListener);
         inventoryFetcher.setProductIdentifiers(allIds);
         inventoryFetchers.put(requestCode, inventoryFetcher);
         inventoryFetcher.fetchInventory();
     }
+
+    @NonNull protected abstract AmazonInventoryFetcherType createInventoryFetcher(int requestCode);
 
     @Override public boolean isUnusedRequestCode(int requestCode)
     {

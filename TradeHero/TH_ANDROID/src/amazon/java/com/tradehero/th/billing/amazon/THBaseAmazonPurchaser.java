@@ -29,7 +29,7 @@ public class THBaseAmazonPurchaser
     @NonNull protected final StringSetPreference processingPurchaseStringSet;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonPurchaser(
+    public THBaseAmazonPurchaser(
             int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,

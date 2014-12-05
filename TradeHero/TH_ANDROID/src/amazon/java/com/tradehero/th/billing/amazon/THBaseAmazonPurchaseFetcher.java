@@ -16,7 +16,6 @@ import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class THBaseAmazonPurchaseFetcher
@@ -33,7 +32,7 @@ public class THBaseAmazonPurchaseFetcher
     @NonNull protected final List<AmazonPurchaseInProcessDTO> savedPurchasesInProcess;
 
     //<editor-fold desc="Constructors">
-    @Inject public THBaseAmazonPurchaseFetcher(
+    public THBaseAmazonPurchaseFetcher(
             int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
