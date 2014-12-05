@@ -7,4 +7,5 @@ public interface MarketUtil
 {
     void showAppOnMarket(@NonNull Activity activity);
     void sendToReviewAllOnMarket(@NonNull Activity activity);
+    String getAppMarketUrl();
 }

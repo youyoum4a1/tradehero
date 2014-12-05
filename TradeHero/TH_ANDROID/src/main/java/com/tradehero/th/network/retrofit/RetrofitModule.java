@@ -182,7 +182,7 @@ public class RetrofitModule
         try
         {
             // HttpResponseCache httpResponseCache = HttpResponseCache.install(httpCacheDirectory, );
-            return new Cache(httpCacheDirectory, 10 * 1024);
+            return new Cache(httpCacheDirectory, 10 * 1024 * 1024);
         }
         catch (IOException e)
         {

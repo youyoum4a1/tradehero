@@ -72,16 +72,13 @@ public class THException extends Exception
                 {
                     ErrorMessageDTO dto = null;
                     // surprisingly, server does return garbage sometime
-                    if (error.getBody() != null)
+                    try
                     {
-                        try
-                        {
-                            dto = (ErrorMessageDTO) error.getBodyAs(ErrorMessageDTO.class);
-                        }
-                        catch (Exception ex)
-                        {
-                            Timber.e(ex, ex.getMessage());
-                        }
+                        dto = (ErrorMessageDTO) error.getBodyAs(ErrorMessageDTO.class);
+                    }
+                    catch (Exception ex)
+                    {
+                        Timber.e(ex, ex.getMessage());
                     }
                     this.code = ExceptionCode.UnknownError;
                     String errorMessage = dto != null

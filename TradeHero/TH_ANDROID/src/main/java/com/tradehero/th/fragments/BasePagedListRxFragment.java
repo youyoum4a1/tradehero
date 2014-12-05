@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
@@ -53,7 +51,7 @@ abstract public class BasePagedListRxFragment<
     protected FlagNearEdgeScrollListener nearEndScrollListener;
 
     protected PagedArrayDTOAdapterNew<DTOType, ViewType> itemViewAdapter;
-    protected Map<Integer, DTOListType> pagedDtos;
+    @NonNull protected Map<Integer, DTOListType> pagedDtos;
     @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
     protected DTOType selectedItem;
 
@@ -83,12 +81,6 @@ abstract public class BasePagedListRxFragment<
         itemViewAdapter = createItemViewAdapter();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
-    {
-        return inflater.inflate(getFragmentLayoutResId(), container, false);
-    }
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -102,14 +94,6 @@ abstract public class BasePagedListRxFragment<
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
         return new MultiScrollListener(nearEndScrollListener, dashboardBottomTabsListViewScrollListener.get());
-    }
-
-    abstract protected int getFragmentLayoutResId();
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        loadAdapterWithAvailableData();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -376,4 +360,5 @@ abstract public class BasePagedListRxFragment<
             }
         }
     }
+
 }

@@ -15,7 +15,7 @@
         android:id="@+id/discovery_news_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:listSelector="@color/transparent"
+        android:listSelector="@drawable/basic_transparent_selector"
         android:cacheColorHint="#00000000"
         android:divider="@color/transparent"
         android:dividerHeight="1dp"

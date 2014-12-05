@@ -27,6 +27,7 @@ import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
+@Deprecated // Remove eventually
 public class ExtraTileAdapter extends BaseAdapter
         implements WrapperListAdapter
 {

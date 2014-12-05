@@ -6,12 +6,16 @@ import android.util.Pair;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import timber.log.Timber;
 
 public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         implements DTOCacheRx<DTOKeyType, DTOType>
 {
+    @NonNull final private Lock cachedValuesLock;
     @NonNull final private THLruCache<DTOKeyType, DTOType> cachedValues;
     @NonNull final private Map<DTOKeyType, BehaviorSubject<Pair<DTOKeyType, DTOType>>> cachedSubjects;
     @NonNull final private Map<DTOKeyType, Observable<Pair<DTOKeyType, DTOType>>> cachedObservables;
@@ -20,6 +24,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     protected BaseDTOCacheRx(int valueSize, int subjectSize,
             @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
+        this.cachedValuesLock = new ReentrantLock();
         this.cachedValues = new THLruCache<>(valueSize);
         this.cachedSubjects = new HashMap<>();
         this.cachedObservables = new HashMap<>();
@@ -72,7 +77,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedObservables.get(key);
     }
 
-    @NonNull public Observable<Pair<DTOKeyType, DTOType>> getFirstOrEmpty(@NonNull final  DTOKeyType key)
+    @NonNull public Observable<Pair<DTOKeyType, DTOType>> getFirstOrEmpty(@NonNull final DTOKeyType key)
     {
         DTOType value = getValue(key);
         if (value == null)
@@ -92,16 +97,33 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         }
     }
 
-    protected DTOType putValue(@NonNull DTOKeyType key, @NonNull DTOType value)
+    @Nullable protected DTOType putValue(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
-        return cachedValues.put(key, value);
+        DTOType previous;
+        try
+        {
+            cachedValuesLock.lock();
+            previous = cachedValues.put(key, value);
+        } finally
+        {
+            cachedValuesLock.unlock();
+        }
+        return previous;
     }
 
     // TODO make it protected when all is cleaned up
     @Deprecated
     @Nullable public DTOType getValue(@NonNull DTOKeyType key)
     {
-        DTOType cachedValue = cachedValues.get(key);
+        DTOType cachedValue;
+        try
+        {
+            cachedValuesLock.lock();
+            cachedValue = cachedValues.get(key);
+        } finally
+        {
+            cachedValuesLock.unlock();
+        }
         if (cachedValue != null && !isValid(cachedValue))
         {
             cachedValue = null;
@@ -121,12 +143,18 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
 
     @Override public void invalidate(@NonNull DTOKeyType key)
     {
-        cachedValues.remove(key);
+        try
+        {
+            cachedValuesLock.lock();
+            cachedValues.remove(key);
+        } finally
+        {
+            cachedValuesLock.unlock();
+        }
     }
 
     @Override public void invalidateAll()
     {
-        cachedValues.evictAll();
         Collection<BehaviorSubject<Pair<DTOKeyType, DTOType>>> subjects = cachedSubjects.values();
         cachedSubjects.clear();
         cachedObservables.clear();
@@ -134,13 +162,23 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         {
             subject.onCompleted();
         }
+        try
+        {
+            cachedValuesLock.lock();
+            cachedValues.evictAll();
+        } catch(IllegalStateException e)
+        {
+            // HACK because cannot find the reason of
+            // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/547fe02d65f8dfea153e0fa5
+            Timber.e(e, "on cache %s", getClass());
+        } finally
+        {
+            cachedValuesLock.unlock();
+        }
     }
 
     /**
      * Removes the observable and cached subject when the counter is 0
-     * @param key
-     * @param counter
-     * @param cachedSubject
      */
     protected void removeConditional(
             @NonNull DTOKeyType key,
@@ -150,13 +188,27 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         if (counter.get() == 0 && cachedSubjects.get(key) == cachedSubject)
         {
             cachedObservables.remove(key);
-            cachedSubjects.remove(key);
+            try
+            {
+                cachedValuesLock.lock();
+                cachedSubjects.remove(key);
+            } finally
+            {
+                cachedValuesLock.unlock();
+            }
         }
     }
 
     @NonNull protected Map<DTOKeyType, DTOType> snapshot()
     {
-        return cachedValues.snapshot();
+        try
+        {
+            cachedValuesLock.lock();
+            return cachedValues.snapshot();
+        } finally
+        {
+            cachedValuesLock.unlock();
+        }
     }
 
     protected static class RefCounter

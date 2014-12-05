@@ -6,6 +6,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -35,10 +36,6 @@ public class WeChatDTOFactory
         else if (whatToShare instanceof ReferralCodeDTO)
         {
             return createFrom(context, (ReferralCodeDTO) whatToShare);
-        }
-        else if (whatToShare instanceof CompetitionPreSeasonDTO)
-        {
-            return createFrom((CompetitionPreSeasonDTO) whatToShare);
         }
         throw new IllegalArgumentException("Unknown element to share " + whatToShare);
     }
@@ -116,20 +113,20 @@ public class WeChatDTOFactory
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.Referral;
-        weChatDTO.title = context.getString(R.string.share_to_wechat_invite_friends, referralCodeDTO.referralCode);
+        weChatDTO.title = context.getString(R.string.share_to_wechat_referral_text, referralCodeDTO.referralCode);
     }
 
-    @NonNull public WeChatDTO createFrom(@NonNull CompetitionPreSeasonDTO preSeasonDTO)
+    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull CompetitionPreSeasonDTO preSeasonDTO, @NonNull ProviderDTO providerDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
-        populateWith(weChatDTO, preSeasonDTO);
+        populateWith(context, preSeasonDTO, providerDTO, weChatDTO);
         return weChatDTO;
     }
 
-    protected void populateWith(@NonNull WeChatDTO weChatDTO, @NonNull CompetitionPreSeasonDTO preSeasonDTO)
+    private void populateWith(Context context, CompetitionPreSeasonDTO preSeasonDTO, ProviderDTO providerDTO, WeChatDTO weChatDTO)
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.PreSeason;
-        weChatDTO.title = preSeasonDTO.title;
+        weChatDTO.title = context.getString(R.string.share_to_wechat_preseason_text, providerDTO.name, preSeasonDTO.title);
     }
 }

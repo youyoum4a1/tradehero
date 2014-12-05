@@ -22,8 +22,6 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import javax.inject.Inject;
 import rx.Observable;
@@ -111,7 +109,7 @@ public class TrendingFilterSelectorView extends RelativeLayout
     @OnItemSelected(value = R.id.exchange_selection, callback = OnItemSelected.Callback.ITEM_SELECTED)
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
     {
-        trendingFilterTypeDTO.exchange = (ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i);
+        trendingFilterTypeDTO = trendingFilterTypeDTO.getByExchange((ExchangeCompactSpinnerDTO) adapterView.getItemAtPosition(i));
         notifyObserver();
         reportAnalytics();
     }

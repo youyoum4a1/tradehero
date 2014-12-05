@@ -24,6 +24,7 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.THTabView;
 import javax.inject.Inject;
 
 @Routable({"news", "discussion", "academy"})
@@ -64,6 +65,9 @@ public class DiscoveryMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
+
+        displayNewIcon();
+
         beginTime = System.currentTimeMillis();
         oldPageItem = 0;
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
@@ -86,6 +90,18 @@ public class DiscoveryMainFragment extends DashboardFragment
             {
             }
         });
+    }
+
+    private void displayNewIcon()
+    {
+        for (int i = 0; i < discoveryPagerAdapter.getCount(); i++)
+        {
+            if (discoveryPagerAdapter.isNew(i))
+            {
+                THTabView tabView = (THTabView) pagerSlidingTabStrip.getTabStrip().getChildAt(i);
+                tabView.setIcon(R.drawable.icn_new_discover);
+            }
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -154,6 +170,11 @@ public class DiscoveryMainFragment extends DashboardFragment
         @Override public int getCount()
         {
             return DiscoveryTabType.values().length;
+        }
+
+        public boolean isNew(int position)
+        {
+            return DiscoveryTabType.values()[position].isNew;
         }
     }
 }

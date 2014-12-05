@@ -5,21 +5,16 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
-import rx.Observable;
 
 interface QuoteServiceRx
 {
-    //<editor-fold desc="Get Quote">
+    //<editor-fold desc="Get Raw Quote">
+    // We should not ask Observable<Response> from Retrofit as Response is not a json convertible object
     @GET("/securities/{exchange}/{securitySymbol}/quote")
-    Observable<SignatureContainer<QuoteDTO>> getQuote(
+    Response getRawQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol);
     //</editor-fold>
 
-    //<editor-fold desc="Get Raw Quote">
-    @GET("/securities/{exchange}/{securitySymbol}/quote")
-    Observable<Response> getRawQuote(
-            @Path("exchange") String exchange,
-            @Path("securitySymbol") String securitySymbol);
-    //</editor-fold>
+    static class QuoteSignatureContainer extends SignatureContainer<QuoteDTO>{}
 }

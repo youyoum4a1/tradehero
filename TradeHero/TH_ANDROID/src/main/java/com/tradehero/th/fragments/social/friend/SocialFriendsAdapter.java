@@ -6,20 +6,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.social.UserFriendsDTO;
-import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
 
 public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListItemDTO, SocialFriendItemView>
 {
-    protected NameFilter filterToUse;
     @LayoutRes private int mLayoutItemResId;
     @LayoutRes private int mLayoutHeaderResId;
     @Nullable private SocialFriendUserView.OnElementClickListener elementClickedListener;
-    @NonNull private List<SocialFriendListItemDTO> mArrayList;
 
     //<editor-fold desc="Constructors">
     public SocialFriendsAdapter(
@@ -30,8 +26,6 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     {
         super(context, 0);
         addAll(objects);
-        mArrayList = new ArrayList<>();
-        mArrayList.addAll(objects);
         this.mLayoutItemResId = layoutItemResId;
         this.mLayoutHeaderResId = layoutHeaderResId;
     }
@@ -136,43 +130,5 @@ public class SocialFriendsAdapter extends ArrayDTOAdapterNew<SocialFriendListIte
     {
         super.clear();
         super.addAll(showItems);
-    }
-
-    public Filter getFilter()
-    {
-        if (filterToUse == null)
-        {
-            filterToUse = new NameFilter();
-        }
-        return filterToUse;
-    }
-
-    class NameFilter extends Filter
-    {
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence)
-        {
-            FilterResults filterResults = new FilterResults();
-            List<SocialFriendListItemDTO> mFilteredArrayList = new ArrayList<>();
-            List<SocialFriendListItemDTO> copyList = new ArrayList<>(mArrayList);
-            int sizeList = copyList.size();
-            for (int i = 0; i < sizeList; i++)
-            {
-                SocialFriendListItemDTO dto = copyList.get(i);
-                if (dto.toString().toLowerCase().contains(charSequence.toString().toLowerCase()))
-                {
-                    mFilteredArrayList.add(dto);
-                }
-            }
-            filterResults.values = mFilteredArrayList;
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence arg0, FilterResults results)
-        {
-            setItemsToShow((List<SocialFriendListItemDTO>) results.values);
-            notifyDataSetChanged();
-        }
     }
 }

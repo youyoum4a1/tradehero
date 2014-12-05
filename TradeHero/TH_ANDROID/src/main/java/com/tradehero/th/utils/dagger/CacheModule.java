@@ -23,8 +23,6 @@ public class CacheModule
 {
     @Provides @Singleton @ForPicasso LruCache providePicassoMemCache(Context context)
     {
-        //return new LruMemFileCache(context);
-        //return LruMemFileCache.getInstance(context.getApplicationContext());
         return new LruCache(context);
     }
 

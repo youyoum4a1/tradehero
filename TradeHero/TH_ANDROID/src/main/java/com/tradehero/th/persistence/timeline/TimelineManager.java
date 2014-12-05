@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.timeline;
 
 import com.tradehero.common.cache.DatabaseCache;
 import com.tradehero.common.persistence.Query;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import dagger.Lazy;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class TimelineManager
         this.allTimelineStores = allTimelineStores;
     }
 
-    public List<TimelineItemDTOKey> getTimeline(Query query, boolean forceReload) throws IOException
+    public List<TimelineItemDTO> getTimeline(Query query, boolean forceReload) throws IOException
     {
         if (query == null)
         {

@@ -269,7 +269,8 @@ public class LeaderboardFriendsItemView extends RelativeLayout
             analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, AnalyticsConstants.Facebook));
             detachFacebookSubscription();
             facebookInvitationSubscription = socialFriendHandlerFacebookLazy.get()
-                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO))
+                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO), null)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<Bundle>()
                     {
                         @Override public void onCompleted()

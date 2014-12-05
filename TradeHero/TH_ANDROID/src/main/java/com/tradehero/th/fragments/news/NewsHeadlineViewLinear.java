@@ -10,7 +10,6 @@ import android.view.View;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
@@ -19,7 +18,7 @@ import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import rx.Observer;
 import rx.observers.EmptyObserver;
 
-public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemDTOKey>
+public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemCompactDTO>
 {
     @Nullable private SecurityId securityId;
     private int backgroundResourceId = -1;
@@ -33,10 +32,10 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
 
     @Override protected NewsItemCompactViewHolder createViewHolder()
     {
-        return new NewsItemCompactViewHolder<NewsItemCompactDTO>(getContext());
+        return new NewsItemCompactViewHolder<>(getContext());
     }
 
-    @Override public void display(NewsItemDTOKey discussionKey)
+    @Override public void display(NewsItemCompactDTO discussionKey)
     {
         super.display(discussionKey);
         viewHolder.discussionActionButtonsView.setCommentCountVisible(View.GONE);
@@ -63,7 +62,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         {
 
             Bundle args = new Bundle();
-            NewsDiscussionFragment.putDiscussionKey(args, discussionKey);
+            //NewsDiscussionFragment.putDiscussionKey(args, discussionKey);
             if(backgroundResourceId > 0)
             {
                 NewsDiscussionFragment.putBackgroundResId(args, backgroundResourceId);

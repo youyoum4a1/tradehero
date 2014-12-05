@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import static butterknife.ButterKnife.findById;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
@@ -37,7 +36,6 @@ import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -51,6 +49,9 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
+import static butterknife.ButterKnife.findById;
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
+
 public class NewsHeadlineFragment extends Fragment
 {
     private static final String NEWS_TYPE_KEY = NewsHeadlineFragment.class.getName() + ".newsType";
@@ -62,15 +63,14 @@ public class NewsHeadlineFragment extends Fragment
     private Subscription newsSubscription;
     private PaginationInfoDTO lastPaginationInfoDTO;
     private ProgressBar mBottomLoadingView;
-    private PublishSubject<List<NewsItemDTOKey>> newsSubject;
+    private PublishSubject<List<NewsItemCompactDTO>> newsSubject;
     private AbsListView.OnScrollListener scrollListener;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        NewsItemDTOKey newsItemDTOKey = (NewsItemDTOKey) parent.getItemAtPosition(position);
-        NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) discussionCache.getValue(newsItemDTOKey);
+        NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) parent.getItemAtPosition(position);
 
         if (newsItemDTO != null && newsItemDTO.url != null)
         {
@@ -82,7 +82,6 @@ public class NewsHeadlineFragment extends Fragment
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
-    @Inject DiscussionCacheRx discussionCache;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
 
@@ -149,7 +148,7 @@ public class NewsHeadlineFragment extends Fragment
         scrollListener = new QuickReturnListViewOnScrollListener(
                 QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        ArrayDTOAdapter<NewsItemDTOKey, NewsHeadlineViewLinear> mNewsAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
+        ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
@@ -197,15 +196,14 @@ public class NewsHeadlineFragment extends Fragment
                 .startWith(new PaginationDTO(1, newsItemListKey.perPage));
     }
 
-    private Observable<List<NewsItemDTOKey>> createNewsListKeyPaginationObservable()
+    private Observable<List<NewsItemCompactDTO>> createNewsListKeyPaginationObservable()
     {
-        return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemDTOKey>>>)
+        return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>)
                 key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
                         .flatMapIterable(PaginatedDTO::getData)
-                        .map(NewsItemCompactDTO::getDiscussionKey)
                         .toList()
         );
     }
@@ -250,7 +248,7 @@ public class NewsHeadlineFragment extends Fragment
         super.onDestroyView();
     }
 
-    private class UpdateUIObserver implements rx.Observer<List<NewsItemDTOKey>>
+    private class UpdateUIObserver implements rx.Observer<List<NewsItemCompactDTO>>
     {
         private void updateUI()
         {
@@ -269,7 +267,7 @@ public class NewsHeadlineFragment extends Fragment
             updateUI();
         }
 
-        @Override public void onNext(List<NewsItemDTOKey> newsItemDTOKeys)
+        @Override public void onNext(List<NewsItemCompactDTO> newsItemDTOKeys)
         {
             updateUI();
         }

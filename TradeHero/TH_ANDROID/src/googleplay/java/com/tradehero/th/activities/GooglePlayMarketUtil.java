@@ -14,6 +14,7 @@ public class GooglePlayMarketUtil implements MarketUtil
 {
     // Google PlayStore
     public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
+    private static final String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
 
     @NonNull protected final AlertDialogUtil alertDialogUtil;
 
@@ -37,8 +38,7 @@ public class GooglePlayMarketUtil implements MarketUtil
             try
             {
                 activity.startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id="
-                                + PLAYSTORE_APP_ID)));
+                        Uri.parse(getAppMarketUrl())));
             }
             catch (Exception e)
             {
@@ -55,5 +55,10 @@ public class GooglePlayMarketUtil implements MarketUtil
     @Override public void sendToReviewAllOnMarket(@NonNull Activity activity)
     {
         showAppOnMarket(activity);
+    }
+
+    @Override public String getAppMarketUrl()
+    {
+        return PLAYSTORE_URL + PLAYSTORE_APP_ID;
     }
 }

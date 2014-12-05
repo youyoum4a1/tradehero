@@ -234,6 +234,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
         @Override public void onError(Throwable e)
         {
+            Timber.e(e, "Failed fetching portfolios list");
             THToast.show(R.string.error_fetch_portfolio_list_info);
         }
     }

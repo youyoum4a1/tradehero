@@ -19,6 +19,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussion;
 import com.tradehero.th.models.discussion.DTOProcessorDiscussionReply;
+import com.tradehero.th.network.DelayRetriesOrFailFunc1;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -29,6 +30,9 @@ import rx.Observable;
 
 @Singleton public class DiscussionServiceWrapper
 {
+    private static final int RETRY_COUNT = 3;
+    private static final long RETRY_DELAY_MILLIS = 1000;
+
     @NonNull private final DiscussionServiceRx discussionServiceRx;
     @NonNull private final DiscussionKeyFactory discussionKeyFactory;
     @NonNull private final DiscussionDTOFactory discussionDTOFactory;
@@ -96,7 +100,10 @@ import rx.Observable;
         if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
         {
             return discussionServiceRx.createDiscussion(discussionFormDTO)
-                    .map(createDiscussionReplyProcessor(((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(), discussionFormDTO.stubKey));
+                    .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
+                    .map(createDiscussionReplyProcessor(
+                            ((ReplyDiscussionFormDTO) discussionFormDTO).getInitiatingDiscussionKey(),
+                            discussionFormDTO.stubKey));
         }
         return postToTimelineRx(
                 currentUserId.toUserBaseKey(),
@@ -136,9 +143,9 @@ import rx.Observable;
     @NonNull public Observable<DiscussionDTO> voteRx(@NonNull DiscussionVoteKey discussionVoteKey)
     {
         return discussionServiceRx.vote(
-                        discussionVoteKey.inReplyToType,
-                        discussionVoteKey.inReplyToId,
-                        discussionVoteKey.voteDirection)
+                discussionVoteKey.inReplyToType,
+                discussionVoteKey.inReplyToId,
+                discussionVoteKey.voteDirection)
                 .map(createDiscussionReplyProcessor(
                         discussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
                         null));
@@ -163,8 +170,9 @@ import rx.Observable;
             @NonNull DiscussionFormDTO discussionFormDTO)
     {
         return discussionServiceRx.postToTimeline(
-                        userBaseKey.key,
-                        discussionFormDTO)
+                userBaseKey.key,
+                discussionFormDTO)
+                .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
                 .map(createDiscussionProcessor());
     }
     //</editor-fold>

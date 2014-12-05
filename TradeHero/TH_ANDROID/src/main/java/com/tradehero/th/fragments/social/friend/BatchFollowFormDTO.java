@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,4 +41,11 @@ public class BatchFollowFormDTO
         }
     }
     //</editor-fold>
+
+    @Override public String toString()
+    {
+        return "BatchFollowFormDTO{" +
+                "userIds=[" + StringUtils.join(",", userIds) + "]" +
+                '}';
+    }
 }

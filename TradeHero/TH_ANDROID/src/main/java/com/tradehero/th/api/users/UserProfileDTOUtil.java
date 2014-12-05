@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.api.alert.UserAlertPlanDTO;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
@@ -103,6 +104,24 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
                 return userProfileCompactDTO.wbLinked;
             default:
                 return false;
+        }
+    }
+
+    public int getFollowerCountByUserProfile(@NonNull MessageType messageType, @NonNull UserProfileDTO userProfileDTO)
+    {
+        switch (messageType)
+        {
+            case BROADCAST_FREE_FOLLOWERS:
+                return userProfileDTO.freeFollowerCount;
+
+            case BROADCAST_PAID_FOLLOWERS:
+                return userProfileDTO.paidFollowerCount;
+
+            case BROADCAST_ALL_FOLLOWERS:
+                return userProfileDTO.allFollowerCount;
+
+            default:
+                throw new IllegalArgumentException("unknown messageType");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.tradehero.th.models.social.follower;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.social.follower.AllFollowerFragment;
 import com.tradehero.th.fragments.social.hero.AllHeroFragment;
@@ -19,7 +20,7 @@ public class AllHeroTypeResourceDTO extends HeroTypeResourceDTO
                 AllFollowerFragment.class);
     }
 
-    @Override public HeroType getHeroType()
+    @Override @NonNull public HeroType getHeroType()
     {
         return HeroType.ALL;
     }

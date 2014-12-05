@@ -2,6 +2,7 @@
 <resources>
 
   <string name="invite">Invite</string>
+  <string name="invite_number">Invite (%s)</string>
   <string name="invite_friends">Invite Friends</string>
   <string name="invite_your_friends_now">Invite your friends now !</string>
   <string name="invite_all">Invite All</string>

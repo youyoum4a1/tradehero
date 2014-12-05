@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class CollectionUtils
 {
@@ -75,5 +76,15 @@ public class CollectionUtils
             }
         }
         return false;
+    }
+
+    @NonNull public static <S, T> List<S> map(@NonNull List<T> collection, @NonNull Func1<T, S> mapper)
+    {
+        List<S> created = new ArrayList<>();
+        for (T element : collection)
+        {
+            created.add(mapper.call(element));
+        }
+        return created;
     }
 }

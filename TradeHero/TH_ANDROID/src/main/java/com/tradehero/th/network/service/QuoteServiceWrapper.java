@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.SecurityId;
@@ -10,6 +9,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.client.Response;
 import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 @Singleton public class QuoteServiceWrapper
 {
@@ -44,29 +45,27 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Quote">
-    public Observable<SignatureContainer<QuoteDTO>> getSignedContainerQuoteRx(SecurityId securityId)
-    {
-        basicCheck(securityId);
-        return this.quoteServiceRx.getQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
-                securityId.getSecuritySymbol()));
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Raw Quote">
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteServiceRx.getRawQuote(
-                UrlEncoderHelper.transform(securityId.getExchange()),
-                UrlEncoderHelper.transform(securityId.getSecuritySymbol()))
-                .map(rawQuoteParser);
-    }
-
-    @NonNull public Observable<Response> getRawQuoteRx(@NonNull SecurityId securityId)
-    {
-        basicCheck(securityId);
-        return this.quoteServiceRx.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
-                securityId.getSecuritySymbol()));
+        //noinspection Convert2Lambda
+        return Observable.create(new Observable.OnSubscribe<QuoteDTO>()
+        {
+            @Override public void call(Subscriber<? super QuoteDTO> subscriber)
+            {
+                try
+                {
+                    Response response = quoteServiceRx.getRawQuote(
+                            UrlEncoderHelper.transform(securityId.getExchange()),
+                            UrlEncoderHelper.transform(securityId.getSecuritySymbol()));
+                    subscriber.onNext(rawQuoteParser.parse(response));
+                } catch (Exception e)
+                {
+                    subscriber.onError(e);
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io());
     }
     //</editor-fold>
 }

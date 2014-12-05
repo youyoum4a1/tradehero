@@ -21,6 +21,7 @@ import com.tradehero.th.models.discussion.DTOProcessorDiscussionCreate;
 import com.tradehero.th.models.discussion.DTOProcessorMessageDeleted;
 import com.tradehero.th.models.discussion.DTOProcessorMessageRead;
 import com.tradehero.th.models.discussion.DTOProcessorReadablePaginatedMessageReceived;
+import com.tradehero.th.network.DelayRetriesOrFailFunc1;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
@@ -35,6 +36,9 @@ import rx.Observable;
 @Singleton
 public class MessageServiceWrapper
 {
+    private static final int RETRY_COUNT = 3;
+    private static final long RETRY_DELAY_MILLIS = 1000;
+
     @NonNull private final MessageServiceRx messageServiceRx;
     @NonNull private final DiscussionDTOFactory discussionDTOFactory;
     @NonNull private final CurrentUserId currentUserId;
@@ -84,8 +88,8 @@ public class MessageServiceWrapper
             return getMessageHeadersRx((TypedMessageListKey) messageListKey);
         }
         return messageServiceRx.getMessageHeaders(
-                        messageListKey.page,
-                        messageListKey.perPage)
+                messageListKey.page,
+                messageListKey.perPage)
                 .map(createReadablePaginatedMessageHeaderReceivedProcessor());
     }
 
@@ -96,10 +100,10 @@ public class MessageServiceWrapper
             return getMessageHeadersRx((RecipientTypedMessageListKey) messageListKey);
         }
         return messageServiceRx.getMessageHeaders(
-                        messageListKey.discussionType.description,
-                        null,
-                        messageListKey.page,
-                        messageListKey.perPage)
+                messageListKey.discussionType.description,
+                null,
+                messageListKey.page,
+                messageListKey.perPage)
                 .map(createReadablePaginatedMessageHeaderReceivedProcessor());
     }
 
@@ -107,10 +111,10 @@ public class MessageServiceWrapper
             RecipientTypedMessageListKey messageListKey)
     {
         return messageServiceRx.getMessageHeaders(
-                        messageListKey.discussionType.description,
-                        messageListKey.recipientId.key,
-                        messageListKey.page,
-                        messageListKey.perPage)
+                messageListKey.discussionType.description,
+                messageListKey.recipientId.key,
+                messageListKey.page,
+                messageListKey.perPage)
                 .map(createReadablePaginatedMessageHeaderReceivedProcessor());
     }
     //</editor-fold>
@@ -154,6 +158,7 @@ public class MessageServiceWrapper
     public Observable<DiscussionDTO> createMessageRx(MessageCreateFormDTO form)
     {
         return messageServiceRx.createMessage(form)
+                .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
                 .map(createDiscussionCreateProcessor(null));
     }
     //</editor-fold>
@@ -179,9 +184,9 @@ public class MessageServiceWrapper
             @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.deleteMessage(
-                        messageHeaderId.commentId,
-                        senderUserId.key,
-                        recipientUserId.key)
+                messageHeaderId.commentId,
+                senderUserId.key,
+                recipientUserId.key)
                 .map(createMessageHeaderDeletedProcessor(messageHeaderId, readerId));
     }
     //</editor-fold>
@@ -207,9 +212,9 @@ public class MessageServiceWrapper
             @NonNull UserBaseKey readerId)
     {
         return messageServiceRx.readMessage(
-                        commentId.commentId,
-                        senderUserId.key,
-                        recipientUserId.key)
+                commentId.commentId,
+                senderUserId.key,
+                recipientUserId.key)
                 .map(createMessageHeaderReadProcessor(messageHeaderId, readerId));
     }
     //</editor-fold>

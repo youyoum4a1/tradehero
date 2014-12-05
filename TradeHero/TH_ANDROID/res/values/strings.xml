@@ -56,7 +56,7 @@
   <string name="error_not_enough_information">Not enough information, try again</string>
   <string name="via">" via "</string>
 
-  <string name="broadcast_success">Send message success</string>
+  <string name="broadcast_success">Message sent</string>
   <string name="broadcast_error">Send message error</string>
   <string name="broadcast_message_title">Broadcast Message</string>
   <string name="broadcast_message_action_send">Send</string>
@@ -199,7 +199,7 @@
   <!--do not translate end-->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="currency">US$</string>
-  <string name="invite_social_friend">Invite %s Friend</string>
+  <string name="invite_social_friend">Invite %s Friends</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
   <string name="social_friend_empty">Sorry, no friends</string>

@@ -165,6 +165,16 @@ public class SlidingTabLayout extends HorizontalScrollView {
     }
 
     /**
+     * Get the underlying tabStrip which contains the actual tabs,
+     * similar to {@link android.widget.TabWidget} inside {@link android.widget.TabHost}
+     * @return SlidingTabStrip
+     */
+    public SlidingTabStrip getTabStrip()
+    {
+        return mTabStrip;
+    }
+
+    /**
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
      * {@link #setCustomTabView(int, int)}.
      */

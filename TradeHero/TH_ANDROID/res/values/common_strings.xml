@@ -85,4 +85,7 @@
   <string name="upgrade_now">Upgrade Now!</string>
 
   <string name="device_no_camera">Unable to detect any camera.</string>
+
+  <string name="service_retry">Failed, retrying %1$d more times\n%2$s</string>
+
 </resources>

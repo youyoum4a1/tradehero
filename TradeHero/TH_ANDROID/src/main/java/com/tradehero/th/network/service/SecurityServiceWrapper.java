@@ -1,7 +1,6 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
@@ -25,47 +24,37 @@ import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
 import com.tradehero.th.models.security.DTOProcessorSecurityPositionDetailReceived;
 import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionUpdated;
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.Callback;
 import rx.Observable;
 
 @Singleton public class SecurityServiceWrapper
 {
     @NonNull private final SecurityService securityService;
-    @NonNull private final SecurityServiceAsync securityServiceAsync;
     @NonNull private final SecurityServiceRx securityServiceRx;
     @NonNull private final ProviderServiceWrapper providerServiceWrapper;
     @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
-    @NonNull private final Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
     @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapper(
             @NonNull SecurityService securityService,
-            @NonNull SecurityServiceAsync securityServiceAsync,
             @NonNull SecurityServiceRx securityServiceRx,
             @NonNull ProviderServiceWrapper providerServiceWrapper,
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
-            @NonNull Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull CurrentUserId currentUserId)
     {
         super();
         this.securityService = securityService;
-        this.securityServiceAsync = securityServiceAsync;
         this.securityServiceRx = securityServiceRx;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityCompactCache = securityCompactCache;
-        this.securityPositionDetailCache = securityPositionDetailCache;
         this.portfolioCache = portfolioCache;
         this.currentUserId = currentUserId;
     }
@@ -268,27 +257,6 @@ import rx.Observable;
                 portfolioCache.get());
     }
 
-    @Deprecated
-    public SecurityPositionTransactionDTO buy(
-            @NonNull SecurityId securityId,
-            @NonNull TransactionFormDTO transactionFormDTO)
-    {
-        return createSecurityPositionTransactionUpdatedProcessor(securityId).process(
-                this.securityService.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
-    }
-
-    @Deprecated
-    @NonNull public MiddleCallback<SecurityPositionTransactionDTO> buy(
-            @NonNull SecurityId securityId,
-            @NonNull TransactionFormDTO transactionFormDTO,
-            @Nullable Callback<SecurityPositionTransactionDTO> callback)
-    {
-        MiddleCallback<SecurityPositionTransactionDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionTransactionUpdatedProcessor(
-                securityId));
-        this.securityServiceAsync.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
-        return middleCallback;
-    }
-
     @NonNull public Observable<SecurityPositionTransactionDTO> buyRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
@@ -299,27 +267,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
-    @Deprecated
-    public SecurityPositionTransactionDTO sell(
-            @NonNull SecurityId securityId,
-            @NonNull TransactionFormDTO transactionFormDTO)
-    {
-        return createSecurityPositionTransactionUpdatedProcessor(securityId).process(
-                this.securityService.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO));
-    }
-
-    @Deprecated
-    @NonNull public MiddleCallback<SecurityPositionTransactionDTO> sell(
-            @NonNull SecurityId securityId,
-            @NonNull TransactionFormDTO transactionFormDTO,
-            @Nullable Callback<SecurityPositionTransactionDTO> callback)
-    {
-        MiddleCallback<SecurityPositionTransactionDTO> middleCallback = new BaseMiddleCallback<>(callback, createSecurityPositionTransactionUpdatedProcessor(
-                securityId));
-        this.securityServiceAsync.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO, middleCallback);
-        return middleCallback;
-    }
-
     @NonNull public Observable<SecurityPositionTransactionDTO> sellRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
@@ -340,20 +287,6 @@ import rx.Observable;
             return buyRx(securityId, transactionFormDTO);
         }
         return sellRx(securityId, transactionFormDTO);
-    }
-
-    @Deprecated
-    @NonNull public MiddleCallback<SecurityPositionTransactionDTO> doTransaction(
-            @NonNull SecurityId securityId,
-            @NonNull TransactionFormDTO transactionFormDTO,
-            boolean isBuy,
-            @Nullable Callback<SecurityPositionTransactionDTO> callback)
-    {
-        if (isBuy)
-        {
-            return buy(securityId, transactionFormDTO, callback);
-        }
-        return sell(securityId, transactionFormDTO, callback);
     }
     //</editor-fold>
 }

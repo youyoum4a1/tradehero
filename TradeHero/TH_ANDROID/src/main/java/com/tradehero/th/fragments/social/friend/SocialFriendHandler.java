@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.social.friend;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
@@ -12,8 +11,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Observable;
 
 @Singleton public class SocialFriendHandler
 {
@@ -26,36 +24,22 @@ import rx.android.schedulers.AndroidSchedulers;
     }
     //</editor-fold>
 
-    public Subscription followFriends(@NonNull List<UserFriendsDTO> users, @Nullable RequestObserver<UserProfileDTO> observer)
+    @NonNull public Observable<UserProfileDTO> followFriends(@NonNull List<UserFriendsDTO> users)
     {
-        if (observer != null)
-        {
-            observer.onRequestStart();
-        }
-        return userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(users, (UserFriendsDTO) null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+        return userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(users, (UserFriendsDTO) null));
     }
 
-    public Subscription inviteFriends(
+    @NonNull public Observable<BaseResponseDTO> inviteFriends(
             @NonNull UserBaseKey userKey,
-            @NonNull List<UserFriendsDTO> users,
-            @Nullable RequestObserver<BaseResponseDTO> observer)
+            @NonNull List<UserFriendsDTO> users)
     {
-        return inviteFriends(userKey, new InviteFormUserDTO(users), observer);
+        return inviteFriends(userKey, new InviteFormUserDTO(users));
     }
 
-    public Subscription inviteFriends(
+    @NonNull public Observable<BaseResponseDTO> inviteFriends(
             @NonNull UserBaseKey userKey,
-            @NonNull InviteFormDTO inviteFormDTO,
-            @Nullable RequestObserver<BaseResponseDTO> observer)
+            @NonNull InviteFormDTO inviteFormDTO)
     {
-        if (observer != null)
-        {
-            observer.onRequestStart();
-        }
-        return userServiceWrapper.inviteFriendsRx(userKey, inviteFormDTO)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
+        return userServiceWrapper.inviteFriendsRx(userKey, inviteFormDTO);
     }
 }

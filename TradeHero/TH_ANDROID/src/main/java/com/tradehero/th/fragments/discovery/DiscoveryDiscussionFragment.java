@@ -23,7 +23,6 @@ import com.tradehero.th.api.pagination.RangeDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
@@ -33,8 +32,6 @@ import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
-import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -47,6 +44,9 @@ import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
+import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
 {
@@ -64,7 +64,7 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private ProgressBar mBottomLoadingView;
 
-    private ArrayDTOAdapter<TimelineItemDTOKey, TimelineItemViewLinear> discoveryDiscussionAdapter;
+    private ArrayDTOAdapter<TimelineItemDTO, TimelineItemViewLinear> discoveryDiscussionAdapter;
     @NonNull private CompositeSubscription timelineSubscriptions;
 
     private RangeDTO currentRangeDTO = new RangeDTO(TIMELINE_ITEM_PER_PAGE, null, null);
@@ -145,7 +145,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         timelineSubscriptions.clear();
 
-        PublishSubject<List<TimelineItemDTOKey>> timelineSubject = PublishSubject.create();
+        PublishSubject<List<TimelineItemDTO>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
         timelineSubscriptions.add(timelineSubject.subscribe(discoveryDiscussionAdapter::setItems));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
@@ -154,10 +154,10 @@ public class DiscoveryDiscussionFragment extends Fragment
         progressBar.setVisibility(View.VISIBLE);
         timelineSubscriptions.add(rxLoaderManager.create(
                 DISCOVERY_LIST_LOADER_ID,
-                PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTOKey>>>)
+                PaginationObservable.createFromRange(timelineRefreshRangeObservable, (Func1<RangeDTO, Observable<List<TimelineItemDTO>>>)
                         rangeDTO -> userTimelineServiceWrapper.getTimelineBySectionRx(TimelineSection.Hot, currentUserId.toUserBaseKey(), rangeDTO)
                                 .flatMapIterable(TimelineDTO::getEnhancedItems)
-                                .map(TimelineItemDTO::getDiscussionKey)
+                                .cast(TimelineItemDTO.class)
                                 .toList()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -183,7 +183,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         HierarchyInjector.inject(this);
     }
 
-    private class RefreshCompleteObserver implements Observer<List<TimelineItemDTOKey>>
+    private class RefreshCompleteObserver implements Observer<List<TimelineItemDTO>>
     {
         private void refreshComplete()
         {
@@ -202,15 +202,15 @@ public class DiscoveryDiscussionFragment extends Fragment
             refreshComplete();
         }
 
-        @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        @Override public void onNext(List<TimelineItemDTO> timelineItemDTOKeys)
         {
             refreshComplete();
         }
     }
 
-    private class UpdateRangeObserver extends EmptyObserver<List<TimelineItemDTOKey>>
+    private class UpdateRangeObserver extends EmptyObserver<List<TimelineItemDTO>>
     {
-        @Override public void onNext(List<TimelineItemDTOKey> timelineItemDTOKeys)
+        @Override public void onNext(List<TimelineItemDTO> timelineItemDTOKeys)
         {
             if (timelineItemDTOKeys != null && !timelineItemDTOKeys.isEmpty())
             {

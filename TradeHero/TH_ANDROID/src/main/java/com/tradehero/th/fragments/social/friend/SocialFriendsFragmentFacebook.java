@@ -1,18 +1,35 @@
 package com.tradehero.th.fragments.social.friend;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import com.facebook.HttpMethod;
+import com.facebook.Response;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import java.util.List;
+import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
+import timber.log.Timber;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
 {
+    private static final String API_INVITABLE_FRIENDS = "/me/invitable_friends";
+
     @Inject Provider<SocialFriendHandlerFacebook> facebookSocialFriendHandlerProvider;
+
+    @Nullable Subscription invitableFriendsSubscription;
+
+    @Override public void onDestroyView()
+    {
+        unsubscribe(invitableFriendsSubscription);
+        invitableFriendsSubscription = null;
+        super.onDestroyView();
+    }
 
     @Override
     protected SocialNetworkEnum getSocialNetwork()
@@ -26,61 +43,47 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         return getString(R.string.invite_social_friend, getString(R.string.facebook));
     }
 
-    @Override
-    protected boolean canInviteAll()
+    @Override @NonNull
+    protected SocialFriendHandlerFacebook createFriendHandler()
     {
-        return true;
+        return facebookSocialFriendHandlerProvider.get();
     }
 
-    @Override
-    protected void createFriendHandler()
+    @Override protected void linkWith(@NonNull UserFriendsDTOList value)
     {
-        if (socialFriendHandler == null)
+        super.linkWith(value);
+        if (this.invitableFriends.isEmpty())
         {
-            socialFriendHandler = facebookSocialFriendHandlerProvider.get();
+            //fetchInvitableFriends();
         }
     }
 
-    @Override
-    protected void handleInviteUsers(List<UserFriendsDTO> usersToInvite)
+    protected void fetchInvitableFriends()
     {
-        // TODO
-        super.handleInviteUsers(usersToInvite);
+        unsubscribe(invitableFriendsSubscription);
+        invitableFriendsSubscription = AndroidObservable.bindFragment(
+                this,
+                facebookSocialFriendHandlerProvider.get().createProfileSessionObservable()
+                        .take(1)
+                        .flatMap(pair -> Observable.create(
+                                FacebookRequestOperator.builder(pair.second)
+                                        .setGraphPath(API_INVITABLE_FRIENDS)
+                                        .setHttpMethod(HttpMethod.GET)
+                                        .setVersion("v2.2")
+                                        .build())))
+                .subscribe(
+                        this::onInvitableFriendsReceived,
+                        this::onInvitableFriendsFailed);
     }
 
-    @Override
-    protected RequestObserver<BaseResponseDTO> createInviteObserver(List<UserFriendsDTO> usersToInvite)
+    protected void onInvitableFriendsReceived(Response response)
     {
-        return new FacebookInviteFriendObserver(usersToInvite);
+        Timber.d("InvitableFriends response %s", response);
+        THToast.show("Parse invitable friends");
     }
 
-    class FacebookInviteFriendObserver extends FacebookRequestObserver
+    protected void onInvitableFriendsFailed(Throwable e)
     {
-        final List<UserFriendsDTO> usersToInvite;
-
-        //<editor-fold desc="Constructors">
-        public FacebookInviteFriendObserver(@NonNull Context context, List<UserFriendsDTO> usersToInvite)
-        {
-            super(context);
-            this.usersToInvite = usersToInvite;
-        }
-
-        private FacebookInviteFriendObserver(List<UserFriendsDTO> usersToInvite)
-        {
-            this(getActivity(), usersToInvite);
-        }
-        //</editor-fold>
-
-        @Override
-        public void success()
-        {
-            handleInviteSuccess(usersToInvite);
-        }
-
-        @Override
-        public void failure()
-        {
-            handleInviteError();
-        }
+        Timber.e(e, "InvitableFriends error");
     }
 }
