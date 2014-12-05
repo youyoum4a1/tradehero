@@ -144,6 +144,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
 
+    private boolean isBuyDirectly = false;
     private boolean isBuy = false;
     private boolean isSending = false;
     private boolean isLoadingBuyDirectly = false;
@@ -153,6 +154,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     protected FreshQuoteHolder freshQuoteHolder;
     @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
+    public ShareDialogFragment shareDialogFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -177,7 +179,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.buy_sale_layout, container, false);
         ButterKnife.inject(this, view);
-        if (getArguments().getBoolean(KEY_IS_BUY_DIRECTLY, false))
+        isBuyDirectly = getArguments().getBoolean(KEY_IS_BUY_DIRECTLY, false);
+        if (isBuyDirectly)
         {
             initDirectly();
             initView();
@@ -834,14 +837,24 @@ public class BuySaleSecurityFragment extends DashboardFragment
                     {
                         return;
                     }
-                    String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity());
+                    String endPoint = THSharePreferenceManager.getShareEndPoint(getActivity() );
                     mShareSheetTitleCache.set(getString(R.string.share_buy_dialog_summary,
                             securityId.getDisplayName(), currentUserId.get().toString(),
                             securityCompactDTO.id.toString(), endPoint));
-                    ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
+
+                    shareDialogFragment = ShareDialogFragment.showDialog(getActivity().getSupportFragmentManager(),
                             getString(R.string.share_buy_dialog_title, securityId.getDisplayName()), getString(R.string.share_buy_dialog_summary,
                             securityId.getDisplayName(), currentUserId.get().toString(),
                             securityCompactDTO.id.toString(), endPoint));
+
+                    shareDialogFragment.setOnDismissListener(new ShareDialogFragment.DialogDissmissListener()
+                    {
+                        @Override public void onDismissDialog()
+                        {
+                           popCurrentFragment();
+                        }
+                    });
+
                 }
                 else
                 {
@@ -861,7 +874,10 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             profitLoss);
                 }
             }
-            ExitBuySellFragment();
+            if(!isBuyDirectly)
+            {//正常流程，退出前先获取自己的持仓
+                ExitBuySellFragment();
+            }
         }
 
         @Override public void failure(RetrofitError retrofitError)

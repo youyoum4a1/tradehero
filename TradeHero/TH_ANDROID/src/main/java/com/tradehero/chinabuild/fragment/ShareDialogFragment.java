@@ -25,15 +25,15 @@ import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
+import javax.inject.Inject;
+import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 
-
-public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener {
+public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener
+{
 
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @InjectView(R.id.title) TextView mTitleText;
@@ -51,6 +51,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
     private static int mUserId = -1;
 
     public static boolean isDialogShowing = false;
+    public DialogDissmissListener mDismissDialog;
 
     /**
      * Share to WeChat moment and share to WeiBo on the background
@@ -61,6 +62,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
      * @return
      */
     public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent) {
+
         if(isDialogShowing){
             return null;
         }
@@ -79,6 +81,13 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         return dialogFragment;
     }
 
+
+
+    public void setOnDismissListener(DialogDissmissListener listener)
+    {
+        mDismissDialog = listener;
+    }
+
     /**
      * Share to WeChat moment and share to WeiBo on the background
      *
@@ -88,6 +97,7 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
      * @return
      */
     public static ShareDialogFragment showDialog(FragmentManager fragmentManager, String title, String shareContent, String type, int userId) {
+
         if(isDialogShowing){
             return null;
         }
@@ -135,12 +145,20 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
                 isDialogShowing = false;
                 recordCancel();
                 dismiss();
+                if(mDismissDialog!=null)
+                {
+                    mDismissDialog.onDismissDialog();
+                }
                 break;
             case R.id.btn_ok:
                 isDialogShowing = false;
                 dismiss();
                 recordConfirm();
                 shareToWeChatMoment();
+                if(mDismissDialog!=null)
+                {
+                    mDismissDialog.onDismissDialog();
+                }
                 break;
         }
     }
@@ -229,4 +247,9 @@ public class ShareDialogFragment extends BaseDialogFragment implements View.OnCl
         }
     }
 
+
+    public static interface DialogDissmissListener
+    {
+        public void onDismissDialog();
+    }
 }

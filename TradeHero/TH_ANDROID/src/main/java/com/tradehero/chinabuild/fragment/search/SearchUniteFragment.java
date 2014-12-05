@@ -140,6 +140,10 @@ public class SearchUniteFragment extends DashboardFragment
 
     boolean isFristLunch;
 
+    private int pageSecurity = 1;
+    //private int pageCompetition = 2;
+    private int pageUser = 3;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -294,7 +298,15 @@ public class SearchUniteFragment extends DashboardFragment
             {
                 return;
             }
-            initAdapterSecurity(value, key);
+            if (key instanceof SearchSecurityListType)
+            {
+                initAdapterSecurity(value, key);
+                pageSecurity ++ ;
+            }
+            else if(key instanceof SearchHotSecurityListType)
+            {
+                initAdapterSecurity(value, key);
+            }
             onFinish();
         }
 
@@ -359,23 +371,30 @@ public class SearchUniteFragment extends DashboardFragment
     {
         if (index == TAB_SEARCH_STOCK)
         {
+            pageSecurity = 1;
             fetchSecuritySearchList(force);
         }
         else if (index == TAB_SEARCH_COMPETITION)
         {
+
             fetchSearchCompetition(force);
         }
         else if (index == TAB_SEARCH_USER)
         {
+            pageUser = 1;
             fetchSearchUser(force);
         }
     }
 
     private void fetchSecuritySearchList(boolean force)
     {
-        if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
+        if (StringUtils.isNullOrEmptyOrSpaces(getSearchString()))
+        {
+            listStock.onRefreshComplete();
+            return;
+        }
         detachSecurityListCache();
-        keySearch = new SearchSecurityListType(getSearchString(), 1, 50);
+        keySearch = new SearchSecurityListType(getSearchString(), pageSecurity, 50);
         securityCompactListCache.get().register(keySearch, securityListTypeCacheListener);
         securityCompactListCache.get().getOrFetchAsync(keySearch, force);
     }
@@ -526,25 +545,22 @@ public class SearchUniteFragment extends DashboardFragment
         if (adapterStock != null && adapterUser.getCount() == 0)
         {
             fetchHotSecuritySearchList(true);
-
         }
 
         if (adapterUser != null && adapterUser.getCount() == 0)
         {
             fetchRecommandCompetition(false);
-
         }
 
         if (adapterCompetition != null && adapterCompetition.getCount() == 0)
         {
             fetchRecommandUser(false);
-
         }
     }
 
     public void loadHistorySearchData()
     {
-        if(tabSelect == TAB_SEARCH_STOCK)
+        if (tabSelect == TAB_SEARCH_STOCK)
         {
             ArrayList<SecurityCompactDTO> securies = SearchResultSave.loadSearchSecurity(getActivity());
             if (securies != null)
@@ -552,7 +568,7 @@ public class SearchUniteFragment extends DashboardFragment
                 adapterStock.setSecurityList(securies);
             }
         }
-        else if(tabSelect == TAB_SEARCH_COMPETITION)
+        else if (tabSelect == TAB_SEARCH_COMPETITION)
         {
             ArrayList<CompetitionDataItem> competitions = SearchResultSave.loadSearchCompetitions(getActivity());
             if (competitions != null)
@@ -560,7 +576,7 @@ public class SearchUniteFragment extends DashboardFragment
                 adapterCompetition.setUserCompetitionDataList(competitions);
             }
         }
-        else if(tabSelect == TAB_SEARCH_USER)
+        else if (tabSelect == TAB_SEARCH_USER)
         {
             ArrayList<UserSearchResultDTO> users = SearchResultSave.loadSearchUsers(getActivity());
             if (users != null)
@@ -656,7 +672,7 @@ public class SearchUniteFragment extends DashboardFragment
         progressBar0 = (TradeHeroProgressBar) view.findViewById(R.id.progressbar_trade_security_search);
         listStock.setEmptyView(tvEmpty);
         listStock.setAdapter(adapterStock);
-        listStock.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        listStock.setMode(PullToRefreshBase.Mode.BOTH);
         listStock.setOnItemClickListener(securityItemClickListner);
 
         listStock.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
@@ -671,6 +687,7 @@ public class SearchUniteFragment extends DashboardFragment
                 }
                 else
                 {
+                    listStock.onRefreshComplete();
                     fetchHotSecuritySearchList(true);
                 }
             }
@@ -678,7 +695,7 @@ public class SearchUniteFragment extends DashboardFragment
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-
+                fetchSecuritySearchList(true);
             }
         });
     }
@@ -714,7 +731,7 @@ public class SearchUniteFragment extends DashboardFragment
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-
+                fetchSecuritySearchList(true);
             }
         });
     }
@@ -726,7 +743,7 @@ public class SearchUniteFragment extends DashboardFragment
         progressBar2 = (TradeHeroProgressBar) view.findViewById(R.id.progressbar_trade_security_search);
         listUser.setEmptyView(tvEmpty);
         listUser.setAdapter(adapterUser);
-        listUser.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        listUser.setMode(PullToRefreshBase.Mode.BOTH);
 
         listUser.setOnItemClickListener(userItemClickListner);
 
@@ -750,7 +767,7 @@ public class SearchUniteFragment extends DashboardFragment
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-
+                fetchSearchUser(true);
             }
         });
     }
@@ -783,6 +800,8 @@ public class SearchUniteFragment extends DashboardFragment
         }
     };
 
+    public static final String[] hintArray = {"股票代码／拼音／简称", "请输入比赛名称", "请输入用户姓名"};
+
     public void setSelectTabView(int index)
     {
         tabSelect = index;
@@ -799,9 +818,11 @@ public class SearchUniteFragment extends DashboardFragment
         viewLine2.setBackgroundColor(
                 index == TAB_SEARCH_USER ? getResources().getColor(R.color.tradehero_blue) : getResources().getColor(R.color.gray_normal));
 
-        viewLine00.setVisibility(index == TAB_SEARCH_STOCK?View.VISIBLE:View.INVISIBLE);
-        viewLine11.setVisibility(index == TAB_SEARCH_COMPETITION?View.VISIBLE:View.INVISIBLE);
-        viewLine22.setVisibility(index == TAB_SEARCH_USER?View.VISIBLE:View.INVISIBLE);
+        viewLine00.setVisibility(index == TAB_SEARCH_STOCK ? View.VISIBLE : View.INVISIBLE);
+        viewLine11.setVisibility(index == TAB_SEARCH_COMPETITION ? View.VISIBLE : View.INVISIBLE);
+        viewLine22.setVisibility(index == TAB_SEARCH_USER ? View.VISIBLE : View.INVISIBLE);
+
+        tvSearchInput.setHint(hintArray[index]);
     }
 
     protected DTOCacheNew.Listener<CompetitionListType, UserCompetitionDTOList> createCompetitionListCacheListenerSearch()
@@ -893,7 +914,7 @@ public class SearchUniteFragment extends DashboardFragment
     private void fetchSearchUser(boolean force)
     {
         detachSearchUser();
-        SearchUserListType searchKey = new SearchUserListType(getSearchString(), 1, 50);
+        SearchUserListType searchKey = new SearchUserListType(getSearchString(), pageUser, 50);
         userBaseKeyListCache.get().register(searchKey, userCacheListenerSearch);
         userBaseKeyListCache.get().getOrFetchAsync(searchKey, force);
     }
@@ -907,9 +928,21 @@ public class SearchUniteFragment extends DashboardFragment
     {
         public void onDTOReceived(@NotNull UserListType key, @NotNull UserSearchResultDTOList value)
         {
-            Timber.d("success");
+            if (key instanceof SearchUserListType)
+            {
+                Timber.d("success");
+                if (((SearchUserListType) key).getPage() == 1)
+                {
+                    initSearchUserResult(value);
+                }
+                else
+                {
+                    addSearchUserResult(value);
+                }
+
+                pageUser++;
+            }
             onFinish();
-            initSearchUserResult(value);
         }
 
         public void onErrorThrown(@NotNull UserListType key, @NotNull Throwable error)
@@ -933,6 +966,14 @@ public class SearchUniteFragment extends DashboardFragment
         }
     }
 
+    public void addSearchUserResult(UserSearchResultDTOList users)
+    {
+        if (adapterUser != null)
+        {
+            adapterUser.addListData(users);
+        }
+    }
+
     private void gotoUserDetailFragment(int userId)
     {
         Bundle bundle = new Bundle();
@@ -953,7 +994,7 @@ public class SearchUniteFragment extends DashboardFragment
             LeaderboardUserDTOList list = value.users;
             if (list != null && list.size() > 0)
             {
-                for(int i = 0;i<list.size();i++)
+                for (int i = 0; i < list.size(); i++)
                 {
                     userSearchResultDTOs.add(new UserSearchResultDTO(list.get(i)));
                 }

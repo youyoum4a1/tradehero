@@ -24,6 +24,11 @@ public class UserSearchResultDTO implements DTO,Serializable
         return new UserBaseKey(userId);
     }
 
+    public UserSearchResultDTO()
+    {
+
+    }
+
     public UserSearchResultDTO(LeaderboardUserDTO dto)
     {
         this.userId = dto.id;
