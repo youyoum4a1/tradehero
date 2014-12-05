@@ -115,7 +115,7 @@ import rx.functions.Func1;
                 dtoCacheUtil);
     }
 
-    public Observable<UserProfileDTO> signUpWithEmailRx(
+    @NonNull public Observable<UserProfileDTO> signUpWithEmailRx(
             String authorization,
             UserFormDTO userFormDTO)
     {
@@ -171,7 +171,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Sign-Up">
-    public Observable<UserProfileDTO> signUpRx(
+    @NonNull public Observable<UserProfileDTO> signUpRx(
             String authorization,
             UserFormDTO userFormDTO)
     {
@@ -185,7 +185,7 @@ import rx.functions.Func1;
         return new DTOProcessorUpdateUserProfileDeep(userProfileCache.get(), homeContentCache.get());
     }
 
-    public Observable<UserProfileDTO> updateProfileRx(
+    @NonNull public Observable<UserProfileDTO> updateProfileRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull UserFormDTO userFormDTO)
     {
@@ -237,7 +237,7 @@ import rx.functions.Func1;
         });
     }
 
-    public Observable<UserProfileDTO> updateProfilePropertyEmailNotificationsRx(
+    @NonNull public Observable<UserProfileDTO> updateProfilePropertyEmailNotificationsRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull Boolean emailNotificationsEnabled)
     {
@@ -247,7 +247,7 @@ import rx.functions.Func1;
         return this.updateProfileRx(userBaseKey, userFormDTO);
     }
 
-    public Observable<UserProfileDTO> updateProfilePropertyPushNotificationsRx(
+    @NonNull public Observable<UserProfileDTO> updateProfilePropertyPushNotificationsRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull Boolean pushNotificationsEnabled)
     {
@@ -259,21 +259,21 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Check Display Name Available">
-    public Observable<UserAvailabilityDTO> checkDisplayNameAvailableRx(@NonNull String username)
+    @NonNull public Observable<UserAvailabilityDTO> checkDisplayNameAvailableRx(@NonNull String username)
     {
         return userServiceRx.checkDisplayNameAvailable(username);
     }
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    public Observable<ForgotPasswordDTO> forgotPasswordRx(@NonNull ForgotPasswordFormDTO forgotPasswordFormDTO)
+    @NonNull public Observable<ForgotPasswordDTO> forgotPasswordRx(@NonNull ForgotPasswordFormDTO forgotPasswordFormDTO)
     {
         return userServiceRx.forgotPassword(forgotPasswordFormDTO);
     }
     //</editor-fold>
 
     //<editor-fold desc="Search Users">
-    public Observable<UserSearchResultDTOList> searchUsersRx(@NonNull UserListType key)
+    @NonNull public Observable<UserSearchResultDTOList> searchUsersRx(@NonNull UserListType key)
     {
         if (key instanceof SearchUserListType)
         {
@@ -282,7 +282,7 @@ import rx.functions.Func1;
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
     }
 
-    protected Observable<UserSearchResultDTOList> searchUsersRx(@NonNull SearchUserListType key)
+    @NonNull protected Observable<UserSearchResultDTOList> searchUsersRx(@NonNull SearchUserListType key)
     {
         if (key.searchString == null)
         {
@@ -293,7 +293,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Search Allowable Recipients">
-    public Observable<PaginatedAllowableRecipientDTO> searchAllowableRecipientsRx(@Nullable SearchAllowableRecipientListType key)
+    @NonNull public Observable<PaginatedAllowableRecipientDTO> searchAllowableRecipientsRx(@Nullable SearchAllowableRecipientListType key)
     {
         if (key == null)
         {
@@ -309,7 +309,7 @@ import rx.functions.Func1;
         return userService.getUser(userKey.key);
     }
 
-    public Observable<UserProfileDTO> getUserRx(@NonNull UserBaseKey userKey)
+    @NonNull public Observable<UserProfileDTO> getUserRx(@NonNull UserBaseKey userKey)
     {
         return userService.getUserRx(userKey.key);
     }
@@ -331,7 +331,7 @@ import rx.functions.Func1;
         return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey, updatePayPalEmailFormDTO);
     }
 
-    public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
+    @NonNull public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
@@ -348,7 +348,7 @@ import rx.functions.Func1;
         return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId, updateAlipayAccountFormDTO);
     }
 
-    public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
+    @NonNull public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
@@ -358,7 +358,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Delete User">
-    public Observable<BaseResponseDTO> deleteUserRx(@NonNull UserBaseKey userKey)
+    @NonNull public Observable<BaseResponseDTO> deleteUserRx(@NonNull UserBaseKey userKey)
     {
         return userServiceRx.deleteUser(userKey.key);
     }
@@ -396,7 +396,7 @@ import rx.functions.Func1;
         return received;
     }
 
-    public Observable<UserFriendsDTOList> getFriendsRx(@NonNull FriendsListKey friendsListKey)
+    @NonNull public Observable<UserFriendsDTOList> getFriendsRx(@NonNull FriendsListKey friendsListKey)
     {
         Observable<UserFriendsDTOList> received;
         if (friendsListKey.searchQuery != null)
@@ -429,14 +429,14 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NonNull UserBaseKey userKey, @NonNull SocialNetworkEnum socialNetworkEnum, @NonNull String query)
+    @NonNull public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NonNull UserBaseKey userKey, @NonNull SocialNetworkEnum socialNetworkEnum, @NonNull String query)
     {
         return userServiceRx.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }
     //</editor-fold>
 
     //<editor-fold desc="Follow Batch Free">
-    protected DTOProcessorFollowFreeUserBatch createBatchFollowFreeProcessor(@NonNull BatchFollowFormDTO batchFollowFormDTO)
+    @NonNull protected DTOProcessorFollowFreeUserBatch createBatchFollowFreeProcessor(@NonNull BatchFollowFormDTO batchFollowFormDTO)
     {
         return new DTOProcessorFollowFreeUserBatch(
                 userProfileCache.get(),
@@ -453,7 +453,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Invite Friends">
-    public Observable<BaseResponseDTO> inviteFriendsRx(
+    @NonNull public Observable<BaseResponseDTO> inviteFriendsRx(
             @NonNull UserBaseKey userKey,
             @NonNull InviteFormDTO inviteFormDTO)
     {
@@ -462,7 +462,7 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Add Credit">
-    public Observable<UserProfileDTO> addCreditRx(
+    @NonNull public Observable<UserProfileDTO> addCreditRx(
             @NonNull UserBaseKey userKey,
             @Nullable PurchaseReportDTO purchaseDTO)
     {
@@ -482,12 +482,12 @@ import rx.functions.Func1;
                 heroId);
     }
 
-    public Observable<UserProfileDTO> followRx(@NonNull UserBaseKey heroId)
+    @NonNull public Observable<UserProfileDTO> followRx(@NonNull UserBaseKey heroId)
     {
         return userServiceRx.follow(heroId.key);
     }
 
-    public Observable<UserProfileDTO> followRx(
+    @NonNull public Observable<UserProfileDTO> followRx(
             @NonNull UserBaseKey heroId,
             @NonNull PurchaseReportDTO purchaseDTO)
     {
@@ -505,21 +505,21 @@ import rx.functions.Func1;
                 heroId);
     }
 
-    public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
+    @NonNull public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
     {
         return userServiceRx.freeFollow(heroId.key).map(createFollowFreeUserProcessor(heroId));
     }
     //</editor-fold>
 
     //<editor-fold desc="Unfollow Hero">
-    public Observable<UserProfileDTO> unfollowRx(@NonNull UserBaseKey heroId)
+    @NonNull public Observable<UserProfileDTO> unfollowRx(@NonNull UserBaseKey heroId)
     {
         return userServiceRx.unfollow(heroId.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">
-    public Observable<HeroDTOList> getHeroesRx(@NonNull UserBaseKey heroKey)
+    @NonNull public Observable<HeroDTOList> getHeroesRx(@NonNull UserBaseKey heroKey)
     {
         return userServiceRx.getHeroes(heroKey.key);
     }

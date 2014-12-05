@@ -33,6 +33,7 @@ import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorViewH
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPrefDTO;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockViewHolder;
 import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
@@ -287,13 +288,14 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         LeaderboardUserDTOList heroesList = heroViewHolder.getSelectedHeroes();
         if (!heroesList.isEmpty())
         {
+            final BatchFollowFormDTO form = new BatchFollowFormDTO(heroesList, new UserBaseDTO());
             userServiceWrapper.followBatchFreeRx(
-                    new BatchFollowFormDTO(heroesList, new UserBaseDTO()))
+                    form)
                     .subscribe(new EmptyObserver<UserProfileDTO>()
                     {
                         @Override public void onError(Throwable e)
                         {
-                            Timber.e(e, "Failed to add heroes");
+                            Timber.e(new THException(e), "Failed to add heroes %s", form);
                         }
                     });
         }
@@ -321,7 +323,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
                     {
                         @Override public void onError(Throwable e)
                         {
-                            Timber.e(e, "Failed to add watchlist");
+                            Timber.e(new THException(e), "Failed to add watchlist");
                         }
                     });
         }
