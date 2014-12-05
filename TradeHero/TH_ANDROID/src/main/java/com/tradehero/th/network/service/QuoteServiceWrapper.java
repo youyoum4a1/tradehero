@@ -1,12 +1,11 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.SignatureContainer;
+import com.tradehero.th.api.RawResponseParser;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
+import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit.Callback;
@@ -17,16 +16,16 @@ import rx.Observable;
 @Singleton public class QuoteServiceWrapper
 {
     @NonNull private final QuoteServiceRx quoteServiceRx;
-    @NonNull private final RawQuoteParser rawQuoteParser;
+    @NonNull private final RawResponseParser rawResponseParser;
 
     //<editor-fold desc="Constructors">
     @Inject public QuoteServiceWrapper(
             @NonNull QuoteServiceRx quoteServiceRx,
-            @NonNull RawQuoteParser rawQuoteParser)
+            @NonNull RawResponseParser rawResponseParser)
     {
         super();
         this.quoteServiceRx = quoteServiceRx;
-        this.rawQuoteParser = rawQuoteParser;
+        this.rawResponseParser = rawResponseParser;
     }
     //</editor-fold>
 
@@ -47,27 +46,28 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Quote">
-    public Observable<SignatureContainer<QuoteDTO>> getSignedContainerQuoteRx(SecurityId securityId)
-    {
-        basicCheck(securityId);
-        return this.quoteServiceRx.getQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
-                securityId.getSecuritySymbol()));
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get Raw Quote">
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
         return Observable.create(subscriber -> quoteServiceRx.getRawQuote(
                 UrlEncoderHelper.transform(securityId.getExchange()),
                 UrlEncoderHelper.transform(securityId.getSecuritySymbol()),
-                new Callback<BaseResponseDTO>()
+                new Callback<QuoteServiceRx.QuoteSignatureContainer>()
                 {
-                    @Override public void success(BaseResponseDTO baseResponseDTO, Response response)
+                    @Override public void success(
+                            QuoteServiceRx.QuoteSignatureContainer container,
+                            Response response)
                     {
-                        subscriber.onNext(rawQuoteParser.call(response));
-                        subscriber.onCompleted();
+                        try
+                        {
+                            QuoteDTO quoteDTO = container.signedObject;
+                            rawResponseParser.appendRawResponse(quoteDTO, response);
+                            subscriber.onNext(quoteDTO);
+                            subscriber.onCompleted();
+                        } catch (IOException e)
+                        {
+                            subscriber.onError(e);
+                        }
                     }
 
                     @Override public void failure(RetrofitError error)

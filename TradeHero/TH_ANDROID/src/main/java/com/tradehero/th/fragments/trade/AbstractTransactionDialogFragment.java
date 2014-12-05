@@ -683,7 +683,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                 null,
                 false,
                 unSpannedComment != null ? unSpannedComment.toString() : null,
-                quoteDTO.rawResponse,
+                quoteDTO.getRawResponse(),
                 mTransactionQuantity,
                 portfolioId.key
         );

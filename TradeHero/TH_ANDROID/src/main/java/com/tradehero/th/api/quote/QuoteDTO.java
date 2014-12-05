@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.th.api.RawResponseKeeper;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.Date;
 import timber.log.Timber;
 
-public class QuoteDTO
+public class QuoteDTO implements RawResponseKeeper
 {
     private static final String BUNDLE_KEY_SECURITY_ID = QuoteDTO.class.getName() + ".security_id";
     private static final String BUNDLE_KEY_AS_OF_UTC = QuoteDTO.class.getName() + ".as_of_utc";
@@ -41,7 +42,7 @@ public class QuoteDTO
     public String timeStamp;
 
     // This part is used for the signature container that came back
-    public String rawResponse;
+    private String rawResponse;
 
     public QuoteDTO()
     {
@@ -176,6 +177,15 @@ public class QuoteDTO
         return isBuy ? getAskRefCcy(portfolioCompactDTO) : getBidRefCcy(portfolioCompactDTO);
     }
 
+    @Override public String getRawResponse()
+    {
+        return rawResponse;
+    }
+
+    @Override public void setRawResponse(String rawResponse)
+    {
+        this.rawResponse = rawResponse;
+    }
 
     public static boolean isValid(Bundle args)
     {
