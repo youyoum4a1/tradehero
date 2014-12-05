@@ -3,6 +3,8 @@ package com.tradehero.th.billing;
 import android.content.Context;
 import android.content.Intent;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -25,9 +27,11 @@ abstract public class BillingUtils<
     }
     //</editor-fold>
 
-    abstract public String getStoreName();
+    @NonNull abstract public String getStoreName();
 
-    public Intent getSupportPurchaseReportEmailIntent(Context context, ProductPurchaseType purchase)
+    @NonNull public Intent getSupportPurchaseReportEmailIntent(
+            @NonNull Context context,
+            @Nullable ProductPurchaseType purchase)
     {
         String deviceDetails = "\n\nThere appears to have been a problem reporting my purchase to TradeHero server\n\n-----\n" +
                 StringUtils.join("\n", getAllPurchaseReportStrings(context, purchase)) +
@@ -37,7 +41,9 @@ abstract public class BillingUtils<
         return intent;
     }
 
-    public List<String> getAllPurchaseReportStrings(Context context, ProductPurchaseType purchase)
+    @NonNull public List<String> getAllPurchaseReportStrings(
+            @NonNull Context context,
+            @Nullable ProductPurchaseType purchase)
     {
         List<String> reported = getPurchaseReportStrings(purchase);
         reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
@@ -45,9 +51,9 @@ abstract public class BillingUtils<
         return reported;
     }
 
-    abstract protected List<String> getPurchaseReportStrings(ProductPurchaseType purchase);
+    @NonNull abstract protected List<String> getPurchaseReportStrings(@Nullable ProductPurchaseType purchase);
 
-    public Intent getIncompleteSupportPurchaseEmailIntent(Context context)
+    @NonNull public Intent getIncompleteSupportPurchaseEmailIntent(@NonNull Context context)
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
@@ -57,7 +63,9 @@ abstract public class BillingUtils<
     }
 
 
-    public Intent getSupportPurchaseRestoreEmailIntent(Context context, Exception exception)
+    @NonNull public Intent getSupportPurchaseRestoreEmailIntent(
+            @NonNull Context context,
+            @NonNull Exception exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem restoring my purchase with " + getStoreName() + "\n\n-----\n" +
                 StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context,

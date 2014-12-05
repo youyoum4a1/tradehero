@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import java.util.ArrayList;
@@ -12,17 +14,17 @@ import java.util.List;
 
 public class VersionUtils
 {
-    public static Intent getSupportEmailIntent(Context context)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context)
     {
         return getSupportEmailIntent(context, false);
     }
 
-    public static Intent getSupportEmailIntent(Context context, boolean longInfo)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
     {
         return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
     }
 
-    public static Intent getSupportEmailIntent(List<String> infoStrings)
+    @NonNull public static Intent getSupportEmailIntent(@NonNull List<String> infoStrings)
     {
         String deviceDetails = "\n\n-----\n" +
                 StringUtils.join("\n", infoStrings) +
@@ -35,7 +37,7 @@ public class VersionUtils
         return intent;
     }
 
-    public static List<String> getSupportEmailTraceParameters(Context context, boolean longInfo)
+    @NonNull public static List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));
@@ -55,45 +57,42 @@ public class VersionUtils
         return parameters;
     }
 
-    public static List<String> getExceptionStringsAndTraceParameters(Context context,
-            Exception exception)
+    @NonNull public static List<String> getExceptionStringsAndTraceParameters(@NonNull Context context,
+            @NonNull Throwable exception)
     {
         List<String> reported = getExceptionStrings(context, exception);
         reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
         return reported;
     }
 
-    public static List<String> getExceptionStrings(Context context, Exception exception)
+    @NonNull public static List<String> getExceptionStrings(@NonNull Context context, @NonNull Throwable exception)
     {
         List<String> reported = new ArrayList<>();
 
-        if (exception != null)
-        {
-            reported.addAll(ExceptionUtils.getElements(exception));
-            reported.add("-----");
-        }
+        reported.addAll(ExceptionUtils.getElements(exception));
+        reported.add("-----");
 
         return reported;
     }
 
-    public static String getAppVersion(Context context)
+    @NonNull public static String getAppVersion(@NonNull Context context)
     {
         return getVersionName(context) + "(" + getVersionCode(context) + ")";
     }
 
-    public static String getVersionName(Context context)
+    @NonNull public static String getVersionName(@NonNull Context context)
     {
         String v = "";
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e)
+        } catch (PackageManager.NameNotFoundException ignored)
         {
         }
         return v;
     }
 
-    public static int getVersionCode(Context context)
+    public static int getVersionCode(@NonNull Context context)
     {
         int v = 0;
         try
@@ -120,7 +119,7 @@ public class VersionUtils
         }
     }
 
-    public static void logScreenMeasurements(Activity activity)
+    public static void logScreenMeasurements(@NonNull Activity activity)
     {
         Display display = activity.getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -131,7 +130,7 @@ public class VersionUtils
         float dpWidth = outMetrics.widthPixels / density;
     }
 
-    private static String capitalize(String s)
+    private static String capitalize(@Nullable String s)
     {
         if (s == null || s.length() == 0)
         {
@@ -148,7 +147,7 @@ public class VersionUtils
         }
     }
 
-    public static String getVersionId(Context context)
+    @NonNull public static String getVersionId(@NonNull Context context)
     {
         return getVersionName(context) + "." + getVersionCode(context);
     }

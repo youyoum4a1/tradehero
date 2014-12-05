@@ -1,34 +1,29 @@
 package com.tradehero.th.utils;
 
+import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExceptionUtils
 {
-    public static List<String> getElements(Exception exception)
+    @NonNull public static List<String> getElements(@NonNull Throwable exception)
     {
         List<String> reported = new ArrayList<>();
 
-        if (exception != null)
-        {
-            reported.add(exception.getClass().getName());
-            reported.add(exception.getMessage());
-            reported.addAll(getStacktrace(exception));
-        }
+        reported.add(exception.getClass().getName());
+        reported.add(exception.getMessage());
+        reported.addAll(getStacktrace(exception));
 
         return reported;
     }
 
-    public static List<String> getStacktrace(Exception exception)
+    @NonNull public static List<String> getStacktrace(@NonNull Throwable exception)
     {
         List<String> reported = new ArrayList<>();
 
-        if (exception != null)
+        for (StackTraceElement stackTraceElement : exception.getStackTrace())
         {
-            for (StackTraceElement stackTraceElement : exception.getStackTrace())
-            {
-                reported.add(stackTraceElement.toString());
-            }
+            reported.add(stackTraceElement.toString());
         }
 
         return reported;

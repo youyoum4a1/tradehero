@@ -3,6 +3,8 @@ package com.tradehero.th.billing.googleplay;
 import android.content.Context;
 import android.content.Intent;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.billing.BillingUtils;
@@ -28,12 +30,12 @@ class GooglePlayUtils
     }
     //</editor-fold>
 
-    @Override public String getStoreName()
+    @Override @NonNull public String getStoreName()
     {
         return "GooglePlay";
     }
 
-    @Override protected List<String> getPurchaseReportStrings(THIABPurchase purchase)
+    @Override @NonNull protected List<String> getPurchaseReportStrings(@Nullable THIABPurchase purchase)
     {
         List<String> reported = new ArrayList<>();
 
@@ -49,7 +51,9 @@ class GooglePlayUtils
         return reported;
     }
 
-    public Intent getSupportPurchaseConsumeEmailIntent(Context context, Exception exception)
+    @NonNull public Intent getSupportPurchaseConsumeEmailIntent(
+            @NonNull Context context,
+            @NonNull Throwable exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem consuming my purchase with " + getStoreName() + "\n\n-----\n" +
                 StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
