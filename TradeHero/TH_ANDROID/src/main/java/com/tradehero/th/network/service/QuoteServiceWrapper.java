@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.SignatureContainer;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.quote.RawQuoteParser;
@@ -8,6 +9,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import retrofit.Callback;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
 
@@ -56,17 +59,22 @@ import rx.Observable;
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
-        return this.quoteServiceRx.getRawQuote(
+        return Observable.create(subscriber -> quoteServiceRx.getRawQuote(
                 UrlEncoderHelper.transform(securityId.getExchange()),
-                UrlEncoderHelper.transform(securityId.getSecuritySymbol()))
-                .map(rawQuoteParser);
-    }
+                UrlEncoderHelper.transform(securityId.getSecuritySymbol()),
+                new Callback<BaseResponseDTO>()
+                {
+                    @Override public void success(BaseResponseDTO baseResponseDTO, Response response)
+                    {
+                        subscriber.onNext(rawQuoteParser.call(response));
+                        subscriber.onCompleted();
+                    }
 
-    @NonNull public Observable<Response> getRawQuoteRx(@NonNull SecurityId securityId)
-    {
-        basicCheck(securityId);
-        return this.quoteServiceRx.getRawQuote(UrlEncoderHelper.transform(securityId.getExchange()), UrlEncoderHelper.transform(
-                securityId.getSecuritySymbol()));
+                    @Override public void failure(RetrofitError error)
+                    {
+                        subscriber.onError(error);
+                    }
+                }));
     }
     //</editor-fold>
 }

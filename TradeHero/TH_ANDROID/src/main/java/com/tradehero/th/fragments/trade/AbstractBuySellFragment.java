@@ -228,7 +228,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(MILLISEC_QUOTE_REFRESH, TimeUnit.MILLISECONDS)))
-                .subscribe(quoteDTO -> linkWith(quoteDTO, true), toastOnErrorAction);
+                .subscribe(
+                        quoteDTO -> linkWith(quoteDTO, true),
+                        toastOnErrorAction);
     }
 
     protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
