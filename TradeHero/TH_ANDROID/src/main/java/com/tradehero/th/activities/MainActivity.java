@@ -373,6 +373,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             {
                 exitApp();
             }
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
