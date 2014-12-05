@@ -1,31 +1,30 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.RawResponseParser;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.network.UrlEncoderHelper;
-import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 @Singleton public class QuoteServiceWrapper
 {
     @NonNull private final QuoteServiceRx quoteServiceRx;
-    @NonNull private final RawResponseParser rawResponseParser;
+    @NonNull private final RawQuoteParser rawQuoteParser;
 
     //<editor-fold desc="Constructors">
     @Inject public QuoteServiceWrapper(
             @NonNull QuoteServiceRx quoteServiceRx,
-            @NonNull RawResponseParser rawResponseParser)
+            @NonNull RawQuoteParser rawQuoteParser)
     {
         super();
         this.quoteServiceRx = quoteServiceRx;
-        this.rawResponseParser = rawResponseParser;
+        this.rawQuoteParser = rawQuoteParser;
     }
     //</editor-fold>
 
@@ -49,32 +48,24 @@ import rx.Observable;
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
-        return Observable.create(subscriber -> quoteServiceRx.getRawQuote(
-                UrlEncoderHelper.transform(securityId.getExchange()),
-                UrlEncoderHelper.transform(securityId.getSecuritySymbol()),
-                new Callback<QuoteServiceRx.QuoteSignatureContainer>()
+        //noinspection Convert2Lambda
+        return Observable.create(new Observable.OnSubscribe<QuoteDTO>()
+        {
+            @Override public void call(Subscriber<? super QuoteDTO> subscriber)
+            {
+                try
                 {
-                    @Override public void success(
-                            QuoteServiceRx.QuoteSignatureContainer container,
-                            Response response)
-                    {
-                        try
-                        {
-                            QuoteDTO quoteDTO = container.signedObject;
-                            rawResponseParser.appendRawResponse(quoteDTO, response);
-                            subscriber.onNext(quoteDTO);
-                            subscriber.onCompleted();
-                        } catch (IOException e)
-                        {
-                            subscriber.onError(e);
-                        }
-                    }
-
-                    @Override public void failure(RetrofitError error)
-                    {
-                        subscriber.onError(error);
-                    }
-                }));
+                    Response response = quoteServiceRx.getRawQuote(
+                            UrlEncoderHelper.transform(securityId.getExchange()),
+                            UrlEncoderHelper.transform(securityId.getSecuritySymbol()));
+                    subscriber.onNext(rawQuoteParser.parse(response));
+                } catch (Exception e)
+                {
+                    subscriber.onError(e);
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io());
     }
     //</editor-fold>
 }
