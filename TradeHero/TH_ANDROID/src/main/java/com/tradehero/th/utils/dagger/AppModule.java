@@ -33,7 +33,6 @@ import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
 import com.tradehero.common.billing.googleplay.IABBillingInventoryFetcher;
 import com.tradehero.common.billing.googleplay.IABServiceConnector;
 import com.tradehero.common.persistence.CacheHelper;
-import com.tradehero.th.activities.ActivityModule;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.*;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
@@ -146,7 +145,6 @@ import java.util.Locale;
                 UserModule.class,
                 PreferenceModule.class,
                 ChartModule.class,
-                ActivityModule.class,
                 BillingModule.class,
                 PushModule.class,
         },

@@ -53,16 +53,17 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huhaiping on 14-9-14. 个人持仓页。比赛持仓页
@@ -176,16 +177,6 @@ public class PortfolioFragment extends DashboardFragment
         View view = inflater.inflate(R.layout.portfolio_layout, container, false);
         ButterKnife.inject(this, view);
 
-        //displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
-        //displayablePortfolioFetchAssistant.setFetchedListener(
-        //        new DisplayablePortfolioFetchAssistant.OnFetchedListener()
-        //        {
-        //            @Override public void onFetched()
-        //            {
-        //                getDefaultPortfolio();
-        //            }
-        //        });
-
         listView.setAdapter(adapter);
         listView.setMode(PullToRefreshBase.Mode.DISABLED);
 
@@ -240,35 +231,8 @@ public class PortfolioFragment extends DashboardFragment
                         ((SecurityPositionItem) item).position);
             }
         }
-        //else if (item instanceof WatchPositionItem)
-        //{
-        //    enterSecurity(((WatchPositionItem) item).watchlistPosition.securityDTO.getSecurityId(),
-        //            ((WatchPositionItem) item).watchlistPosition.securityDTO.name);
-        //}
         else if (item instanceof PositionLockedItem)
         {
-            Timber.d("Clicked follow user!!!");
-            /*
-            if (mBindGuestUserDialogKeyPreference.get())
-            {
-                if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor
-                        && (currentUserProfileDTO.heroIds.size() == 3) || (currentUserProfileDTO.heroIds.size() == 11))
-                {
-                    alertDialogUtil.popWithOkCancelButton(getActivity(), R.string.app_name,
-                            R.string.guest_user_dialog_summary,
-                            R.string.ok, R.string.cancel, new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialog, int which)
-                        {
-                            Bundle args = new Bundle();
-                            args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,
-                                    BindGuestUserFragment.class.getName());
-                            ActivityHelper.launchDashboard(getActivity(), args);
-                        }
-                    });
-                }
-            }
-            */
             if (currentUserProfileDTO != null && currentUserProfileDTO.isVisitor && currentUserProfileDTO.getAllHeroCount() >= 5)
             {
                 dialogContent = getActivity().getResources().getString(R.string.guest_user_dialog_summary);

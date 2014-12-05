@@ -18,12 +18,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
-import com.tradehero.chinabuild.cache.CompetitionListType;
-import com.tradehero.chinabuild.cache.CompetitionListTypeMine;
-import com.tradehero.chinabuild.cache.CompetitionListTypeOffical;
-import com.tradehero.chinabuild.cache.CompetitionListTypeUser;
-import com.tradehero.chinabuild.cache.CompetitionListTypeVip;
-import com.tradehero.chinabuild.cache.CompetitionNewCache;
+import com.tradehero.chinabuild.cache.*;
 import com.tradehero.chinabuild.data.CompetitionDataItem;
 import com.tradehero.chinabuild.data.CompetitionInterface;
 import com.tradehero.chinabuild.data.UserCompetitionDTO;
@@ -43,11 +38,12 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by huhaiping on 14-9-9. 显示所有比赛和我参加的比赛
@@ -203,11 +199,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         gotoDashboard(CompetitionDetailFragment.class.getName());
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -216,11 +207,6 @@ public class CompetitionBaseFragment extends DashboardFragment
         detachUserCompetition();
         detachVipCompetition();
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     public boolean isNeedRefresh()
