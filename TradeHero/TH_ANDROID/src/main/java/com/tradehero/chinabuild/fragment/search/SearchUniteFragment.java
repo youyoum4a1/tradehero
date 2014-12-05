@@ -282,7 +282,17 @@ public class SearchUniteFragment extends DashboardFragment
     {
         super.onResume();
         setOnclickListener();
+        //hideInputMethod();
     }
+
+    //public void hideInputMethod()
+    //{
+    //    if(getActivity()!=null)
+    //    {
+    //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    //        imm.hideSoftInputFromWindow(tvSearchInput.getWindowToken(), 0);
+    //    }
+    //}
 
     protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
     {

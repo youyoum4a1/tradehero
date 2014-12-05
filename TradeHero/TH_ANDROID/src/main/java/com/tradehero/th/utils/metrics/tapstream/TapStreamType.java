@@ -63,7 +63,8 @@ public enum TapStreamType
     SUOPING(61, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_suoping_install, R.string.tap_stream_type_suoping_open),
     SUOPING2(62, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_suoping2_install, R.string.tap_stream_type_suoping2_open),
     TAOBAO(63, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_taobao_install, R.string.tap_stream_type_taobao_open),
-
+    SUOPING3(64, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_suoping3_install, R.string.tap_stream_type_suoping3_open),
+    SUOPING4(65, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_suoping4_install, R.string.tap_stream_type_suoping4_open),
 
     Offical(100, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_offical_install, R.string.tap_stream_type_offical_open),
     Test(101, MarketSegment.CHINA, PushConstants.PushProvider.BAIDU, R.string.tap_stream_type_test_install, R.string.tap_stream_type_test_open),

@@ -854,7 +854,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
                            popCurrentFragment();
                         }
                     });
-
                 }
                 else
                 {
