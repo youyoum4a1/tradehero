@@ -247,7 +247,31 @@ public class WatchlistPositionFragment extends DashboardFragment
                 new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, watchlistPortfolioHeaderView,
                         -trendingFilterHeight, null, 0);
 
-        return new MultiScrollListener(portfolioHearderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get());
+        return new MultiScrollListener(portfolioHearderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get(), new AbsListView.OnScrollListener() {
+            int maxOffsetY = 0;
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                int firstVisibleItem = view.getFirstVisiblePosition();
+                if (firstVisibleItem == 0)
+                {
+                    int offsetY = view.getChildAt(firstVisibleItem).getTop();
+                    if (offsetY > maxOffsetY)
+                    {
+                        maxOffsetY = offsetY;
+                    }
+                    watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
+                }
+                else
+                {
+                    watchListRefreshableContainer.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+            }
+        });
     }
 
     public void setWatchlistOffset()
