@@ -10,10 +10,10 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/leaderboard_user_item_basic_info"
       android:orientation="vertical"
-      android:padding="8dp"
+      android:padding="@dimen/margin_xsmall"
       android:visibility="visible"
-      android:layout_marginLeft="10dp"
-      android:layout_marginRight="10dp"
+      android:layout_marginLeft="@dimen/margin_xsmall"
+      android:layout_marginRight="@dimen/margin_xsmall"
       >
 
     <include layout="@layout/user_statistic"/>
