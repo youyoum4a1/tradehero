@@ -54,6 +54,10 @@ public interface CompetitionService
     //        @Body UGCFromDTO form
     //);
 
+    //默认推荐比赛 api/usercompetitions/search?name=
+    @GET("/usercompetitions/search?name=") UserCompetitionDTOList getRecommandCompetitions(
+    );
+
     //用户创建比赛获取
     @GET("/usercompetitions?filterType=3&sortType=1") UserCompetitionDTOList getUserCompetitions(
             @Query("page") int page,

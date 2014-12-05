@@ -146,6 +146,11 @@ import retrofit.Callback;
                         pagedLeaderboardKey.perPage);
                 return processFromExtraData(data);
             }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.SEARCH_RECOMMEND)//综合搜索默认推荐
+            {
+                UserTrendingDTOList data = leaderboardService.getLeaderboardSearchRecommend();
+                return processFromExtraData(data);
+            }
             else
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;

@@ -16,6 +16,7 @@
     <color name="round_rectangle5">#009CDA</color>
     <color name="round_rectangle6">#0167A3</color>
     <color name="black">@android:color/black</color>
+    <color name="black2">#737373</color>
     <color name="light_grey">#D0D0D0</color>
     <color name="lighter_grey">#E6E6E6</color>
     <color name="light_grey_transparent">#99BFBFBF</color>
