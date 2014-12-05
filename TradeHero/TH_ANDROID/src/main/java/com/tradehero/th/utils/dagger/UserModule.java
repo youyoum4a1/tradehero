@@ -1,7 +1,10 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import com.tradehero.common.annotation.ForUser;
+import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.activities.RecommendStocksActivity;
@@ -34,5 +37,15 @@ public class UserModule
     @Provides @Singleton CurrentUserId provideCurrentUser(@ForUser SharedPreferences sharedPreferences)
     {
         return new CurrentUserId(sharedPreferences, PREF_CURRENT_USER_ID_KEY, 0);
+    }
+
+    @Provides @ForUIThread Handler provideUIHandler()
+    {
+        return new Handler(Looper.getMainLooper());
+    }
+
+    @Provides @Singleton CurrentActivityHolder provideCurrentActivityHandler(@ForUIThread Handler handler)
+    {
+        return new CurrentActivityHolder(handler);
     }
 }

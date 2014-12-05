@@ -58,4 +58,7 @@ public class Constants
     public final static String EMAIL_FEEDBACK = "support@tradehero.mobi";
 
     public final static String DEFAULT_SHARE_ENDPOINT = "cn.tradehero.mobi";
+
+    //Notification Id
+    public final static int NOTIFICATION_ID = 999;
 }

@@ -17,6 +17,7 @@ import com.tradehero.th.models.push.THNotificationBuilder;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -127,7 +128,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         if (notification != null)
         {
             NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.notify(thNotificationBuilder.getNotifyId(pushId), notification);
+            nm.notify(Constants.NOTIFICATION_ID, notification);
         }
     }
 

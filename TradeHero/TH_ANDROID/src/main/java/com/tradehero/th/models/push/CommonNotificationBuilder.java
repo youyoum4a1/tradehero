@@ -17,6 +17,7 @@ import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.persistence.notification.NotificationCache;
+import com.tradehero.th.utils.Constants;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
@@ -256,15 +257,15 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
         @Override public void onDTOReceived(@NotNull NotificationKey key, @NotNull NotificationDTO value)
         {
-            Notification notification = buildNotification(value);
+        Notification notification = buildNotification(value);
 
-            //If notifications setting is off, return
-            if(!THSharePreferenceManager.isNotificationsOn(context)){
-                return;
-            }
-            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.notify(getNotifyId(value.pushId), notification);
+        //If notifications setting is off, return
+        if(!THSharePreferenceManager.isNotificationsOn(context)){
+            return;
         }
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(Constants.NOTIFICATION_ID, notification);
+    }
 
         @Override public void onErrorThrown(@NotNull NotificationKey key, @NotNull Throwable error)
         {
