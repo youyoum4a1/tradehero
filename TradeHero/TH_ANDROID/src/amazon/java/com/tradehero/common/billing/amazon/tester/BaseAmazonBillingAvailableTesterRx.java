@@ -12,6 +12,7 @@ abstract public class BaseAmazonBillingAvailableTesterRx
     public BaseAmazonBillingAvailableTesterRx(int request)
     {
         super(request);
+        testBillingAvailable();
     }
     //</editor-fold>
 

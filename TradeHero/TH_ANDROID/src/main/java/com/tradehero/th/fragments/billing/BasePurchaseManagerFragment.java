@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBasePurchaseActionInteractor;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.THPurchaseActionInteractor;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
@@ -42,6 +43,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected THBillingInteractor userInteractor;
+    @Inject protected THBillingInteractorRx userInteractorRx;
     @Inject protected Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 

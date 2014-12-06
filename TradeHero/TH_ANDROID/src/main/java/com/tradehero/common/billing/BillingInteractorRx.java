@@ -23,9 +23,4 @@ public interface BillingInteractorRx<
     extends ActivityResultRequester
 {
     String getName();
-
-    void onDestroy();
-
-    int getUnusedRequestCode();
-    void forgetRequestCode(int requestCode);
 }

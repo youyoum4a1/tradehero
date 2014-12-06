@@ -1,8 +1,9 @@
-package com.tradehero.common.billing.samsung;
+package com.tradehero.common.billing.samsung.rx;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.tradehero.common.billing.samsung.BaseSamsungOperator;
 import com.tradehero.common.billing.samsung.exception.SamsungBindException;
 import rx.Observable;
 import rx.Subscriber;

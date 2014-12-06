@@ -1,9 +1,10 @@
-package com.tradehero.common.billing.samsung;
+package com.tradehero.common.billing.samsung.rx;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.helper.SamsungIapHelper;
 import com.sec.android.iap.lib.vo.ItemVo;
+import com.tradehero.common.billing.samsung.BaseSamsungOperator;
 import com.tradehero.common.billing.samsung.exception.SamsungItemListException;
 import java.util.List;
 import rx.Observable;
@@ -18,6 +19,19 @@ public class SamsungItemListOperator extends BaseSamsungOperator
     @NonNull protected final String groupId;
 
     //<editor-fold desc="Constructors">
+    public SamsungItemListOperator(
+            @NonNull Context context,
+            int mode,
+            @NonNull ItemListQueryGroup queryGroup)
+    {
+        this(context,
+                mode,
+                queryGroup.startNum,
+                queryGroup.endNum,
+                queryGroup.itemType,
+                queryGroup.groupId);
+    }
+
     public SamsungItemListOperator(
             @NonNull Context context,
             int mode,

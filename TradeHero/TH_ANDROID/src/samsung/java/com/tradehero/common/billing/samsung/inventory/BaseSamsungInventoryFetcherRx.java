@@ -2,13 +2,16 @@ package com.tradehero.common.billing.samsung.inventory;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
-import com.tradehero.common.billing.samsung.SamsungItemListOperator;
 import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
+import com.tradehero.common.billing.samsung.rx.SamsungItemListOperatorZip;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,9 +30,6 @@ abstract public class BaseSamsungInventoryFetcherRx<
         SamsungSKUType,
         SamsungProductDetailType>
 {
-    protected final int startNum;
-    protected final int endNum;
-    @NonNull protected final String itemType;
     @NonNull protected final List<SamsungSKUType> skus;
 
     //<editor-fold desc="Constructors">
@@ -37,15 +37,9 @@ abstract public class BaseSamsungInventoryFetcherRx<
             int requestCode,
             @NonNull Context context,
             int mode,
-            int startNum,
-            int endNum,
-            @NonNull String itemType,
             @NonNull List<SamsungSKUType> skus)
     {
         super(requestCode, context, mode);
-        this.startNum = startNum;
-        this.endNum = endNum;
-        this.itemType = itemType;
         this.skus = skus;
         fetchInventory();
     }
@@ -65,28 +59,34 @@ abstract public class BaseSamsungInventoryFetcherRx<
 
     protected void fetchInventory()
     {
-        Observable.from(getGroups())
-                .flatMap(this::fetchInventoryOnOneGroup)
+        new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
+                .getItems()
+                .flatMap(this::createDetail)
                 .map(detail -> new ProductInventoryResult<>(getRequestCode(), detail.getProductIdentifier(), detail))
                 .subscribe(subject);
     }
 
-    @NonNull protected Set<String> getGroups()
+    @NonNull protected List<ItemListQueryGroup> getItemListQueryGroups()
     {
-        Set<String> groups = new HashSet<>();
+        Set<ItemListQueryGroup> groups = new HashSet<>();
         for (SamsungSKUType sku : skus)
         {
-            groups.add(sku.groupId);
+            groups.add(createItemListQueryGroup(sku));
         }
-        return groups;
+        return new ArrayList<>(groups);
     }
 
-    @NonNull protected Observable<SamsungProductDetailType> fetchInventoryOnOneGroup(@NonNull final String groupId)
+    @NonNull abstract protected ItemListQueryGroup createItemListQueryGroup(@NonNull SamsungSKUType sku);
+
+    @NonNull protected Observable<SamsungProductDetailType> createDetail(@NonNull Pair<ItemListQueryGroup, List<ItemVo>> pair)
     {
-        return Observable.create(new SamsungItemListOperator(context, mode, startNum, endNum, itemType, groupId))
-                .flatMap(Observable::from)
-                .map(itemVo -> createSamsungProductDetail(new SamsungItemGroup(groupId), itemVo));
+        return Observable.from(pair.second)
+                .map(itemVo -> createSamsungProductDetail(
+                        new SamsungItemGroup(pair.first.groupId),
+                        itemVo));
     }
 
-    @NonNull abstract protected SamsungProductDetailType createSamsungProductDetail(@NonNull SamsungItemGroup samsungItemGroup, @NonNull ItemVo itemVo);
+    @NonNull abstract protected SamsungProductDetailType createSamsungProductDetail(
+            @NonNull SamsungItemGroup samsungItemGroup,
+            @NonNull ItemVo itemVo);
 }

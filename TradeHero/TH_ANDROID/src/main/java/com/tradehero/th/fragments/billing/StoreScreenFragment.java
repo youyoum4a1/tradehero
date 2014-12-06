@@ -21,7 +21,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
@@ -38,7 +37,7 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -46,10 +45,9 @@ import timber.log.Timber;
         "store", "store/:action"
 })
 public class StoreScreenFragment extends BasePurchaseManagerFragment
-    implements WithTutorial
+        implements WithTutorial
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
-    protected Integer showBillingAvailableRequestCode;
     protected Integer showProductRequestCode;
 
     @Inject CurrentUserId currentUserId;
@@ -61,6 +59,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
     @InjectView(R.id.store_option_list) protected ListView listView;
+    private Subscription testAvailableSubscription;
     private StoreItemAdapter storeItemAdapter;
     private Subscription storeItemSubscription;
 
@@ -98,14 +97,15 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         storeItemAdapter.clear();
-        detachStoreItemSubscription();
-        storeItemSubscription = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
-                .observeOn(AndroidSchedulers.mainThread())
+        unsubscribe(storeItemSubscription);
+        storeItemSubscription = AndroidObservable.bindFragment(
+                this,
+                storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
+                        .take(1))
                 .subscribe(new EmptyObserver<StoreItemDTOList>()
                 {
                     @Override public void onNext(StoreItemDTOList storeItemDTOs)
                     {
-                        detachStoreItemSubscription();
                         storeItemAdapter.clear();
                         storeItemAdapter.addAll(storeItemDTOs);
                         storeItemAdapter.notifyDataSetChanged();
@@ -123,7 +123,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
-        detachStoreItemSubscription();
+        unsubscribe(storeItemSubscription);
+        storeItemSubscription = null;
+        unsubscribe(testAvailableSubscription);
+        testAvailableSubscription = null;
         super.onStop();
     }
 
@@ -147,36 +150,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             return;
         }
 
-        if (showBillingAvailableRequestCode != null)
-        {
-            userInteractor.forgetRequestCode(showBillingAvailableRequestCode);
-        }
-        showBillingAvailableRequestCode = showBillingAvailable();
-        alreadyNotifiedNeedCreateAccount = true;
-    }
-
-    protected void detachStoreItemSubscription()
-    {
-        Subscription subscriptionCopy = storeItemSubscription;
-        if (subscriptionCopy != null)
-        {
-            subscriptionCopy.unsubscribe();
-        }
-        storeItemSubscription = null;
-    }
-
-    public int showBillingAvailable()
-    {
-        return userInteractor.run(getShowBillingAvailableRequest());
-    }
-
-    public THUIBillingRequest getShowBillingAvailableRequest()
-    {
-        BaseTHUIBillingRequest.Builder request = uiBillingRequestBuilderProvider.get();
-        request.startWithProgressDialog(false);
-        request.popIfBillingNotAvailable(!alreadyNotifiedNeedCreateAccount);
-        request.testBillingAvailable(true);
-        return request.build();
+        unsubscribe(testAvailableSubscription);
+        //noinspection unchecked
+        testAvailableSubscription = AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.test())
+                .subscribe(
+                        pair -> alreadyNotifiedNeedCreateAccount = true,
+                        error -> alreadyNotifiedNeedCreateAccount = true);
     }
 
     @Override protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
@@ -210,7 +191,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             else
             {
                 detachRequestCode();
-                THUIBillingRequest uiRequest = (THUIBillingRequest) uiBillingRequestBuilderProvider.get()
+                THUIBillingRequest uiRequest = uiBillingRequestBuilderProvider.get()
                         .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
                         .applicablePortfolioId(applicablePortfolioId)
                         .startWithProgressDialog(true)

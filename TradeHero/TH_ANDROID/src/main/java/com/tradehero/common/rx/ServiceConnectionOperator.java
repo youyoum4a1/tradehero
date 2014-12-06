@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import java.net.UnknownServiceException;
 import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
@@ -52,7 +53,7 @@ public class ServiceConnectionOperator implements Observable.OnSubscribe<IBinder
         }
         else
         {
-            subscriber.onError(new IllegalArgumentException("Service not available"));
+            subscriber.onError(new UnknownServiceException("Service not available: " + serviceIntent));
         }
     }
 

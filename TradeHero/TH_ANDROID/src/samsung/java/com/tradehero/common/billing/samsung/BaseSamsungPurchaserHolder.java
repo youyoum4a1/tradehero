@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseBillingPurchaserHolder;
 import com.tradehero.common.billing.BillingPurchaser;
@@ -81,5 +82,10 @@ abstract public class BaseSamsungPurchaserHolder<
         }
         purchasers.clear();
         super.onDestroy();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
     }
 }

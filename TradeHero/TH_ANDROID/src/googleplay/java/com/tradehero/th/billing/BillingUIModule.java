@@ -1,21 +1,28 @@
 package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingInteractor;
+import com.tradehero.common.billing.BillingInteractorRx;
 import com.tradehero.common.billing.BillingLogicHolder;
+import com.tradehero.common.billing.BillingLogicHolderRx;
 import com.tradehero.th.billing.googleplay.THBaseIABBillingAvailableTesterHolder;
+import com.tradehero.th.billing.googleplay.THBaseIABInteractorRx;
 import com.tradehero.th.billing.googleplay.THBaseIABInventoryFetcherHolder;
+import com.tradehero.th.billing.googleplay.THBaseIABLogicHolderRx;
 import com.tradehero.th.billing.googleplay.THBaseIABProductIdentifierFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseConsumerHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseFetcherHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaseReporterHolder;
 import com.tradehero.th.billing.googleplay.THBaseIABPurchaserHolder;
+import com.tradehero.th.billing.googleplay.THIABAlertDialogRxUtil;
 import com.tradehero.th.billing.googleplay.THIABAlertDialogUtil;
 import com.tradehero.th.billing.googleplay.THIABBillingAvailableTesterHolder;
 import com.tradehero.th.billing.googleplay.THIABBillingInteractor;
 import com.tradehero.th.billing.googleplay.THIABInteractor;
+import com.tradehero.th.billing.googleplay.THIABInteractorRx;
 import com.tradehero.th.billing.googleplay.THIABInventoryFetcherHolder;
 import com.tradehero.th.billing.googleplay.THIABLogicHolder;
 import com.tradehero.th.billing.googleplay.THIABLogicHolderFull;
+import com.tradehero.th.billing.googleplay.THIABLogicHolderRx;
 import com.tradehero.th.billing.googleplay.THIABProductIdentifierFetcherHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseConsumerHolder;
 import com.tradehero.th.billing.googleplay.THIABPurchaseFetcherHolder;
@@ -125,6 +132,41 @@ public class BillingUIModule
         return thBaseIABPurchaseConsumerHolder;
     }
     //</editor-fold>
+
+    @Provides @Singleton BillingLogicHolderRx provideBillingActorRx(THBillingLogicHolderRx logicHolderRx)
+    {
+        return logicHolderRx;
+    }
+
+    @Provides @Singleton THBillingLogicHolderRx provideTHBillingActorRx(THIABLogicHolderRx logicHolderRx)
+    {
+        return logicHolderRx;
+    }
+
+    @Provides @Singleton THIABLogicHolderRx provideTHIABLogicHolderRx(THBaseIABLogicHolderRx logicHolderRx)
+    {
+        return logicHolderRx;
+    }
+
+    @Provides THBillingAlertDialogRxUtil provideBillingAlertDialogRxUtil(THIABAlertDialogRxUtil THIABAlertDialogUtil)
+    {
+        return THIABAlertDialogUtil;
+    }
+
+    @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
+
+    @Provides @Singleton THBillingInteractorRx provideTHBillingInteractorRx(THIABInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
+
+    @Provides @Singleton THIABInteractorRx provideTHIABInteractorRx(THBaseIABInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
 
     @Provides @Singleton BillingLogicHolder provideBillingActor(THBillingLogicHolder logicHolder)
     {

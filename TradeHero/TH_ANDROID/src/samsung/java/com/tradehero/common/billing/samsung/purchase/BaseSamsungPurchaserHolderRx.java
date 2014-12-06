@@ -1,5 +1,6 @@
 package com.tradehero.common.billing.samsung.purchase;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.purchase.BaseBillingPurchaserHolderRx;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
@@ -34,4 +35,9 @@ abstract public class BaseSamsungPurchaserHolderRx<
     abstract protected SamsungPurchaserRx<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType> createPurchaser(
             int requestCode,
             @NonNull SamsungPurchaseOrderType purchaseOrder);
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        // Nothing to do
+    }
 }

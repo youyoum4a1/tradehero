@@ -9,12 +9,17 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.RequestCodeHolder;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
+import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
+import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.VersionUtils;
+import java.net.UnknownServiceException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -39,10 +44,18 @@ abstract public class THBillingAlertDialogRxUtil<
 {
     public static final int MAX_RANDOM_RETRIES = 50;
 
+    @NonNull protected final Analytics analytics;
+    @NonNull protected final ActivityUtil activityUtil;
+    protected String storeName;
+
     //<editor-fold desc="Constructors">
-    public THBillingAlertDialogRxUtil()
+    public THBillingAlertDialogRxUtil(
+            @NonNull Analytics analytics,
+            @NonNull ActivityUtil activityUtil)
     {
         super();
+        this.analytics = analytics;
+        this.activityUtil = activityUtil;
     }
     //</editor-fold>
 
@@ -67,10 +80,32 @@ abstract public class THBillingAlertDialogRxUtil<
                 });
     }
 
-    //<editor-fold desc="Billing Available">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popBillingUnavailableRx(
+    public void setStoreName(String storeName)
+    {
+        this.storeName = storeName;
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popError(
             @NonNull final Context activityContext,
-            @NonNull String storeName)
+            @NonNull final Throwable throwable)
+    {
+        if (throwable instanceof UnknownServiceException)
+        {
+            return popBillingUnavailableAndHandleRx(activityContext);
+        }
+        return Observable.empty();
+    }
+
+    //<editor-fold desc="Billing Available">
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popBillingUnavailableAndHandleRx(
+            @NonNull final Context activityContext)
+    {
+        return popBillingUnavailableRx(activityContext)
+                .flatMap(pair -> handlePopBillingUnavailable(activityContext, pair));
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popBillingUnavailableRx(
+            @NonNull final Context activityContext)
     {
         return Observable.create(AlertDialogOnSubscribe.builder(
                 createDefaultDialogBuilder(activityContext)
@@ -79,7 +114,20 @@ abstract public class THBillingAlertDialogRxUtil<
                 .setPositiveButton(R.string.store_billing_unavailable_act)
                 .setNegativeButton(R.string.store_billing_unavailable_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build());
+                .build())
+                .subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopBillingUnavailable(
+            @NonNull final Context activityContext,
+            @NonNull Pair<DialogInterface, Integer> pair)
+    {
+        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        {
+            goToCreateAccount(activityContext);
+            return Observable.empty();
+        }
+        return Observable.just(pair);
     }
 
     public void goToCreateAccount(final Context context)
@@ -144,4 +192,28 @@ abstract public class THBillingAlertDialogRxUtil<
                 });
     }
     //</editor-fold>
+
+    public void sendSupportEmailPurchaseNotRestored(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+    public void sendSupportEmailBillingUnknownError(final Context context, final Throwable throwable)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
+                VersionUtils.getExceptionStringsAndTraceParameters(context, throwable));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+    public void sendSupportEmailCancelledPurchase(final Context context)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+
 }

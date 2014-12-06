@@ -5,10 +5,12 @@ import android.support.annotation.NonNull;
 import com.sec.android.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
-import com.tradehero.common.billing.samsung.SamsungInboxOperator;
 import com.tradehero.common.billing.samsung.SamsungOrderId;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.tradehero.common.billing.samsung.rx.InboxListQueryGroup;
+import com.tradehero.common.billing.samsung.rx.SamsungInboxOperatorZip;
+import java.util.List;
 import rx.Observable;
 
 abstract public class BaseSamsungPurchaseFetcherRx<
@@ -25,29 +27,14 @@ abstract public class BaseSamsungPurchaseFetcherRx<
         SamsungOrderIdType,
         SamsungPurchaseType>
 {
-    public static final int FIRST_ITEM_NUM = 1;
-    public static final String FIRST_DATE = "20140101";
-
-    protected final int startNum;
-    protected final int endNum;
-    @NonNull protected final String startDate;
-    @NonNull protected final String groupId;
-
     //<editor-fold desc="Constructors">
     public BaseSamsungPurchaseFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
-            int startNum,
-            int endNum,
-            @NonNull String startDate,
-            @NonNull String groupId)
+            int mode)
     {
         super(requestCode, context, mode);
-        this.startNum = startNum;
-        this.endNum = endNum;
-        this.startDate = startDate;
-        this.groupId = groupId;
+        fetchPurchases();
     }
     //</editor-fold>
 
@@ -58,14 +45,21 @@ abstract public class BaseSamsungPurchaseFetcherRx<
 
     protected void fetchPurchases()
     {
-        Observable.create(new SamsungInboxOperator(context, mode, startNum, endNum, startDate, groupId))
-                .map(this::createIncompletePurchase)
+        new SamsungInboxOperatorZip(context, mode, getInboxListQueryGroups())
+                .getInboxItems()
+                .flatMap(pair -> pair.second
+                        .map(inboxVo -> createIncompletePurchase(pair.first, inboxVo)))
                 .map(this::mergeWithSaved)
                 .map(purchase -> new PurchaseFetchResult<>(getRequestCode(), purchase))
                 .subscribe(subject);
     }
 
-    @NonNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(@NonNull InboxVo inboxVo);
+    @NonNull abstract protected List<InboxListQueryGroup> getInboxListQueryGroups();
 
-    @NonNull abstract protected SamsungPurchaseType mergeWithSaved(@NonNull SamsungPurchaseIncompleteType incomplete);
+    @NonNull abstract protected SamsungPurchaseIncompleteType createIncompletePurchase(
+            @NonNull InboxListQueryGroup queryGroup,
+            @NonNull InboxVo inboxVo);
+
+    @NonNull abstract protected SamsungPurchaseType mergeWithSaved(
+            @NonNull SamsungPurchaseIncompleteType incomplete);
 }

@@ -2,13 +2,15 @@ package com.tradehero.common.billing.samsung.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.sec.android.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
-import com.tradehero.common.billing.samsung.SamsungItemListOperator;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
+import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
+import com.tradehero.common.billing.samsung.rx.SamsungItemListOperatorZip;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,26 +29,14 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
         SamsungSKUType,
         SamsungSKUListType>
 {
-    protected final int startNum;
-    protected final int endNum;
-    @NonNull protected final String itemType;
-    @NonNull protected final String groupId;
 
     //<editor-fold desc="Constructors">
     public BaseSamsungProductIdentifierFetcherRx(
             int requestCode,
             @NonNull Context context,
-            int mode,
-            int startNum,
-            int endNum,
-            @NonNull String itemType,
-            @NonNull String groupId)
+            int mode)
     {
         super(requestCode, context, mode);
-        this.startNum = startNum;
-        this.endNum = endNum;
-        this.itemType = itemType;
-        this.groupId = groupId;
         fetchProductIdentifiers();
     }
     //</editor-fold>
@@ -61,7 +51,8 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
 
     protected void fetchProductIdentifiers()
     {
-        Observable.create(new SamsungItemListOperator(context, mode, startNum, endNum, itemType, groupId))
+        new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
+                .getItems()
                 .flatMap(this::createResult)
                 .subscribe(subject);
     }
@@ -69,17 +60,17 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
     @NonNull protected Observable<ProductIdentifierListResult<
             SamsungSKUListKeyType,
             SamsungSKUType,
-            SamsungSKUListType>> createResult(@NonNull List<ItemVo> itemList)
+            SamsungSKUListType>> createResult(@NonNull Pair<ItemListQueryGroup, List<ItemVo>> pair)
     {
         Map<SamsungSKUListKeyType, SamsungSKUListType> samsungSKUs = new HashMap<>();
-        for (ItemVo itemVo : itemList)
+        for (ItemVo itemVo : pair.second)
         {
             SamsungSKUListKeyType key = createSamsungListKey(itemVo.getType());
             if (samsungSKUs.get(key) == null)
             {
                 samsungSKUs.put(key, createSamsungSKUList());
             }
-            samsungSKUs.get(key).add(createSamsungSku(groupId, itemVo.getItemId()));
+            samsungSKUs.get(key).add(createSamsungSku(pair.first.groupId, itemVo.getItemId()));
         }
         return Observable.from(samsungSKUs.entrySet())
                 .map(entry -> new ProductIdentifierListResult<>(
@@ -87,6 +78,8 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
                         entry.getKey(),
                         entry.getValue()));
     }
+
+    @NonNull abstract protected List<ItemListQueryGroup> getItemListQueryGroups();
 
     @NonNull abstract protected SamsungSKUListKeyType createSamsungListKey(String itemType);
 
