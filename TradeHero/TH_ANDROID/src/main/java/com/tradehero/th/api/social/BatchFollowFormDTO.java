@@ -1,14 +1,15 @@
-package com.tradehero.th.fragments.social.friend;
+package com.tradehero.th.api.social;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatchFollowFormDTO
+public class BatchFollowFormDTO implements DTO
 {
     @NonNull public List<Integer> userIds;
 

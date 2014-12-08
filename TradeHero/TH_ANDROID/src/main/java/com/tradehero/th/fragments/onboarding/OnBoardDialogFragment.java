@@ -32,7 +32,7 @@ import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPrefDTO;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockViewHolder;
-import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.network.service.UserServiceWrapper;

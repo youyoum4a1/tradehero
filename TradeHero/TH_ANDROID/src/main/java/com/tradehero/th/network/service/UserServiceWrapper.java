@@ -32,7 +32,7 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.fragments.social.friend.BatchFollowFormDTO;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
@@ -44,11 +44,9 @@ import com.tradehero.th.models.user.DTOProcessorUpdateUserProfileDeep;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.persistence.DTOCacheUtilImpl;
-import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
-import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -71,8 +69,6 @@ import rx.functions.Func1;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
     @NonNull private final Lazy<HeroListCacheRx> heroListCache;
     @NonNull private final Lazy<ProviderListCacheRx> providerListCache;
-    @NonNull private final Lazy<ProviderCacheRx> providerCache;
-    @NonNull private final Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache;
     @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
@@ -85,8 +81,6 @@ import rx.functions.Func1;
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull Lazy<HeroListCacheRx> heroListCache,
             @NonNull Lazy<ProviderListCacheRx> providerListCache,
-            @NonNull Lazy<ProviderCacheRx> providerCache,
-            @NonNull Lazy<AllowableRecipientPaginatedCacheRx> allowableRecipientPaginatedCache,
             @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
@@ -97,8 +91,6 @@ import rx.functions.Func1;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
         this.heroListCache = heroListCache;
         this.providerListCache = providerListCache;
-        this.providerCache = providerCache;
-        this.allowableRecipientPaginatedCache = allowableRecipientPaginatedCache;
         this.userServiceRx = userServiceRx;
         this.userFormBuilderProvider = userFormBuilderProvider;
         this.homeContentCache = homeContentCache;

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.friend;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormUserDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
