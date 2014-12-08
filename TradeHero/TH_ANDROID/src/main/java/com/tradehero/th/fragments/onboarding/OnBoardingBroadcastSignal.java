@@ -13,11 +13,11 @@ public class OnBoardingBroadcastSignal implements BroadcastData
 
     @NonNull @Override public String getBroadcastBundleKey()
     {
-        return FragmentOnBoardModule.KEY_ON_BOARD_BROADCAST;
+        return FragmentOnBoardComponent.KEY_ON_BOARD_BROADCAST;
     }
 
     @NonNull @Override public String getBroadcastIntentActionName()
     {
-        return FragmentOnBoardModule.ON_BOARD_INTENT_ACTION_NAME;
+        return FragmentOnBoardComponent.ON_BOARD_INTENT_ACTION_NAME;
     }
 }

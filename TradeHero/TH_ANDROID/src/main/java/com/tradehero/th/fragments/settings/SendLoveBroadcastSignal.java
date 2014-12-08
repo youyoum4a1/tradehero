@@ -13,11 +13,11 @@ public class SendLoveBroadcastSignal implements BroadcastData
 
     @NonNull @Override public String getBroadcastBundleKey()
     {
-        return FragmentSettingUIModule.KEY_SEND_LOVE_BROADCAST;
+        return FragmentSettingUIComponent.KEY_SEND_LOVE_BROADCAST;
     }
 
     @NonNull @Override public String getBroadcastIntentActionName()
     {
-        return FragmentSettingUIModule.SEND_LOVE_INTENT_ACTION_NAME;
+        return FragmentSettingUIComponent.SEND_LOVE_INTENT_ACTION_NAME;
     }
 }

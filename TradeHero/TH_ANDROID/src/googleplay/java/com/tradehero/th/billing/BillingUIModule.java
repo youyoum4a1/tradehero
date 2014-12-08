@@ -41,11 +41,7 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
-@Module(
-        complete = false,
-        library = true,
-        overrides = true
-)
+@Module
 public class BillingUIModule
 {
     //<editor-fold desc="Actors and Action Holders">

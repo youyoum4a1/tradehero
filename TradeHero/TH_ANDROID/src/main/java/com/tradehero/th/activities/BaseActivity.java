@@ -14,7 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
+import com.tradehero.th.UiGraph;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
@@ -160,7 +160,6 @@ public class BaseActivity extends FragmentActivity
 
     @Module(
             addsTo = AppModule.class,
-            includes = UIModule.class,
             library = true,
             complete = false
     )

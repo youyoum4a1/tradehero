@@ -25,7 +25,6 @@ import com.tencent.mm.sdk.platformtools.Util;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.activities.MarketUtil;
 import com.tradehero.th.api.share.TrackShareDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -312,9 +311,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
 
     @Module(
             addsTo = AppModule.class,
-            includes = {
-                    UIModule.class
-            },
             library = true,
             complete = false,
             overrides = true

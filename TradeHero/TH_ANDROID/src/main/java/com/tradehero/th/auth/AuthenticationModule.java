@@ -16,10 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Singleton;
 
-@Module(
-        library = true,
-        complete = false
-)
+@Module
 public class AuthenticationModule
 {
     /** TODO waiting for dagger to have map injection feature, it would make following method nicer */

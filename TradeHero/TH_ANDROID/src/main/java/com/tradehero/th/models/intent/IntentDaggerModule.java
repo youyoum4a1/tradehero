@@ -1,7 +1,6 @@
 package com.tradehero.th.models.intent;
 
 import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityIntentFactory;
 import dagger.Module;
 import dagger.Provides;
@@ -9,22 +8,14 @@ import java.util.Set;
 import javax.inject.Singleton;
 
 @Module(
-        staticInjections =
-                {
-                        THIntent.class,
-                },
-        injects = {
-                ProviderPageIntent.class
-        },
-        complete = false,
-        library = true
+        // FIXME dagger2
+        //staticInjections =
+        //        {
+        //                THIntent.class,
+        //        }
 )
 public class IntentDaggerModule
 {
-    public IntentDaggerModule()
-    {
-    }
-
     @Provides(type = Provides.Type.SET)
     THIntentFactory provideProviderIntentFactory(ProviderIntentFactory factory)
     {

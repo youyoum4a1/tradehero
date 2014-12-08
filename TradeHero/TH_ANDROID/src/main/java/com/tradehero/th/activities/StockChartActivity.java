@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
+import com.tradehero.th.UiGraph;
 import com.tradehero.th.THApp;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.inject.Injector;
@@ -43,9 +43,6 @@ public class StockChartActivity extends FragmentActivity
     }
 
     @Module(
-            includes = {
-                    UIModule.class
-            },
             library = true,
             complete = false
     )

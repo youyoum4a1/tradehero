@@ -38,7 +38,6 @@ import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -787,9 +786,6 @@ public class DashboardActivity extends BaseActivity
 
     @Module(
             addsTo = AppModule.class,
-            includes = {
-                    UIModule.class
-            },
             library = true,
             complete = false,
             overrides = true
