@@ -104,7 +104,14 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                     view = conditionalInflate(position, convertView, parent);
                     if (item instanceof DisplayablePortfolioDTO)
                     {
-                        ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);
+                        if(view instanceof  PortfolioListItemView)
+                        {
+                            ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);
+                        }
+                        else
+                        {
+                            Timber.w("Class %s is cast as PortfolioListItemView", view.getClass().getName());
+                        }
                     }
                     else
                     {
