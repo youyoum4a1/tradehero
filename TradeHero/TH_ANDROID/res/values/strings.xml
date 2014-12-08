@@ -33,7 +33,6 @@
   <string name="discussion_loaded">All discussions loaded</string>
   <string name="discussion_loading">Loading</string>
   <string name="discussion_empty">Be the first to discuss this.</string>
-  <!--<string name="network_error">Sorry,network error.</string>-->
 
   <string name="news_view_on_web">View on the Web</string>
   <string name="add_a_comment">Add a comment…</string>
@@ -267,8 +266,6 @@
   <string name="stockgod_leaderboard_all">总盈利榜</string>
   <string name="stockgod_leaderboard_season">季度榜</string>
   <string name="stockgod_leaderboard_6month">半年榜</string>
-  <string name="stockgod_leaderboard_exchange">根据交易所</string>
-  <string name="stockgod_leaderboard_industry">根据行业类别</string>
 
   <string name="press_back_again_to_exit">再按一次返回退出应用</string>
   <string name="settings">设置</string>
@@ -300,23 +297,22 @@
   <string name="position_hold_days">%d天</string>
   <string name="competition_joined_invite">想上头条就从这个炒股比赛开始，现在参加还送一万美刀！</string>
 
-  <string name="login_with_offical_account">使用官方账号登录</string>
-  <string name="login_account">账号：</string>
-  <string name="login_password">密码：</string>
-  <string name="login_account_hint">手机号或邮箱</string>
-  <string name="login_password_hint">6-20位数字或字母</string>
-  <string name="agreed">已同意</string>
+  <string name="login_with_offical_account">Official Account Login</string>
+  <string name="login_account">Account：</string>
+  <string name="login_password">Password：</string>
+  <string name="login_account_hint">Email or Mobile Number</string>
+  <string name="login_password_hint">6-20 Letters or Numbers</string>
+  <string name="agreed">Agreed</string>
   <string name="authentication_agreement">《隐私条款和服务政策》</string>
-  <string name="authentication_next">下一步</string>
-  <string name="register_diaplay_name_hint">用户名（必填）</string>
-  <string name="register_finish">完成注册</string>
-  <string name="请输入您的账号"/>
-  <string name="register_error_account">亲，邮箱是不是写错啦？</string>
-  <string name="register_error_password">密码须为6-20位字母或数字</string>
-  <string name="register_error_displayname">请输入您的用户名</string>
-  <string name="take_photo">拍照</string>
-  <string name="from_gallery">从相册选择</string>
-  <string name="settings_score">去评分</string>
+  <string name="authentication_next">Next</string>
+  <string name="register_diaplay_name_hint">Username (Needed)</string>
+  <string name="register_finish">Register Completed</string>
+  <string name="register_error_account">Email Error</string>
+  <string name="register_error_password">Password 6-20 Letters or Numbers</string>
+  <string name="register_error_displayname">No Nickname</string>
+  <string name="take_photo">Camera</string>
+  <string name="from_gallery">Gallery</string>
+  <string name="settings_score">Score</string>
   <string name="settings_logout">Log Out</string>
   <string name="settings_version">Version</string>
   <string name="settings_notification">Notifications</string>
@@ -328,24 +324,24 @@
   <string name="invite_friend_fail">您的邀请码输入有误</string>
   <string name="copy">复制</string>
   <string name="copy_my_invite_code_success">复制成功，快去邀请好友吧～</string>
-  <string name="follow_success">关注成功</string>
-  <string name="faster_login">快速登录</string>
-  <string name="guest_user_id">游客 ID:%1$s</string>
-  <string name="settings_my_photo">头像</string>
-  <string name="settings_my_name">名字</string>
-  <string name="settings_my_account">账号密码</string>
-  <string name="settings_my_social">账号绑定</string>
-  <string name="settings_my_profile">个人资料</string>
-  <string name="updating">更新中...</string>
-  <string name="bind_success">绑定成功</string>
-  <string name="unbind_success">解绑成功</string>
-  <string name="login_verify_code">验证码:</string>
-  <string name="login_verify_code_hint">请输入验证码</string>
-  <string name="login_get_verify_code">获取验证码</string>
-  <string name="send_verify_code_success">验证码已发送，请注意查收短信</string>
-  <string name="guest_user">游客</string>
+  <string name="follow_success">Follow Successfully</string>
+  <string name="faster_login">Fast Login</string>
+  <string name="guest_user_id">Guest ID:%1$s</string>
+  <string name="settings_my_photo">Avatar</string>
+  <string name="settings_my_name">Name</string>
+  <string name="settings_my_account">Account Password</string>
+  <string name="settings_my_social">Account Binding</string>
+  <string name="settings_my_profile">Profile</string>
+  <string name="updating">Updating...</string>
+  <string name="bind_success">Bind Successfully</string>
+  <string name="unbind_success">Unbind Successfully</string>
+  <string name="login_verify_code">Code:</string>
+  <string name="login_verify_code_hint">Enter Code</string>
+  <string name="login_get_verify_code">Get Code</string>
+  <string name="send_verify_code_success">Verification code has been sent, please check messages.</string>
+  <string name="guest_user">Guest</string>
   <string name="guest_user_dialog_summary">您的当前身份为游客，不会保存您 的账户信息，请升级为正式用户</string>
-  <string name="bind">绑定</string>
+  <string name="bind">Binding</string>
   <string name="share_to_social">我要炫耀</string>
   <string name="share_sell_title">恭喜你，盈利</string>
   <string name="ten_thousands">万</string>
@@ -394,7 +390,7 @@
 
   <string name="quickly_to_get_first">快来抢沙发</string>
   <string name="no_useful_data">空空如也</string>
-  <string name="click_to_get_more">点击加载更多</string>
+  <string name="click_to_get_more">More</string>
   <string name="html_string_blue"><Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data></string>
   <string name="html_string_gray"><Data><![CDATA[ <font color="#929292">%s</font> ]]></Data></string>
   <string name="app_name_cn">全民股神</string>
@@ -429,7 +425,8 @@
   <string name="sign_in_wechat">WeChat</string>
   <string name="sign_in_weibo">Weibo</string>
   <string name="sign_in_reset_password">Reset Password</string>
-  <string name="reset_password_account_hint">Email</string>
+  <string name="sign_in_reset_password_failed">Reset Password Failed</string>
+  <string name="sign_in_reset_password_successfully">Reset Password Successfully</string>
   <!--Sign in & Sign up -->
 
   <!-- Notification -->

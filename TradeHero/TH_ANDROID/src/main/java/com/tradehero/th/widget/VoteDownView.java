@@ -3,7 +3,6 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.VoteDirection;
 
@@ -35,7 +34,7 @@ public class VoteDownView extends VoteView
         }
         else
         {
-            setValue(R.integer.messages_initial_vote_count);
+            setValue(0);
             setChecked(false);
         }
     }

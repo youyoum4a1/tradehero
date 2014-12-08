@@ -1,10 +1,6 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.chinabuild.data.AppInfoDTO;
-import com.tradehero.chinabuild.data.FollowStockForm;
-import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
-import com.tradehero.chinabuild.data.RecommendItems;
-import com.tradehero.chinabuild.data.TrackShareDTO;
+import com.tradehero.chinabuild.data.*;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -13,21 +9,11 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.social.key.FriendsListKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
-import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
-import com.tradehero.th.api.users.UpdateReferralCodeDTO;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.password.ResetPasswordDTO;
+import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
@@ -36,14 +22,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.social.DTOProcessorFriendInvited;
-import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
-import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
-import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
-import com.tradehero.th.models.user.DTOProcessorUnfollowUser;
-import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
-import com.tradehero.th.models.user.DTOProcessorUserDeleted;
+import com.tradehero.th.models.user.*;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
@@ -59,13 +38,14 @@ import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
 
 @Singleton public class UserServiceWrapper
 {
@@ -461,18 +441,18 @@ import retrofit.client.Response;
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">
-    public ForgotPasswordDTO forgotPassword(ForgotPasswordFormDTO forgotPasswordFormDTO)
-    {
-        return userService.forgotPassword(forgotPasswordFormDTO);
-    }
-
-    public MiddleCallback<ForgotPasswordDTO> forgotPassword(
+    public MiddleCallback<ForgotPasswordDTO> forgotPasswordEmail(
             ForgotPasswordFormDTO forgotPasswordFormDTO,
             Callback<ForgotPasswordDTO> callback)
     {
         MiddleCallback<ForgotPasswordDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        userServiceAsync.forgotPassword(forgotPasswordFormDTO, middleCallback);
+        userServiceAsync.forgotPasswordEmail(forgotPasswordFormDTO, middleCallback);
         return middleCallback;
+    }
+
+    public Callback<ResetPasswordDTO> resetPasswordMobile(ResetPasswordFormDTO resetPasswordFormDTO, Callback<ResetPasswordDTO> callback){
+        userServiceAsync.resetPasswordMobile(resetPasswordFormDTO, callback);
+        return callback;
     }
     //</editor-fold>
 

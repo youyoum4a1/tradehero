@@ -12,19 +12,16 @@ import com.tradehero.th.utils.Constants;
 
 public class ActivityHelper
 {
-    public static void launchAuthentication(Context activity)
+    public static void launchAuthentication(Activity activity)
     {
-        Intent localIntent = new Intent(activity, AuthenticationActivity.class);
-        localIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        activity.startActivity(localIntent);
-        ((Activity) activity).finish();
+        presentFromActivity(activity, AuthenticationActivity.class);
+        activity.finish();
     }
 
-    public static void launchGuide(Context activity)
+    public static void launchGuide(Activity activity)
     {
-        Intent localIntent = new Intent(activity, GuideActivity.class);
-        activity.startActivity(localIntent);
-        ((Activity) activity).finish();
+        presentFromActivity(activity, GuideActivity.class);
+        activity.finish();
     }
 
     public static void launchDashboard(Activity activity,Bundle args)
@@ -42,8 +39,15 @@ public class ActivityHelper
     public static void presentFromActivity(Activity fromActivity, Class toActivityClass, int flags,Bundle args)
     {
         Intent localIntent = new Intent(fromActivity.getApplicationContext(), toActivityClass);
-        localIntent.putExtras(args);
-        localIntent.addFlags(flags);
+            localIntent.putExtras(args);
+            localIntent.addFlags(flags);
+        fromActivity.startActivity(localIntent);
+        fromActivity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
+    }
+
+    public static void presentFromActivity(Activity fromActivity, Class toActivityClass)
+    {
+        Intent localIntent = new Intent(fromActivity.getApplicationContext(), toActivityClass);
         fromActivity.startActivity(localIntent);
         fromActivity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }

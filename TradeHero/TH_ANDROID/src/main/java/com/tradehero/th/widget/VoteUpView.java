@@ -34,7 +34,7 @@ public class VoteUpView extends VoteView
         }
         else
         {
-            setValue(R.integer.messages_initial_vote_count);
+            setValue(0);
             setChecked(false);
         }
     }

@@ -7,35 +7,14 @@ import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
-import com.tradehero.th.api.users.UpdateReferralCodeDTO;
-import com.tradehero.th.api.users.UserAvailabilityDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
-import com.tradehero.th.api.users.WebSignInFormDTO;
-import com.tradehero.th.api.users.password.ForgotPasswordDTO;
-import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.social.friend.FollowFriendsForm;
 import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Part;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import retrofit.http.*;
 import retrofit.mime.TypedOutput;
 
 public interface UserService
@@ -124,11 +103,6 @@ public interface UserService
     //<editor-fold desc="Check Display Name Available">
     @GET("/checkDisplayNameAvailable") UserAvailabilityDTO checkDisplayNameAvailable(
             @Query("displayName") String username);
-    //</editor-fold>
-
-    //<editor-fold desc="Forgot Password">
-    @POST("/forgotPassword") ForgotPasswordDTO forgotPassword(
-            @Body ForgotPasswordFormDTO forgotPasswordFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Search Users">

@@ -13,12 +13,13 @@ import com.tradehero.th.base.THUser;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
@@ -145,7 +146,6 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         {
             THUser.clearCurrentUser();
             dismissProgressDialog();
-            // TODO move these lines into MiddleCallbackLogout?
             ActivityHelper.launchAuthentication(activity);
         }
 

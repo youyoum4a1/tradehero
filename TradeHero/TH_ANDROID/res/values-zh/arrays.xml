@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string-array name="share_to">
-    <item>@string/wechat</item>
-    <item>@string/linkedin</item>
-  </string-array>
   <string-array name="register_choose_image">
     <item>@string/take_photo</item>
     <item>@string/from_gallery</item>

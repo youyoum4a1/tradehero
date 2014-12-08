@@ -15,6 +15,7 @@ import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+
 import javax.inject.Inject;
 
 /**
@@ -60,11 +61,6 @@ public class LoginSuggestDialogFragment extends BaseDialogFragment {
     public void setContent(String content) {
         this.content = content;
     }
-
-    public void setContent(int content_id){
-        String content = getActivity().getResources().getString(content_id);
-    }
-
 
     @OnClick(R.id.textview_suggest_signin)
     public void gotoSignIn() {

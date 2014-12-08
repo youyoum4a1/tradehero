@@ -46,8 +46,6 @@ import timber.log.Timber;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Register using email or phone number.
@@ -85,8 +83,9 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
     private Bitmap photo;
     private File file;
 
-    private static long last_time_request_verify_code = -1;
-    private final long duration_verify_code = 60;
+    //Verify Code
+    public static long last_time_request_verify_code = -1;
+    public final static long duration_verify_code = 60;
     private String requestVerifyCodeStr = "";
     private Runnable refreshVerifyCodeRunnable = new Runnable() {
         @Override
@@ -140,12 +139,8 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 mIsPhoneNumRegister = false;
-                if (charSequence.length() == 11) {
-                    Pattern p = Pattern.compile("[0-9]*");
-                    Matcher m = p.matcher(charSequence);
-                    if (m.matches()) {
+                if(EmailSignUtils.isPhoneNumber(charSequence)){
                         mIsPhoneNumRegister = true;
-                    }
                 }
                 if (verifyCodeLayout != null) {
                     verifyCodeLayout.setVisibility(mIsPhoneNumRegister ? View.VISIBLE : View.GONE);

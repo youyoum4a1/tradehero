@@ -4,17 +4,6 @@ public class ResetPasswordFormDTO
 {
     public String newPassword;
     public String newPasswordConfirmation;
-    public String forgotEmailUrlGuid;
-
-    public ResetPasswordFormDTO()
-    {
-        super();
-    }
-
-    public boolean isValid()
-    {
-        return newPassword != null && newPassword.length() >= 6 &&
-                newPasswordConfirmation != null && newPasswordConfirmation.length() >= 6 &&
-                newPasswordConfirmation.equals(newPassword);
-    }
+    public String phoneNumber;
+    public String verifyCode;
 }

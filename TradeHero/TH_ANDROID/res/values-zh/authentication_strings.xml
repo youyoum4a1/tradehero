@@ -1,22 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="authentication_welcome_new_user">新用户</string>
-  <string name="authentication_guarantee">我们尊重您的隐私： 我们永远不会在未经过您允许的情况下，发布任何信息至您的社交平台</string>
-  <string name="authentication_sign_in_pp">隐私策略</string>
-  <string name="authentication_sign_in_tos">服务条款</string>
-  <string name="authentication_email">*电子邮件</string>
-  <string name="authentication_password">*密码</string>
-  <string name="authentication_sign_up">注册</string>
   <string name="authentication_register">注册</string>
-  <string name="authentication_sign_up_with">使用以下账号注册</string>
-  <string name="authentication_sign_up_with_email">或以邮箱注册\u0020</string>
-  <string name="authentication_sign_in">登录</string>
   <string name="authentication_login">登录</string>
-  <string name="authentication_sign_in_with">使用社交平台账号登录</string>
   <string name="authentication_sign_in_with_email">或以注册邮箱登录\u0020</string>
   <string name="authentication_existing_user">已注册用户</string>
-  <string name="authentication_email_address">电子邮件</string>
   <string name="authentication_ask_for_email">请输入您的电子邮件地址:</string>
   <string name="authentication_thank_you_message_email">谢谢您 ! 请查看你的邮箱</string>
   <string name="authentication_confirm">确认</string>

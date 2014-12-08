@@ -4,8 +4,4 @@ public class ResetPasswordDTO
 {
     public boolean resetPassword;
 
-    public ResetPasswordDTO()
-    {
-        super();
-    }
 }

@@ -20,8 +20,9 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
-import java.util.ArrayList;
+
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  * Created by palmer on 14/11/17.
@@ -115,6 +116,14 @@ public class CNPersonTradePositionListAdpater extends BaseExpandableListAdapter 
             ivHead.setBackgroundResource(R.drawable.icon_arrow_down_gray);
         }else{
             ivHead.setBackgroundResource(R.drawable.icon_arrow_up_gray);
+        }
+        int childAccount = getChildrenCount(groupPosition);
+        if(childAccount<=0){
+            tvHead.setVisibility(View.GONE);
+            ivHead.setVisibility(View.GONE);
+        }else{
+            tvHead.setVisibility(View.VISIBLE);
+            ivHead.setVisibility(View.VISIBLE);
         }
         return convertView;
     }

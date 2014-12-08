@@ -19,7 +19,6 @@
   <string name="link_description">分享前，请连接您的 %1$s 账号…</string>
   <string name="link_now">现在连接!</string>
   <string name="later">晚点</string>
-  <string name="press_back_again_to_exit">点击返回以退出</string>
   <string name="discussion">讨论</string>
   <string name="more_character">. . .</string>
   <string name="buy_sell">买入/卖出</string>
@@ -117,7 +116,6 @@
   <string name="authentication_next">下一步</string>
   <string name="register_diaplay_name_hint">用户名（必填）</string>
   <string name="register_finish">完成注册</string>
-  <string name="请输入您的账号"/>
   <string name="register_error_account">亲，邮箱是不是写错啦？</string>
   <string name="register_error_password">密码须为6-20位字母或数字</string>
   <string name="register_error_displayname">请输入您的用户名</string>
@@ -204,7 +202,8 @@
   <string name="sign_in_wechat">微信</string>
   <string name="sign_in_weibo">微博</string>
   <string name="sign_in_reset_password">密码重置</string>
-  <string name="reset_password_account_hint">邮箱</string>
+  <string name="sign_in_reset_password_failed">重置密码失败</string>
+  <string name="sign_in_reset_password_successfully">重置密码成功</string>
   <!--Sign in & Sign up -->
 
   <!-- Photo-->
