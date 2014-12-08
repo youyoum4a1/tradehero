@@ -9,6 +9,8 @@ import android.view.View;
 import com.tradehero.th.R;
 
 /**
+ * Contact List A - Z, #
+ *
  * Created by palmer on 14/11/25.
  */
 public class ABCDView extends View {
@@ -40,7 +42,8 @@ public class ABCDView extends View {
         }
         paint.setTextSize(textSize);
         for(int num=0;num<dividers.length;num++) {
-            canvas.drawText(dividers[num], (width - textSize)/2, unit*5*(num+1)+10, paint);
+            float textWidth = paint.measureText(dividers[num]);
+            canvas.drawText(dividers[num], (width - textWidth)/2, unit*5*(num+1)+10, paint);
         }
     }
 
