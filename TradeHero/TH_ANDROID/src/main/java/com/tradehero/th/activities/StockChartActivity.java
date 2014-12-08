@@ -8,7 +8,7 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.fragments.security.ChartFragment;
 import com.tradehero.th.inject.Injector;
 import dagger.Module;
@@ -23,7 +23,8 @@ public class StockChartActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         THApp app = THApp.get(this);
-        newInjector = app.plus(new StockChartActivityModule());
+        // FIXME dagger2
+        //newInjector = app.plus(new StockChartActivityModule());
 
         super.onCreate(savedInstanceState);
 

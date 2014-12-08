@@ -4,7 +4,7 @@ import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import org.junit.After;
 import org.junit.Before;

@@ -3,7 +3,7 @@ package com.tradehero.th.models.intent;
 import android.content.Intent;
 import android.net.Uri;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import java.util.List;
 
 abstract public class THIntentFactory<THIntentType extends THIntent>

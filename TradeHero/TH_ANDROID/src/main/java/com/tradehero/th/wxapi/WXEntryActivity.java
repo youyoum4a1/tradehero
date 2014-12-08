@@ -32,7 +32,6 @@ import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
@@ -87,9 +86,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        THApp app = THApp.get(this);
-        newInjector = app.plus(new WXEntryActivityModule());
-        newInjector.inject(this);
+
+        // FIXME dagger
+        //THApp app = THApp.get(this);
+        //newInjector = app.plus(new WXEntryActivityModule());
+        //newInjector.inject(this);
 
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.

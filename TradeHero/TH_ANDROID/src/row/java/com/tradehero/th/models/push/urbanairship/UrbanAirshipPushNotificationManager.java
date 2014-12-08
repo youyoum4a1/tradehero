@@ -1,6 +1,6 @@
 package com.tradehero.th.models.push.urbanairship;
 
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.models.push.PushNotificationManager;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;

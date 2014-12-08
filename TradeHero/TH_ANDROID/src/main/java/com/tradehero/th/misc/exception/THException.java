@@ -5,7 +5,7 @@ import com.tradehero.common.utils.RetrofitHelper;
 import com.tradehero.th.R;
 import com.tradehero.th.api.ErrorMessageDTO;
 import com.tradehero.th.api.http.ResponseErrorCode;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.utils.Constants;
 import java.util.List;
 import retrofit.RetrofitError;

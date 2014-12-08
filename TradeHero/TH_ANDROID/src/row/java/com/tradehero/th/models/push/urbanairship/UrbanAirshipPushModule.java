@@ -47,11 +47,6 @@ public class UrbanAirshipPushModule
         }));
     }
 
-    @Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
-    {
-        return richNotificationBuilder;
-    }
-
     @Provides AirshipConfigOptions provideAirshipConfigOptions(Context context)
     {
         AirshipConfigOptions options = AirshipConfigOptions.loadDefaultOptions(context);

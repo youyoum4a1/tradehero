@@ -3,7 +3,6 @@ package com.tradehero.th.utils.broadcast;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import com.google.common.annotations.VisibleForTesting;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,7 +16,7 @@ public class BroadcastTaskNew
     @NonNull private final TaskListener mTaskListener;
     @NonNull private Timer timer;
     private volatile int mTry;
-    @VisibleForTesting public volatile boolean isRunning;
+    /*@VisibleForTesting*/ public volatile boolean isRunning;
 
     //<editor-fold desc="Constructors">
     public BroadcastTaskNew(

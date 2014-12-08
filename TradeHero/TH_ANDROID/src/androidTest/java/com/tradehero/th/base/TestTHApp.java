@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.facebook.LoginActivity;
 import com.tradehero.TestModule;
 import com.tradehero.common.log.SystemOutTree;
+import com.tradehero.th.THApp;
 import dagger.internal.loaders.GeneratedAdapters;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

@@ -2,7 +2,7 @@ package com.tradehero.th.models.number;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 
 public class THSignedPercentage extends THSignedNumber
 {

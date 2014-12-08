@@ -7,21 +7,13 @@ import android.net.NetworkInfo;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.FlavorModule;
 import com.tradehero.th.BuildTypeModule;
+import com.tradehero.th.THApp;
 import com.tradehero.th.activities.ActivityAppModule;
-import com.tradehero.th.activities.GuideActivity;
-import com.tradehero.th.api.ObjectMapperWrapper;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.base.THApp;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.loaders.FriendListLoader;
-import com.tradehero.th.loaders.TimelineListLoader;
-import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
-import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.network.share.SocialNetworkAppModule;
 import com.tradehero.th.persistence.PersistenceModule;
@@ -54,22 +46,6 @@ import javax.inject.Singleton;
                 PushModule.class,
                 BuildTypeModule.class
         },
-        injects =
-                {
-                        THApp.class,
-                        ChoiceFollowUserAssistantWithDialog.class,
-                        SecurityListPagedLoader.class,
-
-                        DisplayablePortfolioFetchAssistant.class,
-
-                        TimelineListLoader.class,
-
-                        FriendListLoader.class,
-                        MessageHeaderDTO.class,
-                        GuideActivity.class,
-
-                        ObjectMapperWrapper.class,
-                },
         complete = false,
         library = true // TODO remove this line
 )

@@ -24,7 +24,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.fragments.ForTypographyFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;

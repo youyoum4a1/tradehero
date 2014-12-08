@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

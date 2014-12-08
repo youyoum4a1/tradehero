@@ -13,7 +13,7 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;

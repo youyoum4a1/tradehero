@@ -15,7 +15,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
-import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
@@ -57,9 +56,7 @@ public class BaseActivity extends FragmentActivity
 
     private void extendAndInject()
     {
-        THApp thApp = THApp.get(this);
-        newInjector = thApp.plus(getModules().toArray());
-        newInjector.inject(this);
+        // FIXME dagger2
     }
 
     protected List<Object> getModules()

@@ -2,7 +2,7 @@ package com.tradehero.th.network;
 
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.misc.exception.THException;
 import java.util.concurrent.TimeUnit;
 import rx.Notification;

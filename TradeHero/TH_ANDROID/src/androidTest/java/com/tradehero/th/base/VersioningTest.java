@@ -17,7 +17,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class VersioningTest
 {
-    @Inject THApp THApp;
+    @Inject com.tradehero.th.THApp THApp;
 
     @Test public void testVersionFollowsProperConventionOfForceUpgrade() throws PackageManager.NameNotFoundException
     {

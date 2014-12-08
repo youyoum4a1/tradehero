@@ -3,7 +3,7 @@ package com.tradehero.common.utils;
 import android.widget.TextView;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.misc.exception.THException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -6,7 +6,7 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.utils.Constants;
 import dagger.Module;
 import dagger.Provides;

@@ -6,7 +6,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.tradehero.th.THApp;
 import com.tradehero.th.misc.exception.THException;
 import timber.log.Timber;
 

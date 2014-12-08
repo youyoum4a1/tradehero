@@ -1,4 +1,4 @@
-package com.tradehero.th.base;
+package com.tradehero.th;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,22 +10,16 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.inject.BaseInjector;
-import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.dagger.AppModule;
-import dagger.ObjectGraph;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class THApp extends PApplication
-    implements ExInjector
 {
-    public static boolean timberPlanted = false;
+    @Inject PushNotificationManager pushNotificationManager;
 
-    @Inject protected PushNotificationManager pushNotificationManager;
-    private ObjectGraph objectGraph;
+    private AppGraph component;
 
     @Override protected void init()
     {
@@ -40,40 +34,25 @@ public class THApp extends PApplication
 
         buildObjectGraphAndInject();
 
-        DaggerUtils.setObjectGraph(objectGraph);
-
         pushNotificationManager.initialise();
 
         THLog.showDeveloperKeyHash(this);
     }
 
-    private Timber.Tree createCrashlyticsTree()
-    {
-        Crashlytics.start(this);
-        return new CrashReportingTree();
-    }
-
     private void buildObjectGraphAndInject()
     {
-        objectGraph = ObjectGraph.create(getModules());
-        objectGraph.injectStatics();
-        objectGraph.inject(this);
-    }
-
-    @NonNull protected Timber.Tree createTimberTree()
-    {
-        return new EasyDebugTree()
-        {
-            @Override public String createTag()
-            {
-                return String.format("TradeHero-%s", super.createTag());
-            }
-        };
+        component = AppComponent.Initializer.init(this);
+        component.injectApp(this);
     }
 
     protected Object[] getModules()
     {
         return new Object[] { new AppModule(this) };
+    }
+
+    public static THApp get(Context context)
+    {
+        return (THApp) context.getApplicationContext();
     }
 
     public void restartActivity(Class<? extends Activity> activityClass)
@@ -85,18 +64,20 @@ public class THApp extends PApplication
         buildObjectGraphAndInject();
     }
 
-    @Override public ExInjector plus(Object... modules)
+    private Timber.Tree createCrashlyticsTree()
     {
-        return new BaseInjector(objectGraph.plus(modules));
+        Crashlytics.start(this);
+        return new CrashReportingTree();
     }
 
-    @Override public void inject(Object o)
+    @NonNull protected Timber.Tree createTimberTree()
     {
-        objectGraph.inject(o);
-    }
-
-    public static THApp get(Context context)
-    {
-        return (THApp) context.getApplicationContext();
+        return new EasyDebugTree()
+        {
+            @Override public String createTag()
+            {
+                return String.format("TradeHero-%s", super.createTag());
+            }
+        };
     }
 }
