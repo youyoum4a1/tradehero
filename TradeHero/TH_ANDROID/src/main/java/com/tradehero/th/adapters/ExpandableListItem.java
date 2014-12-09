@@ -1,6 +1,6 @@
 package com.tradehero.th.adapters;
 
-public class ExpandableListItem<T> implements ExpandableItem, OnSizeChangedListener
+public class ExpandableListItem<T> implements ExpandableItem
 {
     protected boolean expanded;
     protected final T model;
@@ -15,10 +15,6 @@ public class ExpandableListItem<T> implements ExpandableItem, OnSizeChangedListe
     public T getModel()
     {
         return model;
-    }
-
-    @Override public void onSizeChanged(int newHeight)
-    {
     }
 
     @Override public boolean isExpanded()

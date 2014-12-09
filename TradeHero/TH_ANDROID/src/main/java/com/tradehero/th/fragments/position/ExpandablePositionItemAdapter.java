@@ -2,17 +2,15 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.adapters.ExpandableListReporter;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.fragments.position.view.PositionView;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Map;
+
 public class ExpandablePositionItemAdapter extends PositionItemAdapter
-        implements ExpandableListReporter
 {
     private WeakReference<PositionListener<PositionDTO>> cellListener;
 
@@ -61,64 +59,6 @@ public class ExpandablePositionItemAdapter extends PositionItemAdapter
     {
         this.cellListener = new WeakReference<>(cellListener);
     }
-
-    //<editor-fold desc="ExpandableListReporter">
-    @Override public List<Boolean> getExpandedStatesPerPosition()
-    {
-        List<Boolean> expandedStates = new ArrayList<>();
-
-        int position = 0;
-        Object itemAtPosition = null;
-        while (position < getCount())
-        {
-            itemAtPosition = getItem(position);
-            if (itemAtPosition instanceof ExpandableListItem)
-            {
-                expandedStates.add(((ExpandableListItem) itemAtPosition).isExpanded());
-            }
-            else
-            {
-                expandedStates.add(false);
-            }
-            position++;
-        }
-
-        return expandedStates;
-    }
-
-    @Override public void setExpandedStatesPerPosition(boolean[] expandedStatesPerPosition)
-    {
-        if (expandedStatesPerPosition == null)
-        {
-            return;
-        }
-        List<Boolean> expandedStates = new ArrayList<>();
-        for (boolean state: expandedStatesPerPosition)
-        {
-            expandedStates.add(state);
-        }
-        setExpandedStatesPerPosition(expandedStates);
-    }
-
-    @Override public void setExpandedStatesPerPosition(List<Boolean> expandedStatesPerPosition)
-    {
-        if (expandedStatesPerPosition == null)
-        {
-            return;
-        }
-
-        int position = 0;
-        while (position < getCount() && position < expandedStatesPerPosition.size())
-        {
-            Object itemAtPosition = getItem(position);
-            if (itemAtPosition instanceof ExpandableListItem)
-            {
-                ((ExpandableListItem) itemAtPosition).setExpanded(expandedStatesPerPosition.get(position));
-            }
-            position++;
-        }
-    }
-    //</editor-fold>
 
     protected class AbstractPositionItemAdapterPositionListener
             implements PositionListener<PositionDTO>

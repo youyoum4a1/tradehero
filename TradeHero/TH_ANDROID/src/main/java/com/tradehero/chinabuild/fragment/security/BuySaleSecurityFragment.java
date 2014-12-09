@@ -5,17 +5,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ActionMode;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,11 +19,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.portfolio.*;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -65,13 +52,14 @@ import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-2.
@@ -827,7 +815,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
             {
                 THToast.show("出售成功!");
             }
-
+            if(mShareToSocialCheckBox==null){
+                return;
+            }
             if (mShareToSocialCheckBox.isChecked())
             {
                 if (isBuy)
