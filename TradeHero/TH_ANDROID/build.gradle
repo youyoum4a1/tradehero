@@ -316,7 +316,7 @@ dependencies {
   compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile 'com.android.support:support-annotations:20.0.0'
-  compile 'com.crashlytics.android:crashlytics:1.1.10+'
+  compile 'com.crashlytics.android:crashlytics:1.+'
   compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
   compile('oauth.signpost:signpost-core:1.2.1.2') {
     exclude group: 'commons-codec', module: 'commons-codec'
