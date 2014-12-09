@@ -1,8 +1,6 @@
 package com.tradehero.th.api.security;
 
-import com.tradehero.th.api.misc.MediaDTO;
-
-public class SecurityMediaDTO extends MediaDTO
+public class SecurityMediaDTO
 {
     public int securityId;
     public String exchange;
