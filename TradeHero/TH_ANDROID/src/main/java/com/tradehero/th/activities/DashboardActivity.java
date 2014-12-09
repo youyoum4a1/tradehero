@@ -41,7 +41,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -130,6 +129,7 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class DashboardActivity extends BaseActivity
@@ -177,19 +177,14 @@ public class DashboardActivity extends BaseActivity
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
-    @Nullable private Subscription providerListSubscription;
     private Subscription notificationFetchSubscription;
 
     private ProgressDialog progressDialog;
     private DashboardTabHost dashboardTabHost;
     private int tabHostHeight;
-    private BroadcastReceiver mAchievementBroadcastReceiver;
-    private BroadcastReceiver mXPBroadcastReceiver;
-    private BroadcastReceiver onBoardBroadcastReceiver;
-    private BroadcastReceiver enrollmentBroadcastReceiver;
-    private BroadcastReceiver sendLoveBroadcastReceiver;
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
+    private CompositeSubscription subscriptions;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -267,87 +262,6 @@ public class DashboardActivity extends BaseActivity
 
     private void initBroadcastReceivers()
     {
-        mAchievementBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                if (intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
-                {
-                    Bundle bundle = intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
-                    achievementDialogCreator.newInstance(new UserAchievementId(bundle))
-                            .subscribe(new Observer<AbstractAchievementDialogFragment>()
-                            {
-                                private boolean isEmpty = false;
-
-                                @Override public void onCompleted()
-                                {
-                                    if (isEmpty)
-                                    {
-                                        broadcastUtilsLazy.get().nextPlease();
-                                    }
-                                }
-
-                                @Override public void onError(Throwable e)
-                                {
-                                    Timber.e(e, "Error when creating achievement dialog");
-                                }
-
-                                @Override public void onNext(AbstractAchievementDialogFragment abstractAchievementDialogFragment)
-                                {
-                                    isEmpty = false;
-                                    abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
-                                }
-                            });
-                }
-                else
-                {
-                    broadcastUtilsLazy.get().nextPlease();
-                }
-            }
-        };
-
-        mXPBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                if (intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
-                {
-                    Bundle b = intent.getBundleExtra(XpModule.KEY_XP_BROADCAST);
-                    UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
-                    xpToast.showWhenReady(userXPAchievementDTO);
-                }
-                else
-                {
-                    broadcastUtilsLazy.get().nextPlease();
-                }
-            }
-        };
-
-        onBoardBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                isOnboardShown.set(true);
-                OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-            }
-        };
-
-        enrollmentBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                fetchProviderList();
-            }
-        };
-
-        sendLoveBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager());
-            }
-        };
-
         onlineStateReceiver = new BroadcastReceiver()
         {
             @Override public void onReceive(Context context, Intent intent)
@@ -468,19 +382,50 @@ public class DashboardActivity extends BaseActivity
         super.onResume();
         launchActions();
         analytics.openSession();
-        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
-        localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
-        localBroadcastManager.registerReceiver(onBoardBroadcastReceiver, onBoardIntentFilter);
-        // get providers for enrollment page
-        localBroadcastManager.registerReceiver(enrollmentBroadcastReceiver, competitionEnrollmentIntentFilter);
-        localBroadcastManager.registerReceiver(sendLoveBroadcastReceiver, sendLoveIntentFilter);
-    }
 
-    protected void fetchProviderList()
-    {
-        detachSubscription(providerListSubscription);
-        providerListSubscription = AndroidObservable.bindActivity(this, providerListCache.get().get(new ProviderListKey()))
-                .subscribe(new ProviderListFetchObserver());
+        subscriptions = new CompositeSubscription();
+        subscriptions.add(AndroidObservable.fromLocalBroadcast(this, achievementIntentFilter)
+                .filter(intent -> intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
+                .map(intent -> intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID))
+                .map(UserAchievementId::new)
+                .flatMap(achievementDialogCreator::newInstance)
+                .subscribe(
+                        fragment -> fragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG),
+                        throwable -> {}, () -> broadcastUtilsLazy.get().nextPlease()
+                ));
+
+        subscriptions.add(AndroidObservable.fromLocalBroadcast(this, xpIntentFilter)
+                .filter(intent -> intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
+                .map(intent -> new UserXPAchievementDTO(intent.getBundleExtra(XpModule.KEY_XP_BROADCAST)))
+                .subscribe(xpToast::showWhenReady, throwable -> {}, () -> broadcastUtilsLazy.get().nextPlease()));
+
+        subscriptions.add(AndroidObservable.fromLocalBroadcast(this, onBoardIntentFilter)
+                .subscribe(intent -> {
+                    isOnboardShown.set(true);
+                    OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+                }, throwable -> {}));
+
+        // get providers for enrollment page
+        subscriptions.add(AndroidObservable.fromLocalBroadcast(this, competitionEnrollmentIntentFilter)
+                .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
+                .flatMapIterable(pair -> pair.second)
+                .filter(providerDTO -> !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id))
+                .subscribe(
+                        providerDTO-> {
+                            enrollmentScreenOpened.add(providerDTO.id);
+                            Runnable handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
+                            runOnUiThread(handleCompetitionRunnable);
+                        },
+                        throwable -> {
+                            THToast.show(R.string.error_fetch_provider_competition_list);
+                            broadcastUtilsLazy.get().nextPlease();
+                        },
+                        () -> broadcastUtilsLazy.get().nextPlease())
+        );
+
+        subscriptions.add(AndroidObservable.fromLocalBroadcast(this, sendLoveIntentFilter)
+                .subscribe(intent ->
+                        AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -515,11 +460,7 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onPause()
     {
         analytics.closeSession();
-        localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(onBoardBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(enrollmentBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(sendLoveBroadcastReceiver);
+        subscriptions.unsubscribe();
         super.onPause();
     }
 
@@ -532,18 +473,10 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
-        detachSubscription(providerListSubscription);
-        providerListSubscription = null;
         purchaseRestorerFinishedListener = null;
         notificationFetchSubscription = null;
 
         xpToast.destroy();
-
-        mAchievementBroadcastReceiver = null;
-        mXPBroadcastReceiver = null;
-        onBoardBroadcastReceiver = null;
-        enrollmentBroadcastReceiver = null;
-        sendLoveBroadcastReceiver = null;
 
         networkIndicator = null;
 
@@ -706,46 +639,6 @@ public class DashboardActivity extends BaseActivity
             {
                 progressDialog.hide();
             }
-        }
-    }
-
-    protected class ProviderListFetchObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
-    {
-        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
-        {
-            openEnrollmentPageIfNecessary(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_provider_competition_list);
-            broadcastUtilsLazy.get().nextPlease();
-        }
-    }
-
-    private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
-    {
-        boolean isHandled = false;
-        for (ProviderDTO providerDTO : providerDTOs)
-        {
-            if (!providerDTO.isUserEnrolled
-                    && !enrollmentScreenOpened.contains(providerDTO.id))
-            {
-                isHandled = true;
-                enrollmentScreenOpened.add(providerDTO.id);
-
-                Runnable handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
-                runOnUiThread(handleCompetitionRunnable);
-                break;
-            }
-        }
-        if (!isHandled)
-        {
-            broadcastUtilsLazy.get().nextPlease();
         }
     }
 
