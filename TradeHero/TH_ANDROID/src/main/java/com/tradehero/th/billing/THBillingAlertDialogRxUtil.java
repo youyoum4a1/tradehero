@@ -231,9 +231,10 @@ abstract public class THBillingAlertDialogRxUtil<
                     THOrderIdType,
                     THProductPurchaseType> result)
     {
+        Observable<Pair<DialogInterface, Integer>> observable;
         if (result.getCount() == 0)
         {
-            return Observable.create(AlertDialogOnSubscribe.builder(
+            observable = Observable.create(AlertDialogOnSubscribe.builder(
                     createDefaultDialogBuilder(activityContext)
                             .setTitle(R.string.iap_purchase_restored_none_title)
                             .setMessage(R.string.iap_purchase_restored_none_message))
@@ -244,7 +245,7 @@ abstract public class THBillingAlertDialogRxUtil<
         }
         else if (result.getFailedCount() > 0 && result.getSucceededCount() == 0)
         {
-            return Observable.create(AlertDialogOnSubscribe.builder(
+            observable = Observable.create(AlertDialogOnSubscribe.builder(
                     createDefaultDialogBuilder(activityContext)
                             .setTitle(R.string.iap_send_support_email_restore_fail_title)
                             .setMessage(activityContext.getString(
@@ -269,7 +270,7 @@ abstract public class THBillingAlertDialogRxUtil<
         }
         else if (result.getFailedCount() > 0 && result.getSucceededCount() > 0)
         {
-            return Observable.create(AlertDialogOnSubscribe.builder(
+            observable = Observable.create(AlertDialogOnSubscribe.builder(
                     createDefaultDialogBuilder(activityContext)
                             .setTitle(R.string.iap_send_support_email_restore_fail_partial_title)
                             .setMessage(activityContext.getString(
@@ -295,7 +296,7 @@ abstract public class THBillingAlertDialogRxUtil<
         }
         else
         {
-            return Observable.create(AlertDialogOnSubscribe.builder(
+            observable = Observable.create(AlertDialogOnSubscribe.builder(
                     createDefaultDialogBuilder(activityContext)
                             .setTitle(R.string.iap_purchase_restored_title)
                             .setMessage(activityContext.getString(
@@ -306,6 +307,7 @@ abstract public class THBillingAlertDialogRxUtil<
                     .build())
                     .subscribeOn(AndroidSchedulers.mainThread());
         }
+        return observable.flatMap(pair -> Observable.empty()); // We do not want anything propagated
     }
 
     public void sendSupportEmailPurchaseRestoreFailed(
