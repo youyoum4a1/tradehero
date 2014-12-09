@@ -13,7 +13,6 @@ import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class THBaseAmazonPurchaser
@@ -33,7 +32,7 @@ public class THBaseAmazonPurchaser
             int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
-            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull /*@ProcessingPurchase*/ StringSetPreference processingPurchaseStringSet)
     {
         super(request, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;

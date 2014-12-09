@@ -55,12 +55,12 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
     }
 
     //<editor-fold desc="IABProductDetail<IABSKU>">
-    @Override public IABSKU getProductIdentifier()
+    @Override @NonNull public IABSKU getProductIdentifier()
     {
         return this.iabSKU;
     }
 
-    @Override public String getType()
+    @Override @NonNull public String getType()
     {
         return type;
     }

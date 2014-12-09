@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay.purchase;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.purchase.BaseIABPurchaserRx;
@@ -23,12 +24,14 @@ public class THBaseIABPurchaserRx
             int requestCode,
             @NonNull THIABPurchaseOrder purchaseOrder,
             @NonNull Activity activity,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
         super(requestCode,
                 purchaseOrder,
                 activity,
-                iabExceptionFactory);
+                iabExceptionFactory,
+                billingServiceBinderObservable);
     }
     //</editor-fold>
 

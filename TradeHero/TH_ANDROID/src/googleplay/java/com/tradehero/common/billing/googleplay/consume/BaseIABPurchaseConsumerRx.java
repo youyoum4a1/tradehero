@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -20,10 +21,7 @@ abstract public class BaseIABPurchaseConsumerRx<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
-        extends BaseIABServiceCaller<PurchaseConsumeResult<
-        IABSKUType,
-        IABOrderIdType,
-        IABPurchaseType>>
+        extends BaseIABServiceCaller
         implements IABPurchaseConsumerRx<
         IABSKUType,
         IABOrderIdType,
@@ -37,25 +35,19 @@ abstract public class BaseIABPurchaseConsumerRx<
             int requestCode,
             @NonNull IABPurchaseType purchase,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
-        super(requestCode, context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
         this.purchase = purchase;
-        consumeAndTellSubject();
     }
     //</editor-fold>
 
     @NonNull @Override public Observable<PurchaseConsumeResult<IABSKUType, IABOrderIdType, IABPurchaseType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void consumeAndTellSubject()
-    {
-        getBillingServiceResult()
+        return getBillingServiceResult()
                 .flatMap(this::consume)
-                .map(purchase -> new PurchaseConsumeResult<>(getRequestCode(), purchase))
-                .subscribe(subject);
+                .map(purchase -> new PurchaseConsumeResult<>(getRequestCode(), purchase));
     }
 
     protected Observable<IABPurchaseType> consume(@NonNull IABServiceResult serviceResult)

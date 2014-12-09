@@ -2,6 +2,7 @@ package com.tradehero.th.billing.googleplay.purchase;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.purchase.BaseIABPurchaserHolderRx;
@@ -22,15 +23,18 @@ public class THBaseIABPurchaserHolderRx
 {
     @NonNull protected final Provider<Activity> activityProvider;
     @NonNull protected final IABExceptionFactory iabExceptionFactory;
+    @NonNull protected final BillingServiceBinderObservable billingServiceBinderObservable;
 
     //<editor-fold desc="Constructors">
     @Inject THBaseIABPurchaserHolderRx(
             @NonNull Provider<Activity> activityProvider,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
         super();
         this.activityProvider = activityProvider;
         this.iabExceptionFactory = iabExceptionFactory;
+        this.billingServiceBinderObservable = billingServiceBinderObservable;
     }
     //</editor-fold>
 
@@ -38,6 +42,6 @@ public class THBaseIABPurchaserHolderRx
             int requestCode,
             @NonNull THIABPurchaseOrder purchaseOrder)
     {
-        return new THBaseIABPurchaserRx(requestCode, purchaseOrder, activityProvider.get(), iabExceptionFactory);
+        return new THBaseIABPurchaserRx(requestCode, purchaseOrder, activityProvider.get(), iabExceptionFactory, billingServiceBinderObservable);
     }
 }

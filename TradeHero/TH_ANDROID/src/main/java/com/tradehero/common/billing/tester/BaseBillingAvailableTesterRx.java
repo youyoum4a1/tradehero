@@ -1,11 +1,9 @@
 package com.tradehero.common.billing.tester;
 
-import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
-import rx.Observable;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 
 abstract public class BaseBillingAvailableTesterRx
-        extends BaseRequestCodeReplayActor<BillingTestResult>
+        extends BaseRequestCodeActor
         implements BillingAvailableTesterRx
 {
     //<editor-fold desc="Constructors">
@@ -14,9 +12,4 @@ abstract public class BaseBillingAvailableTesterRx
         super(requestCode);
     }
     //</editor-fold>
-
-    @Override @NonNull public Observable<BillingTestResult> get()
-    {
-        return replayObservable;
-    }
 }

@@ -25,5 +25,9 @@ public interface IABLogicHolderRx<
 {
     @NonNull Observable<PurchaseConsumeResult<IABSKUType,
             IABOrderIdType,
+            IABPurchaseType>> consumeAndClear(int requestCode, @NonNull IABPurchaseType purchase);
+
+    @NonNull Observable<PurchaseConsumeResult<IABSKUType,
+            IABOrderIdType,
             IABPurchaseType>> consume(int requestCode, @NonNull IABPurchaseType purchase);
 }

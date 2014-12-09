@@ -6,9 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.RequestCodeHolder;
+import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
+import com.tradehero.common.utils.CollectionUtils;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
@@ -39,7 +44,11 @@ abstract public class THBillingAlertDialogRxUtil<
         ProductDetailAdapterType extends ProductDetailAdapter<
                 ProductIdentifierType,
                 THProductDetailType,
-                ProductDetailViewType>>
+                ProductDetailViewType>,
+        THOrderIdType extends THOrderId,
+        THProductPurchaseType extends THProductPurchase<
+                ProductIdentifierType,
+                THOrderIdType>>
         extends AlertDialogRxUtil
 {
     public static final int MAX_RANDOM_RETRIES = 50;
@@ -85,7 +94,7 @@ abstract public class THBillingAlertDialogRxUtil<
         this.storeName = storeName;
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popError(
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popErrorAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable)
     {
@@ -93,7 +102,7 @@ abstract public class THBillingAlertDialogRxUtil<
         {
             return popBillingUnavailableAndHandleRx(activityContext);
         }
-        return Observable.empty();
+        return Observable.error(throwable);
     }
 
     //<editor-fold desc="Billing Available">
@@ -125,12 +134,11 @@ abstract public class THBillingAlertDialogRxUtil<
         if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
         {
             goToCreateAccount(activityContext);
-            return Observable.empty();
         }
-        return Observable.just(pair);
+        return Observable.empty();
     }
 
-    public void goToCreateAccount(final Context context)
+    public void goToCreateAccount(@NonNull final Context context)
     {
         Intent addAccountIntent = new Intent(Settings.ACTION_ADD_ACCOUNT);
         addAccountIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); // Still cannot get it to go back to TradeHero with back button
@@ -139,6 +147,7 @@ abstract public class THBillingAlertDialogRxUtil<
     //</editor-fold>
 
     //<editor-fold desc="Product Detail Presentation">
+
     /**
      * By default, product identifiers that are not mentioned in the list are enabled.
      */
@@ -153,7 +162,7 @@ abstract public class THBillingAlertDialogRxUtil<
         return new THProductDetailDecreasingPriceComparator<>();
     }
 
-    @NonNull public Observable<THProductDetailType> popBuyDialog(
+    @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
             @NonNull Activity activityContext,
             @NonNull ProductIdentifierDomain domain,
             @NonNull THProductDetailDomainInformerRxType domainInformer)
@@ -162,10 +171,36 @@ abstract public class THBillingAlertDialogRxUtil<
                 .flatMap(requestCode -> domainInformer.getDetailsOfDomain(requestCode, domain))
                 .map(result -> result.detail)
                 .toList()
-                .flatMap(productDetails -> popBuyDialog(activityContext, domain, productDetails));
+                .flatMap(productDetails -> popBuyDialogAndHandle(activityContext, domain, productDetails));
     }
 
-    @NonNull public Observable<THProductDetailType> popBuyDialog(
+    @NonNull public Observable<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> popBuyDialogAndHandle(
+            @NonNull Activity activityContext,
+            @NonNull ProductIdentifierDomain domain,
+            @NonNull List<ProductInventoryResult<ProductIdentifierType, THProductDetailType>> productDetails,
+            @Nullable ProductInventoryResult<ProductIdentifierType, THProductDetailType> typeQualifier)
+    {
+        return popBuyDialog(
+                activityContext,
+                domain,
+                CollectionUtils.map(
+                        productDetails,
+                        result -> result.detail))
+                .filter(pair -> pair.second >= 0)
+                .map(pair -> productDetails.get(pair.second));
+    }
+
+    @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
+            @NonNull Activity activityContext,
+            @NonNull ProductIdentifierDomain domain,
+            @NonNull List<THProductDetailType> productDetails)
+    {
+        return popBuyDialog(activityContext, domain, productDetails)
+                .filter(pair -> pair.second >= 0)
+                .map(pair -> productDetails.get(pair.second));
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popBuyDialog(
             @NonNull Activity activityContext,
             @NonNull ProductIdentifierDomain domain,
             @NonNull List<THProductDetailType> productDetails)
@@ -183,28 +218,163 @@ abstract public class THBillingAlertDialogRxUtil<
                         .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
                         .build())
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .flatMap(pair -> {
-                    if (pair.second >= 0)
-                    {
-                        return Observable.just(productDetails.get(pair.second));
-                    }
-                    return Observable.empty();
-                });
+                .doOnNext(obj -> THToast.show("" + obj))
+                .doOnCompleted(() -> THToast.show("dialog completed"));
     }
     //</editor-fold>
 
-    public void sendSupportEmailPurchaseNotRestored(final Context context)
+    //<editor-fold desc="Purchases Restored">
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreResultAndHandle(
+            @NonNull Context activityContext,
+            @NonNull PurchaseRestoreTotalResult<
+                    ProductIdentifierType,
+                    THOrderIdType,
+                    THProductPurchaseType> result)
+    {
+        if (result.getCount() == 0)
+        {
+            return Observable.create(AlertDialogOnSubscribe.builder(
+                    createDefaultDialogBuilder(activityContext)
+                            .setTitle(R.string.iap_purchase_restored_none_title)
+                            .setMessage(R.string.iap_purchase_restored_none_message))
+                    .setNegativeButton(R.string.iap_purchase_restored_none_cancel)
+                    .setCanceledOnTouchOutside(true)
+                    .build())
+                    .subscribeOn(AndroidSchedulers.mainThread());
+        }
+        else if (result.getFailedCount() > 0 && result.getSucceededCount() == 0)
+        {
+            return Observable.create(AlertDialogOnSubscribe.builder(
+                    createDefaultDialogBuilder(activityContext)
+                            .setTitle(R.string.iap_send_support_email_restore_fail_title)
+                            .setMessage(activityContext.getString(
+                                    R.string.iap_send_support_email_restore_fail_message,
+                                    result.getFailedCount())))
+                    .setPositiveButton(R.string.iap_send_support_email_restore_fail_ok)
+                    .setNegativeButton(R.string.iap_send_support_email_restore_fail_cancel)
+                    .setCanceledOnTouchOutside(true)
+                    .build())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .flatMap(pair -> {
+                        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                        {
+                            sendSupportEmailPurchaseRestoreFailed(
+                                    activityContext,
+                                    CollectionUtils.map(
+                                            result.restoredList,
+                                            restored -> restored.throwable));
+                        }
+                        return Observable.empty();
+                    });
+        }
+        else if (result.getFailedCount() > 0 && result.getSucceededCount() > 0)
+        {
+            return Observable.create(AlertDialogOnSubscribe.builder(
+                    createDefaultDialogBuilder(activityContext)
+                            .setTitle(R.string.iap_send_support_email_restore_fail_partial_title)
+                            .setMessage(activityContext.getString(
+                                    R.string.iap_send_support_email_restore_fail_partial_message,
+                                    result.getSucceededCount(),
+                                    result.getFailedCount())))
+                    .setPositiveButton(R.string.iap_send_support_email_restore_fail_partial_ok)
+                    .setNegativeButton(R.string.iap_send_support_email_restore_fail_partial_cancel)
+                    .setCanceledOnTouchOutside(true)
+                    .build())
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .flatMap(pair -> {
+                        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                        {
+                            sendSupportEmailPurchaseRestoreFailedPartial(
+                                    activityContext,
+                                    CollectionUtils.map(
+                                            result.restoredList,
+                                            restored -> restored.throwable));
+                        }
+                        return Observable.empty();
+                    });
+        }
+        else
+        {
+            return Observable.create(AlertDialogOnSubscribe.builder(
+                    createDefaultDialogBuilder(activityContext)
+                            .setTitle(R.string.iap_purchase_restored_title)
+                            .setMessage(activityContext.getString(
+                                    R.string.iap_purchase_restored_message,
+                                    result.getSucceededCount())))
+                    .setNegativeButton(R.string.iap_purchase_restored_cancel)
+                    .setCanceledOnTouchOutside(true)
+                    .build())
+                    .subscribeOn(AndroidSchedulers.mainThread());
+        }
+    }
+
+    public void sendSupportEmailPurchaseRestoreFailed(
+            @NonNull final Context context,
+            @NonNull List<Throwable> throwables)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
+                VersionUtils.getExceptionStringsAndTraceParameters(context, throwables));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error restoring my purchases");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+    public void sendSupportEmailPurchaseRestoreFailedPartial(
+            @NonNull final Context context,
+            @NonNull List<Throwable> throwables)
+    {
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
+                VersionUtils.getExceptionStringsAndTraceParameters(context, throwables));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error restoring part of my purchases");
+        activityUtil.sendSupportEmail(context, emailIntent);
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreFailedAndHandle(
+            @NonNull Context activityContext,
+            @NonNull Throwable throwable)
+    {
+        return popRestoreFailed(activityContext)
+                .flatMap(pair -> handlePopRestoreFailed(activityContext, throwable, pair));
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreFailed(
+            @NonNull Context activityContext)
+    {
+        return Observable.create(AlertDialogOnSubscribe.builder(
+                createDefaultDialogBuilder(activityContext)
+                        .setTitle(R.string.iap_send_support_email_restore_fail_title)
+                        .setMessage(R.string.iap_send_support_email_restore_fail_message))
+                .setPositiveButton(R.string.iap_send_support_email_restore_fail_ok)
+                .setNegativeButton(R.string.iap_send_support_email_restore_fail_cancel)
+                .setCanceledOnTouchOutside(true)
+                .build())
+                .subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopRestoreFailed(
+            @NonNull Context activityContext,
+            @NonNull Throwable throwable,
+            @NonNull Pair<DialogInterface, Integer> pair)
+    {
+        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        {
+            sendSupportEmailPurchaseNotRestored(activityContext, throwable);
+        }
+        return Observable.empty();
+    }
+
+    public void sendSupportEmailPurchaseNotRestored(@NonNull final Context context, @NonNull Throwable throwable)
     {
         Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
         activityUtil.sendSupportEmail(context, emailIntent);
     }
+    //</editor-fold>
 
-    public void sendSupportEmailBillingUnknownError(final Context context, final Throwable throwable)
+    public void sendSupportEmailBillingGenericError(final Context context, final Throwable throwable)
     {
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
                 VersionUtils.getExceptionStringsAndTraceParameters(context, throwable));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error");
         activityUtil.sendSupportEmail(context, emailIntent);
     }
 
@@ -214,6 +384,4 @@ abstract public class THBillingAlertDialogRxUtil<
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
         activityUtil.sendSupportEmail(context, emailIntent);
     }
-
-
 }

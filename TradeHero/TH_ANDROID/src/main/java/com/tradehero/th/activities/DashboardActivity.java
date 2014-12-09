@@ -56,6 +56,8 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -142,6 +144,7 @@ public class DashboardActivity extends BaseActivity
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
     @Inject Lazy<THBillingInteractor> billingInteractor;
+    @Inject Lazy<THBillingInteractorRx> billingInteractorRx;
     @Inject Provider<BaseTHUIBillingRequest.Builder> thUiBillingRequestBuilderProvider;
 
     private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
@@ -370,8 +373,30 @@ public class DashboardActivity extends BaseActivity
         {
             billingInteractor.get().forgetRequestCode(restoreRequestCode);
         }
-        restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
+        //restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
         // TODO fetch more stuff?
+        //noinspection unchecked
+        AndroidObservable.bindActivity(
+                this,
+                billingInteractorRx.get().restorePurchasesAndClear())
+                .subscribe(new Observer<PurchaseReportResult>()
+                {
+                    @Override public void onNext(PurchaseReportResult args)
+                    {
+                        THToast.show("Restored " + args.reportedPurchase.getProductIdentifier());
+                    }
+
+                    @Override public void onCompleted()
+                    {
+                        THToast.show("Restore completed");
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        THToast.show("Restore failed");
+                        Timber.e(e, "Restore failed");
+                    }
+                });
     }
 
     protected THUIBillingRequest createRestoreRequest()

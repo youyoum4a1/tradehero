@@ -6,15 +6,17 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.android.vending.billing.IInAppBillingService;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.rx.ServiceConnectionOperator;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
+import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class BaseIABServiceCaller<ResultType> extends BaseRequestCodeReplayActor<ResultType>
+public class BaseIABServiceCaller extends BaseRequestCodeActor
 {
     public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
     public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
@@ -22,22 +24,35 @@ public class BaseIABServiceCaller<ResultType> extends BaseRequestCodeReplayActor
 
     @NonNull protected final Context context;
     @NonNull protected final IABExceptionFactory iabExceptionFactory;
-    @NonNull protected final Intent serviceIntent ;
+    @NonNull protected final Intent serviceIntent;
     protected final int bindType;
+    @NonNull private Subscription billingServiceBinderSubscription;
+    private BehaviorSubject<IABServiceResult> serviceSubject;
 
     //<editor-fold desc="Constructors">
     public BaseIABServiceCaller(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
         super(requestCode);
         this.context = context;
         this.iabExceptionFactory = iabExceptionFactory;
         this.serviceIntent = getBillingBindIntent();
         this.bindType = Context.BIND_AUTO_CREATE;
+        serviceSubject = BehaviorSubject.create();
+        this.billingServiceBinderSubscription = billingServiceBinderObservable.getBinder()
+                .flatMap(this::createResult)
+                .subscribe(serviceSubject);
     }
     //</editor-fold>
+
+    public void onDestroy() // TODO call it
+    {
+        THToast.show("ondestroy BaseIABServiceCaller");
+        billingServiceBinderSubscription.unsubscribe();
+    }
 
     @NonNull private static Intent getBillingBindIntent()
     {
@@ -48,8 +63,8 @@ public class BaseIABServiceCaller<ResultType> extends BaseRequestCodeReplayActor
 
     @NonNull protected Observable<IABServiceResult> getBillingServiceResult()
     {
-        return Observable.create(new ServiceConnectionOperator(context, serviceIntent, bindType))
-                .flatMap(this::createResult);
+        return serviceSubject.asObservable()
+                .take(1); // The onCompleted call comes from the context;
     }
 
     @NonNull protected Observable<IABServiceResult> createResult(@NonNull IBinder binder)
@@ -57,7 +72,7 @@ public class BaseIABServiceCaller<ResultType> extends BaseRequestCodeReplayActor
         IInAppBillingService billingService = IInAppBillingService.Stub.asInterface(binder);
         if (billingService == null)
         {
-            return Observable.error(new NullPointerException("Binder returned null for asInterface"));
+            throw new NullPointerException("Binder returned null for asInterface");
         }
         try
         {
@@ -66,11 +81,12 @@ public class BaseIABServiceCaller<ResultType> extends BaseRequestCodeReplayActor
                     checkSubscriptionSupported(billingService)));
         } catch (RemoteException e)
         {
-            return Observable.error(
-                    new IABException(IABConstants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing."));
+            throw
+                    new IABException(IABConstants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing.");
         } catch (IABException e)
         {
-            return Observable.error(e);
+            throw new RuntimeException(e);
+            //return Observable.error(e);
         }
     }
 

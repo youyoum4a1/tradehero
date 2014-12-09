@@ -7,6 +7,7 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.consume.PurchaseConsumeResult;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THBaseBillingLogicHolderRx;
 import com.tradehero.th.billing.googleplay.consumer.THIABPurchaseConsumerHolderRx;
@@ -91,12 +92,26 @@ public class THBaseIABLogicHolderRx
     }
     //</editor-fold>
 
+    //<editor-fold desc="Report Purchase">
     @NonNull @Override public Observable<PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase>> report(int requestCode,
             @NonNull THIABPurchase purchase, @NonNull THIABProductDetail productDetail)
     {
         return super.report(requestCode, purchase, productDetail)
-                .flatMap(result -> consume(requestCode, result.reportedPurchase)
-                        .map(consumeResult -> result));
+                .flatMap(reportResult -> consume(requestCode, reportResult.reportedPurchase)
+                        .map(consumeResult -> reportResult));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Consume Purchase">
+    @NonNull @Override public Observable<PurchaseConsumeResult<
+            IABSKU,
+            THIABOrderId,
+            THIABPurchase>> consumeAndClear(
+            int requestCode,
+            @NonNull THIABPurchase purchase)
+    {
+        return consume(requestCode, purchase)
+                .finallyDo(() -> forgetRequestCode(requestCode));
     }
 
     @NonNull @Override public Observable<PurchaseConsumeResult<
@@ -106,8 +121,11 @@ public class THBaseIABLogicHolderRx
             int requestCode,
             @NonNull THIABPurchase purchase)
     {
-        return purchaseConsumerHolder.get(requestCode, purchase);
+        THToast.show("Consuming " + purchase.getProductIdentifier());
+        return purchaseConsumerHolder.get(requestCode, purchase)
+                .doOnNext(result -> THToast.show("Consumed " + purchase.getProductIdentifier()));
     }
+    //</editor-fold>
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {

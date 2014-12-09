@@ -57,7 +57,21 @@ public class VersionUtils
         return parameters;
     }
 
-    @NonNull public static List<String> getExceptionStringsAndTraceParameters(@NonNull Context context,
+    @NonNull public static List<String> getExceptionStringsAndTraceParameters(
+            @NonNull Context context,
+            @NonNull List<Throwable> exceptions)
+    {
+        List<String> reported = new ArrayList<>();
+        for (Throwable exception : exceptions)
+        {
+            reported.addAll(getExceptionStringsAndTraceParameters(context, exception));
+            reported.add("\n\n\n");
+        }
+        return reported;
+    }
+
+    @NonNull public static List<String> getExceptionStringsAndTraceParameters(
+            @NonNull Context context,
             @NonNull Throwable exception)
     {
         List<String> reported = getExceptionStrings(context, exception);

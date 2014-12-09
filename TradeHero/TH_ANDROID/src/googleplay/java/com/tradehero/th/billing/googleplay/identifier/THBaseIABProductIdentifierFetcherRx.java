@@ -1,29 +1,41 @@
 package com.tradehero.th.billing.googleplay.identifier;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.common.billing.identifier.BaseProductIdentifierFetcherRx;
+import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.identifier.BaseIABProductIdentiferFetcherRx;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
 import com.tradehero.th.billing.googleplay.THIABConstants;
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import rx.Observable;
 
 public class THBaseIABProductIdentifierFetcherRx
-    extends BaseProductIdentifierFetcherRx<
-            IABSKUListKey,
-            IABSKU,
-            IABSKUList>
-    implements THIABProductIdentifierFetcherRx
+        extends BaseIABProductIdentiferFetcherRx<
+        IABSKUListKey,
+        IABSKU,
+        IABSKUList>
+        implements THIABProductIdentifierFetcherRx
 {
     //<editor-fold desc="Constructors">
-    public THBaseIABProductIdentifierFetcherRx(int requestCode)
+    public THBaseIABProductIdentifierFetcherRx(
+            int requestCode,
+            @NonNull Context context,
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
-        super(requestCode);
-        fetchSkus();
+        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
     }
     //</editor-fold>
 
-    protected void fetchSkus()
+    @NonNull @Override public Observable<ProductIdentifierListResult<
+            IABSKUListKey,
+            IABSKU,
+            IABSKUList>> get()
     {
         // TODO hard-coded while there is nothing coming from the server.
         IABSKUList inAppIABSKUs = new IABSKUList();
@@ -41,9 +53,22 @@ public class THBaseIABProductIdentifierFetcherRx
         subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_UNLIMITED));
 
         inAppIABSKUs.add(new IABSKU(THIABConstants.RESET_PORTFOLIO_0));
+        List<ProductIdentifierListResult<
+                IABSKUListKey,
+                IABSKU,
+                IABSKUList>> results = new ArrayList<>();
+        results.add(createResult(IABSKUListKey.getInApp(), inAppIABSKUs));
+        results.add(createResult(IABSKUListKey.getSubs(), subsIABSKUs));
+        return Observable.from(results);
+    }
 
-        subject.onNext(new ProductIdentifierListResult<>(getRequestCode(), IABSKUListKey.getInApp(), inAppIABSKUs));
-        subject.onNext(new ProductIdentifierListResult<>(getRequestCode(), IABSKUListKey.getSubs(), subsIABSKUs));
-        subject.onCompleted();
+    @NonNull private ProductIdentifierListResult<
+            IABSKUListKey,
+            IABSKU,
+            IABSKUList> createResult(
+            @NonNull IABSKUListKey inApp,
+            @NonNull IABSKUList inAppIABSKUs)
+    {
+        return new ProductIdentifierListResult<>(getRequestCode(), inApp, inAppIABSKUs);
     }
 }

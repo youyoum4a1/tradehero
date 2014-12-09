@@ -34,8 +34,23 @@ public interface THBillingLogicHolderRx<
             ProductIdentifierType,
             THOrderIdType,
             THProductPurchaseType>>
+    reportAndClear(int requestCode,
+            @NonNull THProductPurchaseType purchase);
+
+    @NonNull Observable<PurchaseReportResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>>
     report(int requestCode,
             @NonNull THProductPurchaseType purchase);
+
+    @NonNull Observable<PurchaseReportResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>>
+    reportAndClear(int requestCode,
+            @NonNull THProductPurchaseType purchase,
+            @NonNull THProductDetailType productDetail);
 
     @NonNull Observable<PurchaseReportResult<
             ProductIdentifierType,
@@ -44,8 +59,4 @@ public interface THBillingLogicHolderRx<
     report(int requestCode,
             @NonNull THProductPurchaseType purchase,
             @NonNull THProductDetailType productDetail);
-
-    @NonNull Observable<PurchaseReportResult<ProductIdentifierType,
-            THOrderIdType,
-            THProductPurchaseType>> restorePurchases(int requestCode);
 }

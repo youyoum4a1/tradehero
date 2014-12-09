@@ -1,7 +1,7 @@
 package com.tradehero.th.billing.report;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.api.alert.AlertPlanStatusDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -21,10 +21,7 @@ public class THBasePurchaseReporterRx<
         THProductDetailType extends THProductDetail<ProductIdentifierType>,
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<ProductIdentifierType, THOrderIdType>>
-        extends BaseRequestCodeReplayActor<PurchaseReportResult<
-        ProductIdentifierType,
-        THOrderIdType,
-        THProductPurchaseType>>
+        extends BaseRequestCodeActor
         implements THPurchaseReporterRx<
         ProductIdentifierType,
         THOrderIdType,
@@ -54,75 +51,58 @@ public class THBasePurchaseReporterRx<
         this.alertPlanCheckServiceWrapper = alertPlanCheckServiceWrapper;
         this.userServiceWrapper = userServiceWrapper;
         this.portfolioServiceWrapper = portfolioServiceWrapper;
-        reportPurchase();
     }
     //</editor-fold>
 
     @NonNull @Override public Observable<PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void reportPurchase()
-    {
         switch (productDetail.getDomain())
         {
             case DOMAIN_RESET_PORTFOLIO:
-                portfolioServiceWrapper.get().resetPortfolioRx(
+                return portfolioServiceWrapper.get().resetPortfolioRx(
                         purchase.getApplicableOwnedPortfolioId(),
                         purchase.getPurchaseReportDTO())
-                        .map(this::createResult)
-                        .subscribe(subject);
-                break;
+                        .map(this::createResult);
 
             case DOMAIN_VIRTUAL_DOLLAR:
-                portfolioServiceWrapper.get().addCashRx(
+                return portfolioServiceWrapper.get().addCashRx(
                         purchase.getApplicableOwnedPortfolioId(),
                         purchase.getPurchaseReportDTO())
-                        .map(this::createResult)
-                        .subscribe(subject);
-                break;
+                        .map(this::createResult);
 
             case DOMAIN_STOCK_ALERTS:
-                alertPlanServiceWrapper.get().subscribeToAlertPlanRx(
+                return alertPlanServiceWrapper.get().subscribeToAlertPlanRx(
                         purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                         purchase.getPurchaseReportDTO())
                         .onErrorResumeNext(this::seeIfPlanIsYours)
-                        .map(this::createResult)
-                        .subscribe(subject);
-                break;
+                        .map(this::createResult);
 
             case DOMAIN_FOLLOW_CREDITS:
                 if (purchase.getUserToFollow() != null)
                 {
                     // TODO remove when ok https://www.pivotaltracker.com/story/show/77362688
-                    userServiceWrapper.get().addCreditRx(
+                    return userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                             purchase.getPurchaseReportDTO())
                             .flatMap(userProfileDTO -> userServiceWrapper.get().followRx(purchase.getUserToFollow()))
-                            .map(this::createResult)
-                            .subscribe(subject);
+                            .map(this::createResult);
 
                     // TODO put back when ok https://www.pivotaltracker.com/story/show/77362688
-                    //userServiceWrapper.get().followRx(
+                    //return userServiceWrapper.get().followRx(
                     //        purchase.getUserToFollow(),
                     //        purchase.getPurchaseReportDTO())
-                    //        .map(this::createResult)
-                    //        .subscribe(subject);
+                    //        .map(this::createResult);
                 }
                 else
                 {
-                    userServiceWrapper.get().addCreditRx(
+                    return userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                             purchase.getPurchaseReportDTO())
-                            .map(this::createResult)
-                            .subscribe(subject);
+                            .map(this::createResult);
                 }
-                break;
 
             default:
-                subject.onError(new IllegalStateException("Unhandled ProductIdentifierDomain." + productDetail.getDomain()));
-                break;
+                return Observable.error(new IllegalStateException("Unhandled ProductIdentifierDomain." + productDetail.getDomain()));
         }
     }
 

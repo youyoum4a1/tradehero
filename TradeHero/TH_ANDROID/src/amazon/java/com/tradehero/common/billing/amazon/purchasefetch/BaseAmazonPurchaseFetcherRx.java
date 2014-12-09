@@ -28,13 +28,15 @@ abstract public class BaseAmazonPurchaseFetcherRx<
         AmazonOrderIdType,
         AmazonPurchaseType>
 {
+    @NonNull protected final AmazonPurchasingService purchasingService;
+
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaseFetcherRx(
             int request,
             @NonNull AmazonPurchasingService purchasingService)
     {
         super(request);
-        fetchPurchases(purchasingService);
+        this.purchasingService = purchasingService;
     }
     //</editor-fold>
 
@@ -42,9 +44,9 @@ abstract public class BaseAmazonPurchaseFetcherRx<
     {
     }
 
-    protected void fetchPurchases(@NonNull AmazonPurchasingService purchasingService)
+    @NonNull @Override public Observable<PurchaseFetchResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType>> get()
     {
-        fetchIncompletePurchases(purchasingService)
+        return fetchIncompletePurchases(purchasingService)
                 .flatMap(incomplete -> {
                     try
                     {
@@ -54,8 +56,7 @@ abstract public class BaseAmazonPurchaseFetcherRx<
                         return Observable.error(e);
                     }
                 })
-                .map(this::createResult)
-                .subscribe(subject);
+                .map(this::createResult);
     }
 
     protected Observable<AmazonPurchaseIncompleteType> fetchIncompletePurchases(@NonNull AmazonPurchasingService purchasingService)

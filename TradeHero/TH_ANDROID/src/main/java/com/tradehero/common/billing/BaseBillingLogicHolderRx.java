@@ -10,8 +10,12 @@ import com.tradehero.common.billing.purchase.BillingPurchaserHolderRx;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherHolderRx;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreResultWithError;
+import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
 import com.tradehero.common.billing.tester.BillingTestResult;
+import com.tradehero.common.utils.THToast;
 import java.util.List;
 import rx.Observable;
 
@@ -121,9 +125,28 @@ abstract public class BaseBillingLogicHolderRx<
     }
     //</editor-fold>
 
+    //<editor-fold desc="Test Billing">
+    @NonNull @Override public Observable<BillingTestResult> testAndClear(int requestCode)
+    {
+        return test(requestCode)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
+
     @NonNull @Override public Observable<BillingTestResult> test(int requestCode)
     {
         return billingAvailableTesterHolder.get(requestCode);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Product Identifiers">
+    @NonNull @Override public Observable<ProductIdentifierListResult<
+            ProductIdentifierListKeyType,
+            ProductIdentifierType,
+            ProductIdentifierListType>> getIdsAndClear(
+            int requestCode)
+    {
+        return getIds(requestCode)
+                .finallyDo(() -> forgetRequestCode(requestCode));
     }
 
     @NonNull @Override public Observable<ProductIdentifierListResult<
@@ -136,6 +159,16 @@ abstract public class BaseBillingLogicHolderRx<
                 .flatMap(result -> productIdentifierFetcherHolder.get(requestCode))
                 .doOnNext(result -> productIdentifierCache.onNext(result.type, result.productIdentifiers));
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Inventory">
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
+            ProductDetailType>> getInventoryAndClear(int requestCode)
+    {
+        return getInventory(requestCode)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
 
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
@@ -147,11 +180,31 @@ abstract public class BaseBillingLogicHolderRx<
 
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,
+            ProductDetailType>> getInventoryAndClear(int requestCode, @NonNull List<ProductIdentifierType> productIdentifiers)
+    {
+        return getInventory(requestCode, productIdentifiers)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
+
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
             ProductDetailType>> getInventory(int requestCode, @NonNull List<ProductIdentifierType> productIdentifiers)
     {
         return test(requestCode)
                 .flatMap(result -> inventoryFetcherHolder.get(requestCode, productIdentifiers))
                 .doOnNext(result -> productDetailCache.onNext(result.id, result.detail));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchase">
+    @NonNull @Override public Observable<PurchaseResult<
+            ProductIdentifierType,
+            PurchaseOrderType,
+            OrderIdType,
+            ProductPurchaseType>> purchaseAndClear(int requestCode, @NonNull PurchaseOrderType purchaseOrder)
+    {
+        return purchase(requestCode, purchaseOrder)
+                .finallyDo(() -> forgetRequestCode(requestCode));
     }
 
     @NonNull @Override public Observable<PurchaseResult<
@@ -164,6 +217,17 @@ abstract public class BaseBillingLogicHolderRx<
                 .flatMap(result -> purchaserHolder.get(requestCode, purchaseOrder))
                 .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchases Fetch">
+    @NonNull @Override public Observable<PurchaseFetchResult<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType>> getPurchasesAndClear(int requestCode)
+    {
+        return getPurchases(requestCode)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
 
     @NonNull @Override public Observable<PurchaseFetchResult<
             ProductIdentifierType,
@@ -172,8 +236,73 @@ abstract public class BaseBillingLogicHolderRx<
     {
         return test(requestCode)
                 .flatMap(result -> purchaseFetcherHolder.get(requestCode))
-                .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
+                .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase))
+                .doOnNext(result -> THToast.show("Saved purchase in cache " + result.purchase.getProductIdentifier()));
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Restore Purchases">
+    @NonNull @Override public Observable<PurchaseRestoreResult<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType>> restorePurchaseAndClear(
+            int requestCode,
+            @NonNull ProductPurchaseType purchase)
+    {
+        return restorePurchase(requestCode, purchase)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
+
+    @NonNull @Override public Observable<PurchaseRestoreResult<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType>> restorePurchase(
+            int requestCode,
+            @NonNull ProductPurchaseType purchase)
+    {
+        // This default one does not have much to do actually
+        return Observable.just(new PurchaseRestoreResult<>(requestCode, purchase));
+    }
+
+    @NonNull @Override public Observable<PurchaseRestoreTotalResult<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType>> restorePurchasesAndClear(
+            int requestCode)
+    {
+        return restorePurchases(requestCode)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
+
+    @NonNull @Override public Observable<PurchaseRestoreTotalResult<
+            ProductIdentifierType,
+            OrderIdType,
+            ProductPurchaseType>> restorePurchases(
+            int requestCode)
+    {
+        PurchaseRestoreTotalResult<
+                ProductIdentifierType,
+                OrderIdType,
+                ProductPurchaseType> result = new PurchaseRestoreTotalResult<>(requestCode);
+        //noinspection Convert2Diamond
+        return getPurchases(requestCode)
+                .flatMap(fetchResult -> restorePurchase(requestCode, fetchResult.purchase)
+                                .map(restoreResult -> new PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>(
+                                        restoreResult.requestCode,
+                                        restoreResult.purchase,
+                                        null))
+                                .onErrorResumeNext(error -> Observable.just(
+                                        new PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>(
+                                                requestCode,
+                                                fetchResult.purchase,
+                                                error)))
+                )
+                .doOnNext(result::add)
+                .doOnNext(restored -> THToast.show("Restored purchase " + restored.purchase.getProductIdentifier()))
+                .toList()
+                .map(list -> result);
+    }
+    //</editor-fold>
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {

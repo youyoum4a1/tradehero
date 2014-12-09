@@ -87,4 +87,17 @@ public class CollectionUtils
         }
         return created;
     }
+
+    public static <T> int count(@NonNull List<T> collection, @NonNull Predicate<T> predicate)
+    {
+        int count = 0;
+        for (T element: collection)
+        {
+            if (predicate.apply(element))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 }

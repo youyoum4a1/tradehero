@@ -4,8 +4,11 @@ import android.preference.PreferenceCategory;
 import android.support.annotation.NonNull;
 import android.support.v4.preference.PreferenceFragment;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.utils.Constants;
@@ -13,11 +16,13 @@ import com.tradehero.th.utils.metrics.MarketSegment;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observer;
 import timber.log.Timber;
 
 public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
 {
     @NonNull protected final THBillingInteractor billingInteractor;
+    @NonNull protected final THBillingInteractorRx billingInteractorRx;
     @NonNull protected final Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
 
     private Integer restoreRequestCode;
@@ -26,9 +31,11 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
     //<editor-fold desc="Constructors">
     @Inject public RestorePurchaseSettingViewHolder(
             @NonNull THBillingInteractor billingInteractor,
+            @NonNull THBillingInteractorRx billingInteractorRx,
             @NonNull Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider)
     {
         this.billingInteractor = billingInteractor;
+        this.billingInteractorRx = billingInteractorRx;
         this.billingRequestBuilderProvider = billingRequestBuilderProvider;
     }
     //</editor-fold>
@@ -83,7 +90,26 @@ public class RestorePurchaseSettingViewHolder extends OneSettingViewHolder
                 billingInteractor.forgetRequestCode(restoreRequestCode);
             }
             //noinspection unchecked
-            restoreRequestCode = billingInteractor.run(createRestoreRequest());
+            //restoreRequestCode = billingInteractor.run(createRestoreRequest());
+            //noinspection unchecked
+            billingInteractorRx.restorePurchasesAndClear()
+                    .subscribe(new Observer<PurchaseReportResult>()
+                    {
+                        @Override public void onNext(PurchaseReportResult o)
+                        {
+                            THToast.show("restored " + o.reportedPurchase.getProductIdentifier());
+                        }
+
+                        @Override public void onCompleted()
+                        {
+                            THToast.show("restore completed");
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            THToast.show("restore error " + e);
+                        }
+                    });
         }
     }
 

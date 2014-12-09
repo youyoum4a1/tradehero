@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABProductDetail;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -25,8 +26,7 @@ import timber.log.Timber;
 abstract public class BaseIABInventoryFetcherRx<
         IABSKUType extends IABSKU,
         IABProductDetailsType extends IABProductDetail<IABSKUType>>
-        extends BaseIABServiceCaller<ProductInventoryResult<
-        IABSKUType, IABProductDetailsType>>
+        extends BaseIABServiceCaller
         implements IABInventoryFetcherRx<
         IABSKUType,
         IABProductDetailsType>
@@ -38,11 +38,11 @@ abstract public class BaseIABInventoryFetcherRx<
             int requestCode,
             @NonNull List<IABSKUType> iabSKUs,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
-        super(requestCode, context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
         this.iabSKUs = iabSKUs;
-        fetchInventory();
     }
 
     //</editor-fold>
@@ -52,16 +52,11 @@ abstract public class BaseIABInventoryFetcherRx<
         return iabSKUs;
     }
 
-    @NonNull @Override public Observable<ProductInventoryResult<IABSKUType, IABProductDetailsType>> get()
-    {
-        return replayObservable;
-    }
-
     abstract protected IABProductDetailsType createSKUDetails(IABSKUListKey itemType, String json) throws JSONException;
 
-    private void fetchInventory()
+    @NonNull @Override public Observable<ProductInventoryResult<IABSKUType, IABProductDetailsType>> get()
     {
-        getBillingServiceResult().flatMap(result -> {
+        return getBillingServiceResult().flatMap(result -> {
             try
             {
                 List<ProductInventoryResult<IABSKUType, IABProductDetailsType>> list = fetchOne(result, IABSKUListKey.getInApp());

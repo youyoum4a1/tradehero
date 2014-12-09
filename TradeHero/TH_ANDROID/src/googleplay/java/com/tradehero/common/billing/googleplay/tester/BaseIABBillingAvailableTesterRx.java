@@ -3,12 +3,13 @@ package com.tradehero.common.billing.googleplay.tester;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import rx.Observable;
 
 public class BaseIABBillingAvailableTesterRx
-        extends BaseIABServiceCaller<BillingTestResult>
+        extends BaseIABServiceCaller
         implements IABBillingAvailableTesterRx
 {
     protected boolean testing;
@@ -17,9 +18,10 @@ public class BaseIABBillingAvailableTesterRx
     public BaseIABBillingAvailableTesterRx(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
-        super(requestCode, context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
     }
     //</editor-fold>
 

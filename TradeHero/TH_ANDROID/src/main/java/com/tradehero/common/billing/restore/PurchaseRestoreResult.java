@@ -1,24 +1,25 @@
-package com.tradehero.common.billing.purchasefetch;
+package com.tradehero.common.billing.restore;
 
-import com.tradehero.common.billing.BaseRequestCodeActor;
+import android.support.annotation.NonNull;
+import com.tradehero.common.billing.BaseResult;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 
-abstract public class BaseBillingPurchaseFetcherRx<
+public class PurchaseRestoreResult<
         ProductIdentifierType extends ProductIdentifier,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
-        extends BaseRequestCodeActor
-        implements BillingPurchaseFetcherRx<
-        ProductIdentifierType,
-        OrderIdType,
-        ProductPurchaseType>
+        extends BaseResult
 {
+    @NonNull public final ProductPurchaseType purchase;
+
     //<editor-fold desc="Constructors">
-    protected BaseBillingPurchaseFetcherRx(int requestCode)
+    public PurchaseRestoreResult(int requestCode,
+            @NonNull ProductPurchaseType purchase)
     {
         super(requestCode);
+        this.purchase = purchase;
     }
     //</editor-fold>
 }

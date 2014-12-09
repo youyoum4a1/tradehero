@@ -24,7 +24,6 @@ abstract public class BaseBillingAvailableTesterHolderRx
             actors.put(requestCode, tester);
         }
         return tester.get();
-
     }
 
     @NonNull protected abstract BillingAvailableTesterRx createTester(int requestCode);

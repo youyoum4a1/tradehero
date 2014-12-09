@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -24,6 +25,7 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.th.BuildConfig;
 import org.json.JSONException;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaserRx<
@@ -31,11 +33,7 @@ abstract public class BaseIABPurchaserRx<
         IABPurchaseOrderType extends IABPurchaseOrder<IABSKUType>,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
-        extends BaseIABServiceCaller<PurchaseResult<
-        IABSKUType,
-        IABPurchaseOrderType,
-        IABOrderIdType,
-        IABPurchaseType>>
+        extends BaseIABServiceCaller
         implements IABPurchaserRx<
         IABSKUType,
         IABPurchaseOrderType,
@@ -43,17 +41,23 @@ abstract public class BaseIABPurchaserRx<
         IABPurchaseType>
 {
     @NonNull protected final IABPurchaseOrderType purchaseOrder;
+    protected BehaviorSubject<PurchaseResult<
+            IABSKUType,
+            IABPurchaseOrderType,
+            IABOrderIdType,
+            IABPurchaseType>> subject;
 
     //<editor-fold desc="Constructors">
     public BaseIABPurchaserRx(
             int requestCode,
             @NonNull IABPurchaseOrderType purchaseOrder,
             @NonNull Activity activity,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
-        super(requestCode, activity, iabExceptionFactory);
+        super(requestCode, activity, iabExceptionFactory, billingServiceBinderObservable);
         this.purchaseOrder = purchaseOrder;
-        purchase();
+        subject = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -67,14 +71,10 @@ abstract public class BaseIABPurchaserRx<
             IABOrderIdType,
             IABPurchaseType>> get()
     {
-        return replayObservable;
-    }
-
-    private void purchase()
-    {
         getBillingServiceResult()
                 .flatMap(this::startPurchaseActivity)
                 .subscribe(subject);
+        return subject.asObservable();
     }
 
     private Observable<PurchaseResult<IABSKUType,
@@ -117,13 +117,17 @@ abstract public class BaseIABPurchaserRx<
         {
             Timber.d("Unable to buy item, Error response: %s", IABConstants.getStatusCodeDescription(
                     response));
-            throw iabExceptionFactory.create(response);
+            String message = String.format("id %s, type %s, payload %s",
+                    purchaseOrder.getProductIdentifier().identifier,
+                    purchaseOrder.getType(),
+                    purchaseOrder.getDeveloperPayload());
+            throw iabExceptionFactory.create(response, message);
         }
         return buyIntentBundle;
     }
 
     /**
-     * Handles an activity result that's part of the purchase flow in in-app billing. If you are calling {@link #purchase()}, then you must call this
+     * Handles an activity result that's part of the purchase flow in in-app billing. If you are calling {@link #get()}, then you must call this
      * method from your Activity's {@link android.app.Activity@onActivityResult} method. This method MUST be called from the UI thread of the
      * Activity.
      *

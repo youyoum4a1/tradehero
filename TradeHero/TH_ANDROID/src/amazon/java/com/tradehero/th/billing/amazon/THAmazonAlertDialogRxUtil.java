@@ -34,7 +34,9 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         THAmazonProductDetail,
         THAmazonLogicHolderRx,
         THAmazonStoreProductDetailView,
-        THAmazonSKUDetailAdapter>
+        THAmazonSKUDetailAdapter,
+        THAmazonOrderId,
+        THAmazonPurchase>
         implements AmazonAlertDialogRxUtil
 {
     @NonNull protected final THAmazonPurchaseCacheRx thAmazonPurchaseCache;
@@ -64,22 +66,16 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     @Override @NonNull public HashMap<ProductIdentifier, Boolean> getEnabledItems()
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();
-
         for (THAmazonPurchase value : thAmazonPurchaseCache.getValues())
         {
             Timber.d("Disabling %s", value);
             enabledItems.put(value.getProductIdentifier(), false);
         }
-
-        if (enabledItems.size() == 0)
-        {
-            enabledItems = null;
-        }
         return enabledItems;
     }
     //</editor-fold>
 
-    @NonNull @Override public Observable<Pair<DialogInterface, Integer>> popError(
+    @NonNull @Override public Observable<Pair<DialogInterface, Integer>> popErrorAndHandle(
             @NonNull Context activityContext,
             @NonNull Throwable throwable)
     {
@@ -99,7 +95,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         {
             return popPurchaseUnsupportedAndHandle(activityContext, throwable);
         }
-        return super.popError(activityContext, throwable);
+        return super.popErrorAndHandle(activityContext, throwable);
     }
 
     //<editor-fold desc="Inventory Fetch related">
@@ -110,7 +106,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popInventoryFailed(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
-                        () -> sendSupportEmailBillingUnknownError(activityContext, throwable)));
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryFailed(
@@ -133,7 +129,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popInventoryNotSupported(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
-                        () -> sendSupportEmailBillingUnknownError(activityContext, throwable)));
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupported(
@@ -158,7 +154,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popPurchaseFailed(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
-                        () -> sendSupportEmailBillingUnknownError(activityContext, throwable)));
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
     @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseFailed(
@@ -181,7 +177,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return popPurchaseUnsupported(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
                         AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
-                        () -> sendSupportEmailBillingUnknownError(activityContext, throwable)));
+                        () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupported(

@@ -31,6 +31,8 @@ abstract public class BaseAmazonInventoryFetcherRx<
         AmazonProductDetailType>,
         AmazonActor
 {
+    @NonNull protected final AmazonPurchasingService purchasingService;
+
     //<editor-fold desc="Constructors">
     public BaseAmazonInventoryFetcherRx(
             int request,
@@ -38,19 +40,21 @@ abstract public class BaseAmazonInventoryFetcherRx<
             @NonNull AmazonPurchasingService purchasingService)
     {
         super(request, productIdentifiers);
-        fetch(purchasingService);
+        this.purchasingService = purchasingService;
     }
     //</editor-fold>
 
-    protected void fetch(@NonNull AmazonPurchasingService purchasingService)
+    @NonNull @Override public Observable<ProductInventoryResult<
+            AmazonSKUType,
+            AmazonProductDetailType>> get()
     {
-        Observable.create(new AmazonPurchasingServiceProductDataOperator(
-                purchasingService,
-                getSkuSet()))
+        return Observable.create(
+                new AmazonPurchasingServiceProductDataOperator(
+                        purchasingService,
+                        getSkuSet()))
                 .doOnNext(this::reportUnavailable)
                 .flatMap(response -> Observable.from(response.getProductData().entrySet()))
-                .map(this::createResult)
-                .subscribe(subject);
+                .map(this::createResult);
     }
 
     @NonNull protected Set<String> getSkuSet()

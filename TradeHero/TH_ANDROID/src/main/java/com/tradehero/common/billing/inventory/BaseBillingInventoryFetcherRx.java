@@ -1,16 +1,15 @@
 package com.tradehero.common.billing.inventory;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import java.util.List;
-import rx.Observable;
 
 abstract public class BaseBillingInventoryFetcherRx<
         ProductIdentifierType extends ProductIdentifier,
         ProductDetailsType extends ProductDetail<ProductIdentifierType>>
-    extends BaseRequestCodeReplayActor<ProductInventoryResult<ProductIdentifierType, ProductDetailsType>>
+        extends BaseRequestCodeActor
         implements BillingInventoryFetcherRx<
         ProductIdentifierType,
         ProductDetailsType>
@@ -30,10 +29,5 @@ abstract public class BaseBillingInventoryFetcherRx<
     @Override @NonNull public List<ProductIdentifierType> getProductIdentifiers()
     {
         return productIdentifiers;
-    }
-
-    @NonNull @Override public Observable<ProductInventoryResult<ProductIdentifierType, ProductDetailsType>> get()
-    {
-        return replayObservable;
     }
 }

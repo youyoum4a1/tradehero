@@ -5,6 +5,7 @@ import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.purchasefetch.BaseBillingPurchaseFetcherHolderRx;
+import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherRx;
 
 abstract public class BaseIABPurchaseFetcherHolderRx<
         IABSKUType extends IABSKU,
@@ -27,4 +28,23 @@ abstract public class BaseIABPurchaseFetcherHolderRx<
     //</editor-fold>
 
     @NonNull @Override abstract protected IABPurchaseFetcherRx<IABSKUType, IABOrderIdType, IABPurchaseType> createFetcher(int requestCode);
+
+    @Override public void onDestroy()
+    {
+        for (BillingPurchaseFetcherRx<IABSKUType, IABOrderIdType, IABPurchaseType> actor : actors.values())
+        {
+            ((IABPurchaseFetcherRx<IABSKUType, IABOrderIdType, IABPurchaseType>) actor).onDestroy();
+        }
+        super.onDestroy();
+    }
+
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        IABPurchaseFetcherRx<IABSKUType, IABOrderIdType, IABPurchaseType> actor = (IABPurchaseFetcherRx<IABSKUType, IABOrderIdType, IABPurchaseType>) actors.get(requestCode);
+        if (actor != null)
+        {
+            actor.onDestroy();
+        }
+        super.forgetRequestCode(requestCode);
+    }
 }

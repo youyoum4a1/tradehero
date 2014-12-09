@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.billing;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +13,8 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -31,6 +34,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -154,7 +158,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         //noinspection unchecked
         testAvailableSubscription = AndroidObservable.bindFragment(
                 this,
-                userInteractorRx.test())
+                userInteractorRx.testAndClear())
                 .subscribe(
                         pair -> alreadyNotifiedNeedCreateAccount = true,
                         error -> alreadyNotifiedNeedCreateAccount = true);
@@ -216,23 +220,22 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     {
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
-            if (showProductRequestCode != null)
-            {
-                userInteractor.forgetRequestCode(showProductRequestCode);
-            }
             //noinspection unchecked
-            showProductRequestCode = userInteractor.run(
-                    uiBillingRequestBuilderProvider.get()
-                            .domainToPresent(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain)
-                            .applicablePortfolioId(getApplicablePortfolioId())
-                            .startWithProgressDialog(true)
-                            .popIfBillingNotAvailable(true)
-                            .popIfProductIdentifierFetchFailed(true)
-                            .popIfInventoryFetchFailed(true)
-                            .doPurchase(true)
-                            .popIfPurchaseFailed(true)
-                            .popIfReportFailed(true)
-                            .build());
+            AndroidObservable.bindFragment(
+                    this,
+                    userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
+                    .subscribe(new EmptyObserver<PurchaseResult>()
+                    {
+                        @Override public void onNext(PurchaseResult args)
+                        {
+                            handlePurchaseFinished(args);
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            handlePurchaseFailed(e);
+                        }
+                    });
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {
@@ -242,6 +245,17 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         {
             throw new IllegalArgumentException("Unhandled type " + clickedItem);
         }
+    }
+
+    protected void handlePurchaseFinished(@NonNull PurchaseResult purchaseResult)
+    {
+        THToast.show("Purchase done");
+    }
+
+    protected void handlePurchaseFailed(@NonNull Throwable throwable)
+    {
+        THToast.show(new THException(throwable));
+        Timber.e(throwable, "Purchase failed");
     }
 
     private void pushFragment(Class<? extends Fragment> fragmentClass)

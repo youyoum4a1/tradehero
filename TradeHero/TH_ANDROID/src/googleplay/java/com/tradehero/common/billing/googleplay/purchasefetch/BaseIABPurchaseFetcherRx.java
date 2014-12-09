@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
+import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.billing.googleplay.IABPurchase;
@@ -17,6 +18,7 @@ import com.tradehero.common.billing.googleplay.exception.IABBadResponseException
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BuildConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +30,7 @@ abstract public class BaseIABPurchaseFetcherRx<
         IABSKUType extends IABSKU,
         IABOrderIdType extends IABOrderId,
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
-        extends BaseIABServiceCaller<PurchaseFetchResult<IABSKUType,
-        IABOrderIdType,
-        IABPurchaseType>>
+        extends BaseIABServiceCaller
         implements IABPurchaseFetcherRx<
         IABSKUType,
         IABOrderIdType,
@@ -43,80 +43,79 @@ abstract public class BaseIABPurchaseFetcherRx<
     public BaseIABPurchaseFetcherRx(
             int requestCode,
             @NonNull Context context,
-            @NonNull IABExceptionFactory iabExceptionFactory)
+            @NonNull IABExceptionFactory iabExceptionFactory,
+            @NonNull BillingServiceBinderObservable billingServiceBinderObservable)
     {
-        super(requestCode, context, iabExceptionFactory);
+        super(requestCode, context, iabExceptionFactory, billingServiceBinderObservable);
         purchases = new ArrayList<>();
-        fetchPurchasesAndTellSubject();
     }
     //</editor-fold>
 
     @NonNull @Override public Observable<PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void fetchPurchasesAndTellSubject()
-    {
-        getBillingServiceResult()
+        return getBillingServiceResult()
+                .doOnNext(service -> THToast.show("got billing service"))
+                .doOnCompleted(() -> THToast.show("billing service completed"))
                 .flatMap(this::fetchPurchases)
+                .doOnNext(result -> THToast.show("fetch result 1 " + result.getProductIdentifier()))
                 .map(this::createPurchaseResult)
-                .subscribe(subject);
+                .doOnNext(result -> THToast.show("fetch result 2 " + result.purchase.getProductIdentifier()));
     }
 
     protected Observable<IABPurchaseType> fetchPurchases(@NonNull IABServiceResult serviceResult)
     {
-        Observable<IABPurchaseType> purchases = fetchPurchases(serviceResult, IABConstants.ITEM_TYPE_INAPP);
-        if (serviceResult.subscriptionSupported)
-        {
-            purchases.mergeWith(fetchPurchases(serviceResult, IABConstants.ITEM_TYPE_SUBS));
-        }
-        return purchases;
-    }
-
-    protected Observable<IABPurchaseType> fetchPurchases(
-            @NonNull IABServiceResult serviceResult,
-            @NonNull String itemType)
-    {
-        // Query purchase
-        Timber.d("Querying owned items, item type: %s", itemType);
-        Observable<IABPurchaseType> purchases = Observable.empty();
-        String continueToken = null;
+        List<IABPurchaseType> purchases;
         try
         {
-            do
+            purchases = fetchPurchases(serviceResult, IABConstants.ITEM_TYPE_INAPP);
+            if (serviceResult.subscriptionSupported)
             {
-                Bundle ownedItems = getPurchasesBundle(serviceResult, itemType, continueToken);
-                if (ownedItems != null)
-                {
-                    int response = IABConstants.getResponseCodeFromBundle(ownedItems);
-                    Timber.d("Owned items response: %s", String.valueOf(response));
-                    if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
-                    {
-                        throw iabExceptionFactory.create(response);
-                    }
-
-                    purchases.mergeWith(fetchPurchases(ownedItems, itemType));
-
-                    continueToken = ownedItems.getString(IABConstants.INAPP_CONTINUATION_TOKEN);
-                    Timber.d("Continuation token: %s", continueToken);
-                }
+                purchases.addAll(fetchPurchases(serviceResult, IABConstants.ITEM_TYPE_SUBS));
             }
-            while (!TextUtils.isEmpty(continueToken));
         } catch (Exception e)
         {
             return Observable.error(e);
         }
+        return Observable.from(purchases);
+    }
+
+    @NonNull protected List<IABPurchaseType> fetchPurchases(
+            @NonNull IABServiceResult serviceResult,
+            @NonNull String itemType) throws RemoteException, JSONException
+    {
+        // Query purchase
+        //THToast.show("Querying owned items, item type: " + itemType);
+        List<IABPurchaseType> purchases = new ArrayList<>();
+        String continueToken = null;
+        do
+        {
+            Bundle ownedItems = getPurchasesBundle(serviceResult, itemType, continueToken);
+            if (ownedItems != null)
+            {
+                int response = IABConstants.getResponseCodeFromBundle(ownedItems);
+                //THToast.show("Owned items response code: " + String.valueOf(response));
+                if (response != IABConstants.BILLING_RESPONSE_RESULT_OK)
+                {
+                    throw iabExceptionFactory.create(response);
+                }
+
+                purchases.addAll(fetchPurchases(ownedItems, itemType));
+
+                continueToken = ownedItems.getString(IABConstants.INAPP_CONTINUATION_TOKEN);
+                //THToast.show("Continuation token: " + continueToken);
+            }
+        }
+        while (!TextUtils.isEmpty(continueToken));
         return purchases;
     }
 
-    private Observable<IABPurchaseType> fetchPurchases(@NonNull Bundle ownedItems, @NonNull String itemType) throws JSONException
+    private List<IABPurchaseType> fetchPurchases(@NonNull Bundle ownedItems, @NonNull String itemType) throws JSONException
     {
         if (!ownedItems.containsKey(IABConstants.RESPONSE_INAPP_ITEM_LIST)
                 || !ownedItems.containsKey(IABConstants.RESPONSE_INAPP_PURCHASE_DATA_LIST)
                 || !ownedItems.containsKey(IABConstants.RESPONSE_INAPP_SIGNATURE_LIST))
         {
-            return Observable.error(new IABBadResponseException("Bundle returned from getPurchases() doesn't contain required fields."));
+            throw new IABBadResponseException("Bundle returned from getPurchases() doesn't contain required fields.");
         }
 
         ArrayList<String> ownedSkus = ownedItems.getStringArrayList(IABConstants.RESPONSE_INAPP_ITEM_LIST);
@@ -124,6 +123,7 @@ abstract public class BaseIABPurchaseFetcherRx<
         ArrayList<String> signatureList = ownedItems.getStringArrayList(IABConstants.RESPONSE_INAPP_SIGNATURE_LIST);
         List<IABPurchaseType> purchases = new ArrayList<>();
 
+        //THToast.show("fetchPurchases size " + purchaseDataList.size());
         for (int i = 0; i < purchaseDataList.size(); ++i)
         {
             String purchaseData = purchaseDataList.get(i);
@@ -131,7 +131,7 @@ abstract public class BaseIABPurchaseFetcherRx<
             String sku = ownedSkus.get(i);
             if (Security.verifyPurchase(IABConstants.BASE_64_PUBLIC_KEY, purchaseData, signature))
             {
-                Timber.d("Sku is owned: %s", sku);
+                THToast.show("Sku is owned: " + sku);
                 IABPurchaseType purchase = createPurchase(itemType, purchaseData, signature);
 
                 if (TextUtils.isEmpty(purchase.getToken()))
@@ -145,14 +145,13 @@ abstract public class BaseIABPurchaseFetcherRx<
             }
             else
             {
-                return Observable.error(
-                        new IABVerificationFailedException("Purchase signature verification **FAILED**. Not adding item. Purchase data: "
+                throw new IABVerificationFailedException("Purchase signature verification **FAILED**. Not adding item. Purchase data: "
                                 + purchaseData
                                 + "   Signature: "
-                                + signature));
+                                + signature);
             }
         }
-        return Observable.from(purchases);
+        return purchases;
     }
 
     protected Bundle getPurchasesBundle(@NonNull IABServiceResult serviceResult, @NonNull String itemType, @Nullable String continueToken)
@@ -169,6 +168,7 @@ abstract public class BaseIABPurchaseFetcherRx<
     @NonNull protected PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType> createPurchaseResult(
             @NonNull IABPurchaseType purchase)
     {
+        THToast.show("Creating purchase fetch result " + purchase.getProductIdentifier());
         return new PurchaseFetchResult<>(getRequestCode(), purchase);
     }
 

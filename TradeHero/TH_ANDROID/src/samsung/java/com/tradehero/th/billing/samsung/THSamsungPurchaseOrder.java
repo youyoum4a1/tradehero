@@ -1,13 +1,13 @@
 package com.tradehero.th.billing.samsung;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.samsung.exception.SamsungInvalidQuantityException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THSamsungPurchaseOrder
     implements SamsungPurchaseOrder<SamsungSKU>,
@@ -66,11 +66,6 @@ public class THSamsungPurchaseOrder
     @Override public int getQuantity()
     {
         return quantity;
-    }
-
-    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this.applicablePortfolioId = applicablePortfolioId;
     }
 
     @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()

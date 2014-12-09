@@ -7,6 +7,7 @@ import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.purchase.BaseBillingPurchaserHolderRx;
+import com.tradehero.common.billing.purchase.BillingPurchaserRx;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaserHolderRx<
@@ -47,5 +48,24 @@ abstract public class BaseIABPurchaserHolderRx<
         {
             Timber.d("onActivityResult no handler");
         }
+    }
+
+    @Override public void onDestroy()
+    {
+        for (BillingPurchaserRx<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType> actor : actors.values())
+        {
+            ((IABPurchaserRx<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType>) actor).onDestroy();
+        }
+        super.onDestroy();
+    }
+
+    @Override public void forgetRequestCode(int requestCode)
+    {
+        IABPurchaserRx<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType> actor = (IABPurchaserRx<IABSKUType, IABPurchaseOrderType, IABOrderIdType, IABPurchaseType>) actors.get(requestCode);
+        if (actor != null)
+        {
+            actor.onDestroy();
+        }
+        super.forgetRequestCode(requestCode);
     }
 }

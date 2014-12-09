@@ -13,8 +13,11 @@ import com.tradehero.common.billing.identifier.ProductIdentifierFetcherHolderRx;
 import com.tradehero.common.billing.inventory.BillingInventoryFetcherHolderRx;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.purchase.BillingPurchaserHolderRx;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherHolderRx;
+import com.tradehero.common.billing.restore.PurchaseRestoreResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
 import java.util.Collections;
@@ -108,6 +111,34 @@ abstract public class THBaseBillingLogicHolderRx<
     }
     //</editor-fold>
 
+    //<editor-fold desc="Purchase">
+    @NonNull @Override public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchase(
+            int requestCode,
+            @NonNull THPurchaseOrderType purchaseOrder)
+    {
+        return super.purchase(requestCode, purchaseOrder)
+                .flatMap(purchaseResult -> report(
+                        purchaseResult.requestCode,
+                        purchaseResult.purchase)
+                        .map(reportResult -> purchaseResult));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Report Purchase">
+    @NonNull @Override public Observable<PurchaseReportResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> reportAndClear(int requestCode,
+            @NonNull THProductPurchaseType purchase)
+    {
+        return report(requestCode, purchase)
+                .finallyDo(() -> forgetRequestCode(requestCode));
+    }
+
     @NonNull @Override public Observable<PurchaseReportResult<
             ProductIdentifierType,
             THOrderIdType,
@@ -121,21 +152,38 @@ abstract public class THBaseBillingLogicHolderRx<
     @NonNull @Override public Observable<PurchaseReportResult<
             ProductIdentifierType,
             THOrderIdType,
-            THProductPurchaseType>> report(int requestCode,
+            THProductPurchaseType>> reportAndClear(int requestCode,
             @NonNull THProductPurchaseType purchase, @NonNull THProductDetailType productDetail)
     {
-        return purchaseReporterHolder.get(requestCode, purchase, productDetail);
+        return report(requestCode, purchase, productDetail)
+                .finallyDo(() -> forgetRequestCode(requestCode));
     }
 
     @NonNull @Override public Observable<PurchaseReportResult<
             ProductIdentifierType,
             THOrderIdType,
-            THProductPurchaseType>> restorePurchases(
-            int requestCode)
+            THProductPurchaseType>> report(int requestCode,
+            @NonNull THProductPurchaseType purchase, @NonNull THProductDetailType productDetail)
     {
-        return getPurchases(requestCode)
-                .flatMap(result -> report(requestCode, result.purchase));
+        THToast.show("Reporting " + purchase.getProductIdentifier());
+        return purchaseReporterHolder.get(requestCode, purchase, productDetail)
+                .doOnNext(result -> THToast.show("Reported " + result.reportedPurchase.getProductIdentifier()));
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Restore Purchase">
+    @NonNull @Override public Observable<PurchaseRestoreResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchase(
+            int requestCode,
+            @NonNull THProductPurchaseType purchase)
+    {
+        return super.restorePurchase(requestCode, purchase)
+                .flatMap(restored -> report(requestCode, restored.purchase)
+                        .map(reported -> restored));
+    }
+    //</editor-fold>
 
     @NonNull @Override public Observable<ProductInventoryResult<
             ProductIdentifierType,

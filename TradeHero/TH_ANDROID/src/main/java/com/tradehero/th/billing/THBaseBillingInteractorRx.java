@@ -1,20 +1,24 @@
 package com.tradehero.th.billing;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.common.billing.BaseBillingInteractorRx;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
+import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
+import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreResult;
+import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import java.util.List;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.functions.Func1;
 
 abstract public class THBaseBillingInteractorRx<
         ProductIdentifierListKeyType extends ProductIdentifierListKey,
@@ -51,13 +55,28 @@ abstract public class THBaseBillingInteractorRx<
         THProductPurchaseType,
         THBillingLogicHolderType>
         implements
-        THBillingInteractorRx<ProductIdentifierListKeyType, ProductIdentifierType, ProductIdentifierListType, THProductDetailType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType, THBillingLogicHolderType>
+        THBillingInteractorRx<
+                ProductIdentifierListKeyType,
+                ProductIdentifierType,
+                ProductIdentifierListType,
+                THProductDetailType,
+                THPurchaseOrderType,
+                THOrderIdType,
+                THProductPurchaseType,
+                THBillingLogicHolderType>
 {
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
     @NonNull protected final Provider<Activity> activityProvider;
     @NonNull protected final ProgressDialogUtil progressDialogUtil;
-    @NonNull protected final THBillingAlertDialogRxUtil billingAlertDialogUtil;
+    @NonNull protected final THBillingAlertDialogRxUtil<
+            ProductIdentifierType,
+            THProductDetailType,
+            THBillingLogicHolderType,
+            ProductDetailViewType,
+            ProductDetailAdapterType,
+            THOrderIdType,
+            THProductPurchaseType> billingAlertDialogUtil;
     @NonNull protected final THBillingRequisitePreparer billingRequisitePreparer;
 
     //<editor-fold desc="Constructors">
@@ -70,7 +89,9 @@ abstract public class THBaseBillingInteractorRx<
                     THProductDetailType,
                     THBillingLogicHolderType,
                     ProductDetailViewType,
-                    ProductDetailAdapterType> billingAlertDialogUtil,
+                    ProductDetailAdapterType,
+                    THOrderIdType,
+                    THProductPurchaseType> billingAlertDialogUtil,
             @NonNull THBillingRequisitePreparer billingRequisitePreparer)
     {
         super(billingLogicHolder);
@@ -82,15 +103,205 @@ abstract public class THBaseBillingInteractorRx<
     }
     //</editor-fold>
 
+    @NonNull protected <T> Observable<T> popErrorAndHandle(@NonNull Observable<T> observable)
+    {
+        return observable.onErrorResumeNext(error -> billingAlertDialogUtil.popErrorAndHandle(
+                activityProvider.get(),
+                error)
+                .materialize()
+                .dematerialize());
+    }
+
+    //<editor-fold desc="Test Billing">
+    @NonNull @Override public Observable<BillingTestResult> testAndClear()
+    {
+        return popErrorAndHandle(super.testAndClear());
+    }
+
     @NonNull @Override public Observable<BillingTestResult> test()
     {
-        int requestCode = billingLogicHolder.getUnusedRequestCode();
-        //noinspection unchecked
-        return billingLogicHolder.test(requestCode)
-                .onErrorResumeNext(error -> billingAlertDialogUtil.popError(activityProvider.get(), error)
-                        .flatMap(
-                                (Func1<Pair<DialogInterface, Integer>, Observable<BillingTestResult>>)
-                                        pair -> Observable.error(error) // We need to still pass on the error
+        return popErrorAndHandle(super.test());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Product Identifiers">
+    @NonNull @Override public Observable<ProductIdentifierListResult<
+            ProductIdentifierListKeyType,
+            ProductIdentifierType,
+            ProductIdentifierListType>> getIdsAndClear()
+    {
+        return popErrorAndHandle(super.getIdsAndClear());
+    }
+
+    @NonNull @Override public Observable<ProductIdentifierListResult<
+            ProductIdentifierListKeyType,
+            ProductIdentifierType,
+            ProductIdentifierListType>> getIds()
+    {
+        return popErrorAndHandle(super.getIds());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Inventory">
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
+            THProductDetailType>> getInventoryAndClear(
+            @NonNull List<ProductIdentifierType> productIdentifiers)
+    {
+        return popErrorAndHandle(super.getInventoryAndClear(productIdentifiers));
+    }
+
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
+            THProductDetailType>> getInventory(
+            @NonNull List<ProductIdentifierType> productIdentifiers)
+    {
+        return popErrorAndHandle(super.getInventory(productIdentifiers));
+    }
+
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
+            THProductDetailType>> getInventoryAndClear()
+    {
+        return popErrorAndHandle(super.getInventoryAndClear());
+    }
+
+    @NonNull @Override public Observable<ProductInventoryResult<
+            ProductIdentifierType,
+            THProductDetailType>> getInventory()
+    {
+        return popErrorAndHandle(super.getInventory());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Purchases">
+    @NonNull @Override public Observable<PurchaseFetchResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> getPurchasesAndClear()
+    {
+        return popErrorAndHandle(super.getPurchasesAndClear());
+    }
+
+    @NonNull @Override public Observable<PurchaseFetchResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> getPurchases()
+    {
+        return popErrorAndHandle(super.getPurchases());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Purchase">
+    @NonNull @Override public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchaseAndClear(
+            @NonNull THPurchaseOrderType purchaseOrder)
+    {
+        return popErrorAndHandle(super.purchaseAndClear(purchaseOrder));
+    }
+
+    @NonNull @Override public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchase(
+            @NonNull THPurchaseOrderType purchaseOrder)
+    {
+        return popErrorAndHandle(super.purchase(purchaseOrder));
+    }
+
+    @NonNull protected Observable<ProductInventoryResult<ProductIdentifierType,
+            THProductDetailType>> getDomainDialogResult(
+            @NonNull ProductIdentifierDomain domain)
+    {
+        return getInventory()
+                .filter(result -> result.detail.getDomain().equals(domain))
+                .toList()
+                .filter(list -> list.size() > 0)
+                .flatMap(detailList -> billingAlertDialogUtil.popBuyDialogAndHandle(
+                        activityProvider.get(),
+                        domain,
+                        detailList,
+                        null));
+    }
+
+    @NonNull @Override public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchaseAndClear(
+            @NonNull ProductIdentifierDomain domain)
+    {
+        return popErrorAndHandle(
+                getDomainDialogResult(domain)
+                        .flatMap(selected -> createPurchaseOrder(selected)
+                                        .flatMap(purchaseOrder -> billingLogicHolder.purchaseAndClear(
+                                                selected.requestCode,
+                                                purchaseOrder))
                         ));
+    }
+
+    @NonNull @Override public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchase(
+            @NonNull ProductIdentifierDomain domain)
+    {
+        return popErrorAndHandle(
+                getDomainDialogResult(domain)
+                        .flatMap(selected -> createPurchaseOrder(selected)
+                                        .flatMap(purchaseOrder -> billingLogicHolder.purchase(
+                                                selected.requestCode,
+                                                purchaseOrder))
+                        ));
+    }
+    //</editor-fold>
+
+    @NonNull @Override public Observable<PurchaseRestoreResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchaseAndClear(
+            @NonNull THProductPurchaseType purchase)
+    {
+        return popErrorAndHandle(super.restorePurchaseAndClear(purchase));
+    }
+
+    @NonNull @Override public Observable<PurchaseRestoreResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchase(
+            @NonNull THProductPurchaseType purchase)
+    {
+        return popErrorAndHandle(super.restorePurchase(purchase));
+    }
+
+    @NonNull @Override public Observable<PurchaseRestoreTotalResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchasesAndClear()
+    {
+        return popErrorAndHandle(super.restorePurchasesAndClear()
+                .flatMap(result -> billingAlertDialogUtil.popRestoreResultAndHandle(
+                        activityProvider.get(),
+                        result)
+                        .materialize()
+                        .dematerialize()));
+    }
+
+    @NonNull @Override public Observable<PurchaseRestoreTotalResult<
+            ProductIdentifierType,
+            THOrderIdType,
+            THProductPurchaseType>> restorePurchases()
+    {
+        return popErrorAndHandle(super.restorePurchases()
+                .flatMap(result -> billingAlertDialogUtil.popRestoreResultAndHandle(
+                        activityProvider.get(),
+                        result)
+                        .materialize()
+                        .dematerialize()));
     }
 }

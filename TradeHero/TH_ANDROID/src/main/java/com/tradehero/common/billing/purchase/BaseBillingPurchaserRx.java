@@ -1,22 +1,18 @@
 package com.tradehero.common.billing.purchase;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.PurchaseOrder;
-import rx.Observable;
 
 abstract public class BaseBillingPurchaserRx<
         ProductIdentifierType extends ProductIdentifier,
         PurchaseOrderType extends PurchaseOrder<ProductIdentifierType>,
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
-        extends BaseRequestCodeReplayActor<PurchaseResult<ProductIdentifierType,
-        PurchaseOrderType,
-        OrderIdType,
-        ProductPurchaseType>>
+        extends BaseRequestCodeActor
         implements BillingPurchaserRx<
         ProductIdentifierType,
         PurchaseOrderType,
@@ -36,14 +32,5 @@ abstract public class BaseBillingPurchaserRx<
     @NonNull @Override public PurchaseOrderType getPurchaseOrder()
     {
         return purchaseOrder;
-    }
-
-    @Override @NonNull public Observable<PurchaseResult<
-            ProductIdentifierType,
-            PurchaseOrderType,
-            OrderIdType,
-            ProductPurchaseType>> get()
-    {
-        return replayObservable;
     }
 }

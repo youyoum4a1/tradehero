@@ -36,7 +36,7 @@ public class THBaseAmazonPurchaseFetcher
             int request,
             @NonNull AmazonPurchasingService purchasingService,
             @NonNull THAmazonExceptionFactory amazonExceptionFactory,
-            @NonNull @ProcessingPurchase StringSetPreference processingPurchaseStringSet)
+            @NonNull /*@ProcessingPurchase*/ StringSetPreference processingPurchaseStringSet)
     {
         super(request, purchasingService);
         this.amazonExceptionFactory = amazonExceptionFactory;

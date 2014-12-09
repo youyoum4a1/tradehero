@@ -10,7 +10,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 public interface THPurchaseOrder<ProductIdentifierType extends ProductIdentifier>
     extends PurchaseOrder<ProductIdentifierType>
 {
-    void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId);
     @NonNull OwnedPortfolioId getApplicablePortfolioId();
     void setUserToFollow(@Nullable UserBaseKey userToFollow);
     @Nullable UserBaseKey getUserToFollow();

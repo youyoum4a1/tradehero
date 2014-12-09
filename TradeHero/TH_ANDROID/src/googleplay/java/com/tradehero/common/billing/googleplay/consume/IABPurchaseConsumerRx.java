@@ -13,6 +13,8 @@ public interface IABPurchaseConsumerRx<
         IABPurchaseType extends IABPurchase<IABSKUType, IABOrderIdType>>
         extends RequestCodeActor
 {
+    void onDestroy();
+
     @NonNull Observable<PurchaseConsumeResult<IABSKUType,
             IABOrderIdType,
             IABPurchaseType>> get();

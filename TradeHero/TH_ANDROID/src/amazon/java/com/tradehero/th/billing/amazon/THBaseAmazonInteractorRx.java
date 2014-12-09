@@ -6,14 +6,18 @@ import com.tradehero.common.billing.amazon.AmazonConstants;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
+import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
 import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observable;
 
 public class THBaseAmazonInteractorRx
         extends
@@ -30,7 +34,9 @@ public class THBaseAmazonInteractorRx
                 THAmazonSKUDetailAdapter>
         implements THAmazonInteractorRx
 {
+    @NonNull protected final CurrentUserId currentUserId;
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
+    @NonNull protected final PortfolioCompactListCacheRx portfolioCompactListCache;
 
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInteractorRx(
@@ -39,7 +45,9 @@ public class THBaseAmazonInteractorRx
             @NonNull THAmazonAlertDialogRxUtil thAmazonAlertDialogUtil,
             @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull THAmazonLogicHolderRx billingActor,
-            @NonNull UserProfileDTOUtil userProfileDTOUtil)
+            @NonNull CurrentUserId currentUserId,
+            @NonNull UserProfileDTOUtil userProfileDTOUtil,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache)
     {
         super(
                 billingActor,
@@ -47,12 +55,30 @@ public class THBaseAmazonInteractorRx
                 progressDialogUtil,
                 thAmazonAlertDialogUtil,
                 billingRequisitePreparer);
+        this.currentUserId = currentUserId;
         this.userProfileDTOUtil = userProfileDTOUtil;
+        this.portfolioCompactListCache = portfolioCompactListCache;
     }
     //</editor-fold>
 
-    @Override public String getName()
+    @Override @NonNull public String getName()
     {
         return AmazonConstants.NAME;
+    }
+
+    @NonNull @Override public Observable<THAmazonPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult)
+    {
+        return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
+                .take(1)
+                .map(pair -> pair.second.getDefaultPortfolio())
+                .flatMap(dto -> {
+                    if (dto == null)
+                    {
+                        return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
+                    }
+                    return Observable.just(dto);
+                })
+                .map(dto -> new THAmazonPurchaseOrder(inventoryResult.id, 1, dto.getOwnedPortfolioId()));
     }
 }

@@ -1,12 +1,12 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.amazon.AmazonPurchaseOrder;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
     implements THPurchaseOrder<AmazonSKU>
@@ -24,11 +24,6 @@ public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
-
-    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this.applicablePortfolioId = applicablePortfolioId;
-    }
 
     @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {

@@ -30,6 +30,8 @@ abstract public class BaseAmazonPurchaserRx<
         AmazonOrderIdType,
         AmazonPurchaseType>
 {
+    @NonNull protected final AmazonPurchasingService purchasingService;
+
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaserRx(
             int request,
@@ -37,21 +39,28 @@ abstract public class BaseAmazonPurchaserRx<
             @NonNull AmazonPurchasingService purchasingService)
     {
         super(request, purchaseOrder);
-        purchase(purchasingService);
+        this.purchasingService = purchasingService;
     }
     //</editor-fold>
 
-    protected void purchase(@NonNull AmazonPurchasingService purchasingService)
+    @NonNull @Override public Observable<PurchaseResult<
+            AmazonSKUType,
+            AmazonPurchaseOrderType,
+            AmazonOrderIdType,
+            AmazonPurchaseType>> get()
     {
-        Observable.create(new AmazonPurchasingServicePurchaseOperator(
-                purchasingService,
-                getPurchaseOrder().getProductIdentifier().skuId))
-                .flatMap(this::createResultObservable)
-                .subscribe(subject);
+        return Observable.create(
+                new AmazonPurchasingServicePurchaseOperator(
+                        purchasingService,
+                        getPurchaseOrder().getProductIdentifier().skuId))
+                .flatMap(this::createResultObservable);
     }
 
-    @NonNull protected Observable<PurchaseResult<AmazonSKUType, AmazonPurchaseOrderType, AmazonOrderIdType, AmazonPurchaseType>>
-    createResultObservable(@NonNull PurchaseResponse purchaseResponse)
+    @NonNull protected Observable<PurchaseResult<
+            AmazonSKUType,
+            AmazonPurchaseOrderType,
+            AmazonOrderIdType,
+            AmazonPurchaseType>> createResultObservable(@NonNull PurchaseResponse purchaseResponse)
     {
         switch (purchaseResponse.getRequestStatus())
         {

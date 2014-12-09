@@ -27,6 +27,7 @@ public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<Dialo
         {
             @Override public void onClick(DialogInterface dialogInterface, int i)
             {
+                dialogInterface.dismiss();
                 subscriber.onNext(Pair.create(dialogInterface, i));
             }
         };

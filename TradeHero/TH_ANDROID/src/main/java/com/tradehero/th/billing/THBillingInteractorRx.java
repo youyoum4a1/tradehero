@@ -5,7 +5,7 @@ import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingInteractorRx;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
-import com.tradehero.common.billing.tester.BillingTestResult;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import rx.Observable;
 
 public interface THBillingInteractorRx<
@@ -36,7 +36,15 @@ public interface THBillingInteractorRx<
         THProductPurchaseType,
         THBillingLogicHolderType>
 {
-    String getName();
+    @NonNull Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchaseAndClear(@NonNull ProductIdentifierDomain domain);
 
-    @NonNull Observable<BillingTestResult> test();
+    @NonNull Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchase(@NonNull ProductIdentifierDomain domain);
 }

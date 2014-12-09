@@ -1,8 +1,10 @@
 package com.tradehero.common.billing.amazon.tester;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonActor;
 import com.tradehero.common.billing.tester.BaseBillingAvailableTesterRx;
 import com.tradehero.common.billing.tester.BillingTestResult;
+import rx.Observable;
 
 abstract public class BaseAmazonBillingAvailableTesterRx
         extends BaseBillingAvailableTesterRx
@@ -12,20 +14,18 @@ abstract public class BaseAmazonBillingAvailableTesterRx
     public BaseAmazonBillingAvailableTesterRx(int request)
     {
         super(request);
-        testBillingAvailable();
     }
     //</editor-fold>
 
-    protected void testBillingAvailable()
+    @NonNull @Override public Observable<BillingTestResult> get()
     {
         try
         {
             Class.forName("com.amazon.device.iap.PurchasingService");
-            subject.onNext(new BillingTestResult(getRequestCode()));
-            subject.onCompleted();
+            return Observable.just(new BillingTestResult(getRequestCode()));
         } catch (ClassNotFoundException e)
         {
-            subject.onError(e);
+            return Observable.error(e);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.tradehero.common.billing;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
+@Deprecated // Replay is not working as expected
 public class BaseRequestCodeReplayActor<ResultType> extends BaseRequestCodeActor
 {
     protected BehaviorSubject<ResultType> subject;

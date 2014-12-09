@@ -20,7 +20,9 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         THSamsungProductDetail,
         THSamsungLogicHolderRx,
         THSamsungStoreProductDetailView,
-        THSamsungSKUDetailAdapter>
+        THSamsungSKUDetailAdapter,
+        THSamsungOrderId,
+        THSamsungPurchase>
 {
     @NonNull protected final THSamsungPurchaseCacheRx thSamsungPurchaseCache;
     @NonNull protected final SamsungStoreUtils samsungStoreUtils;

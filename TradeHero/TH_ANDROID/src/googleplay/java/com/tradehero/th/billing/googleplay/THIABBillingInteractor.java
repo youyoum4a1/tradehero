@@ -300,7 +300,7 @@ import timber.log.Timber;
             @NonNull THUIIABRequest uiBillingRequest,
             @NonNull IABSKU productIdentifier)
     {
-        return new THIABPurchaseOrder(productIdentifier, uiBillingRequest.getApplicablePortfolioId());
+        return new THIABPurchaseOrder(productIdentifier, /* HACK */ IABConstants.ITEM_TYPE_INAPP, uiBillingRequest.getApplicablePortfolioId());
     }
 
     @Override protected AlertDialog popPurchaseFailed(
