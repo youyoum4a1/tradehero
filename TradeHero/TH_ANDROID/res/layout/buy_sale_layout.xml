@@ -213,6 +213,7 @@
     <CheckBox
         android:id="@+id/share_to_social_checkbox"
         style="@style/CustomCheckboxTheme"
+        android:paddingLeft="5dp"
         android:text="@string/share_to_social"/>
   </LinearLayout>
 
@@ -233,7 +234,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:textColor="#1789d5"
         android:text="确定出售"/>
   </LinearLayout>

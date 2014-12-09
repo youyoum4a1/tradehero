@@ -196,6 +196,12 @@
   <string name="tap_stream_type_suoping4_install" translatable="false">android-tradehero-suoping4-install</string>
   <string name="tap_stream_type_suoping4_open" translatable="false">android-tradehero-suoping4-open</string>
 
+  <string name="tap_stream_type_suoping5_install" translatable="false">android-tradehero-suoping5-install</string>
+  <string name="tap_stream_type_suoping5_open" translatable="false">android-tradehero-suoping5-open</string>
+
+  <string name="tap_stream_type_suoping6_install" translatable="false">android-tradehero-suoping6-install</string>
+  <string name="tap_stream_type_suoping6_open" translatable="false">android-tradehero-suoping6-open</string>
+
   <string name="tap_stream_type_taobao_install" translatable="false">android-tradehero-taobao-install</string>
   <string name="tap_stream_type_taobao_open" translatable="false">android-tradehero-taobao-open</string>
 
