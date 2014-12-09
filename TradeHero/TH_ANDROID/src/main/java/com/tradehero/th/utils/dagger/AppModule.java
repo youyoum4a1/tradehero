@@ -374,7 +374,7 @@ import java.util.Locale;
                         SecurityListAdapter.class,
                         SecuritySearchListAdapter.class,
                         MyTradePositionListAdapter.class,
-                        CNPersonTradePositionListAdpater.class,
+                        CNPersonTradePositionListAdapter.class,
 
                         UserTimeLineAdapter.class,
                         SecurityTimeLineDiscussOrNewsAdapter.class,

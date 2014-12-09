@@ -226,4 +226,6 @@
   <string name="app_update_hint">发现新版本，是否更新至最新版</string>
   <string name="app_update_force_update">（强制升级）</string>
   <!-- App Update -->
+
+  <string name="goto_choose_stock">去选股</string>
 </resources>

@@ -448,4 +448,5 @@
   <string name="app_update_force_update">(Update Needed)</string>
   <!-- App Update -->
 
+  <string name="goto_choose_stock">去选股</string>
 </resources>

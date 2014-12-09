@@ -5,15 +5,9 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
@@ -22,7 +16,6 @@ import com.tradehero.chinabuild.data.PositionInterface;
 import com.tradehero.chinabuild.data.SecurityPositionItem;
 import com.tradehero.chinabuild.data.WatchPositionItem;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
-import com.tradehero.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -30,7 +23,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
-import com.tradehero.th.adapters.CNPersonTradePositionListAdpater;
+import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -59,12 +52,13 @@ import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     交易－我的交易
@@ -93,15 +87,13 @@ public class TradeOfMineFragment extends DashboardFragment
     @InjectView(R.id.tradeheroprogressbar_trade_mine) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
-    @InjectView(R.id.llEmpty) LinearLayout llEmpty;
-    @InjectView(R.id.btnEmptyAction) Button btnEmptyAction;
 
     @InjectView(R.id.rlListAll) RelativeLayout rlListAll;
 
     private OwnedPortfolioId shownPortfolioId;
     private PortfolioDTO shownPortfolioDTO;
 
-    private CNPersonTradePositionListAdpater adapter;
+    private CNPersonTradePositionListAdapter adapter;
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareDialogTotalValueKey BooleanPreference mShareDialogTotalValueKeyPreference;
     @Inject @ShareDialogROIValueKey BooleanPreference mShareDialogROIValueKeyPreference;
@@ -117,7 +109,7 @@ public class TradeOfMineFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        adapter = new CNPersonTradePositionListAdpater(getActivity());
+        adapter = new CNPersonTradePositionListAdapter(getActivity());
         fetchGetPositionsDTOListener = createGetPositionsCacheListener();
         userWatchlistPositionFetchListener = createWatchlistListener();
         portfolioFetchListener = createPortfolioCacheListener();
@@ -168,7 +160,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
     public void initView()
     {
-        listView.setEmptyView(llEmpty);
         listView.getRefreshableView().setAdapter(adapter);
         listView.getRefreshableView().setChildDivider(null);
         listView.getRefreshableView().setGroupIndicator(null);
@@ -255,11 +246,6 @@ public class TradeOfMineFragment extends DashboardFragment
         super.onStop();
     }
 
-    @Override public void onDestroyView()
-    {
-        super.onDestroyView();
-    }
-
     @Override public void onDestroy()
     {
         fetchGetPositionsDTOListener = null;
@@ -275,12 +261,6 @@ public class TradeOfMineFragment extends DashboardFragment
         Timber.d("------> Analytics TradeOfMineFragment onResume");
 
         refreshData(false);
-    }
-
-    @OnClick(R.id.btnEmptyAction)
-    public void onEmptyActionClicked()
-    {
-        gotoDashboard(SearchFragment.class.getName());
     }
 
     public void refreshData(boolean force)

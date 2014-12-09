@@ -41,9 +41,6 @@
     </RelativeLayout>
 
 
-    <include layout="@layout/empty_layout"/>
-
-
   </com.tradehero.common.widget.BetterViewAnimator>
 
 

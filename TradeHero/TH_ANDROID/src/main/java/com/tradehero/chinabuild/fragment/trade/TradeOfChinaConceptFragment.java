@@ -27,8 +27,4 @@ public class TradeOfChinaConceptFragment extends TradeOfTypeBaseFragment
         return inflater.inflate(R.layout.trade_of_china_concept, container, false);
     }
 
-    //public PullToRefreshBase.Mode getRefreshMode()
-    //{
-    //    return PullToRefreshBase.Mode.PULL_FROM_END;//以后可能要下拉刷新
-    //}
 }
