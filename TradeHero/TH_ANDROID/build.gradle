@@ -4,7 +4,7 @@ buildscript {
     maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.14.2'
+    classpath 'com.android.tools.build:gradle:1.0.0'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
@@ -69,7 +69,7 @@ android {
 
   compileSdkVersion 20
 
-  buildToolsVersion "20.0.0"
+  buildToolsVersion "21.1.1"
   //useOldManifestMerger=true
 
   dexOptions {
