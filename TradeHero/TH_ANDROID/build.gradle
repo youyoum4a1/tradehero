@@ -67,9 +67,9 @@ android {
     targetCompatibility JavaVersion.VERSION_1_8
   }
 
-  compileSdkVersion 20
+  compileSdkVersion 21
 
-  buildToolsVersion "20.0.0"
+  buildToolsVersion "21.1.1"
   //useOldManifestMerger=true
 
   dexOptions {
@@ -83,8 +83,9 @@ android {
   }
 
   defaultConfig {
+    //useJack true
     minSdkVersion 14
-    targetSdkVersion 20
+    targetSdkVersion 21
 
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
@@ -173,6 +174,7 @@ android {
         srcDir 'src/googleplay/java'
       }
       res {
+        srcDir 'src/row/res'
         srcDir 'src/googleplay/res'
       }
     }
@@ -198,6 +200,7 @@ android {
         srcDir 'src/samsung/java'
       }
       res {
+        srcDir 'src/row/res'
         srcDir 'src/samsung/res'
       }
     }
@@ -211,6 +214,7 @@ android {
         srcDir 'src/amazon/java'
       }
       res {
+        srcDir 'src/row/res'
         srcDir 'src/amazon/res'
       }
     }
@@ -312,7 +316,7 @@ dependencies {
   compile 'io.reactivex:rxandroid:0.21.0'
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile 'com.jakewharton.timber:timber:2.5.0'
-  compile 'com.urbanairship:urbanairship-lib:3.2.1'
+  compile 'com.urbanairship:urbanairship-lib:5.1.2@aar'
   compile 'com.fasterxml.jackson.core:jackson-databind:2.4.0'
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile 'com.android.support:support-annotations:20.0.0'
@@ -365,7 +369,8 @@ dependencies {
     androidTestCompile files('build/test-classes')
   }
 
-  releaseCompile 'com.google.android.gms:play-services:6.1.+'
+  googleplayCompile 'com.google.android.gms:play-services:6.1.+'
+  samsungCompile 'com.google.android.gms:play-services:6.1.+'
 }
 
 File propFile = file('signing.properties');
