@@ -1,7 +1,7 @@
 package com.tradehero.th.models.push.urbanairship;
 
+import android.app.Notification;
 import android.content.Context;
-
 import com.tradehero.common.annotation.Temp;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.handlers.GcmDeletedHandler;
@@ -11,17 +11,14 @@ import com.tradehero.th.models.push.handlers.PushReceivedHandler;
 import com.tradehero.th.models.push.handlers.RegistrationFinishedHandler;
 import com.tradehero.th.utils.Constants;
 import com.urbanairship.AirshipConfigOptions;
-import com.urbanairship.push.CustomPushNotificationBuilder;
-import com.urbanairship.push.PushNotificationBuilder;
-
+import com.urbanairship.push.notifications.CustomLayoutNotificationFactory;
+import com.urbanairship.push.notifications.NotificationFactory;
+import dagger.Module;
+import dagger.Provides;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
 
 @Module(
         injects = {
@@ -47,9 +44,9 @@ public class UrbanAirshipPushModule
         }));
     }
 
-    @Provides @Temp PushNotificationBuilder provideCustomPushNotificationBuilder(RichNotificationBuilder richNotificationBuilder)
+    @Provides @Temp NotificationFactory provideNotificationFactory(THNotificationFactory notificationFactory)
     {
-        return richNotificationBuilder;
+        return notificationFactory;
     }
 
     @Provides AirshipConfigOptions provideAirshipConfigOptions(Context context)
@@ -63,9 +60,9 @@ public class UrbanAirshipPushModule
         return options;
     }
 
-    @Provides PushNotificationBuilder provideCustomPushNotificationBuilder()
+    @Provides NotificationFactory provideCustomPushNotificationBuilder(Context context)
     {
-        CustomPushNotificationBuilder nb = new CustomPushNotificationBuilder();
+        CustomLayoutNotificationFactory nb = new CustomLayoutNotificationFactory(context);
 
         nb.statusBarIconDrawableId = R.drawable.th_logo;
 

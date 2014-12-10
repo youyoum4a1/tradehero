@@ -3,10 +3,14 @@ package com.tradehero.th.fragments.settings;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.util.Pair;
@@ -36,11 +40,13 @@ import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.urbanairship.UAirship;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 public class AdminSettingsFragment extends DashboardPreferenceFragment
 {
@@ -52,6 +58,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_XP_TEST_SCREEN = "show_xp_test_screen";
     private static final CharSequence KEY_TYPOGRAPHY_SCREEN = "show_typography_examples";
     private static final CharSequence KEY_PRESEASON = "show_preseason_dialog";
+    private static final CharSequence KEY_UA_CHANNEL_ID = "get_urbanairship_channelId";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -64,6 +71,15 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
 
+    @Nullable Subscription userProfileSubscription;
+    private ClipboardManager clipboardManager;
+
+    @Override public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -71,29 +87,27 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         setHasOptionsMenu(true);
         HierarchyInjector.inject(this);
         addPreferencesFromResource(R.xml.admin_settings);
+        try
+        {
+            addPreferencesFromResource(R.xml.admin_settings_row);
+        } catch (Exception e)
+        {
+            Timber.e(e, "Could not add R.xml.admin_settings_row");
+        }
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         initPreferenceClickHandlers();
-        initDefaultValue();
         ListView listView = (ListView) view.findViewById(android.R.id.list);
         listView.setOnScrollListener(dashboardBottomTabsScrollListener.get());
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private void initDefaultValue()
+    @Override public void onStart()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-                    {
-                        Preference pref = findPreference(KEY_USER_INFO);
-                        pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
-                    }
-                });
+        super.onStart();
+        initDefaultValue();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -104,6 +118,27 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         {
             actionBar.setTitle(getString(R.string.admin_setting));
         }
+    }
+
+    @Override public void onStop()
+    {
+        unsubscribe(userProfileSubscription);
+        super.onStop();
+    }
+
+    private void initDefaultValue()
+    {
+        userProfileSubscription = AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
+                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
+                    {
+                        Preference pref = findPreference(KEY_USER_INFO);
+                        pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
+                    }
+                });
     }
 
     private void initPreferenceClickHandlers()
@@ -187,6 +222,18 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
             return true;
         });
+
+        Preference getUAChannelId = findPreference(KEY_UA_CHANNEL_ID);
+        if (getUAChannelId != null)
+        {
+            getUAChannelId.setOnPreferenceClickListener(preference -> {
+                String channelId = UAirship.shared().getPushManager().getChannelId();
+                ClipData clip = ClipData.newPlainText(getString(R.string.urbanairship_channelId), channelId);
+                clipboardManager.setPrimaryClip(clip);
+                THToast.show(channelId + " copied to clipboard");
+                return true;
+            });
+        }
     }
 
     private boolean askForNotificationId()

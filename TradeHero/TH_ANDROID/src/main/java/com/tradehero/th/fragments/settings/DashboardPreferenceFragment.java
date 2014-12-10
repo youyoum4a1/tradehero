@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
 
 import android.view.Menu;
@@ -15,6 +16,7 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.Subscription;
 
 public class DashboardPreferenceFragment extends PreferenceFragment
 {
@@ -67,5 +69,13 @@ public class DashboardPreferenceFragment extends PreferenceFragment
     public DashboardNavigator getNavigator()
     {
         return navigator.get();
+    }
+
+    protected void unsubscribe(@Nullable Subscription subscription)
+    {
+        if (subscription != null && !subscription.isUnsubscribed())
+        {
+            subscription.unsubscribe();
+        }
     }
 }

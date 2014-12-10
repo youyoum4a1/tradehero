@@ -4,13 +4,13 @@ import android.app.Notification;
 
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.THNotificationBuilder;
-import com.urbanairship.push.PushNotificationBuilder;
 
 import java.util.Map;
 
 import javax.inject.Inject;
 
-public class RichNotificationBuilder implements PushNotificationBuilder
+@Deprecated
+public class RichNotificationBuilder //implements PushNotificationBuilder
 {
     private final THNotificationBuilder notificationBuilder;
 
@@ -21,7 +21,7 @@ public class RichNotificationBuilder implements PushNotificationBuilder
     }
     //</editor-fold>
 
-    @Override
+    //@Override
     public Notification buildNotification(String alert, Map<String, String> extras)
     {
         int pushId = getNotificationIdFromBundle(extras);
@@ -29,7 +29,7 @@ public class RichNotificationBuilder implements PushNotificationBuilder
         return pushId > 0 ? notificationBuilder.buildNotification(pushId) : null;
     }
 
-    @Override
+    //@Override
     public int getNextId(String alert, Map<String, String> extras)
     {
         int pushId = getNotificationIdFromBundle(extras);

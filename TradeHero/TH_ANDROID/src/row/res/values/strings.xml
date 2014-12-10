@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="urbanairship_channelId">ChannelId</string>
+  <string name="get_urbanairship_channelId" translatable="false">Copy UrbanAirship channelId</string>
+
+</resources>

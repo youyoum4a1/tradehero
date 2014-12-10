@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
 import android.preference.CheckBoxPreference;
-import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -48,14 +47,9 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         if (pushNotificationSound != null)
         {
             pushNotificationSound.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            pushNotificationManager.setSoundEnabled((boolean) newValue);
-                            return true;
-                        }
+                    (preference, newValue) -> {
+                        pushNotificationManager.setSoundEnabled((boolean) newValue);
+                        return true;
                     });
         }
 
@@ -64,14 +58,9 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         if (pushNotificationVibrate != null)
         {
             pushNotificationVibrate.setOnPreferenceChangeListener(
-                    new Preference.OnPreferenceChangeListener()
-                    {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue)
-                        {
-                            pushNotificationManager.setVibrateEnabled((boolean) newValue);
-                            return true;
-                        }
+                    (preference, newValue) -> {
+                        pushNotificationManager.setVibrateEnabled((boolean) newValue);
+                        return true;
                     });
         }
     }

@@ -265,7 +265,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
         @Override public void onError(Throwable e)
         {
-            Timber.d("There is a problem fetching notification");
+            Timber.e(e, "There is a problem fetching notification");
         }
     }
 }
