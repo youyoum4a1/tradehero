@@ -3,7 +3,6 @@ package com.tradehero.th.api;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -17,8 +16,6 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
-import com.tradehero.th.utils.achievement.AchievementModule;
-import com.tradehero.th.utils.achievement.ForAchievement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,6 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +42,6 @@ public class ObjectMapperWrapperTest extends BaseApiTestClass
     private InputStream leaderboardDefDTOStream;
 
     @Inject LocalBroadcastManager localBroadcastManager;
-    @Inject @ForAchievement IntentFilter achievementIntentFilter;
 
     @Before
     public void setUp() throws IOException
@@ -98,7 +96,7 @@ public class ObjectMapperWrapperTest extends BaseApiTestClass
             {
                 receivedIntents.add(intent);
             }
-        }, achievementIntentFilter);
+        }, ACHIEVEMENT_INTENT_FILTER);
 
         objectMapper.readValue(positionDTOBody1Stream, GetPositionsDTO.class);
 
@@ -111,7 +109,7 @@ public class ObjectMapperWrapperTest extends BaseApiTestClass
 
         assertThat(aReceivedIntent).isNotNull();
 
-        Bundle bundle = aReceivedIntent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
+        Bundle bundle = aReceivedIntent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID);
         assertThat(bundle).isNotNull();
 
         UserAchievementId userAchievementId = new UserAchievementId(bundle);

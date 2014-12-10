@@ -3,8 +3,10 @@ package com.tradehero.th.api.achievement.key;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastData;
+
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_ACTION_NAME;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 
 public class UserAchievementId extends AbstractIntegerDTOKey implements BroadcastData
 {
@@ -29,11 +31,11 @@ public class UserAchievementId extends AbstractIntegerDTOKey implements Broadcas
 
     @NonNull @Override public String getBroadcastBundleKey()
     {
-        return AchievementModule.KEY_USER_ACHIEVEMENT_ID;
+        return KEY_USER_ACHIEVEMENT_ID;
     }
 
     @NonNull @Override public String getBroadcastIntentActionName()
     {
-        return AchievementModule.ACHIEVEMENT_INTENT_ACTION_NAME;
+        return ACHIEVEMENT_INTENT_ACTION_NAME;
     }
 }

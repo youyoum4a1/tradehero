@@ -20,14 +20,15 @@ import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.achievement.AchievementModule;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.level.XpModule;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import javax.inject.Inject;
+
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_ACHIEVEMENT_NODE;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_NODE;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {
@@ -81,26 +82,29 @@ public class ObjectMapperWrapper extends ObjectMapper
             element = elementsIterator.next();
             if (isAchievementNode(element))
             {
-                handleAchievement(objectNode.get(AchievementModule.KEY_ACHIEVEMENT_NODE));
+                handleAchievement(objectNode.get(KEY_ACHIEVEMENT_NODE));
             }
-            else if (isXPNode(element))
+            else
             {
-                handleXP(objectNode.get(XpModule.KEY_XP_NODE));
+                if (isXPNode(element))
+                {
+                    handleXP(objectNode.get(KEY_XP_NODE));
+                }
             }
             //else if (isOther(element)) {}
         }
-        objectNode.remove(AchievementModule.KEY_ACHIEVEMENT_NODE);
-        objectNode.remove(XpModule.KEY_XP_NODE);
+        objectNode.remove(KEY_ACHIEVEMENT_NODE);
+        objectNode.remove(KEY_XP_NODE);
     }
 
     protected boolean isAchievementNode(@NonNull Map.Entry<String, JsonNode> element)
     {
-        return element.getKey().equals(AchievementModule.KEY_ACHIEVEMENT_NODE);
+        return element.getKey().equals(KEY_ACHIEVEMENT_NODE);
     }
 
     protected boolean isXPNode(@NonNull Map.Entry<String, JsonNode> element)
     {
-        return element.getKey().equals(XpModule.KEY_XP_NODE);
+        return element.getKey().equals(KEY_XP_NODE);
     }
 
     protected void handleAchievement(

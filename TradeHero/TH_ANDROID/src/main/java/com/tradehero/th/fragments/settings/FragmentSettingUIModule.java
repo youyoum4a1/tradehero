@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.settings;
 
-import android.content.IntentFilter;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
@@ -33,14 +32,6 @@ import java.util.Set;
 )
 public class FragmentSettingUIModule
 {
-    public static final String SEND_LOVE_INTENT_ACTION_NAME = "com.tradehero.th.setting.sendlove.ALERT";
-    public static final String KEY_SEND_LOVE_BROADCAST = FragmentSettingUIModule.class.getName()+".sendLoveBroadcast";
-
-    @Provides @ForSendLove IntentFilter providesIntentFilterSendLove()
-    {
-        return new IntentFilter(SEND_LOVE_INTENT_ACTION_NAME);
-    }
-
     @Provides(type = Provides.Type.SET_VALUES)
     Set<SocialConnectSettingViewHolder> provideSocialConnectSettingViewHolderSet(
             SocialConnectFacebookSettingViewHolder socialConnectFacebookSettingViewHolder,
