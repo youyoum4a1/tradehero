@@ -263,7 +263,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener
-            implements LeaderboardMarkUserItemView.OnFollowRequestedListener
+            implements LeaderboardMarkUserStockItemView.OnFollowRequestedListener
     {
         @Override public void onFollowRequested(@NonNull UserBaseDTO userBaseDTO)
         {
@@ -336,7 +336,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
             {
-                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
+                return friendLeaderboardMarkedUserDTO.stocksLeaderboardUserDTO.getBaseKey().equals(heroId);
             }
         });
     }

@@ -12,7 +12,6 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
@@ -22,7 +21,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import java.text.SimpleDateFormat;
 
-public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
+public class CompetitionLeaderboardMarkUserStockItemView extends LeaderboardMarkUserStockItemView
 {
     @InjectView(R.id.leaderboard_prize_amount) View prizeIndicator;
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;
@@ -40,17 +39,17 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     protected int prizeDTOSize;
 
     //<editor-fold desc="Constructors">
-    public CompetitionLeaderboardMarkUserItemView(Context context)
+    public CompetitionLeaderboardMarkUserStockItemView(Context context)
     {
         super(context);
     }
 
-    public CompetitionLeaderboardMarkUserItemView(Context context, AttributeSet attrs)
+    public CompetitionLeaderboardMarkUserStockItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public CompetitionLeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
+    public CompetitionLeaderboardMarkUserStockItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

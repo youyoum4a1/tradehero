@@ -1,32 +1,67 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.BaseLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.FxLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 
-public class LeaderboardMarkUserListAdapter extends
+public class LeaderboardMarkUserListAdapter
+        <LeaderboardUserDTO extends BaseLeaderboardUserDTO,
+                LoaderType extends LeaderboardMarkUserLoader<LeaderboardUserDTO>>
+        extends
         LoaderDTOAdapter<
-                LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
-    implements SwipeRefreshLayout.OnRefreshListener
+                LeaderboardUserDTO, BaseLeaderboardMarkUserItemView<LeaderboardUserDTO>, LoaderType>
+        implements SwipeRefreshLayout.OnRefreshListener
 {
+    private static final int VIEW_TYPE_STOCK = 0;
+    private static final int VIEW_TYPE_FX = 1;
+
+    @LayoutRes private static final int fxLeaderboardLayoutResId = R.layout.lbmu_item_fx_mode;
+    @LayoutRes private static final int stockLeaderboardLayoutResId = R.layout.lbmu_item_roi_mode;
+
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
-    protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
+    protected LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListener;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardMarkUserListAdapter(Context context, int loaderId, int layoutResourceId)
+    public LeaderboardMarkUserListAdapter(Context context, int loaderId)
     {
-        super(context, loaderId, layoutResourceId);
+        super(context, loaderId, 0);
     }
     //</editor-fold>
+
+    @Override public int getViewTypeCount()
+    {
+        return 2;
+    }
+
+    @Override public int getItemViewType(int position)
+    {
+        BaseLeaderboardUserDTO leaderboardUserDTO = getItem(position);
+        if(leaderboardUserDTO instanceof StocksLeaderboardUserDTO)
+        {
+            return VIEW_TYPE_STOCK;
+        }
+        else if(leaderboardUserDTO instanceof FxLeaderboardUserDTO)
+        {
+            return VIEW_TYPE_FX;
+        }
+        else
+        {
+            return super.getItemViewType(position);
+        }
+    }
 
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
@@ -38,14 +73,14 @@ public class LeaderboardMarkUserListAdapter extends
         this.applicablePortfolioId = ownedPortfolioId;
     }
 
-    public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }
 
-    @Override public Object getItem(int position)
+    @Override public BaseLeaderboardUserDTO getItem(int position)
     {
-        LeaderboardUserDTO dto = (LeaderboardUserDTO) super.getItem(position);
+        StocksLeaderboardUserDTO dto = (StocksLeaderboardUserDTO) super.getItem(position);
         dto.setPosition(position);
         dto.setLeaderboardId(getLoader().getLeaderboardId());
         dto.setIncludeFoF(getLoader().isIncludeFoF());
@@ -53,7 +88,16 @@ public class LeaderboardMarkUserListAdapter extends
         return dto;
     }
 
-    @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
+    @Override protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
+    {
+        if (convertView == null)
+        {
+            convertView = getInflater().inflate(getLayoutIdforPosition(position), viewGroup, false);
+        }
+        return super.conditionalInflate(position, convertView, viewGroup);
+    }
+
+    @Override protected void fineTune(int position, BaseLeaderboardUserDTO dto, BaseLeaderboardMarkUserItemView dtoView)
     {
         dtoView.linkWith(currentUserProfileDTO, true);
         dtoView.linkWith(applicablePortfolioId);
@@ -81,17 +125,31 @@ public class LeaderboardMarkUserListAdapter extends
         getLoader().loadPrevious();
     }
 
-    protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
+    protected LeaderboardMarkUserStockItemView.OnFollowRequestedListener createChildFollowRequestedListener()
     {
         return this::notifyFollowRequested;
     }
 
     protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
-        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
             followRequestedListenerCopy.onFollowRequested(userBaseDTO);
+        }
+    }
+
+    private int getLayoutIdforPosition(int position)
+    {
+        int viewType = getItemViewType(position);
+        switch (viewType)
+        {
+            case VIEW_TYPE_FX:
+                return fxLeaderboardLayoutResId;
+            case VIEW_TYPE_STOCK:
+                return stockLeaderboardLayoutResId;
+            default:
+                throw new RuntimeException("Unknown layout for class " + getItem(position).getClass().getName());
         }
     }
 }

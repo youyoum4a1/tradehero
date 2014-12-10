@@ -10,7 +10,7 @@ import com.tradehero.common.widget.GaugeView;
 import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UserStatisticView extends LinearLayout
-    implements DTOView<LeaderboardUserDTO>
+    implements DTOView<StocksLeaderboardUserDTO>
 {
     @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
     @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
@@ -34,7 +34,7 @@ public class UserStatisticView extends LinearLayout
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
-    private LeaderboardUserDTO leaderboardUserDTO;
+    private StocksLeaderboardUserDTO stocksLeaderboardUserDTO;
 
     //<editor-fold desc="Constructors">
     public UserStatisticView(Context context)
@@ -61,15 +61,15 @@ public class UserStatisticView extends LinearLayout
         HierarchyInjector.inject(this);
     }
 
-    @Override public void display(LeaderboardUserDTO dto)
+    @Override public void display(StocksLeaderboardUserDTO dto)
     {
-        this.leaderboardUserDTO = dto;
+        this.stocksLeaderboardUserDTO = dto;
         display();
     }
 
     protected void display()
     {
-        if (leaderboardUserDTO != null)
+        if (stocksLeaderboardUserDTO != null)
         {
             // Statistic text view
             displayTradeCount();
@@ -103,7 +103,7 @@ public class UserStatisticView extends LinearLayout
     private void showExpandAnimation()
     {
         String digitsWinRatio = THSignedPercentage
-                .builder(leaderboardUserDTO.getWinRatio() * 100)
+                .builder(stocksLeaderboardUserDTO.getWinRatio() * 100)
                 .withOutSign()
                 .relevantDigitCount(3)
                 .build().toString();
@@ -112,7 +112,7 @@ public class UserStatisticView extends LinearLayout
             winRateGauge.setContentText(digitsWinRatio);
             winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
             winRateGauge.setAnimiationFlag(true);
-            winRateGauge.setTargetValue((float) leaderboardUserDTO.getWinRatio() * 100);
+            winRateGauge.setTargetValue((float) stocksLeaderboardUserDTO.getWinRatio() * 100);
         }
 
         if (performanceGauge != null)
@@ -149,7 +149,7 @@ public class UserStatisticView extends LinearLayout
 
     private void showValueWithoutAnimation()
     {
-        String digitsWinRatio = THSignedNumber.builder(leaderboardUserDTO.getWinRatio() * 100)
+        String digitsWinRatio = THSignedNumber.builder(stocksLeaderboardUserDTO.getWinRatio() * 100)
                 .relevantDigitCount(3)
                 .withOutSign()
                 .build().toString();
@@ -158,7 +158,7 @@ public class UserStatisticView extends LinearLayout
             winRateGauge.setContentText(digitsWinRatio);
             winRateGauge.setSubText(getContext().getString(R.string.leaderboard_win_ratio_title));
             winRateGauge.setAnimiationFlag(false);
-            winRateGauge.setCurrentValue((float) leaderboardUserDTO.getWinRatio() * 100);
+            winRateGauge.setCurrentValue((float) stocksLeaderboardUserDTO.getWinRatio() * 100);
         }
 
         if (performanceGauge != null)
@@ -197,7 +197,7 @@ public class UserStatisticView extends LinearLayout
     {
         if (positionsCountTv != null)
         {
-            positionsCountTv.setEndValue(leaderboardUserDTO.numberOfPositionsInPeriod);
+            positionsCountTv.setEndValue(stocksLeaderboardUserDTO.numberOfPositionsInPeriod);
             positionsCountTv.setFractionDigits(0);
         }
     }
@@ -206,16 +206,16 @@ public class UserStatisticView extends LinearLayout
     {
         if (daysHoldTv != null)
         {
-            daysHoldTv.setEndValue(leaderboardUserDTO.avgHoldingPeriodMins * 1.0f / (60 * 24));
+            daysHoldTv.setEndValue(stocksLeaderboardUserDTO.avgHoldingPeriodMins * 1.0f / (60 * 24));
             daysHoldTv.setFractionDigits(2);
         }
     }
 
     private void displayTradeCount()
     {
-        if (tradeCountTv != null && leaderboardUserDTO.avgNumberOfTradesPerMonth != null)
+        if (tradeCountTv != null && stocksLeaderboardUserDTO.avgNumberOfTradesPerMonth != null)
         {
-            tradeCountTv.setEndValue(leaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
+            tradeCountTv.setEndValue(stocksLeaderboardUserDTO.avgNumberOfTradesPerMonth.floatValue());
             tradeCountTv.setFractionDigits(2);
         }
     }
@@ -224,9 +224,9 @@ public class UserStatisticView extends LinearLayout
     {
         try
         {
-            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
+            Double minConsistency = StocksLeaderboardUserDTO.MIN_CONSISTENCY;
             Double maxConsistency = getAvgConsistency();
-            Double consistency = leaderboardUserDTO.getConsistency();
+            Double consistency = stocksLeaderboardUserDTO.getConsistency();
             consistency = (consistency < minConsistency) ? minConsistency : consistency;
             consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
 
@@ -245,7 +245,7 @@ public class UserStatisticView extends LinearLayout
     {
         try
         {
-            Double v = leaderboardUserDTO.sharpeRatioInPeriodVsSP500;
+            Double v = stocksLeaderboardUserDTO.sharpeRatioInPeriodVsSP500;
             Double min = (double) -2;
             Double max = (double) 2;
 
@@ -258,7 +258,7 @@ public class UserStatisticView extends LinearLayout
                 v = min;
             }
             double r = 100 * (v - min) / (max - min);
-            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s", leaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
+            Timber.d("normalizePerformance sharpeRatioInPeriodVsSP500 %s result %s", stocksLeaderboardUserDTO.sharpeRatioInPeriodVsSP500, r);
 
             return r;
         }
@@ -276,6 +276,6 @@ public class UserStatisticView extends LinearLayout
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
         }
-        return LeaderboardUserDTO.MIN_CONSISTENCY;
+        return StocksLeaderboardUserDTO.MIN_CONSISTENCY;
     }
 }

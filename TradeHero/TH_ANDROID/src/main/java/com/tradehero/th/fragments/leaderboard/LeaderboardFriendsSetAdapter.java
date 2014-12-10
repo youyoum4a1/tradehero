@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.DTOSetAdapter;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -31,7 +31,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     @LayoutRes private final int socialLayoutResId;
 
     protected UserProfileDTO currentUserProfileDTO;
-    @Nullable protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
+    @Nullable protected LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListener;
 
     @NonNull private Map<Object, Boolean> expandedStatues;
 
@@ -109,27 +109,27 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
         }
     }
 
-    private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull LeaderboardUserDTO leaderboardUserDTO)
+    private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
     {
-        return new SavingFriendLeaderboardMarkedUserDTO(leaderboardUserDTO);
+        return new SavingFriendLeaderboardMarkedUserDTO(stocksLeaderboardUserDTO);
     }
 
     private class SavingFriendLeaderboardMarkedUserDTO extends FriendLeaderboardMarkedUserDTO
     {
-        public SavingFriendLeaderboardMarkedUserDTO(@NonNull LeaderboardUserDTO leaderboardUserDTO)
+        public SavingFriendLeaderboardMarkedUserDTO(@NonNull StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
         {
-            this(expandedStatues.get(leaderboardUserDTO.id), leaderboardUserDTO);
+            this(expandedStatues.get(stocksLeaderboardUserDTO.id), stocksLeaderboardUserDTO);
         }
 
-        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
+        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
         {
-            super(expanded == null ? false : expanded, leaderboardUserDTO);
+            super(expanded == null ? false : expanded, stocksLeaderboardUserDTO);
         }
 
         @Override public void setExpanded(boolean expanded)
         {
             super.setExpanded(expanded);
-            LeaderboardFriendsSetAdapter.this.expandedStatues.put(leaderboardUserDTO.id, expanded);
+            LeaderboardFriendsSetAdapter.this.expandedStatues.put(stocksLeaderboardUserDTO.id, expanded);
         }
     }
 
@@ -147,12 +147,12 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
         FriendLeaderboardUserDTO item = getItem(position);
 
-        if (convertView instanceof LeaderboardMarkUserItemView)
+        if (convertView instanceof LeaderboardMarkUserStockItemView)
         {
-            ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK FIXME
-            ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
-            ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
-            ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
+            ((FriendLeaderboardMarkedUserDTO) item).stocksLeaderboardUserDTO.setPosition(position); // HACK FIXME
+            ((LeaderboardMarkUserStockItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).stocksLeaderboardUserDTO);
+            ((LeaderboardMarkUserStockItemView) convertView).linkWith(currentUserProfileDTO, true);
+            ((LeaderboardMarkUserStockItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
         }
         else if (convertView instanceof LeaderboardFriendsItemView)
         {
@@ -180,14 +180,14 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
     protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
-        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
             followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 
-    public void setFollowRequestedListener(@Nullable LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(@Nullable LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }

@@ -10,7 +10,6 @@ import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
-import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.AdView;
@@ -210,11 +209,11 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         else
         {
             View view = leaderboardMarkUserListAdapter.getView(getWrappedPosition(position), convertView, parent);
-            if (view instanceof CompetitionLeaderboardMarkUserItemView)
+            if (view instanceof CompetitionLeaderboardMarkUserStockItemView)
             {
-                ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
+                ((CompetitionLeaderboardMarkUserStockItemView) view).setProviderDTO(providerDTO);
                 //There should allow prizeDTO is null,because it has logic,prizeDTO is null means should not show PrizeInfo in viewItem.
-                ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTOSize(competitionLeaderboardDTO == null  || competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size());
+                ((CompetitionLeaderboardMarkUserStockItemView) view).setPrizeDTOSize(competitionLeaderboardDTO == null  || competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size());
             }
             return view;
         }

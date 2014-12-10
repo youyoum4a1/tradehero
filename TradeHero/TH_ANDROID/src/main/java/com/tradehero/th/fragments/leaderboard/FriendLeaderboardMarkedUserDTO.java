@@ -1,17 +1,17 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 
 public class FriendLeaderboardMarkedUserDTO extends FriendLeaderboardUserDTO
 {
-    @NonNull public LeaderboardUserDTO leaderboardUserDTO;
+    @NonNull public StocksLeaderboardUserDTO stocksLeaderboardUserDTO;
 
     //<editor-fold desc="Constructors">
-    public FriendLeaderboardMarkedUserDTO(boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
+    public FriendLeaderboardMarkedUserDTO(boolean expanded, @NonNull StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
     {
         super(expanded);
-        this.leaderboardUserDTO = leaderboardUserDTO;
+        this.stocksLeaderboardUserDTO = stocksLeaderboardUserDTO;
     }
     //</editor-fold>
 }

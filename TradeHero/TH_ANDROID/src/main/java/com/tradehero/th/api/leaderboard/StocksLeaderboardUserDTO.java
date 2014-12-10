@@ -15,8 +15,7 @@ import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
 
-public class LeaderboardUserDTO extends UserBaseDTO
-        implements ExpandableItem
+public class StocksLeaderboardUserDTO extends BaseLeaderboardUserDTO
 {
     private static final String LEADERBOARD_USER_POSITION = "LEADERBOARD_USER_POSITION";
     private static final String LEADERBOARD_ID = "LEADERBOARD_ID";
@@ -64,7 +63,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String currencyDisplay;
     public String currencyISO;
 
-    public LeaderboardUserDTO()
+    public StocksLeaderboardUserDTO()
     {
         super();
     }

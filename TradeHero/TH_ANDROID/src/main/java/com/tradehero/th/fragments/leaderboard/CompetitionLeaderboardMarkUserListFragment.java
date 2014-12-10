@@ -17,7 +17,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
@@ -125,8 +125,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
-        return new LeaderboardMarkUserListAdapter(
-                getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_competition_mode);
+        return new LeaderboardMarkUserListAdapter(getActivity(), leaderboardDefKey.key);
     }
 
     protected void setupCompetitionAdapter()
@@ -226,9 +225,9 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     private void updateCurrentRankHeaderViewWithProvider()
     {
-        if (getRankHeaderView() != null && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
+        if (getRankHeaderView() != null && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserStockOwnRankingView)
         {
-            CompetitionLeaderboardMarkUserOwnRankingView rankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
+            CompetitionLeaderboardMarkUserStockOwnRankingView rankingView = (CompetitionLeaderboardMarkUserStockOwnRankingView) getRankHeaderView();
             rankingView.setProviderDTO(providerDTO);
         }
     }
@@ -296,10 +295,10 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override protected void setupOwnRankingView(@NonNull View userRankingHeaderView)
     {
-        if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserItemView)
+        if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserStockItemView)
         {
-            CompetitionLeaderboardMarkUserItemView competitionLeaderboardCurrentUserRankHeaderView =
-                    (CompetitionLeaderboardMarkUserItemView) userRankingHeaderView;
+            CompetitionLeaderboardMarkUserStockItemView competitionLeaderboardCurrentUserRankHeaderView =
+                    (CompetitionLeaderboardMarkUserStockItemView) userRankingHeaderView;
             competitionLeaderboardCurrentUserRankHeaderView.setProviderDTO(providerDTO);
         }
         super.setupOwnRankingView(userRankingHeaderView);
@@ -309,9 +308,9 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         if (competitionLeaderboardDTO != null
                 && getRankHeaderView() != null
-                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
+                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserStockOwnRankingView)
         {
-            CompetitionLeaderboardMarkUserOwnRankingView ownRankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
+            CompetitionLeaderboardMarkUserStockOwnRankingView ownRankingView = (CompetitionLeaderboardMarkUserStockOwnRankingView) getRankHeaderView();
             ownRankingView.setPrizeDTOSize(competitionLeaderboardDTO.prizes != null? competitionLeaderboardDTO.prizes.size() : 0);
         }
     }
@@ -381,7 +380,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected class CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback extends LeaderboardMarkUserListViewFragmentListLoaderCallback
     {
-        @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
+        @Override public void onLoadFinished(ListLoader<StocksLeaderboardUserDTO> loader, List<StocksLeaderboardUserDTO> data)
         {
             competitionAdapter.notifyDataSetChanged();
             super.onLoadFinished(loader, data);

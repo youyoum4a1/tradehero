@@ -11,79 +11,79 @@ import static org.junit.Assert.assertEquals;
 
 abstract public class LeaderboardUserDTOUtilTestBase
 {
-    protected LeaderboardUserDTO getUser1()
+    protected StocksLeaderboardUserDTO getUser1()
     {
-        LeaderboardUserDTO value = new LeaderboardUserDTO();
+        StocksLeaderboardUserDTO value = new StocksLeaderboardUserDTO();
         value.id = 11;
         value.lbmuId = 21;
         return value;
     }
 
-    protected LeaderboardUserDTO getUser2()
+    protected StocksLeaderboardUserDTO getUser2()
     {
-        LeaderboardUserDTO value = new LeaderboardUserDTO();
+        StocksLeaderboardUserDTO value = new StocksLeaderboardUserDTO();
         value.id = 12;
         value.lbmuId = 22;
         return value;
     }
 
-    protected List<LeaderboardUserDTO> getListEmpty()
+    protected List<StocksLeaderboardUserDTO> getListEmpty()
     {
         return new ArrayList<>();
     }
 
-    protected Map<LeaderboardUserId, LeaderboardUserDTO> getMapEmpty()
+    protected Map<LeaderboardUserId, StocksLeaderboardUserDTO> getMapEmpty()
     {
         return new HashMap<>();
     }
 
-    protected List<LeaderboardUserDTO> getList1Item()
+    protected List<StocksLeaderboardUserDTO> getList1Item()
     {
-        List<LeaderboardUserDTO> list = new ArrayList<>();
+        List<StocksLeaderboardUserDTO> list = new ArrayList<>();
         list.add(getUser1());
         return list;
     }
 
-    protected List<LeaderboardUserDTO> getList2Items()
+    protected List<StocksLeaderboardUserDTO> getList2Items()
     {
-        List<LeaderboardUserDTO> list = new ArrayList<>();
+        List<StocksLeaderboardUserDTO> list = new ArrayList<>();
         list.add(getUser1());
         list.add(getUser2());
         return list;
     }
 
-    protected Map<LeaderboardUserId, LeaderboardUserDTO> getMap1Item()
+    protected Map<LeaderboardUserId, StocksLeaderboardUserDTO> getMap1Item()
     {
-        Map<LeaderboardUserId, LeaderboardUserDTO> map = new HashMap<>();
+        Map<LeaderboardUserId, StocksLeaderboardUserDTO> map = new HashMap<>();
         map.put(new LeaderboardUserId(11, 21l), getUser1());
         return map;
     }
 
-    protected Map<LeaderboardUserId, LeaderboardUserDTO> getMap2Items()
+    protected Map<LeaderboardUserId, StocksLeaderboardUserDTO> getMap2Items()
     {
-        Map<LeaderboardUserId, LeaderboardUserDTO> map = new HashMap<>();
+        Map<LeaderboardUserId, StocksLeaderboardUserDTO> map = new HashMap<>();
         map.put(new LeaderboardUserId(11, 21l), getUser1());
         map.put(new LeaderboardUserId(12, 22l), getUser2());
         return map;
     }
 
-    protected void assertEmpty(Map<LeaderboardUserId, LeaderboardUserDTO> map)
+    protected void assertEmpty(Map<LeaderboardUserId, StocksLeaderboardUserDTO> map)
     {
         assertEquals(0, map.size());
     }
 
-    protected void assertMap1Item(Map<LeaderboardUserId, LeaderboardUserDTO> map)
+    protected void assertMap1Item(Map<LeaderboardUserId, StocksLeaderboardUserDTO> map)
     {
         assertEquals(1, map.size());
-        LeaderboardUserDTO value = map.get(new LeaderboardUserId(11, 21l));
+        StocksLeaderboardUserDTO value = map.get(new LeaderboardUserId(11, 21l));
         assertEquals(11, value.id);
         assertEquals(21, value.lbmuId);
     }
 
-    protected void assertMap2Items(Map<LeaderboardUserId, LeaderboardUserDTO> map)
+    protected void assertMap2Items(Map<LeaderboardUserId, StocksLeaderboardUserDTO> map)
     {
         assertEquals(2, map.size());
-        LeaderboardUserDTO value = map.get(new LeaderboardUserId(11, 21l));
+        StocksLeaderboardUserDTO value = map.get(new LeaderboardUserId(11, 21l));
         assertEquals(11, value.id);
         assertEquals(21, value.lbmuId);
         value = map.get(new LeaderboardUserId(12, 22l));

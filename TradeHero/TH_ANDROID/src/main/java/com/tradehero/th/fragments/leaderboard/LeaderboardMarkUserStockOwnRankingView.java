@@ -3,23 +3,23 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class LeaderboardMarkUserOwnRankingView extends LeaderboardMarkUserItemView
+public class LeaderboardMarkUserStockOwnRankingView extends LeaderboardMarkUserStockItemView
 {
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
-    public LeaderboardMarkUserOwnRankingView(Context context)
+    public LeaderboardMarkUserStockOwnRankingView(Context context)
     {
         super(context);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public LeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs)
+    public LeaderboardMarkUserStockOwnRankingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public LeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs, int defStyle)
+    public LeaderboardMarkUserStockOwnRankingView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

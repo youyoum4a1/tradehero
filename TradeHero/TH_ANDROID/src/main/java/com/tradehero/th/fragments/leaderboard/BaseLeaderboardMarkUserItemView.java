@@ -22,7 +22,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.BaseLeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.market.Country;
@@ -37,7 +37,6 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -57,10 +56,18 @@ import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
 
-public class LeaderboardMarkUserItemView extends RelativeLayout
-        implements DTOView<LeaderboardUserDTO>,
-        ExpandingLayout.OnExpandListener
+public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType extends BaseLeaderboardUserDTO>
+        extends RelativeLayout
+        implements DTOView<LeaderboardUserDTOType>, ExpandingLayout.OnExpandListener
 {
+    protected UserProfileDTO currentUserProfileDTO;
+    protected OnFollowRequestedListener followRequestedListener;
+    protected OwnedPortfolioId applicablePortfolioId;
+    // data
+    protected LeaderboardUserDTOType leaderboardItem;
+    // top view
+    @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
+    @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
@@ -68,19 +75,8 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject DashboardNavigator navigator;
-
-    protected UserProfileDTO currentUserProfileDTO;
-    protected OnFollowRequestedListener followRequestedListener;
-    protected OwnedPortfolioId applicablePortfolioId;
-    // data
-    protected LeaderboardUserDTO leaderboardItem;
-
-    // top view
-    @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
-    @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
-
     // expanding view
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
@@ -88,29 +84,23 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
-
-    @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
-
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
-
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
 
-    //<editor-fold desc="Constructors">
-    public LeaderboardMarkUserItemView(Context context)
+    public BaseLeaderboardMarkUserItemView(Context context)
     {
         super(context);
     }
 
-    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
-    {
-        super(context, attrs);
-    }
-
-    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
+    public BaseLeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
-    //</editor-fold>
+
+    public BaseLeaderboardMarkUserItemView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
 
     @Override protected void onFinishInflate()
     {
@@ -191,9 +181,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         this.followRequestedListener = followRequestedListener;
     }
 
-    @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
+    @Override public void display(LeaderboardUserDTOType leaderboardUserDTOType)
     {
-        linkWith(leaderboardUserDTO, true);
+        linkWith(leaderboardUserDTOType, true);
     }
 
     private void detachOwnRankingLeaderboardCache()
@@ -206,9 +196,9 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         leaderboardOwnUserRankingSubscription = null;
     }
 
-    private void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
+    protected void linkWith(LeaderboardUserDTOType leaderboardUserDTOType, boolean andDisplay)
     {
-        this.leaderboardItem = leaderboardUserDTO;
+        this.leaderboardItem = leaderboardUserDTOType;
 
         if (andDisplay)
         {
@@ -330,18 +320,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @Override public void onExpand(boolean expand)
     {
-        if (userStatisticView != null)
-        {
-            if (expand)
-            {
-                userStatisticView.display(leaderboardItem);
-            }
-            else
-            {
-                userStatisticView.display(null);
-                Timber.d("clearExpandAnimation");
-            }
-        }
+        //Do nothing for now, wait for the updated PRD on what to do when the user click on expanded cell
     }
 
     protected String getLbmuPlCurrencyDisplay()

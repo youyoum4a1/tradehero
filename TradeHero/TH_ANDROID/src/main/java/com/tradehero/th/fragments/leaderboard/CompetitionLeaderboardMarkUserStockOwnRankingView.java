@@ -18,13 +18,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
-public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
+public class CompetitionLeaderboardMarkUserStockOwnRankingView extends CompetitionLeaderboardMarkUserStockItemView
 {
     @InjectView(R.id.competition_own_ranking_info_container) ViewGroup infoButtonContainer;
     @InjectView(R.id.competition_own_ranking_info_text) TextView infoText;
@@ -33,19 +33,19 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
-    public CompetitionLeaderboardMarkUserOwnRankingView(Context context)
+    public CompetitionLeaderboardMarkUserStockOwnRankingView(Context context)
     {
         super(context);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public CompetitionLeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs)
+    public CompetitionLeaderboardMarkUserStockOwnRankingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public CompetitionLeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs, int defStyle)
+    public CompetitionLeaderboardMarkUserStockOwnRankingView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
@@ -70,9 +70,9 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         infoButtonContainer.setVisibility(View.GONE);
     }
 
-    @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
+    @Override public void display(StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
     {
-        super.display(leaderboardUserDTO);
+        super.display(stocksLeaderboardUserDTO);
         displayPrize();
     }
 
