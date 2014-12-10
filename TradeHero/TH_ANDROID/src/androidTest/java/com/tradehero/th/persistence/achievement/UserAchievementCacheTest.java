@@ -3,20 +3,19 @@ package com.tradehero.th.persistence.achievement;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)
@@ -24,7 +23,6 @@ public class UserAchievementCacheTest
 {
     @Inject UserAchievementCacheRx userAchievementCache;
     @Inject LocalBroadcastManager localBroadcastManager;
-    @Inject @ForAchievement IntentFilter intentFilter;
 
     @Before
     public void setUp()
@@ -73,7 +71,7 @@ public class UserAchievementCacheTest
             @Override public void onReceive(Context context, Intent intent)
             {
             }
-        }, intentFilter);
+        }, ACHIEVEMENT_INTENT_FILTER);
 
         UserAchievementDTO userAchievementDTO = new UserAchievementDTO();
         userAchievementDTO.id = 1;
@@ -103,7 +101,7 @@ public class UserAchievementCacheTest
             {
 
             }
-        }, intentFilter);
+        }, ACHIEVEMENT_INTENT_FILTER);
 
         Thread.sleep(5000);
         THRobolectric.runBgUiTasks(1);

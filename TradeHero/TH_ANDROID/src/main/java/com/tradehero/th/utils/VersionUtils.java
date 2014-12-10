@@ -100,7 +100,7 @@ public class VersionUtils
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException ignored)
+        } catch (PackageManager.NameNotFoundException e)
         {
         }
         return v;
@@ -112,10 +112,8 @@ public class VersionUtils
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e)
-        {
-            // Huh? Really?
         }
+        catch (PackageManager.NameNotFoundException ignored) { }
         return v;
     }
 

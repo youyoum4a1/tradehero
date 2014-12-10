@@ -41,8 +41,6 @@ import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -68,7 +66,6 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.ForCompetitionEnrollment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -76,14 +73,12 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.onboarding.ForOnBoard;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
-import com.tradehero.th.fragments.settings.ForSendLove;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -101,6 +96,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
+import com.tradehero.th.persistence.prefs.IsFxShown;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -108,12 +104,8 @@ import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.achievement.AchievementModule;
-import com.tradehero.th.utils.achievement.ForAchievement;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
-import com.tradehero.th.utils.level.ForXP;
-import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
@@ -130,10 +122,21 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
+import static rx.android.observables.AndroidObservable.bindActivity;
+import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
 
 public class DashboardActivity extends BaseActivity
         implements ResideMenu.OnMenuListener
@@ -166,13 +169,9 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
-    @Inject @ForAchievement IntentFilter achievementIntentFilter;
-    @Inject @ForXP IntentFilter xpIntentFilter;
-    @Inject @ForOnBoard IntentFilter onBoardIntentFilter;
-    @Inject @ForCompetitionEnrollment IntentFilter competitionEnrollmentIntentFilter;
-    @Inject @ForSendLove IntentFilter sendLoveIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
+    @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
 
@@ -181,19 +180,14 @@ public class DashboardActivity extends BaseActivity
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
-    @Nullable private Subscription providerListSubscription;
     private Subscription notificationFetchSubscription;
 
     private ProgressDialog progressDialog;
     private DashboardTabHost dashboardTabHost;
     private int tabHostHeight;
-    private BroadcastReceiver mAchievementBroadcastReceiver;
-    private BroadcastReceiver mXPBroadcastReceiver;
-    private BroadcastReceiver onBoardBroadcastReceiver;
-    private BroadcastReceiver enrollmentBroadcastReceiver;
-    private BroadcastReceiver sendLoveBroadcastReceiver;
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
+    private CompositeSubscription subscriptions;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -271,87 +265,6 @@ public class DashboardActivity extends BaseActivity
 
     private void initBroadcastReceivers()
     {
-        mAchievementBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                if (intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
-                {
-                    Bundle bundle = intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID);
-                    achievementDialogCreator.newInstance(new UserAchievementId(bundle))
-                            .subscribe(new Observer<AbstractAchievementDialogFragment>()
-                            {
-                                private boolean isEmpty = false;
-
-                                @Override public void onCompleted()
-                                {
-                                    if (isEmpty)
-                                    {
-                                        broadcastUtilsLazy.get().nextPlease();
-                                    }
-                                }
-
-                                @Override public void onError(Throwable e)
-                                {
-                                    Timber.e(e, "Error when creating achievement dialog");
-                                }
-
-                                @Override public void onNext(AbstractAchievementDialogFragment abstractAchievementDialogFragment)
-                                {
-                                    isEmpty = false;
-                                    abstractAchievementDialogFragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG);
-                                }
-                            });
-                }
-                else
-                {
-                    broadcastUtilsLazy.get().nextPlease();
-                }
-            }
-        };
-
-        mXPBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                if (intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
-                {
-                    Bundle b = intent.getBundleExtra(XpModule.KEY_XP_BROADCAST);
-                    UserXPAchievementDTO userXPAchievementDTO = new UserXPAchievementDTO(b);
-                    xpToast.showWhenReady(userXPAchievementDTO);
-                }
-                else
-                {
-                    broadcastUtilsLazy.get().nextPlease();
-                }
-            }
-        };
-
-        onBoardBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                isOnboardShown.set(true);
-                OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-            }
-        };
-
-        enrollmentBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                fetchProviderList();
-            }
-        };
-
-        sendLoveBroadcastReceiver = new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager());
-            }
-        };
-
         onlineStateReceiver = new BroadcastReceiver()
         {
             @Override public void onReceive(Context context, Intent intent)
@@ -494,19 +407,54 @@ public class DashboardActivity extends BaseActivity
         super.onResume();
         launchActions();
         analytics.openSession();
-        localBroadcastManager.registerReceiver(mAchievementBroadcastReceiver, achievementIntentFilter);
-        localBroadcastManager.registerReceiver(mXPBroadcastReceiver, xpIntentFilter);
-        localBroadcastManager.registerReceiver(onBoardBroadcastReceiver, onBoardIntentFilter);
-        // get providers for enrollment page
-        localBroadcastManager.registerReceiver(enrollmentBroadcastReceiver, competitionEnrollmentIntentFilter);
-        localBroadcastManager.registerReceiver(sendLoveBroadcastReceiver, sendLoveIntentFilter);
-    }
 
-    protected void fetchProviderList()
-    {
-        detachSubscription(providerListSubscription);
-        providerListSubscription = AndroidObservable.bindActivity(this, providerListCache.get().get(new ProviderListKey()))
-                .subscribe(new ProviderListFetchObserver());
+        subscriptions = new CompositeSubscription();
+        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ACHIEVEMENT_INTENT_FILTER)
+                .filter(intent -> intent != null && intent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID) != null)
+                .map(intent -> intent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID))
+                .map(UserAchievementId::new)
+                .flatMap(achievementDialogCreator::newInstance))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        fragment -> fragment.show(getFragmentManager(), AbstractAchievementDialogFragment.TAG),
+                        throwable -> {
+                        }, () -> broadcastUtilsLazy.get().nextPlease()
+                ));
+
+        subscriptions.add(fromLocalBroadcast(this, XP_INTENT_FILTER)
+                .filter(intent -> (intent != null) && (intent.getBundleExtra(KEY_XP_BROADCAST) != null))
+                .map(intent -> new UserXPAchievementDTO(intent.getBundleExtra(KEY_XP_BROADCAST)))
+                .subscribe(xpToast::showWhenReady, throwable -> {}, () -> broadcastUtilsLazy.get().nextPlease()));
+
+        subscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
+                .subscribe(intent -> {
+                    isOnboardShown.set(true);
+                    OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+                }, throwable -> {}));
+
+        // get providers for enrollment page
+        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
+                        .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
+                        .flatMapIterable(pair -> pair.second)
+                        .filter(providerDTO -> !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id)))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                providerDTO -> {
+                                    enrollmentScreenOpened.add(providerDTO.id);
+                                    navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                },
+                                throwable -> {
+                                    THToast.show(R.string.error_fetch_provider_competition_list);
+                                    broadcastUtilsLazy.get().nextPlease();
+                                },
+                                () -> broadcastUtilsLazy.get().nextPlease())
+        );
+
+        subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
+                .subscribe(intent ->
+                        AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -525,7 +473,7 @@ public class DashboardActivity extends BaseActivity
 
             detachNotificationFetchTask();
             NotificationKey key = new NotificationKey(extras);
-            notificationFetchSubscription = AndroidObservable.bindActivity(
+            notificationFetchSubscription = bindActivity(
                     this,
                     notificationCache.get().get(key))
                     .subscribe(createNotificationFetchObserver());
@@ -541,11 +489,7 @@ public class DashboardActivity extends BaseActivity
     @Override protected void onPause()
     {
         analytics.closeSession();
-        localBroadcastManager.unregisterReceiver(mAchievementBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(mXPBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(onBoardBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(enrollmentBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(sendLoveBroadcastReceiver);
+        subscriptions.unsubscribe();
         super.onPause();
     }
 
@@ -558,18 +502,10 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
-        detachSubscription(providerListSubscription);
-        providerListSubscription = null;
         purchaseRestorerFinishedListener = null;
         notificationFetchSubscription = null;
 
         xpToast.destroy();
-
-        mAchievementBroadcastReceiver = null;
-        mXPBroadcastReceiver = null;
-        onBoardBroadcastReceiver = null;
-        enrollmentBroadcastReceiver = null;
-        sendLoveBroadcastReceiver = null;
 
         networkIndicator = null;
 
@@ -601,7 +537,7 @@ public class DashboardActivity extends BaseActivity
 
     private void showStartDialogsPlease()
     {
-        AndroidObservable.bindActivity(this,
+        bindActivity(this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .first()
@@ -609,18 +545,23 @@ public class DashboardActivity extends BaseActivity
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
                     {
-                        if (args.second != null && !isOnboardShown.get())
+                        if (!isOnboardShown.get())
                         {
-                            if (userProfileDTOUtilLazy.get().shouldShowOnBoard(args.second))
+                            UserProfileDTO userProfileDTO = args.second;
+                            if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                             {
                                 broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
                             }
+                            return;
                         }
 
-                        if (isOnboardShown.get())
+                        if (!isFxShown.get())
                         {
-                            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
+                            //broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                            //return;
                         }
+
+                        broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
                     }
                 });
     }
@@ -711,8 +652,7 @@ public class DashboardActivity extends BaseActivity
         {
             onFinish();
 
-            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this,
-                    pair.second);
+            NotificationClickHandler notificationClickHandler = new NotificationClickHandler(DashboardActivity.this, pair.second);
             notificationClickHandler.handleNotificationItemClicked();
         }
 
@@ -734,71 +674,6 @@ public class DashboardActivity extends BaseActivity
             }
         }
     }
-
-    protected class ProviderListFetchObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
-    {
-        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
-        {
-            openEnrollmentPageIfNecessary(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_provider_competition_list);
-            broadcastUtilsLazy.get().nextPlease();
-        }
-    }
-
-    private void openEnrollmentPageIfNecessary(ProviderDTOList providerDTOs)
-    {
-        boolean isHandled = false;
-        for (ProviderDTO providerDTO : providerDTOs)
-        {
-            if (!providerDTO.isUserEnrolled
-                    && !enrollmentScreenOpened.contains(providerDTO.id))
-            {
-                isHandled = true;
-                enrollmentScreenOpened.add(providerDTO.id);
-
-                Runnable handleCompetitionRunnable = createHandleCompetitionRunnable(providerDTO);
-                runOnUiThread(handleCompetitionRunnable);
-                break;
-            }
-        }
-        if (!isHandled)
-        {
-            broadcastUtilsLazy.get().nextPlease();
-        }
-    }
-
-    //<editor-fold desc="Competition Runnable">
-    private Runnable createHandleCompetitionRunnable(ProviderDTO providerDTO)
-    {
-        return new TrendingFragmentHandleCompetitionRunnable(providerDTO);
-    }
-
-    private class TrendingFragmentHandleCompetitionRunnable implements Runnable
-    {
-        private final ProviderDTO providerDTO;
-
-        private TrendingFragmentHandleCompetitionRunnable(ProviderDTO providerDTO)
-        {
-            this.providerDTO = providerDTO;
-        }
-
-        @Override public void run()
-        {
-            if (!isFinishing())
-            {
-                navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
-            }
-        }
-    }
-    //</editor-fold>
 
     @Override public void onLowMemory()
     {

@@ -13,12 +13,15 @@ import com.tradehero.th.api.security.compact.CoveredWarrantDTO;
 import com.tradehero.th.api.security.compact.DepositoryReceiptDTO;
 import com.tradehero.th.api.security.compact.EquityCompactDTO;
 import com.tradehero.th.api.security.compact.FundCompactDTO;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.compact.IndexSecurityCompactDTO;
 import com.tradehero.th.api.security.compact.LockedSecurityCompactDTO;
 import com.tradehero.th.api.security.compact.PreferenceShareDTO;
 import com.tradehero.th.api.security.compact.PreferredSecurityDTO;
 import com.tradehero.th.api.security.compact.StapledSecurityDTO;
 import com.tradehero.th.api.security.compact.TradableRightsIssueDTO;
 import com.tradehero.th.api.security.compact.UnitCompactDTO;
+import com.tradehero.th.api.security.compact.UnitTrustSecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.ArrayList;
@@ -44,6 +47,9 @@ import timber.log.Timber;
         @JsonSubTypes.Type(value = CoveredWarrantDTO.class, name = CoveredWarrantDTO.DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = PreferredSecurityDTO.class, name = PreferredSecurityDTO.DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = StapledSecurityDTO.class, name = StapledSecurityDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = IndexSecurityCompactDTO.class, name = IndexSecurityCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = UnitTrustSecurityCompactDTO.class, name = UnitTrustSecurityCompactDTO.DTO_DESERIALISING_TYPE),
+        @JsonSubTypes.Type(value = FxSecurityCompactDTO.class, name = FxSecurityCompactDTO.DTO_DESERIALISING_TYPE),
 })
 public class SecurityCompactDTO implements DTO
 {

@@ -51,6 +51,7 @@ public class PreferenceModule
     private static final String USER_PREFERENCE_KEY = "th";
     private static final String APP_PREFERENCE_KEY = "th_app";
     private static final String PREF_IS_ONBOARD_SHOWN_FLAG = "PREF_IS_ONBOARD_SHOWN";
+    private static final String PREF_IS_FX_SHOWN_FLAG = "PREF_IS_FX_SHOWN_FLAG";
 
     @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
     {
@@ -139,6 +140,11 @@ public class PreferenceModule
     @Provides @Singleton @IsOnBoardShown BooleanPreference provideIsOnBoardShown(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_IS_ONBOARD_SHOWN_FLAG, false);
+    }
+
+    @Provides @Singleton @IsFxShown BooleanPreference provideIsFxShown(@ForApp SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_IS_FX_SHOWN_FLAG, false);
     }
 
     @Provides @AuthHeader String provideAuthenticationHeader(final AccountManager accountManager)
