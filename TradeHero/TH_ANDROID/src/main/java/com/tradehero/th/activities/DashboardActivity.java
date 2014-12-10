@@ -63,7 +63,6 @@ import com.tradehero.th.fragments.billing.StoreScreenFragment;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.ForCompetitionEnrollment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -71,14 +70,12 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.onboarding.ForOnBoard;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
-import com.tradehero.th.fragments.settings.ForSendLove;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -103,12 +100,9 @@ import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.achievement.AchievementModule;
-import com.tradehero.th.utils.achievement.ForAchievement;
+import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
-import com.tradehero.th.utils.level.ForXP;
-import com.tradehero.th.utils.level.XpModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
@@ -131,6 +125,12 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.observables.AndroidObservable.bindActivity;
 import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
 
@@ -164,11 +164,6 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<PushNotificationManager> pushNotificationManager;
     @Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
-    @Inject @ForAchievement IntentFilter achievementIntentFilter;
-    @Inject @ForXP IntentFilter xpIntentFilter;
-    @Inject @ForOnBoard IntentFilter onBoardIntentFilter;
-    @Inject @ForCompetitionEnrollment IntentFilter competitionEnrollmentIntentFilter;
-    @Inject @ForSendLove IntentFilter sendLoveIntentFilter;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
@@ -386,9 +381,9 @@ public class DashboardActivity extends BaseActivity
         analytics.openSession();
 
         subscriptions = new CompositeSubscription();
-        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, achievementIntentFilter)
-                .filter(intent -> intent != null && intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID) != null)
-                .map(intent -> intent.getBundleExtra(AchievementModule.KEY_USER_ACHIEVEMENT_ID))
+        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ACHIEVEMENT_INTENT_FILTER)
+                .filter(intent -> intent != null && intent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID) != null)
+                .map(intent -> intent.getBundleExtra(KEY_USER_ACHIEVEMENT_ID))
                 .map(UserAchievementId::new)
                 .flatMap(achievementDialogCreator::newInstance))
                 .subscribeOn(Schedulers.io())
@@ -399,19 +394,19 @@ public class DashboardActivity extends BaseActivity
                         }, () -> broadcastUtilsLazy.get().nextPlease()
                 ));
 
-        subscriptions.add(fromLocalBroadcast(this, xpIntentFilter)
-                .filter(intent -> intent != null && intent.getBundleExtra(XpModule.KEY_XP_BROADCAST) != null)
-                .map(intent -> new UserXPAchievementDTO(intent.getBundleExtra(XpModule.KEY_XP_BROADCAST)))
+        subscriptions.add(fromLocalBroadcast(this, XP_INTENT_FILTER)
+                .filter(intent -> (intent != null) && (intent.getBundleExtra(KEY_XP_BROADCAST) != null))
+                .map(intent -> new UserXPAchievementDTO(intent.getBundleExtra(KEY_XP_BROADCAST)))
                 .subscribe(xpToast::showWhenReady, throwable -> {}, () -> broadcastUtilsLazy.get().nextPlease()));
 
-        subscriptions.add(fromLocalBroadcast(this, onBoardIntentFilter)
+        subscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
                 .subscribe(intent -> {
                     isOnboardShown.set(true);
                     OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
                 }, throwable -> {}));
 
         // get providers for enrollment page
-        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, competitionEnrollmentIntentFilter)
+        subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                         .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
                         .flatMapIterable(pair -> pair.second)
                         .filter(providerDTO -> !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id)))
@@ -429,7 +424,7 @@ public class DashboardActivity extends BaseActivity
                                 () -> broadcastUtilsLazy.get().nextPlease())
         );
 
-        subscriptions.add(fromLocalBroadcast(this, sendLoveIntentFilter)
+        subscriptions.add(fromLocalBroadcast(this, BroadcastConstants.SEND_LOVE_INTENT_FILTER)
                 .subscribe(intent ->
                         AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
     }
