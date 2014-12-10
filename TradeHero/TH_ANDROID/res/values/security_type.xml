@@ -13,4 +13,7 @@
   <string name="security_type_covered_warrant">Covered Warrant</string>
   <string name="security_type_preferred_sec">Preferred Sec</string>
   <string name="security_type_stapled_sec">Stapled Sec</string>
+  <string name="security_type_index">Index</string>
+  <string name="security_type_unit_trust">Unit Trust</string>
+  <string name="security_type_fx">FX</string>
 </resources>
