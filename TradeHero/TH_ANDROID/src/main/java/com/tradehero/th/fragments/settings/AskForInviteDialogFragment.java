@@ -41,6 +41,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
         return inflater.inflate(R.layout.ask_for_invite_dialog_layout, container, false);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_cancel)
     public void onCancel()
     {
@@ -50,6 +51,7 @@ public class AskForInviteDialogFragment extends BaseDialogFragment
 
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_invite)
     public void onInvite()
     {

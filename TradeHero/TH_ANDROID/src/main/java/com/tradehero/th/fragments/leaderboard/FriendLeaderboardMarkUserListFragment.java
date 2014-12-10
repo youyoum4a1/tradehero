@@ -93,7 +93,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
         if (leaderboardMarkUserListView != null)
         {
-            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
             leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
             leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
             if (headerView != null)
@@ -101,6 +100,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 leaderboardMarkUserListView.addHeaderView(headerView, null, false);
                 initHeaderView();
             }
+            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
         }
         leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
     }

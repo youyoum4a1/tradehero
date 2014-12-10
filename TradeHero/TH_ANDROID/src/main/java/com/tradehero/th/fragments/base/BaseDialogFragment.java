@@ -11,11 +11,19 @@ import android.view.View;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
+import rx.Observable;
 import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 
 public abstract class BaseDialogFragment extends DialogFragment
 {
-    private OnDismissedListener dismissedListener;
+    private BehaviorSubject<DialogInterface> dismissedSubject;
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        dismissedSubject = BehaviorSubject.create();
+    }
 
     @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
@@ -48,25 +56,27 @@ public abstract class BaseDialogFragment extends DialogFragment
         super.onDestroyView();
     }
 
-    public void setDismissedListener(OnDismissedListener dismissedListener)
-    {
-        this.dismissedListener = dismissedListener;
-    }
-
     @Override public void onDismiss(DialogInterface dialog)
     {
         super.onDismiss(dialog);
         notifyDismissed(dialog);
     }
 
+    @Override public void onDestroy()
+    {
+        dismissedSubject = null;
+        super.onDestroy();
+    }
+
+    @NonNull public Observable<DialogInterface> getDismissedObservable()
+    {
+        return dismissedSubject.asObservable();
+    }
+
     protected void notifyDismissed(DialogInterface dialog)
     {
-        OnDismissedListener dismissedListenerCopy = dismissedListener;
-        if (dismissedListenerCopy != null)
-        {
-            dismissedListenerCopy.onDismissed(dialog);
-        }
-        dismissedListener = null;
+        dismissedSubject.onNext(dialog);
+        dismissedSubject.onCompleted();
     }
 
     protected void unsubscribe(@Nullable Subscription subscription)
@@ -75,10 +85,5 @@ public abstract class BaseDialogFragment extends DialogFragment
         {
             subscription.unsubscribe();
         }
-    }
-
-    public static interface OnDismissedListener
-    {
-        void onDismissed(DialogInterface dialog);
     }
 }
