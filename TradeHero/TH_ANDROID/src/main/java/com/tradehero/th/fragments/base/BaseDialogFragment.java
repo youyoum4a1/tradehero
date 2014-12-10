@@ -62,12 +62,6 @@ public abstract class BaseDialogFragment extends DialogFragment
         notifyDismissed(dialog);
     }
 
-    @Override public void onDestroy()
-    {
-        dismissedSubject = null;
-        super.onDestroy();
-    }
-
     @NonNull public Observable<DialogInterface> getDismissedObservable()
     {
         return dismissedSubject.asObservable();
