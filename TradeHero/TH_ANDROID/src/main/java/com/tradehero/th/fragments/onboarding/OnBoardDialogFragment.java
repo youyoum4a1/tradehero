@@ -20,6 +20,7 @@ import com.tradehero.th.api.market.ExchangeSectorCompactListDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.security.key.ExchangeSectorSecurityListType;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -32,7 +33,6 @@ import com.tradehero.th.fragments.onboarding.hero.OnBoardPickHeroViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPickExchangeSectorViewHolder;
 import com.tradehero.th.fragments.onboarding.pref.OnBoardPrefDTO;
 import com.tradehero.th.fragments.onboarding.stock.OnBoardPickStockViewHolder;
-import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -47,9 +47,11 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
+
+import static rx.android.observables.AndroidObservable.bindFragment;
 
 public class OnBoardDialogFragment extends BaseDialogFragment
 {
@@ -67,12 +69,10 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @InjectView(R.id.stock_switcher) ViewSwitcher mStockSwitcher;
 
     @Inject UserProfileCacheRx userProfileCache;
-    @Nullable Subscription userProfileSubscription;
 
     //exchange
     @Inject ExchangeSectorCompactListCacheRx exchangeSectorCompactListCache;
     @NonNull OnBoardPickExchangeSectorViewHolder exchangeSectorViewHolder;
-    @Nullable Subscription exchangeSectorSubscription;
 
     //hero
     @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
@@ -83,6 +83,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject SecurityCompactListCacheRx securityCompactListCache;
     @Nullable Subscription securitiesSubscription;
     @NonNull OnBoardPickStockViewHolder stockViewHolder;
+    private CompositeSubscription subscriptions;
 
     public static OnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
@@ -111,6 +112,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
+
         exchangeSectorViewHolder.attachView(view);
         heroViewHolder.attachView(view);
         stockViewHolder.attachView(view);
@@ -119,16 +121,19 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Override public void onStart()
     {
         super.onStart();
-        fetchUserProfile();
-        fetchExchangeSectors();
+        subscriptions = new CompositeSubscription();
+
+        subscriptions.add(bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second))
+                .subscribe(this::linkWith, e -> THToast.show(R.string.error_fetch_your_user_profile)));
+
+        subscriptions.add(bindFragment(
+                this, exchangeSectorCompactListCache.get(new ExchangeSectorCompactKey()).map(pair -> pair.second))
+                .subscribe(this::linkWith, e -> THToast.show(R.string.market_on_board_error_fetch_exchange_sector)));
     }
 
     @Override public void onStop()
     {
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
-        unsubscribe(exchangeSectorSubscription);
-        exchangeSectorSubscription = null;
+        subscriptions.unsubscribe();
         unsubscribe(securitiesSubscription);
         securitiesSubscription = null;
         super.onStop();
@@ -164,32 +169,9 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         super.onDestroy();
     }
 
-    protected void fetchUserProfile()
-    {
-        userProfileSubscription = AndroidObservable.bindFragment(
-                this,
-                userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
-                .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(R.string.error_fetch_your_user_profile));
-    }
-
     protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
     {
         exchangeSectorViewHolder.setUserProfile(userProfileDTO);
-    }
-
-    protected void fetchExchangeSectors()
-    {
-        ExchangeSectorCompactKey key = new ExchangeSectorCompactKey();
-        exchangeSectorSubscription = AndroidObservable.bindFragment(
-                this,
-                exchangeSectorCompactListCache.get(key)
-                        .map(pair -> pair.second))
-                .subscribe(
-                        this::linkWith,
-                        e -> THToast.show(R.string.market_on_board_error_fetch_exchange_sector));
     }
 
     protected void linkWith(@NonNull ExchangeSectorCompactListDTO exchangeSectorCompacts)
@@ -198,7 +180,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         mExchangeSwitcher.setDisplayedChild(1);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.close)
     public void onCloseClicked(View view)
     {
@@ -206,7 +187,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         firstShowOnBoardDialogPreference.justHandled();
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_button)
     public void onNextClicked(View view)
     {
@@ -248,7 +228,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
                     exchangeSectorSecurityListType.exchangeId,
                     exchangeSectorSecurityListType.sectorId,
                     1, null);
-            leaderboardUserListCacheSubscription = AndroidObservable.bindFragment(
+            leaderboardUserListCacheSubscription = bindFragment(
                     this,
                     leaderboardUserListCache.get(key)
                             .map(pair -> pair.second))
@@ -267,7 +247,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         if (exchangeSectorSecurityListType != null)
         {
-            securitiesSubscription = AndroidObservable.bindFragment(this,
+            securitiesSubscription = bindFragment(this,
                     securityCompactListCache.get(exchangeSectorSecurityListType)
                             .map(pair -> pair.second))
                     .subscribe(

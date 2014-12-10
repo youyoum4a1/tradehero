@@ -93,6 +93,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
+import com.tradehero.th.persistence.prefs.IsFxShown;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -100,7 +101,6 @@ import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
@@ -130,6 +130,7 @@ import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INT
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.observables.AndroidObservable.bindActivity;
 import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
@@ -166,6 +167,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
+    @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
 
@@ -424,7 +426,7 @@ public class DashboardActivity extends BaseActivity
                                 () -> broadcastUtilsLazy.get().nextPlease())
         );
 
-        subscriptions.add(fromLocalBroadcast(this, BroadcastConstants.SEND_LOVE_INTENT_FILTER)
+        subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(intent ->
                         AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
     }
@@ -517,18 +519,23 @@ public class DashboardActivity extends BaseActivity
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
                     {
-                        if (args.second != null && !isOnboardShown.get())
+                        if (!isOnboardShown.get())
                         {
-                            if (userProfileDTOUtilLazy.get().shouldShowOnBoard(args.second))
+                            UserProfileDTO userProfileDTO = args.second;
+                            if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                             {
                                 broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
                             }
+                            return;
                         }
 
-                        if (isOnboardShown.get())
+                        if (!isFxShown.get())
                         {
-                            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
+                            //broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                            //return;
                         }
+
+                        broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
                     }
                 });
     }
