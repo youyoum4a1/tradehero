@@ -17,11 +17,13 @@ import com.tradehero.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+
 import javax.inject.Inject;
 
 
@@ -128,7 +130,9 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     @OnClick(R.id.tvCreateTimeLine)
     public void createTimeLine()
     {
-        gotoDashboard(DiscoveryDiscussSendFragment.class.getName());
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(DiscussSendFragment.BUNDLE_KEY_REWARD, true);
+        gotoDashboard(DiscoveryDiscussSendFragment.class.getName(), bundle);
     }
 
 }

@@ -15,11 +15,6 @@ public class SecurityDiscussSendFragment extends DiscussSendFragment
 {
     public static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussSendFragment.class.getName() + ".securityId";
 
-    //public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
-    //{
-    //    args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
-    //}
-
     @Nullable public static SecurityId getSecurityId(@Nullable Bundle args)
     {
         SecurityId extracted = null;
@@ -41,23 +36,6 @@ public class SecurityDiscussSendFragment extends DiscussSendFragment
             String securityName = String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol());
             discussionPostContent.setHint(getString(R.string.discussion_new_post_hint, securityName));
         }
-
-
-        //SecurityCompactDTO securityCompactDTO = securityCompactCache.get(securityId);
-        //if (andDisplay && securityCompactDTO != null)
-        //{
-        //    setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, securityCompactDTO.name));
-        //    SherlockFragmentActivity activityCopy = getSherlockActivity();
-        //    if (activityCopy != null)
-        //    {
-        //        activityCopy.invalidateOptionsMenu();
-        //    }
-        //}
-    }
-
-    @Override protected void postDiscussion()
-    {
-        super.postDiscussion();
     }
 
     @Override protected DiscussionFormDTO buildDiscussionFormDTO()

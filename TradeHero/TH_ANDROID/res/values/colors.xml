@@ -215,4 +215,8 @@
     <color name="buy_sell_button_background">#889e9e9e</color>
     <!-- Buy Sell -->
 
+    <!-- Discovery Discuss Reward -->
+    <color name="discovery_discuss_reward_gray">#bfbfbf</color>
+    <color name="discovery_discuss_reward_orange">#ffae00</color>
+    <!-- Discovery Discuss Reward -->
 </resources>

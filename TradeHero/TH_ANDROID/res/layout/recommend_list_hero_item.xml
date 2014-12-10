@@ -27,7 +27,7 @@
                 android:contentDescription="@null"/>
         <ImageView android:id="@+id/imageview_recommend_list_hero_select" android:layout_height="15dp"
                    android:layout_width="15dp"
-                   android:background="@drawable/checkbox_normal"
+                   android:background="@drawable/checkbox_green"
                    android:layout_alignParentRight="true"
                    android:layout_centerVertical="true"
                    android:contentDescription="@null"

@@ -1,53 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contest_center_content_screen"
-    android:background="@color/bg_fragment"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/contest_center_content_screen"
+        android:background="@color/bg_fragment"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
 
-  <RelativeLayout
-      android:id="@+id/rlDiscussSelectButtons"
-      android:layout_width="fill_parent"
-      android:layout_height="48dp"
-      android:gravity="center_vertical"
-      android:background="@drawable/tab_menu_bg"
-      android:layout_alignParentBottom="true">
-    <Button
-        android:id="@+id/btnAt"
-        android:layout_height="24dp"
-        android:layout_width="24dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="30dp"
-        android:background="@drawable/icon_at_xml"/>
+    <RelativeLayout
+            android:id="@+id/rlDiscussSelectButtons"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/tab_menu_bg"
+            android:layout_alignParentBottom="true">
 
-    <Button
-        android:id="@+id/btnSelectStock"
-        android:layout_height="24dp"
-        android:layout_width="24dp"
-        android:layout_toLeftOf="@id/btnAt"
-        android:layout_marginRight="30dp"
-        android:background="@drawable/icon_select_stock_xml"/>
-  </RelativeLayout>
+        <LinearLayout
+                android:id="@+id/linearlayout_discuss_send_reward" android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:orientation="horizontal">
 
-  <EditText
-      android:id="@+id/edtDiscussionPostContent"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:textAppearance="?android:textAppearanceSmall"
-      android:padding="5dp"
-      android:gravity="top"
-      android:maxLength="500"
-      android:layout_above="@id/rlDiscussSelectButtons"
-      android:background="@color/transparent"
-      android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
-      tools:text="">
-    <requestFocus/>
-  </EditText>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/imageview_discuss_send_reward" android:background="@drawable/checkbox_gray"
+                       android:layout_gravity="center_vertical"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="match_parent"
+                      android:gravity="center_vertical" android:textSize="14sp"
+                      android:id="@+id/textview_discuss_send_reward"
+                      android:layout_marginLeft="10dp"
+                      android:textColor="@color/discovery_discuss_reward_gray"
+                      android:text="@string/discovery_discuss_send_reward"/>
+        </LinearLayout>
+        <Button
+                android:id="@+id/btnAt"
+                android:layout_height="24dp"
+                android:layout_width="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/icon_at_xml"/>
+
+        <Button
+                android:id="@+id/btnSelectStock"
+                android:layout_height="24dp"
+                android:layout_width="24dp"
+                android:layout_toLeftOf="@id/btnAt"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/icon_select_stock_xml"/>
+    </RelativeLayout>
+
+    <EditText
+            android:id="@+id/edtDiscussionPostContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:textAppearanceSmall"
+            android:padding="5dp"
+            android:gravity="top"
+            android:maxLength="500"
+            android:layout_above="@id/rlDiscussSelectButtons"
+            android:background="@color/transparent"
+            android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+            tools:text="">
+    </EditText>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:id="@+id/linearlayout_reward_layout" android:orientation="vertical"
+                  android:visibility="gone"
+                  android:layout_marginLeft="15dp" android:layout_marginRight="15dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_marginTop="15dp" android:layout_marginBottom="15dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="15sp"
+                      android:text="@string/discovery_discuss_send_reward_title"
+                      android:textColor="@color/discovery_discuss_reward_gray"
+                      android:layout_gravity="center_vertical"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/edittext_reward_doc_title"
+                      android:textSize="15sp" android:layout_gravity="center_vertical"
+                      android:background="@color/transparent"
+                      android:textColor="@color/discovery_discuss_reward_gray"/>
+        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="1px" android:background="@color/discovery_discuss_reward_gray"/>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal" android:visibility="gone"
+                      android:layout_marginTop="15dp" android:layout_marginBottom="15dp"
+                      android:id="@+id/linearlayout_reward_money">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="15sp"
+                      android:text="@string/discovery_discuss_send_reward_money"
+                      android:textColor="@color/discovery_discuss_reward_gray"
+                      android:layout_gravity="center_vertical"/>
+
+        </LinearLayout>
+        <View android:id="@+id/view_reward_divider" android:layout_width="match_parent" android:layout_height="1px"
+              android:background="@color/discovery_discuss_reward_gray" android:visibility="gone"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_marginTop="15dp" android:layout_marginBottom="15dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="15sp"
+                      android:text="@string/discovery_discuss_send_reward_content"
+                      android:textColor="@color/discovery_discuss_reward_gray"
+                      android:layout_gravity="center_vertical"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/edittext_reward_doc_content"
+                      android:textSize="15sp" android:layout_gravity="center_vertical"
+                      android:background="@color/transparent"
+                      android:textColor="@color/discovery_discuss_reward_gray"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>
 

@@ -17,6 +17,7 @@ import com.tradehero.chinabuild.data.RecommendStock;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.RecommendStocksActivity;
 import com.tradehero.th.utils.ColorUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -152,11 +153,11 @@ public class RecommendListAdapter extends BaseAdapter
             rateTV.setText(percent);
             if (isSelectedSecurity(recommendStock))
             {
-                stockSelectIV.setBackgroundResource(R.drawable.checkbox_normal);
+                stockSelectIV.setBackgroundResource(R.drawable.checkbox_green);
             }
             else
             {
-                stockSelectIV.setBackgroundResource(R.drawable.checkbox_active);
+                stockSelectIV.setBackgroundResource(R.drawable.checkbox_gray);
             }
             stockRL.setOnClickListener(new View.OnClickListener()
             {
@@ -208,11 +209,11 @@ public class RecommendListAdapter extends BaseAdapter
             }
             if (isSelectedHero(hero))
             {
-                heroSelectIV.setBackgroundResource(R.drawable.checkbox_normal);
+                heroSelectIV.setBackgroundResource(R.drawable.checkbox_green);
             }
             else
             {
-                heroSelectIV.setBackgroundResource(R.drawable.checkbox_active);
+                heroSelectIV.setBackgroundResource(R.drawable.checkbox_gray);
             }
             int color = activity.getResources().getColor(ColorUtils.getColorResourceIdForNumber(hero.roi));
             String percent = "";

@@ -7,9 +7,7 @@ import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -24,14 +22,12 @@ import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -44,12 +40,12 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * 对股票评论的讨论
@@ -62,6 +58,7 @@ public class DiscussSendFragment extends DashboardFragment
     private static final String COMPETITION_FORMAT = "我参加了一个炒股比赛 <#%s,%d#> ，一起来切磋下吧～";//比赛
 
     public static final String BUNDLE_KEY_COMPETITION = "bundle_key_competition";
+    public static final String BUNDLE_KEY_REWARD = "bundle_key_reward";
 
     @InjectView(R.id.btnAt) Button btnAt;
     @InjectView(R.id.btnSelectStock) Button btnSelectStock;
@@ -74,18 +71,30 @@ public class DiscussSendFragment extends DashboardFragment
     private ProgressDialog progressDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
-    private boolean isPosted;
     @Inject DiscussionCache discussionCache;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject SecurityCompactCache securityCompactCache;
-    private DiscussionDTO discussionDTO;
-    private NewsItemDTO newsItemDTO;
     @Inject CurrentUserId currentUserId;
 
     private HasSelectedItem selectionFragment;
 
+    //Competition
     private UserCompetitionDTO userCompetitionDTO;
+
+    //Reward
+    private boolean isReward = false;
+    @InjectView(R.id.linearlayout_discuss_send_reward) LinearLayout discussSendRewardLL;
+    @InjectView(R.id.textview_discuss_send_reward) TextView discussSendRewardTV;
+    @InjectView(R.id.imageview_discuss_send_reward) ImageView discussSendRewardIV;
+    @InjectView(R.id.linearlayout_reward_layout) LinearLayout rewardLayoutLL;
+    @InjectView(R.id.edittext_reward_doc_title) EditText rewardTitleET;
+    @InjectView(R.id.edittext_reward_doc_content) EditText rewardContentET;
+    @InjectView(R.id.view_reward_divider)View dividerView;
+    @InjectView(R.id.linearlayout_reward_money)LinearLayout rewardMoneyLayoutLL;
+    private boolean isGoToReward = false;
+    private int rewardColorGray;
+    private int rewardColorOrange;
 
     private boolean isSending = false;
 
@@ -108,8 +117,11 @@ public class DiscussSendFragment extends DashboardFragment
     @Override public void onClickHeadRight0()
     {
         if(isSending)return;
-        Timber.d("发送！！！");
-        postDiscussion();
+        if(isReward){
+
+        }else {
+            postDiscussion();
+        }
     }
 
     public void initArgument()
@@ -120,6 +132,9 @@ public class DiscussSendFragment extends DashboardFragment
             if (args.containsKey(BUNDLE_KEY_COMPETITION))
             {
                 userCompetitionDTO = (UserCompetitionDTO) args.getSerializable(BUNDLE_KEY_COMPETITION);
+            }
+            if(args.containsKey(BUNDLE_KEY_REWARD)){
+                isReward = args.getBoolean(BUNDLE_KEY_REWARD);
             }
         }
     }
@@ -141,11 +156,34 @@ public class DiscussSendFragment extends DashboardFragment
         {
             handleExtraInput(userCompetitionDTO);
         }
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
+        if(isReward){
+            discussSendRewardLL.setVisibility(View.VISIBLE);
+            discussionPostContent.setVisibility(View.GONE);
+            rewardLayoutLL.setVisibility(View.VISIBLE);
+            rewardColorGray = getActivity().getResources().getColor(R.color.discovery_discuss_reward_gray);
+            rewardColorOrange = getActivity().getResources().getColor(R.color.discovery_discuss_reward_orange);
+            discussSendRewardLL.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    refreshRewardView();
+                }
+            });
+            if(isGoToReward){
+                discussSendRewardTV.setTextColor(rewardColorOrange);
+                discussSendRewardIV.setBackgroundResource(R.drawable.checkbox_orange);
+                dividerView.setVisibility(View.VISIBLE);
+                rewardMoneyLayoutLL.setVisibility(View.VISIBLE);
+            }else{
+                discussSendRewardTV.setTextColor(rewardColorGray);
+                discussSendRewardIV.setBackgroundResource(R.drawable.checkbox_gray);
+                dividerView.setVisibility(View.GONE);
+                rewardMoneyLayoutLL.setVisibility(View.GONE);
+            }
+        }else{
+            discussSendRewardLL.setVisibility(View.GONE);
+            rewardLayoutLL.setVisibility(View.GONE);
+            discussionPostContent.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override public void onDestroyView()
@@ -156,16 +194,9 @@ public class DiscussSendFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
-
-        isPosted = false;
 
         Bundle args = getArguments();
         if (args != null)
@@ -193,32 +224,6 @@ public class DiscussSendFragment extends DashboardFragment
     private void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.get(discussionKey);
-        linkWith(abstractDiscussionDTO, andDisplay);
-    }
-
-    private void linkWith(AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
-    {
-        // TODO question, should we subclass this to have a NewsEditPostFragment?
-        if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
-        {
-            linkWith((NewsItemDTO) abstractDiscussionCompactDTO, andDisplay);
-        }
-
-        else if (abstractDiscussionCompactDTO instanceof DiscussionDTO)
-        {
-            linkWith((DiscussionDTO) abstractDiscussionCompactDTO, andDisplay);
-        }
-    }
-
-    private void linkWith(NewsItemDTO newsItemDTO, boolean andDisplay)
-    {
-        this.newsItemDTO = newsItemDTO;
-    }
-
-    private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
-    {
-        this.discussionDTO = discussionDTO;
     }
 
     @OnClick({R.id.btnAt, R.id.btnSelectStock})
@@ -226,7 +231,6 @@ public class DiscussSendFragment extends DashboardFragment
     {
         if (view.getId() == R.id.btnAt)
         {
-            Timber.d("@ selected!! ");
             Bundle bundle = new Bundle();
             bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_USER_ID, currentUserId.toUserBaseKey().key);
             bundle.putInt(UserFriendsListFragment.BUNDLE_SHOW_FRIENDS_TYPE, UserFriendsListFragment.TYPE_FRIENDS_ALL);
@@ -235,7 +239,6 @@ public class DiscussSendFragment extends DashboardFragment
         }
         else if (view.getId() == R.id.btnSelectStock)
         {
-            Timber.d("$ selected!!");
             Bundle bundle = new Bundle();
             bundle.putString(BUNDLE_KEY_RETURN_FRAGMENT, DiscussSendFragment.this.getClass().getName());
             selectionFragment = (SearchFragment) pushFragment(SearchFragment.class, bundle);
@@ -294,7 +297,7 @@ public class DiscussSendFragment extends DashboardFragment
         if (extraInput == null) return;
 
         String extraText = "";
-        Editable editable = discussionPostContent.getText();
+
 
         if (extraInput instanceof SecurityCompactDTO)
         {
@@ -314,18 +317,30 @@ public class DiscussSendFragment extends DashboardFragment
             extraText = String.format(COMPETITION_FORMAT, ((UserCompetitionDTO) extraInput).name, ((UserCompetitionDTO) extraInput).id);
         }
 
-        String nonMarkUpText = extraText;
-        if (!editable.toString().isEmpty())
-        {
-            int start = discussionPostContent.getSelectionStart();
-            int end = discussionPostContent.getSelectionEnd();
-            editable = editable.replace(start, end, extraText);
-            nonMarkUpText = unSpanText(editable).toString();
+        Editable editable = null;
+        if(isReward){
+            editable = rewardContentET.getText();
+            String nonMarkUpText = extraText;
+            if (!editable.toString().isEmpty()) {
+                int start = rewardContentET.getSelectionStart();
+                int end = rewardContentET.getSelectionEnd();
+                editable = editable.replace(start, end, extraText);
+                nonMarkUpText = unSpanText(editable).toString();
+            }
+            rewardContentET.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
+            rewardContentET.setSelection(rewardContentET.length());
+        }else {
+            editable = discussionPostContent.getText();
+            String nonMarkUpText = extraText;
+            if (!editable.toString().isEmpty()) {
+                int start = discussionPostContent.getSelectionStart();
+                int end = discussionPostContent.getSelectionEnd();
+                editable = editable.replace(start, end, extraText);
+                nonMarkUpText = unSpanText(editable).toString();
+            }
+            discussionPostContent.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
+            discussionPostContent.setSelection(discussionPostContent.length());
         }
-
-        Timber.d("Original text: %s", nonMarkUpText);
-        discussionPostContent.setText(parser.load(nonMarkUpText).create(), TextView.BufferType.SPANNABLE);
-        discussionPostContent.setSelection(discussionPostContent.length());
     }
 
     protected static Editable unSpanText(Editable editable)
@@ -395,8 +410,6 @@ public class DiscussSendFragment extends DashboardFragment
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
             onFinish();
-            //linkWith(discussionDTO, true);
-            isPosted = true;
             DeviceUtil.dismissKeyboard(getActivity());
             getDashboardNavigator().popFragment();
         }
@@ -421,9 +434,6 @@ public class DiscussSendFragment extends DashboardFragment
         @Override public void success(TimelineItemDTO discussionDTO, Response response)
         {
             onFinish();
-            //linkWith(discussionDTO, true);
-            THToast.show("发布成功");
-            isPosted = true;
             DeviceUtil.dismissKeyboard(getActivity());
             getDashboardNavigator().popFragment();
         }
@@ -442,6 +452,22 @@ public class DiscussSendFragment extends DashboardFragment
             }
 
             isSending = false;
+        }
+    }
+
+    private void refreshRewardView(){
+        if(isGoToReward){
+            isGoToReward = false;
+            discussSendRewardTV.setTextColor(rewardColorGray);
+            discussSendRewardIV.setBackgroundResource(R.drawable.checkbox_gray);
+            dividerView.setVisibility(View.GONE);
+            rewardMoneyLayoutLL.setVisibility(View.GONE);
+        }else{
+            isGoToReward = true;
+            discussSendRewardTV.setTextColor(rewardColorOrange);
+            discussSendRewardIV.setBackgroundResource(R.drawable.checkbox_orange);
+            dividerView.setVisibility(View.VISIBLE);
+            rewardMoneyLayoutLL.setVisibility(View.VISIBLE);
         }
     }
 }
