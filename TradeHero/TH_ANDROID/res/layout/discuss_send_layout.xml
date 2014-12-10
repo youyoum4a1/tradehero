@@ -81,6 +81,7 @@
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:id="@+id/edittext_reward_doc_title"
                       android:textSize="15sp" android:layout_gravity="center_vertical"
+                      android:layout_marginLeft="10dp"
                       android:background="@color/transparent"
                       android:textColor="@color/discovery_discuss_reward_gray"/>
         </LinearLayout>
@@ -93,7 +94,10 @@
                       android:text="@string/discovery_discuss_send_reward_money"
                       android:textColor="@color/discovery_discuss_reward_gray"
                       android:layout_gravity="center_vertical"/>
-
+            <Spinner android:id="@+id/spinner_reward_money_list"
+                     android:layout_width="200dp"
+                     android:layout_marginLeft="10dp"
+                     android:layout_height="wrap_content"/>
         </LinearLayout>
         <View android:id="@+id/view_reward_divider" android:layout_width="match_parent" android:layout_height="1px"
               android:background="@color/discovery_discuss_reward_gray" android:visibility="gone"/>
@@ -109,6 +113,7 @@
                       android:id="@+id/edittext_reward_doc_content"
                       android:textSize="15sp" android:layout_gravity="center_vertical"
                       android:background="@color/transparent"
+                      android:layout_marginLeft="10dp"
                       android:textColor="@color/discovery_discuss_reward_gray"/>
         </LinearLayout>
     </LinearLayout>

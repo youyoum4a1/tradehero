@@ -6,15 +6,15 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.api.misc.DeviceType;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.StringUtils;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-//import com.urbanairship.push.PushManager;
+import javax.inject.Inject;
 
 public class DeviceTokenHelper
 {
@@ -48,13 +48,9 @@ public class DeviceTokenHelper
      */
     public String getDeviceToken()
     {
-        //if (isChineseVersion())
-        //{
         String token = savedPushDeviceIdentifier.get();
         Timber.d("get saved the token from baidu %s", token);
         return token;
-        //}
-        //return PushManager.shared().getAPID();
     }
 
     public DeviceType getDeviceType()
@@ -67,8 +63,7 @@ public class DeviceTokenHelper
         String imei = mDeviceIDStringPreference.get();
         if (imei.isEmpty())
         {
-            TelephonyManager tm = (TelephonyManager) currentActivityHolder
-                    .getCurrentActivity().getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager tm = (TelephonyManager) Application.context().getSystemService(Context.TELEPHONY_SERVICE);
             String strIMEI = tm.getDeviceId();
             if (StringUtils.isNullOrEmpty(strIMEI) || strIMEI.contains("000000000000000"))
             {

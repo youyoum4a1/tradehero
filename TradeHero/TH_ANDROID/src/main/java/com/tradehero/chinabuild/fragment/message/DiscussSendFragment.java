@@ -92,9 +92,12 @@ public class DiscussSendFragment extends DashboardFragment
     @InjectView(R.id.edittext_reward_doc_content) EditText rewardContentET;
     @InjectView(R.id.view_reward_divider)View dividerView;
     @InjectView(R.id.linearlayout_reward_money)LinearLayout rewardMoneyLayoutLL;
+    @InjectView(R.id.spinner_reward_money_list)Spinner rewardMoneyListS;
+    private ArrayAdapter<String> rewardMoneyListAdapter;
     private boolean isGoToReward = false;
     private int rewardColorGray;
     private int rewardColorOrange;
+    private String[] moneyList;
 
     private boolean isSending = false;
 
@@ -162,6 +165,7 @@ public class DiscussSendFragment extends DashboardFragment
             rewardLayoutLL.setVisibility(View.VISIBLE);
             rewardColorGray = getActivity().getResources().getColor(R.color.discovery_discuss_reward_gray);
             rewardColorOrange = getActivity().getResources().getColor(R.color.discovery_discuss_reward_orange);
+            moneyList = getActivity().getResources().getStringArray(R.array.reward_money_list);
             discussSendRewardLL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -179,6 +183,9 @@ public class DiscussSendFragment extends DashboardFragment
                 dividerView.setVisibility(View.GONE);
                 rewardMoneyLayoutLL.setVisibility(View.GONE);
             }
+            rewardMoneyListAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, moneyList);
+            rewardMoneyListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            rewardMoneyListS.setAdapter(rewardMoneyListAdapter);
         }else{
             discussSendRewardLL.setVisibility(View.GONE);
             rewardLayoutLL.setVisibility(View.GONE);
