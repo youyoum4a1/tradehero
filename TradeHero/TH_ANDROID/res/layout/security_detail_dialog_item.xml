@@ -20,6 +20,6 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:textAppearance="?android:attr/textAppearanceListItem"
     android:gravity="center_vertical|center_horizontal"
-    android:textAlignment="viewStart"
+    android:textSize="17sp"
     android:textColor="@color/black"
     />

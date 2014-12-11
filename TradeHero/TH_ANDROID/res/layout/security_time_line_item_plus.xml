@@ -23,62 +23,76 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/default_image"/>
 
-        <LinearLayout
-                android:orientation="vertical"
+        <RelativeLayout
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical"
                 android:layout_width="fill_parent">
 
-            <RelativeLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="fill_parent">
-                <TextView
-                        android:id="@+id/tvUserTLTimeStamp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="2dp"
-                        android:textSize="11sp"
-                        android:layout_alignParentRight="true"
-                        android:text="刚刚"
-                        android:textColor="@color/text_gray_normal"
-                        />
-
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_alignParentLeft="true">
                 <TextView
                         android:id="@+id/tvUserTLName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:layout_gravity="left"
-                        android:layout_marginLeft="2dp"
                         android:textSize="14sp"
                         android:textColor="@color/tradehero_blue"
                         />
-            </RelativeLayout>
-
-
-            <LinearLayout
-                    android:id="@+id/llUserTLNoTrade"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                <com.tradehero.th.widget.MarkdownTextView
-                        android:id="@+id/tvUserTLContent"
-                        android:layout_below="@id/tvUserTLTimeStamp"
+                <TextView
+                        android:id="@+id/tvUserTLTimeStamp"
                         android:layout_width="wrap_content"
-                        android:lineSpacingExtra="4dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dip"
-                        android:textColorLink="@color/timeline_item_link"
-                        android:textColor="@color/timeline_item"
-                        android:textSize="@dimen/text_medium"
-                        android:textStyle="normal"
-                        android:maxLines="3"
+                        android:singleLine="true"
+                        android:textSize="11sp"
+                        android:layout_alignParentRight="true"
+                        android:text="刚刚"
+                        android:textColor="@color/text_gray_normal"
                         />
             </LinearLayout>
-            <include android:id="@+id/includeTLOperater" layout="@layout/timeline_operater_line"/>
-        </LinearLayout>
+
+            <TextView android:text="@string/discovery_discuss_send_reward_money_plus"
+                      android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_centerVertical="true" android:id="@+id/tvIsReward"
+                      android:layout_marginRight="15dp" android:layout_alignParentRight="true"
+                      android:gravity="center"
+                      android:background="@drawable/reward_frame" android:textSize="14sp"
+                      android:textColor="@color/discovery_discuss_reward_orange"/>
+        </RelativeLayout>
     </LinearLayout>
+    <TextView
+            android:id="@+id/tvUserTVTitle"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="6dip"
+            android:singleLine="true"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="normal"
+            android:layout_marginLeft="15dp"
+            android:visibility="gone"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/black"/>
+    <com.tradehero.th.widget.MarkdownTextView
+            android:id="@+id/tvUserTLContent"
+            android:layout_width="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dip"
+            android:textColorLink="@color/timeline_item_link"
+            android:textColor="@color/timeline_item"
+            android:textSize="@dimen/text_medium"
+            android:textStyle="normal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:maxLines="3"
+            />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:layout_marginLeft="15dp"
+                  android:layout_marginRight="15dp" android:orientation="horizontal">
+        <include android:id="@+id/includeTLOperater" layout="@layout/timeline_operater_line"/>
+    </LinearLayout>
+
     <View android:layout_width="match_parent" android:layout_height="15dp" android:background="#eeeeef"/>
+
 </LinearLayout>
 

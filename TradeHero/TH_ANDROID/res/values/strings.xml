@@ -396,7 +396,7 @@
 
   <string name="quickly_to_get_first">快来抢沙发</string>
   <string name="no_useful_data">空空如也</string>
-  <string name="click_to_get_more">More</string>
+  <string name="click_to_get_more">更多</string>
   <string name="html_string_blue"><Data><![CDATA[ <font color="#1789d5">%s</font> ]]></Data></string>
   <string name="html_string_gray"><Data><![CDATA[ <font color="#929292">%s</font> ]]></Data></string>
   <string name="app_name_cn">全民股神</string>
@@ -460,6 +460,7 @@
   <string name="discovery_discuss_send_reward">悬赏贴</string>
   <string name="discovery_discuss_send_reward_title">标题：</string>
   <string name="discovery_discuss_send_reward_money">悬赏金额：</string>
+  <string name="discovery_discuss_send_reward_money_plus">悬赏$1000</string>
   <string name="discovery_discuss_send_reward_content">内容：</string>
   <!-- Discovery Discuss Reward -->
 </resources>

@@ -39,13 +39,14 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
@@ -247,7 +248,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvTradePrice = (TextView) convertView.findViewById(R.id.tvTradePrice);
                 holder.tvTradeCount = (TextView) convertView.findViewById(R.id.tvTradeCount);
                 holder.tvTradeMoney = (TextView) convertView.findViewById(R.id.tvTradeMoney);
-                //holder.tvTradeCost = (TextView) convertView.findViewById(R.id.tvTradeCost);
                 holder.title0 = (TextView) convertView.findViewById(R.id.title0);
                 holder.title1 = (TextView) convertView.findViewById(R.id.title1);
                 holder.title2 = (TextView) convertView.findViewById(R.id.title2);

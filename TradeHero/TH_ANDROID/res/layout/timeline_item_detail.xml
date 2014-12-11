@@ -27,8 +27,6 @@
         android:id="@+id/rlAllView"
         >
 
-      <!--<include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>-->
-
       <RelativeLayout
           android:id="@+id/rlSend"
           android:background="@drawable/tab_menu_bg"
