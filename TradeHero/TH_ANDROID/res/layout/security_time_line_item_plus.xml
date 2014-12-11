@@ -57,7 +57,7 @@
                       android:layout_centerVertical="true" android:id="@+id/tvIsReward"
                       android:layout_marginRight="15dp" android:layout_alignParentRight="true"
                       android:gravity="center"
-                      android:background="@drawable/reward_frame" android:textSize="14sp"
+                      android:background="@drawable/reward_frame" android:textSize="11sp"
                       android:textColor="@color/discovery_discuss_reward_orange"/>
         </RelativeLayout>
     </LinearLayout>
