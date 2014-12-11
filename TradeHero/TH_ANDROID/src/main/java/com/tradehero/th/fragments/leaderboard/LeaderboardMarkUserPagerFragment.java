@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,11 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import javax.inject.Inject;
 
 public class LeaderboardMarkUserPagerFragment extends DashboardFragment
 {
+    @Inject Context context;
     @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @InjectView(R.id.pager) ViewPager viewPager;
 
@@ -34,15 +37,15 @@ public class LeaderboardMarkUserPagerFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        viewPager.setAdapter(new ContestCenterPagerAdapter(getChildFragmentManager()));
+        viewPager.setAdapter(new LeaderboardPagerAdapter(getChildFragmentManager()));
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
         pagerSlidingTabLayout.setViewPager(viewPager);
     }
 
-    private class ContestCenterPagerAdapter extends FragmentPagerAdapter
+    private class LeaderboardPagerAdapter extends FragmentPagerAdapter
     {
-        public ContestCenterPagerAdapter(FragmentManager fm)
+        public LeaderboardPagerAdapter(FragmentManager fm)
         {
             super(fm);
         }
@@ -68,5 +71,4 @@ public class LeaderboardMarkUserPagerFragment extends DashboardFragment
             return getString(LeaderboardTabType.values()[position].titleRes);
         }
     }
-
 }

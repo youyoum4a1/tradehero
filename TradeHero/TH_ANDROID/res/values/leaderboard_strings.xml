@@ -75,4 +75,8 @@
   <string name="leaderboard_empty">Start trading now to be the first trader on this leaderboard</string>
 
   <string name="leaderboard_ranks_needed">Move up by %s ranks to win!</string>
+
+  <string name="leaderboard_type_stocks">Stocks</string>
+  <string name="leaderboard_type_fx">Forex</string>
+  <string name="leaderboard_type_all">All</string>
 </resources>

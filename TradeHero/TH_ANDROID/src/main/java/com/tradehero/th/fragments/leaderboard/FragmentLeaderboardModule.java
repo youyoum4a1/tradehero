@@ -31,6 +31,7 @@ import dagger.Module;
                 LeaderboardCommunityFragment.class,
                 LeaderboardFilterFragment.class,
                 LeaderboardFilterSliderContainer.class,
+                LeaderboardMarkUserPagerFragment.class,
         },
         library = true,
         complete = false

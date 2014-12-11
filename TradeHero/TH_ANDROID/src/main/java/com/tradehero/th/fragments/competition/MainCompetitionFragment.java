@@ -569,6 +569,7 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void pushLeaderboardElement(@NonNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
     {
+        //TODO check if it's a stocks or forex competition and push corresponding leaderboard.
         LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
         Bundle args = new Bundle();
         CompetitionLeaderboardMarkUserListFragment.putProviderId(args, providerId);

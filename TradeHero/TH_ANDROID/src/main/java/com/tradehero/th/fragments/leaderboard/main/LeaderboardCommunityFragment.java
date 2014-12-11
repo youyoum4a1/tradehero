@@ -29,6 +29,7 @@ import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserPagerFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -237,7 +238,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
+                navigator.get().pushFragment(LeaderboardMarkUserPagerFragment.class, bundle);
                 break;
         }
     }
