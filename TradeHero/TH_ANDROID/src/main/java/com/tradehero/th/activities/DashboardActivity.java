@@ -67,6 +67,7 @@ import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -127,6 +128,7 @@ import timber.log.Timber;
 
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.FX_ONBOARD_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
@@ -407,6 +409,12 @@ public class DashboardActivity extends BaseActivity
                     OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
                 }, throwable -> {}));
 
+        subscriptions.add(fromLocalBroadcast(this, FX_ONBOARD_INTENT_FILTER)
+                .subscribe(intent -> {
+                    isFxShown.set(true);
+                    FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+                }, throwable -> {}));
+
         // get providers for enrollment page
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                         .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
@@ -429,6 +437,8 @@ public class DashboardActivity extends BaseActivity
         subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(intent ->
                         AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
+
+        FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
     }
 
     @Override protected void onNewIntent(Intent intent)

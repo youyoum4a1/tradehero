@@ -25,4 +25,7 @@ public class BroadcastConstants
     public static final String SEND_LOVE_INTENT_ACTION_NAME = "com.tradehero.th.setting.sendlove.ALERT";
     public static final String KEY_SEND_LOVE_BROADCAST = BroadcastConstants.class.getName()+".sendLoveBroadcast";
     public static final IntentFilter SEND_LOVE_INTENT_FILTER = new IntentFilter(SEND_LOVE_INTENT_ACTION_NAME);
+
+    public static final String FX_ONBOARD_INTENT_ACTION_NAME = "com.tradehero.th.fxonboard.ALERT";
+    public static final IntentFilter FX_ONBOARD_INTENT_FILTER = new IntentFilter(FX_ONBOARD_INTENT_ACTION_NAME);
 }
