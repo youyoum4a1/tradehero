@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.OnClick;
@@ -162,6 +163,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         initView();
     }
 
