@@ -22,13 +22,13 @@ public abstract class BaseLeaderboardUserDTO extends UserBaseDTO
     private static final String LEADERBOARD_INCLUDE_FOF = "LEADERBOARD_INCLUDE_FOF";
 
     public long lbmuId;    // leaderboardMarkUser.id ..., will be null if user not ranked
+    public int portfolioId;    // ...OR portfolioId --> messy
 
     public double roiInPeriod;
     public double roiAnnualizedInPeriod;
     public int ordinalPosition; // OK
     public String currencyDisplay;
     public String currencyISO;
-    public int portfolioId;    // ...OR portfolioId --> messy
 
     @JsonProperty("friendOf_UserIds")
     public List<Integer> friendOfUserIds;    // client expects userIds here to be present in LeaderboardDTO.users collection!
