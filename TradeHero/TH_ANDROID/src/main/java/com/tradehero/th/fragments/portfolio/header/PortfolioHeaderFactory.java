@@ -42,6 +42,7 @@ import javax.inject.Singleton;
 
     public int layoutIdFor(UserBaseKey userBaseKey)
     {
+        // TODO distinguish Fx portfolios
         if (userBaseKey.equals(currentUserId.toUserBaseKey()))
         {
             return R.layout.portfolio_header_current_user_view;
