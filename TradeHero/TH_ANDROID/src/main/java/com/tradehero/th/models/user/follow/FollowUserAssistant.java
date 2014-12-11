@@ -12,12 +12,14 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,6 +32,7 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
     @Inject protected CurrentUserId currentUserId;
     @Inject Provider<BaseTHUIBillingRequest.Builder> billingRequestBuilderProvider;
     @Inject protected THBillingInteractor billingInteractor;
+    @Inject protected THBillingInteractorRx billingInteractorRx;
 
     @Nullable private Subscription profileCacheSubscription;
     protected UserProfileDTO currentUserProfile;
@@ -62,6 +65,25 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
         {
             subscription.unsubscribe();
         }
+    }
+
+    @NonNull @Override protected Observable<UserProfileDTO> launchPremiumFollowRx()
+    {
+        return userProfileCache.get(currentUserId.toUserBaseKey())
+                .take(1)
+                .flatMap(pair -> {
+                    if (pair.second.ccBalance > 0)
+                    {
+                        return super.launchPremiumFollowRx();
+                    }
+                    else
+                    {
+                        //noinspection unchecked
+                        return billingInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
+                                .materialize()
+                                .dematerialize();
+                    }
+                });
     }
 
     @Override public void launchPremiumFollow()

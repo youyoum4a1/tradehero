@@ -30,10 +30,29 @@ public class THSamsungPurchaseOrder
     public THSamsungPurchaseOrder(
             @NonNull String groupId,
             @NonNull String itemId,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
+        this(groupId, itemId, 1, applicablePortfolioId, userToFollow);
+    }
+
+    public THSamsungPurchaseOrder(
+            @NonNull String groupId,
+            @NonNull String itemId,
             int quantity,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId);
+    }
+
+    public THSamsungPurchaseOrder(
+            @NonNull String groupId,
+            @NonNull String itemId,
+            int quantity,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
+        this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId, userToFollow);
     }
 
     public THSamsungPurchaseOrder(
@@ -48,9 +67,19 @@ public class THSamsungPurchaseOrder
             int quantity,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {
+        this(productIdentifier, quantity, applicablePortfolioId, null);
+    }
+
+    public THSamsungPurchaseOrder(
+            @NonNull SamsungSKU productIdentifier,
+            int quantity,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
         this.productIdentifier = productIdentifier;
         this.quantity = quantity;
         this.applicablePortfolioId = applicablePortfolioId;
+        this.userToFollow = userToFollow;
         if (quantity <= 0)
         {
             throw new SamsungInvalidQuantityException("Quantity " + quantity + " is invalid");

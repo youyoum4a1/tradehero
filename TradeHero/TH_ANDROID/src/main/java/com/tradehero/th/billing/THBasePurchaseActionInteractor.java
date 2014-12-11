@@ -136,13 +136,6 @@ public class THBasePurchaseActionInteractor implements THPurchaseActionInteracto
         premiumFollowUserAssistant.launchPremiumFollow();
     }
 
-    @Override public void unfollowUser()
-    {
-        // Do not call if no hero to follow
-        //noinspection ConstantConditions
-        premiumFollowUserAssistant.launchUnFollow();
-    }
-
     private void detachRequestCode()
     {
         if (showProductDetailRequestCode != null && billingInteractor != null)

@@ -13,6 +13,7 @@ import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -261,6 +262,43 @@ abstract public class THBaseBillingInteractorRx<
     }
     //</editor-fold>
 
+    //<editor-fold desc="Premium Follow">
+    @NonNull @Override
+    public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchaseAndPremiumFollowAndClear(
+            @NonNull UserBaseKey heroId)
+    {
+        return popErrorAndHandle(
+                getDomainDialogResult(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
+                        .flatMap(selected -> createPurchaseOrder(selected, heroId)
+                                        .flatMap(purchaseOrder -> billingLogicHolder.purchaseAndClear(
+                                                selected.requestCode,
+                                                purchaseOrder))
+                        ));
+    }
+
+    @NonNull @Override
+    public Observable<PurchaseResult<
+            ProductIdentifierType,
+            THPurchaseOrderType,
+            THOrderIdType,
+            THProductPurchaseType>> purchaseAndPremiumFollow(
+            @NonNull UserBaseKey heroId)
+    {
+        return popErrorAndHandle(
+                getDomainDialogResult(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
+                        .flatMap(selected -> createPurchaseOrder(selected, heroId)
+                                        .flatMap(purchaseOrder -> billingLogicHolder.purchase(
+                                                selected.requestCode,
+                                                purchaseOrder))
+                        ));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Restore Purchases">
     @NonNull @Override public Observable<PurchaseRestoreResult<
             ProductIdentifierType,
             THOrderIdType,
@@ -304,4 +342,5 @@ abstract public class THBaseBillingInteractorRx<
                         .materialize()
                         .dematerialize()));
     }
+    //</editor-fold>
 }

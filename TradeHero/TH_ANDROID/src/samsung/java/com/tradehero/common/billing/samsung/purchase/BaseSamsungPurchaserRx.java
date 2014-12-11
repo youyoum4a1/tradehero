@@ -42,7 +42,6 @@ abstract public class BaseSamsungPurchaserRx<
         super(requestCode, context, mode);
         this.purchaseOrder = purchaseOrder;
         this.showSucessDialog = showSucessDialog;
-        purchase();
     }
     //</editor-fold>
 
@@ -57,13 +56,8 @@ abstract public class BaseSamsungPurchaserRx<
             SamsungOrderIdType,
             SamsungPurchaseType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void purchase()
-    {
         SamsungSKUType sku = purchaseOrder.getProductIdentifier();
-        Observable.create(
+        return Observable.create(
                 new SamsungPaymentOperator(
                         context,
                         mode,
@@ -71,8 +65,7 @@ abstract public class BaseSamsungPurchaserRx<
                         sku.itemId,
                         showSucessDialog))
                 .map(this::createSamsungPurchase)
-                .map(purchase -> new PurchaseResult<>(getRequestCode(), purchaseOrder, purchase))
-                .subscribe(subject);
+                .map(purchase -> new PurchaseResult<>(getRequestCode(), purchaseOrder, purchase));
     }
 
     @NonNull abstract protected SamsungPurchaseType createSamsungPurchase(@NonNull PurchaseVo purchaseVo);

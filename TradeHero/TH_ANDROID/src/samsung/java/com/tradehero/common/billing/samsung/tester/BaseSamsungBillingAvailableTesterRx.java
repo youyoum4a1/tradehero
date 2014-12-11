@@ -18,19 +18,12 @@ abstract public class BaseSamsungBillingAvailableTesterRx
             int mode)
     {
         super(requestCode, context, mode);
-        test();
     }
     //</editor-fold>
 
     @NonNull @Override public Observable<BillingTestResult> get()
     {
-        return replayObservable;
-    }
-
-    protected void test()
-    {
-        Observable.create(new SamsungIapBindOperator(context, mode))
-                .map(result -> new BillingTestResult(getRequestCode()))
-                .subscribe(subject);
+        return Observable.create(new SamsungIapBindOperator(context, mode))
+                .map(result -> new BillingTestResult(getRequestCode()));
     }
 }

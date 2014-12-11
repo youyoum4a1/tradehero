@@ -38,33 +38,6 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
                 okClickListener);
     }
 
-    public AlertDialog popAlertUnfollowHero(
-            @NonNull Context context,
-            @Nullable DialogInterface.OnClickListener okClickListener)
-    {
-        return popWithOkCancelButton(
-                context,
-                R.string.manage_heroes_alert_unfollow_title,
-                R.string.manage_heroes_alert_unfollow_message,
-                R.string.manage_heroes_alert_unfollow_ok,
-                R.string.manage_heroes_alert_unfollow_cancel,
-                okClickListener);
-    }
-
-    public AlertDialog popAlertNoMoreMessageFollow(
-            @NonNull Context context,
-            @Nullable DialogInterface.OnClickListener okClickListener,
-            @Nullable String heroName)
-    {
-        return popWithOkCancelButton(
-                context,
-                context.getString(R.string.private_message_expired_free_message_title),
-                context.getString(R.string.private_message_expired_free_message_description, heroName),
-                R.string.private_message_expired_free_message_ok,
-                R.string.private_message_expired_free_message_cancel,
-                okClickListener);
-    }
-
     @Nullable public FollowDialogCombo showFollowDialog(
             @NonNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,

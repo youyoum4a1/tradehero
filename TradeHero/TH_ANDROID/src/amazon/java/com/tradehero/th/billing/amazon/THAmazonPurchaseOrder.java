@@ -11,7 +11,7 @@ import com.tradehero.th.billing.THPurchaseOrder;
 public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
     implements THPurchaseOrder<AmazonSKU>
 {
-    @NonNull private OwnedPortfolioId applicablePortfolioId;
+    @NonNull private final OwnedPortfolioId applicablePortfolioId;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
@@ -20,8 +20,18 @@ public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
             int quantity,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {
+        this(sku, quantity, applicablePortfolioId, null);
+    }
+
+    public THAmazonPurchaseOrder(
+            @NonNull AmazonSKU sku,
+            int quantity,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
         super(sku, quantity);
         this.applicablePortfolioId = applicablePortfolioId;
+        this.userToFollow = userToFollow;
     }
     //</editor-fold>
 

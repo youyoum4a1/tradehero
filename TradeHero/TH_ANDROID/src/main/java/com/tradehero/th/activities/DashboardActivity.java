@@ -289,7 +289,7 @@ public class DashboardActivity extends BaseActivity
         //restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
         // TODO fetch more stuff?
         //noinspection unchecked
-        AndroidObservable.bindActivity(
+        bindActivity(
                 this,
                 billingInteractorRx.get().restorePurchasesAndClear())
                 .subscribe(new Observer<PurchaseReportResult>()

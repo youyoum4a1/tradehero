@@ -25,15 +25,29 @@ public class THIABPurchaseOrder implements IABPurchaseOrder<IABSKU>, THPurchaseO
     //<editor-fold desc="Constructors">
     public THIABPurchaseOrder(@NonNull IABSKU sku, @NonNull String type, @NonNull OwnedPortfolioId developerPayload)
     {
+        this(sku, type, developerPayload, null);
+    }
+
+    public THIABPurchaseOrder(@NonNull IABSKU sku, @NonNull String type, @NonNull OwnedPortfolioId developerPayload,
+            @Nullable UserBaseKey heroId)
+    {
         this(sku, 1, type, developerPayload);
+        this.userToFollow = heroId;
         Timber.d("THIABPurchaseOrder with %s", developerPayload);
     }
 
     public THIABPurchaseOrder(@NonNull IABSKU sku, int quantity, @NonNull String type, @NonNull OwnedPortfolioId developerPayload)
     {
+        this(sku, quantity, type, developerPayload, null);
+    }
+
+    public THIABPurchaseOrder(@NonNull IABSKU sku, int quantity, @NonNull String type, @NonNull OwnedPortfolioId developerPayload,
+            @Nullable UserBaseKey heroId)
+    {
         this.sku = sku;
         this.quantity = quantity;
         this.type = type;
+        this.userToFollow = heroId;
         if (quantity <= 0)
         {
             throw new IABInvalidQuantityException("Quantity " + quantity + " is invalid");

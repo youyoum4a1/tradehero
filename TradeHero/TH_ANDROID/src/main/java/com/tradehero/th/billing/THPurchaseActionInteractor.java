@@ -12,5 +12,4 @@ public interface THPurchaseActionInteractor
     int resetPortfolio();
 
     void premiumFollowUser();
-    void unfollowUser();
 }

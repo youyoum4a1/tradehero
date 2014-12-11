@@ -1,10 +1,10 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,9 +19,12 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 /**
  * Refactor the code inside AlertDialogUtil
@@ -36,13 +39,12 @@ public class FollowDialogView extends LinearLayout
     @InjectView(R.id.free_follow_layout) LinearLayout mFreeFollowArea;
     @InjectView(R.id.not_follow_layout) LinearLayout mNotFollowArea;
 
-    @InjectView(R.id.btn_free) Button mFreeFollowButton;
-
     @Inject @ForUserPhoto Lazy<Transformation> peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
 
     @Nullable private UserBaseDTO userBaseDTO;
     @Nullable private OnFollowRequestedListener followRequestedListener;
+    private BehaviorSubject<FollowRequest> requestSubject;
 
     //<editor-fold desc="Constructors">
     public FollowDialogView(Context context)
@@ -65,6 +67,7 @@ public class FollowDialogView extends LinearLayout
     {
         super.onFinishInflate();
 
+        requestSubject = BehaviorSubject.create();
         ButterKnife.inject(this);
         HierarchyInjector.inject(this);
     }
@@ -89,6 +92,7 @@ public class FollowDialogView extends LinearLayout
         displayUserName();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick({
             R.id.btn_free,
             R.id.free_follow})
@@ -99,8 +103,14 @@ public class FollowDialogView extends LinearLayout
         {
             followRequestedListenerCopy.freeFollowRequested(userBaseDTO.getBaseKey());
         }
+        if (userBaseDTO != null)
+        {
+            requestSubject.onNext(new FollowRequest(userBaseDTO.getBaseKey(), false));
+            requestSubject.onCompleted();
+        }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick({
             R.id.btn_premium,
             R.id.premium_follow
@@ -112,6 +122,16 @@ public class FollowDialogView extends LinearLayout
         {
             followRequestedListenerCopy.premiumFollowRequested(userBaseDTO.getBaseKey());
         }
+        if (userBaseDTO != null)
+        {
+            requestSubject.onNext(new FollowRequest(userBaseDTO.getBaseKey(), true));
+            requestSubject.onCompleted();
+        }
+    }
+
+    @NonNull public Observable<FollowRequest> getRequestObservable()
+    {
+        return requestSubject.asObservable();
     }
 
     private void initFreeFollowDialog()

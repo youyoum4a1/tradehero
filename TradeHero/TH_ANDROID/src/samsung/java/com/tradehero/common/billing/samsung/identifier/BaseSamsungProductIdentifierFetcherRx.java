@@ -37,7 +37,6 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
             int mode)
     {
         super(requestCode, context, mode);
-        fetchProductIdentifiers();
     }
     //</editor-fold>
 
@@ -46,15 +45,9 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
             SamsungSKUType,
             SamsungSKUListType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void fetchProductIdentifiers()
-    {
-        new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
+        return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
                 .getItems()
-                .flatMap(this::createResult)
-                .subscribe(subject);
+                .flatMap(this::createResult);
     }
 
     @NonNull protected Observable<ProductIdentifierListResult<

@@ -179,6 +179,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         mExchangeSwitcher.setDisplayedChild(1);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.close)
     public void onCloseClicked(View view)
     {
@@ -186,6 +187,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         firstShowOnBoardDialogPreference.justHandled();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_button)
     public void onNextClicked(View view)
     {

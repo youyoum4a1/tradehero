@@ -41,7 +41,6 @@ abstract public class BaseSamsungInventoryFetcherRx<
     {
         super(requestCode, context, mode);
         this.skus = skus;
-        fetchInventory();
     }
     //</editor-fold>
 
@@ -54,16 +53,10 @@ abstract public class BaseSamsungInventoryFetcherRx<
             SamsungSKUType,
             SamsungProductDetailType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void fetchInventory()
-    {
-        new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
+        return new SamsungItemListOperatorZip(context, mode, getItemListQueryGroups())
                 .getItems()
                 .flatMap(this::createDetail)
-                .map(detail -> new ProductInventoryResult<>(getRequestCode(), detail.getProductIdentifier(), detail))
-                .subscribe(subject);
+                .map(detail -> new ProductInventoryResult<>(getRequestCode(), detail.getProductIdentifier(), detail));
     }
 
     @NonNull protected List<ItemListQueryGroup> getItemListQueryGroups()

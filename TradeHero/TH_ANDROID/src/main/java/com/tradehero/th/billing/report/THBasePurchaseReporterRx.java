@@ -56,36 +56,36 @@ public class THBasePurchaseReporterRx<
 
     @NonNull @Override public Observable<PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>> get()
     {
+        Observable<UserProfileDTO> result;
         switch (productDetail.getDomain())
         {
             case DOMAIN_RESET_PORTFOLIO:
-                return portfolioServiceWrapper.get().resetPortfolioRx(
+                result = portfolioServiceWrapper.get().resetPortfolioRx(
                         purchase.getApplicableOwnedPortfolioId(),
-                        purchase.getPurchaseReportDTO())
-                        .map(this::createResult);
+                        purchase.getPurchaseReportDTO());
+                break;
 
             case DOMAIN_VIRTUAL_DOLLAR:
-                return portfolioServiceWrapper.get().addCashRx(
+                result = portfolioServiceWrapper.get().addCashRx(
                         purchase.getApplicableOwnedPortfolioId(),
-                        purchase.getPurchaseReportDTO())
-                        .map(this::createResult);
+                        purchase.getPurchaseReportDTO());
+                break;
 
             case DOMAIN_STOCK_ALERTS:
-                return alertPlanServiceWrapper.get().subscribeToAlertPlanRx(
+                result = alertPlanServiceWrapper.get().subscribeToAlertPlanRx(
                         purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                         purchase.getPurchaseReportDTO())
-                        .onErrorResumeNext(this::seeIfPlanIsYours)
-                        .map(this::createResult);
+                        .onErrorResumeNext(this::seeIfPlanIsYours);
+                break;
 
             case DOMAIN_FOLLOW_CREDITS:
                 if (purchase.getUserToFollow() != null)
                 {
                     // TODO remove when ok https://www.pivotaltracker.com/story/show/77362688
-                    return userServiceWrapper.get().addCreditRx(
+                    result = userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
                             purchase.getPurchaseReportDTO())
-                            .flatMap(userProfileDTO -> userServiceWrapper.get().followRx(purchase.getUserToFollow()))
-                            .map(this::createResult);
+                            .flatMap(userProfileDTO -> userServiceWrapper.get().followRx(purchase.getUserToFollow()));
 
                     // TODO put back when ok https://www.pivotaltracker.com/story/show/77362688
                     //return userServiceWrapper.get().followRx(
@@ -95,15 +95,17 @@ public class THBasePurchaseReporterRx<
                 }
                 else
                 {
-                    return userServiceWrapper.get().addCreditRx(
+                    result = userServiceWrapper.get().addCreditRx(
                             purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
-                            purchase.getPurchaseReportDTO())
-                            .map(this::createResult);
+                            purchase.getPurchaseReportDTO());
                 }
+                break;
 
             default:
-                return Observable.error(new IllegalStateException("Unhandled ProductIdentifierDomain." + productDetail.getDomain()));
+                result = Observable.error(new IllegalStateException("Unhandled ProductIdentifierDomain." + productDetail.getDomain()));
+                break;
         }
+        return result.map(this::createResult);
     }
 
     @NonNull protected PurchaseReportResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType> createResult(
@@ -112,7 +114,7 @@ public class THBasePurchaseReporterRx<
         return new PurchaseReportResult<>(getRequestCode(), purchase, userProfileDTO);
     }
 
-    protected Observable<UserProfileDTO> seeIfPlanIsYours(@NonNull Throwable errorFromReport)
+    @NonNull protected Observable<UserProfileDTO> seeIfPlanIsYours(@NonNull Throwable errorFromReport)
     {
         return alertPlanCheckServiceWrapper.get().checkAlertPlanAttributionRx(
                 purchase.getApplicableOwnedPortfolioId().getUserBaseKey(),
@@ -120,7 +122,7 @@ public class THBasePurchaseReporterRx<
                 .flatMap(alert -> seeIfPlanIsYours(alert, errorFromReport));
     }
 
-    protected Observable<UserProfileDTO> seeIfPlanIsYours(
+    @NonNull protected Observable<UserProfileDTO> seeIfPlanIsYours(
             @NonNull AlertPlanStatusDTO alertPlanStatusDTO,
             @NonNull Throwable errorFromReport)
     {

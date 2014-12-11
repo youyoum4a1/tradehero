@@ -5,7 +5,9 @@ import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingInteractorRx;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
+import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.purchase.PurchaseResult;
+import com.tradehero.th.api.users.UserBaseKey;
 import rx.Observable;
 
 public interface THBillingInteractorRx<
@@ -47,4 +49,22 @@ public interface THBillingInteractorRx<
             THPurchaseOrderType,
             THOrderIdType,
             THProductPurchaseType>> purchase(@NonNull ProductIdentifierDomain domain);
+
+    @NonNull Observable<THPurchaseOrderType> createPurchaseOrder(
+            @NonNull ProductInventoryResult<
+                    ProductIdentifierType,
+                    THProductDetailType> inventoryResult,
+            @NonNull UserBaseKey heroId);
+
+    @NonNull Observable<PurchaseResult<
+        ProductIdentifierType,
+        THPurchaseOrderType,
+        THOrderIdType,
+        THProductPurchaseType>> purchaseAndPremiumFollowAndClear(@NonNull UserBaseKey heroId);
+
+    @NonNull Observable<PurchaseResult<
+        ProductIdentifierType,
+        THPurchaseOrderType,
+        THOrderIdType,
+        THProductPurchaseType>> purchaseAndPremiumFollow(@NonNull UserBaseKey heroId);
 }

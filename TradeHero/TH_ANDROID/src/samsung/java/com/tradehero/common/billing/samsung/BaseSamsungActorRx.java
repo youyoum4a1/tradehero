@@ -2,9 +2,9 @@ package com.tradehero.common.billing.samsung;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 
-abstract public class BaseSamsungActorRx<ResultType> extends BaseRequestCodeReplayActor<ResultType>
+abstract public class BaseSamsungActorRx<ResultType> extends BaseRequestCodeActor
 {
     @NonNull protected final Context context;
     protected final int mode;

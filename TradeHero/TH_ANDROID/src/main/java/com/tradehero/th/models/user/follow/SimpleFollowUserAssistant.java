@@ -3,6 +3,7 @@ package com.tradehero.th.models.user.follow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -11,6 +12,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 
@@ -47,12 +49,20 @@ public class SimpleFollowUserAssistant extends EmptyObserver<UserProfileDTO>
         this.userFollowedListener = userFollowedListener;
     }
 
-    public void launchUnFollow()
+    @NonNull public Observable<UserProfileDTO> launchUnFollowRx()
     {
         showProgress(R.string.manage_heroes_unfollow_progress_message);
-        userServiceWrapper.unfollowRx(heroId)
+        return userServiceWrapper.unfollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this);
+                .finallyDo(() -> alertDialogUtilLazy.get().dismissProgressDialog());
+    }
+
+    @NonNull public Observable<UserProfileDTO> launchFreeFollowRx()
+    {
+        showProgress(R.string.following_this_hero);
+        return userServiceWrapper.freeFollowRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(() -> alertDialogUtilLazy.get().dismissProgressDialog());
     }
 
     public void launchFreeFollow()
@@ -63,6 +73,14 @@ public class SimpleFollowUserAssistant extends EmptyObserver<UserProfileDTO>
                 .subscribe(this);
     }
 
+    @NonNull protected Observable<UserProfileDTO> launchPremiumFollowRx()
+    {
+        showProgress(R.string.following_this_hero);
+        return userServiceWrapper.followRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(() -> alertDialogUtilLazy.get().dismissProgressDialog());
+    }
+
     protected void launchPremiumFollow()
     {
         showProgress(R.string.following_this_hero);
@@ -71,7 +89,7 @@ public class SimpleFollowUserAssistant extends EmptyObserver<UserProfileDTO>
                 .subscribe(this);
     }
 
-    protected void showProgress(int contentResId)
+    protected void showProgress(@StringRes int contentResId)
     {
         alertDialogUtilLazy.get().showProgressDialog(
                 context,

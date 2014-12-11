@@ -46,6 +46,7 @@ import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFra
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
@@ -54,9 +55,8 @@ import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.social.FollowDialogCombo;
-import com.tradehero.th.models.social.OnFollowRequestedListener;
+import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
@@ -72,10 +72,12 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
@@ -106,6 +108,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
+    @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogUtilRxLazy;
     @Inject Analytics analytics;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -128,6 +131,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription userProfileCacheSubscription;
     @Nullable private Subscription portfolioSubscription;
     @Nullable protected Subscription messageThreadHeaderFetchSubscription;
+    @NonNull protected SubscriptionList subscriptions;
 
     protected FollowDialogCombo followDialogCombo;
     protected MessageHeaderDTO messageThreadHeaderDTO;
@@ -150,6 +154,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
         shownUserBaseKey = getUserBaseKey(getArguments());
         if (shownUserBaseKey == null)
         {
@@ -266,7 +271,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         nearEndScrollListener.activateEnd();
         timelineListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(), nearEndScrollListener));
         swipeRefreshContainer.setOnRefreshListener(() -> {
-            switch(currentTab)
+            switch (currentTab)
             {
                 case TIMELINE:
                     mainTimelineAdapter.getTimelineLoader().loadNext();
@@ -329,7 +334,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override public void onStop()
     {
         unsubscribe(freeFollowSubscription);
-        freeFollowSubscription= null;
+        freeFollowSubscription = null;
         unsubscribe(messageThreadHeaderFetchSubscription);
         messageThreadHeaderFetchSubscription = null;
         detachFollowDialogCombo();
@@ -346,6 +351,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         userProfileCacheSubscription = null;
         unsubscribe(portfolioSubscription);
         portfolioSubscription = null;
+        subscriptions.unsubscribe();
         displayablePortfolioFetchAssistant = null;
 
         if (userProfileView != null)
@@ -365,7 +371,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         messageThreadHeaderFetchSubscription = null;
         super.onDestroy();
     }
-
 
     protected void detachFollowDialogCombo()
     {
@@ -424,9 +429,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void reportAnalytics(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
+    private void reportAnalytics(DisplayablePortfolioDTOList displayablePortfolioDTOs)
+    {
         Collection<String> collection = new ArrayList<>();
-        for (int i = 0;i < displayablePortfolioDTOs.size();i++)
+        for (int i = 0; i < displayablePortfolioDTOs.size(); i++)
         {
             if (displayablePortfolioDTOs.get(i).portfolioDTO.providerId != null)
             {
@@ -616,15 +622,34 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                     || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
             {
                 detachFollowDialogCombo();
-                followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getActivity(), shownProfile,
-                        UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG,
-                        new TimelineFollowForMessageRequestedListener());
+                subscriptions.add(heroAlertDialogUtilRxLazy.get()
+                        .showFollowDialog(
+                                getActivity(),
+                                shownProfile,
+                                UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
+                        .flatMap(this::handleFollowRequest)
+                        .subscribe(new EmptyObserver<>()));
             }
             else
             {
                 pushPrivateMessageFragment();
             }
         });
+    }
+
+    protected Observable<UserProfileDTO> handleFollowRequest(@NonNull FollowRequest request)
+    {
+        if (request.isPremium)
+        {
+            //noinspection unchecked
+            return userInteractorRx.purchaseAndPremiumFollowAndClear(request.heroId)
+                    .materialize().dematerialize()
+                    .map(shouldNoHappen -> new UserProfileDTO());
+        }
+        else
+        {
+            return freeFollow(request.heroId);
+        }
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
@@ -640,11 +665,25 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             detachChoiceFollowAssistant();
             choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
                     getActivity(),
-                    shownUserBaseKey,
-                    createPremiumUserFollowedListener(),
+                    shownProfile,
                     getApplicablePortfolioId());
-            choiceFollowUserAssistantWithDialog.setHeroBaseInfo(shownProfile);
-            choiceFollowUserAssistantWithDialog.launchChoice();
+            subscriptions.add(
+                    choiceFollowUserAssistantWithDialog.launchChoiceRx()
+                            .finallyDo(() -> heroAlertDialogUtilLazy.get().dismissProgressDialog())
+                            .subscribe(
+                                    pair -> {
+                                        if (!mIsOtherProfile)
+                                        {
+                                            linkWith(pair.second, true);
+                                        }
+                                        updateBottomButton();
+                                        String actionName = pair.first.isPremium
+                                                ? AnalyticsConstants.PremiumFollow_Success
+                                                : AnalyticsConstants.FreeFollow_Success;
+                                        analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
+                                    },
+                                    error -> THToast.show(new THException(error))
+                            ));
         }
     }
 
@@ -699,51 +738,12 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         return 0;
     }
 
-    protected void freeFollow(@NonNull UserBaseKey heroId, @Nullable Observer<UserProfileDTO> followCallback)
+    protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
     {
         heroAlertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
-        unsubscribe(freeFollowSubscription);
-        freeFollowSubscription = userServiceWrapperLazy.get().freeFollowRx(heroId)
+        return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(followCallback);
-    }
-
-    public class FreeUserFollowedObserver extends EmptyObserver<UserProfileDTO>
-    {
-        @Override public void onNext(UserProfileDTO userProfileDTO)
-        {
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
-            updateBottomButton();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Profile));
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
-        }
-    }
-
-    public class FreeUserFollowedForMessageObserver extends FreeUserFollowedObserver
-    {
-        @Override public void onNext(UserProfileDTO userProfileDTO)
-        {
-            super.onNext(userProfileDTO);
-            pushPrivateMessageFragment();
-        }
-    }
-
-    public class TimelineFollowForMessageRequestedListener implements OnFollowRequestedListener
-    {
-        @Override public void freeFollowRequested(@NonNull UserBaseKey heroId)
-        {
-            freeFollow(heroId, new FreeUserFollowedForMessageObserver());
-        }
-
-        @Override public void premiumFollowRequested(@NonNull UserBaseKey heroId)
-        {
-            premiumFollowUser(heroId);
-        }
+                .finallyDo(() -> heroAlertDialogUtilLazy.get().dismissProgressDialog());
     }
 
     protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>
@@ -773,31 +773,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
     {
         return new TimelinePurchaseReportedListener();
-    }
-
-    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new TimelinePremiumUserFollowedListener();
-    }
-
-    protected class TimelinePremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(
-                @NonNull UserBaseKey userFollowed,
-                @NonNull UserProfileDTO currentUserProfileDTO)
-        {
-            if (!mIsOtherProfile)
-            {
-                linkWith(currentUserProfileDTO, true);
-            }
-            updateBottomButton();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
-        }
-
-        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
-        {
-            // Nothing for now
-        }
     }
 
     protected class TimelinePurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener

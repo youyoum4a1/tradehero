@@ -7,7 +7,9 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
 import com.tradehero.th.billing.THBillingRequisitePreparer;
@@ -66,8 +68,7 @@ public class THBaseAmazonInteractorRx
         return AmazonConstants.NAME;
     }
 
-    @NonNull @Override public Observable<THAmazonPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult)
+    @NonNull protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
     {
         return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                 .take(1)
@@ -78,7 +79,28 @@ public class THBaseAmazonInteractorRx
                         return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
                     }
                     return Observable.just(dto);
-                })
-                .map(dto -> new THAmazonPurchaseOrder(inventoryResult.id, 1, dto.getOwnedPortfolioId()));
+                });
+    }
+
+    @NonNull @Override public Observable<THAmazonPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult)
+    {
+        return getDefaultPortfolio()
+                .map(dto -> new THAmazonPurchaseOrder(
+                        inventoryResult.id,
+                        1,
+                        dto.getOwnedPortfolioId()));
+    }
+
+    @NonNull @Override public Observable<THAmazonPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<AmazonSKU, THAmazonProductDetail> inventoryResult,
+            @NonNull UserBaseKey heroId)
+    {
+        return getDefaultPortfolio()
+                .map(dto -> new THAmazonPurchaseOrder(
+                        inventoryResult.id,
+                        1,
+                        dto.getOwnedPortfolioId(),
+                        heroId));
     }
 }

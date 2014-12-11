@@ -7,7 +7,9 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
 import com.tradehero.th.billing.THBillingRequisitePreparer;
@@ -22,19 +24,19 @@ import javax.inject.Singleton;
 import rx.Observable;
 
 @Singleton public class THBaseIABInteractorRx
-    extends
+        extends
         THBaseBillingInteractorRx<
-                        IABSKUListKey,
-                        IABSKU,
-                        IABSKUList,
-                        THIABProductDetail,
-                        THIABPurchaseOrder,
-                        THIABOrderId,
-                        THIABPurchase,
-                        THIABLogicHolderRx,
-                        THIABStoreProductDetailView,
-                        THIABSKUDetailAdapter>
-    implements THIABInteractorRx
+                IABSKUListKey,
+                IABSKU,
+                IABSKUList,
+                THIABProductDetail,
+                THIABPurchaseOrder,
+                THIABOrderId,
+                THIABPurchase,
+                THIABLogicHolderRx,
+                THIABStoreProductDetailView,
+                THIABSKUDetailAdapter>
+        implements THIABInteractorRx
 {
     public static final String BUNDLE_KEY_ACTION = THBaseIABInteractorRx.class.getName() + ".action";
 
@@ -73,8 +75,7 @@ import rx.Observable;
         return IABConstants.NAME;
     }
 
-    @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult)
+    @NonNull protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
     {
         return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                 .take(1)
@@ -85,10 +86,28 @@ import rx.Observable;
                         return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
                     }
                     return Observable.just(dto);
-                })
+                });
+    }
+
+    @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult)
+    {
+        return getDefaultPortfolio()
                 .map(dto -> new THIABPurchaseOrder(
                         inventoryResult.id,
                         inventoryResult.detail.getType(),
                         dto.getOwnedPortfolioId()));
+    }
+
+    @NonNull @Override public Observable<THIABPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<IABSKU, THIABProductDetail> inventoryResult,
+            @NonNull UserBaseKey heroId)
+    {
+        return getDefaultPortfolio()
+                .map(dto -> new THIABPurchaseOrder(
+                        inventoryResult.id,
+                        inventoryResult.detail.getType(),
+                        dto.getOwnedPortfolioId(),
+                        heroId));
     }
 }

@@ -7,7 +7,9 @@ import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
 import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
@@ -64,8 +66,7 @@ public class THBaseSamsungInteractorRx
         return SamsungConstants.NAME;
     }
 
-    @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
-            @NonNull ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult)
+    @NonNull protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
     {
         return portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                 .take(1)
@@ -76,10 +77,28 @@ public class THBaseSamsungInteractorRx
                         return Observable.error(new IllegalArgumentException("Default portfolio cannot be null"));
                     }
                     return Observable.just(dto);
-                })
+                });
+    }
+
+    @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult)
+    {
+        return getDefaultPortfolio()
                 .map(dto -> new THSamsungPurchaseOrder(
                         inventoryResult.id.groupId,
                         inventoryResult.id.itemId,
                         dto.getOwnedPortfolioId()));
+    }
+
+    @NonNull @Override public Observable<THSamsungPurchaseOrder> createPurchaseOrder(
+            @NonNull ProductInventoryResult<SamsungSKU, THSamsungProductDetail> inventoryResult,
+            @NonNull UserBaseKey heroId)
+    {
+        return getDefaultPortfolio()
+                .map(dto -> new THSamsungPurchaseOrder(
+                        inventoryResult.id.groupId,
+                        inventoryResult.id.itemId,
+                        dto.getOwnedPortfolioId(),
+                        heroId));
     }
 }

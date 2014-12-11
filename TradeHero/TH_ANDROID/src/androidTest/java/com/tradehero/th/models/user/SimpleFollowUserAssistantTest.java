@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import retrofit.RetrofitError;
+import rx.observers.EmptyObserver;
 
 @RunWith(THRobolectricTestRunner.class)
 public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
@@ -108,7 +109,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
         // Prepare user service
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchUnFollow();
+        assistant.launchUnFollowRx().subscribe(new EmptyObserver<>());
 
         verify(userServiceWrapper, times(1)).unfollowRx(heroId);
     }
@@ -134,7 +135,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForFailUnfollow(assistant, expected);
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchUnFollow();
+        assistant.launchUnFollowRx().subscribe(new EmptyObserver<>());
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
@@ -147,7 +148,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForSuccessUnfollow(assistant, expected);
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchUnFollow();
+        assistant.launchUnFollowRx().subscribe(new EmptyObserver<>());
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
     }

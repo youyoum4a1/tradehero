@@ -3,7 +3,7 @@ package com.tradehero.common.billing.amazon.consume;
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.FulfillmentResult;
 import com.amazon.device.iap.model.ProductType;
-import com.tradehero.common.billing.BaseRequestCodeReplayActor;
+import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.amazon.AmazonOrderId;
 import com.tradehero.common.billing.amazon.AmazonPurchase;
 import com.tradehero.common.billing.amazon.AmazonPurchaseCacheRx;
@@ -15,16 +15,14 @@ abstract public class BaseAmazonPurchaseConsumerRx<
         AmazonSKUType extends AmazonSKU,
         AmazonOrderIdType extends AmazonOrderId,
         AmazonPurchaseType extends AmazonPurchase<AmazonSKUType, AmazonOrderIdType>>
-        extends BaseRequestCodeReplayActor<PurchaseConsumedResult<
-        AmazonSKUType,
-        AmazonOrderIdType,
-        AmazonPurchaseType>>
+        extends BaseRequestCodeActor
         implements AmazonPurchaseConsumerRx<
         AmazonSKUType,
         AmazonOrderIdType,
         AmazonPurchaseType>
 {
     @NonNull protected AmazonPurchaseType purchase;
+    @NonNull protected AmazonPurchasingService purchasingService;
 
     //<editor-fold desc="Constructors">
     public BaseAmazonPurchaseConsumerRx(
@@ -34,7 +32,7 @@ abstract public class BaseAmazonPurchaseConsumerRx<
     {
         super(requestCode);
         this.purchase = purchase;
-        consumeAndInformSubject(purchasingService);
+        this.purchasingService = purchasingService;
     }
     //</editor-fold>
 
@@ -44,19 +42,18 @@ abstract public class BaseAmazonPurchaseConsumerRx<
 
     @NonNull @Override public Observable<PurchaseConsumedResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType>> get()
     {
-        return replayObservable;
+        if (purchase.getOrderId().receipt.getProductType().equals(ProductType.CONSUMABLE))
+        {
+            purchasingService.notifyFulfillment(purchase.getOrderId().receipt.getReceiptId(), FulfillmentResult.FULFILLED);
+        }
+        getPurchaseCache().invalidate(purchase.getOrderId());
+        return Observable.just(createResult());
     }
 
     @NonNull abstract protected AmazonPurchaseCacheRx<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType> getPurchaseCache();
 
     protected void consumeAndInformSubject(@NonNull AmazonPurchasingService purchasingService)
     {
-        if (purchase.getOrderId().receipt.getProductType().equals(ProductType.CONSUMABLE))
-        {
-            purchasingService.notifyFulfillment(purchase.getOrderId().receipt.getReceiptId(), FulfillmentResult.FULFILLED);
-        }
-        getPurchaseCache().invalidate(purchase.getOrderId());
-        subject.onNext(createResult());
     }
 
     @NonNull PurchaseConsumedResult<AmazonSKUType,

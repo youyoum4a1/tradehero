@@ -34,24 +34,17 @@ abstract public class BaseSamsungPurchaseFetcherRx<
             int mode)
     {
         super(requestCode, context, mode);
-        fetchPurchases();
     }
     //</editor-fold>
 
     @NonNull @Override public Observable<PurchaseFetchResult<SamsungSKUType, SamsungOrderIdType, SamsungPurchaseType>> get()
     {
-        return replayObservable;
-    }
-
-    protected void fetchPurchases()
-    {
-        new SamsungInboxOperatorZip(context, mode, getInboxListQueryGroups())
+        return new SamsungInboxOperatorZip(context, mode, getInboxListQueryGroups())
                 .getInboxItems()
                 .flatMap(pair -> pair.second
                         .map(inboxVo -> createIncompletePurchase(pair.first, inboxVo)))
                 .map(this::mergeWithSaved)
-                .map(purchase -> new PurchaseFetchResult<>(getRequestCode(), purchase))
-                .subscribe(subject);
+                .map(purchase -> new PurchaseFetchResult<>(getRequestCode(), purchase));
     }
 
     @NonNull abstract protected List<InboxListQueryGroup> getInboxListQueryGroups();
