@@ -5,8 +5,10 @@
   <string name="position_nothing_description">No open positions. Tap to Trade!</string>
   <string name="position_list_action_bar_header">%d Positions</string>
   <string name="position_list_action_bar_header_unknown">Positions</string>
-  <string name="position_list_header_open">Open (%d)</string>
-  <string name="position_list_header_open_unsure">Open</string>
+  <string name="position_list_header_open_long">Open Long (%d)</string>
+  <string name="position_list_header_open_long_unsure">Open Long</string>
+  <string name="position_list_header_open_short">Open Short (%d)</string>
+  <string name="position_list_header_open_short_unsure">Open Short</string>
   <string name="position_list_header_closed">Closed (%d)</string>
   <string name="position_list_header_closed_unsure">Closed</string>
   <string name="position_list_header_time_base" translatable="false">%1$s - %2$s</string>
