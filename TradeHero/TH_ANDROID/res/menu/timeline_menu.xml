@@ -3,12 +3,6 @@
 <menu
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<item-->
-            <!--android:id="@+id/menu_settings"-->
-            <!--android:icon="@drawable/icon_menu"-->
-            <!--android:title="@string/action_menu_settings"-->
-            <!--android:showAsAction="ifRoom"/>-->
-
     <item
             android:id="@+id/menu_edit"
             android:title="@string/timeline_menu_edit"
