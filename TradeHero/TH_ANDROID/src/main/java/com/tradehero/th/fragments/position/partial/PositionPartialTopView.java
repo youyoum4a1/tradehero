@@ -172,6 +172,7 @@ public class PositionPartialTopView extends LinearLayout
     protected void linkWith(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
+        displayStockSymbol();
         displayStockLogo();
         displayCompanyName();
         displayStockMovementIndicator();

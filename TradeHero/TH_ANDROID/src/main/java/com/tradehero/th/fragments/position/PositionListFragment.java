@@ -314,8 +314,10 @@ public class PositionListFragment
         layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN, R.layout.position_top_view);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_IN_PERIOD, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_LONG_IN_PERIOD, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT, R.layout.position_top_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_OPEN_SHORT_IN_PERIOD, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED, R.layout.position_top_view);
         layouts.put(PositionItemAdapter.VIEW_TYPE_CLOSED_IN_PERIOD, R.layout.position_top_view);
         return layouts;

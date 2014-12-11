@@ -5,7 +5,7 @@
   <string name="position_nothing_description">当前无任何持仓. 点击这里开始进行交易吧!</string>
   <string name="position_list_action_bar_header">%d 仓位</string>
   <string name="position_list_action_bar_header_unknown">仓位</string>
-  <string name="position_list_header_open">持仓 (%d)</string>
+  <string name="position_list_header_open_long">持仓 (%d)</string>
   <string name="position_list_header_open_unsure">持仓</string>
   <string name="position_list_header_closed">平仓 (%d)</string>
   <string name="position_list_header_closed_unsure">平仓</string>
