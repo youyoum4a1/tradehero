@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
@@ -200,7 +199,7 @@ public class BaseWebViewFragment extends DashboardFragment
         }
     }
 
-    @VisibleForTesting
+    /*@VisibleForTesting*/
     public WebView getWebView()
     {
         return webView;

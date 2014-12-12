@@ -60,7 +60,6 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
-import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
@@ -72,7 +71,6 @@ import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -102,6 +100,7 @@ import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
@@ -438,7 +437,7 @@ public class DashboardActivity extends BaseActivity
                 .subscribe(intent ->
                         AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
 
-        FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+        if (!Constants.RELEASE) FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -534,18 +533,18 @@ public class DashboardActivity extends BaseActivity
                             UserProfileDTO userProfileDTO = args.second;
                             if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                             {
-                                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                                broadcastUtilsLazy.get().enqueue(BroadcastConstants.ON_BOARDING_BROADCAST_DATA);
                             }
                             return;
                         }
 
                         if (!isFxShown.get())
                         {
-                            //broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            //return;
+                            broadcastUtilsLazy.get().enqueue(BroadcastConstants.FX_ONBOARD_BROADCAST_DATA);
+                            return;
                         }
 
-                        broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
+                        broadcastUtilsLazy.get().enqueue(BroadcastConstants.COMPETITION_ENROLLMENT_BROADCAST_DATA);
                     }
                 });
     }

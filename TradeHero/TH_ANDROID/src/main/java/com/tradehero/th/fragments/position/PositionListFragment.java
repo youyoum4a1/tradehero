@@ -40,7 +40,6 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
-import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -53,6 +52,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -423,7 +423,7 @@ public class PositionListFragment
         {
             if (mShowAskForReviewDialogPreference.isItTime())
             {
-                broadcastUtils.enqueue(new SendLoveBroadcastSignal());
+                broadcastUtils.enqueue(BroadcastConstants.SEND_LOVE_BROADCAST_DATA);
             }
             else if (mShowAskForInviteDialogPreference.isItTime())
             {

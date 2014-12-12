@@ -1,10 +1,19 @@
 buildscript {
-    repositories {
-        mavenCentral()
-    }
+  repositories {
+    mavenCentral()
+  }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-        classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
+  dependencies {
+    classpath 'com.android.tools.build:gradle:1.0.0'
+    classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+  }
+}
+
+allprojects {
+  repositories {
+    maven {
+      url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
+  }
 }

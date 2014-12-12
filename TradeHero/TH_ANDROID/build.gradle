@@ -26,6 +26,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'crashlytics'
 apply plugin: 'robolectric'
 apply plugin: 'retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
   maven { url "http://dl.bintray.com/populov/maven" }
@@ -308,7 +309,6 @@ dependencies {
   }
   compile 'com.tradehero:metrics:1.2-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
-  provided 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'io.reactivex:rxandroid:0.21.0'
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile 'com.jakewharton.timber:timber:2.5.0'
@@ -366,6 +366,10 @@ dependencies {
   }
 
   releaseCompile 'com.google.android.gms:play-services:6.1.+'
+  apt 'com.google.auto.value:auto-value:1.0-rc1'
+  provided 'com.google.auto.value:auto-value:1.0-rc1'
+  provided 'org.glassfish:javax.annotation:10.0-b28'
+  apt 'com.squareup.dagger:dagger-compiler:1.2.2'
 }
 
 File propFile = file('signing.properties');

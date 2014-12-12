@@ -64,7 +64,6 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
-import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -84,6 +83,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
@@ -1122,7 +1122,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             if (mShowAskForReviewDialogPreference.isItTime())
             {
-                broadcastUtils.enqueue(new SendLoveBroadcastSignal());
+                broadcastUtils.enqueue(BroadcastConstants.SEND_LOVE_BROADCAST_DATA);
             }
             else if (mShowAskForInviteDialogPreference.isItTime())
             {
