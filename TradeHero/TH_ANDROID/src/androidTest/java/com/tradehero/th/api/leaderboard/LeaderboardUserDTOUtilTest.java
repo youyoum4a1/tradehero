@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(manifest = Config.NONE)
-public class StocksLeaderboardUserDTOUtilTest extends LeaderboardUserDTOUtilTestBase
+public class LeaderboardUserDTOUtilTest extends LeaderboardUserDTOUtilTestBase
 {
     private LeaderboardUserDTOUtil leaderboardUserDTOUtil;
 
@@ -41,7 +41,7 @@ public class StocksLeaderboardUserDTOUtilTest extends LeaderboardUserDTOUtilTest
 
     @Test public void testEmptyReturnsEmpty()
     {
-        assertEmpty(leaderboardUserDTOUtil.map(new ArrayList<StocksLeaderboardUserDTO>()));
+        assertEmpty(leaderboardUserDTOUtil.map(new ArrayList<>()));
     }
 
     @Test public void testList1ReturnsMap1()
