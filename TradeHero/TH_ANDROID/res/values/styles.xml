@@ -588,8 +588,19 @@
     <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 
-  <style name="TH.onBoardDialog"
-      parent="TH.Dialog">
+  <style name="TH.FxOnBoardDialog" parent="TH">
+    <item name="android:paddingTop">@dimen/margin_medium</item>
+    <item name="android:paddingRight">@dimen/margin_medium</item>
+    <item name="android:paddingLeft">@dimen/margin_medium</item>
+  </style>
+
+  <style name="TH.FxOnBoardDialog.NextButton" parent="TH.Button">
+    <item name="android:paddingTop">@dimen/margin_medium</item>
+    <item name="android:paddingBottom">@dimen/margin_medium</item>
+    <item name="android:layout_gravity">bottom|center</item>
+  </style>
+
+  <style name="TH.OnBoardDialog" parent="TH.Dialog">
     <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 

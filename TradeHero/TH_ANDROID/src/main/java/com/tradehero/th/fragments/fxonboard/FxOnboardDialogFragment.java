@@ -35,24 +35,36 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 
         Observable.just(viewAnimator)
                 .flatMapIterable(animator -> {
-                    List<FxOnBoardView<View>> ooo = new ArrayList<>();
+                    List<FxOnBoardView<Boolean>> onboardViews = new ArrayList<>();
                     for (int i = 0; i < animator.getChildCount(); ++i)
                     {
                         View child = animator.getChildAt(i);
                         if (child instanceof FxOnBoardView)
                         {
-                            ooo.add((FxOnBoardView<View>) child);
+                            @SuppressWarnings("unchecked")
+                            FxOnBoardView<Boolean> fxOnBoardView = (FxOnBoardView<Boolean>) child;
+                            onboardViews.add(fxOnBoardView);
                         }
                     }
-                    return ooo;
+                    return onboardViews;
                 })
-                .flatMap(fxOnBoardView -> fxOnBoardView.<View>result())
-                .subscribe(t -> viewAnimator.showNext(), throwable -> Timber.d(throwable.getMessage()))
-        ;
+                .flatMap(FxOnBoardView::result)
+                .subscribe(
+                        shouldShowNext -> {
+                            if (shouldShowNext)
+                            {
+                                viewAnimator.showNext();
+                            }
+                            else
+                            {
+                                onCloseClicked();
+                            }
+                        },
+                        throwable -> Timber.e(throwable, "Unable to handle Forex onboard views"));
     }
 
     @OnClick(R.id.close)
-    public void onCloseClicked(View view)
+    public void onCloseClicked()
     {
         dismiss();
         // TODO mark fx onboard handled

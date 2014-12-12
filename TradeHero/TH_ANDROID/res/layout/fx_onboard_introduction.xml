@@ -4,7 +4,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:padding="@dimen/margin_medium">
+      style="@style/TH.FxOnBoardDialog">
 
     <include layout="@layout/fx_onboard_header_view"/>
 
@@ -12,15 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:text="@string/fx_onboard_introduction_video_introduction"
         />
 
     <TextView
-        android:id="@+id/next"
+        android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
         android:text="@string/next"
+        style="@style/TH.FxOnBoardDialog.NextButton"
         />
   </com.tradehero.th.fragments.fxonboard.IntroductionView>
 </merge>

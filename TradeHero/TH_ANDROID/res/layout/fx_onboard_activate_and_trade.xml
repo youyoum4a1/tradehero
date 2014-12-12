@@ -5,8 +5,8 @@
   <com.tradehero.th.fragments.fxonboard.ActivateTradeView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="@dimen/margin_medium"
       android:orientation="vertical"
+      style="@style/TH.FxOnBoardDialog"
       >
     <TextView
         android:layout_width="match_parent"
@@ -25,9 +25,8 @@
         android:id="@+id/start_trading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:text="@string/start_trading"
-        style="@style/TH.Achievement.Title"
+        style="@style/TH.FxOnBoardDialog.NextButton"
         />
   </com.tradehero.th.fragments.fxonboard.ActivateTradeView>
 </merge>
