@@ -54,7 +54,6 @@
     <activity
         android:name="com.tradehero.th.activities.SplashActivity"
         android:label="@string/app_name"
-        android:launchMode="singleTask"
         android:screenOrientation="portrait"
         android:theme="@style/AppBaseTheme.NoActionBar2">
       <intent-filter>
