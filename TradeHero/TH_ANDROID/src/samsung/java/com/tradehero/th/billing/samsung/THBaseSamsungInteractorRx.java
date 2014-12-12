@@ -7,6 +7,7 @@ import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -100,5 +101,10 @@ public class THBaseSamsungInteractorRx
                         inventoryResult.id.itemId,
                         dto.getOwnedPortfolioId(),
                         heroId));
+    }
+
+    @Override public void manageSubscriptions()
+    {
+        THToast.show("TODO");
     }
 }

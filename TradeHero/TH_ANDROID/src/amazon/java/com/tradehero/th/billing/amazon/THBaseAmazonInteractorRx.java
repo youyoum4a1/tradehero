@@ -7,6 +7,7 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -102,5 +103,10 @@ public class THBaseAmazonInteractorRx
                         1,
                         dto.getOwnedPortfolioId(),
                         heroId));
+    }
+
+    @Override public void manageSubscriptions()
+    {
+        THToast.show("TODO");
     }
 }
