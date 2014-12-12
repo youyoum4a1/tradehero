@@ -44,6 +44,7 @@
       android:scrollbarDefaultDelayBeforeFade="@integer/about_screen_rotation_delay"
       android:paddingTop="@dimen/margin_xsmall"
       android:paddingBottom="@dimen/margin_xsmall"
+      android:layout_gravity="center_horizontal"
       >
 
     <LinearLayout

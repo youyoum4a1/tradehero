@@ -37,6 +37,12 @@ public class PortfolioCompactDTO implements DTO
     @Nullable public Double refCcyToUsdRate;
     @Nullable public Double txnCostUsd;
 
+    public Double nav; // Net asset value
+    public Double marginAvailableRefCcy;
+    public Double marginUsedRefCcy;
+    public Double unrealizedPLRefCcy;
+    public Double marginCloseOutPercent;
+
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
     {
@@ -71,6 +77,11 @@ public class PortfolioCompactDTO implements DTO
     @JsonIgnore public boolean isDefault()
     {
         return providerId == null && !isWatchlist;
+    }
+
+    @JsonIgnore public boolean isFx()
+    {
+        return marginAvailableRefCcy != null && marginUsedRefCcy != null;
     }
 
     @JsonIgnore public boolean isAllowedAddCash()

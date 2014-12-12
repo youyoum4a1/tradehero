@@ -178,11 +178,6 @@ public class PositionListFragment
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
         positionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-
-        // portfolio header
-        int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey);
-        headerStub.setLayoutResource(headerLayoutId);
-        portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -238,8 +233,7 @@ public class PositionListFragment
     @Override public void onStart()
     {
         super.onStart();
-        portfolioHeaderView.setFollowRequestedListener(this);
-        portfolioHeaderView.setTimelineRequestedListener(this);
+        linkPortfolioHeader();
         fetchUserProfile();
         fetchPortfolio();
         fetchSimplePage();
@@ -265,8 +259,11 @@ public class PositionListFragment
         userProfileSubscription = null;
         unsubscribe(getPositionsSubscription);
         getPositionsSubscription = null;
-        portfolioHeaderView.setFollowRequestedListener(null);
-        portfolioHeaderView.setTimelineRequestedListener(null);
+        if (portfolioHeaderView != null)
+        {
+            portfolioHeaderView.setFollowRequestedListener(null);
+            portfolioHeaderView.setTimelineRequestedListener(null);
+        }
         super.onStop();
     }
 
@@ -323,6 +320,15 @@ public class PositionListFragment
         return layouts;
     }
 
+    protected void linkPortfolioHeader()
+    {
+        if (portfolioHeaderView != null)
+        {
+            portfolioHeaderView.setFollowRequestedListener(this);
+            portfolioHeaderView.setTimelineRequestedListener(this);
+        }
+    }
+
     protected void fetchUserProfile()
     {
         if (userProfileSubscription == null)
@@ -374,41 +380,24 @@ public class PositionListFragment
                 portfolioSubscription = AndroidObservable.bindFragment(
                         this,
                         portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
-                        .subscribe(createPortfolioCacheObserver());
+                        .subscribe(
+                                pair -> linkWith(pair.second),
+                                error -> THToast.show(R.string.error_fetch_portfolio_info)
+                        );
             }
             // We do not need to fetch for other players
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
     }
 
-    protected Observer<Pair<OwnedPortfolioId, PortfolioDTO>> createPortfolioCacheObserver()
-    {
-        return new PortfolioCacheObserver();
-    }
-
-    protected class PortfolioCacheObserver implements Observer<Pair<OwnedPortfolioId, PortfolioDTO>>
-    {
-        @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_portfolio_info);
-        }
-    }
-
     protected void linkWith(@NonNull PortfolioDTO portfolioDTO)
     {
         this.portfolioDTO = portfolioDTO;
-        portfolioHeaderView.linkWith(portfolioDTO);
         displayActionBarTitle();
         showPrettyReviewAndInvite(portfolioDTO);
+
+        preparePortfolioHeaderView(portfolioDTO);
+        portfolioHeaderView.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -431,6 +420,22 @@ public class PositionListFragment
             {
                 AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
             }
+        }
+    }
+
+    private void preparePortfolioHeaderView(@NonNull PortfolioCompactDTO portfolioCompactDTO)
+    {
+        if (portfolioHeaderView == null)
+        {
+            // portfolio header
+            int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO);
+            headerStub.setLayoutResource(headerLayoutId);
+            portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
+            linkPortfolioHeader();
+        }
+        else
+        {
+            Timber.d("Not inflating portfolioHeaderView because already not null");
         }
     }
 
