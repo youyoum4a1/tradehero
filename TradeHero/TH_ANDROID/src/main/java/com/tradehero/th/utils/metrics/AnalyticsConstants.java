@@ -88,9 +88,10 @@ public class AnalyticsConstants
     public static final String ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM = "ANONYMOUS_TO_REAL_ACCOUNT_CONFIRM";
     public static final String ANONYMOUS_TO_REAL_ACCOUNT_CANCEL = "ANONYMOUS_TO_REAL_ACCOUNT_CANCEL";
 
-    //股神动态，热门话题,最新动态
+    //股神动态，热门话题,悬赏帖，最新动态
     public final static String BUTTON_DISCOVERY_LATEST = "BUTTON_DISCOVERY_LATEST";
     public final static String BUTTON_DISCOVERY_HOT = "BUTTON_DISCOVERY_HOT";
+    public final static String BUTTON_DISCOVERY_REWARD = "BUTTON_DISCOVERY_REWARD";
     public final static String BUTTON_DISCOVERY_GOD = "BUTTON_DISCOVERY_GOD";
 
     //Palmer

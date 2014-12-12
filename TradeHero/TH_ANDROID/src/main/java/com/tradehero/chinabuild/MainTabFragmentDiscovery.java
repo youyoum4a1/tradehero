@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryRewardFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
@@ -23,7 +24,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
 import javax.inject.Inject;
 
 
@@ -61,7 +61,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     }
 
     private static final String[] CONTENT = new String[] {"最新动态"
-              , "热门话题", "股神动态"
+              , "热门话题","悬赏帖", "股神动态"
     };
 
     @Override
@@ -70,11 +70,15 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_LATEST));
             return;
         }
-        if(i == 1){
+        else if(i == 1){
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_HOT));
             return;
         }
-        if(i == 2){
+        else if(i == 2){
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_REWARD));
+            return;
+        }
+        else if(i == 3){
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_GOD));
             return;
         }
@@ -109,6 +113,9 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
                     return new DiscoveryHotTopicFragment();
 
                 case 2:
+                    return new DiscoveryRewardFragment();
+
+                case 3:
                     return new DiscoveryStockGodNewsFragment();
             }
             return null;
