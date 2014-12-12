@@ -12,7 +12,7 @@ import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.adapters.DTOAdapterNew;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,10 @@ public class OnBoardPickHeroViewHolder
         ButterKnife.reset(this);
     }
 
-    public void setUsers(@NonNull List<StocksLeaderboardUserDTO> users)
+    public void setUsers(@NonNull List<LeaderboardUserDTO> users)
     {
         List<SelectableUserDTO> list = new ArrayList<>();
-        for (StocksLeaderboardUserDTO user : users)
+        for (LeaderboardUserDTO user : users)
         {
             SelectableUserDTO selectableUserDTO = new SelectableUserDTO(user);
             selectableUserDTO.selected = true;

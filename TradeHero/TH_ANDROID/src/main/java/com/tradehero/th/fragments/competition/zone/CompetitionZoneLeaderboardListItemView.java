@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -104,7 +104,7 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
         {
             if (competitionZoneDTO != null && competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
             {
-                StocksLeaderboardUserDTO stocksLeaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
+                LeaderboardUserDTO stocksLeaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
                 if(stocksLeaderboardUserDTO != null)
                 {
                     THSignedNumber thRoi = THSignedPercentage

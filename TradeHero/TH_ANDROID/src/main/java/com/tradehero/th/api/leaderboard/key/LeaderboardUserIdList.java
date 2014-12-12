@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.Collection;
 
 public class LeaderboardUserIdList extends BaseArrayList<LeaderboardUserId>
@@ -24,11 +24,11 @@ public class LeaderboardUserIdList extends BaseArrayList<LeaderboardUserId>
     }
 
     public LeaderboardUserIdList(
-            @NonNull Collection<? extends StocksLeaderboardUserDTO> c,
-            @Nullable StocksLeaderboardUserDTO typeQualifier)
+            @NonNull Collection<? extends LeaderboardUserDTO> c,
+            @Nullable LeaderboardUserDTO typeQualifier)
     {
         super();
-        for (StocksLeaderboardUserDTO stocksLeaderboardUserDTO : c)
+        for (LeaderboardUserDTO stocksLeaderboardUserDTO : c)
         {
             add(stocksLeaderboardUserDTO.getLeaderboardUserId());
         }

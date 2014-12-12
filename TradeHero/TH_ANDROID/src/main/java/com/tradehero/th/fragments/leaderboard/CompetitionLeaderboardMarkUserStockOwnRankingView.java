@@ -18,7 +18,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -70,7 +70,7 @@ public class CompetitionLeaderboardMarkUserStockOwnRankingView extends Competiti
         infoButtonContainer.setVisibility(View.GONE);
     }
 
-    @Override public void display(StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
+    @Override public void display(LeaderboardUserDTO stocksLeaderboardUserDTO)
     {
         super.display(stocksLeaderboardUserDTO);
         displayPrize();

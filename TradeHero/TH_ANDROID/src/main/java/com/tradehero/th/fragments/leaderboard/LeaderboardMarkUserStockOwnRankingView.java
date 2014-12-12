@@ -3,7 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class LeaderboardMarkUserStockOwnRankingView extends LeaderboardMarkUserStockItemView
+public class LeaderboardMarkUserStockOwnRankingView extends BaseLeaderboardMarkUserItemView
 {
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

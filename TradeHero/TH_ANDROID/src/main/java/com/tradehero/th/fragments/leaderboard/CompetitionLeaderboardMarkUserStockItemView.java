@@ -21,7 +21,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import java.text.SimpleDateFormat;
 
-public class CompetitionLeaderboardMarkUserStockItemView extends LeaderboardMarkUserStockItemView
+public class CompetitionLeaderboardMarkUserStockItemView extends BaseLeaderboardMarkUserItemView
 {
     @InjectView(R.id.leaderboard_prize_amount) View prizeIndicator;
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;

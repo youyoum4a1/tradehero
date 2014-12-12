@@ -23,8 +23,8 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
@@ -82,10 +82,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     private View mRankHeaderView;
 
     @Nullable protected Subscription userOnLeaderboardCacheSubscription;
-    protected StocksLeaderboardUserDTO currentStocksLeaderboardUserDTO;
+    protected LeaderboardUserDTO currentLeaderboardUserDTO;
 
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
-    protected LeaderboardMarkUserListAdapter<StocksLeaderboardUserDTO, LeaderboardMarkUserLoader<StocksLeaderboardUserDTO>>
+    protected LeaderboardMarkUserListAdapter
             leaderboardMarkUserListAdapter;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
@@ -94,6 +94,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected PerPagedLeaderboardKey currentLeaderboardKey;
     protected FollowDialogCombo followDialogCombo;
     protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
+    private LeaderboardMarkUserListViewFragmentListLoaderCallback leaderboardMarkUserListViewFragmentListLoaderCallback =
+            new LeaderboardMarkUserListViewFragmentListLoaderCallback();
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -119,7 +121,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
         leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
-        inflateHeaderView(inflater, container);
+        inflateHeaderView(inflater);
 
         if (leaderboardMarkUserListView != null)
         {
@@ -138,8 +140,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     }
 
     protected void inflateHeaderView(
-            @NonNull LayoutInflater inflater,
-            @SuppressWarnings("UnusedParameters") ViewGroup container)
+            @NonNull LayoutInflater inflater)
     {
         if (leaderboardMarkUserListView != null)
         {
@@ -243,21 +244,25 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
         }
         leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
-        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
+        leaderboardMarkUserListAdapter.setDTOLoaderCallback(leaderboardMarkUserListViewFragmentListLoaderCallback);
         leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
         leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
         swipeContainer.setOnRefreshListener(leaderboardMarkUserListAdapter);
         leaderboardMarkUserListView.setOnScrollListener(new MultiScrollListener(dashboardBottomTabsListViewScrollListener.get(),
-                new AbsListView.OnScrollListener() {
+                new AbsListView.OnScrollListener()
+                {
                     private boolean scrollStateChanged;
+
                     @Override
-                    public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    public void onScrollStateChanged(AbsListView view, int scrollState)
+                    {
                         scrollStateChanged = true;
                     }
 
                     @Override
-                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+                    {
                         if (view instanceof ListView && scrollStateChanged)
                         {
                             ListView listView = (ListView) view;
@@ -272,11 +277,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                         }
                     }
                 }));
-                leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
+        leaderboardMarkUserListView.setAdapter(leaderboardMarkUserListAdapter);
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
                 leaderboardDefKey.key, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+        leaderboardMarkUserLoader.setLeaderboardLoaderListener(new LeaderboardLoadedListener());
     }
 
     @Override public void onResume()
@@ -383,9 +389,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         }
-        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserStockItemView)
+        if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
         {
-            LeaderboardMarkUserStockItemView ownRankingView = (LeaderboardMarkUserStockItemView) mRankHeaderView;
+            BaseLeaderboardMarkUserItemView ownRankingView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
             ownRankingView.linkWith(getApplicablePortfolioId());
             ownRankingView.linkWith(currentUserProfileDTO);
         }
@@ -418,38 +424,40 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void updateLoadingCurrentRankHeaderView()
     {
-        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserStockItemView)
+        if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
         {
-            LeaderboardMarkUserStockItemView leaderboardMarkUserStockItemView = (LeaderboardMarkUserStockItemView) mRankHeaderView;
+            BaseLeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
             leaderboardMarkUserStockItemView.displayUserIsLoading();
         }
     }
 
     protected void updateCurrentRankHeaderViewWithLeaderboardUser()
     {
-        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserStockItemView)
+        if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
         {
-            LeaderboardMarkUserStockItemView leaderboardMarkUserStockItemView = (LeaderboardMarkUserStockItemView) mRankHeaderView;
-            if (currentStocksLeaderboardUserDTO != null)
+            BaseLeaderboardMarkUserItemView leaderboardMarkUserItemView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
+            if (currentLeaderboardUserDTO != null)
             {
-                leaderboardMarkUserStockItemView.display(currentStocksLeaderboardUserDTO);
+                leaderboardMarkUserItemView.displayUserIsNotRanked();
+                // user is not ranked, disable expandable view
+                leaderboardMarkUserItemView.setOnClickListener(null);
+            }
+            if (mRankHeaderView instanceof BaseLeaderboardMarkUserItemView && currentLeaderboardUserDTO instanceof LeaderboardUserDTO)
+            {
+                BaseLeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
+
+                leaderboardMarkUserStockItemView.display(currentLeaderboardUserDTO);
                 setupOwnRankingView(leaderboardMarkUserStockItemView);
                 leaderboardMarkUserStockItemView.setOnClickListener(new BaseExpandingItemListener());
-            }
-            else
-            {
-                leaderboardMarkUserStockItemView.displayUserIsNotRanked();
-                // user is not ranked, disable expandable view
-                leaderboardMarkUserStockItemView.setOnClickListener(null);
             }
         }
     }
 
     protected void setupOwnRankingView(View userRankingHeaderView)
     {
-        if (userRankingHeaderView instanceof LeaderboardMarkUserStockItemView)
+        if (userRankingHeaderView instanceof BaseLeaderboardMarkUserItemView)
         {
-            LeaderboardMarkUserStockItemView ownRankingView = (LeaderboardMarkUserStockItemView) userRankingHeaderView;
+            BaseLeaderboardMarkUserItemView ownRankingView = (BaseLeaderboardMarkUserItemView) userRankingHeaderView;
             if (ownRankingView.expandingLayout != null)
             {
                 ownRankingView.expandingLayout.setVisibility(View.GONE);
@@ -467,7 +475,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         @Override public void onNext(Pair<LeaderboardKey, LeaderboardDTO> pair)
         {
-            StocksLeaderboardUserDTO received = null;
+            LeaderboardUserDTO received = null;
             if (pair.second.users != null && pair.second.users.size() == 1)
             {
                 received = pair.second.users.get(0);
@@ -483,13 +491,13 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             Timber.e("Failed to download current User position on leaderboard", e);
             THToast.show(R.string.error_fetch_user_on_leaderboard);
-            linkWith((StocksLeaderboardUserDTO) null, true);
+            linkWith((LeaderboardUserDTO) null, true);
         }
     }
 
-    protected void linkWith(@Nullable StocksLeaderboardUserDTO leaderboardDTO, boolean andDisplay)
+    protected void linkWith(@Nullable LeaderboardUserDTO leaderboardDTO, boolean andDisplay)
     {
-        this.currentStocksLeaderboardUserDTO = leaderboardDTO;
+        this.currentLeaderboardUserDTO = leaderboardDTO;
         if (andDisplay)
         {
             updateCurrentRankHeaderViewWithLeaderboardUser();
@@ -539,31 +547,42 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         }
     }
 
-    protected class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<StocksLeaderboardUserDTO>
+    protected class LeaderboardMarkUserListViewFragmentListLoaderCallback extends LoaderDTOAdapter.ListLoaderCallback<LeaderboardUserDTO>
     {
-        @Override public ListLoader<StocksLeaderboardUserDTO> onCreateLoader(Bundle args)
+        @Override public ListLoader<LeaderboardUserDTO> onCreateLoader(Bundle args)
         {
-            LeaderboardMarkUserLoader<StocksLeaderboardUserDTO> leaderboardMarkUserLoader = new LeaderboardMarkUserStocksLoader(getActivity(), currentLeaderboardKey);
+            LeaderboardMarkUserLoader leaderboardMarkUserLoader = new LeaderboardMarkUserLoader(getActivity(), currentLeaderboardKey);
             leaderboardMarkUserLoader.setPerPage(Constants.LEADERBOARD_MARK_USER_ITEM_PER_PAGE);
             return leaderboardMarkUserLoader;
         }
 
-        @Override public void onLoadFinished(ListLoader<StocksLeaderboardUserDTO> loader, List<StocksLeaderboardUserDTO> data)
+        @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
         {
-            // display marking time
-            LeaderboardMarkUserLoader<StocksLeaderboardUserDTO> leaderboardMarkUserLoader =
-                    (LeaderboardMarkUserLoader<StocksLeaderboardUserDTO>) loader;
-            Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
-            if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-            {
-                leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
-            }
             leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.swipe_container);
             swipeContainer.setRefreshing(false);
         }
     }
 
-    protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardMarkUserStockItemView.OnFollowRequestedListener
+    protected class LeaderboardLoadedListener implements LeaderboardMarkUserLoader.LeaderboardLoaderListener
+    {
+        @Override public void onLoadedInBackground(final LeaderboardDTO leaderboardDTO)
+        {
+            getActivity().runOnUiThread(() -> {
+                Date markingTime = leaderboardDTO.markUtc;
+                if (markingTime != null && leaderboardMarkUserMarkingTime != null)
+                {
+                    leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
+                }
+                leaderboardMarkUserListAdapter.setIsForex(leaderboardDTO.isForex);
+                if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
+                {
+                    ((BaseLeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isForex);
+                }
+            });
+        }
+    }
+
+    protected class LeaderboardMarkUserListFollowRequestedListener implements BaseLeaderboardMarkUserItemView.OnFollowRequestedListener
     {
         @Override public void onFollowRequested(@NonNull UserBaseDTO userBaseDTO)
         {

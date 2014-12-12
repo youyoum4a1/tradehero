@@ -10,7 +10,7 @@ import com.tradehero.common.widget.GaugeView;
 import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class UserStatisticView extends LinearLayout
-    implements DTOView<StocksLeaderboardUserDTO>
+    implements DTOView<LeaderboardUserDTO>
 {
     @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
     @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
@@ -34,7 +34,7 @@ public class UserStatisticView extends LinearLayout
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
-    private StocksLeaderboardUserDTO stocksLeaderboardUserDTO;
+    private LeaderboardUserDTO stocksLeaderboardUserDTO;
 
     //<editor-fold desc="Constructors">
     public UserStatisticView(Context context)
@@ -61,7 +61,7 @@ public class UserStatisticView extends LinearLayout
         HierarchyInjector.inject(this);
     }
 
-    @Override public void display(StocksLeaderboardUserDTO dto)
+    @Override public void display(LeaderboardUserDTO dto)
     {
         this.stocksLeaderboardUserDTO = dto;
         display();
@@ -224,7 +224,7 @@ public class UserStatisticView extends LinearLayout
     {
         try
         {
-            Double minConsistency = StocksLeaderboardUserDTO.MIN_CONSISTENCY;
+            Double minConsistency = LeaderboardUserDTO.MIN_CONSISTENCY;
             Double maxConsistency = getAvgConsistency();
             Double consistency = stocksLeaderboardUserDTO.getConsistency();
             consistency = (consistency < minConsistency) ? minConsistency : consistency;
@@ -276,6 +276,6 @@ public class UserStatisticView extends LinearLayout
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();
         }
-        return StocksLeaderboardUserDTO.MIN_CONSISTENCY;
+        return LeaderboardUserDTO.MIN_CONSISTENCY;
     }
 }

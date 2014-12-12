@@ -9,30 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.leaderboard.BaseLeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.FxLeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 
 public class LeaderboardMarkUserListAdapter
-        <LeaderboardUserDTO extends BaseLeaderboardUserDTO,
-                LoaderType extends LeaderboardMarkUserLoader<LeaderboardUserDTO>>
         extends
         LoaderDTOAdapter<
-                LeaderboardUserDTO, BaseLeaderboardMarkUserItemView<LeaderboardUserDTO>, LoaderType>
+                LeaderboardUserDTO, BaseLeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
         implements SwipeRefreshLayout.OnRefreshListener
 {
-    private static final int VIEW_TYPE_STOCK = 0;
-    private static final int VIEW_TYPE_FX = 1;
-
-    @LayoutRes private static final int fxLeaderboardLayoutResId = R.layout.lbmu_item_fx_mode;
     @LayoutRes private static final int stockLeaderboardLayoutResId = R.layout.lbmu_item_roi_mode;
 
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
-    protected LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListener;
+    protected BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
+    private boolean isForex;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(Context context, int loaderId)
@@ -40,28 +33,6 @@ public class LeaderboardMarkUserListAdapter
         super(context, loaderId, 0);
     }
     //</editor-fold>
-
-    @Override public int getViewTypeCount()
-    {
-        return 2;
-    }
-
-    @Override public int getItemViewType(int position)
-    {
-        BaseLeaderboardUserDTO leaderboardUserDTO = getItem(position);
-        if(leaderboardUserDTO instanceof StocksLeaderboardUserDTO)
-        {
-            return VIEW_TYPE_STOCK;
-        }
-        else if(leaderboardUserDTO instanceof FxLeaderboardUserDTO)
-        {
-            return VIEW_TYPE_FX;
-        }
-        else
-        {
-            return super.getItemViewType(position);
-        }
-    }
 
     public void setCurrentUserProfileDTO(UserProfileDTO currentUserProfileDTO)
     {
@@ -73,14 +44,14 @@ public class LeaderboardMarkUserListAdapter
         this.applicablePortfolioId = ownedPortfolioId;
     }
 
-    public void setFollowRequestedListener(LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }
 
-    @Override public BaseLeaderboardUserDTO getItem(int position)
+    @Override public LeaderboardUserDTO getItem(int position)
     {
-        StocksLeaderboardUserDTO dto = (StocksLeaderboardUserDTO) super.getItem(position);
+        LeaderboardUserDTO dto = (LeaderboardUserDTO) super.getItem(position);
         dto.setPosition(position);
         dto.setLeaderboardId(getLoader().getLeaderboardId());
         dto.setIncludeFoF(getLoader().isIncludeFoF());
@@ -92,15 +63,16 @@ public class LeaderboardMarkUserListAdapter
     {
         if (convertView == null)
         {
-            convertView = getInflater().inflate(getLayoutIdforPosition(position), viewGroup, false);
+            convertView = getInflater().inflate(stockLeaderboardLayoutResId, viewGroup, false);
         }
         return super.conditionalInflate(position, convertView, viewGroup);
     }
 
-    @Override protected void fineTune(int position, BaseLeaderboardUserDTO dto, BaseLeaderboardMarkUserItemView dtoView)
+    @Override protected void fineTune(int position, LeaderboardUserDTO dto, BaseLeaderboardMarkUserItemView dtoView)
     {
         dtoView.linkWith(currentUserProfileDTO, true);
         dtoView.linkWith(applicablePortfolioId);
+        dtoView.shouldHideStatistics(isForex);
         dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
@@ -125,31 +97,22 @@ public class LeaderboardMarkUserListAdapter
         getLoader().loadPrevious();
     }
 
-    protected LeaderboardMarkUserStockItemView.OnFollowRequestedListener createChildFollowRequestedListener()
+    protected BaseLeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
     {
         return this::notifyFollowRequested;
     }
 
     protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
-        LeaderboardMarkUserStockItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
             followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 
-    private int getLayoutIdforPosition(int position)
+    public void setIsForex(boolean isForex)
     {
-        int viewType = getItemViewType(position);
-        switch (viewType)
-        {
-            case VIEW_TYPE_FX:
-                return fxLeaderboardLayoutResId;
-            case VIEW_TYPE_STOCK:
-                return stockLeaderboardLayoutResId;
-            default:
-                throw new RuntimeException("Unknown layout for class " + getItem(position).getClass().getName());
-        }
+        this.isForex = isForex;
     }
 }

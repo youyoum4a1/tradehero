@@ -23,6 +23,8 @@ public class LeaderboardDTO extends BaseHasExpiration
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
+    public boolean isForex;
+
     public int minPositionCount;
     @JsonProperty("max_sharpeRatioInPeriod_vsSP500")
     public double maxSharpeRatioInPeriodVsSP500;

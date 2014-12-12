@@ -11,7 +11,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.ConnectedLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -108,7 +108,7 @@ public class LeaderboardDefView extends RelativeLayout
         leaderboardDefUserRankWrapper.setVisibility(GONE);
     }
 
-    private void showUserBestROI(StocksLeaderboardUserDTO stocksLeaderboardUserDTO)
+    private void showUserBestROI(LeaderboardUserDTO stocksLeaderboardUserDTO)
     {
         THSignedNumber roi = THSignedPercentage
                 .builder(stocksLeaderboardUserDTO.roiInPeriod * 100)

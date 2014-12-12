@@ -16,12 +16,12 @@ public class LeaderboardUserDTOUtil
     //</editor-fold>
 
     @NonNull
-    public Map<LeaderboardUserId, StocksLeaderboardUserDTO> map(@NonNull List<StocksLeaderboardUserDTO> stocksLeaderboardUserDTOs)
+    public Map<LeaderboardUserId, LeaderboardUserDTO> map(@NonNull List<LeaderboardUserDTO> stocksLeaderboardUserDTOs)
     {
-        Map<LeaderboardUserId, StocksLeaderboardUserDTO> returned = new HashMap<>();
-        for (StocksLeaderboardUserDTO stocksLeaderboardUserDTO : stocksLeaderboardUserDTOs)
+        Map<LeaderboardUserId, LeaderboardUserDTO> returned = new HashMap<>();
+        for (LeaderboardUserDTO leaderboardUserDTO : stocksLeaderboardUserDTOs)
         {
-            returned.put(stocksLeaderboardUserDTO.getLeaderboardUserId(), stocksLeaderboardUserDTO);
+            returned.put(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO);
         }
         return returned;
     }

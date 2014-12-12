@@ -1,25 +1,27 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.Context;
-import com.tradehero.th.api.leaderboard.BaseLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.loaders.PaginationListLoader;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-public abstract class LeaderboardMarkUserLoader<LeaderboardUserDTOType extends BaseLeaderboardUserDTO> extends PaginationListLoader<LeaderboardUserDTOType>
+public class LeaderboardMarkUserLoader extends PaginationListLoader<LeaderboardUserDTO>
 {
-    protected PagedLeaderboardKey pagedLeaderboardKey;
-    protected Date markUtc;
+    static interface LeaderboardLoaderListener
+    {
+        void onLoadedInBackground(LeaderboardDTO leaderboardDTO);
+    }
+    @Inject LeaderboardCacheRx leaderboardCache;
 
-    abstract public List<LeaderboardUserDTOType> loadInBackground();
+    protected PagedLeaderboardKey pagedLeaderboardKey;
+    private LeaderboardLoaderListener leaderboardLoaderListener;
 
     public LeaderboardMarkUserLoader(Context context, PagedLeaderboardKey pagedLeaderboardKey)
     {
@@ -28,12 +30,17 @@ public abstract class LeaderboardMarkUserLoader<LeaderboardUserDTOType extends B
         HierarchyInjector.inject(context, this);
     }
 
-    @Override protected void onLoadNext(LeaderboardUserDTOType firstVisibleItem)
+    public void setLeaderboardLoaderListener(LeaderboardLoaderListener leaderboardLoaderListener)
+    {
+        this.leaderboardLoaderListener = leaderboardLoaderListener;
+    }
+
+    @Override protected void onLoadNext(LeaderboardUserDTO firstVisibleItem)
     {
         // do nothing
     }
 
-    @Override protected void onLoadPrevious(LeaderboardUserDTOType lastVisibleItem)
+    @Override protected void onLoadPrevious(LeaderboardUserDTO lastVisibleItem)
     {
         Integer currentPage = pagedLeaderboardKey.page;
         if (currentPage == null)
@@ -64,9 +71,33 @@ public abstract class LeaderboardMarkUserLoader<LeaderboardUserDTOType extends B
         }
     }
 
-    public Date getMarkUtc()
+    @Override public List<LeaderboardUserDTO> loadInBackground()
     {
-        return markUtc;
+        Timber.d("loadInBackground %s", pagedLeaderboardKey);
+        Timber.d("Loader with id = %d", getId());
+
+        try
+        {
+            LeaderboardDTO fetched = leaderboardCache.get(pagedLeaderboardKey).toBlocking().first().second;
+
+            if (fetched == null)
+            {
+                return null;
+            }
+
+            if(leaderboardLoaderListener != null)
+            {
+                leaderboardLoaderListener.onLoadedInBackground(fetched);
+            }
+
+            Timber.d("Leaderboard marked at %s", fetched.markUtc);
+
+            return fetched.users;
+        } catch (Throwable throwable)
+        {
+            Timber.e("Error loading Leaderboard ranking", throwable);
+            return null;
+        }
     }
 
     public Integer getLeaderboardId()

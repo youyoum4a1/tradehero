@@ -3,7 +3,7 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -32,7 +32,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         {
             return null;
         }
-        return Math.max((float) (double) StocksLeaderboardUserDTO.MIN_CONSISTENCY, consistency);
+        return Math.max((float) (double) LeaderboardUserDTO.MIN_CONSISTENCY, consistency);
     }
 
     //<editor-fold desc="Constructors">

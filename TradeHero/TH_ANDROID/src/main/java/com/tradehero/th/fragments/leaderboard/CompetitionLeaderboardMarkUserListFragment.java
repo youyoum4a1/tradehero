@@ -17,7 +17,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.StocksLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
 import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
@@ -380,7 +380,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected class CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback extends LeaderboardMarkUserListViewFragmentListLoaderCallback
     {
-        @Override public void onLoadFinished(ListLoader<StocksLeaderboardUserDTO> loader, List<StocksLeaderboardUserDTO> data)
+        @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
         {
             competitionAdapter.notifyDataSetChanged();
             super.onLoadFinished(loader, data);

@@ -22,7 +22,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.BaseLeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.market.Country;
@@ -37,6 +37,7 @@ import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -56,15 +57,15 @@ import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
 
-public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType extends BaseLeaderboardUserDTO>
+public class BaseLeaderboardMarkUserItemView
         extends RelativeLayout
-        implements DTOView<LeaderboardUserDTOType>, ExpandingLayout.OnExpandListener
+        implements DTOView<LeaderboardUserDTO>, ExpandingLayout.OnExpandListener
 {
     protected UserProfileDTO currentUserProfileDTO;
     protected OnFollowRequestedListener followRequestedListener;
     protected OwnedPortfolioId applicablePortfolioId;
     // data
-    protected LeaderboardUserDTOType leaderboardItem;
+    protected LeaderboardUserDTO leaderboardItem;
     // top view
     @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
     @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
@@ -85,7 +86,9 @@ public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType ext
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
+    @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
+    private boolean shouldHideStatistics = true;
 
     public BaseLeaderboardMarkUserItemView(Context context)
     {
@@ -181,7 +184,7 @@ public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType ext
         this.followRequestedListener = followRequestedListener;
     }
 
-    @Override public void display(LeaderboardUserDTOType leaderboardUserDTOType)
+    @Override public void display(LeaderboardUserDTO leaderboardUserDTOType)
     {
         linkWith(leaderboardUserDTOType, true);
     }
@@ -196,7 +199,7 @@ public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType ext
         leaderboardOwnUserRankingSubscription = null;
     }
 
-    protected void linkWith(LeaderboardUserDTOType leaderboardUserDTOType, boolean andDisplay)
+    protected void linkWith(LeaderboardUserDTO leaderboardUserDTOType, boolean andDisplay)
     {
         this.leaderboardItem = leaderboardUserDTOType;
 
@@ -316,11 +319,6 @@ public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType ext
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
-    }
-
-    @Override public void onExpand(boolean expand)
-    {
-        //Do nothing for now, wait for the updated PRD on what to do when the user click on expanded cell
     }
 
     protected String getLbmuPlCurrencyDisplay()
@@ -550,6 +548,38 @@ public abstract class BaseLeaderboardMarkUserItemView<LeaderboardUserDTOType ext
 
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
+    }
+
+    @Override public void onExpand(boolean expand)
+    {
+        if (userStatisticView != null && leaderboardItem != null && !shouldHideStatistics)
+        {
+            if (expand)
+            {
+                userStatisticView.display(leaderboardItem);
+            }
+            else
+            {
+                userStatisticView.display(null);
+                Timber.d("clearExpandAnimation");
+            }
+        }
+    }
+
+    public void shouldHideStatistics(boolean hide)
+    {
+        this.shouldHideStatistics = hide;
+        if(userStatisticView != null)
+        {
+            if(hide)
+            {
+                userStatisticView.setVisibility(View.GONE);
+            }
+            else
+            {
+                userStatisticView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public static interface OnFollowRequestedListener
