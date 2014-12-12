@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                             android:orientation="vertical"
                                                             android:layout_width="match_parent"
                                                             android:layout_height="wrap_content"
@@ -11,9 +11,9 @@
               android:textAppearance="?android:attr/textAppearanceListItem"
               android:gravity="center_vertical|center_horizontal"
               android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_report"
+              android:text="@string/discovery_discuss_send_comment"
               android:textColor="@color/black"/>
-    <View android:layout_width="match_parent" android:layout_height="1px"
+    <View android:layout_width="match_parent" android:layout_height="1px" android:id="@+id/view_divider_discuss_apply"
           android:background="@color/discovery_discuss_reward_gray"
             />
     <TextView android:id="@+id/textview_discovery_discuss_send_report"
@@ -22,7 +22,7 @@
               android:textAppearance="?android:attr/textAppearanceListItem"
               android:gravity="center_vertical|center_horizontal"
               android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_delete"
+              android:text="@string/discovery_discuss_send_report"
               android:textColor="@color/black"/>
     <View android:layout_width="match_parent" android:layout_height="1px" android:id="@+id/view_divider_discuss_report"
           android:background="@color/discovery_discuss_reward_gray"
@@ -33,7 +33,7 @@
               android:textAppearance="?android:attr/textAppearanceListItem"
               android:gravity="center_vertical|center_horizontal"
               android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_delete"
+              android:text="@string/discovery_discuss_send_apply"
               android:textColor="@color/black"/>
     <View android:layout_width="match_parent" android:layout_height="1px" android:id="@+id/view_divider_discuss_delete"
           android:background="@color/discovery_discuss_reward_gray"
@@ -46,4 +46,4 @@
               android:textSize="17sp"
               android:text="@string/discovery_discuss_send_share"
               android:textColor="@color/black"/>
-</com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout>
+</com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout>

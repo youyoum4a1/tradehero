@@ -28,11 +28,20 @@ public class DialogFactory {
     }
 
     public Dialog createTimeLineDetailDialog(@NotNull Context context, @NotNull TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener menuClickListener,
-        boolean isDeleteAllowed, boolean isReportAllowed) {
-        TimeLineDetailDialogLayout contentView = (TimeLineDetailDialogLayout)LayoutInflater.from(context).inflate(R.layout.timeline_detail_dialog_layout, null);
+                                             boolean isDeleteAllowed, boolean isReportAllowed) {
+        TimeLineDetailDialogLayout contentView = (TimeLineDetailDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_detail_dialog_layout, null);
         contentView.setMenuClickListener(menuClickListener);
         contentView.setBtnStatus(isDeleteAllowed, isReportAllowed);
         return THDialog.showUpDialog(context, contentView);
+    }
+
+    public Dialog createTimeLineCommentDialog(@NotNull Context context, @NotNull TimeLineCommentDialogLayout.TimeLineCommentMenuClickListener menuClickListener,
+                                              boolean isApplyAllowed, boolean isDeleteAllowed, boolean isReportAllowed) {
+        TimeLineCommentDialogLayout contentView = (TimeLineCommentDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_comment_dialog_layout, null);
+        contentView.setMenuClickListener(menuClickListener);
+        contentView.setBtnStatus(isReportAllowed,isDeleteAllowed, isApplyAllowed);
+        return THDialog.showUpDialog(context, contentView);
+
     }
 
 }

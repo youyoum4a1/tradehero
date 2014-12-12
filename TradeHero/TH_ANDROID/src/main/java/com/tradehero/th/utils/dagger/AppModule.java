@@ -5,6 +5,7 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableL
 import com.tradehero.chinabuild.*;
 import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.competition.*;
@@ -394,6 +395,7 @@ import java.util.Locale;
 
                         SecurityDetailDialogLayout.class,
                         TimeLineDetailDialogLayout.class,
+                        TimeLineCommentDialogLayout.class,
 
                         CompetitionAllFragment.class,
                         CompetitionMineFragment.class,

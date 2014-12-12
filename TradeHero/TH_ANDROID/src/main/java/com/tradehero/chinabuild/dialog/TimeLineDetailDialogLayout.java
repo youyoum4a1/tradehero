@@ -18,12 +18,11 @@ import com.tradehero.th.utils.DaggerUtils;
 public class TimeLineDetailDialogLayout extends LinearLayout {
 
 
-    @InjectView(R.id.textview_discovery_discuss_send_share)
-    TextView shareTV;
-    @InjectView(R.id.textview_discovery_discuss_send_delete)
-    TextView deleteTV;
-    @InjectView(R.id.textview_discovery_discuss_send_report)
-    TextView reportTV;
+    @InjectView(R.id.textview_discovery_discuss_send_share)TextView shareTV;
+    @InjectView(R.id.textview_discovery_discuss_send_delete)TextView deleteTV;
+    @InjectView(R.id.textview_discovery_discuss_send_report)TextView reportTV;
+    @InjectView(R.id.view_divider_discuss_delete)View deleteDividerV;
+    @InjectView(R.id.view_divider_discuss_report)View reportDividerV;
 
     private TimeLineDetailMenuClickListener menuClickListener;
 
@@ -88,15 +87,19 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
     }
 
     public void setBtnStatus(boolean isDeleteAllowed, boolean isReportAllowed) {
-        if (isDeleteAllowed && deleteTV != null) {
+        if (isDeleteAllowed && deleteTV != null && deleteDividerV!=null) {
             deleteTV.setVisibility(View.VISIBLE);
+            deleteDividerV.setVisibility(View.VISIBLE);
         }else {
             deleteTV.setVisibility(View.GONE);
+            deleteDividerV.setVisibility(View.GONE);
         }
-        if (isReportAllowed && reportTV != null) {
+        if (isReportAllowed && reportTV != null && reportDividerV!=null) {
             reportTV.setVisibility(View.VISIBLE);
+            reportDividerV.setVisibility(View.VISIBLE);
         }else{
             reportTV.setVisibility(View.GONE);
+            reportDividerV.setVisibility(View.GONE);
         }
     }
 

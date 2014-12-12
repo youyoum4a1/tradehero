@@ -18,6 +18,7 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.dialog.DialogFactory;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
@@ -148,7 +149,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private final int ITEMS_PER_PAGE = 50;
 
-    private Dialog timeLineMenuDialog;
+    private Dialog timeLineDetailMenuDialog;
+    private Dialog timeLineCommentMenuDialog;
     private DialogFactory dialogFactory;
 
     @Override
@@ -248,7 +250,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         adapter.setListener(new TimeLineBaseAdapter.TimeLineOperater() {
             @Override
             public void OnTimeLineItemClicked(int position) {
-                setHintForSender(position);
+                onCommentClick(position);
             }
 
             @Override
@@ -691,23 +693,57 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (dialogFactory == null) {
             dialogFactory = new DialogFactory();
         }
-        timeLineMenuDialog = dialogFactory.createTimeLineDetailDialog(getActivity(), new TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener() {
+        if(getActivity()==null){
+            return;
+        }
+        timeLineDetailMenuDialog = dialogFactory.createTimeLineDetailDialog(getActivity(), new TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener() {
             @Override
             public void onReportClick() {
-                timeLineMenuDialog.dismiss();
+                timeLineDetailMenuDialog.dismiss();
             }
 
             @Override
             public void onDeleteClick() {
-                timeLineMenuDialog.dismiss();
+                timeLineDetailMenuDialog.dismiss();
             }
 
             @Override
             public void onShareClick() {
                 share();
-                timeLineMenuDialog.dismiss();
+                timeLineDetailMenuDialog.dismiss();
             }
         }, true, true);
+    }
+
+    public void onCommentClick(final int position){
+        if (dialogFactory == null) {
+            dialogFactory = new DialogFactory();
+        }
+        if(getActivity()==null){
+            return;
+        }
+        timeLineCommentMenuDialog = dialogFactory.createTimeLineCommentDialog(getActivity(), new TimeLineCommentDialogLayout.TimeLineCommentMenuClickListener() {
+            @Override
+            public void onCommentClick() {
+                setHintForSender(position);
+                timeLineCommentMenuDialog.dismiss();
+            }
+
+            @Override
+            public void onReportClick() {
+                timeLineCommentMenuDialog.dismiss();
+            }
+
+            @Override
+            public void onDeleteClick() {
+                timeLineCommentMenuDialog.dismiss();
+            }
+
+            @Override
+            public void onApplyClick() {
+                timeLineCommentMenuDialog.dismiss();
+            }
+        }, true, true, true);
     }
 
     private void share(){
