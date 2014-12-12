@@ -8,13 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -22,7 +16,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.dialog.DialogFactory;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -33,18 +29,10 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.*;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -70,14 +58,15 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
@@ -140,6 +129,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private final int ITEMS_PER_PAGE = 50;
 
+    private Dialog timeLineMenuDialog;
+    private DialogFactory dialogFactory;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -166,6 +158,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain("详情");
+        setHeadViewRight0(getActivity().getResources().getString(R.string.discovery_discuss_send_more));
     }
 
     @Override
@@ -776,5 +769,33 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         @Override public void failure(RetrofitError error)
         {
         }
+    }
+
+
+    @Override
+    public void onClickHeadRight0()
+    {
+        if(dialogFactory == null){
+            dialogFactory = new DialogFactory();
+        }
+        if(timeLineMenuDialog == null) {
+            timeLineMenuDialog = dialogFactory.createTimeLineDetailDialog(getActivity(), new TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener() {
+                @Override
+                public void onReportClick() {
+
+                }
+
+                @Override
+                public void onDeleteClick() {
+
+                }
+
+                @Override
+                public void onShareClick() {
+
+                }
+            }, true, true);
+        }
+        timeLineMenuDialog.show();
     }
 }
