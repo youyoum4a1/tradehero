@@ -466,5 +466,7 @@
   <string name="discovery_discuss_send_report">举报</string>
   <string name="discovery_discuss_send_delete">删帖</string>
   <string name="discovery_discuss_send_share">分享</string>
+  <string name="discovery_discuss_send_comment">回复</string>
+  <string name="discovery_discuss_send_apply">采纳</string>
   <!-- Discovery Discuss Reward -->
 </resources>

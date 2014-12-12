@@ -12,7 +12,7 @@ import com.tradehero.th.utils.DaggerUtils;
 
 /**
  * Dialog for TimeLine Detail Menu
- * <p/>
+ *
  * Created by palmer on 14/12/12.
  */
 public class TimeLineDetailDialogLayout extends LinearLayout {
