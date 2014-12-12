@@ -12,8 +12,4 @@ public class THBaseAmazonBillingAvailableTesterRx
         super(request);
     }
     //</editor-fold>
-
-    @Override public void onDestroy()
-    {
-    }
 }

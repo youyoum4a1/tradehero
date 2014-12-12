@@ -13,7 +13,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -46,7 +45,6 @@ public class THBaseAmazonInteractorRx
             @NonNull Provider<Activity> activityProvider,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THAmazonAlertDialogRxUtil thAmazonAlertDialogUtil,
-            @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull THAmazonLogicHolderRx billingActor,
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
@@ -56,8 +54,7 @@ public class THBaseAmazonInteractorRx
                 billingActor,
                 activityProvider,
                 progressDialogUtil,
-                thAmazonAlertDialogUtil,
-                billingRequisitePreparer);
+                thAmazonAlertDialogUtil);
         this.currentUserId = currentUserId;
         this.userProfileDTOUtil = userProfileDTOUtil;
         this.portfolioCompactListCache = portfolioCompactListCache;

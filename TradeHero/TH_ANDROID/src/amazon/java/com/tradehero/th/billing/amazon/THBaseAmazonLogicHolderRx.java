@@ -14,6 +14,7 @@ import com.tradehero.th.billing.THBaseBillingLogicHolderRx;
 import com.tradehero.th.billing.THProductDetailDomainPredicate;
 import com.tradehero.th.billing.amazon.consume.THAmazonPurchaseConsumerHolderRx;
 import com.tradehero.th.billing.amazon.identifier.THAmazonProductIdentifierFetcherHolderRx;
+import com.tradehero.th.billing.amazon.identifier.THBaseAmazonProductIdentifierFetcherRx;
 import com.tradehero.th.billing.amazon.inventory.THAmazonInventoryFetcherHolderRx;
 import com.tradehero.th.billing.amazon.purchase.THAmazonPurchaserHolderRx;
 import com.tradehero.th.billing.amazon.purchasefetch.THAmazonPurchaseFetcherHolderRx;
@@ -97,7 +98,7 @@ public class THBaseAmazonLogicHolderRx
 
     @Override public List<THAmazonProductDetail> getDetailsOfDomain(ProductIdentifierDomain domain)
     {
-        List<THAmazonProductDetail> details = productDetailCache.getValues(THBaseAmazonProductIdentifierFetcher.getAllSkus());
+        List<THAmazonProductDetail> details = productDetailCache.getValues(THBaseAmazonProductIdentifierFetcherRx.getAllSkus());
         if (details == null)
         {
             return null;

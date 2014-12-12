@@ -26,7 +26,7 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnSc
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.activities.ActivityResultRequester;
-import com.tradehero.common.billing.BillingPurchaseRestorer;
+import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
@@ -53,11 +53,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.billing.report.PurchaseReportResult;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
@@ -146,12 +142,7 @@ public class DashboardActivity extends BaseActivity
 
     // It is important to have Lazy here because we set the current Activity after the injection
     // and the LogicHolder creator needs the current Activity...
-    @Inject Lazy<THBillingInteractor> billingInteractor;
     @Inject Lazy<THBillingInteractorRx> billingInteractorRx;
-    @Inject Provider<BaseTHUIBillingRequest.Builder> thUiBillingRequestBuilderProvider;
-
-    private BillingPurchaseRestorer.OnPurchaseRestorerListener purchaseRestorerFinishedListener;
-    private Integer restoreRequestCode;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -204,13 +195,6 @@ public class DashboardActivity extends BaseActivity
         }
 
         appContainer.wrap(this);
-
-        purchaseRestorerFinishedListener = (requestCode, restoredPurchases, failedRestorePurchases, failExceptions) -> {
-            if (Integer.valueOf(requestCode).equals(restoreRequestCode))
-            {
-                restoreRequestCode = null;
-            }
-        };
 
         if (Constants.RELEASE)
         {
@@ -282,21 +266,16 @@ public class DashboardActivity extends BaseActivity
 
     private void launchBilling()
     {
-        if (restoreRequestCode != null)
-        {
-            billingInteractor.get().forgetRequestCode(restoreRequestCode);
-        }
-        //restoreRequestCode = billingInteractor.get().run(createRestoreRequest());
         // TODO fetch more stuff?
         //noinspection unchecked
         bindActivity(
                 this,
                 billingInteractorRx.get().restorePurchasesAndClear())
-                .subscribe(new Observer<PurchaseReportResult>()
+                .subscribe(new Observer<PurchaseRestoreTotalResult>()
                 {
-                    @Override public void onNext(PurchaseReportResult args)
+                    @Override public void onNext(PurchaseRestoreTotalResult args)
                     {
-                        THToast.show("Restored " + args.reportedPurchase.getProductIdentifier());
+                        //TODO
                     }
 
                     @Override public void onCompleted()
@@ -310,18 +289,6 @@ public class DashboardActivity extends BaseActivity
                         Timber.e(e, "Restore failed");
                     }
                 });
-    }
-
-    protected THUIBillingRequest createRestoreRequest()
-    {
-        BaseTHUIBillingRequest.Builder builder = thUiBillingRequestBuilderProvider.get();
-        //noinspection unchecked,PointlessBooleanExpression
-        builder.restorePurchase(true)
-                .startWithProgressDialog(!Constants.RELEASE)
-                .popRestorePurchaseOutcome(true)
-                .popRestorePurchaseOutcomeVerbose(false)
-                .purchaseRestorerListener(purchaseRestorerFinishedListener);
-        return builder.build();
     }
 
     @Override public void onBackPressed()
@@ -502,18 +469,11 @@ public class DashboardActivity extends BaseActivity
 
     @Override protected void onDestroy()
     {
-        purchaseRestorerFinishedListener = null;
         notificationFetchSubscription = null;
 
         xpToast.destroy();
 
         networkIndicator = null;
-
-        THBillingInteractor billingInteractorCopy = billingInteractor.get();
-        if (billingInteractorCopy != null && restoreRequestCode != null)
-        {
-            billingInteractorCopy.forgetRequestCode(restoreRequestCode);
-        }
 
         if (navigator != null)
         {
@@ -597,8 +557,6 @@ public class DashboardActivity extends BaseActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         CollectionUtils.apply(activityResultRequesters, requester -> requester.onActivityResult(requestCode, resultCode, data));
-        // Passing it on just in case it is expecting something
-        billingInteractor.get().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override public void openMenu()

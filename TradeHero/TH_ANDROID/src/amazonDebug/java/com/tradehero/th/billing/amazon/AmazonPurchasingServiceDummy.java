@@ -44,7 +44,7 @@ import javax.inject.Singleton;
     @Inject public AmazonPurchasingServiceDummy(
             @NonNull Context appContext,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull AmazonAlertDialogUtil dialogUtil,
+            @NonNull AmazonAlertDialogRxUtil dialogUtil,
             @NonNull CurrentUserId currentUserId)
     {
         super(appContext, activityProvider, dialogUtil);

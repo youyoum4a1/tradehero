@@ -40,10 +40,6 @@ abstract public class BaseAmazonPurchaseFetcherRx<
     }
     //</editor-fold>
 
-    @Override public void onDestroy()
-    {
-    }
-
     @NonNull @Override public Observable<PurchaseFetchResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType>> get()
     {
         return fetchIncompletePurchases(purchasingService)

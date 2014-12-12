@@ -36,10 +36,6 @@ abstract public class BaseAmazonPurchaseConsumerRx<
     }
     //</editor-fold>
 
-    @Override public void onDestroy()
-    {
-    }
-
     @NonNull @Override public Observable<PurchaseConsumedResult<AmazonSKUType, AmazonOrderIdType, AmazonPurchaseType>> get()
     {
         if (purchase.getOrderId().receipt.getProductType().equals(ProductType.CONSUMABLE))

@@ -12,7 +12,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -46,7 +45,6 @@ public class THBaseSamsungInteractorRx
             @NonNull Provider<Activity> activityProvider,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THSamsungAlertDialogRxUtil thSamsungAlertDialogUtil,
-            @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull THSamsungLogicHolderRx billingActor,
             @NonNull CurrentUserId currentUserId,
             @NonNull PortfolioCompactListCacheRx portfolioCompactListCache)
@@ -55,8 +53,7 @@ public class THBaseSamsungInteractorRx
                 billingActor,
                 activityProvider,
                 progressDialogUtil,
-                thSamsungAlertDialogUtil,
-                billingRequisitePreparer);
+                thSamsungAlertDialogUtil);
         this.currentUserId = currentUserId;
         this.portfolioCompactListCache = portfolioCompactListCache;
     }

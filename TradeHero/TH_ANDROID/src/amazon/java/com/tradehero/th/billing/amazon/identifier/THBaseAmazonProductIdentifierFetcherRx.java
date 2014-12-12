@@ -23,10 +23,6 @@ public class THBaseAmazonProductIdentifierFetcherRx
     }
     //</editor-fold>
 
-    @Override public void onDestroy()
-    {
-    }
-
     @NonNull public static AmazonSKUList getAllSkus()
     {
         AmazonSKUList list = new AmazonSKUList();

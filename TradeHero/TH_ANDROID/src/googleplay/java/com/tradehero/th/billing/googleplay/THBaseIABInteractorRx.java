@@ -14,7 +14,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.billing.THBillingRequisitePreparer;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
@@ -53,7 +52,6 @@ import rx.Observable;
             @NonNull Provider<Activity> activityProvider,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THIABAlertDialogRxUtil thIABAlertDialogUtil,
-            @NonNull THBillingRequisitePreparer billingRequisitePreparer,
             @NonNull CurrentUserId currentUserId,
             @NonNull THIABProductDetailCacheRx thiabProductDetailCache,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
@@ -63,8 +61,7 @@ import rx.Observable;
                 billingActor,
                 activityProvider,
                 progressDialogUtil,
-                thIABAlertDialogUtil,
-                billingRequisitePreparer);
+                thIABAlertDialogUtil);
         this.currentUserId = currentUserId;
         this.thiabProductDetailCache = thiabProductDetailCache;
         this.userProfileDTOUtil = userProfileDTOUtil;

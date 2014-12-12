@@ -78,7 +78,6 @@ abstract public class THBaseBillingInteractorRx<
             ProductDetailAdapterType,
             THOrderIdType,
             THProductPurchaseType> billingAlertDialogUtil;
-    @NonNull protected final THBillingRequisitePreparer billingRequisitePreparer;
 
     //<editor-fold desc="Constructors">
     protected THBaseBillingInteractorRx(
@@ -92,15 +91,13 @@ abstract public class THBaseBillingInteractorRx<
                     ProductDetailViewType,
                     ProductDetailAdapterType,
                     THOrderIdType,
-                    THProductPurchaseType> billingAlertDialogUtil,
-            @NonNull THBillingRequisitePreparer billingRequisitePreparer)
+                    THProductPurchaseType> billingAlertDialogUtil)
     {
         super(billingLogicHolder);
         this.activityProvider = activityProvider;
         this.progressDialogUtil = progressDialogUtil;
         this.billingAlertDialogUtil = billingAlertDialogUtil;
         this.billingAlertDialogUtil.setStoreName(getName());
-        this.billingRequisitePreparer = billingRequisitePreparer;
     }
     //</editor-fold>
 

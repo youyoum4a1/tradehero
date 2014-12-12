@@ -29,6 +29,9 @@ public interface AmazonAlertDialogRxUtil
     @NonNull Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupported(
             @NonNull final Context context);
 
+    @NonNull Observable<Pair<DialogInterface, Integer>> popSandboxModeAndHandle(
+            @NonNull final Context context);
+
     @NonNull Observable<Pair<DialogInterface, Integer>> popSandboxMode(
             @NonNull final Context context);
 }

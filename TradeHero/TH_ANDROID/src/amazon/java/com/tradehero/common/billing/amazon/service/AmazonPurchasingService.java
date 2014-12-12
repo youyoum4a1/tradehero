@@ -12,15 +12,14 @@ import com.amazon.device.iap.model.PurchaseResponse;
 import com.amazon.device.iap.model.PurchaseUpdatesResponse;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserDataResponse;
-import com.tradehero.common.billing.amazon.BaseAmazonPurchaseFetcher;
-import com.tradehero.th.billing.amazon.AmazonAlertDialogUtil;
-import java.util.ArrayList;
+import com.tradehero.th.billing.amazon.AmazonAlertDialogRxUtil;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Singleton public class AmazonPurchasingService
@@ -35,7 +34,7 @@ import timber.log.Timber;
     @Inject public AmazonPurchasingService(
             @NonNull Context appContext,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull AmazonAlertDialogUtil dialogUtil)
+            @NonNull AmazonAlertDialogRxUtil dialogUtil)
     {
         super();
         this.purchasingListeners = new LruCache<>(DEFAULT_MAP_LENGTH);
@@ -44,7 +43,8 @@ import timber.log.Timber;
         Timber.e(new Exception("Sandbox is " + PurchasingService.IS_SANDBOX_MODE), "Sandbox is %s", PurchasingService.IS_SANDBOX_MODE);
         if (PurchasingService.IS_SANDBOX_MODE)
         {
-            dialogUtil.popSandboxMode(activityProvider.get());
+            dialogUtil.popSandboxModeAndHandle(activityProvider.get())
+                    .subscribe(new EmptyObserver<>());
         }
     }
     //</editor-fold>
@@ -159,23 +159,6 @@ import timber.log.Timber;
                 else
                 {
                     listener.onPurchaseUpdatesResponse((PurchaseUpdatesResponse) response);
-                }
-            }
-
-            // HACK because RequestId seems messed up on App Tester
-            {
-                if (response instanceof PurchaseUpdatesResponse)
-                {
-                    for (RequestId listenerId : new ArrayList<>(purchasingListeners.snapshot().keySet()))
-                    {
-                        listener = purchasingListeners.get(listenerId);
-                        if (BaseAmazonPurchaseFetcher.class.isAssignableFrom(listener.getClass()))
-                        {
-                            purchasingListeners.remove(listenerId);
-                            waitingResponses.remove(requestEntry.getKey());
-                            listener.onPurchaseUpdatesResponse((PurchaseUpdatesResponse) response);
-                        }
-                    }
                 }
             }
         }

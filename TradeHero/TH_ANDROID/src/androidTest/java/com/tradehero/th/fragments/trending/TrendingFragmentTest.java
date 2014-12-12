@@ -8,24 +8,18 @@ import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(THRobolectricTestRunner.class)
 public class TrendingFragmentTest
@@ -57,18 +51,18 @@ public class TrendingFragmentTest
                 OpenTrendingFragment.class,
                 args);
         THRobolectric.runBgUiTasks(3);
-        THBillingInteractor dummyInteractor = mock(THBillingInteractor.class);
+        THBillingInteractorRx dummyInteractor = mock(THBillingInteractorRx.class);
         trendingFragment.set(dummyInteractor);
-        final THUIBillingRequestContainer requestContainer = new THUIBillingRequestContainer();
+        //final THUIBillingRequestContainer requestContainer = new THUIBillingRequestContainer();
         //noinspection unchecked
-        when(dummyInteractor.run(any(THUIBillingRequest.class))).then(new Answer<Object>()
-        {
-            @Override public Object answer(InvocationOnMock invocation) throws Throwable
-            {
-                requestContainer.passedRequest = (THUIBillingRequest) invocation.getArguments()[0];
-                return 1;
-            }
-        });
+        //when(dummyInteractor.run(any(THUIBillingRequest.class))).then(new Answer<Object>()
+        //{
+        //    @Override public Object answer(InvocationOnMock invocation) throws Throwable
+        //    {
+        //        requestContainer.passedRequest = (THUIBillingRequest) invocation.getArguments()[0];
+        //        return 1;
+        //    }
+        //});
 
         trendingFragment.handleExtraCashItemOnClick();
         Thread.sleep(50);

@@ -38,10 +38,6 @@ public class THBaseAmazonPurchaserRx
     }
     //</editor-fold>
 
-    @Override public void onDestroy()
-    {
-    }
-
     @NonNull @Override protected THBaseAmazonPurchase createPurchase(@NonNull PurchaseResponse purchaseResponse)
     {
         THBaseAmazonPurchase purchase = new THBaseAmazonPurchase(purchaseResponse, getPurchaseOrder().getApplicablePortfolioId());

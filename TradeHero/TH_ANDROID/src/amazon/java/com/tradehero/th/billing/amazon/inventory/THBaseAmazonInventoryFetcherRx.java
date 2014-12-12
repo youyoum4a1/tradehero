@@ -24,10 +24,6 @@ public class THBaseAmazonInventoryFetcherRx
     }
     //</editor-fold>
 
-    @Override public void onDestroy()
-    {
-    }
-
     @NonNull @Override protected AmazonSKU createAmazonSku(@NonNull String skuId)
     {
         return new AmazonSKU(skuId);

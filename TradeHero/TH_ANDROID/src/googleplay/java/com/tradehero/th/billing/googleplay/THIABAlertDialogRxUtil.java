@@ -299,6 +299,7 @@ public class THIABAlertDialogRxUtil
         return enabledItems;
     }
     //</editor-fold>
+
     public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
     {
         context.startActivity(Intent.createChooser(

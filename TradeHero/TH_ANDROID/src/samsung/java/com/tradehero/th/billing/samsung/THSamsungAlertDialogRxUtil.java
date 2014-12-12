@@ -1,10 +1,13 @@
 package com.tradehero.th.billing.samsung;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
@@ -59,4 +62,11 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         return enabledItems;
     }
     //</editor-fold>
+
+    public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
+    {
+        context.startActivity(Intent.createChooser(
+                samsungStoreUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
+                context.getString(R.string.iap_send_support_email_chooser_title)));
+    }
 }

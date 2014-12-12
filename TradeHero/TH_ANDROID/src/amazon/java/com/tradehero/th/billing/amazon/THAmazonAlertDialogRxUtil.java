@@ -237,4 +237,11 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         activityUtil.sendSupportEmail(context, emailIntent);
     }
     //</editor-fold>
+
+    public void sendSupportEmailRestoreFailed(final Context context, Exception exception)
+    {
+        context.startActivity(Intent.createChooser(
+                amazonStoreUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
+                context.getString(R.string.iap_send_support_email_chooser_title)));
+    }
 }
