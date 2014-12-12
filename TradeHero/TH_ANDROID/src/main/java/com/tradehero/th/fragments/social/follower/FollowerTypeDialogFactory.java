@@ -32,11 +32,11 @@ public class FollowerTypeDialogFactory
         LinearLayout expanded = (LinearLayout) inflater
                 .inflate(R.layout.common_dialog_layout, null, false);
         ListView list = (ListView) expanded.findViewById(R.id.content_list);
-        list.setAdapter(createMessageTypeAdapter(activity));
         View header = inflater.inflate(R.layout.common_dialog_item_header_layout, null);
         TextView headerText = (TextView) header.findViewById(android.R.id.title);
         headerText.setText(R.string.broadcast_message_change_type_hint);
         list.addHeaderView(header, null, false);
+        list.setAdapter(createMessageTypeAdapter(activity));
         return Pair.create(
                 THDialog.showUpDialog(activity, expanded, null),
                 ListViewObservable.itemClicks(list)

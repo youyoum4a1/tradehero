@@ -20,6 +20,8 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -170,6 +172,7 @@ public class PositionPartialTopView extends LinearLayout
     protected void linkWith(SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
+        displayStockSymbol();
         displayStockLogo();
         displayCompanyName();
         displayStockMovementIndicator();
@@ -238,7 +241,12 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (stockSymbol != null)
         {
-            if (securityId != null)
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                stockSymbol.setText(String.format("%s/%s", pair.left, pair.right));
+            }
+            else if (securityId != null)
             {
                 stockSymbol.setText(String.format("%s:%s", securityId.getExchange(), securityId.getSecuritySymbol()));
             }

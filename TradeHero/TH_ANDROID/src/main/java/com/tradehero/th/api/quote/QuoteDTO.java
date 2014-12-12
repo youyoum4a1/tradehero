@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.RawResponseKeeper;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import java.util.Date;
@@ -11,6 +12,13 @@ import timber.log.Timber;
 
 public class QuoteDTO implements RawResponseKeeper
 {
+    public static final int QUOTE_TYPE_YAHOO_CSV = 1;
+    public static final int QUOTE_TYPE_ACTIV_FINANCIAL = 2;
+    public static final int QUOTE_TYPE_BBG_JSON = 3;
+    public static final int QUOTE_TYPE_EDI_CSV = 4;
+    public static final int QUOTE_TYPE_VSAT_JSON = 5;
+    public static final int QUOTE_TYPE_OANDA_JSON = 6;
+
     private static final String BUNDLE_KEY_SECURITY_ID = QuoteDTO.class.getName() + ".security_id";
     private static final String BUNDLE_KEY_AS_OF_UTC = QuoteDTO.class.getName() + ".as_of_utc";
     private static final String BUNDLE_KEY_BID_PRICE = QuoteDTO.class.getName() + ".bid_price";
@@ -27,6 +35,8 @@ public class QuoteDTO implements RawResponseKeeper
     public int securityId;
 
     @Nullable public Date asOfUtc;
+    @JsonProperty("asOfEST")
+    public Date asOfEst;
     @Nullable public Double bid;
     @Nullable public Double ask;
 
@@ -40,6 +50,13 @@ public class QuoteDTO implements RawResponseKeeper
     public Date toUSDRateDate;
 
     public String timeStamp;
+
+    @JsonProperty("IsInverted")
+    public Boolean isInverted;
+    @JsonProperty("IsOneSided")
+    public Boolean isOneSided;
+    @JsonProperty("IsValid")
+    public Boolean isValid;
 
     // This part is used for the signature container that came back
     private String rawResponse;

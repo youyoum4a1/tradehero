@@ -12,9 +12,5 @@ interface QuoteServiceRx
     Response getRawQuote(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol);
-
-    @GET("/FX/{fxSymbol}/quote")
-    Response getRawFxQuote(
-            @Path("fxSymbol") String fxSymbol);
     //</editor-fold>
 }

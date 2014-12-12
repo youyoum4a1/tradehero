@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -14,6 +15,7 @@
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,19 +23,25 @@
         android:gravity="center"
         android:textColor="@color/portfolio_header_text_color"
         style="@style/TH.Caption"/>
+
     <TextView
         android:id="@+id/header_portfolio_total_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/portfolio_header_text_color"
         style="@style/TH.Subhead"
-        android:gravity="center"/>
+        android:gravity="center"
+        tools:text="US$ 8,695"
+        />
+
   </LinearLayout>
+
   <LinearLayout
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,12 +49,17 @@
         android:gravity="center"
         android:textColor="@color/portfolio_header_text_color"
         style="@style/TH.Caption"/>
+
     <TextView
         android:id="@+id/header_portfolio_cash_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TH.Subhead"
         android:textColor="@color/portfolio_header_text_color"
-        android:gravity="center"/>
+        android:gravity="center"
+        tools:text="US$ 8,695"
+        />
+
   </LinearLayout>
+
 </com.tradehero.th.fragments.portfolio.header.CurrentUserPortfolioHeaderView>
