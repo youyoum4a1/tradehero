@@ -5,16 +5,19 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.th.R;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.observables.ViewObservable;
+import rx.subjects.PublishSubject;
 
 public class LearnMoreView extends LinearLayout
     implements FxOnBoardView<Boolean>
 {
+    private PublishSubject<Boolean> resultSubject = PublishSubject.create();
+    private Subscription enrollmentSubscription;
+
     @Override public Observable<Boolean> result()
     {
-        return ViewObservable.clicks(findViewById(R.id.next_button), false)
-                .map(t -> true)
-                .asObservable();
+        return resultSubject.asObservable();
     }
 
     public LearnMoreView(Context context, AttributeSet attrs)
@@ -22,8 +25,18 @@ public class LearnMoreView extends LinearLayout
         super(context, attrs);
     }
 
-    @Override protected void onFinishInflate()
+    @Override protected void onAttachedToWindow()
     {
-        super.onFinishInflate();
+        super.onAttachedToWindow();
+        enrollmentSubscription = ViewObservable.clicks(findViewById(R.id.next_button), false)
+                //.flatMap(view -> fxService.enroll()) TODO when server ready, implement this
+                .map(view -> true) // continue to next screen
+                .subscribe(resultSubject);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        enrollmentSubscription.unsubscribe();
+        super.onDetachedFromWindow();
     }
 }
