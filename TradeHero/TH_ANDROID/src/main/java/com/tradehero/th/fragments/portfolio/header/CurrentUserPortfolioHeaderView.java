@@ -56,7 +56,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         // Nothing to do
     }
 
-    private void displayTotalValueTextView()
+    public void displayTotalValueTextView()
     {
         if (totalValueTextView != null)
         {
@@ -68,7 +68,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         }
     }
 
-    private void displayCashValueTextView()
+    public void displayCashValueTextView()
     {
         if (cashValueTextView != null)
         {

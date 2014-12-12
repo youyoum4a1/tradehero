@@ -1,8 +1,10 @@
 package com.tradehero.th.fragments.portfolio.header;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -16,31 +18,47 @@ import javax.inject.Singleton;
 {
     @Inject protected CurrentUserId currentUserId;
 
-    public int layoutIdFor(GetPositionsDTOKey getPositionsDTOKey)
+    public int layoutIdFor(
+            @NonNull GetPositionsDTOKey getPositionsDTOKey,
+            @NonNull PortfolioCompactDTO portfolioCompactDTO)
     {
-        if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
+        if (portfolioCompactDTO.isFx())
         {
-            return layoutIdFor((LeaderboardMarkUserId) getPositionsDTOKey);
+            // TODO more tests
+            return layoutIdForFx(portfolioCompactDTO.getOwnedPortfolioId());
         }
-        else if (getPositionsDTOKey instanceof OwnedPortfolioId)
+        else
         {
-            return layoutIdFor((OwnedPortfolioId) getPositionsDTOKey);
+            if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
+            {
+                return layoutIdForStocks((LeaderboardMarkUserId) getPositionsDTOKey);
+            }
+            else if (getPositionsDTOKey instanceof OwnedPortfolioId)
+            {
+                return layoutIdForStocks((OwnedPortfolioId) getPositionsDTOKey);
+            }
         }
         throw new IllegalArgumentException("Unhandled getPositionDTOKey type " + getPositionsDTOKey.getClass());
     }
 
-    protected int layoutIdFor(LeaderboardMarkUserId leaderboardMarkUserId)
+    protected int layoutIdForFx(@NonNull OwnedPortfolioId ownedPortfolioId)
+    {
+        // TODO more tests
+        return R.layout.portfolio_header_fx_current_user_view;
+    }
+
+    protected int layoutIdForStocks(LeaderboardMarkUserId leaderboardMarkUserId)
     {
         // TODO check whether we need to see this is current user or not
         return R.layout.portfolio_header_other_user_view;
     }
 
-    protected int layoutIdFor(OwnedPortfolioId ownedPortfolioId)
+    protected int layoutIdForStocks(@NonNull OwnedPortfolioId ownedPortfolioId)
     {
         return layoutIdFor(ownedPortfolioId.getUserBaseKey());
     }
 
-    public int layoutIdFor(UserBaseKey userBaseKey)
+    public int layoutIdFor(@NonNull UserBaseKey userBaseKey)
     {
         // TODO distinguish Fx portfolios
         if (userBaseKey.equals(currentUserId.toUserBaseKey()))

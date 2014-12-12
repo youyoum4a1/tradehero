@@ -2,13 +2,11 @@ package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 
 /**
  * Header displayed on a Portfolio owned by the authenticated user.
@@ -36,4 +34,85 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
         super(context, attrs, defStyle);
     }
     //</editor-fold>
+
+    @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
+    {
+        super.linkWith(portfolioCompactDTO);
+
+        displayMarginAvailable();
+        displayMarginUsed();
+        displayUnrealisedPl();
+        displayRealisedPl();
+    }
+
+    @Override public void displayTotalValueTextView()
+    {
+        if (totalValueTextView != null)
+        {
+            if (portfolioCompactDTO != null)
+            {
+                totalValueTextView.setText(
+                        THSignedMoney.builder(portfolioCompactDTO.nav)
+                                .currency(portfolioCompactDTO.getNiceCurrency())
+                                .build()
+                                .toString());
+            }
+        }
+    }
+
+    public void displayMarginAvailable()
+    {
+        if (marginAvailable != null)
+        {
+            if (portfolioCompactDTO != null)
+            {
+                marginAvailable.setText(
+                        THSignedMoney.builder(portfolioCompactDTO.marginAvailableRefCcy)
+                                .currency(portfolioCompactDTO.getNiceCurrency())
+                                .build()
+                                .toString());
+            }
+        }
+    }
+
+    public void displayMarginUsed()
+    {
+        if (marginUsed != null)
+        {
+            if (portfolioCompactDTO != null)
+            {
+                marginUsed.setText(
+                        THSignedMoney.builder(portfolioCompactDTO.marginUsedRefCcy)
+                                .currency(portfolioCompactDTO.getNiceCurrency())
+                                .build()
+                                .toString());
+            }
+        }
+    }
+
+    public void displayUnrealisedPl()
+    {
+        if (unrealisedPl != null)
+        {
+            if (portfolioCompactDTO != null)
+            {
+                unrealisedPl.setText(
+                        THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
+                                .currency(portfolioCompactDTO.getNiceCurrency())
+                                .build()
+                                .toString());
+            }
+        }
+    }
+
+    public void displayRealisedPl()
+    {
+        if (realisedPl != null)
+        {
+            if (portfolioCompactDTO != null)
+            {
+                // TODO
+            }
+        }
+    }
 }
