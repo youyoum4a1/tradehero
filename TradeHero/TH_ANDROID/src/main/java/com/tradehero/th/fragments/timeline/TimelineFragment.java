@@ -17,8 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClickSticky;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
@@ -38,7 +36,6 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
@@ -141,7 +138,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription freeFollowSubscription;
     private UserProfileView userProfileView;
     private View loadingView;
-    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
 
     public TabType currentTab = TabType.PORTFOLIO_LIST;
     protected boolean mIsOtherProfile = false;
@@ -338,7 +334,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         unsubscribe(messageThreadHeaderFetchSubscription);
         messageThreadHeaderFetchSubscription = null;
         detachFollowDialogCombo();
-        detachChoiceFollowAssistant();
 
         super.onStop();
     }
@@ -380,16 +375,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
         }
         followDialogCombo = null;
-    }
-
-    private void detachChoiceFollowAssistant()
-    {
-        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
-        if (copy != null)
-        {
-            copy.onDestroy();
-        }
-        choiceFollowUserAssistantWithDialog = null;
     }
 
     protected void fetchMessageThreadHeader()
@@ -637,7 +622,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         });
     }
 
-    protected Observable<UserProfileDTO> handleFollowRequest(@NonNull FollowRequest request)
+    @NonNull protected Observable<UserProfileDTO> handleFollowRequest(@NonNull FollowRequest request)
     {
         if (request.isPremium)
         {
@@ -662,13 +647,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            detachChoiceFollowAssistant();
-            choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
-                    getActivity(),
-                    shownProfile,
-                    getApplicablePortfolioId());
             subscriptions.add(
-                    choiceFollowUserAssistantWithDialog.launchChoiceRx()
+                    new ChoiceFollowUserAssistantWithDialog(
+                            getActivity(),
+                            shownProfile,
+                            getApplicablePortfolioId()).launchChoiceRx()
                             .finallyDo(() -> heroAlertDialogUtilLazy.get().dismissProgressDialog())
                             .subscribe(
                                     pair -> {
@@ -768,31 +751,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
         }
     }
-
-    //<editor-fold desc="BasePurchaseManagerFragment stuffs">
-    @Override protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()
-    {
-        return new TimelinePurchaseReportedListener();
-    }
-
-    protected class TimelinePurchaseReportedListener implements THPurchaseReporter.OnPurchaseReportedListener
-    {
-        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO currentUserProfileDTO)
-        {
-            if (!mIsOtherProfile)
-            {
-                linkWith(currentUserProfileDTO, true);
-            }
-            updateBottomButton();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Profile));
-        }
-
-        @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-        {
-            // Nothing for now
-        }
-    }
-    //</editor-fold>
 
     //<editor-fold desc="UserProfileCompactViewHolder">
     protected void pushHeroFragment()

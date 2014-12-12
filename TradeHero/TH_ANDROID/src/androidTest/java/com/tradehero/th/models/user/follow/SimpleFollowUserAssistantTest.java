@@ -1,10 +1,12 @@
-package com.tradehero.th.models.user;
+package com.tradehero.th.models.user.follow;
 
 import com.tradehero.THRobolectric;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.models.user.FollowUserAssistantTestBase;
+import com.tradehero.th.models.user.OpenSimpleFollowUserAssistant;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import org.junit.After;
 import org.junit.Before;
@@ -120,7 +122,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
         // Prepare user service
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollow();
+        ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollowRx();
 
         verify(userServiceWrapper, times(1)).followRx(heroId);
     }
@@ -161,7 +163,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForFailFollow(assistant, expected);
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollow();
+        ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollowRx();
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
@@ -174,7 +176,7 @@ public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForSuccessFollow(assistant, expected);
         ((OpenSimpleFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollow();
+        ((OpenSimpleFollowUserAssistant) assistant).launchPremiumFollowRx();
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
     }

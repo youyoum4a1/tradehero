@@ -1,5 +1,7 @@
 package com.tradehero.th.models.user;
 
+import com.tradehero.th.models.user.follow.FollowUserAssistantTest;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistantTest;
 import dagger.Module;
 
 @Module(

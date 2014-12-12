@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,10 +34,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
@@ -53,6 +50,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
@@ -63,11 +61,8 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -221,31 +216,10 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key))
-                .subscribe(createExchangeListTypeFetchObserver()));
-    }
-
-    @NonNull protected Observer<Pair<ExchangeListType, ExchangeCompactDTOList>> createExchangeListTypeFetchObserver()
-    {
-        return new TrendingExchangeListTypeFetchObserver();
-    }
-
-    protected class TrendingExchangeListTypeFetchObserver implements Observer<Pair<ExchangeListType, ExchangeCompactDTOList>>
-    {
-        @Override public void onNext(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
-        {
-            Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(getString(R.string.error_fetch_exchange_list_info));
-            Timber.e("Error fetching the list of exchanges", e);
-        }
+                .subscribe(
+                        pair -> linkWith(pair.second),
+                        error -> THToast.show(getString(R.string.error_fetch_exchange_list_info))
+                ));
     }
 
     private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)
@@ -271,30 +245,10 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserProfileFetchObserver()));
-    }
-
-    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileFetchObserver()
-    {
-        return new TrendingUserProfileFetchObserver();
-    }
-
-    protected class TrendingUserProfileFetchObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            Timber.d("Retrieve user with surveyUrl=%s", pair.second.activeSurveyImageURL);
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_user_profile);
-        }
+                .subscribe(
+                        pair -> linkWith(pair.second),
+                        error -> THToast.show(R.string.error_fetch_user_profile)
+                ));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -309,30 +263,16 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey()))
-                .subscribe(createProviderListFetchObserver()));
+                .subscribe(
+                        pair -> linkWith(pair.second),
+                        error -> THToast.show(R.string.error_fetch_provider_competition_list)
+                ));
     }
 
-    @NonNull protected Observer<Pair<ProviderListKey, ProviderDTOList>> createProviderListFetchObserver()
+    protected void linkWith(ProviderDTOList providerDTOs)
     {
-        return new TrendingProviderListFetchObserver();
-    }
-
-    protected class TrendingProviderListFetchObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
-    {
-        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
-        {
-            providerDTOs = pair.second;
-            wrapperAdapter.setProviderEnabled(providerDTOs != null && !providerDTOs.isEmpty());
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_provider_competition_list);
-        }
+        this.providerDTOs = providerDTOs;
+        wrapperAdapter.setProviderEnabled(providerDTOs != null && !providerDTOs.isEmpty());
     }
 
     @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
@@ -463,45 +403,42 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
 
     private void handleSurveyItemOnClick()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        subscriptions.add(AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
                 .first()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        if (args.second.activeSurveyURL != null)
-                        {
-                            Bundle bundle = new Bundle();
-                            WebViewFragment.putUrl(bundle, args.second.activeSurveyURL);
-                            navigator.get().pushFragment(WebViewFragment.class, bundle, null);
-                        }
-                    }
-                });
+                .subscribe(
+                        args -> {
+                            if (args.second.activeSurveyURL != null)
+                            {
+                                Bundle bundle = new Bundle();
+                                WebViewFragment.putUrl(bundle, args.second.activeSurveyURL);
+                                navigator.get().pushFragment(WebViewFragment.class, bundle, null);
+                            }
+                        },
+                        error -> THToast.show(new THException(error))));
     }
 
     private void handleResetPortfolioItemOnClick()
     {
-        detachRequestCode();
         //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest)
-                uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO)
-                        .applicablePortfolioId(getApplicablePortfolioId())
-                        .startWithProgressDialog(true)
-                        .build());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
+                .subscribe(
+                        result -> {},
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     protected void handleExtraCashItemOnClick()
     {
-        detachRequestCode();
         //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest)
-                uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
-                        .applicablePortfolioId(getApplicablePortfolioId())
-                        .startWithProgressDialog(true)
-                        .build());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+                .subscribe(
+                        result -> {},
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     private void handleEarnCreditItemOnClick()

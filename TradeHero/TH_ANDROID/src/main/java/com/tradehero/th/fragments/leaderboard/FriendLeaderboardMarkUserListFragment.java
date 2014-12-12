@@ -29,7 +29,6 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -61,7 +60,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
 
     protected FollowDialogCombo followDialogCombo;
-    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
     @Nullable Subscription friendsSubscription;
     @NonNull SubscriptionList subscriptions;
 
@@ -168,7 +166,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         subscriptions.unsubscribe();
         detachFollowDialogCombo();
-        detachChoiceFollowAssistant();
         unsubscribe(friendsSubscription);
         friendsSubscription = null;
         super.onStop();
@@ -203,16 +200,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
             followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
         }
         followDialogCombo = null;
-    }
-
-    protected void detachChoiceFollowAssistant()
-    {
-        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
-        if (copy != null)
-        {
-            copy.onDestroy();
-        }
-        choiceFollowUserAssistantWithDialog = null;
     }
 
     protected View inflateEmptyView(@NonNull LayoutInflater inflater, ViewGroup container)
@@ -274,34 +261,14 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         }
     }
 
-    @NonNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new LeaderboardMarkUserListPremiumUserFollowedListener();
-    }
-
-    protected class LeaderboardMarkUserListPremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO)
-        {
-            handleFollowSuccess(currentUserProfileDTO);
-        }
-
-        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
-        {
-            // nothing for now
-        }
-    }
-
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        detachChoiceFollowAssistant();
-        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
-                getActivity(),
-                userBaseDTO,
-                getApplicablePortfolioId());
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                choiceFollowUserAssistantWithDialog.launchChoiceRx())
+                new ChoiceFollowUserAssistantWithDialog(
+                        getActivity(),
+                        userBaseDTO,
+                        getApplicablePortfolioId()).launchChoiceRx())
                 .subscribe(
                         pair -> {
                             setCurrentUserProfileDTO(pair.second);
@@ -330,10 +297,5 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
                 return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
             }
         });
-    }
-
-    protected void handleFollowSuccess(@NonNull UserProfileDTO userProfileDTO)
-    {
-        setCurrentUserProfileDTO(userProfileDTO);
     }
 }

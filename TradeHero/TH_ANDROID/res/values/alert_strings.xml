@@ -34,5 +34,6 @@
 
   <string name="error_fetch_alert">There was an error when fetching alert information</string>
   <string name="error_alert_insufficient_info">There is insufficient information to submit the alert</string>
+  <string name="error_alert_save_inactive">We cannot save an inactive alert</string>
 
 </resources>

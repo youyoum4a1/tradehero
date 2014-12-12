@@ -34,15 +34,10 @@ public class ChoiceFollowUserAssistantWithDialog
         super();
         this.activity = activity;
         this.heroBaseInfo = heroDTO;
-        this.followUserAssistant = new FollowUserAssistant(activity, heroDTO.getBaseKey(), null, applicablePortfolioId);
+        this.followUserAssistant = new FollowUserAssistant(activity, heroDTO.getBaseKey(), applicablePortfolioId);
         HierarchyInjector.inject(activity, this);
     }
     //</editor-fold>
-
-    public void onDestroy()
-    {
-        followUserAssistant.onDestroy();
-    }
 
     @NonNull public Observable<Pair<FollowRequest, UserProfileDTO>> launchChoiceRx()
     {

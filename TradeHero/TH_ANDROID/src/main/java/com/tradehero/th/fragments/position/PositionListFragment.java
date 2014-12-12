@@ -46,7 +46,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
@@ -63,6 +63,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -110,6 +111,7 @@ public class PositionListFragment
     protected UserBaseKey shownUser;
     @Nullable protected Subscription userProfileSubscription;
     @Nullable protected UserProfileDTO userProfileDTO;
+    @NonNull protected SubscriptionList subscriptions;
 
     protected PositionItemAdapter positionItemAdapter;
 
@@ -140,6 +142,7 @@ public class PositionListFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
         thRouter.inject(this);
         Bundle args = getArguments();
         if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
@@ -259,6 +262,7 @@ public class PositionListFragment
 
     @Override public void onStop()
     {
+        subscriptions.unsubscribe();
         unsubscribe(portfolioSubscription);
         portfolioSubscription = null;
         unsubscribe(userProfileSubscription);
@@ -294,11 +298,6 @@ public class PositionListFragment
     {
         this.positionItemAdapter = null;
         super.onDestroy();
-    }
-
-    @NonNull @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new AbstractPositionListPremiumUserFollowedListener();
     }
 
     protected PositionItemAdapter createPositionItemAdapter()
@@ -545,8 +544,18 @@ public class PositionListFragment
     //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
-        premiumFollowUser(userBaseKey);
-        //popFollowUser(userBaseKey);
+        //noinspection unchecked
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
+                .subscribe(
+                        result-> {
+                            displayHeaderView();
+                            fetchSimplePage();
+                            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     @Override public void onUserFollowed(UserBaseKey userBaseKey)
@@ -587,20 +596,5 @@ public class PositionListFragment
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_position_list;
-    }
-
-    protected class AbstractPositionListPremiumUserFollowedListener implements FollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO)
-        {
-            displayHeaderView();
-            fetchSimplePage();
-            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
-        }
-
-        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
-        {
-            // do nothing for now
-        }
     }
 }

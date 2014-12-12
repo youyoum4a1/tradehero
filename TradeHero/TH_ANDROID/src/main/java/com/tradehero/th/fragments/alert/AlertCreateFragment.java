@@ -4,11 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.Observable;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
@@ -29,8 +30,8 @@ public class AlertCreateFragment extends BaseAlertEditFragment
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(getSecurityId(getArguments()), true);
-        linkWith(getDummyInitialAlertDTO(), true);
+        linkWith(getSecurityId(getArguments()));
+        linkWith(getDummyInitialAlertDTO());
     }
 
     protected AlertDTO getDummyInitialAlertDTO()
@@ -47,11 +48,10 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         setActionBarTitle(R.string.stock_alert_add_alert);
     }
 
-    protected void saveAlertProper(AlertFormDTO alertFormDTO)
+    @Override @NonNull protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
     {
-        AndroidObservable.bindFragment(this, alertServiceWrapper.get().createAlertRx(
+        return alertServiceWrapper.get().createAlertRx(
                 currentUserId.toUserBaseKey(),
-                alertFormDTO))
-                .subscribe(createAlertUpdateObserver());
+                alertFormDTO);
     }
 }

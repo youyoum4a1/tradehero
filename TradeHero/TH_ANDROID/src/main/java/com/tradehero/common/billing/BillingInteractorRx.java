@@ -124,4 +124,6 @@ public interface BillingInteractorRx<
                 OrderIdType,
                 ProductPurchaseType>> restorePurchases();
     //</editor-fold>
+
+    void manageSubscriptions();
 }

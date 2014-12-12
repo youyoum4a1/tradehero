@@ -1,6 +1,8 @@
 package com.tradehero.th.billing.googleplay;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -109,5 +111,15 @@ import rx.Observable;
                         inventoryResult.detail.getType(),
                         dto.getOwnedPortfolioId(),
                         heroId));
+    }
+
+    @Override public void manageSubscriptions()
+    {
+        Activity currentActivity = activityProvider.get();
+        if (currentActivity != null)
+        {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
+            currentActivity.startActivity(intent);
+        }
     }
 }

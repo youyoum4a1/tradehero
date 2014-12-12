@@ -23,8 +23,6 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
@@ -42,6 +40,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
@@ -52,13 +51,11 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         implements WithTutorial
 {
     public static boolean alreadyNotifiedNeedCreateAccount = false;
-    protected Integer showProductRequestCode;
 
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject StoreItemFactory storeItemFactory;
-    @Inject protected THBillingInteractor userInteractor;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
@@ -66,10 +63,12 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     private Subscription testAvailableSubscription;
     private StoreItemAdapter storeItemAdapter;
     private Subscription storeItemSubscription;
+    @NonNull protected SubscriptionList subscriptions;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
         thRouter.inject(this);
         storeItemAdapter = new StoreItemAdapter(getActivity());
     }
@@ -90,7 +89,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         setActionBarTitle(R.string.store_option_menu_title);  // Add the changing cute icon
-        setActionBarSubtitle(userInteractor.getName());
+        setActionBarSubtitle(userInteractorRx.getName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -127,6 +126,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
     @Override public void onStop()
     {
+        subscriptions.unsubscribe();
         unsubscribe(storeItemSubscription);
         storeItemSubscription = null;
         unsubscribe(testAvailableSubscription);
@@ -194,17 +194,14 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             }
             else
             {
-                detachRequestCode();
-                THUIBillingRequest uiRequest = uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal])
-                        .applicablePortfolioId(applicablePortfolioId)
-                        .startWithProgressDialog(true)
-                        .popIfBillingNotAvailable(true)
-                        .popIfProductIdentifierFetchFailed(true)
-                        .popIfInventoryFetchFailed(true)
-                        .build();
                 //noinspection unchecked
-                requestCode = userInteractor.run(uiRequest);
+                subscriptions.add(AndroidObservable.bindFragment(
+                        this,
+                        userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
+                        .subscribe(
+                                pair -> {},
+                                error -> THToast.show(new THException((Throwable) error))
+                        ));
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,21 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnItemClickSticky;
 import com.tradehero.common.billing.BillingConstants;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.SecurityAlertKnowledge;
-import com.tradehero.th.billing.THBasePurchaseActionInteractor;
-import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -36,8 +32,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class AlertManagerFragment extends BasePurchaseManagerFragment
@@ -55,6 +51,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected SecurityAlertKnowledge securityAlertKnowledge;
 
+    @NonNull SubscriptionList subscriptions;
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
 
@@ -62,6 +59,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         super.onCreate(savedInstanceState);
         alertListItemAdapter = new AlertListItemAdapter(getActivity(), currentUserId, R.layout.alert_list_item);
+        subscriptions = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -75,22 +73,14 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-        alertListView.setAdapter(alertListItemAdapter);
         alertListView.addFooterView(footerView);
+        alertListView.setAdapter(alertListItemAdapter);
         alertListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
         displayAlertCount();
         displayAlertCountIcon();
 
-        btnPlanUpgrade.setOnClickListener(v -> {
-            detachRequestCode();
-            //noinspection unchecked
-            requestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
-                    .domainToPresent(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
-                    .build());
-        });
-
-        footerView.setOnClickListener(view1 -> handleManageSubscriptionClicked());
+        footerView.setOnClickListener(this::handleManageSubscriptionClicked);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -123,12 +113,6 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
         alertListView = null;
 
-        if (btnPlanUpgrade != null)
-        {
-            btnPlanUpgrade.setOnClickListener(null);
-        }
-        btnPlanUpgrade = null;
-
         if (footerView != null)
         {
             footerView.setOnClickListener(null);
@@ -146,33 +130,53 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchUserProfile()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserProfileCacheObserver());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .subscribe(
+                        pair -> linkWith(pair.second),
+                        error -> THToast.show(new THException(error))
+                ));
+    }
+
+    public void linkWith(UserProfileDTO userProfileDTO)
+    {
+        this.currentUserProfile = userProfileDTO;
+        displayAlertCount();
+        displayAlertCountIcon();
     }
 
     protected void fetchAlertCompactList()
     {
-        AndroidObservable.bindFragment(
+        subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 alertCompactListCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createAlertCompactDTOListObserver());
+                .subscribe(
+                        pair -> linkWith(pair.second),
+                        error -> THToast.show(new THException(error))
+                ));
     }
 
-    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
+    protected void linkWith(@NonNull AlertCompactDTOList alertCompactDTOs)
     {
-        return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new THPurchaseReporter.OnPurchaseReportedListener()
-                {
-                    @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase, UserProfileDTO updatedUserPortfolio)
-                    {
-                        displayAlertCount();
-                        displayAlertCountIcon();
-                    }
+        progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
+        alertListItemAdapter.appendTail(alertCompactDTOs);
+        alertListItemAdapter.notifyDataSetChanged();
+    }
 
-                    @Override public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase, BillingException error)
-                    {
-                    }
-                });
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.btn_upgrade_plan)
+    protected void handleBtnPlanUpgradeClicked(@SuppressWarnings("UnusedParameters") View view)
+    {
+        //noinspection unchecked
+        subscriptions.add(userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
+                .subscribe(
+                        result -> {
+                            displayAlertCount();
+                            displayAlertCountIcon();
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     private void displayAlertCount()
@@ -218,75 +222,15 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void handleAlertItemClicked(AlertCompactDTO alertCompactDTO)
+    private void handleAlertItemClicked(@NonNull AlertCompactDTO alertCompactDTO)
     {
         Bundle bundle = new Bundle();
         AlertViewFragment.putAlertId(bundle, alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()));
         navigator.get().pushFragment(AlertViewFragment.class, bundle);
     }
 
-    private void handleManageSubscriptionClicked()
+    private void handleManageSubscriptionClicked(View view)
     {
-        detachRequestCode();
-        //noinspection unchecked
-        requestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
-                .manageSubscriptions(true)
-                .build());
-    }
-
-    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new AlertManagerFragmentUserProfileCacheObserver();
-    }
-
-    protected class AlertManagerFragmentUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-    }
-
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
-    {
-        this.currentUserProfile = userProfileDTO;
-        if (andDisplay)
-        {
-            displayAlertCount();
-            displayAlertCountIcon();
-        }
-    }
-
-    protected Observer<Pair<UserBaseKey, AlertCompactDTOList>> createAlertCompactDTOListObserver()
-    {
-        return new AlertManagerFragmentAlertCompactListObserver();
-    }
-
-    protected class AlertManagerFragmentAlertCompactListObserver implements Observer<Pair<UserBaseKey, AlertCompactDTOList>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, AlertCompactDTOList> pair)
-        {
-            progressAnimator.setDisplayedChildByLayoutId(R.id.alerts_list);
-            alertListItemAdapter.appendTail(pair.second);
-            alertListItemAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_alert);
-        }
+        userInteractorRx.manageSubscriptions();
     }
 }

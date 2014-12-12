@@ -21,13 +21,11 @@ import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
@@ -38,6 +36,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class AllRelationsFragment extends BasePurchaseManagerFragment
@@ -56,10 +55,12 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     private RelationsListItemAdapter mRelationsListItemAdapter;
     @InjectView(R.id.relations_list) ListView mRelationsListView;
 
-    @Override
-    protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
+    @NonNull SubscriptionList subscriptions;
+
+    @Override public void onCreate(Bundle savedInstanceState)
     {
-        return new AllRelationsPremiumUserFollowedListener();
+        super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,6 +101,12 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         alertDialogUtilLazy.get().dismissProgressDialog();
         super.onPause();
+    }
+
+    @Override public void onStop()
+    {
+        subscriptions.unsubscribe();
+        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -158,7 +165,14 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)
     {
-        premiumFollowUser(userBaseKey);
+        //noinspection unchecked
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
+                .subscribe(
+                        result -> forceUpdateLook(userBaseKey),
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     protected Observer<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>
@@ -204,25 +218,9 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected class AllRelationsPremiumUserFollowedListener
-            implements FollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(
-                @NonNull UserBaseKey userFollowed,
-                @NonNull UserProfileDTO currentUserProfileDTO)
-        {
-            forceUpdateLook(userFollowed);
-        }
-
-        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
-        {
-            // nothing for now
-        }
-    }
-
     protected void forceUpdateLook(@NonNull final UserBaseKey userFollowed)
     {
-        AndroidObservable.bindFragment(
+        subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userMessagingRelationshipCache.get(userFollowed))
                 .subscribe(new Observer<Pair<UserBaseKey, UserMessagingRelationshipDTO>>()
@@ -252,6 +250,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                                         allowableRecipientDTO -> allowableRecipientDTO != null
                                                 && allowableRecipientDTO.user.getBaseKey().equals(userFollowed));
                     }
-                });
+                }));
     }
 }

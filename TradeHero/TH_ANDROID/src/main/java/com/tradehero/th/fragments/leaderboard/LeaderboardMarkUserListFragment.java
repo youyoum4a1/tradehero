@@ -95,7 +95,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected PerPagedLeaderboardKey currentLeaderboardKey;
 
     protected FollowDialogCombo followDialogCombo;
-    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -317,7 +316,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         unsubscribe(userOnLeaderboardCacheSubscription);
         userOnLeaderboardCacheSubscription = null;
         detachFollowDialogCombo();
-        detachChoiceFollowAssistant();
         super.onStop();
     }
 
@@ -359,16 +357,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
         }
         followDialogCombo = null;
-    }
-
-    protected void detachChoiceFollowAssistant()
-    {
-        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
-        if (copy != null)
-        {
-            copy.onDestroy();
-        }
-        choiceFollowUserAssistantWithDialog = null;
     }
 
     @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
@@ -581,14 +569,12 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        detachChoiceFollowAssistant();
-        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
-                getActivity(),
-                userBaseDTO,
-                getApplicablePortfolioId());
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                choiceFollowUserAssistantWithDialog.launchChoiceRx())
+                new ChoiceFollowUserAssistantWithDialog(
+                        getActivity(),
+                        userBaseDTO,
+                        getApplicablePortfolioId()).launchChoiceRx())
                 .subscribe(
                         pair -> {
                             setCurrentUserProfileDTO(pair.second);

@@ -1,7 +1,6 @@
-package com.tradehero.th.models.user;
+package com.tradehero.th.models.user.follow;
 
 import com.tradehero.THRobolectric;
-import static com.tradehero.THRobolectric.runBgUiTasks;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.billing.ProductPurchase;
 import com.tradehero.common.billing.exception.BillingException;
@@ -11,32 +10,36 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.request.THUIBillingRequest;
+import com.tradehero.th.models.user.FollowUserAssistantTestBase;
+import com.tradehero.th.models.user.OpenFollowUserAssistant;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import retrofit.RetrofitError;
+
+import static com.tradehero.THRobolectric.runBgUiTasks;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import retrofit.RetrofitError;
 
 @RunWith(THRobolectricTestRunner.class)
 public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 {
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    protected THBillingInteractor billingInteractor;
+    protected THBillingInteractorRx billingInteractor;
     private OwnedPortfolioId applicablePortfolioId = new OwnedPortfolioId(98, 456);
     private FollowUserAssistant assistant;
     private THUIBillingRequest receivedRequest;
@@ -46,7 +49,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         super.setUp();
         THRobolectric.setupActivity(DashboardActivityExtended.class).inject(this);
         currentUserId.set(98);
-        billingInteractor = mock(THBillingInteractor.class);
+        billingInteractor = mock(THBillingInteractorRx.class);
     }
 
     @After public void tearDown()
@@ -155,7 +158,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         userProfileCache = mock(UserProfileCacheRx.class);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
 
         verify(userProfileCache, times(1)).get(currentUserId.toUserBaseKey());
     }
@@ -184,7 +187,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         makeProfileCacheThrow(expected);
         ((OpenFollowUserAssistant) assistant).setUserProfileCache(userProfileCache);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
     }
@@ -199,7 +202,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         // Prepare user service
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).followRx(heroId);
@@ -217,7 +220,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForFailFollow(assistant, expected);
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, expected);
@@ -235,7 +238,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForSuccessFollow(assistant, expected);
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, expected);
@@ -252,7 +255,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         ((OpenFollowUserAssistant) assistant).setBillingInteractor(billingInteractor);
         makeBillingInteractorSaveRequest(13);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         //noinspection unchecked
@@ -292,7 +295,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
 
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         verify(userServiceWrapper, times(1)).followRx(heroId);
@@ -315,7 +318,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForFailFollow(assistant, retrofitError);
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowFailed(heroId, retrofitError);
@@ -338,7 +341,7 @@ public class FollowUserAssistantTest extends FollowUserAssistantTestBase
         prepareUserServiceForSuccessFollow(assistant, myProfileAfterFollow);
         ((OpenFollowUserAssistant) assistant).setUserServiceWrapper(userServiceWrapper);
 
-        assistant.launchPremiumFollow();
+        assistant.launchPremiumFollowRx();
         runBgUiTasks(3);
 
         verify(listener, times(1)).onUserFollowSuccess(heroId, myProfileAfterFollow);
