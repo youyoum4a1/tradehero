@@ -52,7 +52,6 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -65,6 +64,8 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
+
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.SendLove.SEND_LOVE_BROADCAST_DATA;
 
 @Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
@@ -423,7 +424,7 @@ public class PositionListFragment
         {
             if (mShowAskForReviewDialogPreference.isItTime())
             {
-                broadcastUtils.enqueue(BroadcastConstants.SEND_LOVE_BROADCAST_DATA);
+                broadcastUtils.enqueue(SEND_LOVE_BROADCAST_DATA);
             }
             else if (mShowAskForInviteDialogPreference.isItTime())
             {

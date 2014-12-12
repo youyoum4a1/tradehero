@@ -62,7 +62,6 @@ import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import dagger.Lazy;
@@ -74,6 +73,8 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
+
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.SendLove.SEND_LOVE_BROADCAST_DATA;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
 {
@@ -578,7 +579,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onDismiss(DialogInterface dialog)
     {
         super.onDismiss(dialog);
-        broadcastUtils.enqueue(BroadcastConstants.SEND_LOVE_BROADCAST_DATA);
+        broadcastUtils.enqueue(SEND_LOVE_BROADCAST_DATA);
         broadcastUtils.nextPlease();
     }
 

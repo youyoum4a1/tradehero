@@ -100,7 +100,6 @@ import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.broadcast.BroadcastConstants;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
@@ -125,14 +124,17 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.FX_ONBOARD_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.Achievement.ACHIEVEMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.Achievement.KEY_USER_ACHIEVEMENT_ID;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.CompetitionEnrollment.COMPETITION_ENROLLMENT_BROADCAST_DATA;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.CompetitionEnrollment.ENROLLMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.FxOnBoard.FX_ONBOARD_BROADCAST_DATA;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.FxOnBoard.FX_ONBOARD_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.OnBoard.ONBOARD_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.OnBoard.ON_BOARDING_BROADCAST_DATA;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.SendLove.SEND_LOVE_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.KEY_XP_BROADCAST;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.XP_INTENT_FILTER;
 import static rx.android.observables.AndroidObservable.bindActivity;
 import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
 
@@ -533,18 +535,18 @@ public class DashboardActivity extends BaseActivity
                             UserProfileDTO userProfileDTO = args.second;
                             if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                             {
-                                broadcastUtilsLazy.get().enqueue(BroadcastConstants.ON_BOARDING_BROADCAST_DATA);
+                                broadcastUtilsLazy.get().enqueue(ON_BOARDING_BROADCAST_DATA);
                             }
                             return;
                         }
 
                         if (!isFxShown.get())
                         {
-                            broadcastUtilsLazy.get().enqueue(BroadcastConstants.FX_ONBOARD_BROADCAST_DATA);
+                            broadcastUtilsLazy.get().enqueue(FX_ONBOARD_BROADCAST_DATA);
                             return;
                         }
 
-                        broadcastUtilsLazy.get().enqueue(BroadcastConstants.COMPETITION_ENROLLMENT_BROADCAST_DATA);
+                        broadcastUtilsLazy.get().enqueue(COMPETITION_ENROLLMENT_BROADCAST_DATA);
                     }
                 });
     }

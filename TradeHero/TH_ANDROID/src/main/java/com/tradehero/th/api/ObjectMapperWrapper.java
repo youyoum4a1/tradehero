@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.inject.Inject;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_ACHIEVEMENT_NODE;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_NODE;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.Achievement.KEY_ACHIEVEMENT_NODE;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.KEY_XP_NODE;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {
