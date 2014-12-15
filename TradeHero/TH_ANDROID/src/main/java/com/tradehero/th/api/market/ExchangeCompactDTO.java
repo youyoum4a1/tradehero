@@ -30,8 +30,8 @@ public class ExchangeCompactDTO implements DTO
 
     public ExchangeCompactDTO(
             int id,
-            @NonNull String name,
-            @NonNull String countryCode,
+            String name,
+            String countryCode,
             double sumMarketCap,
             String desc,
             boolean isInternal,
