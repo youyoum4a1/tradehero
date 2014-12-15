@@ -44,12 +44,6 @@ public abstract class BaseDialogFragment extends DialogFragment
         HierarchyInjector.inject(this);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
@@ -60,12 +54,6 @@ public abstract class BaseDialogFragment extends DialogFragment
     {
         super.onDismiss(dialog);
         notifyDismissed(dialog);
-    }
-
-    @Override public void onDestroy()
-    {
-        dismissedSubject = null;
-        super.onDestroy();
     }
 
     @NonNull public Observable<DialogInterface> getDismissedObservable()

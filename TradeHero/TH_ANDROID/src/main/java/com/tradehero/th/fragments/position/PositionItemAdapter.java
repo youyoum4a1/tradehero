@@ -24,10 +24,12 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     public static final int VIEW_TYPE_HEADER = 0;
     public static final int VIEW_TYPE_PLACEHOLDER = 1;
     public static final int VIEW_TYPE_LOCKED = 2;
-    public static final int VIEW_TYPE_OPEN = 3;
-    public static final int VIEW_TYPE_OPEN_IN_PERIOD = 4;
-    public static final int VIEW_TYPE_CLOSED = 5;
-    public static final int VIEW_TYPE_CLOSED_IN_PERIOD = 6;
+    public static final int VIEW_TYPE_OPEN_LONG = 3;
+    public static final int VIEW_TYPE_OPEN_LONG_IN_PERIOD = 4;
+    public static final int VIEW_TYPE_OPEN_SHORT = 5;
+    public static final int VIEW_TYPE_OPEN_SHORT_IN_PERIOD = 6;
+    public static final int VIEW_TYPE_CLOSED = 7;
+    public static final int VIEW_TYPE_CLOSED_IN_PERIOD = 8;
 
     protected Map<Integer, Integer> itemTypeToLayoutId;
 
@@ -41,7 +43,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     @Override public int getViewTypeCount()
     {
-        return 7;
+        return 9;
     }
 
     @Override public int getItemViewType(int position)
@@ -78,12 +80,13 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         }
         else if (item.isOpen() && item instanceof PositionInPeriodDTO)
         {
-            return VIEW_TYPE_OPEN_IN_PERIOD;
+            return VIEW_TYPE_OPEN_LONG_IN_PERIOD;
         }
         else if (item.isOpen())
         {
-            return VIEW_TYPE_OPEN;
+            return VIEW_TYPE_OPEN_LONG;
         }
+        // TODO short
         throw new IllegalArgumentException("Unhandled item " + item);
     }
 
@@ -125,7 +128,8 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         else
         {
             PositionDTOList<PositionDTO> lockedPositions = new PositionDTOList<>();
-            PositionDTOList<PositionDTO> openPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTO> openLongPositions = new PositionDTOList<>();
+            PositionDTOList<PositionDTO> openShortPositions = new PositionDTOList<>();
             PositionDTOList<PositionDTO> closedPositions = new PositionDTOList<>();
 
             // Split in open / closed
@@ -141,8 +145,9 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
                 }
                 else
                 {
-                    openPositions.add(positionDTO);
+                    openLongPositions.add(positionDTO);
                 }
+                // TODO short
             }
 
             // Dress list
@@ -159,16 +164,30 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
                 newItems.add(positionDTO);
             }
-            else if (openPositions.size() > 0)
+            else if (openShortPositions.size() > 0)
             {
                 newItems.add(new HeaderDTO(
-                        VIEW_TYPE_OPEN,
-                        openPositions.size(),
-                        openPositions.getEarliestTradeUtc(),
-                        openPositions.getLatestTradeUtc()
+                        VIEW_TYPE_OPEN_SHORT,
+                        openShortPositions.size(),
+                        openShortPositions.getEarliestTradeUtc(),
+                        openShortPositions.getLatestTradeUtc()
                 ));
 
-                for (PositionDTO openPosition : openPositions)
+                for (PositionDTO openPosition : openShortPositions)
+                {
+                    add(newItems, openPosition);
+                }
+            }
+            else if (openLongPositions.size() > 0)
+            {
+                newItems.add(new HeaderDTO(
+                        VIEW_TYPE_OPEN_LONG,
+                        openLongPositions.size(),
+                        openLongPositions.getEarliestTradeUtc(),
+                        openLongPositions.getLatestTradeUtc()
+                ));
+
+                for (PositionDTO openPosition : openLongPositions)
                 {
                     add(newItems, openPosition);
                 }
@@ -254,11 +273,15 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     public String getHeaderText(HeaderDTO headerDTO)
     {
         if (headerDTO == null ||
-                headerDTO.headerForViewType == VIEW_TYPE_OPEN ||
+                headerDTO.headerForViewType == VIEW_TYPE_OPEN_LONG ||
                 headerDTO.headerForViewType == VIEW_TYPE_LOCKED ||
                 headerDTO.headerForViewType == VIEW_TYPE_PLACEHOLDER)
         {
-            return getOpenHeaderText(headerDTO);
+            return getOpenLongHeaderText(headerDTO);
+        }
+        else if (headerDTO.headerForViewType == VIEW_TYPE_OPEN_SHORT)
+        {
+            return getOpenShortHeaderText(headerDTO);
         }
         else if (headerDTO.headerForViewType == VIEW_TYPE_CLOSED)
         {
@@ -267,13 +290,22 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         throw new IllegalArgumentException("Unhandled " + headerDTO.toString() );
     }
 
-    public String getOpenHeaderText(HeaderDTO headerDTO)
+    public String getOpenLongHeaderText(HeaderDTO headerDTO)
     {
         if (headerDTO == null || headerDTO.count == null)
         {
-            return getContext().getString(R.string.position_list_header_open_unsure);
+            return getContext().getString(R.string.position_list_header_open_long_unsure);
         }
-        return getContext().getString(R.string.position_list_header_open, (int) headerDTO.count);
+        return getContext().getString(R.string.position_list_header_open_long, (int) headerDTO.count);
+    }
+
+    public String getOpenShortHeaderText(HeaderDTO headerDTO)
+    {
+        if (headerDTO == null || headerDTO.count == null)
+        {
+            return getContext().getString(R.string.position_list_header_open_short_unsure);
+        }
+        return getContext().getString(R.string.position_list_header_open_short, (int) headerDTO.count);
     }
 
     public String getClosedHeaderText(HeaderDTO headerDTO)
@@ -324,6 +356,4 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
                     '}';
         }
     }
-
-
 }

@@ -1,7 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.SignatureContainer;
-import com.tradehero.th.api.quote.QuoteDTO;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -15,6 +13,4 @@ interface QuoteServiceRx
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol);
     //</editor-fold>
-
-    static class QuoteSignatureContainer extends SignatureContainer<QuoteDTO>{}
 }

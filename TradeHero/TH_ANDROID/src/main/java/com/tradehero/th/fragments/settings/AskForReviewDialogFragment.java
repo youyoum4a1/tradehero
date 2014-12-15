@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MarketUtil;
@@ -26,6 +27,12 @@ public class AskForReviewDialogFragment extends BaseDialogFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.ask_for_review_dialog_layout, container, false);
+    }
+
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
     }
 
     @SuppressWarnings("UnusedDeclaration")

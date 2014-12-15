@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
@@ -114,6 +115,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         display();
         final Handler mHandler = new Handler();
         Animator current = AnimatorInflater.loadAnimator(getActivity(), R.animator.rotate_flip_hide);

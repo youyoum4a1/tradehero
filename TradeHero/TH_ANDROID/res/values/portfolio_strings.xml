@@ -17,7 +17,14 @@
   <string name="portfolio_default_title">Main Portfolio</string>
   <string name="portfolio_item_title_loading">Loading...</string>
   <string name="portfolio_header_total_value">Total Value</string>
+  <string name="portfolio_header_value">Value</string>
   <string name="portfolio_header_cash_value">Cash Value</string>
+  <string name="portfolio_header_net_asset_value">Net Asset Value</string>
+  <string name="portfolio_header_margin_title">Margin</string>
+  <string name="portfolio_header_margin_available_title">Available</string>
+  <string name="portfolio_header_margin_used_title">Used</string>
+  <string name="portfolio_header_pl_unrealised_title">Unrealised</string>
+  <string name="portfolio_header_pl_realised_title">Realised</string>
 
   <string name="portfolio_title_unnamed">Unnamed Portfolio</string>
 

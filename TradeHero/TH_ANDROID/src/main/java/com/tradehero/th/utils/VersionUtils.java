@@ -87,9 +87,16 @@ public class VersionUtils
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
-        } catch (PackageManager.NameNotFoundException e)
-        {
+            if (!Constants.RELEASE)
+            {
+                int dashIndex = v.indexOf("-");
+                if (dashIndex >= 0)
+                {
+                    v = v.substring(0, dashIndex);
+                }
+            }
         }
+        catch (PackageManager.NameNotFoundException ignored) { }
         return v;
     }
 
@@ -99,10 +106,8 @@ public class VersionUtils
         try
         {
             v = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e)
-        {
-            // Huh? Really?
         }
+        catch (PackageManager.NameNotFoundException ignored) { }
         return v;
     }
 

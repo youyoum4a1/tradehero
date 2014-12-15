@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.Optional;
@@ -79,6 +80,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.inject(this, view);
         registerWeChatButton();
         registerSocialButtons();
     }
