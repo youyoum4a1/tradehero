@@ -73,6 +73,19 @@ interface UserTimelineServiceAsync
             Callback<TimelineDTO> callback);
     //</editor-fold>
 
+    //悬赏帖子
+    //http://localhost/api/users/552948/timeline?maxCount=10&type=question
+    //@GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
+    //https://www.tradehero.mobi/api/users/552948/timeline?maxCount=10&type=recommended&includeComment=true&includeTrade=true
+    @GET("/users/{userId}/timeline?type=question")
+    void getTimelineReward(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<TimelineDTO> callback);
+    //</editor-fold>
+
     //股神动态
     //@GET("/users/{userId}/timeline?type=original&includeComment=true&includeTrade=true")
     //https://www.tradehero.mobi/api/users/552948/timeline?maxCount=10&type=recommended&includeComment=true&includeTrade=true

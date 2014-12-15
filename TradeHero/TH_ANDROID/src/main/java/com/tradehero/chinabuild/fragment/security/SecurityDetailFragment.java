@@ -12,7 +12,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -42,7 +47,11 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.discussion.*;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
@@ -54,7 +63,12 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.position.*;
+import com.tradehero.th.api.position.OwnedPositionId;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOCompact;
+import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionDTOKeyFactory;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -114,16 +128,15 @@ import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by huhaiping on 14-9-1.
@@ -248,12 +261,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     TextView tvUserTLContent;
     TextView tvUserTLName;
     LinearLayout llTLPraise;
+    LinearLayout llTLPraiseDown;
     LinearLayout llTLComment;
-    LinearLayout llTLShare;
+    //LinearLayout llTLShare;
     TextView tvTLPraise;
     TextView btnTLPraise;
+    TextView tvTLPraiseDown;
+    TextView btnTLPraiseDown;
     TextView tvTLComment;
-    TextView tvTLShare;
+    //TextView tvTLShare;
     LinearLayout bottomBarLL;
     //Security Detail Tab End
 
@@ -477,8 +493,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void initView()
     {
         initTabPageView();
-
-        tvUserTLContent.setMaxLines(10);
+        tvUserTLContent.setMaxLines(3);
         llBuySaleButtons.setVisibility(View.GONE);
 
         btnChart = new Button[4];
@@ -587,12 +602,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         tvUserTLContent = (TextView) tabView0.findViewById(R.id.tvUserTLContent);
         tvUserTLName = (TextView) tabView0.findViewById(R.id.tvUserTLName);
         llTLPraise = (LinearLayout) tabView0.findViewById(R.id.llTLPraise);
+        llTLPraiseDown = (LinearLayout) tabView0.findViewById(R.id.llTLPraiseDown);
         llTLComment = (LinearLayout) tabView0.findViewById(R.id.llTLComment);
-        llTLShare = (LinearLayout) tabView0.findViewById(R.id.llTLShare);
+        //llTLShare = (LinearLayout) tabView0.findViewById(R.id.llTLShare);
         tvTLPraise = (TextView) tabView0.findViewById(R.id.tvTLPraise);
         btnTLPraise = (TextView) tabView0.findViewById(R.id.btnTLPraise);
+        tvTLPraiseDown = (TextView) tabView0.findViewById(R.id.tvTLPraiseDown);
+        btnTLPraiseDown = (TextView) tabView0.findViewById(R.id.btnTLPraiseDown);
         tvTLComment = (TextView) tabView0.findViewById(R.id.tvTLComment);
-        tvTLShare = (TextView) tabView0.findViewById(R.id.tvTLShare);
+        //tvTLShare = (TextView) tabView0.findViewById(R.id.tvTLShare);
         bottomBarLL = (LinearLayout) tabView0.findViewById(R.id.ic_info_buy_sale_btns);
     }
 
@@ -605,7 +623,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         btnDiscuss.setOnClickListener(this);
         btnNews.setOnClickListener(this);
         llTLComment.setOnClickListener(this);
-        llTLShare.setOnClickListener(this);
+        llTLPraiseDown.setOnClickListener(this);
+        //llTLShare.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);
         llDisscurssOrNews.setOnClickListener(this);
         imgSecurityTLUserHeader.setOnClickListener(this);
@@ -1966,6 +1985,24 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         displayDiscussOrNewsDTO();
     }
 
+    public void clickedPraiseDown()
+    {
+        AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
+        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
+
+        if (item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+        }
+        else
+        {
+            item.voteDirection = 0;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+        }
+        displayDiscussOrNewsDTO();
+    }
+
     protected void detachVoteMiddleCallback()
     {
         if (voteCallback != null)
@@ -2150,42 +2187,48 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE));
             clickedPraise();
         }
+        else if (view.getId() == R.id.llTLPraiseDown)
+        {
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_PRAISE_DOWN));
+            clickedPraiseDown();
+        }
         else if (view.getId() == R.id.llTLComment)
         {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_COMMENT));
-            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
-            comments(dto);
+            //analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_COMMENT));
+            //AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+            //comments(dto);
+            enterTimeLineDetail(getAbstractDiscussionCompactDTO());
         }
-        else if (view.getId() == R.id.llTLShare)
-        {
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_SHARE));
-            AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
-            String strShare = "";
-            if (dto instanceof NewsItemCompactDTO)
-            {
-                strShare = (((NewsItemCompactDTO) dto).description);
-            }
-            else if (dto instanceof DiscussionDTO)
-            {
-                strShare = (((DiscussionDTO) dto).text);
-            }
-
-            if (securityName != null && securityId.getDisplayName() != null)
-            {
-                strShare = securityName + "(" + securityId.getDisplayName() + ")  " + strShare;
-            }
-
-            if (TextUtils.isEmpty(strShare))
-            {
-                if (tvUserTLContent.getText() == null)
-                {
-                    return;
-                }
-                shareToWechatMoment(tvUserTLContent.getText().toString());
-                return;
-            }
-            shareToWechatMoment(strShare);
-        }
+        //else if (view.getId() == R.id.llTLShare)
+        //{
+        //    analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.USER_PAGE_SHARE));
+        //    AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
+        //    String strShare = "";
+        //    if (dto instanceof NewsItemCompactDTO)
+        //    {
+        //        strShare = (((NewsItemCompactDTO) dto).description);
+        //    }
+        //    else if (dto instanceof DiscussionDTO)
+        //    {
+        //        strShare = (((DiscussionDTO) dto).text);
+        //    }
+        //
+        //    if (securityName != null && securityId.getDisplayName() != null)
+        //    {
+        //        strShare = securityName + "(" + securityId.getDisplayName() + ")  " + strShare;
+        //    }
+        //
+        //    if (TextUtils.isEmpty(strShare))
+        //    {
+        //        if (tvUserTLContent.getText() == null)
+        //        {
+        //            return;
+        //        }
+        //        shareToWechatMoment(tvUserTLContent.getText().toString());
+        //        return;
+        //    }
+        //    shareToWechatMoment(strShare);
+        //}
     }
 
     @Override public void onClick(View view)
@@ -2193,7 +2236,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         int id = view.getId();
         if (id == R.id.llTLComment
                 || id == R.id.llTLPraise
-                || id == R.id.llTLShare
+                || id == R.id.llTLPraiseDown
+                //|| id == R.id.llTLShare
                 || id == R.id.llDisscurssOrNews
                 || id == R.id.imgSecurityTLUserHeader
                 || id == R.id.tvUserTLContent)

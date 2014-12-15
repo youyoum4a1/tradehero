@@ -12,186 +12,213 @@
     android:orientation="vertical"
     >
 
-  <LinearLayout android:layout_width="fill_parent"
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="fill_parent"
       android:layout_height="wrap_content">
-
-    <ImageView
-        android:id="@+id/imgUserTLUserHeader"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="5dp"
-        android:visibility="gone"
-        android:scaleType="fitXY"
-        android:background="@drawable/default_image"/>
-
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:orientation="vertical">
+        android:layout_height="fill_parent">
 
-      <RelativeLayout
+
+      <ImageView
+          android:id="@+id/imgUserTLUserHeader"
+          android:layout_width="32dp"
+          android:layout_height="32dp"
+          android:layout_marginRight="5dp"
           android:layout_marginTop="5dp"
-
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/tvUserTLName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_gravity="left"
-            android:layout_marginLeft="2dp"
-            android:textSize="13sp"
-            android:textColor="@color/tradehero_blue"
-            android:layout_alignParentLeft="true"
-            android:visibility="gone"
-            android:text=""
-            />
-
-        <TextView
-            android:id="@+id/tvUserTLTimeStamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_alignParentLeft="true"
-            android:textSize="12sp"
-            android:layout_marginLeft="2dp"
-            android:layout_centerVertical="true"
-            android:text="刚刚"
-            android:textColor="@color/text_gray_normal"
-            />
-
-        <TextView
-            android:id="@+id/tvUserTLTimeStamp2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:visibility="visible"
-            android:layout_alignParentRight="true"
-            android:textSize="11sp"
-            android:layout_marginLeft="2dp"
-            android:layout_centerVertical="true"
-            android:textColor="@color/text_gray_normal"
-            />
-
-        <TextView
-            android:id="@+id/tvTipInTop"
-            android:visibility="gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="置顶"
-            android:textColor="@color/white"
-            android:textSize="10sp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_marginRight="2dp"
-            android:layout_toLeftOf="@id/tvUserTLTimeStamp2"
-            android:layout_centerVertical="true"
-            android:background="@drawable/bg_tips_in_head"/>
-
-      </RelativeLayout>
+          android:visibility="visible"
+          android:scaleType="fitXY"
+          android:background="@drawable/default_image"/>
 
 
       <LinearLayout
-          android:id="@+id/llUserTLNoTrade"
-          android:layout_marginBottom="8dp"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-        <com.tradehero.th.widget.MarkdownTextView
-            android:id="@+id/tvUserTLContent"
-            android:layout_below="@id/tvUserTLTimeStamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dip"
-            android:textColorLink="@color/timeline_item_link"
-            android:textColor="@color/timeline_item"
-            android:textSize="@dimen/text_medium"
-            android:textStyle="normal"
-            android:lineSpacingExtra="4dp"
-            android:maxLines="3"
-            />
-      </LinearLayout>
-
-      <RelativeLayout
-          android:id="@+id/rlUserTLTrade"
-          android:layout_width="wrap_content"
+          android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="5dp"
+          android:layout_marginLeft="5dp"
           android:orientation="vertical">
-        <TextView
-            android:id="@+id/title0"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="@dimen/text_medium_plus_plus"
-            android:text="买入股票："/>
-        <TextView
-            android:id="@+id/title1"
-            android:layout_below="@id/title0"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="@dimen/text_medium_plus_plus"
-            android:text="买入价格："/>
-        <TextView
-            android:id="@+id/title2"
-            android:layout_below="@id/title1"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="@dimen/text_medium_plus_plus"
-            android:text="买入数量："/>
-        <TextView
-            android:id="@+id/title3"
-            android:layout_below="@id/title2"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="@dimen/text_medium_plus_plus"
-            android:text="成交金额："/>
 
-        <TextView
-            android:id="@+id/tvTradeName"
-            android:layout_toRightOf="@id/title0"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="@dimen/text_medium_plus_plus"
-            android:textColor="#ffae00"/>
+        <RelativeLayout
+            android:layout_marginTop="5dp"
 
-        <TextView
-            android:id="@+id/tvTradePrice"
-            android:layout_toRightOf="@id/title1"
-            android:layout_below="@id/title0"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_medium_plus_plus"/>
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+          <TextView
+              android:id="@+id/tvUserTLName"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:singleLine="true"
+              android:layout_gravity="left"
+              android:layout_marginLeft="2dp"
+              android:textSize="13sp"
+              android:textColor="@color/tradehero_blue"
+              android:layout_alignParentLeft="true"
+              android:visibility="visible"
+              android:text="111"
+              />
 
-        <TextView
-            android:id="@+id/tvTradeCount"
-            android:layout_toRightOf="@id/title2"
-            android:layout_below="@id/title1"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="14sp"
-            android:textColor="@color/black"/>
+          <TextView
+              android:id="@+id/tvUserTLTimeStamp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:singleLine="true"
+              android:layout_marginTop="2dp"
+              android:layout_below="@id/tvUserTLName"
+              android:layout_alignParentLeft="true"
+              android:textSize="12sp"
+              android:layout_marginLeft="2dp"
+              android:text="刚刚"
+              android:textColor="@color/text_gray_normal"
+              />
 
+          <!--<TextView-->
+          <!--android:id="@+id/tvTipInTop"-->
+          <!--android:visibility="visible"-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:text="置顶"-->
+          <!--android:layout_below="@id/tvUserTLName"-->
+          <!--android:layout_marginTop="2dp"-->
+          <!--android:textColor="@color/white"-->
+          <!--android:textSize="10sp"-->
+          <!--android:paddingLeft="5dp"-->
+          <!--android:paddingRight="5dp"-->
+          <!--android:layout_marginLeft="2dp"-->
+          <!--android:layout_toRightOf="@id/tvUserTLTimeStamp"-->
+          <!--android:layout_centerVertical="true"-->
+          <!--android:background="@drawable/bg_tips_in_head"/>-->
 
-        <TextView
-            android:id="@+id/tvTradeMoney"
-            android:layout_toRightOf="@id/title3"
-            android:layout_below="@id/title2"
-            style="@style/buy_sale_title"
-            android:layout_marginTop="3dp"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:text=""/>
-
-      </RelativeLayout>
-
-      <include
-          android:id="@+id/includeTLOperater"
-          layout="@layout/timeline_operater_line"/>
+          <TextView
+              android:id="@+id/tvIsReward"
+              android:visibility="gone"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_centerVertical="true"
+              android:layout_marginRight="15dp"
+              android:layout_alignParentRight="true"
+              android:gravity="center"
+              android:text=""
+              android:background="@drawable/reward_frame"
+              android:textSize="11sp"
+              android:textColor="@color/discovery_discuss_reward_orange"/>
+        </RelativeLayout>
+      </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/llUserTLNoTrade"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/tvUserTLTitle"
+          android:layout_below="@id/tvUserTLTimeStamp"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="6dip"
+          android:textColorLink="@color/timeline_item_link"
+          android:textColor="@color/timeline_item_title"
+          android:textSize="@dimen/text_large"
+          android:textStyle="normal"
+          android:maxLines="1"
+          android:text="TITLE "
+          />
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/tvUserTLContent"
+          android:layout_below="@id/tvUserTLTimeStamp"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dip"
+          android:textColorLink="@color/timeline_item_link"
+          android:textColor="@color/timeline_item"
+          android:textSize="@dimen/text_medium"
+          android:textStyle="normal"
+          android:text="CONTENT "
+          android:lineSpacingExtra="4dp"
+          android:maxLines="3"
+          />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlUserTLTrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
+      <TextView
+          android:id="@+id/title0"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="@dimen/text_medium_plus_plus"
+          android:text="买入股票："/>
+      <TextView
+          android:id="@+id/title1"
+          android:layout_below="@id/title0"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="@dimen/text_medium_plus_plus"
+          android:text="买入价格："/>
+      <TextView
+          android:id="@+id/title2"
+          android:layout_below="@id/title1"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="@dimen/text_medium_plus_plus"
+          android:text="买入数量："/>
+      <TextView
+          android:id="@+id/title3"
+          android:layout_below="@id/title2"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="@dimen/text_medium_plus_plus"
+          android:text="成交金额："/>
+
+      <TextView
+          android:id="@+id/tvTradeName"
+          android:layout_toRightOf="@id/title0"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="@dimen/text_medium_plus_plus"
+          android:textColor="#ffae00"/>
+
+      <TextView
+          android:id="@+id/tvTradePrice"
+          android:layout_toRightOf="@id/title1"
+          android:layout_below="@id/title0"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textColor="@color/black"
+          android:textSize="@dimen/text_medium_plus_plus"/>
+
+      <TextView
+          android:id="@+id/tvTradeCount"
+          android:layout_toRightOf="@id/title2"
+          android:layout_below="@id/title1"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="14sp"
+          android:textColor="@color/black"/>
+
+
+      <TextView
+          android:id="@+id/tvTradeMoney"
+          android:layout_toRightOf="@id/title3"
+          android:layout_below="@id/title2"
+          style="@style/buy_sale_title"
+          android:layout_marginTop="3dp"
+          android:textSize="14sp"
+          android:textColor="@color/black"
+          android:text=""/>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/includeTLOperater"
+        layout="@layout/timeline_operater_line"/>
   </LinearLayout>
+
 
 </LinearLayout>
 

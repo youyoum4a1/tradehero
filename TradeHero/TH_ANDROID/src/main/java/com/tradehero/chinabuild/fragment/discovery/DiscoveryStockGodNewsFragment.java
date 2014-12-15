@@ -117,6 +117,11 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE));
             }
 
+            @Override public void OnTimeLinePraiseDownClicked(int position)
+            {
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_PRAISE_DOWN));
+            }
+
             @Override public void OnTimeLineCommentsClicked(int position)
             {
                 analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.DISCOVERY_ITEM_COMMENT));

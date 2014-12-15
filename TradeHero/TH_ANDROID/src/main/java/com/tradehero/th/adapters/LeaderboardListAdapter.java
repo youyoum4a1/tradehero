@@ -33,6 +33,7 @@ public class LeaderboardListAdapter extends BaseAdapter
     private Context context;
     private LayoutInflater inflater;
     private LeaderboardUserDTOList leaderboardUserDTOs;
+    public boolean hasLeaderboard;
 
     public int leaderboardType = LeaderboardDefKeyKnowledge.DAYS_30;
 
@@ -55,8 +56,10 @@ public class LeaderboardListAdapter extends BaseAdapter
         if (leaderboardUserDTOs != null && list.size() == 0)
         {
             leaderboardUserDTOs.add(new EmptyLeaderboardUserDTO());
+            hasLeaderboard = false;
             return;
         }
+        hasLeaderboard = true;
         this.leaderboardUserDTOs = list;
     }
 
@@ -68,6 +71,7 @@ public class LeaderboardListAdapter extends BaseAdapter
     public void addItems(LeaderboardUserDTOList listAdd)
     {
         this.leaderboardUserDTOs.addAll(listAdd);
+        hasLeaderboard = true;
     }
 
     @Override public boolean areAllItemsEnabled()

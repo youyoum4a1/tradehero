@@ -1,50 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@drawable/listview_item_selector"
-        android:id="@+id/llItemAll"
-        android:orientation="vertical"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@drawable/listview_item_selector"
+    android:id="@+id/llItemAll"
+    android:orientation="vertical"
+    >
 
   <LinearLayout
       android:id="@+id/llAllTimeLine"
+      android:orientation="vertical"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imgSecurityTLUserHeader"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:scaleType="fitXY"
-        android:background="@drawable/default_image"/>
-
     <LinearLayout
-        android:orientation="vertical"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
         android:layout_width="fill_parent">
+      <ImageView
+          android:id="@+id/imgSecurityTLUserHeader"
+          android:layout_width="32dp"
+          android:layout_height="32dp"
+          android:scaleType="fitXY"
+          android:background="@drawable/default_image"/>
 
       <RelativeLayout
-          android:layout_height="wrap_content"
+          android:layout_marginLeft="5dp"
+          android:layout_height="fill_parent"
           android:layout_width="fill_parent">
-        <TextView
-            android:id="@+id/tvUserTLTimeStamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_gravity="right"
-            android:layout_marginRight="2dp"
-            android:textSize="11sp"
-            android:layout_alignParentRight="true"
-            android:text="刚刚"
-            android:textColor="@color/text_gray_normal"
-            />
+
 
         <TextView
             android:id="@+id/tvUserTLName"
@@ -54,19 +42,39 @@
             android:layout_gravity="left"
             android:layout_marginLeft="2dp"
             android:textSize="14sp"
+            android:text="xxx"
             android:textColor="@color/tradehero_blue"
             />
+
+        <TextView
+            android:id="@+id/tvUserTLTimeStamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textSize="11sp"
+            android:layout_below="@id/tvUserTLName"
+            android:text="刚刚"
+            android:textColor="@color/text_gray_normal"
+            />
       </RelativeLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_width="fill_parent">
 
 
       <LinearLayout
           android:id="@+id/llUserTLNoTrade"
-          android:layout_width="wrap_content"
+          android:layout_width="fill_parent"
           android:layout_height="wrap_content">
         <com.tradehero.th.widget.MarkdownTextView
             android:id="@+id/tvUserTLContent"
             android:layout_below="@id/tvUserTLTimeStamp"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:lineSpacingExtra="4dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dip"

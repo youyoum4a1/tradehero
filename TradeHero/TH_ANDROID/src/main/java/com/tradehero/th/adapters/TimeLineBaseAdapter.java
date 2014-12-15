@@ -47,6 +47,8 @@ public class TimeLineBaseAdapter extends BaseAdapter
 
         void OnTimeLinePraiseClicked(int position);
 
+        void OnTimeLinePraiseDownClicked(int position);
+
         void OnTimeLineCommentsClicked(int position);
 
         void OnTimeLineShareClicked(int position);

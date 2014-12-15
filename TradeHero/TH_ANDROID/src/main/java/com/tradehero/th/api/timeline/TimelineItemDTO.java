@@ -29,6 +29,13 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
 
     public Date lastCommentAtUtc;//最后回复时间
 
+    /*Reward tips*/
+    public String header;
+    public boolean isQuestionItem;
+    public Integer prizeAmount;
+    public boolean isAnswered;
+
+
     //<editor-fold desc="Constructors">
     public TimelineItemDTO()
     {
@@ -98,5 +105,15 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     public boolean hasTrader()
     {
         return tradeId != 0;
+    }
+
+    public String getRewardString()
+    {
+        if(!isQuestionItem)return "";
+        if(isAnswered)return "已采纳";
+        else
+        {
+            return "悬赏$"+prizeAmount;
+        }
     }
 }

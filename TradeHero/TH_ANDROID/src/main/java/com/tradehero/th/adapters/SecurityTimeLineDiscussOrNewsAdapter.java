@@ -25,13 +25,12 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.List;
 
 public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 {
@@ -129,13 +128,13 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                     //赞，评论，分享
                     holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
                     holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
-                    holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
+                    //holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
                     holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
                     holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
                     holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
                     holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
-                    holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
-                    holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
+                    //holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
+                    //holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
 
                     holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
 
@@ -240,16 +239,16 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                     }
                 });
 
-                holder.llTLShare.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override public void onClick(View view)
-                    {
-                        if (timeLineOperater != null)
-                        {
-                            timeLineOperater.OnTimeLineShareClicked(position);
-                        }
-                    }
-                });
+                //holder.llTLShare.setOnClickListener(new View.OnClickListener()
+                //{
+                //    @Override public void onClick(View view)
+                //    {
+                //        if (timeLineOperater != null)
+                //        {
+                //            timeLineOperater.OnTimeLineShareClicked(position);
+                //        }
+                //    }
+                //});
             //}
         return convertView;
     }
@@ -288,13 +287,13 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         public LinearLayout llUserTLNoTrade = null;
         public LinearLayout llTLPraise = null;
         public LinearLayout llTLComment = null;
-        public LinearLayout llTLShare = null;
+        //public LinearLayout llTLShare = null;
         public TextView btnTLPraise = null;
         public TextView tvTLPraise = null;
         public TextView btnTLComment = null;
         public TextView tvTLComment = null;
-        public TextView btnTLShare = null;
-        public TextView tvTLShare = null;
+        //public TextView btnTLShare = null;
+        //public TextView tvTLShare = null;
 
         public LinearLayout includeTLOperater;
     }

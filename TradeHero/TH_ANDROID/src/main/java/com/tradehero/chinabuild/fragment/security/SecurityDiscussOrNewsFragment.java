@@ -180,6 +180,11 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
                 Timber.d("Praise position = " + position);
             }
 
+            @Override public void OnTimeLinePraiseDownClicked(int position)
+            {
+                Timber.d("Praise position = " + position);
+            }
+
             @Override public void OnTimeLineCommentsClicked(int position)
             {
                 AbstractDiscussionCompactDTO dto = adapter.getItem(position);

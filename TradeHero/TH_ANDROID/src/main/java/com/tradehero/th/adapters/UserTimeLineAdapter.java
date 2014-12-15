@@ -34,19 +34,19 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
@@ -54,7 +54,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     private MiddleCallback<DiscussionDTO> voteCallback;
 
     @Inject Picasso picasso;
-    //private List<TimelineItemDTO> listData;
 
     private List<UserProfileCompactDTO> users = new ArrayList<>();
     private List<SecurityCompactDTO> securities = new ArrayList<>();
@@ -63,7 +62,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     private List<TradeDTO> trades = new ArrayList<>();
 
     public boolean isShowHeadAndName = false;//是否显示头像和名字
-    //public boolean isSecurityAsUser = false;//是否是以股票为头像和名字
     public boolean isShowLastCommentUtc = false;//是否需要显示时间为最后回复的时间
     public boolean isMySelf = false;
     public boolean isShowFollowBuy = false;
@@ -230,17 +228,18 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder = new ViewHolder();
 
                 holder.llItemAll = (LinearLayout) convertView.findViewById(R.id.llItemAll);
-
+                holder.tvReward = (TextView) convertView.findViewById(R.id.tvIsReward);
                 holder.tvUserTLTimeStamp = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp);
 
                 //不是股票交易
                 holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.llUserTLNoTrade);
+                holder.tvUserTLTitle = (TextView) convertView.findViewById(R.id.tvUserTLTitle);
                 holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
 
                 holder.imgUserTLUserHeader = (ImageView) convertView.findViewById(R.id.imgUserTLUserHeader);
                 holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
-                holder.tvUserTLTimeStamp2 = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp2);
-                holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
+                //holder.tvUserTLTimeStamp2 = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp2);
+                //holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
 
                 //是股票交易
                 holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
@@ -252,19 +251,22 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.title1 = (TextView) convertView.findViewById(R.id.title1);
                 holder.title2 = (TextView) convertView.findViewById(R.id.title2);
 
-                //赞，评论，分享
+                //赞,踩，评论，分享
                 holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
+                holder.llTLPraiseDown = (LinearLayout)convertView.findViewById(R.id.llTLPraiseDown);
                 holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
-                holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
+                //holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
                 holder.llTLBuy = (LinearLayout) convertView.findViewById(R.id.llTLBuy);
                 holder.btnTLBuy = (TextView) convertView.findViewById(R.id.btnTLBuy);
                 holder.tvTLBuy = (TextView) convertView.findViewById(R.id.tvTLBuy);
                 holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
                 holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
+                holder.btnTLPraiseDown = (TextView) convertView.findViewById(R.id.btnTLPraiseDown);
+                holder.tvTLPraiseDown = (TextView) convertView.findViewById(R.id.tvTLPraiseDown);
                 holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
                 holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
-                holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
-                holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
+                //holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
+                //holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
 
                 convertView.setTag(holder);
             }
@@ -275,15 +277,16 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
             boolean isTrade = item.hasTrader();
 
-            holder.llTLShare.setVisibility((!isMySelf && isTrade) ? View.GONE : View.VISIBLE);
-
+            //holder.llTLShare.setVisibility((!isMySelf && isTrade) ? View.GONE : View.VISIBLE);
+            holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.GONE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
-            holder.tvUserTLTimeStamp.setVisibility(isShowHeadAndName ? View.GONE : View.VISIBLE);
-            holder.tvUserTLTimeStamp2.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
-            holder.tvTipInTop.setVisibility((isShowHeadAndName && item.isHighlight) ? View.VISIBLE : View.GONE);
+            holder.tvUserTLTimeStamp.setVisibility(View.VISIBLE);
+            //holder.tvUserTLTimeStamp2.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
+            //holder.tvTipInTop.setVisibility((isShowHeadAndName && item.isHighlight) ? View.VISIBLE : View.GONE);
             holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
+            holder.tvUserTLTitle.setVisibility(StringUtils.isNullOrEmpty(item.header) ? View.GONE : View.VISIBLE);
 
             if (isShowLastCommentUtc)
             {
@@ -318,7 +321,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 }
 
                 TradeDTO tradeDTO = getTradeDTO(item.tradeId);
+                //有跟买就不要出现comment选项
                 holder.llTLBuy.setVisibility((!isMySelf && isTrade && tradeDTO.isBuy() && isShowFollowBuy) ? View.VISIBLE : View.GONE);
+                holder.llTLComment.setVisibility((!isMySelf && isTrade && tradeDTO.isBuy() && isShowFollowBuy) ? View.GONE : View.VISIBLE);
+
                 if (tradeDTO != null)
                 {
                     holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.getUnitPriceCurrency());
@@ -332,7 +338,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             }
             else
             {
+                holder.tvUserTLTitle.setText("" + item.header);
                 holder.tvUserTLContent.setText("" + item.text);
+                holder.tvReward.setText(item.getRewardString());
                 holder.llTLBuy.setVisibility(View.GONE);
             }
 
@@ -364,19 +372,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     });
                 }
 
-                if (isShowLastCommentUtc)
+                if (item.lastCommentAtUtc != null)
                 {
-                    if (item.lastCommentAtUtc != null)
-                    {
-                        holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.lastCommentAtUtc));
-                    }
-                }
-                else
-                {
-                    if (item.createdAtUtc != null)
-                    {
-                        holder.tvUserTLTimeStamp2.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
-                    }
+                    holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.lastCommentAtUtc));
                 }
             }
 
@@ -430,22 +428,31 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     clickedPraise(position);
                 }
             });
+            holder.llTLPraiseDown.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    timeLineOperater.OnTimeLinePraiseDownClicked(position);
+                    clickedPraiseDown(position);
+                }
+            });
 
             holder.llTLComment.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
-                    timeLineOperater.OnTimeLineCommentsClicked(position);
+                    //timeLineOperater.OnTimeLineCommentsClicked(position);
+                    timeLineOperater.OnTimeLineItemClicked(position);
                 }
             });
 
-            holder.llTLShare.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    timeLineOperater.OnTimeLineShareClicked(position);
-                }
-            });
+            //holder.llTLShare.setOnClickListener(new View.OnClickListener()
+            //{
+            //    @Override public void onClick(View view)
+            //    {
+            //        timeLineOperater.OnTimeLineShareClicked(position);
+            //    }
+            //});
         }
         return convertView;
     }
@@ -525,27 +532,32 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         public LinearLayout llItemAll = null;
 
         public TextView tvUserTLTimeStamp = null;
+        public TextView tvUserTLTitle = null;
         public TextView tvUserTLContent = null;
 
         public ImageView imgUserTLUserHeader = null;
-        public TextView tvUserTLTimeStamp2 = null;
-        public TextView tvTipInTop = null;
+        //public TextView tvUserTLTimeStamp2 = null;
+        //public TextView tvTipInTop = null;
+        public TextView tvReward = null;
         public TextView tvUserTLName = null;
 
         //不是一个交易相关
         public LinearLayout llUserTLNoTrade = null;
         public LinearLayout llTLBuy = null;
         public LinearLayout llTLPraise = null;
+        public LinearLayout llTLPraiseDown = null;
         public LinearLayout llTLComment = null;
-        public LinearLayout llTLShare = null;
+        //public LinearLayout llTLShare = null;
         public TextView btnTLBuy = null;
         public TextView tvTLBuy = null;
         public TextView btnTLPraise = null;
         public TextView tvTLPraise = null;
+        public TextView btnTLPraiseDown = null;
+        public TextView tvTLPraiseDown = null;
         public TextView btnTLComment = null;
         public TextView tvTLComment = null;
-        public TextView btnTLShare = null;
-        public TextView tvTLShare = null;
+        //public TextView btnTLShare = null;
+        //public TextView tvTLShare = null;
 
         //是一个交易相关的
         public RelativeLayout rlUserTLTrade;
@@ -604,6 +616,25 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     //}
 
     public void clickedPraise(int position)
+    {
+        TimelineItemDTO item = (TimelineItemDTO) getItem(position);
+
+        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
+
+        if (item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+        }
+        else
+        {
+            item.voteDirection = 0;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+        }
+        notifyDataSetChanged();
+    }
+
+    public void clickedPraiseDown(int position)
     {
         TimelineItemDTO item = (TimelineItemDTO) getItem(position);
 
