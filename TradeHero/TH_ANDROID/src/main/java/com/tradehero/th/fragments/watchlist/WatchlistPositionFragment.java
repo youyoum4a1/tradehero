@@ -243,11 +243,11 @@ public class WatchlistPositionFragment extends DashboardFragment
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
         int trendingFilterHeight = (int) getResources().getDimension(R.dimen.watch_list_header_height);
-        QuickReturnListViewOnScrollListener portfolioHearderQuickReturnListener =
+        QuickReturnListViewOnScrollListener portfolioHeaderQuickReturnListener =
                 new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER, watchlistPortfolioHeaderView,
                         -trendingFilterHeight, null, 0);
 
-        return new MultiScrollListener(portfolioHearderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get(), new AbsListView.OnScrollListener() {
+        return new MultiScrollListener(portfolioHeaderQuickReturnListener, dashboardBottomTabsListViewScrollListener.get(), new AbsListView.OnScrollListener() {
             int maxOffsetY = 0;
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
