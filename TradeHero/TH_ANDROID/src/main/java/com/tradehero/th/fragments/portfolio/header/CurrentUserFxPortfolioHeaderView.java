@@ -51,11 +51,18 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
         {
             if (portfolioCompactDTO != null)
             {
-                totalValueTextView.setText(
-                        THSignedMoney.builder(portfolioCompactDTO.nav)
-                                .currency(portfolioCompactDTO.getNiceCurrency())
-                                .build()
-                                .toString());
+                if (portfolioCompactDTO.nav != null)
+                {
+                    totalValueTextView.setText(
+                            THSignedMoney.builder(portfolioCompactDTO.nav)
+                                    .currency(portfolioCompactDTO.getNiceCurrency())
+                                    .build()
+                                    .toString());
+                }
+                else
+                {
+                    totalValueTextView.setText(R.string.na);
+                }
             }
         }
     }
@@ -66,11 +73,18 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
         {
             if (portfolioCompactDTO != null)
             {
-                marginAvailable.setText(
-                        THSignedMoney.builder(portfolioCompactDTO.marginAvailableRefCcy)
-                                .currency(portfolioCompactDTO.getNiceCurrency())
-                                .build()
-                                .toString());
+                if (portfolioCompactDTO.marginAvailableRefCcy != null)
+                {
+                    marginAvailable.setText(
+                            THSignedMoney.builder(portfolioCompactDTO.marginAvailableRefCcy)
+                                    .currency(portfolioCompactDTO.getNiceCurrency())
+                                    .build()
+                                    .toString());
+                }
+                else
+                {
+                    marginAvailable.setText(R.string.na);
+                }
             }
         }
     }
@@ -81,11 +95,18 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
         {
             if (portfolioCompactDTO != null)
             {
-                marginUsed.setText(
-                        THSignedMoney.builder(portfolioCompactDTO.marginUsedRefCcy)
-                                .currency(portfolioCompactDTO.getNiceCurrency())
-                                .build()
-                                .toString());
+                if (portfolioCompactDTO.marginUsedRefCcy != null)
+                {
+                    marginUsed.setText(
+                            THSignedMoney.builder(portfolioCompactDTO.marginUsedRefCcy)
+                                    .currency(portfolioCompactDTO.getNiceCurrency())
+                                    .build()
+                                    .toString());
+                }
+                else
+                {
+                    marginUsed.setText(R.string.na);
+                }
             }
         }
     }
@@ -96,11 +117,18 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
         {
             if (portfolioCompactDTO != null)
             {
-                unrealisedPl.setText(
-                        THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
-                                .currency(portfolioCompactDTO.getNiceCurrency())
-                                .build()
-                                .toString());
+                if (portfolioCompactDTO.unrealizedPLRefCcy != null)
+                {
+                    unrealisedPl.setText(
+                            THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
+                                    .currency(portfolioCompactDTO.getNiceCurrency())
+                                    .build()
+                                    .toString());
+                }
+                else
+                {
+                    unrealisedPl.setText(R.string.na);
+                }
             }
         }
     }
