@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionView;
@@ -64,28 +65,40 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         throw new IllegalArgumentException("Unhandled item " + item);
     }
 
-    protected int getItemViewType(PositionDTO item)
+    protected int getItemViewType(@NonNull PositionDTO item)
     {
+        Boolean isClosed = item.isClosed();
+        Boolean isOpen = item.isOpen();
         if (item.isLocked())
         {
             return VIEW_TYPE_LOCKED;
         }
-        else if (item.isClosed() && item instanceof PositionInPeriodDTO)
+        else if (isClosed != null && isClosed)
         {
-            return VIEW_TYPE_CLOSED_IN_PERIOD;
-        }
-        else if (item.isClosed())
-        {
+            if (item instanceof PositionInPeriodDTO)
+            {
+                return VIEW_TYPE_CLOSED_IN_PERIOD;
+            }
             return VIEW_TYPE_CLOSED;
         }
-        else if (item.isOpen() && item instanceof PositionInPeriodDTO)
+        else if (isOpen != null && isOpen)
         {
-            return VIEW_TYPE_OPEN_LONG_IN_PERIOD;
-        }
-        else if (item.isOpen())
-        {
+            boolean isShort = item.positionStatus != null && item.positionStatus.equals(PositionStatus.SHORT);
+            if (isShort)
+            {
+                if (item instanceof PositionInPeriodDTO)
+                {
+                    return VIEW_TYPE_OPEN_SHORT_IN_PERIOD;
+                }
+                return VIEW_TYPE_OPEN_SHORT;
+            }
+            if (item instanceof PositionInPeriodDTO)
+            {
+                return VIEW_TYPE_OPEN_LONG_IN_PERIOD;
+            }
             return VIEW_TYPE_OPEN_LONG;
         }
+
         // TODO short
         throw new IllegalArgumentException("Unhandled item " + item);
     }
@@ -135,19 +148,24 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
             // Split in open / closed
             for (PositionDTO positionDTO : dtos)
             {
-                if (positionDTO.isLocked())
+                switch(getItemViewType(positionDTO))
                 {
-                    lockedPositions.add(positionDTO);
+                    case VIEW_TYPE_LOCKED:
+                        lockedPositions.add(positionDTO);
+                        break;
+                    case VIEW_TYPE_CLOSED_IN_PERIOD:
+                    case VIEW_TYPE_CLOSED:
+                        closedPositions.add(positionDTO);
+                        break;
+                    case VIEW_TYPE_OPEN_LONG_IN_PERIOD:
+                    case VIEW_TYPE_OPEN_LONG:
+                        openLongPositions.add(positionDTO);
+                        break;
+                    case VIEW_TYPE_OPEN_SHORT_IN_PERIOD:
+                    case VIEW_TYPE_OPEN_SHORT:
+                        openShortPositions.add(positionDTO);
+                        break;
                 }
-                else if (positionDTO.isClosed())
-                {
-                    closedPositions.add(positionDTO);
-                }
-                else
-                {
-                    openLongPositions.add(positionDTO);
-                }
-                // TODO short
             }
 
             // Dress list

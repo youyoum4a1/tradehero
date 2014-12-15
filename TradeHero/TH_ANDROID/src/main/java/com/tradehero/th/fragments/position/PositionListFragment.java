@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,10 +59,8 @@ import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
@@ -112,6 +109,7 @@ public class PositionListFragment
     @Nullable protected UserProfileDTO userProfileDTO;
 
     protected PositionItemAdapter positionItemAdapter;
+    protected boolean showedMarginCall;
 
     private int firstPositionVisible = 0;
 
@@ -284,6 +282,7 @@ public class PositionListFragment
         positionListView.setOnScrollListener(null);
         positionListView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
+        portfolioHeaderView = null;
         super.onDestroyView();
     }
 
@@ -333,36 +332,24 @@ public class PositionListFragment
     {
         if (userProfileSubscription == null)
         {
-            userProfileSubscription = AndroidObservable.bindFragment(this, userProfileCache.get(shownUser))
-                    .subscribe(createProfileCacheObserver());
+            userProfileSubscription = AndroidObservable.bindFragment(
+                    this,
+                    userProfileCache.get(shownUser))
+                    .subscribe(
+                            pair -> linkWith(pair.second),
+                            this::handleUserProfileError);
         }
     }
 
-    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
-    {
-        return new AbstractPositionListProfileCacheObserver();
-    }
-
-    protected class AbstractPositionListProfileCacheObserver extends EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_user_profile);
-        }
-    }
-
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    public void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
-        if (andDisplay)
-        {
-            displayHeaderView();
-        }
+        displayHeaderView();
+    }
+
+    public void handleUserProfileError(Throwable e)
+    {
+        THToast.show(R.string.error_fetch_user_profile);
     }
 
     public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
@@ -398,6 +385,8 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
+
+        conditionalDisplayMarginCall();
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -443,36 +432,27 @@ public class PositionListFragment
     {
         if (getPositionsDTOKey.isValid() && getPositionsSubscription == null)
         {
-            getPositionsSubscription = AndroidObservable.bindFragment(this, getPositionsCache.get(getPositionsDTOKey))
-                    .subscribe(createGetPositionsCacheObserver());
+            getPositionsSubscription = AndroidObservable.bindFragment(
+                    this,
+                    getPositionsCache.get(getPositionsDTOKey))
+                    .subscribe(
+                            pair -> this.linkWith(pair.second),
+                            this::handleGetPositionsError);
         }
     }
 
-    @NonNull protected Observer<Pair<GetPositionsDTOKey, GetPositionsDTO>> createGetPositionsCacheObserver()
+    public void handleGetPositionsError(Throwable e)
     {
-        return new GetPositionsObserver();
-    }
-
-    protected class GetPositionsObserver extends EmptyObserver<Pair<GetPositionsDTOKey, GetPositionsDTO>>
-    {
-        @Override public void onNext(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
+        if (getPositionsDTO == null)
         {
-            linkWith(pair.second, true);
-        }
+            listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
 
-        @Override public void onError(Throwable e)
-        {
-            if (getPositionsDTO == null)
-            {
-                listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
-
-                THToast.show(getString(R.string.error_fetch_position_list_info));
-                Timber.d(e, "Error fetching the positionList info");
-            }
+            THToast.show(getString(R.string.error_fetch_position_list_info));
+            Timber.d(e, "Error fetching the positionList info");
         }
     }
 
-    public void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
+    public void linkWith(GetPositionsDTO getPositionsDTO)
     {
         this.getPositionsDTO = getPositionsDTO;
         positionItemAdapter.clear();
@@ -480,12 +460,7 @@ public class PositionListFragment
         positionItemAdapter.notifyDataSetChanged();
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
-
-        if (andDisplay)
-        {
-            // TODO finer grained
-            display();
-        }
+        display();
     }
 
     protected void refreshSimplePage()
@@ -609,5 +584,26 @@ public class PositionListFragment
         {
             // do nothing for now
         }
+    }
+
+    protected void conditionalDisplayMarginCall()
+    {
+        if (!showedMarginCall
+                && portfolioDTO != null
+                && portfolioDTO.isFx()
+                && portfolioDTO.hasMarginCall())
+        {
+            displayMarginCall();
+        }
+    }
+
+    protected void displayMarginCall()
+    {
+        showedMarginCall = true;
+        alertDialogUtil.popWithNegativeButton(
+                getActivity(),
+                R.string.portfolio_margin_call_title,
+                R.string.portfolio_margin_call_description,
+                R.string.portfolio_margin_call_ok);
     }
 }

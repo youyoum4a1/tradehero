@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +17,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
+import com.tradehero.th.api.security.FxCurrency;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
@@ -30,10 +30,8 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class PositionPartialTopView extends LinearLayout
@@ -44,6 +42,9 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected PositionDTOUtils positionDTOUtils;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
+    @InjectView(R.id.flags_container) protected View flagsContainer;
+    @InjectView(R.id.flag_left) protected ImageView flagLeft;
+    @InjectView(R.id.flag_right) protected ImageView flagRight;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
     @InjectView(R.id.company_name) protected TextView companyName;
     @InjectView(R.id.stock_movement_indicator) protected TextView stockMovementIndicator;
@@ -138,35 +139,24 @@ public class PositionPartialTopView extends LinearLayout
                     .map(pair -> pair.second)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(this::linkWith)
-                    .flatMap(securityCompactCache::get)
+                    .flatMap(securityId -> securityCompactCache.get(securityId))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(createSecurityCompactCacheObserver());
+                    .subscribe(
+                            pair -> linkWith(pair.second),
+                            this::handleSecurityError);
         }
+    }
+
+    public void handleSecurityError(Throwable e)
+    {
+        THToast.show("There was an error when fetching the security information");
+        Timber.e(e, "Error fetching the security");
     }
 
     protected void linkWith(@NonNull SecurityId securityId)
     {
         this.securityId = securityId;
         displayStockSymbol();
-    }
-
-    protected Observer<Pair<SecurityId, SecurityCompactDTO>> createSecurityCompactCacheObserver()
-    {
-        return new SecurityCompactObserver();
-    }
-
-    protected class SecurityCompactObserver extends EmptyObserver<Pair<SecurityId, SecurityCompactDTO>>
-    {
-        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show("There was an error when fetching the security information");
-            Timber.e(e, "Error fetching the security");
-        }
     }
 
     protected void linkWith(SecurityCompactDTO securityCompactDTO)
@@ -201,6 +191,8 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
+                stockLogo.setVisibility(View.VISIBLE);
+                flagsContainer.setVisibility(View.GONE);
                 picasso.load(securityCompactDTO.imageBlobUrl)
                         .placeholder(R.drawable.default_image)
                         .transform(new WhiteToTransparentTransformation())
@@ -216,6 +208,14 @@ public class PositionPartialTopView extends LinearLayout
                             }
                         });
             }
+            else if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                stockLogo.setVisibility(View.GONE);
+                flagsContainer.setVisibility(View.VISIBLE);
+                FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                flagLeft.setImageResource(FxCurrency.create(pair.left).flag);
+                flagRight.setImageResource(FxCurrency.create(pair.right).flag);
+            }
             else
             {
                 displayStockLogoExchange();
@@ -225,6 +225,8 @@ public class PositionPartialTopView extends LinearLayout
 
     public void displayStockLogoExchange()
     {
+        stockLogo.setVisibility(View.VISIBLE);
+        flagsContainer.setVisibility(View.GONE);
         if (securityCompactDTO != null)
         {
             picasso.load(securityCompactDTO.getExchangeLogoId())
