@@ -509,7 +509,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         Timber.d("initialLoad %s", currentLeaderboardKey);
         leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
-        //invalidateCachedItemView();
     }
 
     private void updateListViewRow(@NonNull final UserBaseKey heroId)
@@ -567,18 +566,16 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         @Override public void onLoadedInBackground(final LeaderboardDTO leaderboardDTO)
         {
-            getActivity().runOnUiThread(() -> {
-                Date markingTime = leaderboardDTO.markUtc;
-                if (markingTime != null && leaderboardMarkUserMarkingTime != null)
-                {
-                    leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
-                }
-                leaderboardMarkUserListAdapter.setIsForex(leaderboardDTO.isForex);
-                if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
-                {
-                    ((BaseLeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isForex);
-                }
-            });
+            Date markingTime = leaderboardDTO.markUtc;
+            if (markingTime != null && leaderboardMarkUserMarkingTime != null)
+            {
+                leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
+            }
+            leaderboardMarkUserListAdapter.setIsForex(leaderboardDTO.isForex);
+            if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
+            {
+                ((BaseLeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isForex);
+            }
         }
     }
 
