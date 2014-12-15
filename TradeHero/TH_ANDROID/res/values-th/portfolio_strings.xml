@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Portfolios list -->
+  <string name="portfolio_topbar_title">พอร์ทการลงทุน และ รายการเฝ้าระวัง</string>
+  <string name="portfolio_own_header">พอร์ทการลงทุน </string>
+  <string name="portfolio_recently_viewed_heroes">ฮีโร่ที่เรียกดูล่าสุด</string>
+  <string name="portfolio_recently_viewed_others">ผู้ใช้ที่เรียกดูล่าสุด</string>
+  <string name="portfolio_loading_count">กำลังโหลด %1$,d/%2$,d พอร์ทการลงทุน...</string>
+  <string name="portfolio_description_count_open_positions_you">คุณมี %1$d สถานะเปิด</string>
+  <string name="portfolio_description_count_closed_positions_you">คุณมี %1$d สถานะปิด</string>
+  <string name="portfolio_description_count_watch_positions_you">คุณกำลังดู %1$d รายการ</string>
+  <string name="portfolio_description_count_open_positions_other">%2$s มี %1$d สถานะเปิด </string>
+  <string name="portfolio_description_count_closed_positions_other">%2$s มี %1$d สถานะปิด</string>
+  <string name="portfolio_description_count_watch_positions_other">%2$s กำลังดู %1$d รายการ</string>
+  <string name="portfolio_description_count_watchlist">คุณมี %1$d รายการ</string>
+  <string name="portfolio_default_title">พอร์ทการลงทุนหลัก</string>
+  <string name="portfolio_item_title_loading">กำลังโหลด...</string>
+  <string name="portfolio_header_total_value">มูลค่ารวม</string>
+  <string name="portfolio_header_cash_value">มูลค่าเงินสด</string>
+
+  <string name="portfolio_title_unnamed">พอร์ทการลงทุนที่ไม่มีชื่อ</string>
+
+  <string name="error_fetch_portfolio_list_info">เกิดข้อผิดพลาด เมื่อได้รับรายการพอร์ทการลงทุน</string>
+  <string name="error_fetch_portfolio_info">เกิดข้อผิดพลาด เมื่อได้รับข้อมูลพอร์ทการลงทุน</string>
+
+</resources>
