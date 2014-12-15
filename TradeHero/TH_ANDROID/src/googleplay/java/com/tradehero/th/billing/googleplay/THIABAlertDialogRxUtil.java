@@ -9,6 +9,7 @@ import android.util.Pair;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
+import com.tradehero.common.billing.googleplay.exception.IABDeveloperErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionException;
 import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
@@ -78,6 +79,10 @@ public class THIABAlertDialogRxUtil
         if (throwable instanceof IABItemAlreadyOwnedException)
         {
             return popAlreadyOwnedAndHandle(activityContext, throwable);
+        }
+        if (throwable instanceof IABDeveloperErrorException)
+        {
+            return popDeveloperErrorAndHandle(activityContext, throwable);
         }
         return super.popErrorAndHandle(activityContext, throwable);
     }
@@ -277,6 +282,50 @@ public class THIABAlertDialogRxUtil
                 googlePlayUtils.getSupportAlreadyOwnedIntent(context, exception));
     }
     //</editor-fold>
+
+    //<editor-fold desc="Developer Error">
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popDeveloperErrorAndHandle(
+            @NonNull final Context activityContext,
+            @NonNull final Throwable throwable)
+    {
+        return popDeveloperError(activityContext)
+                .flatMap(pair -> handleSendEmailDeveloperError(activityContext, pair, throwable));
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> popDeveloperError(
+            @NonNull final Context activityContext)
+    {
+        return Observable.create(
+                AlertDialogOnSubscribe.builder(
+                        createDefaultDialogBuilder(activityContext)
+                                .setTitle(R.string.google_play_billing_developer_error_window_title)
+                                .setMessage(R.string.google_play_billing_developer_error_window_description))
+                        .setPositiveButton(R.string.google_play_billing_developer_error_ok)
+                        .setNegativeButton(R.string.google_play_billing_developer_error_cancel)
+                        .build())
+                .subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    @NonNull public Observable<Pair<DialogInterface, Integer>> handleSendEmailDeveloperError(
+            @NonNull final Context activityContext,
+            @NonNull Pair<DialogInterface, Integer> pair,
+            @NonNull Throwable throwable)
+    {
+        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        {
+            sendSupportEmailDeveloperError(activityContext, throwable);
+        }
+        return Observable.empty();
+    }
+
+    public void sendSupportEmailDeveloperError(@NonNull final Context context, @NonNull Throwable exception)
+    {
+        activityUtil.sendSupportEmail(
+                context,
+                googlePlayUtils.getSupportDeveloperErrorIntent(context, exception));
+    }
+    //</editor-fold>
+
 
     //<editor-fold desc="SKU related">
     @Override @NonNull protected THIABSKUDetailAdapter createProductDetailAdapter(

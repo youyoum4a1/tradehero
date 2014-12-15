@@ -86,4 +86,10 @@
   <string name="google_play_billing_already_owned_ok">Sure</string>
   <string name="google_play_billing_already_owned_cancel">Never Mind</string>
 
+  <string name="google_play_billing_developer_error_window_title">Developer Error</string>
+  <string name="google_play_billing_developer_error_window_description">Google Play Store reported an error by TradeHero
+    \n\nDo you mind reporting the incident to TradeHero?</string>
+  <string name="google_play_billing_developer_error_ok">Sure</string>
+  <string name="google_play_billing_developer_error_cancel">Never Mind</string>
+
 </resources>

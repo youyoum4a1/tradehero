@@ -159,9 +159,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         testAvailableSubscription = AndroidObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
+                .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
                 .subscribe(
-                        pair -> alreadyNotifiedNeedCreateAccount = true,
-                        error -> alreadyNotifiedNeedCreateAccount = true);
+                        pair -> {},
+                        error -> {});
     }
 
     @Override protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()

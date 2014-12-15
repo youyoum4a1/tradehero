@@ -9,6 +9,7 @@ import com.android.vending.billing.IInAppBillingService;
 import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
@@ -48,9 +49,8 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
     }
     //</editor-fold>
 
-    public void onDestroy() // TODO call it
+    public void onDestroy()
     {
-        THToast.show("ondestroy BaseIABServiceCaller");
         billingServiceBinderSubscription.unsubscribe();
     }
 
@@ -72,7 +72,7 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
         IInAppBillingService billingService = IInAppBillingService.Stub.asInterface(binder);
         if (billingService == null)
         {
-            throw new NullPointerException("Binder returned null for asInterface");
+            return Observable.error(new NullPointerException("Binder returned null for asInterface"));
         }
         try
         {
@@ -81,12 +81,10 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
                     checkSubscriptionSupported(billingService)));
         } catch (RemoteException e)
         {
-            throw
-                    new IABException(IABConstants.IABHELPER_REMOTE_EXCEPTION, "RemoteException while setting up in-app billing.");
+            return Observable.error(new IABRemoteException("RemoteException while setting up in-app billing.", e));
         } catch (IABException e)
         {
-            throw new RuntimeException(e);
-            //return Observable.error(e);
+            return Observable.error(e);
         }
     }
 

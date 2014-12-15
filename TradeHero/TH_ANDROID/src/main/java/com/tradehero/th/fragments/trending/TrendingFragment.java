@@ -218,7 +218,10 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
                 exchangeCompactListCache.get(key))
                 .subscribe(
                         pair -> linkWith(pair.second),
-                        error -> THToast.show(getString(R.string.error_fetch_exchange_list_info))
+                        error -> {
+                            Timber.e(error, "Fetching exchanges");
+                            THToast.show(getString(R.string.error_fetch_exchange_list_info));
+                        }
                 ));
     }
 

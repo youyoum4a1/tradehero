@@ -315,11 +315,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
 
-        mBtnAddCash.setOnClickListener(view -> {
-            DeviceUtil.dismissKeyboard(mCommentsEditText);
-            handleBtnAddCashPressed();
-        });
-
         displayAddCashButton();
     }
 
@@ -423,8 +418,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.comments)
-    void onCommentAreaClicked(View commentTextBox)
+    @OnClick(R.id.comments) void onCommentAreaClicked(View commentTextBox)
     {
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
@@ -484,8 +478,11 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    public void handleBtnAddCashPressed()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.dialog_btn_add_cash)
+    public void handleBtnAddCashPressed(View view)
     {
+        DeviceUtil.dismissKeyboard(mCommentsEditText);
         //noinspection unchecked
         subscriptions.add(AndroidObservable.bindFragment(
                 this,

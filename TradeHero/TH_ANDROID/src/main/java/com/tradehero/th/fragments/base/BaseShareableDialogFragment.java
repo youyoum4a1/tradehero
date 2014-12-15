@@ -104,6 +104,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     {
         unsubscribeWeChatButton();
         unsubscribeSocialLinkingButtons();
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 

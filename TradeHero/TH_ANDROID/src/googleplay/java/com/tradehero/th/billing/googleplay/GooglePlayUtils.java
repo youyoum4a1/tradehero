@@ -2,7 +2,6 @@ package com.tradehero.th.billing.googleplay;
 
 import android.content.Context;
 import android.content.Intent;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.IABSKU;
@@ -10,10 +9,8 @@ import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.billing.BillingUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.VersionUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
 
 class GooglePlayUtils
@@ -56,6 +53,18 @@ class GooglePlayUtils
             @NonNull Throwable exception)
     {
         String deviceDetails = "\n\nI already own an SKU I am trying to purchase with " + getStoreName() + "\n\n-----\n" +
+                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
+                "\n-----\n";
+        Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
+        intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
+        return intent;
+    }
+
+    @NonNull public Intent getSupportDeveloperErrorIntent(
+            @NonNull Context context,
+            @NonNull Throwable exception)
+    {
+        String deviceDetails = "\n\nDeveloper error reported by " + getStoreName() + "\n\n-----\n" +
                 StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
