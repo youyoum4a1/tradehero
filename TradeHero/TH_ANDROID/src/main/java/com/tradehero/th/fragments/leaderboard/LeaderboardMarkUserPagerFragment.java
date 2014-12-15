@@ -14,22 +14,17 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
+import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardMarkUserPagerFragment extends DashboardFragment
+public class LeaderboardMarkUserPagerFragment extends LeaderboardDefFragment
 {
-    private static final String BUNDLE_KEY_LEADERBOARD_ID = LeaderboardMarkUserPagerFragment.class.getName() + ".leaderboardId";
-
     @Inject Context context;
     @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @InjectView(R.id.pager) ViewPager viewPager;
-
-    public static void putLeaderboardDefKey(Bundle bundle, LeaderboardDefKey leaderboardDefKey)
-    {
-        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
-    }
+    private LeaderboardPagerAdapter leaderboardPagerAdapter;
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -45,38 +40,66 @@ public class LeaderboardMarkUserPagerFragment extends DashboardFragment
 
     private void initViews(View view)
     {
-        viewPager.setAdapter(new LeaderboardPagerAdapter(getChildFragmentManager()));
+        leaderboardPagerAdapter = new LeaderboardPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(leaderboardPagerAdapter);
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
+    }
+
+    private void refreshViewpager()
+    {
         pagerSlidingTabLayout.setViewPager(viewPager);
+    }
+
+    @Override public void onDestroyView()
+    {
+        leaderboardPagerAdapter = null;
+        super.onDestroyView();
+    }
+
+    @Override protected void onLeaderboardDefListLoaded(List<LeaderboardDefDTO> leaderboardDefDTOs)
+    {
+        leaderboardPagerAdapter.setItems(leaderboardDefDTOs);
     }
 
     private class LeaderboardPagerAdapter extends FragmentPagerAdapter
     {
+        List<LeaderboardDefDTO> leaderboardDefDTOs = new LeaderboardDefDTOList();
+
         public LeaderboardPagerAdapter(FragmentManager fm)
         {
             super(fm);
         }
 
+        public void setItems(List<LeaderboardDefDTO> items)
+        {
+            leaderboardDefDTOs.clear();
+            leaderboardDefDTOs.addAll(items);
+            notifyDataSetChanged();
+            refreshViewpager();
+        }
+
         @Override public Fragment getItem(int position)
         {
-            LeaderboardTabType tabType = LeaderboardTabType.values()[position];
+            LeaderboardDefDTO dto = leaderboardDefDTOs.get(position);
             Bundle args = getArguments();
             if (args == null)
             {
                 args = new Bundle();
             }
-            return Fragment.instantiate(getActivity(), tabType.tabClass.getName(), args);
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
+            return Fragment.instantiate(getActivity(), LeaderboardMarkUserListFragment.class.getName(), args);
         }
 
         @Override public int getCount()
         {
-            return LeaderboardTabType.values().length;
+            return leaderboardDefDTOs.size();
         }
 
         @Override public CharSequence getPageTitle(int position)
         {
-            return getString(LeaderboardTabType.values()[position].titleRes);
+            //TODO
+            return getString(R.string.leaderboard_type_stocks);
         }
     }
 }

@@ -29,6 +29,7 @@ import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserPagerFragment;
@@ -286,7 +287,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle(getArguments());
         (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
-        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
+        LeaderboardDefFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
         if (navigator != null)
         {
             navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
