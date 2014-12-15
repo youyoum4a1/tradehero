@@ -19,6 +19,7 @@ public class PositionDTOCompact implements DTO
     // This is the portfolio currency
     @Nullable public String currencyDisplay;
     @Nullable public String currencyISO;
+    @Nullable public PositionStatus positionStatus;
 
     //<editor-fold desc="Constructors">
     public PositionDTOCompact()
@@ -27,9 +28,13 @@ public class PositionDTOCompact implements DTO
     }
     //</editor-fold>
 
-    @JsonIgnore
+    @JsonIgnore @Nullable
     public Boolean isClosed()
     {
+        if (positionStatus != null && positionStatus.equals(PositionStatus.CLOSED))
+        {
+            return true;
+        }
         if (shares == null)
         {
             return null;
@@ -37,9 +42,13 @@ public class PositionDTOCompact implements DTO
         return shares == 0;
     }
 
-    @JsonIgnore
+    @JsonIgnore @Nullable
     public Boolean isOpen()
     {
+        if (positionStatus != null && positionStatus.equals(PositionStatus.CLOSED))
+        {
+            return false;
+        }
         if (shares == null)
         {
             return null;
