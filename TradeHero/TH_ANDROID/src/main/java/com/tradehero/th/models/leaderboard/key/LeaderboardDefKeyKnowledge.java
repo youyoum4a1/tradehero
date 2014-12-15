@@ -9,6 +9,7 @@ import javax.inject.Inject;
 public class LeaderboardDefKeyKnowledge
 {
     // For fake leaderboard definition, hardcoded on client side
+    public static final int MOST_SKILLED_CONTAINER_ID = -7;
     public static final int INVITE_FRIENDS_ID = -6;
     public static final int FOLLOWER_ID = -5;
     public static final int HERO_ID = -4;
@@ -37,8 +38,9 @@ public class LeaderboardDefKeyKnowledge
     public static final int QUARTER_4_B = 39;
     public static final int DAYS_30 = 40;
     public static final int DAYS_90 = 41;
-    public static final int MOST_SKILLED_ID = 49;
     public static final int MONTHS_6 = 285;
+    public static final int MOST_SKILLED_ID = 49;
+    public static final int MOST_SKILLED_FOREX_ID = 700000271;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefKeyKnowledge()
@@ -127,7 +129,7 @@ public class LeaderboardDefKeyKnowledge
             case DAYS_90:
                 return R.drawable.icn_lb_90d;
 
-            case MOST_SKILLED_ID:
+            case MOST_SKILLED_CONTAINER_ID:
                 return R.drawable.icn_lb_most_skilled;
 
             case MONTHS_6:

@@ -14,14 +14,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
 public class LeaderboardMarkUserPagerFragment extends DashboardFragment
 {
+    private static final String BUNDLE_KEY_LEADERBOARD_ID = LeaderboardMarkUserPagerFragment.class.getName() + ".leaderboardId";
+
     @Inject Context context;
     @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @InjectView(R.id.pager) ViewPager viewPager;
+
+    public static void putLeaderboardDefKey(Bundle bundle, LeaderboardDefKey leaderboardDefKey)
+    {
+        bundle.putInt(BUNDLE_KEY_LEADERBOARD_ID, leaderboardDefKey.key);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {

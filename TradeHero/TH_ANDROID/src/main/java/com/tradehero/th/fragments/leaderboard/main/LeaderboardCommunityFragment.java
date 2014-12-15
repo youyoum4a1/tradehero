@@ -22,8 +22,10 @@ import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
+import com.tradehero.th.api.leaderboard.def.MostSkilledContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
@@ -62,8 +64,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemClickSticky(R.id.leaderboard_community_list)
-    void handleLeaderboardItemClicked(AdapterView<?> parent, View view, int position, long id)
+    @OnItemClickSticky(R.id.leaderboard_community_list) void handleLeaderboardItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         LeaderboardDefDTO leaderboardDefDTO = (LeaderboardDefDTO) parent.getItemAtPosition(position);
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
@@ -78,6 +79,10 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             {
                 throw new IllegalArgumentException("Unhandled drillDownLeaderboardDefDTO " + drillDownLeaderboardDefDTO);
             }
+        }
+        else if (leaderboardDefDTO instanceof MostSkilledContainerLeaderboardDefDTO)
+        {
+            pushMostSkilledFragment(leaderboardDefDTO);
         }
         else
         {
@@ -285,6 +290,17 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         if (navigator != null)
         {
             navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
+        }
+    }
+
+    private void pushMostSkilledFragment(LeaderboardDefDTO leaderboardDefDTO)
+    {
+        Bundle bundle = new Bundle(getArguments());
+        (new MostSkilledLeaderboardDefListKey()).putParameters(bundle);
+        LeaderboardMarkUserPagerFragment.putLeaderboardDefKey(bundle, leaderboardDefDTO.getLeaderboardDefKey());
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(LeaderboardMarkUserPagerFragment.class, bundle);
         }
     }
 
