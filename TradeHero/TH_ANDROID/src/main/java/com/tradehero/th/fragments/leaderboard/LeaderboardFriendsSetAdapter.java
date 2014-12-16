@@ -82,6 +82,8 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
     public void set(@NonNull LeaderboardFriendsDTO leaderboardFriendsDTO)
     {
+        clear();
+        notifyDataSetChanged();
         Observable.from(leaderboardFriendsDTO.leaderboard.users)
                 .subscribeOn(Schedulers.computation())
                 .map(this::createUserDTOFrom)
