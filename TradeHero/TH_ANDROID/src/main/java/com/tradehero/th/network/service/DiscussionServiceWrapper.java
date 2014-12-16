@@ -109,14 +109,21 @@ import javax.inject.Singleton;
     //</editor-fold>
 
     public MiddleCallback<TimelineItemDTO> createDiscoveryDiscussion(
-            int userid,
+            int userId,
             DiscoveryDiscussFormDTO discussionFormDTO,
             Callback<TimelineItemDTO> callback)
     {
         MiddleCallback<TimelineItemDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        discussionServiceAsync.createDiscoveryDiscussion(userid, discussionFormDTO, middleCallback);
+        discussionServiceAsync.createDiscoveryDiscussion(userId, discussionFormDTO, middleCallback);
         return middleCallback;
     }
+
+    public void createRewardTimeLine(int userId,
+                                     DiscoveryDiscussFormDTO discussionFormDTO,
+                                     Callback<Response> callback){
+        discussionServiceAsync.createRewaredTimeLine(userId, discussionFormDTO, callback);
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Get Discussions">

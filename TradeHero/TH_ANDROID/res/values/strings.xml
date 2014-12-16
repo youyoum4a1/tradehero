@@ -462,6 +462,7 @@
   <string name="discovery_discuss_send_reward_money">悬赏金额：</string>
   <string name="discovery_discuss_send_reward_money_plus">悬赏$1000</string>
   <string name="discovery_discuss_send_reward_content">内容：</string>
+  <string name="discovery_discuss_send_reward_successfully">发布成功</string>
   <string name="discovery_discuss_send_more">更多</string>
   <string name="discovery_discuss_send_report">举报</string>
   <string name="discovery_discuss_send_delete">删帖</string>
@@ -479,5 +480,8 @@
   <string name="discovery_discuss_dlg_title_deletecomment">确定删除已发布的贴子？</string>
   <string name="discovery_discuss_dlg_title_applycomment">确定删除已发布的贴子？</string>
   <string name="discovery_discuss_dlg_delete">删除中...</string>
+  <string name="discovery_discuss_send_reward_title_warning">标题为3-18个字符</string>
+  <string name="discovery_discuss_send_reward_content_warning">您的帖子内容不能为空</string>
+
   <!-- Discovery Discuss Reward -->
 </resources>

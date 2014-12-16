@@ -86,6 +86,12 @@ interface DiscussionServiceAsync
             @Path("userId") int userId,
             @Body DiscoveryDiscussFormDTO discussionFormDTO,
             Callback<TimelineItemDTO> callback);
+
+    @POST("/users/{userId}/timeline")
+    void createRewaredTimeLine(
+            @Path("userId") int userId,
+            @Body DiscoveryDiscussFormDTO discussionFormDTO,
+            Callback<Response> callback);
     //</editor-fold>
 
     @POST("/report")

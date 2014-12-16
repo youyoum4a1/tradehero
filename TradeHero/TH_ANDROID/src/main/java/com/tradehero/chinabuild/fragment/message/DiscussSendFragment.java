@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,7 +122,7 @@ public class DiscussSendFragment extends DashboardFragment
     {
         if(isSending)return;
         if(isReward){
-
+            postRewardTimeLine();
         }else {
             postDiscussion();
         }
@@ -376,6 +377,65 @@ public class DiscussSendFragment extends DashboardFragment
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             discussionEditMiddleCallback = discussionServiceWrapper.createDiscussion(discussionFormDTO, new SecurityDiscussionEditCallback());
         }
+    }
+
+    private void postRewardTimeLine()
+    {
+        String title = rewardTitleET.getText().toString();
+        if(TextUtils.isEmpty(title) || title.length()>18 || title.length()<3){
+            THToast.show(R.string.discovery_discuss_send_reward_title_warning);
+            return;
+        }
+        String content = rewardContentET.getText().toString();
+        if(TextUtils.isEmpty(content)){
+            THToast.show(R.string.discovery_discuss_send_reward_content_warning);
+            return;
+        }
+        DiscoveryDiscussFormDTO dto = new DiscoveryDiscussFormDTO();
+        dto.text = content;
+        dto.header = title;
+        if(isGoToReward){
+            int position = rewardMoneyListS.getSelectedItemPosition();
+            switch(position){
+                case 0:
+                    dto.prizeAmount = 1000;
+                    break;
+                case 1:
+                    dto.prizeAmount = 2000;
+                    break;
+                case 2:
+                    dto.prizeAmount = 5000;
+                    break;
+                case 3:
+                    dto.prizeAmount = 10000;
+                    break;
+            }
+        }
+        progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
+        isSending = true;
+        discussionServiceWrapper.createRewardTimeLine(currentUserId.toUserBaseKey().key, dto, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                popCurrentFragment();
+                THToast.show(R.string.discovery_discuss_send_reward_successfully);
+                onFinish();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                THToast.show(retrofitError.getMessage());
+                onFinish();
+            }
+
+            private void onFinish(){
+                if (progressDialog != null)
+                {
+                    progressDialog.hide();
+                }
+
+                isSending = false;
+            }
+        });
     }
 
     //发布普通的自己的TIMELINE流入最新动态

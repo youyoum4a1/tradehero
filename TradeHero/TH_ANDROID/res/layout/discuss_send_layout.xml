@@ -82,6 +82,7 @@
                       android:id="@+id/edittext_reward_doc_title"
                       android:textSize="15sp" android:layout_gravity="center_vertical"
                       android:layout_marginLeft="10dp"
+                      android:singleLine="true"
                       android:background="@color/transparent"
                       android:textColor="@color/discovery_discuss_reward_gray"/>
         </LinearLayout>
@@ -114,6 +115,7 @@
                       android:textSize="15sp" android:layout_gravity="center_vertical"
                       android:background="@color/transparent"
                       android:layout_marginLeft="10dp"
+                      android:maxLength="500"
                       android:textColor="@color/discovery_discuss_reward_gray"/>
         </LinearLayout>
     </LinearLayout>
