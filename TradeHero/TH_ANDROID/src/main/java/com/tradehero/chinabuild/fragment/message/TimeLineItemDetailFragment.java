@@ -518,7 +518,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
 
             tvTLComment.setText("" + dto.commentCount);
-            tvTLPraise.setText(Html.fromHtml(dto.getVoteString()));
+            tvTLPraise.setText(Html.fromHtml(dto.getVoteUpString()));
         }
     }
 

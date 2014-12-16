@@ -67,10 +67,23 @@ abstract public class AbstractDiscussionCompactDTO extends ExtendedDTO
                 '}';
     }
 
-    public String getVoteString()
+    public String getVoteUpString()
     {
         String str = "" + upvoteCount;
         if(voteDirection == 1)
+        {
+            return Application.context().getString(R.string.html_string_blue,str);
+        }
+        else
+        {
+            return Application.context().getString(R.string.html_string_gray,str);
+        }
+    }
+
+    public String getVoteDownString()
+    {
+        String str = "" + downvoteCount;
+        if(voteDirection == -1)
         {
             return Application.context().getString(R.string.html_string_blue,str);
         }

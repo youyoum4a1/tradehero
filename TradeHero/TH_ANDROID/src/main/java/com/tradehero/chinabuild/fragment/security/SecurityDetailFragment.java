@@ -493,7 +493,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void initView()
     {
         initTabPageView();
-        tvUserTLContent.setMaxLines(3);
+        tvUserTLContent.setMaxLines(8);
         llBuySaleButtons.setVisibility(View.GONE);
 
         btnChart = new Button[4];
@@ -1951,17 +1951,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                         .into(imgSecurityTLUserHeader);
             }
 
-            if (dto.voteDirection == 1)
-            {
-                btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
-            }
-            if (dto.voteDirection == 0)
-            {
-                btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
-            }
+            btnTLPraise.setBackgroundResource(dto.voteDirection==1?R.drawable.icon_praise_active:R.drawable.icon_praise_normal);
+            btnTLPraiseDown.setBackgroundResource(dto.voteDirection==-1?R.drawable.icon_praise_down_active:R.drawable.icon_praise_down_normal);
 
             tvTLComment.setText("" + dto.commentCount);
-            tvTLPraise.setText(Html.fromHtml(dto.getVoteString()));
+            tvTLPraise.setText(Html.fromHtml(dto.getVoteUpString()));
+            tvTLPraiseDown.setText(Html.fromHtml(dto.getVoteDownString()));
         }
 
         setTextForMoreButton();
@@ -1970,38 +1965,57 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     public void clickedPraise()
     {
         AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
-        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
 
-        if (item.voteDirection == 0)
-        {
-            item.voteDirection = 1;
-            item.upvoteCount += 1;
-        }
-        else
+        if (item.voteDirection == 1)
         {
             item.voteDirection = 0;
             item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+            updateVoting(VoteDirection.UnVote, item);
         }
+        else if (item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+            updateVoting(VoteDirection.UpVote, item);
+        }
+        else if (item.voteDirection == -1)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+            item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
+            updateVoting(VoteDirection.UpVote, item);
+        }
+
         displayDiscussOrNewsDTO();
     }
 
     public void clickedPraiseDown()
     {
         AbstractDiscussionCompactDTO item = getAbstractDiscussionCompactDTO();
-        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
 
-        if (item.voteDirection == 0)
+        if (item.voteDirection == 1)
         {
-            item.voteDirection = 1;
-            item.upvoteCount += 1;
+            item.voteDirection = -1;
+            item.downvoteCount += 1;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+            updateVoting(VoteDirection.DownVote, item);
         }
-        else
+        else if (item.voteDirection == 0)
+        {
+            item.voteDirection = -1;
+            item.downvoteCount += 1;
+            updateVoting(VoteDirection.DownVote, item);
+        }
+        else if (item.voteDirection == -1)
         {
             item.voteDirection = 0;
-            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+            item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
+            updateVoting(VoteDirection.UnVote, item);
         }
+
         displayDiscussOrNewsDTO();
     }
+
 
     protected void detachVoteMiddleCallback()
     {

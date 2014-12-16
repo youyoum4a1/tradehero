@@ -378,16 +378,11 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 }
             }
 
-            if (item.voteDirection == 1)
-            {
-                holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_active);
-            }
-            if (item.voteDirection == 0)
-            {
-                holder.btnTLPraise.setBackgroundResource(R.drawable.icon_praise_normal);
-            }
+            holder.btnTLPraise.setBackgroundResource(item.voteDirection==1?R.drawable.icon_praise_active:R.drawable.icon_praise_normal);
+            holder.btnTLPraiseDown.setBackgroundResource(item.voteDirection==-1?R.drawable.icon_praise_down_active:R.drawable.icon_praise_down_normal);
 
-            holder.tvTLPraise.setText(Html.fromHtml(item.getVoteString()));
+            holder.tvTLPraise.setText(Html.fromHtml(item.getVoteUpString()));
+            holder.tvTLPraiseDown.setText(Html.fromHtml(item.getVoteDownString()));
             holder.tvTLComment.setText("" + item.commentCount);
 
             holder.llItemAll.setOnClickListener(new View.OnClickListener()
@@ -600,37 +595,30 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         }
     }
 
-    //public void enterBuySale(boolean isBuy)
-    //{
-    //
-    //    if (!isBuyOrSaleValid(isBuy)) return;
-    //    Bundle bundle = new Bundle();
-    //    bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
-    //    bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
-    //    bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
-    //    bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
-    //    bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
-    //    bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
-    //    bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
-    //    pushFragment(BuySaleSecurityFragment.class, bundle);
-    //}
-
     public void clickedPraise(int position)
     {
         TimelineItemDTO item = (TimelineItemDTO) getItem(position);
 
-        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
-
-        if (item.voteDirection == 0)
-        {
-            item.voteDirection = 1;
-            item.upvoteCount += 1;
-        }
-        else
+        if (item.voteDirection == 1)
         {
             item.voteDirection = 0;
             item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+            updateVoting(VoteDirection.UnVote, item);
         }
+        else if(item.voteDirection == 0)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount += 1;
+            updateVoting(VoteDirection.UpVote, item);
+        }
+        else if(item.voteDirection == -1)
+        {
+            item.voteDirection = 1;
+            item.upvoteCount +=1;
+            item.downvoteCount = item.downvoteCount > 0?(item.downvoteCount -1):0;
+            updateVoting(VoteDirection.UpVote, item);
+        }
+
         notifyDataSetChanged();
     }
 
@@ -638,17 +626,24 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     {
         TimelineItemDTO item = (TimelineItemDTO) getItem(position);
 
-        updateVoting((item.voteDirection == 0) ? VoteDirection.UpVote : VoteDirection.UnVote, item);
-
-        if (item.voteDirection == 0)
+        if (item.voteDirection == 1)
         {
-            item.voteDirection = 1;
-            item.upvoteCount += 1;
+            item.voteDirection = -1;
+            item.downvoteCount += 1;
+            item.upvoteCount = item.upvoteCount>0?(item.upvoteCount-1):0;
+            updateVoting(VoteDirection.DownVote, item);
         }
-        else
+        else if (item.voteDirection == 0)
+        {
+            item.voteDirection = -1;
+            item.downvoteCount += 1;
+            updateVoting(VoteDirection.DownVote, item);
+        }
+        else if(item.voteDirection == -1)
         {
             item.voteDirection = 0;
-            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
+            item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
+            updateVoting(VoteDirection.UnVote, item);
         }
         notifyDataSetChanged();
     }
