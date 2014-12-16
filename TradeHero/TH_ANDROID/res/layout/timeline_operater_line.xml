@@ -5,102 +5,134 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
-
+    android:orientation="vertical"
+    >
+  <View android:layout_height="1px"
+      android:layout_width="fill_parent"
+      android:background="@color/gray_normal"/>
   <LinearLayout
-      android:paddingTop="10dp"
-      android:paddingBottom="10dp"
-      android:id="@+id/llTLBuy"
-      android:visibility="gone"
-      android:layout_marginLeft="0dp"
-      android:layout_marginRight="40dp"
-      android:layout_width="wrap_content"
+      android:layout_weight="3"
+      android:orientation="horizontal"
+      android:layout_width="fill_parent"
       android:layout_height="wrap_content">
-    <TextView android:id="@+id/btnTLBuy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:duplicateParentState="true"
-        android:background="@drawable/icon_buy_xml"/>
-    <TextView
-        android:id="@+id/tvTLBuy"
-        android:layout_marginLeft="3dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/text_xsmall"
-        android:duplicateParentState="true"
-        android:layout_gravity="center_vertical"
-        android:textColor="#929292"
-        android:text="跟买"/>
+    <LinearLayout
+        android:layout_weight="1"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:id="@+id/llTLPraise"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+      <TextView android:id="@+id/btnTLPraise"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:duplicateParentState="true"
+          android:background="@drawable/icon_praise_normal"/>
+      <TextView
+          android:id="@+id/tvTLPraise"
+          android:layout_marginLeft="3dp"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textSize="@dimen/text_xsmall"
+          android:duplicateParentState="true"
+          android:layout_gravity="center_vertical"
+          android:textColor="#929292"
+          android:text="赞"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/gray_normal"/>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:id="@+id/llTLPraiseDown"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+      <TextView android:id="@+id/btnTLPraiseDown"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:duplicateParentState="true"
+          android:background="@drawable/icon_praise_down_normal"/>
+      <TextView
+          android:id="@+id/tvTLPraiseDown"
+          android:layout_marginLeft="3dp"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:textSize="@dimen/text_xsmall"
+          android:duplicateParentState="true"
+          android:layout_gravity="center_vertical"
+          android:textColor="#929292"
+          android:text="踩"/>
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/gray_normal"/>
+
+    <RelativeLayout
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+      <LinearLayout
+          android:id="@+id/llTLComment"
+          android:gravity="center"
+          android:layout_height="fill_parent"
+          android:layout_width="fill_parent">
+
+        <TextView android:id="@+id/btnTLComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:background="@drawable/icon_comment_xml"/>
+        <TextView
+            android:id="@+id/tvTLComment"
+            android:layout_marginLeft="3dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/text_xsmall"
+            android:duplicateParentState="true"
+            android:layout_gravity="center_vertical"
+            android:textColor="#929292"
+            android:text="0"/>
+      </LinearLayout>
+
+      <LinearLayout
+          android:visibility="gone"
+          android:id="@+id/llTLBuy"
+          android:gravity="center"
+          android:layout_height="fill_parent"
+          android:layout_width="fill_parent">
+        <TextView android:id="@+id/btnTLBuy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:background="@drawable/icon_buy_xml"/>
+        <TextView
+            android:id="@+id/tvTLBuy"
+            android:layout_marginLeft="3dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/text_xsmall"
+            android:duplicateParentState="true"
+            android:layout_gravity="center_vertical"
+            android:textColor="#929292"
+            android:text="跟买"/>
+      </LinearLayout>
+    </RelativeLayout>
   </LinearLayout>
 
-  <LinearLayout
-      android:paddingTop="10dp"
-      android:paddingBottom="10dp"
-      android:id="@+id/llTLPraise"
-      android:layout_marginLeft="0dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
-    <TextView android:id="@+id/btnTLPraise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:duplicateParentState="true"
-        android:background="@drawable/icon_praise_normal"/>
-    <TextView
-        android:id="@+id/tvTLPraise"
-        android:layout_marginLeft="3dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/text_xsmall"
-        android:duplicateParentState="true"
-        android:layout_gravity="center_vertical"
-        android:textColor="#929292"
-        android:text="赞"/>
-  </LinearLayout>
 
-  <LinearLayout
-      android:id="@+id/llTLComment"
-      android:layout_marginLeft="40dp"
-      android:padding="10dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
-    <TextView android:id="@+id/btnTLComment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:duplicateParentState="true"
-        android:background="@drawable/icon_comment_xml"/>
-    <TextView
-        android:id="@+id/tvTLComment"
-        android:layout_marginLeft="3dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/text_xsmall"
-        android:duplicateParentState="true"
-        android:layout_gravity="center_vertical"
-        android:textColor="#929292"
-        android:text="0"/>
-  </LinearLayout>
-
-  <LinearLayout
-      android:id="@+id/llTLShare"
-      android:paddingTop="10dp"
-      android:paddingBottom="10dp"
-      android:layout_marginLeft="40dp"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
-    <TextView android:id="@+id/btnTLShare"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:duplicateParentState="true"
-        android:background="@drawable/icon_share_xml"/>
-    <TextView
-        android:id="@+id/tvTLShare"
-        android:layout_marginLeft="3dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/text_xsmall"
-        android:duplicateParentState="true"
-        android:textColor="#929292"
-        android:layout_gravity="center_vertical"
-        android:text="分享"/>
-  </LinearLayout>
 </LinearLayout>

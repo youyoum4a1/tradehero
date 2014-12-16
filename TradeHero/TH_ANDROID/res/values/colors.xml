@@ -107,6 +107,7 @@
     <color name="authentication_forgot_password_link">#9F9F9F</color>
     <color name="authentication_button_dark">#9e9e9e</color>
     <color name="authentication_button_light">#808080</color>
+    <color name="timeline_item_title">#000000</color>
     <color name="timeline_item">#000000</color>
     <color name="timeline_item_link">#1789d5</color>
     <color name="trending_grid_item_stock_name">#384152</color>

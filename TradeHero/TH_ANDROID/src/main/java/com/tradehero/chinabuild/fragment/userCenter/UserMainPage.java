@@ -225,6 +225,12 @@ public class UserMainPage extends DashboardFragment
             }
 
             @Override
+            public void OnTimeLinePraiseDownClicked(int position)
+            {
+                Timber.d("Praise position = " + position);
+            }
+
+            @Override
             public void OnTimeLineCommentsClicked(int position)
             {
                 Timber.d("Comments position = " + position);

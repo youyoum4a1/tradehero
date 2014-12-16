@@ -104,6 +104,14 @@ import retrofit.client.Response;
         userTimelineServiceAsync.getTimelineHotTopic(userId.key, maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
+    //悬赏帖
+    public @NotNull MiddleCallback<TimelineDTO> getTimelineReward(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+            @Nullable Callback<TimelineDTO> callback)
+    {
+        BaseMiddleCallback<TimelineDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userTimelineServiceAsync.getTimelineReward(userId.key, maxCount, maxId, minId, middleCallback);
+        return middleCallback;
+    }
     //股神动态
     public @NotNull MiddleCallback<TimelineDTO> getTimelineStockGodNews(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
             @Nullable Callback<TimelineDTO> callback)

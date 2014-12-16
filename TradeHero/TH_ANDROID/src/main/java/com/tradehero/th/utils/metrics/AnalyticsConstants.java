@@ -42,6 +42,7 @@ public class AnalyticsConstants
 
     //个股页面每条讨论，每条资讯的点赞，评论，分享的点击量
     public static final String USER_PAGE_PRAISE = "USER_PAGE_PRAISE";
+    public static final String USER_PAGE_PRAISE_DOWN = "USER_PAGE_PRAISE_DOWN";
     public static final String USER_PAGE_COMMENT = "USER_PAGE_COMMENT";
     public static final String USER_PAGE_SHARE = "USER_PAGE_SHARE";
 
@@ -49,6 +50,7 @@ public class AnalyticsConstants
     public static final String DISCOVERY_MESSAGE_CENTER = "DISCOVERY_MESSAGE_CENTER";
     public static final String DISCOVERY_ITEM_PERSON = "DISCOVERY_ITEM_PERSON";
     public static final String DISCOVERY_ITEM_PRAISE = "DISCOVERY_ITEM_PRAISE";
+    public static final String DISCOVERY_ITEM_PRAISE_DOWN = "DISCOVERY_ITEM_PRAISE_DOWN";
     public static final String DISCOVERY_ITEM_COMMENT = "DISCOVERY_ITEM_COMMENT";
     public static final String DISCOVERY_ITEM_SHARE = "DISCOVERY_ITEM_SHARE";
 
