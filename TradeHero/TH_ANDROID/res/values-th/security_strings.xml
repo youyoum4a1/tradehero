@@ -54,7 +54,6 @@
   <string name="share_to_wechat_quest_bonus_text">ดำเนินการ \&quot;%1$s\&quot; สำเร็จแล้ว</string>
   <string name="share_success">ส่วนแบ่งของคุณ ดำเนินการสำเร็จแล้ว</string>
   <!--do not thanslate-->
-  <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
 
   <string name="market_on_board_error_fetch_exchange_sector">เกิดข้อผิดพลาด เมื่อได้รับรายการตลาดหุ้นและกลุ่มธุรกิจ</string>
   <string name="market_on_board_exchange_interested">คุณสนใจในตลาดหุ้นใดมากที่สุด?</string>

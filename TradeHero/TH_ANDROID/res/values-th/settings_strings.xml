@@ -22,7 +22,6 @@
   <string name="settings_primary_restore_purchases">เรียกคืนการซื้อ</string>
   <string name="settings_primary_referral_code">รหัสอ้างอิง</string>
   <string name="settings_misc_sign_out">ออกจากระบบ</string>
-  <string name="settings_misc_sign_out_summary" translatable="false">%1$s: %2$s</string>
   <string name="settings_misc_sign_out_are_you_sure">คุณแน่ใจหรือว่า ต้องการออกจากระบบ?</string>
   <string name="settings_misc_sign_out_no">ไม่ใช่</string>
   <string name="settings_misc_sign_out_yes">ใช่</string>

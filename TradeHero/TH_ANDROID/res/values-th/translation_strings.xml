@@ -2,30 +2,8 @@
 <resources>
 
   <!-- We cannot have %3$s - %2$s as it returns weird results on right-to-left languages -->
-  <string name="translation_preferred_language_summary" translatable="false">%2$s - %3$s (%1$s)</string>
   <string name="translation_provided_by_bing">จัดทำโดย Bing</string>
 
   <string name="translation_error_creating_languages">มีข้อผิดพลาดในการสร้างรายการภาษา</string>
   <string name="translation_error_saving_preference">มีข้อผิดพลาดในการบันทึกภาษาที่คุณต้องการ</string>
-
-  <!-- TODO these xy_own need to be properly translated in this very file -->
-  <string name="translation_language_known_he" translatable="false">Hebrew</string>
-  <string name="translation_language_known_he_own" translatable="false">עברית</string>
-  <string name="translation_language_known_ht" translatable="false">Haitian Creole</string>
-  <string name="translation_language_known_ht_own" translatable="false">Kreyòl Ayisyen</string>
-  <string name="translation_language_known_id" translatable="false">Indonesian</string>
-  <string name="translation_language_known_id_own" translatable="false">Bahasa Indonesia</string>
-  <string name="translation_language_known_mww" translatable="false">Hmong Daw</string>
-  <string name="translation_language_known_mww_own" translatable="false">Hmoob Daw</string>
-  <string name="translation_language_known_no" translatable="false">Norwegian</string>
-  <string name="translation_language_known_no_own" translatable="false">Norsk</string>
-  <string name="translation_language_known_tlh" translatable="false">Klingon</string>
-  <string name="translation_language_known_tlh_own" translatable="false">tlhIngan</string>
-  <string name="translation_language_known_tlh_qaak" translatable="false">Klingon (pIqaD)</string>
-  <string name="translation_language_known_tlh_qaak_own" translatable="false">Klingon (pIqaD)</string>
-  <string name="translation_language_known_zh_CHS" translatable="false">Chinese Simplified</string>
-  <string name="translation_language_known_zh_CHS_own" translatable="false">简体中文</string>
-  <string name="translation_language_known_zh_CHT" translatable="false">Chinese Traditional</string>
-  <string name="translation_language_known_zh_CHT_own" translatable="false">繁體中文</string>
-
 </resources>

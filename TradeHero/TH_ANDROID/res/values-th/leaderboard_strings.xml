@@ -17,7 +17,6 @@
   <string name="leaderboard_number_trades_in_period_title">จำนวนเทรดภายในระยะเวลา</string>
   <string name="leaderboard_win_ratio_title">โอกาสชนะ</string>
   <string name="leaderboard_performance_title">ผลงานเชิงเปรียบเทียบ</string>
-  <string name="leaderboard_SP_500" translatable="false">ดัชนี S&amp;P 500</string>
   <string name="leaderboard_consistency_title">ความสม่ำเสมอของการเทรด</string>
   <string name="leaderboard_avg_days_held">เฉลี่ย วันที่ถือครอง</string>
   <string name="leaderboard_followers_count"># ผู้ติดตาม</string>
@@ -71,6 +70,5 @@
   <string name="leaderboard_friends_position_failed">ขอโทษค่ะ มีข้อมูลไม่เพียงพอที่จะแสดงสถานะของผู้ใช้รายนี้</string>
   <string name="leaderboard_see_competition_rules">ดูข้อบังคับการแข่งขัน ที่นี่</string>
 
-  <string name="leaderboard_max_ranked_position" translatable="false"><![CDATA[>1000]]></string>
   <string name="leaderboard_empty">เริ่มเทรดเลย เพื่อเป็นเทรดเดอร์คนแรกบนบอร์ดผู้นำนี้</string>
 </resources>
