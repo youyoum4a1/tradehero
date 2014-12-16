@@ -13,10 +13,6 @@
   <string name="buy_sell_ask_with_bracket">(ราคาเสนอขาย)</string>
   <string name="buy_sell_bid_price_not_available">ไม่มีราคาเสนอซื้อ</string>
   <string name="buy_sell_ask_price_not_available">ไม่มีราคาเสนอขาย</string>
-  <string name="buy_sell_p5k" translatable="false">$5K</string>
-  <string name="buy_sell_p10k" translatable="false">$10K</string>
-  <string name="buy_sell_p25k" translatable="false">$25K</string>
-  <string name="buy_sell_p50k" translatable="false">$50K</string>
   <string name="buy_sell_button_buy">ซื้อ @ %1$s %2$s</string>
   <string name="buy_sell_dialog_buy">ซื้อ @ %1$s</string>
   <string name="buy_sell_button_sell">ขาย @ %1$s %2$s</string>
@@ -29,7 +25,6 @@
   <string name="buy_sell_confirm_share_on">หุ้น:</string>
   <string name="buy_sell_switch_buy">ซื้อ</string>
   <string name="buy_sell_switch_sell">ขาย</string>
-  <string name="buy_sell_usd_price_unit_left" translatable="false">= US$</string>
   <string name="buy_sell_market_status">สภาวะตลาด</string>
   <string name="buy_sell_toggle">สลับโหมด ซื้อ/ขาย</string>
 

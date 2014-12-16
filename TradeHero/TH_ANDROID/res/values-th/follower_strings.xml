@@ -8,7 +8,6 @@
   <string name="not_follow_msg_title">คุณต้องติดตาม\n%1$s\nเพื่อส่งข้อความเป็นการส่วนตัว เลือกระดับด้านล่าง:</string>
   <string name="not_follow_subtitle">ติดตามแบบฟรี</string>
   <string name="not_follow_subtitle2">ฟรี</string>
-  <string name="follower_item_with_subtitle" translatable="false">%1$s (%2$s)</string>
   <string name="not_follow_premium_subtitle">ติดตามแบบพรีเมียม</string>
   <string name="not_follow_premium_subtitle2">พรีเมียม</string>
   <string name="free_follow_title">คุณกำลังติดตาม</string>

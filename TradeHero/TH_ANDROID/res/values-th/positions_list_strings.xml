@@ -9,7 +9,6 @@
   <string name="position_list_header_open_unsure">เปิด</string>
   <string name="position_list_header_closed">ปิด (%d)</string>
   <string name="position_list_header_closed_unsure">ปิด</string>
-  <string name="position_list_header_time_base" translatable="false">%1$s - %2$s</string>
   <string name="position_unrealised_loss_header">จะขาดทุน</string>
   <string name="position_unrealised_profit_header">จะทำกำไร</string>
   <string name="position_unrealised_pl_header" deprecated="true">กำไร &amp; ขาดทุน ที่ยังไม่เกิดขึ้น</string>

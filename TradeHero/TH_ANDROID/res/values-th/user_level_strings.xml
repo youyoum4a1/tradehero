@@ -4,17 +4,4 @@
   <string name="user_level_xp">XP</string>
   <string name="user_level_up_header_text">ยินดีด้วยค่ะ!</string>
   <string name="user_level_up_description_text">คุณสำเร็จในระดับ %d!</string>
-  <string name="user_level_xp_multiplier_format" translatable="false">%1$s: XP x%2$d!</string>
-
-  <!-- For XP Testing Screen -->
-  <string name="xp_test_reason" translatable="false">XP สาเหตุ เช่น โบนัสจากการเทรด</string>
-  <string name="xp_test_from" translatable="false">XP จาก</string>
-  <string name="xp_test_earned" translatable="false">XP ที่ได้รับ</string>
-  <string name="xp_test_multiplier_reason" translatable="false">สาเหตุของตัวคูณ เช่น ROI ที่เป็นบวก</string>
-  <string name="xp_test_multiplier" translatable="false">มูลค่าของตัวคูณ</string>
-  <string name="xp_test_multiplier1" translatable="false">ตัวคูณ 1</string>
-  <string name="xp_test_multiplier2" translatable="false">ตัวคูณ 2 </string>
-  <string name="xp_test_multiplier3" translatable="false">ตัวคูณ 3  </string>
-  <string name="xp_test_launch" translatable="false">เริ่ม!</string>
-
 </resources>
