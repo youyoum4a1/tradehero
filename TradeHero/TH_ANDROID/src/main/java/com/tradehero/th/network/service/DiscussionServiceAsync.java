@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
+import com.tradehero.chinabuild.data.DiscussReportDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
@@ -8,14 +9,11 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import java.util.Map;
 import retrofit.Callback;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
+import retrofit.client.Response;
+import retrofit.http.*;
+
+import java.util.Map;
 
 interface DiscussionServiceAsync
 {
@@ -90,4 +88,12 @@ interface DiscussionServiceAsync
             Callback<TimelineItemDTO> callback);
     //</editor-fold>
 
+    @POST("/report")
+    void reportTimeLineItem(@Body DiscussReportDTO discussReportDTO, Callback<Response> callback);
+
+    @DELETE("/timeline/{timelineItemId}")
+    void deleteTimeLineItem(@Path("timelineItemId")int timelineItemId, Callback<Response> callback);
+
+    @DELETE("/discussions/{discussionId}")
+    void deleteDiscussionItem(@Path("discussionId")int discussionId, Callback<Response> callback);
 }

@@ -16,10 +16,11 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by palmer on 14-11-11.
@@ -157,6 +158,17 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
     public void setListener(TimeLineBaseAdapter.TimeLineOperater listener)
     {
         this.listener = listener;
+    }
+
+    public void removeDeletedItem(int discussionId){
+        int size = listData.size();
+        for(int num=0;num<size; num++){
+           if(listData.get(num).id == discussionId){
+               listData.remove(num);
+               break;
+           }
+        }
+        notifyDataSetChanged();
     }
 
     public class Holder

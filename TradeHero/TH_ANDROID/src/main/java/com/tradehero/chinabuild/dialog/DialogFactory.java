@@ -41,7 +41,12 @@ public class DialogFactory {
         contentView.setMenuClickListener(menuClickListener);
         contentView.setBtnStatus(isReportAllowed,isDeleteAllowed, isApplyAllowed);
         return THDialog.showUpDialog(context, contentView);
+    }
 
+    public Dialog createTimeLineReportDialog(@NotNull Context context, @NotNull TimeLineReportDialogLayout.TimeLineReportMenuClickListener menuClickListener){
+        TimeLineReportDialogLayout contentView = (TimeLineReportDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_report_dialog_layout, null);
+        contentView.setMenuClickListener(menuClickListener);
+        return THDialog.showUpDialog(context, contentView);
     }
 
 }

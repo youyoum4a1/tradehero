@@ -468,5 +468,15 @@
   <string name="discovery_discuss_send_share">分享</string>
   <string name="discovery_discuss_send_comment">回复</string>
   <string name="discovery_discuss_send_apply">采纳</string>
+  <string name="discovery_discuss_send_report_a">广告信息</string>
+  <string name="discovery_discuss_send_report_b">钓鱼／欺诈</string>
+  <string name="discovery_discuss_send_report_c">诽谤／造谣</string>
+  <string name="discovery_discuss_send_report_d">暴力／色情</string>
+  <string name="discovery_discuss_report_successfully">举报成功，我们会及时处理</string>
+  <string name="discovery_discuss_report_btn_ok">确认</string>
+  <string name="discovery_discuss_report_btn_cancel">取消</string>
+  <string name="discovery_discuss_report_title_deletetimeline">确定删除已发布的贴子？</string>
+  <string name="discovery_discuss_report_title_deletecomment">确定删除已发布的贴子？</string>
+  <string name="discovery_discuss_report_title_applycomment">确定删除已发布的贴子？</string>
   <!-- Discovery Discuss Reward -->
 </resources>

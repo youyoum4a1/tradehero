@@ -1,14 +1,12 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
+import com.tradehero.chinabuild.data.DiscussReportDTO;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.*;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
@@ -20,10 +18,12 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCache;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class DiscussionServiceWrapper
 {
@@ -208,4 +208,18 @@ import retrofit.Callback;
         return middleCallback;
     }
     //</editor-fold>
+
+
+    public void reportTimeLineItem(DiscussReportDTO discussReportDTO, Callback<Response> callback){
+        discussionServiceAsync.reportTimeLineItem(discussReportDTO, callback);
+    }
+
+    public void deleteTimeLineItem(int timelineItemId, Callback<Response> callback){
+        discussionServiceAsync.deleteTimeLineItem(timelineItemId, callback);
+    }
+
+    public void deleteDiscussionItem(int discussionItemId, Callback<Response> callback){
+        THLog.d("delete discussion item");
+        discussionServiceAsync.deleteDiscussionItem(discussionItemId, callback);
+    }
 }

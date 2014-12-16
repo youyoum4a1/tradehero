@@ -3,10 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.*;
-import com.tradehero.chinabuild.dialog.SecurityDetailDialogLayout;
-import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
-import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
-import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
+import com.tradehero.chinabuild.dialog.*;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.competition.*;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
@@ -396,6 +393,7 @@ import java.util.Locale;
                         SecurityDetailDialogLayout.class,
                         TimeLineDetailDialogLayout.class,
                         TimeLineCommentDialogLayout.class,
+                        TimeLineReportDialogLayout.class,
 
                         CompetitionAllFragment.class,
                         CompetitionMineFragment.class,
