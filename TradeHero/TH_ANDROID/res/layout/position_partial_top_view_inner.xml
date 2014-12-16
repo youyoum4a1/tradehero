@@ -150,15 +150,4 @@
 
   </RelativeLayout>
 
-  <ImageView
-      android:id="@+id/btn_trade_history"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerInParent="true"
-      android:layout_alignParentRight="true"
-      android:scaleType="fitCenter"
-      android:src="@drawable/settings_forward_light"
-      android:contentDescription="@null"
-      />
-
 </merge>

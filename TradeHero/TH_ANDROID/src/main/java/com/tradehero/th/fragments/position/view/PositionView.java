@@ -20,7 +20,6 @@ public class PositionView extends LinearLayout
     @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
 
     @InjectView(R.id.color_indicator) protected ColorIndicator colorIndicator;
-    @InjectView(R.id.btn_trade_history) protected View historyButton;
 
     protected boolean hasHistoryButton = true;
     protected ExpandableListItem<PositionDTO> expandableListItem;
