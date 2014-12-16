@@ -53,7 +53,6 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.position_percentage) protected TextView positionPercent;
     @InjectView(R.id.position_last_amount_header) protected TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
-    @InjectView(R.id.btn_trade_history) protected View tradeHistoryButton;
 
     protected PositionDTO positionDTO;
     protected SecurityId securityId;
@@ -93,12 +92,6 @@ public class PositionPartialTopView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        if (tradeHistoryButton != null)
-        {
-            tradeHistoryButton.setOnTouchListener(null);
-        }
-        tradeHistoryButton = null;
-
         unsubscribe(securityCompactCacheFetchSubscription);
         securityCompactCacheFetchSubscription = null;
         if (stockLogo != null)
