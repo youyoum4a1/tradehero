@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -18,7 +19,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     protected PortfolioCompactDTO portfolioCompactDTO;
 
     @InjectView(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
-    @InjectView(R.id.header_portfolio_cash_value) protected  TextView cashValueTextView;
+    @InjectView(R.id.header_portfolio_cash_value) @Optional protected  TextView cashValueTextView;
 
     //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)

@@ -16,7 +16,6 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
     @InjectView(R.id.header_portfolio_margin_available) protected TextView marginAvailable;
     @InjectView(R.id.header_portfolio_margin_used) protected TextView marginUsed;
     @InjectView(R.id.header_portfolio_pl_unrealised) protected TextView unrealisedPl;
-    @InjectView(R.id.header_portfolio_pl_realised) protected TextView realisedPl;
 
     //<editor-fold desc="Constructors">
     public CurrentUserFxPortfolioHeaderView(Context context)
@@ -42,7 +41,6 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
         displayMarginAvailable();
         displayMarginUsed();
         displayUnrealisedPl();
-        displayRealisedPl();
     }
 
     @Override public void displayTotalValueTextView()
@@ -119,27 +117,16 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
             {
                 if (portfolioCompactDTO.unrealizedPLRefCcy != null)
                 {
-                    unrealisedPl.setText(
-                            THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
-                                    .currency(portfolioCompactDTO.getNiceCurrency())
-                                    .build()
-                                    .toString());
+                    THSignedMoney unrealised = THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
+                            .currency(portfolioCompactDTO.getNiceCurrency())
+                            .build();
+                    unrealisedPl.setText(unrealised.toString());
+                    unrealisedPl.setTextColor(unrealised.getColor());
                 }
                 else
                 {
                     unrealisedPl.setText(R.string.na);
                 }
-            }
-        }
-    }
-
-    public void displayRealisedPl()
-    {
-        if (realisedPl != null)
-        {
-            if (portfolioCompactDTO != null)
-            {
-                // TODO
             }
         }
     }
