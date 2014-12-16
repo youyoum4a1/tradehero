@@ -8,18 +8,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-<<<<<<< HEAD
 import android.view.Window;
 import android.widget.*;
-=======
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
->>>>>>> 4a0d90a5faa92b26559c7ba6eefff4199c9b2c6e
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -40,18 +30,10 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.*;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -78,14 +60,15 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
@@ -136,10 +119,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView tvUserTLName;
     private LinearLayout llTLPraise;
     private LinearLayout llTLComment;
-    //private LinearLayout llTLShare;
     private TextView tvTLPraise;
     private TextView tvTLComment;
-    private TextView tvTLShare;
     private TextView btnTLPraise;
 
     private LinearLayout mRefreshView;
@@ -168,11 +149,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     {
         super.onCreate(savedInstanceState);
         discussionFetchListener = createDiscussionCacheListener();
-        initArgment();
+        initArgument();
         adapter = new TimeLineDetailDiscussSecItem(getActivity());
     }
 
-    public void initArgment()
+    public void initArgument()
     {
         Bundle bundle = getArguments();
         if (bundle.containsKey(BUNDLE_ARGUMENT_DISCUSSTION_ID))
@@ -227,17 +208,14 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvUserTLName = (TextView) view.findViewById(R.id.tvUserTLName);
         llTLPraise = (LinearLayout) view.findViewById(R.id.llTLPraise);
         llTLComment = (LinearLayout) view.findViewById(R.id.llTLComment);
-        //llTLShare = (LinearLayout) view.findViewById(R.id.llTLShare);
         tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
         tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
-        //tvTLShare = (TextView) view.findViewById(R.id.tvTLShare);
         btnTLPraise = (TextView) view.findViewById(R.id.btnTLPraise);
 
         tvUserTLName.setOnClickListener(this);
         imgSecurityTLUserHeader.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);
         llTLComment.setOnClickListener(this);
-        //llTLShare.setOnClickListener(this);
 
         llDisscurssOrNews.setOnClickListener(new View.OnClickListener()
         {
@@ -384,18 +362,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     }
 
     @Override
-<<<<<<< HEAD
     public void onResume() {
-=======
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onResume()
-    {
->>>>>>> 4a0d90a5faa92b26559c7ba6eefff4199c9b2c6e
         super.onResume();
         fetchDiscussion(timelineItemDTOKey, false);
     }
@@ -441,13 +408,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     protected class PrivateDiscussionViewDiscussionCacheListener implements DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO>
     {
         @Override
-<<<<<<< HEAD
         public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value) {
-=======
-        public void onDTOReceived(@NotNull DiscussionKey key, @NotNull AbstractDiscussionCompactDTO value)
-        {
-            //linkWithInitiating((PrivateDiscussionDTO) value, true);
->>>>>>> 4a0d90a5faa92b26559c7ba6eefff4199c9b2c6e
             linkWithDTO(value);
             OnFinish();
         }
@@ -770,31 +731,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
 
-<<<<<<< HEAD
     private void openUserProfile(int userId) {
         if (userId >= 0) {
-=======
-    private class RequestCallback implements Callback
-    {
-
-        @Override
-        public void success(Object o, Response response)
-        {
-
-        }
-
-        @Override
-        public void failure(RetrofitError retrofitError)
-        {
-
-        }
-    }
-
-    private void openUserProfile(int userId)
-    {
-        if (userId >= 0)
-        {
->>>>>>> 4a0d90a5faa92b26559c7ba6eefff4199c9b2c6e
             Bundle bundle = new Bundle();
             bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
             pushFragment(UserMainPage.class, bundle);
@@ -854,7 +792,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             return;
         }
-<<<<<<< HEAD
 
         boolean isDeleteAllowed = isDeleteAllowed(dataDto);
         boolean isReportAllowed = !isDeleteAllowed;
@@ -888,30 +825,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 timeLineDetailMenuDialog.dismiss();
             }
         }, isDeleteAllowed, isReportAllowed);
-=======
-        timeLineDetailMenuDialog =
-                dialogFactory.createTimeLineDetailDialog(getActivity(), new TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener()
-                {
-                    @Override
-                    public void onReportClick()
-                    {
-                        timeLineDetailMenuDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onDeleteClick()
-                    {
-                        timeLineDetailMenuDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onShareClick()
-                    {
-                        share();
-                        timeLineDetailMenuDialog.dismiss();
-                    }
-                }, true, true);
->>>>>>> 4a0d90a5faa92b26559c7ba6eefff4199c9b2c6e
     }
 
     public void onCommentClick(final int position)
@@ -924,7 +837,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             return;
         }
-<<<<<<< HEAD
         AbstractDiscussionCompactDTO dto = adapter.getItem(position);
         boolean isApplyAllowed = true;
         boolean isDeleteAllowed = isDeleteAllowed(dto);
@@ -967,36 +879,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 timeLineCommentMenuDialog.dismiss();
             }
         }, isApplyAllowed, isDeleteAllowed, isReportAllowed);
-=======
-        timeLineCommentMenuDialog =
-                dialogFactory.createTimeLineCommentDialog(getActivity(), new TimeLineCommentDialogLayout.TimeLineCommentMenuClickListener()
-                {
-                    @Override
-                    public void onCommentClick()
-                    {
-                        setHintForSender(position);
-                        timeLineCommentMenuDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onReportClick()
-                    {
-                        timeLineCommentMenuDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onDeleteClick()
-                    {
-                        timeLineCommentMenuDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onApplyClick()
-                    {
-                        timeLineCommentMenuDialog.dismiss();
-                    }
-                }, true, true, true);
->>>>>>> 4a0d90a5faa92b26559c7ba6eefff4199c9b2c6e
     }
 
     private void share()
