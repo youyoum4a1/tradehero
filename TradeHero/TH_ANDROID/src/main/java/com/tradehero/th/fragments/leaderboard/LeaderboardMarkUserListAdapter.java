@@ -25,7 +25,7 @@ public class LeaderboardMarkUserListAdapter
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     protected BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
-    private boolean isForex;
+    private boolean hideStatistics;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(Context context, int loaderId)
@@ -72,7 +72,7 @@ public class LeaderboardMarkUserListAdapter
     {
         dtoView.linkWith(currentUserProfileDTO, true);
         dtoView.linkWith(applicablePortfolioId);
-        dtoView.shouldHideStatistics(isForex);
+        dtoView.shouldHideStatistics(hideStatistics);
         dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
         final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
@@ -111,8 +111,8 @@ public class LeaderboardMarkUserListAdapter
         }
     }
 
-    public void setIsForex(boolean isForex)
+    public void setHideStatistics(boolean hideStatistics)
     {
-        this.isForex = isForex;
+        this.hideStatistics = hideStatistics;
     }
 }

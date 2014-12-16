@@ -571,10 +571,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             {
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
-            leaderboardMarkUserListAdapter.setIsForex(leaderboardDTO.isForex);
+            leaderboardMarkUserListAdapter.setHideStatistics(leaderboardDTO.isFX());
             if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
             {
-                ((BaseLeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isForex);
+                ((BaseLeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isFX());
             }
         }
     }
