@@ -1,7 +1,6 @@
 package com.tradehero.chinabuild.fragment.message;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
@@ -90,7 +89,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @Inject DiscussionKeyFactory discussionKeyFactory;
 
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
-    private ProgressDialog progressDialog;
     @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
@@ -543,7 +541,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             DiscussionFormDTO discussionFormDTO = buildDiscussionFormDTO();
             if (discussionFormDTO == null) return;
             unsetDiscussionEditMiddleCallback();
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
+            progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             discussionEditMiddleCallback = discussionServiceWrapper.get().createDiscussion(discussionFormDTO, new SecurityDiscussionEditCallback());
         }
     }
@@ -598,10 +596,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
         private void onFinish()
         {
-            if (progressDialog != null)
-            {
-                progressDialog.hide();
-            }
+            dismissProgressDlg();
         }
     }
 
@@ -644,9 +639,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
             comments(dto);
         }
-        //else if (view.getId() == R.id.llTLShare) {
-        //    share();
-        //}
     }
 
     public void comments(AbstractDiscussionCompactDTO dto)
@@ -939,11 +931,17 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void success(Response response, Response response2) {
                 popCurrentFragment();
+                onFinish();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
                 THToast.show(retrofitError.getMessage());
+                onFinish();
+            }
+
+            private void onFinish(){
+                dismissProgressDlg();
             }
         });
     }
@@ -953,11 +951,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void success(Response response, Response response2) {
                adapter.removeDeletedItem(discussionItemId);
+                onFinish();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
                 THToast.show(retrofitError.getMessage());
+                onFinish();
+            }
+            private void onFinish(){
+                dismissProgressDlg();
             }
         });
     }
@@ -997,8 +1000,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             deleteOrApplyTLConfirmDlgTitle2TV = (TextView)deleteOrApplyTimeLineConfirmDialog.findViewById(R.id.title2);
             deleteOrApplyTLConfirmDlgCancelTV = (TextView)deleteOrApplyTimeLineConfirmDialog.findViewById(R.id.btn_cancel);
             deleteOrApplyTLConfirmDlgOKTV = (TextView)deleteOrApplyTimeLineConfirmDialog.findViewById(R.id.btn_ok);
+            deleteOrApplyTLConfirmDlgOKTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_btn_ok));
             deleteOrApplyTLConfirmDlgTitle2TV.setVisibility(View.GONE);
-            deleteOrApplyTLConfirmDlgCancelTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_report_btn_cancel));
+            deleteOrApplyTLConfirmDlgCancelTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_btn_cancel));
             deleteOrApplyTLConfirmDlgCancelTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1010,7 +1014,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             return;
         }
         if(dialogType == DIALOG_TYPE_APPLY_COMMENT){
-            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_report_title_applycomment));
+            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_title_applycomment));
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1019,20 +1023,22 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             });
         }
         if(dialogType == DIALOG_TYPE_DELETE_COMMENT){
-            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_report_title_deletecomment));
+            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_title_deletecomment));
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    showDeleteProgressDlg();
                     deleteDiscussionItem(itemId);
                     deleteOrApplyTimeLineConfirmDialog.dismiss();
                 }
             });
         }
         if(dialogType ==DIALOG_TYPE_DELETE_TIMELINE){
-            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_report_title_deletetimeline));
+            deleteOrApplyTLConfirmDlgTitleTV.setText(getActivity().getResources().getString(R.string.discovery_discuss_dlg_title_deletetimeline));
             deleteOrApplyTLConfirmDlgOKTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    showDeleteProgressDlg();
                     deleteTimeLineItem(itemId);
                     deleteOrApplyTimeLineConfirmDialog.dismiss();
                 }
@@ -1041,5 +1047,15 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         deleteOrApplyTimeLineConfirmDialog.show();
     }
 
+    private void showDeleteProgressDlg(){
+        progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.discovery_discuss_dlg_delete);
+    }
+
+    private void dismissProgressDlg(){
+        if(getActivity()==null){
+            return;
+        }
+        progressDialogUtil.dismiss(getActivity());
+    }
 
 }
