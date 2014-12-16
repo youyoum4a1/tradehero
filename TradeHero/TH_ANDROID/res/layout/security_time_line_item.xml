@@ -60,38 +60,37 @@
     </LinearLayout>
 
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_width="fill_parent">
-
-
-      <LinearLayout
-          android:id="@+id/llUserTLNoTrade"
+    <RelativeLayout
+        android:layout_below="@id/llAllTimeLine"
+        android:id="@+id/llUserTLNoTrade"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/tvUserTLContent"
+          android:layout_width="fill_parent"
+          android:lineSpacingExtra="4dp"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="6dip"
+          android:textColorLink="@color/timeline_item_link"
+          android:textColor="@color/timeline_item"
+          android:textSize="@dimen/text_medium"
+          android:textStyle="normal"
+          android:maxLines="3"
+          />
+      <RelativeLayout
+          android:layout_below="@id/tvUserTLContent"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content">
-        <com.tradehero.th.widget.MarkdownTextView
-            android:id="@+id/tvUserTLContent"
-            android:layout_below="@id/tvUserTLTimeStamp"
-            android:layout_width="fill_parent"
-            android:lineSpacingExtra="4dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dip"
-            android:textColorLink="@color/timeline_item_link"
-            android:textColor="@color/timeline_item"
-            android:textSize="@dimen/text_medium"
-            android:textStyle="normal"
-            android:maxLines="3"
-            />
-      </LinearLayout>
+        <include layout="@layout/timeline_operater_line"/>
+      </RelativeLayout>
 
 
-      <include
-          android:id="@+id/includeTLOperater"
-          layout="@layout/timeline_operater_line"
-          />
-    </LinearLayout>
+      <!--<include-->
+      <!--android:id="@+id/includeTLOperater"-->
+      <!--layout="@layout/timeline_operater_line"-->
+      <!--android:layout_alignParentBottom="true"  />-->
+    </RelativeLayout>
+
 
   </LinearLayout>
 </LinearLayout>

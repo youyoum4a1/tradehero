@@ -421,6 +421,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLinePraiseClicked(position);
                     clickedPraise(position);
+
+
                 }
             });
             holder.llTLPraiseDown.setOnClickListener(new View.OnClickListener()
@@ -620,6 +622,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         }
 
         notifyDataSetChanged();
+
+
     }
 
     public void clickedPraiseDown(int position)

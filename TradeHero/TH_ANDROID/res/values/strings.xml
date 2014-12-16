@@ -477,8 +477,8 @@
   <string name="discovery_discuss_dlg_btn_ok">确认</string>
   <string name="discovery_discuss_dlg_btn_cancel">取消</string>
   <string name="discovery_discuss_dlg_title_deletetimeline">确定删除已发布的贴子？</string>
-  <string name="discovery_discuss_dlg_title_deletecomment">确定删除已发布的贴子？</string>
-  <string name="discovery_discuss_dlg_title_applycomment">确定删除已发布的贴子？</string>
+  <string name="discovery_discuss_dlg_title_deletecomment">确定删除已发布的评论？</string>
+  <string name="discovery_discuss_dlg_title_applycomment">确定采纳这条回复？</string>
   <string name="discovery_discuss_dlg_delete">删除中...</string>
   <string name="discovery_discuss_send_reward_title_warning">标题为3-18个字符</string>
   <string name="discovery_discuss_send_reward_content_warning">您的帖子内容不能为空</string>

@@ -16,11 +16,10 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by palmer on 14-11-11.
@@ -167,6 +166,11 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
                listData.remove(num);
                break;
            }
+        }
+
+        if (listData != null && listData.size() == 0)
+        {
+            listData.add(new EmptyDiscussionCompactDTO());
         }
         notifyDataSetChanged();
     }

@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -1987,6 +1988,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         displayDiscussOrNewsDTO();
+        btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.vote_ani));
+
     }
 
     public void clickedPraiseDown()
@@ -2014,6 +2017,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         displayDiscussOrNewsDTO();
+        btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.vote_ani));
     }
 
 
