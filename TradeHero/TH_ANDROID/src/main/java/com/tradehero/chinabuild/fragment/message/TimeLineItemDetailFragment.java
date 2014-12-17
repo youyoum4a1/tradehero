@@ -22,7 +22,6 @@ import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -1091,7 +1090,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void failure(RetrofitError retrofitError) {
                 THToast.show(retrofitError.getMessage());
-                THLog.d(retrofitError.getMessage());
                 onFinish();
             }
 
@@ -1228,15 +1226,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private boolean isRewardTimeLine(){
         if(dataDto==null){
-            THLog.d("dataDto is null");
-        }else{
-            THLog.d("dataDto is not null");
+            return false;
         }
         if(dataDto instanceof TimelineItemDTO){
-            THLog.d("dataDto is object of TimelineItemDTO");
             TimelineItemDTO dto = (TimelineItemDTO)dataDto;
             if(dto.isQuestionItem){
-                THLog.d("dataDto is a question item");
                 return true;
             }
         }
