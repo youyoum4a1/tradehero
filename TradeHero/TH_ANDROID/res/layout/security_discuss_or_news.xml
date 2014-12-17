@@ -2,10 +2,9 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contest_center_content_screen"
-    android:background="@color/bg_fragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:background="@color/bg_timeline"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     >
 
 <com.tradehero.common.widget.BetterViewAnimator
@@ -27,9 +26,10 @@
       android:id="@+id/listTimeLine"
       android:scrollingCache="false"
       android:fadingEdge="none"
-      android:dividerHeight="1px"
-      android:divider="@color/separate_line_color"
-      android:background="@color/bg_fragment"
+      android:dividerHeight="5dp"
+      android:scrollbars="none"
+      android:divider="@color/transparent"
+      android:layout_margin="10dp"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent">
   </com.tradehero.chinabuild.listview.SecurityListView>

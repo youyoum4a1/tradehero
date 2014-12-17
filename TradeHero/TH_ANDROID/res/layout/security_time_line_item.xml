@@ -4,10 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:background="@drawable/listview_item_selector"
+    android:background="@drawable/timeline_item_bg"
     android:id="@+id/llItemAll"
     android:orientation="vertical"
     >
@@ -19,6 +16,9 @@
       android:layout_height="wrap_content">
 
     <LinearLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent">
       <ImageView
@@ -66,6 +66,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
       <com.tradehero.th.widget.MarkdownTextView
+          android:paddingLeft="10dp"
+          android:paddingRight="10dp"
           android:id="@+id/tvUserTLContent"
           android:layout_width="fill_parent"
           android:lineSpacingExtra="4dp"
@@ -84,11 +86,6 @@
         <include layout="@layout/timeline_operater_line"/>
       </RelativeLayout>
 
-
-      <!--<include-->
-      <!--android:id="@+id/includeTLOperater"-->
-      <!--layout="@layout/timeline_operater_line"-->
-      <!--android:layout_alignParentBottom="true"  />-->
     </RelativeLayout>
 
 

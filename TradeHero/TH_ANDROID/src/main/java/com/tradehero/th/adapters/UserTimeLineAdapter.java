@@ -7,6 +7,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -67,12 +69,13 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     public boolean isShowFollowBuy = false;
 
     @Inject Analytics analytics;
-
+    public Animation animation;
     public UserTimeLineAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        animation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
     }
 
     public UserTimeLineAdapter(Context context, boolean isMySelf)
@@ -239,7 +242,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.imgUserTLUserHeader = (ImageView) convertView.findViewById(R.id.imgUserTLUserHeader);
                 holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
                 //holder.tvUserTLTimeStamp2 = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp2);
-                //holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
+                holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
 
                 //是股票交易
                 holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
@@ -275,15 +278,17 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            final ViewHolder copyHolder = holder;
+
             boolean isTrade = item.hasTrader();
 
             //holder.llTLShare.setVisibility((!isMySelf && isTrade) ? View.GONE : View.VISIBLE);
-            holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.GONE);
+            holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.INVISIBLE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(View.VISIBLE);
             //holder.tvUserTLTimeStamp2.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
-            //holder.tvTipInTop.setVisibility((isShowHeadAndName && item.isHighlight) ? View.VISIBLE : View.GONE);
+            holder.tvTipInTop.setVisibility((isShowHeadAndName && item.isHighlight) ? View.VISIBLE : View.INVISIBLE);
             holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.tvUserTLTitle.setVisibility(StringUtils.isNullOrEmpty(item.header) ? View.GONE : View.VISIBLE);
@@ -413,6 +418,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLineBuyClicked(position);
                     clickedBuy(position);
+
                 }
             });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()
@@ -421,8 +427,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLinePraiseClicked(position);
                     clickedPraise(position);
-
-
+                    copyHolder.btnTLPraise.startAnimation(animation);
                 }
             });
             holder.llTLPraiseDown.setOnClickListener(new View.OnClickListener()
@@ -431,6 +436,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLinePraiseDownClicked(position);
                     clickedPraiseDown(position);
+                    copyHolder.btnTLPraiseDown.startAnimation(animation);
                 }
             });
 
@@ -534,7 +540,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
         public ImageView imgUserTLUserHeader = null;
         //public TextView tvUserTLTimeStamp2 = null;
-        //public TextView tvTipInTop = null;
+        public TextView tvTipInTop = null;
         public TextView tvReward = null;
         public TextView tvUserTLName = null;
 
