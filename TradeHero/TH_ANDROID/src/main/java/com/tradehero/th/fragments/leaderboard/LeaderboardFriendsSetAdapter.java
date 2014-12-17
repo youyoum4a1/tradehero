@@ -118,9 +118,9 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
     private class SavingFriendLeaderboardMarkedUserDTO extends FriendLeaderboardMarkedUserDTO
     {
-        public SavingFriendLeaderboardMarkedUserDTO(@NonNull LeaderboardUserDTO stocksLeaderboardUserDTO)
+        public SavingFriendLeaderboardMarkedUserDTO(@NonNull LeaderboardUserDTO leaderboardUserDTO)
         {
-            this(expandedStatues.get(stocksLeaderboardUserDTO.id), stocksLeaderboardUserDTO);
+            this(expandedStatues.get(leaderboardUserDTO.id), leaderboardUserDTO);
         }
 
         public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
