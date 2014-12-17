@@ -9,7 +9,7 @@
       android:orientation="horizontal"
       android:gravity="center_horizontal"
       android:measureWithLargestChild="true"
-      android:padding="@dimen/margin_xsmall"
+      android:layout_margin="@dimen/margin_small"
       >
 
     <Button

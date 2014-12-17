@@ -59,19 +59,10 @@ public class LeaderboardMarkUserListAdapter extends
         dtoView.linkWith(applicablePortfolioId);
         dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
-        final View expandingLayout = dtoView.findViewById(R.id.expanding_layout);
+        final ExpandingLayout expandingLayout = (ExpandingLayout) dtoView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            //if(expandingLayout instanceof ExpandingLayout)
-            //{
-            //    ((ExpandingLayout)expandingLayout).expand(dto.isExpanded());
-            //}
-            //else
-            //{
-            //    expandingLayout.setVisibility(dto.isExpanded() ? View.VISIBLE : View.GONE);
-            //}
-            //TODO
-            expandingLayout.setVisibility(dto.isExpanded() ? View.VISIBLE : View.GONE);
+            expandingLayout.expandWithNoAnimation(dto.isExpanded());
             dtoView.onExpand(dto.isExpanded());
         }
     }
