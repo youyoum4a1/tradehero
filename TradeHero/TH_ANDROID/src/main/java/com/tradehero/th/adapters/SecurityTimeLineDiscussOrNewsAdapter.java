@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.data.EmptyDiscussionCompactDTO;
@@ -19,7 +20,6 @@ import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.network.retrofit.MiddleCallback;
@@ -53,7 +53,6 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
     public SecurityTimeLineDiscussOrNewsAdapter(Context context, boolean isSimpleModule)
     {
         this(context);
-        this.isSimpleModule = isSimpleModule;
     }
 
     public void setListData(List<AbstractDiscussionCompactDTO> listCompactDTO)
@@ -121,7 +120,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.tvUserTLTimeStamp = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp);
 
             //不是股票交易
-            holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.llUserTLNoTrade);
+            holder.llUserTLNoTrade = (RelativeLayout) convertView.findViewById(R.id.llUserTLNoTrade);
             holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
 
             holder.imgSecurityTLUserHeader = (ImageView) convertView.findViewById(R.id.imgSecurityTLUserHeader);
@@ -139,8 +138,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
             //holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
             //holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
-
-            holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
+            //holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
 
             convertView.setTag(holder);
         }
@@ -159,8 +157,6 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         {
             holder.llAllTimeLine.setVisibility(View.VISIBLE);
         }
-
-        holder.includeTLOperater.setVisibility(isSimpleModule ? View.GONE : View.VISIBLE);
 
         holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
 
@@ -337,7 +333,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         public TextView tvUserTLContent = null;
 
         //不是一个交易相关
-        public LinearLayout llUserTLNoTrade = null;
+        public RelativeLayout llUserTLNoTrade = null;
         public LinearLayout llTLPraise = null;
         public LinearLayout llTLPraiseDown = null;
         public LinearLayout llTLComment = null;
@@ -351,7 +347,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         //public TextView btnTLShare = null;
         //public TextView tvTLShare = null;
 
-        public LinearLayout includeTLOperater;
+        //public LinearLayout includeTLOperater;
     }
 
     private DashboardNavigator getNavigator()

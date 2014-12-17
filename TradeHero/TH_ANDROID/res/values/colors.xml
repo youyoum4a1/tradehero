@@ -169,6 +169,7 @@
     <color name="discussion_action_buttons_border_top_color">#fafafa</color>
 
     <color name="grid_item_bg_border">#88000000</color>
+    <color name="bg_timeline">#FFF4F4F4</color>
 
     <color name="loading_progress_background">#ea2c2c2c</color>
 

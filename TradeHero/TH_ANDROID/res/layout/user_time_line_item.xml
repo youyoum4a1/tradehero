@@ -7,17 +7,20 @@
     android:paddingTop="10dp"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:background="@drawable/listview_item_selector"
+
     android:id="@+id/llItemAll"
     android:orientation="vertical"
     >
 
   <LinearLayout
+      android:background="@drawable/timeline_item_bg"
       android:orientation="vertical"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content">
 
     <LinearLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
@@ -72,26 +75,9 @@
               android:textColor="@color/text_gray_normal"
               />
 
-          <!--<TextView-->
-          <!--android:id="@+id/tvTipInTop"-->
-          <!--android:visibility="visible"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:text="置顶"-->
-          <!--android:layout_below="@id/tvUserTLName"-->
-          <!--android:layout_marginTop="2dp"-->
-          <!--android:textColor="@color/white"-->
-          <!--android:textSize="10sp"-->
-          <!--android:paddingLeft="5dp"-->
-          <!--android:paddingRight="5dp"-->
-          <!--android:layout_marginLeft="2dp"-->
-          <!--android:layout_toRightOf="@id/tvUserTLTimeStamp"-->
-          <!--android:layout_centerVertical="true"-->
-          <!--android:background="@drawable/bg_tips_in_head"/>-->
-
           <TextView
               android:id="@+id/tvIsReward"
-              android:visibility="gone"
+              android:visibility="invisible"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_centerVertical="true"
@@ -102,10 +88,29 @@
               android:background="@drawable/reward_frame"
               android:textSize="11sp"
               android:textColor="@color/discovery_discuss_reward_orange"/>
+
+          <TextView
+              android:id="@+id/tvTipInTop"
+              android:visibility="invisible"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="置顶"
+              android:textColor="@color/white"
+              android:textSize="10sp"
+              android:paddingLeft="5dp"
+              android:paddingRight="5dp"
+              android:layout_marginRight="10dp"
+              android:layout_centerVertical="true"
+              android:layout_toLeftOf="@id/tvIsReward"
+              android:background="@drawable/bg_tips_in_head"/>
+
+
         </RelativeLayout>
       </LinearLayout>
     </LinearLayout>
     <LinearLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:id="@+id/llUserTLNoTrade"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
@@ -142,6 +147,8 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:id="@+id/rlUserTLTrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

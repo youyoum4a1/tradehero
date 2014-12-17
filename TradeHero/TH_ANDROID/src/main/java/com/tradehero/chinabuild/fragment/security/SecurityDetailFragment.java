@@ -384,6 +384,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         initView();
         updateHeadView(true);
         betterViewAnimator.setDisplayedChildByLayoutId(R.id.progress);
+
         return view;
     }
 
@@ -769,22 +770,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     }
 
-    public void getTradeTabDetail2()
-    {
-        com.tradehero.th.api.position.PositionDTOKey positionDTOKey = getPositionDTOKey(getArguments(), positionDTOKeyFactory);
-
-            if (positionDTOKey != null)
-            {
-                linkWith(positionDTOKey);
-            }
-            else //显示没有交易记录
-            {
-                if (betterViewAnimatorPortfolio != null)
-                {
-                    betterViewAnimatorPortfolio.setDisplayedChildByLayoutId(R.id.listTrade);
-                }
-            }
-    }
 
     public void initArgment()
     {
@@ -2017,7 +2002,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         displayDiscussOrNewsDTO();
-        btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.vote_ani));
+        btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
     }
 
 
@@ -2440,4 +2425,5 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
         }
     }
+
 }
