@@ -11,6 +11,7 @@ public class DiscussionDTO extends AbstractDiscussionDTO
     public UserBaseDTO user;
     public int inReplyToId;
     public DiscussionType inReplyToType;
+    public boolean isAnswer;
 
     public String url; // to post a link
 

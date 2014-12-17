@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
@@ -226,7 +225,12 @@ import javax.inject.Singleton;
     }
 
     public void deleteDiscussionItem(int discussionItemId, Callback<Response> callback){
-        THLog.d("delete discussion item");
         discussionServiceAsync.deleteDiscussionItem(discussionItemId, callback);
     }
+
+    public void applyRewardTimeLineAnswer(int userId, int timeLineItemId, int commentId, Callback<Response> callback){
+        discussionServiceAsync.applyRewardTimeLineAnswer(userId, timeLineItemId, commentId, callback);
+    }
+
+
 }

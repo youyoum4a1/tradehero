@@ -102,4 +102,7 @@ interface DiscussionServiceAsync
 
     @DELETE("/discussions/{discussionId}")
     void deleteDiscussionItem(@Path("discussionId")int discussionId, Callback<Response> callback);
+
+    @POST("/users/{userid}/timeline/{timelineid}/pickAnswer?commentId={commentid}")
+    void applyRewardTimeLineAnswer(@Path("userid")int userid,@Path("timelineid")int timelineid,@Path("commentid")int commentid,Callback<Response> callback);
 }

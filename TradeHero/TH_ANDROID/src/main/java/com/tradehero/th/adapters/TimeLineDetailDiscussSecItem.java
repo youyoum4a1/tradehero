@@ -16,10 +16,11 @@ import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * Created by palmer on 14-11-11.
@@ -66,7 +67,7 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup)
     {
-        final AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
+        final AbstractDiscussionCompactDTO item = getItem(position);
         Holder holder = null;
         if (convertView == null)
         {
@@ -77,6 +78,7 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
             holder.moment = (TextView) convertView.findViewById(R.id.textview_discuss_second_time);
             holder.user = (TextView) convertView.findViewById(R.id.textview_discuss_second_user);
             holder.allContent = (LinearLayout) convertView.findViewById(R.id.linearlayout_discuss_second_allcontent);
+            holder.rightAnswer = (TextView)convertView.findViewById(R.id.textview_discuss_reward_right_answer);
             convertView.setTag(holder);
         }
         else
@@ -101,12 +103,18 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
             holder.content.setText(((DiscussionDTO) item).text);
             if (((DiscussionDTO) item).user != null)
             {
-                holder.user.setText(((DiscussionDTO) item).user.getDisplayName());
+                DiscussionDTO discussionDTO = ((DiscussionDTO) item);
+                holder.user.setText(discussionDTO.user.getDisplayName());
                 picasso.get()
                         .load(((DiscussionDTO) item).user.picture)
                         .placeholder(R.drawable.superman_facebook)
                         .error(R.drawable.superman_facebook)
                         .into(holder.avatar);
+                if(discussionDTO.isAnswer){
+                    holder.rightAnswer.setVisibility(View.VISIBLE);
+                }else{
+                    holder.rightAnswer.setVisibility(View.GONE);
+                }
             }
             else
             {
@@ -175,6 +183,24 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         notifyDataSetChanged();
     }
 
+    public void applyRightAnswer(int discussionId){
+        if(listData == null || listData.size() ==0){
+            return;
+        }
+        int size = listData.size();
+        for(int num=0;num<size; num++){
+            if(listData.get(num).id == discussionId){
+                AbstractDiscussionCompactDTO abstractDiscussionCompactDTO = listData.get(num);
+                if(abstractDiscussionCompactDTO instanceof DiscussionDTO){
+                    DiscussionDTO discussionDTO = (DiscussionDTO)abstractDiscussionCompactDTO;
+                    discussionDTO.isAnswer = true;
+                }
+                break;
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public class Holder
     {
         public ImageView avatar;
@@ -182,5 +208,6 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         public TextView moment;
         public MarkdownTextView content;
         public LinearLayout allContent;
+        public TextView rightAnswer;
     }
 }

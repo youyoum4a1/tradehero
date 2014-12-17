@@ -82,6 +82,7 @@
                       android:id="@+id/edittext_reward_doc_title"
                       android:textSize="15sp" android:layout_gravity="center_vertical"
                       android:layout_marginLeft="10dp"
+                      android:maxLength="18"
                       android:singleLine="true"
                       android:background="@color/transparent"
                       android:textColor="@color/discovery_discuss_reward_gray"/>
