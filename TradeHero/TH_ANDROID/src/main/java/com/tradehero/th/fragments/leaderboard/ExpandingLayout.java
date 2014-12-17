@@ -61,7 +61,6 @@ public class ExpandingLayout extends LinearLayout
         int distToTravel;
         if (expand)
         {
-
             distToTravel = measuredHeight - mCurrentHeight;
             animator = ValueAnimator.ofInt(mCurrentHeight, measuredHeight);
             animator.addListener(new AnimatorListenerAdapter()

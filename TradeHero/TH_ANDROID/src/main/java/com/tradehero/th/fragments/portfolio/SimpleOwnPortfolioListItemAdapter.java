@@ -44,7 +44,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
             // TODO This could be improved
             SortedSet<DisplayablePortfolioDTO> ownPortfolios = new TreeSet<>(this.ownDisplayablePortfolioDTOWithinUserComparator);
 
-            for (DisplayablePortfolioDTO displayablePortfolioDTO: items)
+            for (DisplayablePortfolioDTO displayablePortfolioDTO : items)
             {
                 if (displayablePortfolioDTO != null)
                 {
@@ -52,7 +52,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                 }
             }
 
-            for (DisplayablePortfolioDTO displayablePortfolioDTO: ownPortfolios)
+            for (DisplayablePortfolioDTO displayablePortfolioDTO : ownPortfolios)
             {
                 preparedOrderedItems.add(displayablePortfolioDTO);
             }
@@ -104,7 +104,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                     view = conditionalInflate(position, convertView, parent);
                     if (item instanceof DisplayablePortfolioDTO)
                     {
-                        if(view instanceof  PortfolioListItemView)
+                        if (view instanceof PortfolioListItemView)
                         {
                             ((PortfolioListItemView) view).display((DisplayablePortfolioDTO) item);
                         }
