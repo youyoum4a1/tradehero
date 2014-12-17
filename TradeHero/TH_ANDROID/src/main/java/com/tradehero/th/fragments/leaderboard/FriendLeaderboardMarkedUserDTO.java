@@ -5,13 +5,13 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 
 public class FriendLeaderboardMarkedUserDTO extends FriendLeaderboardUserDTO
 {
-    @NonNull public LeaderboardUserDTO stocksLeaderboardUserDTO;
+    @NonNull public LeaderboardUserDTO leaderboardUserDTO;
 
     //<editor-fold desc="Constructors">
-    public FriendLeaderboardMarkedUserDTO(boolean expanded, @NonNull LeaderboardUserDTO stocksLeaderboardUserDTO)
+    public FriendLeaderboardMarkedUserDTO(boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
     {
         super(expanded);
-        this.stocksLeaderboardUserDTO = stocksLeaderboardUserDTO;
+        this.leaderboardUserDTO = leaderboardUserDTO;
     }
     //</editor-fold>
 }

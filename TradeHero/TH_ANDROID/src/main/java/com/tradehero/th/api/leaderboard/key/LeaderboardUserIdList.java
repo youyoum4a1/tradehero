@@ -28,9 +28,9 @@ public class LeaderboardUserIdList extends BaseArrayList<LeaderboardUserId>
             @Nullable LeaderboardUserDTO typeQualifier)
     {
         super();
-        for (LeaderboardUserDTO stocksLeaderboardUserDTO : c)
+        for (LeaderboardUserDTO leaderboardUserDTO : c)
         {
-            add(stocksLeaderboardUserDTO.getLeaderboardUserId());
+            add(leaderboardUserDTO.getLeaderboardUserId());
         }
     }
     //</editor-fold>

@@ -336,7 +336,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         {
             @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
             {
-                return friendLeaderboardMarkedUserDTO.stocksLeaderboardUserDTO.getBaseKey().equals(heroId);
+                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
             }
         });
     }

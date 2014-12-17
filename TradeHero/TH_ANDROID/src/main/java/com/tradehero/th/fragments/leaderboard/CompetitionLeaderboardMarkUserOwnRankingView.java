@@ -70,9 +70,9 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         infoButtonContainer.setVisibility(View.GONE);
     }
 
-    @Override public void display(LeaderboardUserDTO stocksLeaderboardUserDTO)
+    @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
     {
-        super.display(stocksLeaderboardUserDTO);
+        super.display(leaderboardUserDTO);
         displayPrize();
     }
 

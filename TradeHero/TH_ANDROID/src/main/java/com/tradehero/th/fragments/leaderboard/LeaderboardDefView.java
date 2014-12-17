@@ -108,10 +108,10 @@ public class LeaderboardDefView extends RelativeLayout
         leaderboardDefUserRankWrapper.setVisibility(GONE);
     }
 
-    private void showUserBestROI(LeaderboardUserDTO stocksLeaderboardUserDTO)
+    private void showUserBestROI(LeaderboardUserDTO leaderboardUserDTO)
     {
         THSignedNumber roi = THSignedPercentage
-                .builder(stocksLeaderboardUserDTO.roiInPeriod * 100)
+                .builder(leaderboardUserDTO.roiInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)

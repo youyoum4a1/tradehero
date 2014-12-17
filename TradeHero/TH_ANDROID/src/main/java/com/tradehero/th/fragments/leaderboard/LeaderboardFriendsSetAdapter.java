@@ -111,9 +111,9 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
         }
     }
 
-    private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull LeaderboardUserDTO stocksLeaderboardUserDTO)
+    private FriendLeaderboardUserDTO createUserDTOFrom(@NonNull LeaderboardUserDTO leaderboardUserDTO)
     {
-        return new SavingFriendLeaderboardMarkedUserDTO(stocksLeaderboardUserDTO);
+        return new SavingFriendLeaderboardMarkedUserDTO(leaderboardUserDTO);
     }
 
     private class SavingFriendLeaderboardMarkedUserDTO extends FriendLeaderboardMarkedUserDTO
@@ -123,15 +123,15 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
             this(expandedStatues.get(stocksLeaderboardUserDTO.id), stocksLeaderboardUserDTO);
         }
 
-        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull LeaderboardUserDTO stocksLeaderboardUserDTO)
+        public SavingFriendLeaderboardMarkedUserDTO(@Nullable Boolean expanded, @NonNull LeaderboardUserDTO leaderboardUserDTO)
         {
-            super(expanded == null ? false : expanded, stocksLeaderboardUserDTO);
+            super(expanded == null ? false : expanded, leaderboardUserDTO);
         }
 
         @Override public void setExpanded(boolean expanded)
         {
             super.setExpanded(expanded);
-            LeaderboardFriendsSetAdapter.this.expandedStatues.put(stocksLeaderboardUserDTO.id, expanded);
+            LeaderboardFriendsSetAdapter.this.expandedStatues.put(leaderboardUserDTO.id, expanded);
         }
     }
 
@@ -151,10 +151,10 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
         if (convertView instanceof LeaderboardMarkUserItemView)
         {
-            LeaderboardUserDTO stocksLeaderboardUserDTO =
-                    ((FriendLeaderboardMarkedUserDTO) item).stocksLeaderboardUserDTO;
-            ((FriendLeaderboardMarkedUserDTO) item).stocksLeaderboardUserDTO.setPosition(position); // HACK FIXME
-            ((LeaderboardMarkUserItemView) convertView).display(stocksLeaderboardUserDTO);
+            LeaderboardUserDTO leaderboardUserDTO =
+                    ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO;
+            ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK FIXME
+            ((LeaderboardMarkUserItemView) convertView).display(leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
             ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
         }

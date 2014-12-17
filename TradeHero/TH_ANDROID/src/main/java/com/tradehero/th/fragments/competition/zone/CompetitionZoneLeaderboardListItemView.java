@@ -104,11 +104,11 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
         {
             if (competitionZoneDTO != null && competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
             {
-                LeaderboardUserDTO stocksLeaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
-                if(stocksLeaderboardUserDTO != null)
+                LeaderboardUserDTO leaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
+                if(leaderboardUserDTO != null)
                 {
                     THSignedNumber thRoi = THSignedPercentage
-                            .builder(stocksLeaderboardUserDTO.roiInPeriod * 100)
+                            .builder(leaderboardUserDTO.roiInPeriod * 100)
                             .build();
 
                     roiView.setText(thRoi.toString());
