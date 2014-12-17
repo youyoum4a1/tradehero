@@ -10,22 +10,15 @@
     android:background="@drawable/grid_item_bg"
     >
 
-  <com.makeramen.RoundedImageView
-     android:id="@+id/stock_bg_logo"
-     android:layout_width="match_parent"
-     android:layout_height="@dimen/grid_item_height"
-     app:oval="false"
-     android:scaleType="centerCrop"
-     app:corner_radius="@dimen/grid_item_bg_radius"
-        />
-
   <ImageView
       android:id="@+id/country_logo"
       android:layout_width="@dimen/medium_image_w_h"
       android:layout_height="@dimen/medium_image_w_h"
       android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginStart="@dimen/margin_small"
       android:layout_centerVertical="true"
-      android:layout_marginRight="10dp"
+      android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginEnd="@dimen/margin_small"
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
