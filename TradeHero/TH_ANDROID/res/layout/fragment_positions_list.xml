@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
 
-  <ViewStub
-      android:id="@+id/position_list_header_stub"
-      android:inflatedId="@+id/position_list_header_stub"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      />
-
   <ViewAnimator
       android:id="@+id/list_flipper"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true">
 
     <ProgressBar
         android:id="@android:id/progress"
@@ -37,6 +31,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:fadingEdge="none"
+          android:paddingTop="@dimen/size_10"
           android:paddingBottom="@dimen/dashboard_tabhost_height"
           android:clipToPadding="false"
           />
@@ -53,4 +48,12 @@
 
   </ViewAnimator>
 
-</LinearLayout>
+  <ViewStub
+      android:id="@+id/position_list_header_stub"
+      android:inflatedId="@+id/position_list_header_stub"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      />
+
+</RelativeLayout>

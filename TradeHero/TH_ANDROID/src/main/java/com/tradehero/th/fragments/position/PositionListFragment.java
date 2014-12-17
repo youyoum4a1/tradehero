@@ -10,12 +10,15 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
@@ -56,6 +59,7 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -89,7 +93,6 @@ public class PositionListFragment
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
 
-    //@InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
@@ -175,7 +178,6 @@ public class PositionListFragment
 
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
-        positionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -419,8 +421,31 @@ public class PositionListFragment
             // portfolio header
             int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO);
             headerStub.setLayoutResource(headerLayoutId);
-            portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
+            View inflatedHeader = headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
             linkPortfolioHeader();
+
+            positionListView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    AbsListView listView = positionListView;
+                    if (listView != null)
+                    {
+                        int headerHeight = inflatedHeader.getMeasuredHeight();
+                        listView.setPadding(listView.getPaddingLeft(),
+                                headerHeight,
+                                listView.getPaddingRight(),
+                                listView.getPaddingBottom());
+                        listView.setOnScrollListener(new MultiScrollListener(
+                                dashboardBottomTabsListViewScrollListener.get(),
+                                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
+                                        inflatedHeader,
+                                        -headerHeight,
+                                        null, 0)));
+                    }
+                }
+            });
         }
         else
         {
