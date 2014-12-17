@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.ApplyCommentDTO;
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -103,6 +104,6 @@ interface DiscussionServiceAsync
     @DELETE("/discussions/{discussionId}")
     void deleteDiscussionItem(@Path("discussionId")int discussionId, Callback<Response> callback);
 
-    @POST("/users/{userid}/timeline/{timelineid}/pickAnswer?commentId={commentid}")
-    void applyRewardTimeLineAnswer(@Path("userid")int userid,@Path("timelineid")int timelineid,@Path("commentid")int commentid,Callback<Response> callback);
+    @POST("/users/{userid}/timeline/{timelineid}/pickAnswer")
+    void applyRewardTimeLineAnswer(@Path("userid")int userid,@Path("timelineid")int timelineid,@Body ApplyCommentDTO applyCommentDTO,Callback<Response> callback);
 }

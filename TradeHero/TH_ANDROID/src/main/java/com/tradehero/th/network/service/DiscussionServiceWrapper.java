@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.ApplyCommentDTO;
 import com.tradehero.chinabuild.data.DiscoveryDiscussFormDTO;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -229,7 +230,9 @@ import javax.inject.Singleton;
     }
 
     public void applyRewardTimeLineAnswer(int userId, int timeLineItemId, int commentId, Callback<Response> callback){
-        discussionServiceAsync.applyRewardTimeLineAnswer(userId, timeLineItemId, commentId, callback);
+        ApplyCommentDTO applyCommentDTO = new ApplyCommentDTO();
+        applyCommentDTO.commentId = commentId;
+        discussionServiceAsync.applyRewardTimeLineAnswer(userId, timeLineItemId, applyCommentDTO, callback);
     }
 
 
