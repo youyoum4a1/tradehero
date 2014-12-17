@@ -15,7 +15,7 @@ import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -64,7 +64,7 @@ public class LeaderboardMarkUserPagerFragment extends LeaderboardDefFragment
 
     private class LeaderboardPagerAdapter extends FragmentPagerAdapter
     {
-        List<LeaderboardDefDTO> leaderboardDefDTOs = new LeaderboardDefDTOList();
+        List<LeaderboardDefDTO> leaderboardDefDTOs = Collections.<LeaderboardDefDTO>emptyList();
 
         public LeaderboardPagerAdapter(FragmentManager fm)
         {
@@ -73,8 +73,7 @@ public class LeaderboardMarkUserPagerFragment extends LeaderboardDefFragment
 
         public void setItems(List<LeaderboardDefDTO> items)
         {
-            leaderboardDefDTOs.clear();
-            leaderboardDefDTOs.addAll(items);
+            leaderboardDefDTOs = items;
             notifyDataSetChanged();
             refreshViewpager();
         }

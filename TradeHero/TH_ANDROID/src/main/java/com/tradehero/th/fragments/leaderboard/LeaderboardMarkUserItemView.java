@@ -576,9 +576,9 @@ public class LeaderboardMarkUserItemView
     public void shouldHideStatistics(boolean hide)
     {
         this.shouldHideStatistics = hide;
-        if(userStatisticView != null)
+        if (userStatisticView != null)
         {
-            if(hide)
+            if (hide)
             {
                 userStatisticView.setVisibility(View.GONE);
             }
