@@ -287,4 +287,13 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
         detachTimeLineMiddleCallback();
         super.onDestroyView();
     }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if(adapter!=null)
+        {
+            adapter.OnResumeDataAction();
+        }
+    }
 }

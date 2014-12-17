@@ -8,7 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -17,7 +23,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
-import com.tradehero.chinabuild.dialog.*;
+import com.tradehero.chinabuild.dialog.DialogFactory;
+import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
+import com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -28,10 +38,19 @@ import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
-import com.tradehero.th.api.discussion.*;
+import com.tradehero.th.adapters.UserTimeLineAdapter;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
-import com.tradehero.th.api.discussion.key.*;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
+import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
+import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -43,6 +62,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -58,15 +78,14 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
@@ -635,7 +654,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         public void failure(RetrofitError error)
         {
             onFinish();
-            THToast.show(error.getMessage());
+            //THToast.show(error.getMessage());
+            THException thException = new THException(error);
+            THToast.show(thException);
         }
 
         private void onFinish()
@@ -1023,26 +1044,32 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void failure(RetrofitError retrofitError)
             {
-                THToast.show(retrofitError.getMessage());
+                //THToast.show(retrofitError.getMessage());
+                THException thException = new THException(retrofitError);
+                THToast.show(thException);
             }
         });
     }
 
-    private void deleteTimeLineItem(int timeLineItemId){
+    private void deleteTimeLineItem(final int timeLineItemId){
         showDeleteProgressDlg();
         discussionServiceWrapper.get().deleteTimeLineItem(timeLineItemId, new Callback<Response>()
         {
             @Override
             public void success(Response response, Response response2)
             {
+                UserTimeLineAdapter.setTimeLineItemDeleted(timeLineItemId);
                 popCurrentFragment();
                 onFinish();
+                //通知APP删除timelineItemId的帖子
             }
 
             @Override
             public void failure(RetrofitError retrofitError)
             {
-                THToast.show(retrofitError.getMessage());
+                //THToast.show(retrofitError.getMessage());
+                THException thException = new THException(retrofitError);
+                THToast.show(thException);
                 onFinish();
             }
 
@@ -1060,6 +1087,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void success(Response response, Response response2)
             {
+                if(dataDto!=null)
+                {
+                    UserTimeLineAdapter.setTimeLineItemAnswered(dataDto.id);
+                }
                 adapter.removeDeletedItem(discussionItemId);
                 onFinish();
             }
@@ -1067,7 +1098,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void failure(RetrofitError retrofitError)
             {
-                THToast.show(retrofitError.getMessage());
+                //THToast.show(retrofitError.getMessage());
+                THException thException = new THException(retrofitError);
+                THToast.show(thException);
                 onFinish();
             }
 
@@ -1095,7 +1128,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                THToast.show(retrofitError.getMessage());
+                //THToast.show(retrofitError.getMessage());
+                THException thException = new THException(retrofitError);
+                THToast.show(thException);
                 onFinish();
             }
 
