@@ -5,18 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    style="@style/TH.ListItem"
     android:gravity="center_vertical"
     android:background="@color/white"
     >
+
+  <TextView
+      android:id="@+id/margin_close_out_warn"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:padding="@dimen/margin_xsmall"
+      style="@style/TH.Subhead.Inverse"
+      android:background="@color/orange"
+      tools:text="Margin is approaching"
+      android:gravity="center"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
 
   <HorizontalScrollView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:scrollbarDefaultDelayBeforeFade="@integer/about_screen_rotation_delay"
-      android:paddingTop="@dimen/margin_xsmall"
-      android:paddingBottom="@dimen/margin_xsmall"
       android:layout_gravity="center_horizontal"
+      style="@style/TH.ListItem"
       >
 
     <TableLayout

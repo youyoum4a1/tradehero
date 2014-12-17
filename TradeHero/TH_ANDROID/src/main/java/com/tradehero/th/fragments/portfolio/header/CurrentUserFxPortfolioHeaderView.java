@@ -7,12 +7,14 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 
 /**
  * Header displayed on a Portfolio owned by the authenticated user.
  */
 public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeaderView
 {
+    @InjectView(R.id.margin_close_out_warn) protected TextView marginCloseOutSoon;
     @InjectView(R.id.header_portfolio_margin_available) protected TextView marginAvailable;
     @InjectView(R.id.header_portfolio_margin_used) protected TextView marginUsed;
     @InjectView(R.id.header_portfolio_pl_unrealised) protected TextView unrealisedPl;
@@ -38,6 +40,7 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
     {
         super.linkWith(portfolioCompactDTO);
 
+        displayMarginCloseOutSoon();
         displayMarginAvailable();
         displayMarginUsed();
         displayUnrealisedPl();
@@ -61,6 +64,28 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
                 {
                     totalValueTextView.setText(R.string.na);
                 }
+            }
+        }
+    }
+
+    public void displayMarginCloseOutSoon()
+    {
+        if (marginCloseOutSoon != null)
+        {
+            if (portfolioCompactDTO != null
+                    && portfolioCompactDTO.marginCloseOutPercent != null
+                    && portfolioCompactDTO.hasMarginCallApproaching())
+            {
+                marginCloseOutSoon.setText(getResources().getString(
+                        R.string.portfolio_margin_close_out_soon,
+                        THSignedNumber.builder(portfolioCompactDTO.marginCloseOutPercent)
+                                .relevantDigitCount(2)
+                                .build().toString()));
+                marginCloseOutSoon.setVisibility(VISIBLE);
+            }
+            else
+            {
+                marginCloseOutSoon.setVisibility(GONE);
             }
         }
     }

@@ -112,7 +112,6 @@ public class PositionListFragment
     @Nullable protected UserProfileDTO userProfileDTO;
 
     protected PositionItemAdapter positionItemAdapter;
-    protected boolean showedMarginCall;
 
     private int firstPositionVisible = 0;
 
@@ -387,8 +386,6 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
-
-        conditionalDisplayMarginCall();
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -609,26 +606,5 @@ public class PositionListFragment
         {
             // do nothing for now
         }
-    }
-
-    protected void conditionalDisplayMarginCall()
-    {
-        if (!showedMarginCall
-                && portfolioDTO != null
-                && portfolioDTO.isFx()
-                && portfolioDTO.hasMarginCall())
-        {
-            displayMarginCall();
-        }
-    }
-
-    protected void displayMarginCall()
-    {
-        showedMarginCall = true;
-        alertDialogUtil.popWithNegativeButton(
-                getActivity(),
-                R.string.portfolio_margin_call_title,
-                R.string.portfolio_margin_call_description,
-                R.string.portfolio_margin_call_ok);
     }
 }
