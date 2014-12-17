@@ -59,16 +59,9 @@ import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
 
 public class LeaderboardMarkUserItemView
         extends RelativeLayout
-        implements DTOView<LeaderboardUserDTO>, ExpandingLayout.OnExpandListener
+        implements DTOView<LeaderboardUserDTO>,
+        ExpandingLayout.OnExpandListener
 {
-    protected UserProfileDTO currentUserProfileDTO;
-    protected OnFollowRequestedListener followRequestedListener;
-    protected OwnedPortfolioId applicablePortfolioId;
-    // data
-    protected LeaderboardUserDTO leaderboardItem;
-    // top view
-    @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
-    @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject Lazy<Picasso> picasso;
@@ -76,8 +69,19 @@ public class LeaderboardMarkUserItemView
     @Inject THRouter thRouter;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject DashboardNavigator navigator;
+
+    protected UserProfileDTO currentUserProfileDTO;
+    protected OnFollowRequestedListener followRequestedListener;
+    protected OwnedPortfolioId applicablePortfolioId;
+    // data
+    protected LeaderboardUserDTO leaderboardItem;
+
+    // top view
+    @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
+    @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
     @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
     @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
+
     // expanding view
     @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
     @InjectView(R.id.lbmu_roi_annualized) TextView lbmuRoiAnnualized;
@@ -85,8 +89,11 @@ public class LeaderboardMarkUserItemView
     @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
     @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
     @InjectView(R.id.leaderboard_user_item_country_logo) @Optional @Nullable ImageView countryLogo;
-    @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
+
     @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
+
+    @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
+
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
     private boolean shouldHideStatistics = true;
 
@@ -184,9 +191,9 @@ public class LeaderboardMarkUserItemView
         this.followRequestedListener = followRequestedListener;
     }
 
-    @Override public void display(LeaderboardUserDTO leaderboardUserDTOType)
+    @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
     {
-        linkWith(leaderboardUserDTOType, true);
+        linkWith(leaderboardUserDTO, true);
     }
 
     private void detachOwnRankingLeaderboardCache()
@@ -199,9 +206,9 @@ public class LeaderboardMarkUserItemView
         leaderboardOwnUserRankingSubscription = null;
     }
 
-    protected void linkWith(LeaderboardUserDTO leaderboardUserDTOType, boolean andDisplay)
+    protected void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
     {
-        this.leaderboardItem = leaderboardUserDTOType;
+        this.leaderboardItem = leaderboardUserDTO;
 
         if (andDisplay)
         {
