@@ -8,13 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -23,11 +17,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
-import com.tradehero.chinabuild.dialog.DialogFactory;
-import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
-import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
-import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
-import com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout;
+import com.tradehero.chinabuild.dialog.*;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -39,18 +29,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
 import com.tradehero.th.adapters.UserTimeLineAdapter;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.key.*;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -78,14 +60,15 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
@@ -893,7 +876,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
 
         boolean isDeleteAllowed = isDeleteAllowed(dataDto);
-        boolean isReportAllowed = !isDeleteAllowed;
+        boolean isReportAllowed = isReportAllowed(dataDto);
         timeLineDetailMenuDialog = dialogFactory.createTimeLineDetailDialog(getActivity(), new TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener() {
             @Override
             public void onReportClick() {
@@ -1161,6 +1144,13 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
         }
         return false;
+    }
+
+    private boolean isReportAllowed(AbstractDiscussionCompactDTO dto){
+        if(dto ==null){
+            return false;
+        }
+        return !isDeleteAllowed(dto);
     }
 
     private void showDeleteTimeLineConfirmDlg(final int itemId, int dialogType){
