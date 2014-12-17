@@ -12,6 +12,7 @@ import java.util.Date;
 public class PortfolioCompactDTO implements DTO
 {
     public static final String DEFAULT_TITLE = "Default";
+    public static final double MARGIN_CLOSE_OUT_WARN = 0.7d;
 
     public int id;
     //<editor-fold desc="Populated on client side">
@@ -140,9 +141,9 @@ public class PortfolioCompactDTO implements DTO
         return txnCostUsd != null ? txnCostUsd : SecurityUtils.DEFAULT_TRANSACTION_COST_USD;
     }
 
-    public boolean hasMarginCall()
+    public boolean hasMarginCallApproaching()
     {
-        return marginCloseOutPercent != null && marginCloseOutPercent < 0.5; // TODO review
+        return marginCloseOutPercent != null && marginCloseOutPercent >= MARGIN_CLOSE_OUT_WARN;
     }
 
     @Override @NonNull public String toString()
