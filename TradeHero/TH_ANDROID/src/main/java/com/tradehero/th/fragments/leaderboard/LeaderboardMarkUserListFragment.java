@@ -438,18 +438,19 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
             if (currentLeaderboardUserDTO != null)
             {
-                leaderboardMarkUserItemView.displayUserIsNotRanked();
-                // user is not ranked, disable expandable view
-                leaderboardMarkUserItemView.setOnClickListener(null);
-            }
-            if (mRankHeaderView instanceof LeaderboardMarkUserItemView && currentLeaderboardUserDTO instanceof LeaderboardUserDTO)
-            {
                 LeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
 
                 leaderboardMarkUserStockItemView.display(currentLeaderboardUserDTO);
                 setupOwnRankingView(leaderboardMarkUserStockItemView);
                 leaderboardMarkUserStockItemView.setOnClickListener(new BaseExpandingItemListener());
             }
+            else
+            {
+                leaderboardMarkUserItemView.displayUserIsNotRanked();
+                // user is not ranked, disable expandable view
+                leaderboardMarkUserItemView.setOnClickListener(null);
+            }
+
         }
     }
 
