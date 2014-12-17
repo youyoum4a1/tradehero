@@ -300,8 +300,12 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if(mRefreshView==null){
             return;
         }
-        tvIsReward = (TextView)mRefreshView.findViewById(R.id.tvIsReward);
-        tvUserTVTitle = (TextView)mRefreshView.findViewById(R.id.tvUserTVTitle);
+        if(tvIsReward == null){
+            tvIsReward = (TextView)mRefreshView.findViewById(R.id.tvIsReward);
+        }
+        if(tvUserTVTitle == null) {
+            tvUserTVTitle = (TextView) mRefreshView.findViewById(R.id.tvUserTVTitle);
+        }
         if(!TextUtils.isEmpty(getHeader())){
             tvUserTVTitle.setVisibility(View.VISIBLE);
             tvUserTVTitle.setText(getHeader());
@@ -401,6 +405,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @Override
     public void onResume() {
         super.onResume();
+        checkAndDealDeletedTimeLine();
         fetchDiscussion(timelineItemDTOKey, true);
     }
 
@@ -467,10 +472,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     {
         if(value!=null) {
             this.dataDto = value;
+            checkAndDealDeletedTimeLine();
             initRefreshView();
+            fetchDiscussList(true);
+            displayDiscussOrNewsDTO();
         }
-        fetchDiscussList(true);
-        displayDiscussOrNewsDTO();
     }
 
     public AbstractDiscussionCompactDTO getAbstractDiscussionCompactDTO()
@@ -1255,4 +1261,13 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         return "";
     }
 
+    private void checkAndDealDeletedTimeLine(){
+        if(dataDto instanceof TimelineItemDTO){
+            TimelineItemDTO timelineItemDTO = (TimelineItemDTO)dataDto;
+            if(timelineItemDTO.isDeleted){
+                popCurrentFragment();
+                THToast.show(R.string.discovery_discuss_already_deleted);
+            }
+        }
+    }
 }

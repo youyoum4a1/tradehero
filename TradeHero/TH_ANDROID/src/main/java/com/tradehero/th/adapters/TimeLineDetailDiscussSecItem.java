@@ -100,21 +100,23 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
 
         if (item instanceof DiscussionDTO)
         {
-            holder.content.setText(((DiscussionDTO) item).text);
-            if (((DiscussionDTO) item).user != null)
+            DiscussionDTO discussionDTO = ((DiscussionDTO) item);
+            if(discussionDTO.isAnswer){
+                holder.rightAnswer.setVisibility(View.VISIBLE);
+            }else{
+                holder.rightAnswer.setVisibility(View.GONE);
+            }
+
+            holder.content.setText(discussionDTO.text);
+            if (discussionDTO.user != null)
             {
-                DiscussionDTO discussionDTO = ((DiscussionDTO) item);
+
                 holder.user.setText(discussionDTO.user.getDisplayName());
                 picasso.get()
                         .load(((DiscussionDTO) item).user.picture)
                         .placeholder(R.drawable.superman_facebook)
                         .error(R.drawable.superman_facebook)
                         .into(holder.avatar);
-                if(discussionDTO.isAnswer){
-                    holder.rightAnswer.setVisibility(View.VISIBLE);
-                }else{
-                    holder.rightAnswer.setVisibility(View.GONE);
-                }
             }
             else
             {

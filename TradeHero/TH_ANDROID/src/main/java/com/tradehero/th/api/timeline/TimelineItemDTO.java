@@ -9,8 +9,9 @@ import com.tradehero.th.api.security.SecurityMediaDTO;
 import com.tradehero.th.api.security.SecurityMediaDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
-import java.util.Date;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Date;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO
 {
@@ -34,6 +35,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     public boolean isQuestionItem;
     public Integer prizeAmount;
     public boolean isAnswered;
+    public boolean isDeleted;
 
 
     //<editor-fold desc="Constructors">
