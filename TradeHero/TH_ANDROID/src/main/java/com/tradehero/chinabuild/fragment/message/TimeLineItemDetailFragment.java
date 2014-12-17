@@ -162,9 +162,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (bundle.containsKey(BUNDLE_ARGUMENT_DISCUSSTION_ID))
         {
             timelineItemDTOKey = discussionKeyFactory.fromBundle(bundle.getBundle(BUNDLE_ARGUMENT_DISCUSSTION_ID));
-            fetchDiscussion(timelineItemDTOKey, false);
+            fetchDiscussion(timelineItemDTOKey, true);
             discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, ITEMS_PER_PAGE);
-            fetchDiscussList(false);
+            fetchDiscussList(true);
         }
     }
 
@@ -402,7 +402,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @Override
     public void onResume() {
         super.onResume();
-        fetchDiscussion(timelineItemDTOKey, false);
+        fetchDiscussion(timelineItemDTOKey, true);
     }
 
     private void fetchDiscussion(DiscussionKey discussionKey, boolean force)
@@ -1083,14 +1083,15 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void success(Response response, Response response2) {
                 THToast.show(R.string.discovery_discuss_apply_successfully);
+                adapter.applyRightAnswer(commentItemId);
+                setRefreshViewRewarded();
                 onFinish();
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
                 THToast.show(retrofitError.getMessage());
-                adapter.applyRightAnswer(commentItemId);
-                setRefreshViewRewarded();
+                THLog.d(retrofitError.getMessage());
                 onFinish();
             }
 
