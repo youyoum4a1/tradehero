@@ -35,9 +35,9 @@ public class LeaderboardUserCacheRx extends BaseDTOCacheRx<LeaderboardUserId, Le
 
     public void put(@NonNull List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
     {
-        for (LeaderboardUserDTO stocksLeaderboardUserDTO : leaderboardUserDTOs)
+        for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
         {
-            onNext(stocksLeaderboardUserDTO.getLeaderboardUserId(), stocksLeaderboardUserDTO);
+            onNext(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO);
         }
     }
 
