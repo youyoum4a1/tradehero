@@ -70,6 +70,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     @Inject Analytics analytics;
     public Animation animation;
+
+    private static int timeLineItemDeleted = -1;
+    private static int timeLineItemAnswerd = -1;
+
     public UserTimeLineAdapter(Context context)
     {
         DaggerUtils.inject(this);
@@ -256,7 +260,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
                 //赞,踩，评论，分享
                 holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
-                holder.llTLPraiseDown = (LinearLayout)convertView.findViewById(R.id.llTLPraiseDown);
+                holder.llTLPraiseDown = (LinearLayout) convertView.findViewById(R.id.llTLPraiseDown);
                 holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
                 //holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
                 holder.llTLBuy = (LinearLayout) convertView.findViewById(R.id.llTLBuy);
@@ -383,8 +387,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 }
             }
 
-            holder.btnTLPraise.setBackgroundResource(item.voteDirection==1?R.drawable.icon_praise_active:R.drawable.icon_praise_normal);
-            holder.btnTLPraiseDown.setBackgroundResource(item.voteDirection==-1?R.drawable.icon_praise_down_active:R.drawable.icon_praise_down_normal);
+            holder.btnTLPraise.setBackgroundResource(item.voteDirection == 1 ? R.drawable.icon_praise_active : R.drawable.icon_praise_normal);
+            holder.btnTLPraiseDown.setBackgroundResource(
+                    item.voteDirection == -1 ? R.drawable.icon_praise_down_active : R.drawable.icon_praise_down_normal);
 
             holder.tvTLPraise.setText(Html.fromHtml(item.getVoteUpString()));
             holder.tvTLPraiseDown.setText(Html.fromHtml(item.getVoteDownString()));
@@ -418,7 +423,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLineBuyClicked(position);
                     clickedBuy(position);
-
                 }
             });
             holder.llTLPraise.setOnClickListener(new View.OnClickListener()
@@ -613,23 +617,21 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
             updateVoting(VoteDirection.UnVote, item);
         }
-        else if(item.voteDirection == 0)
+        else if (item.voteDirection == 0)
         {
             item.voteDirection = 1;
             item.upvoteCount += 1;
             updateVoting(VoteDirection.UpVote, item);
         }
-        else if(item.voteDirection == -1)
+        else if (item.voteDirection == -1)
         {
             item.voteDirection = 1;
-            item.upvoteCount +=1;
-            item.downvoteCount = item.downvoteCount > 0?(item.downvoteCount -1):0;
+            item.upvoteCount += 1;
+            item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
             updateVoting(VoteDirection.UpVote, item);
         }
 
         notifyDataSetChanged();
-
-
     }
 
     public void clickedPraiseDown(int position)
@@ -640,7 +642,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         {
             item.voteDirection = -1;
             item.downvoteCount += 1;
-            item.upvoteCount = item.upvoteCount>0?(item.upvoteCount-1):0;
+            item.upvoteCount = item.upvoteCount > 0 ? (item.upvoteCount - 1) : 0;
             updateVoting(VoteDirection.DownVote, item);
         }
         else if (item.voteDirection == 0)
@@ -649,7 +651,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             item.downvoteCount += 1;
             updateVoting(VoteDirection.DownVote, item);
         }
-        else if(item.voteDirection == -1)
+        else if (item.voteDirection == -1)
         {
             item.voteDirection = 0;
             item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
@@ -709,6 +711,59 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         @Override public void failure(RetrofitError error)
         {
             Timber.d("VoteCallback failed :" + error.toString());
+        }
+    }
+
+    public static void setTimeLineItemDeleted(int itemDeleted)
+    {
+        timeLineItemDeleted = itemDeleted;
+    }
+
+    public static void setTimeLineItemAnswered(int itemAnswered)
+    {
+        timeLineItemAnswerd = itemAnswered;
+    }
+
+    //UI主动调用Adapter方法 去除已经删除的帖子
+    public void OnResumeDataAction()
+    {
+        deleteTimeLineItemDeleted();
+        updateTimeLineItemAnswerd();
+    }
+
+    public void updateTimeLineItemAnswerd()
+    {
+        //悬赏贴已经采纳更新状态
+        if (timeLineItemAnswerd != -1 && enhancedItems != null && enhancedItems.size() > 0)
+        {
+            for (int i = 0; i < enhancedItems.size(); i++)
+            {
+                TimelineItemDTO dto = enhancedItems.get(i);
+                if (dto.id == timeLineItemAnswerd)
+                {
+                    enhancedItems.get(i).isAnswered = true;
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+    }
+
+    public void deleteTimeLineItemDeleted()
+    {
+        //删除已删除的帖子
+        if (timeLineItemDeleted != -1 && enhancedItems != null && enhancedItems.size() > 0)
+        {
+            for (int i = 0; i < enhancedItems.size(); i++)
+            {
+                TimelineItemDTO dto = enhancedItems.get(i);
+                if (dto.id == timeLineItemDeleted)
+                {
+                    enhancedItems.remove(i);
+                    notifyDataSetChanged();
+                    return;
+                }
+            }
         }
     }
 }

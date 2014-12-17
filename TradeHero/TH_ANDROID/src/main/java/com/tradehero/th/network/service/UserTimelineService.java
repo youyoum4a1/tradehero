@@ -14,8 +14,7 @@ import retrofit.http.Query;
 public interface UserTimelineService
 {
     //<editor-fold desc="Get Global Timeline">
-    @GET("/timeline")
-    TimelineDTO getGlobalTimeline(
+    @GET("/timeline") TimelineDTO getGlobalTimeline(
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId);
@@ -25,36 +24,30 @@ public interface UserTimelineService
     //</editor-fold>
 
     //<editor-fold desc="Get User Timeline">
-    @GET("/users/{userId}/timeline")
-    TimelineDTO getTimeline(
+    @GET("/users/{userId}/timeline") TimelineDTO getTimeline(
             @Path("userId") int userId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId);
     //</editor-fold>
-
 
     //<editor-fold desc="Get User Timeline">
-    @GET("/users/{userId}/timeline?type=filtered&includeComment=true&includeTrade=true")
-    TimelineDTO getTimelineNew(
+    @GET("/users/{userId}/timeline?type=filtered&includeComment=true&includeTrade=true") TimelineDTO getTimelineNew(
             @Path("userId") int userId,
             @Query("maxCount") Integer maxCount,
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId);
     //</editor-fold>
 
-
     //<editor-fold desc="Share Timeline Item">
-    @POST("/users/{userId}/timeline/{timelineItemId}/share")
-    Response shareTimelineItem( // Appears to return a boolean
+    @POST("/users/{userId}/timeline/{timelineItemId}/share") Response shareTimelineItem( // Appears to return a boolean
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId,
             @Body TimelineItemShareRequestDTO timelineItemShareRequestDTO);
     //</editor-fold>
 
     //<editor-fold desc="Delete Timeline Item">
-    @DELETE("/users/{userId}/timeline/{timelineItemId}")
-    Response deleteTimelineItem(
+    @DELETE("/users/{userId}/timeline/{timelineItemId}") Response deleteTimelineItem(
             @Path("userId") int userId,
             @Path("timelineItemId") int timelineItemId);
     //</editor-fold>

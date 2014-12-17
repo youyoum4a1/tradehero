@@ -316,4 +316,13 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
             progressBar.stopLoading();
         }
     }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if(adapter!=null)
+        {
+            adapter.OnResumeDataAction();
+        }
+    }
 }

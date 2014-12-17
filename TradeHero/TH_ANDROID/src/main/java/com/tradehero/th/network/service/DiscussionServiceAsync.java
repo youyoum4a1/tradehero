@@ -10,11 +10,16 @@ import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import java.util.Map;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.http.*;
-
-import java.util.Map;
+import retrofit.http.Body;
+import retrofit.http.DELETE;
+import retrofit.http.GET;
+import retrofit.http.POST;
+import retrofit.http.Path;
+import retrofit.http.Query;
+import retrofit.http.QueryMap;
 
 interface DiscussionServiceAsync
 {
@@ -105,5 +110,9 @@ interface DiscussionServiceAsync
     void deleteDiscussionItem(@Path("discussionId")int discussionId, Callback<Response> callback);
 
     @POST("/users/{userid}/timeline/{timelineid}/pickAnswer")
-    void applyRewardTimeLineAnswer(@Path("userid")int userid,@Path("timelineid")int timelineid,@Body ApplyCommentDTO applyCommentDTO,Callback<Response> callback);
+    void applyRewardTimeLineAnswer(
+            @Path("userid")int userid,
+            @Path("timelineid")int timelineid,
+            @Body ApplyCommentDTO applyCommentDTO,
+            Callback<Response> callback);
 }
