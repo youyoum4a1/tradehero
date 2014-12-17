@@ -363,7 +363,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 if (edtSend != null)
                 {
                     edtSend.setHint(strHint);
-                    //"<@(.+?),(\\d+)@>"
                     strReply = "<@@" + displayName + "," + id + "@>";
                     isReplayFollower = true;
                 }
@@ -637,7 +636,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         public void failure(RetrofitError error)
         {
             onFinish();
-            //THToast.show(error.getMessage());
             THException thException = new THException(error);
             THToast.show(thException);
         }
@@ -1027,7 +1025,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void failure(RetrofitError retrofitError)
             {
-                //THToast.show(retrofitError.getMessage());
                 THException thException = new THException(retrofitError);
                 THToast.show(thException);
             }
@@ -1044,13 +1041,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 UserTimeLineAdapter.setTimeLineItemDeleted(timeLineItemId);
                 popCurrentFragment();
                 onFinish();
-                //通知APP删除timelineItemId的帖子
             }
 
             @Override
             public void failure(RetrofitError retrofitError)
             {
-                //THToast.show(retrofitError.getMessage());
                 THException thException = new THException(retrofitError);
                 THToast.show(thException);
                 onFinish();
@@ -1077,7 +1072,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void failure(RetrofitError retrofitError)
             {
-                //THToast.show(retrofitError.getMessage());
                 THException thException = new THException(retrofitError);
                 THToast.show(thException);
                 onFinish();
@@ -1111,7 +1105,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                //THToast.show(retrofitError.getMessage());
                 THException thException = new THException(retrofitError);
                 THToast.show(thException);
                 onFinish();
@@ -1239,11 +1232,14 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 return false;
             }
             int userId = currentUserId.toUserBaseKey().getUserId();
-            UserBaseDTO userBaseDTO = null;
+            UserBaseDTO userBaseDTOTimeLineOwner = null;
             if(dto instanceof TimelineItemDTO){
-                userBaseDTO= ((TimelineItemDTO)dto).user;
-
+                userBaseDTOTimeLineOwner= ((TimelineItemDTO)dataDto).user;
             }
+            if(userBaseDTOTimeLineOwner==null || userId != userBaseDTOTimeLineOwner.id){
+                return false;
+            }
+            UserBaseDTO userBaseDTO = null;
             if(dto instanceof DiscussionDTO){
                 userBaseDTO = ((DiscussionDTO)dto).user;
             }
