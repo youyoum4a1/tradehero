@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="contest_center_tab_active">แอคทีฟ</string>
+  <string name="contest_center_tab_joined">เข้าร่วม</string>
+  <string name="contest_no_joined">ขอโทษค่ะ!\n คุณยังไม่ได้เข้าร่วมในการแข่งขันใดๆเลย\nเลือกหนึ่งการแข่งขันจากแท็บที่เปิดใช้งาน แล้วเริ่มเล่นเลย!</string>
+    <string name="current_prize_pool">เงินรางวัลในปัจจุบัน :</string>
+    <string name="new_players_need">ผู้เล่นรายใหม่ต้องปลดล็อค %1$s :</string>
+</resources>

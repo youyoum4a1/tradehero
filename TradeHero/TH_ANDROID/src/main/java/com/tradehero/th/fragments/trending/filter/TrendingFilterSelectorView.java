@@ -19,6 +19,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
@@ -127,8 +128,11 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     private void reportAnalytics()
     {
-        analytics.fireProfileEvent(new ProfileEvent(
-                AnalyticsConstants.InterestedExchange,
-                Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
+        if (Constants.RELEASE)
+        {
+            analytics.localytics().setProfileAttribute(new ProfileEvent(
+                    AnalyticsConstants.InterestedExchange,
+                    Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
+        }
     }
 }

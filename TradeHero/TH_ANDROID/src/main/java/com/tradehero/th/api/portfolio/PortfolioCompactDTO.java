@@ -21,6 +21,8 @@ public class PortfolioCompactDTO implements DTO
     public Integer providerId;
     public String title;
 
+    @Nullable public PortfolioType portfolioType;
+
     public double cashBalance;
     public double totalValue;
     public double totalExtraCashPurchased;
@@ -36,6 +38,13 @@ public class PortfolioCompactDTO implements DTO
     public String currencyISO;
     @Nullable public Double refCcyToUsdRate;
     @Nullable public Double txnCostUsd;
+
+    public Double leverage;
+    public Double nav; // Net asset value
+    public Double marginAvailableRefCcy;
+    public Double marginUsedRefCcy;
+    public Double unrealizedPLRefCcy;
+    @Nullable public Double marginCloseOutPercent;
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -71,6 +80,11 @@ public class PortfolioCompactDTO implements DTO
     @JsonIgnore public boolean isDefault()
     {
         return providerId == null && !isWatchlist;
+    }
+
+    @JsonIgnore public boolean isFx()
+    {
+        return portfolioType != null && portfolioType.equals(PortfolioType.FX);
     }
 
     @JsonIgnore public boolean isAllowedAddCash()
@@ -124,6 +138,11 @@ public class PortfolioCompactDTO implements DTO
     @JsonIgnore public double getProperTxnCostUsd()
     {
         return txnCostUsd != null ? txnCostUsd : SecurityUtils.DEFAULT_TRANSACTION_COST_USD;
+    }
+
+    public boolean hasMarginCall()
+    {
+        return marginCloseOutPercent != null && marginCloseOutPercent < 0.5; // TODO review
     }
 
     @Override @NonNull public String toString()

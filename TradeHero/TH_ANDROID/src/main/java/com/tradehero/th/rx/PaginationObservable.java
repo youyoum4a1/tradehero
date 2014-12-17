@@ -53,21 +53,30 @@ public class PaginationObservable
             boolean isSmallerNewList = checkInsideSegment(newFirst, last, first);
             if (isSmallerNewList)
             {
+                // newList       collector
+                // [1-----5]     [8---------20]
                 collector.addAll(0, newList);
             }
             else
             {
+                // collector     newList
+                // [8---------20] [23----30]
                 collector.addAll(newList);
             }
             return collector;
         }
         else if (!isFirstNewItemOutsideBound && !isLastNewItemOutsideBound)
         {
+            // not applicable, however return collector instead of throwing an error
             return collector;
         }
 
         if (isFirstNewItemOutsideBound)
         {
+            //     collector
+            //     [8---------20]
+            // newList
+            // [1-----11]
             int outBound = 0;
             for (T item : newList)
             {
@@ -86,6 +95,10 @@ public class PaginationObservable
 
         if (isLastNewItemOutsideBound)
         {
+            // collector
+            // [8---------20]
+            //       newList
+            //       [18-----31]
             boolean isOut = false;
             for (T item : newList)
             {

@@ -84,11 +84,23 @@ public interface SecurityServiceRx
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
+
+    @POST("/securities/{exchange}/{securitySymbol}/fxbuy")
+    Observable<SecurityPositionTransactionDTO> buyFx(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
     @POST("/securities/{exchange}/{securitySymbol}/newsell")
     Observable<SecurityPositionTransactionDTO> sell(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
+
+    @POST("/securities/{exchange}/{securitySymbol}/fxsell")
+    Observable<SecurityPositionTransactionDTO> sellFx(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);

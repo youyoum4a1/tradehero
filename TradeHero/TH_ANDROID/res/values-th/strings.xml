@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="follow">ติดตาม</string>
+  <string name="follow_all">ติดตามทั้งหมด</string>
+  <string name="message">ข้อความ</string>
+  <string name="upgrade_to_premium">อัพเกรดเป็นพรีเมียม</string>
+  <string name="following_premium">กำลังติดตาม\n(พรีเมียม)</string>
+  <string name="select_endpoint">เลือกจุดปลาย Api</string>
+  <string name="current_endpoint">&quot;จุดปลายในปัจจุบัน: &quot;</string>
+  <string name="action_menu_about">เกี่ยวกับ</string>
+  <string name="action_search">ค้นหา</string>
+  <string name="action_invite">เชิญชวนเพื่อนๆ</string>
+  <string name="update">อัพเดท</string>
+  <string name="empty_video_list">ขณะนี้ ยังไม่มีวิดิโอเพื่อการเรียนรู้</string>
+  <string name="loading_required_information">กำลังโหลดข้อมูลที่จำเป็น</string>
+  <string name="server_response">&quot;การตอบสนองจากเซิร์ฟเวอร์: &quot;</string>
+  <string name="link">ลิงค์ %1$s</string>
+  <string name="link_description">คุณต้องลิงค์บัญชี %1$s ก่อนที่จะแชร์…</string>
+  <string name="link_now">ลิงค์เลย!</string>
+  <string name="link_select_one_social">เลือกโซเชียลเนทเวิร์ค</string>
+  <string name="link_select_one_social_description">โปรดเลือกอย่างน้อยหนึ่งโซเชียลเนทเวิร์คเพื่อแชร์</string>
+
+  <string name="not_connected">คุณกำลังออฟไลน์</string>
+  <string name="not_connected_desc">ไม่ได้เชื่อมต่ออินเตอร์เนท โปรดตรวจสอบการเชื่อมต่อของคุณ</string>
+
+  <string name="later">ภายหลัง</string>
+  <string name="please_update">เวอร์ชั่นนี้เป็นเวอร์ชั่นเก่า โปรดอัพเดทเพื่อใช้ TradeHero ต่อไป</string>
+  <string name="upgrade_needed">จำเป็นต้องอัพเกรด</string>
+  <string name="update_now">อัพเกรดเลย</string>
+  <string name="update_guide">โปรดติดตั้ง TradeHero ใหม่</string>
+  <string name="suggest_to_upgrade">เวอร์ชั่นใหม่พร้อมใช้งานแล้ว เราแนะนำให้คุณทำการอัพเกรด คุณต้องการอัพเกรดเลยหรือไม่?</string>
+
+  <string name="please_update_token_title">การรับรองความถูกต้องของโซเชียลเนทเวิร์ค หมดอายุแล้ว</string>
+  <string name="please_update_token_description">โปรดรับรองความถูกต้องให้กับโซเชียลเนทเวิร์คที่คุณต้องการ ซ้ำอีกครั้ง</string>
+
+  <string name="press_back_again_to_exit">กดย้อนกลับอีกครั้ง เพื่อออกจากระบบ</string>
+  <string name="discussion">การสนทนา</string>
+  <string name="more_character">…</string>
+  <string name="buy_sell">ซื้อ/ขาย</string>
+  <string name="translate">แปล</string>
+  <string name="share_to">แชร์ให้กับ…</string>
+  <string name="comment">ความเห็น</string>
+  <string name="timeline_discussion_post">@string/post</string>
+  <string name="timeline_discussion_comment_box_hint">พิมพ์ความเห็นของคุณ…</string>
+  <string name="discussion_loaded">โหลดการสนทนาทั้งหมดเรียบร้อยแล้ว</string>
+  <string name="discussion_loading">กำลังโหลด</string>
+  <string name="discussion_empty">เป็นคนแรกในการสนทนานี้</string>
+  <!--<string name="network_error">Sorry,network error.</string>-->
+
+  <string name="trade_list_action">การดำเนินการ</string>
+
+  <string name="news_view_on_web">ดูบนหน้าเว็บ</string>
+  <string name="add_a_comment">เพิ่มความเห็น…</string>
+  <string name="start_new_discussion">เริ่มการสนทนาใหม่</string>
+  <string name="error_empty_comment">ไม่ควรปล่อยความเห็นให้ว่าง</string>
+  <string name="error_not_enough_information">ข้อมูลไม่เพียงพอ โปรดลองอีกครั้ง</string>
+  <string name="via">&quot; ผ่านทาง &quot;</string>
+
+  <string name="broadcast_success">การส่งข้อความ สำเร็จแล้ว</string>
+  <string name="broadcast_error">การส่งข้อความ ล้มเหลว</string>
+  <string name="broadcast_message_title">กระจายข้อความ</string>
+  <string name="broadcast_message_action_send">ส่ง</string>
+  <string name="broadcast_message_change_type_hint">เลือกผู้ติดตามเพื่อส่งข้อความ</string>
+  <string name="broadcast_message_no_follower_hint">ขอโทษค่ะ คุณไม่สามารถส่งข้อความใดๆได้ เพราะคุณไม่มีผู้ติดตามประเภทดังกล่าว</string>
+  <string name="broadcast_message_content_length_hint">ไม่สามารถปล่อยข้อความให้ว่าง</string>
+  <string name="broadcast_message_sending_hint">กำลังส่งข้อความ…</string>
+  <string name="broadcast_message_waiting">กำลังรอ</string>
+  <string name="social_followers">ผู้ติดตาม</string>
+  <string name="social_heroes">ฮีโร่</string>
+
+  <string name="common_loading_error">ขอโทษค่ะ มีความผิดพลาดเกิดขึ้น</string>
+  <string name="no_message">คุณยังไม่มีข้อความใดๆเลย</string>
+  <string name="message_fetch_error">ขอโทษค่ะ มีความผิดพลาดเกิดขึ้น  \nกดเพื่อลองใหม่อีกครั้ง</string>
+  <string name="notification_list_empty">คุณยังไม่มีการแจ้งเตือนใดๆเลย \nโปรดดึงเพื่อรีเฟรชรายการการแจ้งเตือน!</string>
+  <string name="security_discussion_add">+ เริ่มการสนทนาใหม่</string>
+  <string name="post">โพส</string>
+  <string name="discussion_new_post_hint">คุณรู้สึกอย่างไรเกี่ยวกับ %s?</string>
+  <string name="error_discussion_empty_post">ไม่สามารถปล่อยการสนทนาให้ว่าง</string>
+  <string name="at">&quot;@&quot;</string>
+  <string name="hashtag">$</string>
+  <string name="discussion_edit_post_subtitle">on %s</string>
+  <string name="team_credit">ทำด้วยใจในสิงคโปร์และเซี่ยงไฮ้</string>
+  <string name="about_screen_secure_by">คุ้มครองความปลอดภัยโดย:</string>
+  <string name="about_screen_text_processing_by">ประมวลผลข้อความโดย:</string>
+  <string name="about_screen_sentiment_analysis_by">วิเคราะห์สภาวะตลาดโดย:</string>
+
+  <string name="buy_sell_loading_ask_price">กำลังโหลดราคาเสนอขาย…</string>
+  <string name="buy_sell_loading_bid_price">กำลังโหลดราคาเสนอซื้อ…</string>
+  <string name="sell">ขาย</string>
+  <string name="buy">ซื้อ</string>
+  <string name="chart_loading_image">กำลังโหลดกราฟ…</string>
+
+  <string name="sure_to_delete_message">ลบข้อความนี้?</string>
+  <string name="currency">US$</string>
+  <string name="invite_social_friend">เชิญชวน %s เพื่อน</string>
+  <string name="search_social_friend_hint">ค้นหาเพื่อน</string>
+
+  <string name="social_friend_empty">ขอโทษค่ะ ไม่มีเพื่อน</string>
+  <string name="search_social_friend_empty">ขอโทษค่ะ ไม่พบคนที่คุณค้นหา</string>
+  <string name="invite_from_weibo">เชิญชวนจาก Weibo</string>
+  <string name="invite_from_wechat">เชิญชวนจาก Wechat</string>
+  <string name="invite_from_linkedIn">เชิญชวนจาก LinkedIn</string>
+  <string name="invite_from_twitter">เชิญชวนจาก Twitter</string>
+  <string name="invite_from_facebook">เชิญชวนจาก Facebook </string>
+
+  <string name="social_no_friend_to_invite">ไม่มีผู้ใช้ให้เชิญชวน</string>
+  <string name="social_no_friend_to_follow">ไม่มีผู้ใช้ให้ติดตาม</string>
+
+  <plurals name="inbox_notification_title">
+    <item quantity="one">1 ข้อความใหม่</item>
+    <item quantity="other">%d
+      <b>ใหม่</b>
+      ข้อความ
+    </item>
+  </plurals>
+
+  <string name="inbox_summary">+%d เพิ่มเติม</string>
+  <string name="notification_unread_messages">คุณมี %d ข้อความที่ไม่ได้อ่าน</string>
+  <string name="notification_new_activities">คุณมี %d กิจกรรมใหม่</string>
+  <string name="friend_link_social_network">โปรดลิงค์โซเชียลเนทเวิร์ค</string>
+  <string name="exit_app">ออกจาก app</string>
+
+  <string name="friends_can_be_invite">%s เพื่อนสามารถเชิญชวน</string>
+  <string name="friends_can_be_follow">%s เพื่อนสามารถติดตาม</string>
+  <string name="weibo_message_length_error">ไม่มากกว่า 140 ตัวอักษร</string>
+  <string name="weibo_friends_invite">เข้าร่วมกับ TradeHero, เรียนรู้การเทรด, รับเคล็ดลับจากผู้เชี่ยวชาญ, แข่งขันกับเทรดเดอร์ระดับโลก และรับเงินจริงจากผู้ติดตาม, ใช้รหัสเชิญชวนของฉัน %1$s เพื่อรับเงินพิเศษ 10,000 TH dollars! </string>
+  <string name="referral_dollars_claimed">เบิกดอลลาร์อ้างอิงแล้ว</string>
+  <string name="next">ถัดไป</string>
+  <string name="done">สำเร็จ</string>
+  <string name="trade_comment">ความเห็นในการเทรด</string>
+
+  <string name="mark_all_as_read">ทำเครื่องหมายกับทุกข้อความ ว่าอ่านแล้ว</string>
+
+  <!-- Discovery -->
+  <string name="discovery_whats_hot">หุ้นร้อน</string>
+  <string name="discovery_news">ข่าว</string>
+  <string name="discovery_discussions">การสนทนา</string>
+  <string name="discovery">ค้นพบ</string>
+  <string name="discovery_learning">ศูนย์การเรียนรู้</string>
+  <string name="discovery_games">@string/games</string>
+  <string name="discovery_articles">@string/articles</string>
+  <string name="onboard_exchange_title">เพื่อช่วยคุณในตอนเริ่มต้น</string>
+  <string name="onboard_exchange_summary1">คุณสนใจในตลาดหุ้นใด ?</string>
+  <string name="onboard_exchange_summary2">คุณสนใจในกลุ่มธุรกิจใด ?</string>
+  <string name="ask_for_review_title">รัก TradeHero?</string>
+  <string name="ask_for_review_summary">โปรดจัดอันดับใน App Store และแจ้งให้เราทราบว่าคุณคิดอย่างไร
+  </string>
+  <string name="ask_for_review_rate">จัดอันดับ TradeHero</string>
+  <string name="maybe_later">ภายหลัง</string>
+  <string name="regional_news">ข่าวภูมิภาค</string>
+  <string name="global_news">ข่าวระหว่างประเทศ</string>
+  <string name="search_regional_hint">ค้นหาประเทศ</string>
+  <string name="ask_for_invite_title">สนุกมากขึ้นกับเพื่อนๆ !</string>
+  <string name="ask_for_invite_summary1">ชวนบัดดี้ และ รับผลตอบแทน</string>
+  <string name="ask_for_invite_summary2">10,000 TH$</string>
+  <string name="ask_for_invite">ชวนเพื่อนเลย !</string>
+
+  <!-- Residemenu -->
+  <string name="residemenu_footer_title">หุ้นส่วนด้านเนื้อหา:</string>
+
+  <!-- Discovery games -->
+  <string name="games">เกมส์</string>
+  <string name="coming_soon">เร็วๆนี้!</string>
+  <string name="articles">บทความ</string>
+  <string name="best_roi">ROI:</string>
+</resources>

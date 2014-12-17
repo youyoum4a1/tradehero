@@ -261,6 +261,11 @@ import rx.Observable;
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
+        if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
+        {
+            return this.securityServiceRx.buyFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
+                    .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+        }
         return this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
             .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
     }
@@ -271,6 +276,11 @@ import rx.Observable;
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
+        if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
+        {
+            return this.securityServiceRx.sellFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
+                    .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+        }
         return this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
                 .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
     }
