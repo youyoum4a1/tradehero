@@ -26,6 +26,7 @@ class DiscussionCutDTO extends AbstractDiscussionCutDTO
     public String geo_lat;
     public String geo_long;
     public boolean isPublic;
+    public boolean isAnswer;
 
     DiscussionCutDTO(@NotNull DiscussionDTO discussionDTO)
     {
@@ -44,6 +45,7 @@ class DiscussionCutDTO extends AbstractDiscussionCutDTO
         this.geo_lat = discussionDTO.geo_lat;
         this.geo_long = discussionDTO.geo_long;
         this.isPublic = discussionDTO.isPublic;
+        this.isAnswer = discussionDTO.isAnswer;
     }
 
     @Nullable DiscussionDTO inflate()
@@ -76,6 +78,7 @@ class DiscussionCutDTO extends AbstractDiscussionCutDTO
         inflated.geo_lat = this.geo_lat;
         inflated.geo_long = this.geo_long;
         inflated.isPublic = this.isPublic;
+        inflated.isAnswer = this.isAnswer;
         return true;
     }
 }
