@@ -11,6 +11,8 @@ import java.util.List;
 public class PositionDTOCompact implements DTO
 {
     public int id;
+    @NonNull public String exchange;
+    @NonNull public String symbol;
     @Nullable public Integer shares;
     public int portfolioId;
 
@@ -19,6 +21,7 @@ public class PositionDTOCompact implements DTO
     // This is the portfolio currency
     @Nullable public String currencyDisplay;
     @Nullable public String currencyISO;
+    @Nullable public Double fxRate;
     @Nullable public PositionStatus positionStatus;
 
     //<editor-fold desc="Constructors">

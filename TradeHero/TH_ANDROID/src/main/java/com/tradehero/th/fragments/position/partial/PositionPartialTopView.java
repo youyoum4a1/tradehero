@@ -17,11 +17,11 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.api.security.FxCurrency;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -42,15 +42,17 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected PositionDTOUtils positionDTOUtils;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
-    @InjectView(R.id.flags_container) protected View flagsContainer;
-    @InjectView(R.id.flag_left) protected ImageView flagLeft;
-    @InjectView(R.id.flag_right) protected ImageView flagRight;
+    @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.stock_symbol) protected TextView stockSymbol;
     @InjectView(R.id.company_name) protected TextView companyName;
+    @InjectView(R.id.share_count) protected TextView shareCount;
+    @InjectView(R.id.last_price_container) protected View lastPriceContainer;
     @InjectView(R.id.stock_movement_indicator) protected TextView stockMovementIndicator;
     @InjectView(R.id.stock_last_price) protected TextView stockLastPrice;
     @InjectView(R.id.ic_market_close) protected ImageView marketClose;
     @InjectView(R.id.position_percentage) protected TextView positionPercent;
+    @InjectView(R.id.position_unrealised_pl) protected TextView positionUnrealisedPL;
+    @InjectView(R.id.position_last_amount_container) View positionLastAmountContainer;
     @InjectView(R.id.position_last_amount_header) protected TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
 
@@ -118,8 +120,11 @@ public class PositionPartialTopView extends LinearLayout
         if (andDisplay)
         {
             displayPositionPercent();
+            displayUnrealisedPL();
             displayPositionLastAmountHeader();
             displayPositionLastAmount();
+            displayCompanyName();
+            displayShareCount();
         }
         if (positionDTO == null)
         {
@@ -158,7 +163,12 @@ public class PositionPartialTopView extends LinearLayout
         displayStockSymbol();
         displayStockLogo();
         displayCompanyName();
+        displayShareCount();
+        displayLastPriceContainer();
+        displayPositionPercent();
+        displayUnrealisedPL();
         displayStockMovementIndicator();
+        displayPositionLastAmountContainer();
         displayStockLastPrice();
         displayMarketClose();
     }
@@ -169,11 +179,15 @@ public class PositionPartialTopView extends LinearLayout
         displayStockLogo();
         displayStockSymbol();
         displayCompanyName();
+        displayShareCount();
+        displayLastPriceContainer();
         displayStockMovementIndicator();
         displayStockLastPrice();
         displayMarketClose();
 
         displayPositionPercent();
+        displayUnrealisedPL();
+        displayPositionLastAmountContainer();
         displayPositionLastAmountHeader();
         displayPositionLastAmount();
     }
@@ -184,8 +198,8 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO != null && securityCompactDTO.imageBlobUrl != null)
             {
-                stockLogo.setVisibility(View.VISIBLE);
-                flagsContainer.setVisibility(View.GONE);
+                stockLogo.setVisibility(VISIBLE);
+                flagsContainer.setVisibility(GONE);
                 picasso.load(securityCompactDTO.imageBlobUrl)
                         .placeholder(R.drawable.default_image)
                         .transform(new WhiteToTransparentTransformation())
@@ -203,11 +217,9 @@ public class PositionPartialTopView extends LinearLayout
             }
             else if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                stockLogo.setVisibility(View.GONE);
-                flagsContainer.setVisibility(View.VISIBLE);
-                FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
-                flagLeft.setImageResource(FxCurrency.create(pair.left).flag);
-                flagRight.setImageResource(FxCurrency.create(pair.right).flag);
+                stockLogo.setVisibility(GONE);
+                flagsContainer.setVisibility(VISIBLE);
+                flagsContainer.display(((FxSecurityCompactDTO) securityCompactDTO).getFxPair());
             }
             else
             {
@@ -218,8 +230,8 @@ public class PositionPartialTopView extends LinearLayout
 
     public void displayStockLogoExchange()
     {
-        stockLogo.setVisibility(View.VISIBLE);
-        flagsContainer.setVisibility(View.GONE);
+        stockLogo.setVisibility(VISIBLE);
+        flagsContainer.setVisibility(GONE);
         if (securityCompactDTO != null)
         {
             picasso.load(securityCompactDTO.getExchangeLogoId())
@@ -256,13 +268,60 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (companyName != null)
         {
-            if (securityCompactDTO != null)
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
+                companyName.setVisibility(GONE);
+            }
+            else if (securityCompactDTO != null)
+            {
+                companyName.setVisibility(VISIBLE);
                 companyName.setText(securityCompactDTO.name);
             }
             else
             {
+                companyName.setVisibility(VISIBLE);
                 companyName.setText("");
+            }
+        }
+    }
+
+    public void displayShareCount()
+    {
+        if (shareCount != null)
+        {
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                shareCount.setVisibility(VISIBLE);
+                String count;
+                if (positionDTO == null || positionDTO.shares == null)
+                {
+                    count = getResources().getString(R.string.na);
+                }
+                else
+                {
+                    count = THSignedNumber.builder(positionDTO.shares)
+                            .build().toString();
+                }
+                shareCount.setText(getResources().getString(R.string.position_unit_count, count));
+            }
+            else
+            {
+                shareCount.setVisibility(GONE);
+            }
+        }
+    }
+
+    public void displayLastPriceContainer()
+    {
+        if (lastPriceContainer != null)
+        {
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                lastPriceContainer.setVisibility(GONE);
+            }
+            else
+            {
+                lastPriceContainer.setVisibility(VISIBLE);
             }
         }
     }
@@ -324,7 +383,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO != null)
             {
-                marketClose.setVisibility(securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen ? View.INVISIBLE : View.VISIBLE);
+                marketClose.setVisibility(securityCompactDTO.marketOpen == null || securityCompactDTO.marketOpen ? INVISIBLE : VISIBLE);
             }
         }
     }
@@ -333,13 +392,66 @@ public class PositionPartialTopView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
+                positionPercent.setVisibility(GONE);
+            }
+            else if (positionDTO instanceof PositionInPeriodDTO && ((PositionInPeriodDTO) positionDTO).isProperInPeriod())
+            {
+                positionPercent.setVisibility(VISIBLE);
                 positionDTOUtils.setROIInPeriod(positionPercent, (PositionInPeriodDTO) positionDTO);
             }
             else
             {
+                positionPercent.setVisibility(VISIBLE);
+
                 positionDTOUtils.setROISinceInception(positionPercent, positionDTO);
+            }
+        }
+    }
+
+    public void displayUnrealisedPL()
+    {
+        if (positionUnrealisedPL != null)
+        {
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                positionUnrealisedPL.setVisibility(VISIBLE);
+                String unrealised;
+                if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null)
+                {
+                    THSignedMoney unrealisedMoney = THSignedMoney.builder(positionDTO.unrealizedPLRefCcy)
+                            .currency(positionDTO.getNiceCurrency())
+                            .withSign()
+                            .signTypeArrow()
+                            .build();
+                    positionUnrealisedPL.setTextColor(unrealisedMoney.getColor());
+                    unrealised = unrealisedMoney.toString();
+                }
+                else
+                {
+                    unrealised = getResources().getString(R.string.na);
+                }
+                positionUnrealisedPL.setText(unrealised);
+            }
+            else
+            {
+                positionUnrealisedPL.setVisibility(GONE);
+            }
+        }
+    }
+
+    public void displayPositionLastAmountContainer()
+    {
+        if (positionLastAmountContainer != null)
+        {
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                positionLastAmountContainer.setVisibility(GONE);
+            }
+            else
+            {
+                positionLastAmountContainer.setVisibility(VISIBLE);
             }
         }
     }
