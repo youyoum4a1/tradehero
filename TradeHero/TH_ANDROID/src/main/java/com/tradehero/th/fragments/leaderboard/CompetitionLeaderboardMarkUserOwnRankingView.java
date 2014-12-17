@@ -24,7 +24,7 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
-public class CompetitionLeaderboardMarkUserStockOwnRankingView extends CompetitionLeaderboardMarkUserStockItemView
+public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLeaderboardMarkUserItemView
 {
     @InjectView(R.id.competition_own_ranking_info_container) ViewGroup infoButtonContainer;
     @InjectView(R.id.competition_own_ranking_info_text) TextView infoText;
@@ -33,19 +33,19 @@ public class CompetitionLeaderboardMarkUserStockOwnRankingView extends Competiti
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
-    public CompetitionLeaderboardMarkUserStockOwnRankingView(Context context)
+    public CompetitionLeaderboardMarkUserOwnRankingView(Context context)
     {
         super(context);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public CompetitionLeaderboardMarkUserStockOwnRankingView(Context context, AttributeSet attrs)
+    public CompetitionLeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public CompetitionLeaderboardMarkUserStockOwnRankingView(Context context, AttributeSet attrs, int defStyle)
+    public CompetitionLeaderboardMarkUserOwnRankingView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }

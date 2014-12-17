@@ -389,9 +389,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         }
-        if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
+        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            BaseLeaderboardMarkUserItemView ownRankingView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
+            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) mRankHeaderView;
             ownRankingView.linkWith(getApplicablePortfolioId());
             ownRankingView.linkWith(currentUserProfileDTO);
         }
@@ -424,27 +424,27 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void updateLoadingCurrentRankHeaderView()
     {
-        if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
+        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            BaseLeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
+            LeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
             leaderboardMarkUserStockItemView.displayUserIsLoading();
         }
     }
 
     protected void updateCurrentRankHeaderViewWithLeaderboardUser()
     {
-        if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
+        if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            BaseLeaderboardMarkUserItemView leaderboardMarkUserItemView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
+            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
             if (currentLeaderboardUserDTO != null)
             {
                 leaderboardMarkUserItemView.displayUserIsNotRanked();
                 // user is not ranked, disable expandable view
                 leaderboardMarkUserItemView.setOnClickListener(null);
             }
-            if (mRankHeaderView instanceof BaseLeaderboardMarkUserItemView && currentLeaderboardUserDTO instanceof LeaderboardUserDTO)
+            if (mRankHeaderView instanceof LeaderboardMarkUserItemView && currentLeaderboardUserDTO instanceof LeaderboardUserDTO)
             {
-                BaseLeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (BaseLeaderboardMarkUserItemView) mRankHeaderView;
+                LeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
 
                 leaderboardMarkUserStockItemView.display(currentLeaderboardUserDTO);
                 setupOwnRankingView(leaderboardMarkUserStockItemView);
@@ -455,9 +455,9 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void setupOwnRankingView(View userRankingHeaderView)
     {
-        if (userRankingHeaderView instanceof BaseLeaderboardMarkUserItemView)
+        if (userRankingHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            BaseLeaderboardMarkUserItemView ownRankingView = (BaseLeaderboardMarkUserItemView) userRankingHeaderView;
+            LeaderboardMarkUserItemView ownRankingView = (LeaderboardMarkUserItemView) userRankingHeaderView;
             if (ownRankingView.expandingLayout != null)
             {
                 ownRankingView.expandingLayout.setVisibility(View.GONE);
@@ -572,14 +572,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
             leaderboardMarkUserListAdapter.setHideStatistics(leaderboardDTO.isFX());
-            if (mRankHeaderView != null && mRankHeaderView instanceof BaseLeaderboardMarkUserItemView)
+            if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
             {
-                ((BaseLeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isFX());
+                ((LeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(leaderboardDTO.isFX());
             }
         }
     }
 
-    protected class LeaderboardMarkUserListFollowRequestedListener implements BaseLeaderboardMarkUserItemView.OnFollowRequestedListener
+    protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardMarkUserItemView.OnFollowRequestedListener
     {
         @Override public void onFollowRequested(@NonNull UserBaseDTO userBaseDTO)
         {

@@ -17,14 +17,14 @@ import com.tradehero.th.api.users.UserProfileDTO;
 public class LeaderboardMarkUserListAdapter
         extends
         LoaderDTOAdapter<
-                LeaderboardUserDTO, BaseLeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
+                LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
         implements SwipeRefreshLayout.OnRefreshListener
 {
     @LayoutRes private static final int stockLeaderboardLayoutResId = R.layout.lbmu_item_roi_mode;
 
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
-    protected BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
     private boolean hideStatistics;
 
     //<editor-fold desc="Constructors">
@@ -44,7 +44,7 @@ public class LeaderboardMarkUserListAdapter
         this.applicablePortfolioId = ownedPortfolioId;
     }
 
-    public void setFollowRequestedListener(BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }
@@ -68,7 +68,7 @@ public class LeaderboardMarkUserListAdapter
         return super.conditionalInflate(position, convertView, viewGroup);
     }
 
-    @Override protected void fineTune(int position, LeaderboardUserDTO dto, BaseLeaderboardMarkUserItemView dtoView)
+    @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
     {
         dtoView.linkWith(currentUserProfileDTO, true);
         dtoView.linkWith(applicablePortfolioId);
@@ -97,14 +97,14 @@ public class LeaderboardMarkUserListAdapter
         getLoader().loadPrevious();
     }
 
-    protected BaseLeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
+    protected LeaderboardMarkUserItemView.OnFollowRequestedListener createChildFollowRequestedListener()
     {
         return this::notifyFollowRequested;
     }
 
     protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
-        BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
             followRequestedListenerCopy.onFollowRequested(userBaseDTO);

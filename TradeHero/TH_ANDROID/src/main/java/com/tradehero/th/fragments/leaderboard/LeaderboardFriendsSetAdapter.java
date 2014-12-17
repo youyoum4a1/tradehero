@@ -31,7 +31,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
     @LayoutRes private final int socialLayoutResId;
 
     protected UserProfileDTO currentUserProfileDTO;
-    @Nullable protected BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
+    @Nullable protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     @NonNull private Map<Object, Boolean> expandedStatues;
 
@@ -149,14 +149,14 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
         FriendLeaderboardUserDTO item = getItem(position);
 
-        if (convertView instanceof BaseLeaderboardMarkUserItemView)
+        if (convertView instanceof LeaderboardMarkUserItemView)
         {
             LeaderboardUserDTO stocksLeaderboardUserDTO =
                     ((FriendLeaderboardMarkedUserDTO) item).stocksLeaderboardUserDTO;
             ((FriendLeaderboardMarkedUserDTO) item).stocksLeaderboardUserDTO.setPosition(position); // HACK FIXME
-            ((BaseLeaderboardMarkUserItemView) convertView).display(stocksLeaderboardUserDTO);
-            ((BaseLeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
-            ((BaseLeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
+            ((LeaderboardMarkUserItemView) convertView).display(stocksLeaderboardUserDTO);
+            ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
+            ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
         }
         else if (convertView instanceof LeaderboardFriendsItemView)
         {
@@ -184,14 +184,14 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
     protected void notifyFollowRequested(@NonNull UserBaseDTO userBaseDTO)
     {
-        BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
+        LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
         if (followRequestedListenerCopy != null)
         {
             followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
     }
 
-    public void setFollowRequestedListener(@Nullable BaseLeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
+    public void setFollowRequestedListener(@Nullable LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener)
     {
         this.followRequestedListener = followRequestedListener;
     }

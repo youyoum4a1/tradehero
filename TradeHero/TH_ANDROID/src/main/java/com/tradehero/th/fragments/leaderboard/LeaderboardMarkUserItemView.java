@@ -57,7 +57,7 @@ import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
 
-public class BaseLeaderboardMarkUserItemView
+public class LeaderboardMarkUserItemView
         extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>, ExpandingLayout.OnExpandListener
 {
@@ -90,17 +90,17 @@ public class BaseLeaderboardMarkUserItemView
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
     private boolean shouldHideStatistics = true;
 
-    public BaseLeaderboardMarkUserItemView(Context context)
+    public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
     }
 
-    public BaseLeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
+    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
 
-    public BaseLeaderboardMarkUserItemView(Context context, AttributeSet attrs)
+    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }

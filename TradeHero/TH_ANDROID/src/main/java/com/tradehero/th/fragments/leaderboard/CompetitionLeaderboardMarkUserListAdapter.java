@@ -209,11 +209,11 @@ public class CompetitionLeaderboardMarkUserListAdapter extends BaseAdapter
         else
         {
             View view = leaderboardMarkUserListAdapter.getView(getWrappedPosition(position), convertView, parent);
-            if (view instanceof CompetitionLeaderboardMarkUserStockItemView)
+            if (view instanceof CompetitionLeaderboardMarkUserItemView)
             {
-                ((CompetitionLeaderboardMarkUserStockItemView) view).setProviderDTO(providerDTO);
+                ((CompetitionLeaderboardMarkUserItemView) view).setProviderDTO(providerDTO);
                 //There should allow prizeDTO is null,because it has logic,prizeDTO is null means should not show PrizeInfo in viewItem.
-                ((CompetitionLeaderboardMarkUserStockItemView) view).setPrizeDTOSize(competitionLeaderboardDTO == null  || competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size());
+                ((CompetitionLeaderboardMarkUserItemView) view).setPrizeDTOSize(competitionLeaderboardDTO == null  || competitionLeaderboardDTO.prizes == null? 0 : competitionLeaderboardDTO.prizes.size());
             }
             return view;
         }

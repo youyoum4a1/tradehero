@@ -225,9 +225,9 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     private void updateCurrentRankHeaderViewWithProvider()
     {
-        if (getRankHeaderView() != null && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserStockOwnRankingView)
+        if (getRankHeaderView() != null && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
         {
-            CompetitionLeaderboardMarkUserStockOwnRankingView rankingView = (CompetitionLeaderboardMarkUserStockOwnRankingView) getRankHeaderView();
+            CompetitionLeaderboardMarkUserOwnRankingView rankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
             rankingView.setProviderDTO(providerDTO);
         }
     }
@@ -295,10 +295,10 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override protected void setupOwnRankingView(@NonNull View userRankingHeaderView)
     {
-        if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserStockItemView)
+        if (userRankingHeaderView instanceof CompetitionLeaderboardMarkUserItemView)
         {
-            CompetitionLeaderboardMarkUserStockItemView competitionLeaderboardCurrentUserRankHeaderView =
-                    (CompetitionLeaderboardMarkUserStockItemView) userRankingHeaderView;
+            CompetitionLeaderboardMarkUserItemView competitionLeaderboardCurrentUserRankHeaderView =
+                    (CompetitionLeaderboardMarkUserItemView) userRankingHeaderView;
             competitionLeaderboardCurrentUserRankHeaderView.setProviderDTO(providerDTO);
         }
         super.setupOwnRankingView(userRankingHeaderView);
@@ -308,9 +308,9 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         if (competitionLeaderboardDTO != null
                 && getRankHeaderView() != null
-                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserStockOwnRankingView)
+                && getRankHeaderView() instanceof CompetitionLeaderboardMarkUserOwnRankingView)
         {
-            CompetitionLeaderboardMarkUserStockOwnRankingView ownRankingView = (CompetitionLeaderboardMarkUserStockOwnRankingView) getRankHeaderView();
+            CompetitionLeaderboardMarkUserOwnRankingView ownRankingView = (CompetitionLeaderboardMarkUserOwnRankingView) getRankHeaderView();
             ownRankingView.setPrizeDTOSize(competitionLeaderboardDTO.prizes != null? competitionLeaderboardDTO.prizes.size() : 0);
         }
     }

@@ -21,7 +21,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import java.text.SimpleDateFormat;
 
-public class CompetitionLeaderboardMarkUserStockItemView extends BaseLeaderboardMarkUserItemView
+public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserItemView
 {
     @InjectView(R.id.leaderboard_prize_amount) View prizeIndicator;
     @InjectView(R.id.lbmu_pl) TextView lbmuPl;
@@ -39,17 +39,17 @@ public class CompetitionLeaderboardMarkUserStockItemView extends BaseLeaderboard
     protected int prizeDTOSize;
 
     //<editor-fold desc="Constructors">
-    public CompetitionLeaderboardMarkUserStockItemView(Context context)
+    public CompetitionLeaderboardMarkUserItemView(Context context)
     {
         super(context);
     }
 
-    public CompetitionLeaderboardMarkUserStockItemView(Context context, AttributeSet attrs)
+    public CompetitionLeaderboardMarkUserItemView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
     }
 
-    public CompetitionLeaderboardMarkUserStockItemView(Context context, AttributeSet attrs, int defStyle)
+    public CompetitionLeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
