@@ -426,8 +426,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
         {
-            LeaderboardMarkUserItemView leaderboardMarkUserStockItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
-            leaderboardMarkUserStockItemView.displayUserIsLoading();
+            LeaderboardMarkUserItemView leaderboardMarkUserItemView = (LeaderboardMarkUserItemView) mRankHeaderView;
+            leaderboardMarkUserItemView.displayUserIsLoading();
         }
     }
 
