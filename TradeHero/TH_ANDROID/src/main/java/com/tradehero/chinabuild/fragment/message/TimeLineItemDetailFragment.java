@@ -1087,10 +1087,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             @Override
             public void success(Response response, Response response2)
             {
-                if(dataDto!=null)
-                {
-                    UserTimeLineAdapter.setTimeLineItemAnswered(dataDto.id);
-                }
                 adapter.removeDeletedItem(discussionItemId);
                 onFinish();
             }
@@ -1123,6 +1119,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 THToast.show(R.string.discovery_discuss_apply_successfully);
                 adapter.applyRightAnswer(commentItemId);
                 setRefreshViewRewarded();
+                if(dataDto!=null)
+                {
+                    UserTimeLineAdapter.setTimeLineItemAnswered(dataDto.id);
+                }
                 onFinish();
             }
 
