@@ -244,7 +244,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             default:
                 Timber.d("LeaderboardMarkUserListFragment %s", bundle);
                 LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                navigator.get().pushFragment(LeaderboardMarkUserPagerFragment.class, bundle);
+                navigator.get().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
