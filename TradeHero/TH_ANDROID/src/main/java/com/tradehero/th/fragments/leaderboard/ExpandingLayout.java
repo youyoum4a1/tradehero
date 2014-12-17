@@ -63,51 +63,37 @@ public class ExpandingLayout extends LinearLayout
         {
             distToTravel = measuredHeight - mCurrentHeight;
             animator = ValueAnimator.ofInt(mCurrentHeight, measuredHeight);
-            animator.addListener(new AnimatorListenerAdapter()
-            {
-                @Override public void onAnimationStart(Animator animation)
-                {
-                    super.onAnimationStart(animation);
-                    getLayoutParams().height = mCurrentHeight;
-                    setVisibility(View.VISIBLE);
-                }
-
-                @Override public void onAnimationEnd(Animator animation)
-                {
-                    super.onAnimationEnd(animation);
-                    notifyExpand(true);
-                }
-            });
+            animator.addListener(new ExpandAnimatorListener());
         }
         else
         {
             distToTravel = mCurrentHeight;
             animator = ValueAnimator.ofInt(mCurrentHeight, 0);
-            animator.addListener(new AnimatorListenerAdapter()
-            {
-                @Override public void onAnimationEnd(Animator animation)
-                {
-                    super.onAnimationEnd(animation);
-                    setVisibility(View.GONE);
-                    notifyExpand(false);
-                }
-            });
+            animator.addListener(new CollapseAnimatorListener());
         }
 
-        int duration = EXPAND_COLLAPSE_MAX_DURATION * (distToTravel / measuredHeight);
-        animator.setDuration(duration);
-        animator.addUpdateListener(animation -> {
-            mCurrentHeight = (int) animation.getAnimatedValue();
-            getLayoutParams().height = mCurrentHeight;
-            requestLayout();
-        });
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.start();
+        startExpandCollapseAnimation(measuredHeight, distToTravel);
+    }
 
-        //This is a hack to prevent the view being recycled while we are doing expand/collapse animation
-        //Another way to avoid this hack is by using View.setHasTransientState(true) but this API is only available
-        //for post JellyBean devices
-        animate().alpha(1).setDuration(duration).start();
+    private void startExpandCollapseAnimation(int measuredHeight, int distToTravel)
+    {
+        if(animator != null)
+        {
+            int duration = EXPAND_COLLAPSE_MAX_DURATION * (distToTravel / measuredHeight);
+            animator.setDuration(duration);
+            animator.addUpdateListener(animation -> {
+                mCurrentHeight = (int) animation.getAnimatedValue();
+                getLayoutParams().height = mCurrentHeight;
+                requestLayout();
+            });
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.start();
+
+            //This is a hack to prevent the view being recycled while we are doing expand/collapse animation
+            //Another way to avoid this hack is by using View.setHasTransientState(true) but this API is only available
+            //for post JellyBean devices
+            animate().alpha(1).setDuration(duration).start();
+        }
     }
 
     public void expandWithNoAnimation(boolean expand)
@@ -157,5 +143,31 @@ public class ExpandingLayout extends LinearLayout
     public static interface OnExpandListener
     {
         void onExpand(boolean expand);
+    }
+
+    protected class ExpandAnimatorListener extends AnimatorListenerAdapter
+    {
+        @Override public void onAnimationStart(Animator animation)
+        {
+            super.onAnimationStart(animation);
+            getLayoutParams().height = mCurrentHeight;
+            setVisibility(View.VISIBLE);
+        }
+
+        @Override public void onAnimationEnd(Animator animation)
+        {
+            super.onAnimationEnd(animation);
+            notifyExpand(true);
+        }
+    }
+
+    protected class CollapseAnimatorListener extends AnimatorListenerAdapter
+    {
+        @Override public void onAnimationEnd(Animator animation)
+        {
+            super.onAnimationEnd(animation);
+            setVisibility(View.GONE);
+            notifyExpand(false);
+        }
     }
 }
