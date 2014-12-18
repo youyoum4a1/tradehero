@@ -9,7 +9,7 @@
     android:background="@drawable/trending_filter_header_background"
     >
 
-  <TextView
+  <com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView
       android:id="@+id/margin_close_out_status"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

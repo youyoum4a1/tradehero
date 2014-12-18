@@ -107,7 +107,10 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-          android:padding="@dimen/size_1"
+          android:paddingTop="@dimen/size_1"
+          android:paddingRight="@dimen/size_2"
+          android:paddingBottom="@dimen/size_1"
+          android:paddingLeft="@dimen/size_2"
           style="@style/TH.Btn_Buy_Sell"
           android:text="@string/security_close"
           />
