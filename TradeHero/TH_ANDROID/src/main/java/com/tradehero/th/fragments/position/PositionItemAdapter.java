@@ -168,9 +168,6 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
                 }
             }
 
-            // Dress list
-
-            // Open area
             if (lockedPositions.size() > 0)
             {
                 PositionDTO positionDTO = lockedPositions.get(0);
@@ -182,32 +179,36 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
                 newItems.add(positionDTO);
             }
-            else if (openShortPositions.size() > 0)
+            else if (openShortPositions.size() + openLongPositions.size() > 0)
             {
-                newItems.add(new HeaderDTO(
-                        VIEW_TYPE_OPEN_SHORT,
-                        openShortPositions.size(),
-                        openShortPositions.getEarliestTradeUtc(),
-                        openShortPositions.getLatestTradeUtc()
-                ));
-
-                for (PositionDTO openPosition : openShortPositions)
+                if (openShortPositions.size() > 0)
                 {
-                    add(newItems, openPosition);
+                    newItems.add(new HeaderDTO(
+                            VIEW_TYPE_OPEN_SHORT,
+                            openShortPositions.size(),
+                            openShortPositions.getEarliestTradeUtc(),
+                            openShortPositions.getLatestTradeUtc()
+                    ));
+
+                    for (PositionDTO openPosition : openShortPositions)
+                    {
+                        add(newItems, openPosition);
+                    }
                 }
-            }
-            else if (openLongPositions.size() > 0)
-            {
-                newItems.add(new HeaderDTO(
-                        VIEW_TYPE_OPEN_LONG,
-                        openLongPositions.size(),
-                        openLongPositions.getEarliestTradeUtc(),
-                        openLongPositions.getLatestTradeUtc()
-                ));
 
-                for (PositionDTO openPosition : openLongPositions)
+                if (openLongPositions.size() > 0)
                 {
-                    add(newItems, openPosition);
+                    newItems.add(new HeaderDTO(
+                            VIEW_TYPE_OPEN_LONG,
+                            openLongPositions.size(),
+                            openLongPositions.getEarliestTradeUtc(),
+                            openLongPositions.getLatestTradeUtc()
+                    ));
+
+                    for (PositionDTO openPosition : openLongPositions)
+                    {
+                        add(newItems, openPosition);
+                    }
                 }
             }
             else
