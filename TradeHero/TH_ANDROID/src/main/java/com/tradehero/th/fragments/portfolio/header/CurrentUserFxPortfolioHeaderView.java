@@ -6,19 +6,14 @@ import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
-import javax.inject.Inject;
 
 /**
  * Header displayed on a Portfolio owned by the authenticated user.
  */
 public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeaderView
 {
-    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    @InjectView(R.id.margin_close_out_status) protected TextView marginCloseOutStatus;
+    @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.header_portfolio_margin_available) protected TextView marginAvailable;
     @InjectView(R.id.header_portfolio_margin_used) protected TextView marginUsed;
     @InjectView(R.id.header_portfolio_pl_unrealised) protected TextView unrealisedPl;
@@ -27,19 +22,16 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
     public CurrentUserFxPortfolioHeaderView(Context context)
     {
         super(context);
-        HierarchyInjector.inject(this);
     }
 
     public CurrentUserFxPortfolioHeaderView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        HierarchyInjector.inject(this);
     }
 
     public CurrentUserFxPortfolioHeaderView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
-        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
@@ -79,24 +71,7 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
     {
         if (marginCloseOutStatus != null)
         {
-            if (portfolioCompactDTO != null
-                    && portfolioCompactDTO.marginCloseOutPercent != null)
-            {
-                int labelResId = portfolioCompactDTOUtil.getMarginCloseOutLabelResId(getResources(), portfolioCompactDTO.marginCloseOutPercent);
-                marginCloseOutStatus.setText(getResources().getString(
-                        labelResId,
-                        THSignedNumber.builder(portfolioCompactDTO.marginCloseOutPercent)
-                                .relevantDigitCount(2)
-                                .build().toString()));
-                marginCloseOutStatus.setBackgroundColor(portfolioCompactDTOUtil.getMarginCloseOutColor(
-                                getResources(),
-                                portfolioCompactDTO.marginCloseOutPercent));
-                marginCloseOutStatus.setVisibility(VISIBLE);
-            }
-            else
-            {
-                marginCloseOutStatus.setVisibility(GONE);
-            }
+            marginCloseOutStatus.linkWith(portfolioCompactDTO);
         }
     }
 

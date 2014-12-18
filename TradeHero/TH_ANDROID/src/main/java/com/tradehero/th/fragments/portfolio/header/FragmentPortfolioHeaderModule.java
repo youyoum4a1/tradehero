@@ -4,7 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
-                CurrentUserFxPortfolioHeaderView.class,
+                MarginCloseOutStatusTextView.class,
         },
         library = true,
         complete = false
