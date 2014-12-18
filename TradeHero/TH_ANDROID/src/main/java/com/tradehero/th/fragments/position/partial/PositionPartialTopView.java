@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
@@ -22,7 +24,9 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.FxFlagContainer;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -41,6 +45,7 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected SecurityIdCache securityIdCache;
     @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected PositionDTOUtils positionDTOUtils;
+    @Inject protected DashboardNavigator navigator;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
@@ -56,6 +61,7 @@ public class PositionPartialTopView extends LinearLayout
     @InjectView(R.id.position_last_amount_header) protected TextView positionLastAmountHeader;
     @InjectView(R.id.position_last_amount) protected TextView positionLastAmount;
     @InjectView(R.id.position_force_closed) protected View forceClosed;
+    @InjectView(R.id.btn_position_close) protected View btnClose;
 
     protected PositionDTO positionDTO;
     protected SecurityId securityId;
@@ -93,6 +99,12 @@ public class PositionPartialTopView extends LinearLayout
         }
     }
 
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        ButterKnife.inject(this);
+    }
+
     @Override protected void onDetachedFromWindow()
     {
         unsubscribe(securityCompactCacheFetchSubscription);
@@ -101,6 +113,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             stockLogo.setImageDrawable(null);
         }
+        ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
@@ -127,6 +140,7 @@ public class PositionPartialTopView extends LinearLayout
             displayCompanyName();
             displayShareCount();
             displayForceClosed();
+            displayCloseButton();
         }
         if (positionDTO == null)
         {
@@ -135,6 +149,7 @@ public class PositionPartialTopView extends LinearLayout
         else if (isDifferentSecurity)
         {
             unsubscribe(securityCompactCacheFetchSubscription);
+            //noinspection Convert2MethodRef
             securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
                     .map(pair -> pair.second)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -172,6 +187,18 @@ public class PositionPartialTopView extends LinearLayout
         displayStockMovementIndicator();
         displayStockLastPrice();
         displayMarketClose();
+        displayCloseButton();
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.btn_position_close)
+    protected void handleBtnCloseClicked(@SuppressWarnings("UnusedParameters") View view)
+    {
+        Bundle args = new Bundle();
+        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        BuySellFragment.putSecurityId(args, securityId);
+        // TODO add command to go direct to pop-up
+        navigator.pushFragment(BuySellFragment.class, args);
     }
 
     //<editor-fold desc="Display Methods">
@@ -191,6 +218,7 @@ public class PositionPartialTopView extends LinearLayout
         displayPositionLastAmountHeader();
         displayPositionLastAmount();
         displayForceClosed();
+        displayCloseButton();
     }
 
     public void displayStockLogo()
@@ -504,6 +532,21 @@ public class PositionPartialTopView extends LinearLayout
             boolean isForceClosed = positionDTO != null && positionDTO.positionStatus != null &&
                     positionDTO.positionStatus.equals(PositionStatus.FORCE_CLOSED);
             forceClosed.setVisibility(isForceClosed ? VISIBLE : GONE);
+        }
+    }
+
+    public void displayCloseButton()
+    {
+        if (btnClose != null)
+        {
+            boolean showBtn = false;
+            if (securityCompactDTO instanceof FxSecurityCompactDTO
+                    && positionDTO != null)
+            {
+                Boolean isOpen = positionDTO.isOpen();
+                showBtn = isOpen != null && isOpen;
+            }
+            btnClose.setVisibility(showBtn ? VISIBLE : GONE);
         }
     }
     //</editor-fold>
