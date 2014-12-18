@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -104,6 +105,18 @@ public interface SecurityServiceRx
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Basic FX Trending">
+    @GET("/securities/trendingFx")
+    Observable<SecurityCompactDTOList> getFXSecurities();
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX KChart">
+    @GET("/FX/{securitySymbol}/{duration}/history")
+    Observable<FXChartDTO> getFXHistroy(
+                        @Path("securitySymbol") String securitySymbol,
+                        @Path("duration") String duration);
     //</editor-fold>
 }
 

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(THRobolectricTestRunner.class)
-public class TrendingFragmentTest
+public class TrendingStockFragmentTest
 {
     @Inject CurrentUserId currentUserId;
     @Inject DashboardNavigator dashboardNavigator;
@@ -52,7 +52,7 @@ public class TrendingFragmentTest
     @Test public void uiRequestDollarPassedWhenCallExtraCash() throws InterruptedException
     {
         Bundle args = new Bundle();
-        TrendingFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        TrendingStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         trendingFragment = dashboardNavigator.pushFragment(
                 OpenTrendingFragment.class,
                 args);

@@ -28,7 +28,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
@@ -280,7 +280,7 @@ import rx.observers.EmptyObserver;
         TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
 
         this.securityCompactListCache.get().get(
-                filterTypeBasicDTO.getSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
+                filterTypeBasicDTO.getSecurityListType(1, TrendingStockFragment.DEFAULT_PER_PAGE));
     }
 
     private void preFetchTraderLevels()
@@ -309,7 +309,7 @@ import rx.observers.EmptyObserver;
                                         new TrendingBasicSecurityListType(
                                                 initialExchange.name,
                                                 1,
-                                                TrendingFragment.DEFAULT_PER_PAGE));
+                                                TrendingStockFragment.DEFAULT_PER_PAGE));
                             }
                         }
                     })

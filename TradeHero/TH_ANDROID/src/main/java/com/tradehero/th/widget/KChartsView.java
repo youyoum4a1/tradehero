@@ -1,0 +1,457 @@
+package com.tradehero.th.widget;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.util.FloatMath;
+import android.view.MotionEvent;
+import com.tradehero.th.R;
+import com.tradehero.th.api.fx.FXCandleDTO;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+public class KChartsView extends KChartBase {
+
+	/** 触摸模式 */
+	private static int TOUCH_MODE;
+	private final static int NONE = 0;
+	private final static int DOWN = 1;
+	private final static int MOVE = 2;
+	private final static int ZOOM = 3;
+
+	/** 默认Y轴字体颜色 **/
+	private static final int DEFAULT_AXIS_Y_TITLE_COLOR = Color.BLUE;
+
+	/** 默认X轴字体颜色 **/
+	private static final int DEFAULT_AXIS_X_TITLE_COLOR = Color.BLUE;
+
+    /** 默认candle detail dkGreen color **/
+    private static final int DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR = R.color.number_green;
+
+    /** 默认candle detail red color **/
+    private static final int DEFAULT_CANDLE_DETAIL_RED_COLOR = Color.RED;
+
+	/** 显示的最小Candle数 */
+	private final static int MIN_CANDLE_NUM = 10;
+
+	/** 默认显示的Candle数 */
+	private final static int DEFAULT_CANDLE_NUM = 50;
+
+	/** 最小可识别的移动距离 */
+	private final static int MIN_MOVE_DISTANCE = 15;
+
+	/** Candle宽度 */
+	private double mCandleWidth;
+
+	/** 触摸点 */
+	private float mStartX;
+	private float mStartY;
+
+	/** OHLC数据 */
+	private List<FXCandleDTO> mOHLCData;
+//	private List<OHLCEntity> mOHLCData;
+
+	/** 显示的OHLC数据起始位置 */
+	private int mDataStartIndext;
+
+	/** 显示的OHLC数据个数 */
+	private int mShowDataNum;
+
+	/** 是否显示蜡烛详情 */
+	private boolean showDetails;
+
+	/** 当前数据的最大最小值 */
+	private double mMaxPrice;
+	private double mMinPrice;
+
+	/** MA数据 */
+//    private static final boolean showMALine = false;
+
+	public KChartsView(Context context) {
+		super(context);
+		init();
+	}
+
+	public KChartsView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+
+	public KChartsView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		init();
+	}
+
+	private void init() {
+		mShowDataNum = DEFAULT_CANDLE_NUM;
+		mDataStartIndext = 0;
+		showDetails = false;
+		mMaxPrice = -1;
+		mMinPrice = -1;
+
+		mOHLCData = new ArrayList<FXCandleDTO>();
+//		mOHLCData = new ArrayList<OHLCEntity>();
+	}
+
+	@Override
+	protected void onDraw(Canvas canvas) {
+		super.onDraw(canvas);
+		if (mOHLCData == null || mOHLCData.size() <= 0) {
+			return;
+		}
+		drawUpperRegion(canvas);
+		drawTitles(canvas);
+		drawCandleDetails(canvas);
+	}
+
+	private void drawCandleDetails(Canvas canvas) {
+		if (showDetails) {
+			float width = getCandleWidth();
+			float left = (float) DEFAULT_AXIS_TITLE_SIZE;
+			float leftText = left + (float)DEFAULT_AXIS_TITLE_SIZE / 4;
+			float top = (float) DEFAULT_AXIS_TITLE_SIZE;
+			float lineHeight = (float) 7*DEFAULT_AXIS_TITLE_SIZE/6;
+			float right = (float)8.5 * DEFAULT_AXIS_TITLE_SIZE + 4f;
+			float bottom = (float)8 * DEFAULT_AXIS_TITLE_SIZE + DEFAULT_AXIS_TITLE_SIZE / 3;
+			if (mStartX < width / 2.0f) {
+				right = width - (float)DEFAULT_AXIS_TITLE_SIZE + 4f;
+				left = width - (float)8.5 * DEFAULT_AXIS_TITLE_SIZE;
+                leftText = left + (float)DEFAULT_AXIS_TITLE_SIZE / 4;
+			}
+			int selectIndext = (int) ((width - 2.0f - mStartX) / mCandleWidth + mDataStartIndext);
+
+            //draw touch detail
+			Paint paint = new Paint();
+			paint.setColor(Color.LTGRAY);
+			canvas.drawRect(left, top, right, bottom, paint);
+            paint.setColor(Color.DKGRAY);
+            paint.setStrokeWidth(DEFAULT_TWO_LINE_WIDTH);
+			canvas.drawLine(left, top, left, bottom, paint);
+			canvas.drawLine(left, top, right, top, paint);
+			canvas.drawLine(right, bottom, right, top, paint);
+			canvas.drawLine(right, bottom, left, bottom, paint);
+
+            // draw touch line
+            float startX = (float) (width - mCandleWidth * selectIndext - (mCandleWidth - DEFAULT_ONE_LINE_WIDTH) / 2);
+			canvas.drawRect(startX - DEFAULT_ONE_LINE_WIDTH, 2.0f, startX + DEFAULT_ONE_LINE_WIDTH, UPER_CHART_BOTTOM, paint);
+
+			// 绘制详情文字
+			Paint textPaint = new Paint();
+			textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+			textPaint.setColor(Color.DKGRAY);
+			textPaint.setFakeBoldText(true);
+			canvas.drawText("日期: " + mOHLCData.get(selectIndext).getDate(), leftText, top + lineHeight, textPaint);
+
+			canvas.drawText("开盘:", leftText, top + 2*lineHeight, textPaint);
+			double open = mOHLCData.get(selectIndext).getOpen();
+			try {
+				double ysdclose = mOHLCData.get(selectIndext + 1).getClose();
+				if (open >= ysdclose) {
+					textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
+				} else {
+					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
+				}
+				canvas.drawText(new DecimalFormat("#.##").format(open), leftText
+						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 2*lineHeight,
+						textPaint);
+			} catch (Exception e) {
+				canvas.drawText(new DecimalFormat("#.##").format(open), leftText
+						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 2*lineHeight,
+						textPaint);
+			}
+
+			textPaint.setColor(Color.DKGRAY);
+			canvas.drawText("最高:", leftText, top + 3*lineHeight, textPaint);
+			double high = mOHLCData.get(selectIndext).getHigh();
+			if (open < high) {
+				textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
+			} else {
+				textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
+			}
+			canvas.drawText(new DecimalFormat("#.##").format(high), leftText
+					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 3*lineHeight,
+					textPaint);
+
+			textPaint.setColor(Color.DKGRAY);
+			canvas.drawText("最低:", leftText, top + 4*lineHeight, textPaint);
+			double low = mOHLCData.get(selectIndext).getLow();
+			try {
+				double yesterday = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
+						selectIndext + 1).getHigh()) / 2.0f;
+				if (yesterday <= low) {
+					textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
+				} else {
+					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
+				}
+			} catch (Exception e) {
+
+			}
+			canvas.drawText(new DecimalFormat("#.##").format(low), leftText
+					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 4*lineHeight,
+					textPaint);
+
+			textPaint.setColor(Color.DKGRAY);
+			canvas.drawText("收盘:", leftText, top + 5*lineHeight, textPaint);
+			double close = mOHLCData.get(selectIndext).getClose();
+			try {
+				double yesdopen = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
+						selectIndext + 1).getHigh()) / 2.0f;
+				if (yesdopen <= close) {
+					textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
+				} else {
+					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
+				}
+			} catch (Exception e) {
+
+			}
+			canvas.drawText(new DecimalFormat("#.##").format(close), leftText
+					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 5*lineHeight,
+					textPaint);
+
+			textPaint.setColor(Color.DKGRAY);
+			canvas.drawText("涨跌幅:", leftText, top + 6*lineHeight, textPaint);
+			try {
+				double yesdclose = mOHLCData.get(selectIndext + 1).getClose();
+				double priceRate = (close - yesdclose) / yesdclose;
+				if (priceRate >= 0) {
+					textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
+				} else {
+					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
+				}
+				canvas.drawText(new DecimalFormat("#.##%").format(priceRate), leftText
+						+ DEFAULT_AXIS_TITLE_SIZE * 3.5f, top + 6*lineHeight,
+						textPaint);
+			} catch (Exception e) {
+				canvas.drawText("--", leftText + DEFAULT_AXIS_TITLE_SIZE * 3.5f, top
+						+ 6*lineHeight, textPaint);
+			}
+		}
+	}
+
+	private void drawTitles(Canvas canvas) {
+		Paint textPaint = new Paint();
+		textPaint.setColor(DEFAULT_AXIS_Y_TITLE_COLOR);
+		textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
+
+		// Y轴Titles
+        for (int i=0;i<=DEFAULT_UPER_LATITUDE_NUM;i++)
+        {
+            if (i == DEFAULT_UPER_LATITUDE_NUM)
+            {
+                canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / (DEFAULT_UPER_LATITUDE_NUM) * i),
+                        getCandleWidth() + 10, UPER_CHART_BOTTOM - getLatitudeSpacing() * i - DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+            }
+            else if (i == 0)
+            {
+                canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / (DEFAULT_UPER_LATITUDE_NUM) * i),
+                        getCandleWidth() + 10, UPER_CHART_BOTTOM - getLatitudeSpacing() * i - DEFAULT_ONE_LINE_WIDTH, textPaint);
+            }
+            else
+            {
+                canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / (DEFAULT_UPER_LATITUDE_NUM) * i),
+                        getCandleWidth() + 10, UPER_CHART_BOTTOM - getLatitudeSpacing() * i - DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE / 2, textPaint);
+            }
+        }
+
+		// X轴Titles
+		textPaint.setColor(DEFAULT_AXIS_X_TITLE_COLOR);
+        for (int i=0;i<=DEFAULT_LOGITUDE_NUM;i++)
+        {
+            float offset;
+//            float offset = 0f;
+            int position = mDataStartIndext + mShowDataNum * (DEFAULT_LOGITUDE_NUM-i) / DEFAULT_LOGITUDE_NUM;
+            if (i == 0)
+            {
+                offset = 0;
+                position -= 1;
+            }
+            else if (i == DEFAULT_LOGITUDE_NUM)
+            {
+                offset = - 4 - 4.5f * DEFAULT_AXIS_TITLE_SIZE;
+            }
+            else
+            {
+                offset = (- 4 - 4.5f * DEFAULT_AXIS_TITLE_SIZE)/2;
+            }
+            canvas.drawText(mOHLCData.get(position).getDate(),
+                    getCandleWidth()*i/DEFAULT_LOGITUDE_NUM + offset,
+                    UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+        }
+	}
+
+	private void drawUpperRegion(Canvas canvas) {
+		// 绘制蜡烛图
+		Paint redPaint = new Paint();
+		redPaint.setColor(Color.RED);
+		Paint greenPaint = new Paint();
+		greenPaint.setColor(Color.GREEN);
+		int width = getCandleWidth();
+		mCandleWidth = (width - 4) / 10.0 * 10.0 / mShowDataNum;
+        double rate = (getUperChartHeight() - DEFAULT_TWO_LINE_WIDTH) / (mMaxPrice - mMinPrice);
+		for (int i = 0; i < mShowDataNum && mDataStartIndext + i < mOHLCData.size(); i++) {
+            FXCandleDTO entity = mOHLCData.get(mDataStartIndext + i);
+//			OHLCEntity entity = mOHLCData.get(mDataStartIndext + i);
+			float open = (float) ((mMaxPrice - entity.getOpen()) * rate + DEFAULT_TWO_LINE_WIDTH);
+			float close = (float) ((mMaxPrice - entity.getClose()) * rate + DEFAULT_TWO_LINE_WIDTH);
+			float high = (float) ((mMaxPrice - entity.getHigh()) * rate + DEFAULT_TWO_LINE_WIDTH);
+			float low = (float) ((mMaxPrice - entity.getLow()) * rate + DEFAULT_TWO_LINE_WIDTH);
+
+            float lineWidth = (float)1.25;
+			float left = (float) (width - mCandleWidth * (i + 1) + lineWidth*2);
+			float right = (float) (width - mCandleWidth * i - lineWidth*2);
+			float startX = (float) (width - mCandleWidth * i - (mCandleWidth - 1) / 2);
+			if (open < close) {
+				canvas.drawRect(left, open, right, close, greenPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, greenPaint);
+			} else if (open == close) {
+				canvas.drawRect(left, open, right, open + lineWidth*2, redPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
+			} else {
+				canvas.drawRect(left, close, right, open, redPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
+			}
+
+		}
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		// 设置触摸模式
+		case MotionEvent.ACTION_DOWN:
+			TOUCH_MODE = DOWN;
+			mStartX = event.getRawX();
+			mStartY = event.getRawY();
+			break;
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_POINTER_UP:
+			if (TOUCH_MODE == DOWN) {
+				TOUCH_MODE = NONE;
+				if (!super.onTouchEvent(event)) {
+					if (mStartX > 2.0f && mStartX < getCandleWidth() - 2.0f) {
+						showDetails = true;
+					}
+				}
+				postInvalidate();
+			} else {
+				TOUCH_MODE = NONE;
+			}
+			break;
+		case MotionEvent.ACTION_CANCEL:
+			TOUCH_MODE = NONE;
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (mOHLCData == null || mOHLCData.size() <= 0) {
+				return true;
+			}
+			showDetails = false;
+			if (TOUCH_MODE == MOVE) {
+				float horizontalSpacing = event.getRawX() - mStartX;
+				if (Math.abs(horizontalSpacing) < MIN_MOVE_DISTANCE) {
+					return true;
+				}
+				mStartX = event.getRawX();
+				mStartY = event.getRawY();
+				if (horizontalSpacing < 0) {
+					mDataStartIndext--;
+					if (mDataStartIndext < 0) {
+						mDataStartIndext = 0;
+					}
+				} else if (horizontalSpacing > 0) {
+					mDataStartIndext++;
+				}
+				setCurrentData();
+				postInvalidate();
+			} else if (TOUCH_MODE == ZOOM) {
+				float verticalSpacing = event.getRawY() - mStartY;
+				if (Math.abs(verticalSpacing) < MIN_MOVE_DISTANCE) {
+					return true;
+				}
+				mStartX = event.getRawX();
+				mStartY = event.getRawY();
+				if (verticalSpacing < 0) {
+					zoomOut();
+				} else {
+					zoomIn();
+				}
+				setCurrentData();
+				postInvalidate();
+
+			} else if (TOUCH_MODE == DOWN) {
+				setTouchMode(event);
+			}
+
+			break;
+		}
+		return true;
+	}
+
+	private void setCurrentData() {
+		if (mShowDataNum > mOHLCData.size()) {
+			mShowDataNum = mOHLCData.size();
+		}
+		if (MIN_CANDLE_NUM > mOHLCData.size()) {
+			mShowDataNum = MIN_CANDLE_NUM;
+		}
+
+		if (mShowDataNum > mOHLCData.size()) {
+			mDataStartIndext = 0;
+		} else if (mShowDataNum + mDataStartIndext > mOHLCData.size()) {
+			mDataStartIndext = mOHLCData.size() - mShowDataNum;
+		}
+		mMinPrice = mOHLCData.get(mDataStartIndext).getLow();
+		mMaxPrice = mOHLCData.get(mDataStartIndext).getHigh();
+		for (int i = mDataStartIndext + 1; i < mOHLCData.size()
+				&& i < mShowDataNum + mDataStartIndext; i++) {
+            FXCandleDTO entity = mOHLCData.get(i);
+//			OHLCEntity entity = mOHLCData.get(i);
+			mMinPrice = mMinPrice < entity.getLow() ? mMinPrice : entity.getLow();
+			mMaxPrice = mMaxPrice > entity.getHigh() ? mMaxPrice : entity.getHigh();
+		}
+	}
+
+	private void zoomIn() {
+		mShowDataNum++;
+		if (mShowDataNum > mOHLCData.size()) {
+			mShowDataNum = MIN_CANDLE_NUM > mOHLCData.size() ? MIN_CANDLE_NUM : mOHLCData.size();
+		}
+
+	}
+
+	private void zoomOut() {
+		mShowDataNum--;
+		if (mShowDataNum < MIN_CANDLE_NUM) {
+			mShowDataNum = MIN_CANDLE_NUM;
+		}
+
+	}
+
+	private void setTouchMode(MotionEvent event) {
+		float daltX = Math.abs(event.getRawX() - mStartX);
+		float daltY = Math.abs(event.getRawY() - mStartY);
+		if (FloatMath.sqrt(daltX * daltX + daltY * daltY) > MIN_MOVE_DISTANCE) {
+			if (daltX < daltY) {
+				TOUCH_MODE = ZOOM;
+			} else {
+				TOUCH_MODE = MOVE;
+			}
+			mStartX = event.getRawX();
+			mStartY = event.getRawY();
+		}
+	}
+
+	public void setOHLCData(List<FXCandleDTO> OHLCData) {
+//	public void setOHLCData(List<OHLCEntity> OHLCData) {
+		if (OHLCData == null || OHLCData.size() <= 0) {
+			return;
+		}
+		this.mOHLCData = OHLCData;
+
+		setCurrentData();
+		postInvalidate();
+	}
+
+}

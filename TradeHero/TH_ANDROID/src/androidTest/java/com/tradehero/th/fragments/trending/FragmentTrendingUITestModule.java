@@ -4,7 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
-                TrendingFragmentTest.class,
+                TrendingStockFragmentTest.class,
                 OpenTrendingFragment.class,
         },
         complete = false,

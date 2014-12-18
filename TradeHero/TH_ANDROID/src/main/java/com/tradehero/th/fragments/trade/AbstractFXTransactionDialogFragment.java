@@ -74,11 +74,11 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public abstract class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
+public abstract class AbstractFXTransactionDialogFragment extends BaseShareableDialogFragment
 {
-    protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
-    protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
-    protected static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
+    protected static final String KEY_SECURITY_ID = AbstractFXTransactionDialogFragment.class.getName() + ".security_id";
+    protected static final String KEY_PORTFOLIO_ID = AbstractFXTransactionDialogFragment.class.getName() + ".portfolio_id";
+    protected static final String KEY_QUOTE_DTO = AbstractFXTransactionDialogFragment.class.getName() + ".quote_dto";
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
@@ -152,13 +152,13 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                 (!isBuy && quoteDTO.bid != null);
     }
 
-    public static AbstractTransactionDialogFragment newInstance(
+    public static AbstractFXTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
             @NonNull PortfolioId portfolioId,
             @NonNull QuoteDTO quoteDTO,
             boolean isBuy)
     {
-        AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
+        AbstractFXTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyFXDialogFragment() : new SellFXDialogFragment();
         Bundle args = new Bundle();
         args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
         args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
@@ -167,7 +167,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         return abstractBuySellDialogFragment;
     }
 
-    protected AbstractTransactionDialogFragment()
+    protected AbstractFXTransactionDialogFragment()
     {
         super();
     }
@@ -225,10 +225,9 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onResume();
 
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
-        if (!(navigator.get().getCurrentFragment() instanceof BuySellFragment
-                || navigator.get().getCurrentFragment() instanceof BuySellFXFragment))
+        if (!(navigator.get().getCurrentFragment() instanceof BuySellFragment))
         {
-            getDialog().hide();
+//            getDialog().hide();
         }
 
         fetchPortfolioCompactList();
@@ -599,7 +598,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @NonNull public abstract String getCashShareLeft();
 
-    private void updateConfirmButton(boolean forceDisable)
+    protected void updateConfirmButton(boolean forceDisable)
+//    private void updateConfirmButton(boolean forceDisable)
     {
         if (forceDisable)
         {
@@ -649,7 +649,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
             if (transactionFormDTO != null)
             {
                 dismissTransactionProgress();
-                mTransactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
+                mTransactionDialog = progressDialogUtil.show(AbstractFXTransactionDialogFragment.this.getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
                 unsubscribe(buySellSubscription);

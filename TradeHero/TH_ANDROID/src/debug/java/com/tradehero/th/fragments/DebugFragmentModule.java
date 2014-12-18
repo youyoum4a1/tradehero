@@ -10,7 +10,8 @@ import dagger.Module;
                 DebugFragmentLevelModule.class,
         },
         injects = {
-                TypographyExampleFragment.class
+                TypographyExampleFragment.class,
+                TestKChartsFragment.class
         },
 
         complete = false,

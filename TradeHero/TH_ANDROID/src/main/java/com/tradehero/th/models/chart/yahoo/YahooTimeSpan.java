@@ -5,6 +5,12 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 
 public enum YahooTimeSpan
 {
+    min1("M1", R.string.yahoo_chart_1min, ChartTimeSpan.MIN_1),
+    min5("M5", R.string.yahoo_chart_5min, ChartTimeSpan.MIN_5),
+    min15("M15", R.string.yahoo_chart_15min, ChartTimeSpan.MIN_15),
+    min30("M30", R.string.yahoo_chart_30min, ChartTimeSpan.MIN_30),
+    hour1("H1", R.string.yahoo_chart_1h, ChartTimeSpan.HOUR_1),
+    hour4("H4", R.string.yahoo_chart_4h, ChartTimeSpan.HOUR_4),
     day1("1d", R.string.yahoo_chart_1d, ChartTimeSpan.DAY_1),
     day5("5d", R.string.yahoo_chart_5d, ChartTimeSpan.DAY_5),
     month3("3m", R.string.yahoo_chart_3m, ChartTimeSpan.MONTH_3),

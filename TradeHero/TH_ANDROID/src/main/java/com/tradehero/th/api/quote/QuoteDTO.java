@@ -274,4 +274,26 @@ public class QuoteDTO implements RawResponseKeeper
         putParameters(args);
         return args;
     }
+
+    @Override
+    public String toString() {
+        return "QuoteDTO{" +
+                "securityId=" + securityId +
+                ", asOfUtc=" + asOfUtc +
+                ", asOfEst=" + asOfEst +
+                ", bid=" + bid +
+                ", ask=" + ask +
+                ", currencyISO='" + currencyISO + '\'' +
+                ", currencyDisplay='" + currencyDisplay + '\'' +
+                ", fromCache=" + fromCache +
+                ", quoteType=" + quoteType +
+                ", toUSDRate=" + toUSDRate +
+                ", toUSDRateDate=" + toUSDRateDate +
+                ", timeStamp='" + timeStamp + '\'' +
+                ", isInverted=" + isInverted +
+                ", isOneSided=" + isOneSided +
+                ", isValid=" + isValid +
+                ", rawResponse='" + rawResponse + '\'' +
+                '}';
+    }
 }

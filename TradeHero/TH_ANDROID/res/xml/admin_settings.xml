@@ -68,4 +68,8 @@
     android:title="Show Preseason Dialog"
     android:icon="@drawable/icn_competition_prize"/>
 
+    <Preference
+    android:key="show_kchart_examples"
+    android:title="show_kchart_examples"/>
+
 </PreferenceScreen>
