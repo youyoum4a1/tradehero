@@ -43,6 +43,7 @@ import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
+@Deprecated // It does not offer real change from AbstractBuySellFragment
 abstract public class AbstractBuySellFXFragment extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFXFragment.class.getName() + ".securityId";
