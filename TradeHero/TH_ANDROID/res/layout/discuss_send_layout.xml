@@ -99,7 +99,7 @@
                       android:layout_gravity="center_vertical"/>
             <Spinner android:id="@+id/spinner_reward_money_list"
                      android:layout_width="200dp"
-                     android:layout_marginLeft="10dp"
+                     android:background="@drawable/tradehero_spinner_discuss_reward_bg"
                      android:layout_height="wrap_content"/>
         </LinearLayout>
         <View android:id="@+id/view_reward_divider" android:layout_width="match_parent" android:layout_height="1px"

@@ -5,9 +5,10 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.persistence.user.UserProfileCompactCache;
-import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Date;
 
 class TimelineItemCutDTO extends AbstractDiscussionCutDTO
 {
@@ -22,6 +23,12 @@ class TimelineItemCutDTO extends AbstractDiscussionCutDTO
 
     private UserBaseKey user;
 
+    public String header;
+    public boolean isQuestionItem;
+    public Integer prizeAmount;
+    public boolean isAnswered;
+    public boolean isDeleted;
+
     TimelineItemCutDTO(
             @NotNull TimelineItemDTO timelineItemDTO,
             @NotNull UserProfileCompactCache userProfileCompactCache)
@@ -34,6 +41,11 @@ class TimelineItemCutDTO extends AbstractDiscussionCutDTO
         this.useSysIcon = timelineItemDTO.useSysIcon;
         this.renderSysStyle = timelineItemDTO.renderSysStyle;
         this.imageUrl = timelineItemDTO.imageUrl;
+        this.header = timelineItemDTO.header;
+        this.isQuestionItem = timelineItemDTO.isQuestionItem;
+        this.prizeAmount = timelineItemDTO.prizeAmount;
+        this.isAnswered = timelineItemDTO.isAnswered;
+        this.isDeleted = timelineItemDTO.isDeleted;
         UserProfileCompactDTO userCompact = timelineItemDTO.getUser();
         if (userCompact != null)
         {
@@ -68,6 +80,11 @@ class TimelineItemCutDTO extends AbstractDiscussionCutDTO
         inflated.useSysIcon = this.useSysIcon;
         inflated.renderSysStyle = this.renderSysStyle;
         inflated.imageUrl = this.imageUrl;
+        inflated.header = this.header;
+        inflated.isQuestionItem = this.isQuestionItem;
+        inflated.prizeAmount = this.prizeAmount;
+        inflated.isAnswered = this.isAnswered;
+        inflated.isDeleted = this.isDeleted;
         if (this.user != null)
         {
             inflated.setUser(userProfileCompactCache.get(this.user));
