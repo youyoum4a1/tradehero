@@ -191,6 +191,7 @@ public class DiscussSendFragment extends DashboardFragment
             discussSendRewardLL.setVisibility(View.GONE);
             rewardLayoutLL.setVisibility(View.GONE);
             discussionPostContent.setVisibility(View.VISIBLE);
+            discussionPostContent.requestFocus();
         }
     }
 
