@@ -27,7 +27,7 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
@@ -195,7 +195,7 @@ public class THRouterTest
     {
         thRouter.open("security/4_NASDAQ_AAPL");
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(BuySellFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(BuySellStockFragment.class);
     }
     //endregion
 

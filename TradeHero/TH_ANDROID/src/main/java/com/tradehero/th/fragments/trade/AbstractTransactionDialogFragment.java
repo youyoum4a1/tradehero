@@ -9,11 +9,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -74,7 +72,7 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public abstract class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
+abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
 {
     protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
     protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
@@ -89,8 +87,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @InjectView(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
 
     @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
-
-    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
     @InjectView(R.id.comments) protected TextView mCommentsEditText;
@@ -113,20 +109,20 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
 
-    private ProgressDialog mTransactionDialog;
+    protected ProgressDialog mTransactionDialog;
 
-    private Subscription buySellSubscription;
+    protected Subscription buySellSubscription;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected PortfolioCompactDTOList portfolioCompactDTOs;
-    private PortfolioId portfolioId;
+    protected PortfolioId portfolioId;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
-    private BuySellTransactionListener buySellTransactionListener;
+    protected BuySellTransactionListener buySellTransactionListener;
 
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TextWatcher mQuantityTextWatcher;
@@ -150,21 +146,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         return (isBuy && quoteDTO.ask != null) ||
                 (!isBuy && quoteDTO.bid != null);
-    }
-
-    public static AbstractTransactionDialogFragment newInstance(
-            @NonNull SecurityId securityId,
-            @NonNull PortfolioId portfolioId,
-            @NonNull QuoteDTO quoteDTO,
-            boolean isBuy)
-    {
-        AbstractTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragment() : new SellDialogFragment();
-        Bundle args = new Bundle();
-        args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
-        args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
-        args.putBundle(KEY_QUOTE_DTO, quoteDTO.getArgs());
-        abstractBuySellDialogFragment.setArguments(args);
-        return abstractBuySellDialogFragment;
     }
 
     protected AbstractTransactionDialogFragment()
@@ -208,11 +189,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         return d;
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
-    }
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -225,8 +201,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onResume();
 
         /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
-        if (!(navigator.get().getCurrentFragment() instanceof BuySellFragment
-                || navigator.get().getCurrentFragment() instanceof BuySellFXFragment))
+        if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment))
         {
             getDialog().hide();
         }
@@ -323,7 +298,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
                 });
     }
 
-    private void initViews()
+    protected void initViews()
     {
         mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
         mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
@@ -333,8 +308,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
 
         mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
-
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
 
         mBtnAddCash.setOnClickListener(view -> {
             DeviceUtil.dismissKeyboard(mCommentsEditText);
@@ -350,7 +323,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         mStockPriceTextView.setText(String.valueOf(getLabel()));
     }
 
-    private void initPortfolioRelatedInfo()
+    protected void initPortfolioRelatedInfo()
     {
         mPortfolioTextView.setText(
                 getString(R.string.buy_sell_portfolio_selected_title) + " " + (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
@@ -366,6 +339,8 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         displayQuickPriceButtonSet();
         updateTransactionDialog();
     }
+
+    protected abstract void displayQuickPriceButtonSet();
 
     protected void dismissTransactionProgress()
     {
@@ -508,16 +483,6 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         this.buySellTransactionListener = buySellTransactionListener;
     }
 
-    public void displayQuickPriceButtonSet()
-    {
-        QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
-        if (buttonSetCopy != null)
-        {
-            buttonSetCopy.setEnabled(isQuickButtonEnabled());
-            buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
-        }
-    }
-
     public void displayAddCashButton()
     {
         if (mBtnAddCash != null)
@@ -599,7 +564,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @NonNull public abstract String getCashShareLeft();
 
-    private void updateConfirmButton(boolean forceDisable)
+    protected void updateConfirmButton(boolean forceDisable)
     {
         if (forceDisable)
         {
@@ -649,7 +614,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
             if (transactionFormDTO != null)
             {
                 dismissTransactionProgress();
-                mTransactionDialog = progressDialogUtil.show(AbstractTransactionDialogFragment.this.getActivity(),
+                mTransactionDialog = progressDialogUtil.show(getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
                 unsubscribe(buySellSubscription);
@@ -840,7 +805,7 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    private QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
+    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
     {
         return priceSelected -> {
             if (quoteDTO == null)
@@ -972,3 +937,4 @@ public abstract class AbstractTransactionDialogFragment extends BaseShareableDia
         void onTransactionFailed(boolean isBuy, THException error);
     }
 }
+

@@ -27,7 +27,7 @@ import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -205,10 +205,10 @@ public class PositionPartialTopView extends LinearLayout
         }
         else
         {
-            BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-            BuySellFragment.putSecurityId(args, securityId);
+            BuySellStockFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+            BuySellStockFragment.putSecurityId(args, securityId);
             // TODO add command to go direct to pop-up
-            navigator.pushFragment(BuySellFragment.class, args);
+            navigator.pushFragment(BuySellStockFragment.class, args);
         }
     }
 

@@ -7,7 +7,7 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -95,7 +95,7 @@ public class SecurityPushBuyIntentTest
 
     @Test public void actionFragmentIsCorrect()
     {
-        assertEquals(BuySellFragment.class, new SecurityPushBuyIntent(resources, new SecurityIntegerId(3), new SecurityId("A", "B")).getActionFragment());
+        assertEquals(BuySellStockFragment.class, new SecurityPushBuyIntent(resources, new SecurityIntegerId(3), new SecurityId("A", "B")).getActionFragment());
     }
 
     @Test public void bundleIsCorrect()

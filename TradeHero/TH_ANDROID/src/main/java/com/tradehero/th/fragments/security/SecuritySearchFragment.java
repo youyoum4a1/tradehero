@@ -19,7 +19,7 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -104,13 +104,13 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     protected void pushTradeFragmentIn(SecurityId securityId)
     {
         Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, securityId);
+        BuySellStockFragment.putSecurityId(args, securityId);
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
-            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        navigator.get().pushFragment(BuySellFragment.class, args);
+        navigator.get().pushFragment(BuySellStockFragment.class, args);
     }
 
     @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)

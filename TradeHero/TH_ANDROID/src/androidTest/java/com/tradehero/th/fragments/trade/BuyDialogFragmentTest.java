@@ -61,8 +61,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = null;
         quoteDTO.bid = null;
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isFalse();
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isFalse();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, true)).isFalse();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, false)).isFalse();
     }
 
     @Test public void shouldShowOnlyBuyWithQuoteNoBid()
@@ -70,8 +70,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = 3d;
         quoteDTO.bid = null;
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isTrue();
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isFalse();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, true)).isTrue();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, false)).isFalse();
     }
 
     @Test public void shouldShowOnlySellWithQuoteNoAsk()
@@ -79,8 +79,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = null;
         quoteDTO.bid = 2d;
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isFalse();
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isTrue();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, true)).isFalse();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, false)).isTrue();
     }
 
     @Test public void shouldShowBothWithQuoteOk()
@@ -88,8 +88,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = 3d;
         quoteDTO.bid = 2d;
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, true)).isTrue();
-        assertThat(BuyDialogFragment.canShowDialog(quoteDTO, false)).isTrue();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, true)).isTrue();
+        assertThat(BuyDialogFragmentStock.canShowDialog(quoteDTO, false)).isTrue();
     }
 
     @Test

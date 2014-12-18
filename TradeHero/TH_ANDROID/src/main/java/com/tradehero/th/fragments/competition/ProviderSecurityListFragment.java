@@ -26,7 +26,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -266,11 +266,11 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
-            BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-            args.putBundle(BuySellFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
+            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            BuySellStockFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+            args.putBundle(BuySellStockFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
             // TODO use other positions
-            navigator.get().pushFragment(BuySellFragment.class, args);
+            navigator.get().pushFragment(BuySellStockFragment.class, args);
         }
     }
 

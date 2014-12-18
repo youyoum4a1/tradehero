@@ -11,21 +11,18 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
-public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
+public abstract class AbstractStockTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
-    private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
-
-    public static AbstractFXTransactionDialogFragment newInstance(
+    public static AbstractStockTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
             @NonNull PortfolioId portfolioId,
             @NonNull QuoteDTO quoteDTO,
             boolean isBuy)
     {
-        AbstractFXTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyFXDialogFragment() : new SellFXDialogFragment();
+        AbstractStockTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragmentStock() : new SellDialogFragmentStock();
         Bundle args = new Bundle();
         args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
         args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
@@ -34,14 +31,13 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         return abstractBuySellDialogFragment;
     }
 
-    protected AbstractFXTransactionDialogFragment()
+    protected AbstractStockTransactionDialogFragment()
     {
         super();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        // TODO FX
         return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
     }
 
