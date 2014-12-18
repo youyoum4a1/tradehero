@@ -7,4 +7,6 @@ public interface BuildTypeUIModuleExpectation
     /*@ForQuestListTestingFragment*/ Class provideQuestListTestingFragmentClass();
     /*@ForXpTestingFragment*/ Class provideXpTestingFragmentClass();
     /*@ForTypographyFragment*/ Class provideTypographyExampleFragment();
+    /*@ForKChartFragment*/ Class provideKChartExampleFragment();
+//    /*@ForFXDetailFragment*/ Class provideFXDetailExampleFragment();
 }

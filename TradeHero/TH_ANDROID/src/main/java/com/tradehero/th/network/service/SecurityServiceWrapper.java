@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -297,6 +298,24 @@ import rx.Observable;
             return buyRx(securityId, transactionFormDTO);
         }
         return sellRx(securityId, transactionFormDTO);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX Security">
+    @NonNull public Observable<SecurityCompactDTOList> getFXSecuritiesRx()
+    {
+        Observable<SecurityCompactDTOList> received;
+        received = securityServiceRx.getFXSecurities();
+        return received;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX KChart">
+    @NonNull public Observable<FXChartDTO> getFXHistory(SecurityId securityId, String duration)
+    {
+        Observable<FXChartDTO> received;
+        received = securityServiceRx.getFXHistroy(securityId.getSecuritySymbol(), duration);
+        return received;
     }
     //</editor-fold>
 }

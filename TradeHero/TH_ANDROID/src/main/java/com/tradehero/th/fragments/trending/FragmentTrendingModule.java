@@ -5,7 +5,9 @@ import dagger.Module;
 
 @Module(
         injects = {
-                TrendingFragment.class,
+                TrendingMainFragment.class,
+                TrendingStockFragment.class,
+                TrendingFXFragment.class,
                 TrendingFilterSelectorView.class,
                 SearchPeopleItemView.class,
 

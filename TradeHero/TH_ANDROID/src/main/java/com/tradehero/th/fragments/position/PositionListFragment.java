@@ -46,7 +46,7 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -216,10 +216,10 @@ public class PositionListFragment
 
         if (ownedPortfolioId != null)
         {
-            TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            TrendingStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        navigator.get().pushFragment(TrendingFragment.class, args);
+        navigator.get().pushFragment(TrendingStockFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)

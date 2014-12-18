@@ -5,6 +5,12 @@ package com.tradehero.th.models.chart;
  */
 public class ChartTimeSpan
 {
+    public static final long MIN_1 =        60;
+    public static final long MIN_5 =       300;
+    public static final long MIN_15 =      900;
+    public static final long MIN_30 =     1800;
+    public static final long HOUR_1 =     3600;
+    public static final long HOUR_4 =    14400;
     public static final long DAY_1 =     86400;
     public static final long DAY_5 =    432000;
     public static final long MONTH_3 = 2629800;

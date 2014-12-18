@@ -71,7 +71,7 @@ import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("trending-securities")
-public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
+public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemView>
         implements WithTutorial
 {
     @Inject CurrentUserId currentUserId;
@@ -109,7 +109,7 @@ public class TrendingFragment extends SecurityListRxFragment<SecurityItemView>
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_trending, container, false);
+        return inflater.inflate(R.layout.fragment_stock_trending, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
