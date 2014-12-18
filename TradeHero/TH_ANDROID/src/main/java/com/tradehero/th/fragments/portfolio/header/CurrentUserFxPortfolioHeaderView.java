@@ -7,6 +7,7 @@ import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
@@ -26,16 +27,19 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
     public CurrentUserFxPortfolioHeaderView(Context context)
     {
         super(context);
+        HierarchyInjector.inject(this);
     }
 
     public CurrentUserFxPortfolioHeaderView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        HierarchyInjector.inject(this);
     }
 
     public CurrentUserFxPortfolioHeaderView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        HierarchyInjector.inject(this);
     }
     //</editor-fold>
 
