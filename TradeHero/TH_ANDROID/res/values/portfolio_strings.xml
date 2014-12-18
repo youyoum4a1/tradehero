@@ -28,7 +28,15 @@
 
   <string name="portfolio_title_unnamed">Unnamed Portfolio</string>
 
-  <string name="portfolio_margin_close_out_soon">Margin is approaching closeout (%s)</string>
+  <item name="position_margin_close_out_ok" format="float" type="dimen">0.5</item>
+  <string name="position_margin_close_out_ok">Margin is healthy (%s)</string>
+  <color name="position_margin_close_out_ok">@color/number_green</color>
+  <item name="position_margin_close_out_warn" format="float" type="dimen">0.9</item>
+  <string name="position_margin_close_out_warn">Margin is approaching closeout (%s)</string>
+  <color name="position_margin_close_out_warn">@color/orange</color>
+  <string name="position_margin_close_out_danger">Margin is dangerously near closeout (%s)</string>
+  <color name="position_margin_close_out_danger">@color/number_red</color>
+
   <string name="portfolio_margin_call_title">Margin Call</string>
   <string name="portfolio_margin_call_description">You have a margin call on your portfolio, close positions and avoid a forced close-out</string>
   <string name="portfolio_margin_call_ok">Deal with it now!</string>

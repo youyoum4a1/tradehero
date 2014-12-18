@@ -502,7 +502,7 @@ public class PositionPartialTopView extends LinearLayout
         if (forceClosed != null)
         {
             boolean isForceClosed = positionDTO != null && positionDTO.positionStatus != null &&
-                    positionDTO.positionStatus.equals(PositionStatus.FORCECLOSED);
+                    positionDTO.positionStatus.equals(PositionStatus.FORCE_CLOSED);
             forceClosed.setVisibility(isForceClosed ? VISIBLE : GONE);
         }
     }

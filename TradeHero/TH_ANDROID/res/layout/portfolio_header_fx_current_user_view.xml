@@ -10,13 +10,13 @@
     >
 
   <TextView
-      android:id="@+id/margin_close_out_warn"
+      android:id="@+id/margin_close_out_status"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:padding="@dimen/margin_xsmall"
       style="@style/TH.Subhead.Inverse"
-      android:background="@color/orange"
+      tools:background="@color/orange"
       tools:text="Margin is approaching"
       android:gravity="center"
       android:visibility="gone"
