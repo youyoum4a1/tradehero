@@ -15,7 +15,7 @@
       android:orientation="horizontal"
       android:gravity="center_vertical"
       android:layout_width="fill_parent"
-      android:layout_height="32dp">
+      android:layout_height="30dp">
     <LinearLayout
         android:layout_weight="1"
         android:id="@+id/llTLPraise"
@@ -23,8 +23,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
       <TextView android:id="@+id/btnTLPraise"
-          android:layout_width="16dp"
-          android:layout_height="16dp"
+          android:layout_width="15dp"
+          android:layout_height="15dp"
           android:duplicateParentState="true"
           android:background="@drawable/icon_praise_normal"/>
       <TextView
@@ -40,10 +40,10 @@
     </LinearLayout>
 
     <View
-        android:layout_width="1dp"
+        android:layout_width="1px"
         android:layout_height="fill_parent"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
         android:background="@color/gray_normal"/>
 
     <LinearLayout
@@ -53,8 +53,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
       <TextView android:id="@+id/btnTLPraiseDown"
-          android:layout_width="16dp"
-          android:layout_height="16dp"
+          android:layout_width="15dp"
+          android:layout_height="15dp"
           android:duplicateParentState="true"
           android:background="@drawable/icon_praise_down_normal"/>
       <TextView
@@ -71,10 +71,10 @@
 
 
     <View
-        android:layout_width="1dp"
+        android:layout_width="1px"
         android:layout_height="fill_parent"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="7dp"
         android:background="@color/gray_normal"/>
 
     <RelativeLayout
@@ -90,8 +90,8 @@
           android:layout_width="fill_parent">
 
         <TextView android:id="@+id/btnTLComment"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:duplicateParentState="true"
             android:background="@drawable/icon_comment_xml"/>
         <TextView
@@ -113,8 +113,8 @@
           android:layout_height="fill_parent"
           android:layout_width="fill_parent">
         <TextView android:id="@+id/btnTLBuy"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:duplicateParentState="true"
             android:background="@drawable/icon_buy_xml"/>
         <TextView
