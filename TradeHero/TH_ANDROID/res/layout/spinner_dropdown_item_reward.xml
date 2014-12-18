@@ -6,10 +6,11 @@
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:ellipsize="marquee"
-                 android:paddingTop="3dp"
-                 android:paddingBottom="3dp"
+                 android:paddingTop="5dp"
+                 android:paddingBottom="5dp"
                  android:paddingLeft="15dp"
                  android:paddingRight="15dp"
                  android:textSize="15sp"
+                 android:background="#ffffff"
                  android:textColor="@color/discovery_discuss_reward_gray"
                  android:textAlignment="inherit"/>

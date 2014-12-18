@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -35,11 +33,12 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-9. UGC 比赛创建页
@@ -79,6 +78,8 @@ public class CompetitionCreateFragment extends DashboardFragment
     private Dialog mShareSheetDialog;
 
     private boolean bSuccessed = false;
+
+    private int tradehero_blue;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -167,25 +168,15 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     private void initView()
     {
+        tradehero_blue = getActivity().getResources().getColor(R.color.tradehero_blue);
         initSpinnerViewPeriod();
         cbCompetitionInvite.setChecked(true);
         cbExchangeCH.setChecked(true);
     }
-
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override public void onResume()
@@ -220,6 +211,21 @@ public class CompetitionCreateFragment extends DashboardFragment
     private void initSpinnerViewPeriod()
     {
         spinnerIconAdapterPeriod = new SpinnerExchangeIconAdapter(getActivity(), CompetitionUtils.strPeriods);
+        spCompetitionPerid.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view != null)
+                {
+                    TextView selectedTV = (TextView) view.findViewById(R.id.tvSpinnerItemName);
+                    selectedTV.setTextColor(tradehero_blue);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         spCompetitionPerid.setAdapter(spinnerIconAdapterPeriod);
     }
 

@@ -184,7 +184,7 @@ public class DiscussSendFragment extends DashboardFragment
                 dividerView.setVisibility(View.GONE);
                 rewardMoneyLayoutLL.setVisibility(View.GONE);
             }
-            rewardMoneyListAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item_reward, moneyList);
+            rewardMoneyListAdapter = new ArrayAdapter(getActivity(), R.layout.spinner_item_reward, moneyList);
             rewardMoneyListAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item_reward);
             rewardMoneyListS.setAdapter(rewardMoneyListAdapter);
         }else{
