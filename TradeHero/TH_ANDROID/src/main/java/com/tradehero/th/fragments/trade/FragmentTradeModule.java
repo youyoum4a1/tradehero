@@ -5,13 +5,10 @@ import dagger.Module;
 
 @Module(
         injects = {
-                BuySellFragment.class,
-                AbstractBuySellFXFragment.class,
+                BuySellStockFragment.class,
                 BuySellFXFragment.class,
-                AbstractTransactionDialogFragment.class,
-                BuyDialogFragment.class,
-                SellDialogFragment.class,
-                AbstractFXTransactionDialogFragment.class,
+                BuyDialogFragmentStock.class,
+                SellDialogFragmentStock.class,
                 BuyFXDialogFragment.class,
                 SellFXDialogFragment.class,
                 TradeListFragment.class,

@@ -43,7 +43,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
     protected PortfolioId portfolioId;
     protected QuoteDTO quoteDTO;
     protected DashboardActivity activity;
-    protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
+    protected AbstractStockTransactionDialogFragment abstractTransactionDialogFragment;
 
     @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
     @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
@@ -93,7 +93,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
 
         activity = Robolectric.setupActivity(DashboardActivity.class);
         abstractTransactionDialogFragment
-                = AbstractTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
+                = AbstractStockTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
         abstractTransactionDialogFragment.show(activity.getFragmentManager(), "Test");
         ButterKnife.inject(this, abstractTransactionDialogFragment.getView());
 

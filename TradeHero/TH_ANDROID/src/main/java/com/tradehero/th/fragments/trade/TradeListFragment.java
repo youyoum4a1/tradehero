@@ -528,12 +528,12 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
-                BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
-            BuySellFragment.putSecurityId(args, securityId);
+            BuySellStockFragment.putSecurityId(args, securityId);
             if (navigator != null)
             {
-                navigator.get().pushFragment(BuySellFragment.class, args);
+                navigator.get().pushFragment(BuySellStockFragment.class, args);
             }
         }
     }

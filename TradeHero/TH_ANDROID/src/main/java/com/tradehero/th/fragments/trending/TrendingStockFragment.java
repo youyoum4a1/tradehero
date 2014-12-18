@@ -46,7 +46,7 @@ import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
@@ -514,15 +514,15 @@ public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemVi
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
 
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
 
         if (ownedPortfolioId != null)
         {
-            BuySellFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            BuySellStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        navigator.get().pushFragment(BuySellFragment.class, args);
+        navigator.get().pushFragment(BuySellStockFragment.class, args);
     }
 }

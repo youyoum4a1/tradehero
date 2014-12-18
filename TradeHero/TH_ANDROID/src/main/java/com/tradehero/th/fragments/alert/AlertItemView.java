@@ -19,7 +19,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -205,8 +205,8 @@ public class AlertItemView extends RelativeLayout
                 alertCompactDTO.security.getSecurityId() != null)
         {
             Bundle args = new Bundle();
-            BuySellFragment.putSecurityId(args, alertCompactDTO.security.getSecurityId());
-            navigator.pushFragment(BuySellFragment.class, args);
+            BuySellStockFragment.putSecurityId(args, alertCompactDTO.security.getSecurityId());
+            navigator.pushFragment(BuySellStockFragment.class, args);
         }
     }
 }

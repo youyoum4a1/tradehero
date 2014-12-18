@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 
 @RunWith(THRobolectricTestRunner.class)
-public class BuySellFragmentTest
+public class BuySellStockFragmentTest
 {
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
@@ -40,7 +40,7 @@ public class BuySellFragmentTest
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject SecurityIdCache securityIdCache;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    private BuySellFragment buySellFragment;
+    private BuySellStockFragment buySellStockFragment;
     @Inject DashboardNavigator dashboardNavigator;
 
     @Before public void setUp()
@@ -52,7 +52,7 @@ public class BuySellFragmentTest
 
     @After public void tearDown()
     {
-        buySellFragment = null;
+        buySellStockFragment = null;
         alertCompactListCache.invalidateAll();
         alertCompactCache.invalidateAll();
         alertCache.invalidateAll();
@@ -66,7 +66,7 @@ public class BuySellFragmentTest
     {
         SecurityId googleId = new SecurityId("NYSE", "GOOG");
         Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, googleId);
+        BuySellStockFragment.putSecurityId(args, googleId);
         return args;
     }
 
@@ -89,11 +89,11 @@ public class BuySellFragmentTest
     {
         alertCompactListCache.onNext(currentUserId.toUserBaseKey(), new AlertCompactDTOList());
 
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
+        buySellStockFragment = dashboardNavigator.pushFragment(BuySellStockFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
-        assertThat(buySellFragment.mBtnAddTrigger.getText()).isEqualTo("Add Alert");
+        assertThat(buySellStockFragment.mBtnAddTrigger.getText()).isEqualTo("Add Alert");
     }
 
     @Test public void testWhenHasAlertShowsEditAlert() throws Throwable
@@ -101,11 +101,11 @@ public class BuySellFragmentTest
         populateAlertCacheWithGoogleSecurityId();
         assertThat(alertCompactListCache.get(currentUserId.toUserBaseKey()).toBlocking().first()).isNotNull();
 
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
+        buySellStockFragment = dashboardNavigator.pushFragment(BuySellStockFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
-        assertThat(buySellFragment.mBtnAddTrigger.getText()).isEqualTo("Edit Alert");
+        assertThat(buySellStockFragment.mBtnAddTrigger.getText()).isEqualTo("Edit Alert");
     }
     //</editor-fold>
 
@@ -134,24 +134,24 @@ public class BuySellFragmentTest
                 currentUserId.toUserBaseKey(),
                 new WatchlistPositionDTOList());
 
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
+        buySellStockFragment = dashboardNavigator.pushFragment(BuySellStockFragment.class, bundleWithGoogleSecurityId());
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
         Robolectric.runBackgroundTasks();
         Robolectric.runUiThreadTasks();
 
-        assertThat(buySellFragment.mBtnAddWatchlist.getText()).isEqualTo("Add to Watchlist");
+        assertThat(buySellStockFragment.mBtnAddWatchlist.getText()).isEqualTo("Add to Watchlist");
     }
 
     @Test public void testWhenHasWatchlistShowEditWatchlist() throws InterruptedException
     {
         populateUserWatchlistCache();
-        buySellFragment = dashboardNavigator.pushFragment(BuySellFragment.class, bundleWithGoogleSecurityId());
+        buySellStockFragment = dashboardNavigator.pushFragment(BuySellStockFragment.class, bundleWithGoogleSecurityId());
 
         runBgUiTasks(3);
 
-        assertThat(buySellFragment.mBtnAddWatchlist.getText()).isEqualTo("Edit in Watchlist");
+        assertThat(buySellStockFragment.mBtnAddWatchlist.getText()).isEqualTo("Edit in Watchlist");
     }
     //</editor-fold>
 }

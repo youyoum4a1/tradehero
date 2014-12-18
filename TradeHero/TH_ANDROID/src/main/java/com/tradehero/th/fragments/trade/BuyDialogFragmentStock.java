@@ -12,13 +12,13 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
-public class SellDialogFragment extends AbstractTransactionDialogFragment
+public class BuyDialogFragmentStock extends AbstractStockTransactionDialogFragment
 {
-    private static final boolean IS_BUY = false;
+    private static final boolean IS_BUY = true;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    public SellDialogFragment()
+    public BuyDialogFragmentStock()
     {
         super();
     }
@@ -30,73 +30,60 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
 
     @Override protected String getLabel()
     {
-        THSignedNumber sthSignedNumber = THSignedMoney
-                .builder(quoteDTO.bid)
+        THSignedNumber bThSignedNumber = THSignedMoney
+                .builder(quoteDTO.ask)
                 .withOutSign()
                 .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
                 .build();
-        return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
+        return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd()
     {
-        if (positionDTOCompactList == null || portfolioCompactDTO == null)
-        {
-            return null;
-        }
-        Double netProceedsUsd = positionDTOCompactList.getNetSellProceedsUsd(
-                mTransactionQuantity,
-                quoteDTO,
-                getPortfolioId(),
-                true,
-                portfolioCompactDTO.getProperTxnCostUsd());
-        Double totalSpentUsd = positionDTOCompactList.getSpentOnQuantityUsd(mTransactionQuantity, portfolioCompactDTO);
-        if (netProceedsUsd == null || totalSpentUsd == null)
-        {
-            return null;
-        }
-        return netProceedsUsd - totalSpentUsd;
+        return null;
     }
 
     @Override protected int getCashLeftLabelResId()
     {
-        return R.string.buy_sell_share_left;
+        return R.string.buy_sell_cash_left;
     }
 
     @Override @NonNull public String getCashShareLeft()
     {
-        String shareLeftText = getResources().getString(R.string.na);
+        String cashLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null)
         {
             Double priceRefCcy = getPriceCcy();
             if (priceRefCcy != null && portfolioCompactDTO != null)
             {
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null && maxSellableShares != 0)
-                {
-                    shareLeftText = THSignedNumber.builder(maxSellableShares - mTransactionQuantity)
-                            .relevantDigitCount(1)
-                            .withOutSign()
-                            .build().toString();
-                }
+                double value = mTransactionQuantity * priceRefCcy;
+
+                double cashAvailable = portfolioCompactDTO.cashBalance;
+                THSignedNumber thSignedNumber = THSignedMoney
+                        .builder(cashAvailable - value)
+                        .withOutSign()
+                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .build();
+                cashLeftText = thSignedNumber.toString();
             }
         }
-        return shareLeftText;
+
+        return cashLeftText;
     }
 
     @Override @Nullable protected Integer getMaxValue()
     {
-        return getMaxSellableShares();
+        return getMaxPurchasableShares();
     }
 
     @Override protected boolean hasValidInfo()
     {
-        return hasValidInfoForSell();
+        return hasValidInfoForBuy();
     }
 
     @Override protected boolean isQuickButtonEnabled()
     {
-        if ((quoteDTO == null || quoteDTO.bid == null || quoteDTO.toUSDRate == null))
+        if (quoteDTO == null || quoteDTO.ask == null)
         {
             return false;
         }
@@ -105,11 +92,9 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
 
     @Override protected double getQuickButtonMaxValue()
     {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares != null && quoteDTO != null && quoteDTO.bid != null)
+        if (portfolioCompactDTO != null)
         {
-            // TODO see other currencies
-            return maxSellableShares * quoteDTO.bid * quoteDTO.toUSDRate;
+            return portfolioCompactDTO.cashBalance;
         }
         return 0;
     }
@@ -132,19 +117,18 @@ public class SellDialogFragment extends AbstractTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    @Nullable public Integer getMaxSellableShares()
+    @Nullable public Integer getMaxPurchasableShares()
     {
-        return positionDTOCompactList == null ? null :
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
+        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+                portfolioCompactDTO,
+                quoteDTO);
     }
 
-    protected boolean hasValidInfoForSell()
+    protected boolean hasValidInfoForBuy()
     {
         return securityId != null
                 && securityCompactDTO != null
                 && quoteDTO != null
-                && quoteDTO.bid != null;
+                && quoteDTO.ask != null;
     }
 }
