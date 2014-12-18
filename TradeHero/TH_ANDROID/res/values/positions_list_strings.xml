@@ -23,6 +23,7 @@
   <string name="position_quantity_header">Quantity</string>
   <string name="position_average_price_header">Avg. Price</string>
   <string name="position_unit_count">%s units</string>
+  <string name="position_force_closed">Force Closed</string>
 
   <string name="error_fetch_position_list_info">There was an error when fetching the list of positions</string>
   <string name="error_lost_position_in_cache">We have lost track of this trading position</string>
