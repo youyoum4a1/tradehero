@@ -224,7 +224,7 @@ abstract public class AbstractBuySellFXFragment extends BasePurchaseManagerFragm
         unsubscribe(quoteSubscription);
         quoteSubscription = AndroidObservable.bindFragment(
                 this,
-                quoteServiceWrapper.getFXQuoteRx(securityId)
+                quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(MILLISEC_QUOTE_REFRESH, TimeUnit.MILLISECONDS)))
                 .subscribe(
                         quoteDTO -> linkWith(quoteDTO, true),
