@@ -28,6 +28,8 @@ import com.tradehero.th.api.position.PositionDTOKeyFactory;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -408,8 +410,18 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             securityId = securityCompactDTO.getSecurityId();
         }
+        FxPairSecurityId fxPairSecurityId = null;
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+        }
 
-        if (securityId != null)
+        if (fxPairSecurityId != null)
+        {
+            setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
+            setActionBarSubtitle(null);
+        }
+        else if (securityId != null)
         {
             if (securityCompactDTO == null || securityCompactDTO.name == null)
             {

@@ -1,17 +1,25 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.models.resource.ResourceUtil;
 import javax.inject.Inject;
 
 public class PortfolioCompactDTOUtil
 {
+    @NonNull protected final ResourceUtil resourceUtil;
+
     //<editor-fold desc="Constructors">
-    @Inject public PortfolioCompactDTOUtil()
+    @Inject public PortfolioCompactDTOUtil(@NonNull ResourceUtil resourceUtil)
     {
         super();
+        this.resourceUtil = resourceUtil;
     }
     //</editor-fold>
 
@@ -87,5 +95,52 @@ public class PortfolioCompactDTOUtil
             }
         }
         return null;
+    }
+
+    @StringRes public int getMarginCloseOutLabelResId(
+            @NonNull Resources resources,
+            double marginCloseOutPercent)
+    {
+        float okBound = resourceUtil.getFloat(resources, R.dimen.position_margin_close_out_ok);
+        float warnBound = resourceUtil.getFloat(resources, R.dimen.position_margin_close_out_warn);
+        if (marginCloseOutPercent <= okBound)
+        {
+            return R.string.position_margin_close_out_ok;
+        }
+        else if (marginCloseOutPercent <= warnBound)
+        {
+            return R.string.position_margin_close_out_warn;
+        }
+        else
+        {
+            return R.string.position_margin_close_out_danger;
+        }
+    }
+
+    public int getMarginCloseOutColor(
+            @NonNull Resources resources,
+            double marginCloseOutPercent)
+    {
+        return resources.getColor(getMarginCloseOutColorResId(resources, marginCloseOutPercent));
+    }
+
+    @ColorRes public int getMarginCloseOutColorResId(
+            @NonNull Resources resources,
+            double marginCloseOutPercent)
+    {
+        float okBound = resourceUtil.getFloat(resources, R.dimen.position_margin_close_out_ok);
+        float warnBound = resourceUtil.getFloat(resources, R.dimen.position_margin_close_out_warn);
+        if (marginCloseOutPercent <= okBound)
+        {
+            return R.color.position_margin_close_out_ok;
+        }
+        else if (marginCloseOutPercent <= warnBound)
+        {
+            return R.color.position_margin_close_out_warn;
+        }
+        else
+        {
+            return R.color.position_margin_close_out_danger;
+        }
     }
 }

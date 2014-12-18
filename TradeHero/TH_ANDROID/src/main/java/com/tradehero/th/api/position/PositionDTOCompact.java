@@ -34,7 +34,9 @@ public class PositionDTOCompact implements DTO
     @JsonIgnore @Nullable
     public Boolean isClosed()
     {
-        if (positionStatus != null && positionStatus.equals(PositionStatus.CLOSED))
+        if (positionStatus != null &&
+                (positionStatus.equals(PositionStatus.CLOSED)
+                        || positionStatus.equals(PositionStatus.FORCE_CLOSED)))
         {
             return true;
         }
@@ -48,7 +50,9 @@ public class PositionDTOCompact implements DTO
     @JsonIgnore @Nullable
     public Boolean isOpen()
     {
-        if (positionStatus != null && positionStatus.equals(PositionStatus.CLOSED))
+        if (positionStatus != null &&
+                (positionStatus.equals(PositionStatus.CLOSED)
+                        || positionStatus.equals(PositionStatus.FORCE_CLOSED)))
         {
             return false;
         }
@@ -85,7 +89,7 @@ public class PositionDTOCompact implements DTO
         }
 
         List<PositionCompactId> positionCompactIds = new ArrayList<>();
-        for (PositionDTOCompact positionDTOCompact: positionDTOCompacts)
+        for (PositionDTOCompact positionDTOCompact : positionDTOCompacts)
         {
             positionCompactIds.add(positionDTOCompact.getPositionCompactId());
         }

@@ -6,10 +6,10 @@ import timber.log.Timber;
 
 public enum PositionStatus
 {
-    SHORT(-1),
     CLOSED(0),
-    LONG(1),
-    FORCECLOSED(2),
+    SHORT(1),
+    LONG(2),
+    FORCE_CLOSED(3),
     ;
 
     public final int value;
