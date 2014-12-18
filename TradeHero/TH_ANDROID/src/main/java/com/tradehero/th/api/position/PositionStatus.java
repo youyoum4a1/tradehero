@@ -9,6 +9,7 @@ public enum PositionStatus
     SHORT(-1),
     CLOSED(0),
     LONG(1),
+    FORCECLOSED(2),
     ;
 
     public final int value;

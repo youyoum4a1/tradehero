@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_vertical"
-    android:background="@color/white"
+    android:background="@drawable/trending_filter_header_background"
     >
 
   <TextView
@@ -23,114 +23,175 @@
       tools:visibility="visible"
       />
 
-  <HorizontalScrollView
+  <TableLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:scrollbarDefaultDelayBeforeFade="@integer/about_screen_rotation_delay"
       android:layout_gravity="center_horizontal"
       style="@style/TH.ListItem"
       >
 
-    <TableLayout
-        android:layout_width="wrap_content"
+    <TableRow
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        >
 
-      <TableRow
-          android:layout_width="match_parent"
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+
+      <TextView
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          >
+          android:text="@string/portfolio_header_net_asset_value"
+          android:layout_gravity="center_vertical"
+          android:textColor="@color/gray_normal"
+          style="@style/TH.Caption"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/portfolio_header_net_asset_value"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/gray_normal"
-            style="@style/TH.Caption"/>
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/position_unrealised_pl_header"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/gray_normal"
-            style="@style/TH.Caption"
-            />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/position_unrealised_pl_header"
+          android:layout_gravity="center_vertical"
+          android:textColor="@color/gray_normal"
+          style="@style/TH.Caption"
+          />
 
-      </TableRow>
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-      <TableRow>
+    </TableRow>
 
-        <TextView
-            android:id="@+id/header_portfolio_total_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/TH.Subhead"
-            android:textColor="@color/black"
-            tools:text="US$ 8,695"
-            />
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
-        <TextView
-            android:id="@+id/header_portfolio_pl_unrealised"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TH.Subhead"
-            android:textColor="@color/black"
-            android:layout_gravity="center_vertical"
-            tools:text="US$ 85,695"
-            />
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-      </TableRow>
+      <TextView
+          android:id="@+id/header_portfolio_total_value"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead"
+          android:textColor="@color/black"
+          tools:text="US$ 8,695"
+          />
 
-      <TableRow>
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/portfolio_header_margin_available_title"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/gray_normal"
-            style="@style/TH.Caption"
-            />
+      <TextView
+          android:id="@+id/header_portfolio_pl_unrealised"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead"
+          android:textColor="@color/black"
+          android:layout_gravity="center_vertical"
+          tools:text="US$ 85,695"
+          />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/portfolio_header_margin_used_title"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/gray_normal"
-            style="@style/TH.Caption"
-            />
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-      </TableRow>
+    </TableRow>
 
-      <TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
 
-        <TextView
-            android:id="@+id/header_portfolio_margin_available"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TH.Subhead"
-            android:textColor="@color/black"
-            android:layout_gravity="center_vertical"
-            tools:text="US$ 85,695"
-            />
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-        <TextView
-            android:id="@+id/header_portfolio_margin_used"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/TH.Subhead"
-            android:textColor="@color/black"
-            android:layout_gravity="center_vertical"
-            tools:text="US$ 25,695"
-            />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/portfolio_header_margin_available_title"
+          android:layout_gravity="center_vertical"
+          android:textColor="@color/gray_normal"
+          style="@style/TH.Caption"
+          />
 
-      </TableRow>
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
 
-    </TableLayout>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/portfolio_header_margin_used_title"
+          android:layout_gravity="center_vertical"
+          android:textColor="@color/gray_normal"
+          style="@style/TH.Caption"
+          />
 
-  </HorizontalScrollView>
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+
+      <TextView
+          android:id="@+id/header_portfolio_margin_available"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead"
+          android:textColor="@color/black"
+          android:layout_gravity="center_vertical"
+          tools:text="US$ 85,695"
+          />
+
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+
+      <TextView
+          android:id="@+id/header_portfolio_margin_used"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.Subhead"
+          android:textColor="@color/black"
+          android:layout_gravity="center_vertical"
+          tools:text="US$ 25,695"
+          />
+
+      <Space
+          android:layout_width="0dp"
+          android:layout_height="1dp"
+          android:layout_weight="1"/>
+
+    </TableRow>
+
+  </TableLayout>
 
 </com.tradehero.th.fragments.portfolio.header.CurrentUserFxPortfolioHeaderView>
