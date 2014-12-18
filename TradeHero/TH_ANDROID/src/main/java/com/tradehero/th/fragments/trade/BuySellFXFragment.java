@@ -75,7 +75,7 @@ import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 //@Routable("security/:securityRawInfo")
-public class BuySellFXFragment extends AbstractBuySellFXFragment
+public class BuySellFXFragment extends AbstractBuySellFragment
         implements WithTutorial, TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
     public static final String EVENT_CHART_IMAGE_CLICKED = BuySellFXFragment.class.getName() + ".chartButtonClicked";
