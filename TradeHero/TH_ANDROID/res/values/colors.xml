@@ -43,7 +43,7 @@
 
     <color name="gray_2">#A0AFAFAF</color>
     <color name="text_gray_normal">#929292</color>
-    <color name="gray_normal">#d3d2d6</color>
+    <color name="gray_normal">#dedde0</color>
     <color name="gray_1">#eeeeef</color>
     <color name="gray_3">#F3F3F3</color>
     <color name="gray_4">#F6F6F6</color>
@@ -108,7 +108,7 @@
     <color name="authentication_button_dark">#9e9e9e</color>
     <color name="authentication_button_light">#808080</color>
     <color name="timeline_item_title">#000000</color>
-    <color name="timeline_item">#000000</color>
+    <color name="timeline_item">#848484</color>
     <color name="timeline_item_link">#1789d5</color>
     <color name="trending_grid_item_stock_name">#384152</color>
     <color name="leaderboard_ranking_position">#4d6d9d</color>
@@ -151,7 +151,7 @@
 
     <color name="message_button_blue">#6e96fa</color>
     <!-- <color name="message_button_blue_pressed">#ffa6befa</color> -->
-    <color name="message_button_blue_pressed">#eeeeef</color>
+    <color name="message_button_blue_pressed">#f4f4f4</color>
     <color name="message_button_blue_overlay">#0d6cfb</color>
 
     <color name="light_green_selector">#a0dc50</color>
@@ -169,7 +169,7 @@
     <color name="discussion_action_buttons_border_top_color">#fafafa</color>
 
     <color name="grid_item_bg_border">#88000000</color>
-    <color name="bg_timeline">#FFF4F4F4</color>
+    <color name="bg_timeline">#FFEEEEEF</color>
 
     <color name="loading_progress_background">#ea2c2c2c</color>
 

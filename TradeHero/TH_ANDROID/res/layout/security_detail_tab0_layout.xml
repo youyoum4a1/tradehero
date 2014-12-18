@@ -73,19 +73,22 @@
         </LinearLayout>
 
         <include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>
-        <!--<include layout="@layout/separate_line"/>-->
-        <TextView
-            android:id="@+id/tvSecurityDiscussOrNewsMore"
-            android:background="@drawable/listview_item_selector"
-            android:layout_width="fill_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="32dp"
-            android:gravity="center"
-            android:visibility="gone"
-            android:text="@string/click_to_get_more"/>
+
       </LinearLayout>
+
+      <include layout="@layout/separate_line"/>
+      <TextView
+          android:id="@+id/tvSecurityDiscussOrNewsMore"
+          android:background="@drawable/listview_item_selector"
+          android:layout_width="fill_parent"
+          android:layout_marginLeft="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginTop="10dp"
+          android:layout_height="32dp"
+          android:gravity="center"
+          android:visibility="visible"
+          android:text="@string/click_to_get_more"/>
+
     </LinearLayout>
   </ScrollView>
 </LinearLayout>
