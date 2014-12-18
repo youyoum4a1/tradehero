@@ -68,28 +68,4 @@ import rx.schedulers.Schedulers;
                 .subscribeOn(Schedulers.io());
     }
     //</editor-fold>
-
-    //<editor-fold desc="Get Quote">
-    @NonNull public Observable<QuoteDTO> getFXQuoteRx(@NonNull SecurityId securityId)
-    {
-        basicCheck(securityId);
-        //noinspection Convert2Lambda
-        return Observable.create(new Observable.OnSubscribe<QuoteDTO>()
-        {
-            @Override public void call(Subscriber<? super QuoteDTO> subscriber)
-            {
-                try
-                {
-                    Response response = quoteServiceRx.getFXRawQuote(
-                            UrlEncoderHelper.transform(securityId.getSecuritySymbol()));
-                    subscriber.onNext(rawQuoteParser.parse(response));
-                } catch (Exception e)
-                {
-                    subscriber.onError(e);
-                }
-            }
-        })
-                .subscribeOn(Schedulers.io());
-    }
-    //</editor-fold>
 }

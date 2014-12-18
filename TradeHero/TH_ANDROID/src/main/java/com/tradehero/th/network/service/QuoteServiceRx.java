@@ -13,11 +13,4 @@ interface QuoteServiceRx
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol);
     //</editor-fold>
-
-    //<editor-fold desc="Get FX Raw Quote">
-    // We should not ask Observable<Response> from Retrofit as Response is not a json convertible object
-    @GET("/securities/FXRATE/{securitySymbol}/quote")
-    Response getFXRawQuote(
-            @Path("securitySymbol") String securitySymbol);
-    //</editor-fold>
 }
