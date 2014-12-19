@@ -3,6 +3,7 @@ package com.tradehero.th;
 import com.tradehero.th.fragments.DebugFragmentModule;
 import com.tradehero.th.fragments.ForKChartFragment;
 import com.tradehero.th.fragments.ForTypographyFragment;
+import com.tradehero.th.fragments.TestKChartsFragment;
 import com.tradehero.th.fragments.TypographyExampleFragment;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
@@ -10,7 +11,6 @@ import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.level.XpTestingFragment;
-import com.tradehero.th.fragments.TestKChartsFragment;
 import dagger.Module;
 import dagger.Provides;
 
@@ -49,5 +49,4 @@ public class BuildTypeUIModule implements BuildTypeUIModuleExpectation
     {
         return TestKChartsFragment.class;
     }
-
 }
