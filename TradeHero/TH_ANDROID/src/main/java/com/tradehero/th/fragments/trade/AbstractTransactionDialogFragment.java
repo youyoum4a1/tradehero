@@ -453,7 +453,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
         {
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()
@@ -467,15 +467,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    protected void linkWith(PortfolioCompactDTOList value, boolean andDisplay)
+    protected void linkWith(PortfolioCompactDTOList value)
     {
         this.portfolioCompactDTOs = value;
         portfolioCompactDTO = value.findFirstWhere(portfolioCompactDTO1 -> portfolioCompactDTO1.getPortfolioId().equals(getPortfolioId()));
-        if (andDisplay)
-        {
-            updateTransactionDialog();
-            displayAddCashButton();
-        }
+        updateTransactionDialog();
+        displayAddCashButton();
     }
 
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -527,6 +524,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         mSeekBar.setProgress(mTransactionQuantity);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.dialog_profit_and_loss)
     protected void toggleProfitLossUsdRefCcy()
     {

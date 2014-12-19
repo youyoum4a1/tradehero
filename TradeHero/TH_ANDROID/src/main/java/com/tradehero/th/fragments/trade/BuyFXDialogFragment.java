@@ -11,6 +11,7 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import timber.log.Timber;
 
 public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 {
@@ -51,16 +52,26 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
     @Override @NonNull public String getCashShareLeft()
     {
         String cashLeftText = getResources().getString(R.string.na);
-        if (quoteDTO != null)
+        if (quoteDTO != null && portfolioCompactDTO != null)
         {
+            double availableRefCcy;
+            if (portfolioCompactDTO.marginAvailableRefCcy != null
+                    && portfolioCompactDTO.leverage != null)
+            {
+                availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
+            }
+            else
+            {
+                Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
+                availableRefCcy = portfolioCompactDTO.cashBalance;
+            }
+
             Double priceRefCcy = getPriceCcy();
-            if (priceRefCcy != null && portfolioCompactDTO != null)
+            if (priceRefCcy != null)
             {
                 double value = mTransactionQuantity * priceRefCcy;
-
-                double cashAvailable = portfolioCompactDTO.cashBalance;
                 THSignedNumber thSignedNumber = THSignedMoney
-                        .builder(cashAvailable - value)
+                        .builder(availableRefCcy - value)
                         .withOutSign()
                         .currency(portfolioCompactDTO.currencyDisplay)
                         .build();
@@ -127,7 +138,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
     protected boolean hasValidInfoForBuy()
     {
         return securityId != null
-//                && securityCompactDTO != null
+                //                && securityCompactDTO != null
                 && quoteDTO != null
                 && quoteDTO.ask != null;
     }

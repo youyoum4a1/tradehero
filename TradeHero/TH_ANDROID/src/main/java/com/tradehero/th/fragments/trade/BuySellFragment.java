@@ -585,7 +585,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     public void showBuySellDialog()
     {
         if (quoteDTO != null
-                && BuyDialogFragmentStock.canShowDialog(quoteDTO, isTransactionTypeBuy))
+                && BuyStockDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
         {
             OwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
             if (currentMenu != null)

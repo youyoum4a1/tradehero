@@ -40,12 +40,23 @@ public class PortfolioCompactDTOUtil
         }
         double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         Double askUsd = quoteDTO.getAskUSD();
-        double cashUsd = portfolioCompactDTO.getCashBalanceUsd();
+        double availableUsd;
+        if (portfolioCompactDTO.marginAvailableRefCcy != null
+                && portfolioCompactDTO.leverage != null)
+        {
+            availableUsd = portfolioCompactDTO.marginAvailableRefCcy
+                    * portfolioCompactDTO.leverage
+                    * portfolioCompactDTO.getProperRefCcyToUsdRate();
+        }
+        else
+        {
+            availableUsd = portfolioCompactDTO.getCashBalanceUsd();
+        }
         if (askUsd == null || askUsd == 0)
         {
             return null;
         }
-        return (int) Math.floor((cashUsd - (includeTransactionCostUsd ? txnCostUsd : 0)) / askUsd);
+        return (int) Math.floor((availableUsd - (includeTransactionCostUsd ? txnCostUsd : 0)) / askUsd);
     }
     //</editor-fold>
 
