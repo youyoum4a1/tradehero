@@ -49,6 +49,7 @@
     public static ** valueOf(java.lang.String);
     @com.fasterxml.jackson.annotation.JsonCreator public static ** **(**);
     ** **();
+    *;
     final ** **();
     @com.fasterxml.jackson.annotation.@JsonValue ** **();
     @com.fasterxml.jackson.annotation.@JsonValue final ** **();
