@@ -563,6 +563,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             adapter.addListData(listData);
         }
+        if(listTimeLine==null){
+            return;
+        }
         listTimeLine.onRefreshComplete();
         if (adapter.getCount() >= ITEMS_PER_PAGE)
         {
