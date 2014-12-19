@@ -49,6 +49,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     {
         super.initViews();
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+        mProfitLossView.setVisibility(View.GONE);
     }
 
     public void displayQuickPriceButtonSet()

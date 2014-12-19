@@ -34,7 +34,8 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         THSignedNumber bThSignedNumber = THSignedMoney
                 .builder(quoteDTO.ask)
                 .withOutSign()
-                .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
+                .relevantDigitCount(10)
+                .currency("")
                 .build();
         return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
     }
@@ -54,37 +55,63 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         String cashLeftText = getResources().getString(R.string.na);
         if (quoteDTO != null && portfolioCompactDTO != null)
         {
-            double availableRefCcy;
-            if (portfolioCompactDTO.marginAvailableRefCcy != null
-                    && portfolioCompactDTO.leverage != null)
+            Double priceRefCcy = getPriceCcy();
+            if (priceRefCcy != null && portfolioCompactDTO != null)
             {
-                availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
+                Integer maxSellableShares = getMaxSellableShares();
+                if (maxSellableShares != null && maxSellableShares < 0)
+                {
+                    cashLeftText = THSignedNumber.builder(-maxSellableShares - mTransactionQuantity)
+                            .relevantDigitCount(1)
+                            .withOutSign()
+                            .build().toString();
+                }
             }
             else
             {
-                Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
-                availableRefCcy = portfolioCompactDTO.cashBalance;
-            }
+                double availableRefCcy;
+                if (portfolioCompactDTO.marginAvailableRefCcy != null
+                        && portfolioCompactDTO.leverage != null) {
+                    availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
+                } else {
+                    Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
+                    availableRefCcy = portfolioCompactDTO.cashBalance;
+                }
 
-            Double priceRefCcy = getPriceCcy();
-            if (priceRefCcy != null)
-            {
-                double value = mTransactionQuantity * priceRefCcy;
-                THSignedNumber thSignedNumber = THSignedMoney
-                        .builder(availableRefCcy - value)
-                        .withOutSign()
-                        .currency(portfolioCompactDTO.currencyDisplay)
-                        .build();
-                cashLeftText = thSignedNumber.toString();
+                if (priceRefCcy != null) {
+                    double value = mTransactionQuantity * priceRefCcy;
+                    THSignedNumber thSignedNumber = THSignedMoney
+                            .builder(availableRefCcy - value)
+                            .withOutSign()
+                            .currency(portfolioCompactDTO.currencyDisplay)
+                            .build();
+                    cashLeftText = thSignedNumber.toString();
+                }
             }
         }
 
         return cashLeftText;
     }
 
+    @Nullable public Integer getMaxSellableShares()
+    {
+        return positionDTOCompactList == null ? null :
+                positionDTOCompactList.getMaxSellableShares(
+                        this.quoteDTO,
+                        this.portfolioCompactDTO);
+    }
+
     @Override @Nullable protected Integer getMaxValue()
     {
-        return getMaxPurchasableShares();
+        Integer maxSellableShares = getMaxSellableShares();
+        if (maxSellableShares != null && maxSellableShares < 0)
+        {
+            return -maxSellableShares;
+        }
+        else
+        {
+            return getMaxPurchasableShares();
+        }
     }
 
     @Override protected boolean hasValidInfo()
