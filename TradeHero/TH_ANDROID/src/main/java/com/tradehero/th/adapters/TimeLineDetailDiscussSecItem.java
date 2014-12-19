@@ -1,6 +1,8 @@
 package com.tradehero.th.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.data.EmptyDiscussionCompactDTO;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
@@ -122,14 +129,26 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
                 holder.user.setText("");
             }
         }
+
+        holder.user.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (item instanceof DiscussionDTO)
+                {
+                    openUserProfile( ((DiscussionDTO) item).user.id);
+                }
+            }
+        });
         holder.avatar.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                if (listener != null)
+                if (item instanceof DiscussionDTO)
                 {
-                    listener.OnTimeLineItemClicked(position);
+                    openUserProfile( ((DiscussionDTO) item).user.id);
                 }
             }
         });
@@ -148,7 +167,8 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         {
             @Override
             public void onClick(View view)
-            {                if (view instanceof MarkdownTextView)
+            {
+                if (view instanceof MarkdownTextView)
                 {
                     if (!((MarkdownTextView) view).isClicked)
                     {
@@ -224,5 +244,35 @@ public class TimeLineDetailDiscussSecItem extends BaseAdapter
         public MarkdownTextView content;
         public LinearLayout allContent;
         public TextView rightAnswer;
+    }
+
+    private DashboardNavigator getNavigator()
+    {
+        return ((DashboardNavigatorActivity) context).getDashboardNavigator();
+    }
+
+    public void gotoDashboard(String strFragment, Bundle bundle)
+    {
+        Bundle args = new Bundle();
+        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
+        args.putAll(bundle);
+        ActivityHelper.launchDashboard((Activity) this.context, args);
+    }
+
+    private void openUserProfile(int userId)
+    {
+        if (userId >= 0)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userId);
+            if (getNavigator() != null)
+            {
+                getNavigator().pushFragment(UserMainPage.class, bundle);
+            }
+            else
+            {
+                gotoDashboard(UserMainPage.class.getName(), bundle);
+            }
+        }
     }
 }
