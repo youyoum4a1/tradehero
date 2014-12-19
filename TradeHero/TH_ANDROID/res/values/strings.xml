@@ -483,7 +483,10 @@
   <string name="discovery_discuss_dlg_apply">正在采纳...</string>
   <string name="discovery_discuss_send_reward_title_warning">标题为3-18个字符</string>
   <string name="discovery_discuss_send_reward_content_warning">您的帖子内容不能为空</string>
+  <string name="discovery_discuss_send_reward_title_hint">(必填)</string>
+  <string name="discovery_discuss_send_reward_content_hint">聊聊股市吧</string>
   <string name="discovery_discuss_send_reward_right_answer">最佳答案</string>
   <string name="discovery_discuss_already_deleted">该贴已删除</string>
+
   <!-- Discovery Discuss Reward -->
 </resources>

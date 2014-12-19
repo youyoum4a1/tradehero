@@ -393,7 +393,7 @@ public class DiscussSendFragment extends DashboardFragment
             return;
         }
         DiscoveryDiscussFormDTO dto = new DiscoveryDiscussFormDTO();
-        dto.text = content;
+        dto.text = unSpanText(rewardContentET.getText()).toString();
         dto.header = title;
         if(isGoToReward){
             int position = rewardMoneyListS.getSelectedItemPosition();
@@ -424,7 +424,8 @@ public class DiscussSendFragment extends DashboardFragment
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                THToast.show(retrofitError.getMessage());
+                THException exception = new THException(retrofitError);
+                THToast.show(exception.getMessage());
                 onFinish();
             }
 

@@ -38,7 +38,6 @@ import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
 import javax.inject.Inject;
-import java.util.Date;
 
 public class DashboardActivity extends SherlockFragmentActivity
         implements DashboardNavigatorActivity
@@ -271,18 +270,6 @@ public class DashboardActivity extends SherlockFragmentActivity
         {
 
         }
-    }
-
-    @Override public void onLowMemory()
-    {
-        super.onLowMemory();
-        String currentFragmentName =
-                getSupportFragmentManager().findFragmentById(R.id.realtabcontent)
-                        .getClass()
-                        .getName();
-        Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s",
-                currentFragmentName);
-        Crashlytics.setString("LowMemoryAt", new Date().toString());
     }
 
     private void setScreenWH() {
