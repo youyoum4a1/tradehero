@@ -81,12 +81,11 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         ProviderDTOList mockProvidersDTOList = new ProviderDTOList();
         int firstTradeAllTime = 0;
 
-        SecurityPositionDetailDTO mockPositionDetailDTO =
-                new SecurityPositionDetailDTO(
-                        mockSecurityCompactDTO,
-                        mockPositionsDTOCompactList,
-                        firstTradeAllTime,
-                        mockProvidersDTOList);
+        SecurityPositionDetailDTO mockPositionDetailDTO = new SecurityPositionDetailDTO();
+        mockPositionDetailDTO.security = mockSecurityCompactDTO;
+        mockPositionDetailDTO.positions = mockPositionsDTOCompactList;
+        mockPositionDetailDTO.firstTradeAllTime = firstTradeAllTime;
+        mockPositionDetailDTO.providers = mockProvidersDTOList;
 
         securityCompactCache.onNext(securityId, mockSecurityCompactDTO);
         //securityPositionDetailCache.put(securityId, mockPositionDetailDTO); // TODO find way to enforce values
