@@ -12,7 +12,6 @@ import dagger.Module;
                 SearchPeopleItemView.class,
 
                 // Extra Tile needs to know about userProfile data for survey tile element
-                ExtraTileAdapter.class,
                 ProviderTileView.class,
                 SurveyTileView.class,
                 ResetPortfolioTileView.class,
