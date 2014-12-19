@@ -81,8 +81,6 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_above="@+id/chart_time_span_button_set"
-          android:layout_marginLeft="@dimen/margin_small"
-          android:layout_marginRight="@dimen/margin_small"
           android:animateLayoutChanges="true"
           >
 
