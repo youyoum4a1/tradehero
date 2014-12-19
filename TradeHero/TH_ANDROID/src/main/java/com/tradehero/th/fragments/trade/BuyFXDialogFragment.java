@@ -66,26 +66,26 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
                             .withOutSign()
                             .build().toString();
                 }
-            }
-            else
-            {
-                double availableRefCcy;
-                if (portfolioCompactDTO.marginAvailableRefCcy != null
-                        && portfolioCompactDTO.leverage != null) {
-                    availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
-                } else {
-                    Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
-                    availableRefCcy = portfolioCompactDTO.cashBalance;
-                }
+                else
+                {
+                    double availableRefCcy;
+                    if (portfolioCompactDTO.marginAvailableRefCcy != null
+                            && portfolioCompactDTO.leverage != null) {
+                        availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
+                    } else {
+                        Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
+                        availableRefCcy = portfolioCompactDTO.cashBalance;
+                    }
 
-                if (priceRefCcy != null) {
-                    double value = mTransactionQuantity * priceRefCcy;
-                    THSignedNumber thSignedNumber = THSignedMoney
-                            .builder(availableRefCcy - value)
-                            .withOutSign()
-                            .currency(portfolioCompactDTO.currencyDisplay)
-                            .build();
-                    cashLeftText = thSignedNumber.toString();
+                    if (priceRefCcy != null) {
+                        double value = mTransactionQuantity * priceRefCcy;
+                        THSignedNumber thSignedNumber = THSignedMoney
+                                .builder(availableRefCcy - value)
+                                .withOutSign()
+                                .currency(portfolioCompactDTO.currencyDisplay)
+                                .build();
+                        cashLeftText = thSignedNumber.toString();
+                    }
                 }
             }
         }
