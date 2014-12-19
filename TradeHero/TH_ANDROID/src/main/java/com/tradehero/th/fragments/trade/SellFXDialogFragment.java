@@ -164,14 +164,6 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    @Nullable public Integer getMaxSellableShares()
-    {
-        return positionDTOCompactList == null ? null :
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
-    }
-
     @Nullable public Integer getMaxPurchasableShares()
     {
         return portfolioCompactDTOUtil.getMaxPurchasableSharesForFX(

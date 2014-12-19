@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +12,10 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
-
-    private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
 
     public static AbstractFXTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
@@ -42,7 +40,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // TODO FX
-        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
+        return inflater.inflate(R.layout.fx_buy_sell_dialog, container, false);
     }
 
     protected void initViews()
@@ -57,8 +55,60 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
         if (buttonSetCopy != null)
         {
+            buttonSetCopy.setFX(true);
             buttonSetCopy.setEnabled(isQuickButtonEnabled());
             buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
         }
+    }
+
+    @Nullable
+    public Integer getMaxSellableShares()
+    {
+        return positionDTOCompactList == null ? null :
+                positionDTOCompactList.getMaxSellableShares(
+                        this.quoteDTO,
+                        this.portfolioCompactDTO);
+    }
+
+    @Override
+    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener() {
+        return priceSelected -> {
+            float i = 1f;
+            switch ((int)priceSelected)
+            {
+                case 5000:
+                    i = 0.25f;
+                    break;
+                case 10000:
+                    i = 0.5f;
+                    break;
+                case 25000:
+                    i = 0.75f;
+                    break;
+            }
+            if (quoteDTO == null) {
+                // Nothing to do
+            } else {
+                Double priceRefCcy = getPriceCcy();
+                if (priceRefCcy == null || priceRefCcy == 0) {
+                    // Nothing to do
+                } else {
+                    Integer maxSellableShares = getMaxSellableShares();
+                    if (maxSellableShares == null || maxSellableShares == 0)
+                    {
+                        linkWithQuantity((int) Math.floor(i * getMaxValue() / priceRefCcy), true);
+                    }
+                    else
+                    {
+                        linkWithQuantity((int) Math.floor(i * getMaxValue()), true);
+                    }
+                }
+            }
+
+            Integer selectedQuantity = mTransactionQuantity;
+            mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
+            updateTransactionDialog();
+//            mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
+        };
     }
 }

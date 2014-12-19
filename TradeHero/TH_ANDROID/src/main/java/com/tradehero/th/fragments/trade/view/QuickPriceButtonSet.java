@@ -17,6 +17,7 @@ public class QuickPriceButtonSet extends LinearLayout
     @Nullable private OnQuickPriceButtonSelectedListener listener;
     private double maxPrice = Double.MAX_VALUE;
     @Nullable private QuickPriceButton currentSelected;
+    public boolean isFX;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButtonSet(Context context, AttributeSet attrs)
@@ -97,7 +98,7 @@ public class QuickPriceButtonSet extends LinearLayout
         List<QuickPriceButton> buttons = findButtons();
         for (QuickPriceButton button : buttons)
         {
-            button.setEnabled(isEnabled() && (button.getPrice() <= maxPrice));
+            button.setEnabled(isEnabled() && (isFX || (button.getPrice() <= maxPrice)));
         }
         for (Button button : buttons)
         {
@@ -117,5 +118,9 @@ public class QuickPriceButtonSet extends LinearLayout
     public interface OnQuickPriceButtonSelectedListener
     {
         public void onQuickPriceButtonSelected(double priceSelected);
+    }
+
+    public void setFX(boolean isFX) {
+        this.isFX = isFX;
     }
 }
