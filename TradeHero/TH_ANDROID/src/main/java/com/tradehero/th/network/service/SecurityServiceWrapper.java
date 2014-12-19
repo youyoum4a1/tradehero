@@ -6,6 +6,7 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
@@ -28,6 +29,7 @@ import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionU
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -315,6 +317,15 @@ import rx.Observable;
     {
         Observable<FXChartDTO> received;
         received = securityServiceRx.getFXHistroy(securityId.getSecuritySymbol(), duration);
+        return received;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX All Price">
+    @NonNull public Observable<List<QuoteDTO>> getFXSecuritiesAllPriceRx()
+    {
+        Observable<List<QuoteDTO>> received;
+        received = securityServiceRx.getFXSecuritiesAllPrice();
         return received;
     }
     //</editor-fold>

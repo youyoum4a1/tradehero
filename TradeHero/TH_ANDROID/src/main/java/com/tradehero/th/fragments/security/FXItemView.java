@@ -71,7 +71,13 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
         {
             displayStockName();
             displayMarketClose();
+            displayPrice();
         }
+    }
+
+    private void displayPrice() {
+        buyPrice.setText(String.valueOf(securityCompactDTO.askPrice));
+        sellPrice.setText(String.valueOf(securityCompactDTO.bidPrice));
     }
 
     //<editor-fold desc="Display Methods">
@@ -80,6 +86,7 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
         displayStockName();
         displayMarketClose();
         displayFlagContainer();
+        displayPrice();
     }
 
     public void displayStockName()
