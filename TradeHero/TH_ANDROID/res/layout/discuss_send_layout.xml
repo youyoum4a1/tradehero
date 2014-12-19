@@ -119,7 +119,7 @@
             </LinearLayout>
             <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:id="@+id/edittext_reward_doc_content"
-                      android:minLines="5"
+                      android:minLines="20"
                       android:textSize="15sp"
                       android:gravity="top"
                       android:hint="@string/discovery_discuss_send_reward_content_hint"
