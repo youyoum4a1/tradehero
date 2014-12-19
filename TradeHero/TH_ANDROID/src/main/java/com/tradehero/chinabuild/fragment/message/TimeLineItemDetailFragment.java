@@ -1351,14 +1351,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (dataDto instanceof TimelineItemDTO)
         {
             TimelineItemDTO dto = (TimelineItemDTO) dataDto;
-            THLog.d("aaaaaaa");
             if (dto.isQuestionItem)
             {
-                THLog.d("bbbbbbb");
                 return dto.getRewardString();
             }
         }
-        THLog.d("ccccccc");
         return "";
     }
 
