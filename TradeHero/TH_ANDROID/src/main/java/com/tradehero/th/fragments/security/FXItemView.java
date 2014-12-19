@@ -15,10 +15,12 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import timber.log.Timber;
 
-public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO> {
+public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
+{
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
     @InjectView(R.id.stock_name) TextView stockName;
+    // TODO use FxFlagContainer perhaps?
     @InjectView(R.id.fx_first_logo) ImageView fxFirstLogo;
     @InjectView(R.id.fx_second_logo) ImageView fxSecondLogo;
     @InjectView(R.id.buy_price) TextView buyPrice;
@@ -27,34 +29,41 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     protected SecurityCompactDTO securityCompactDTO;
 
     //<editor-fold desc="Constructors">
-    public FXItemView(Context context) {
+    public FXItemView(Context context)
+    {
         super(context);
     }
 
-    public FXItemView(Context context, AttributeSet attrs) {
+    public FXItemView(Context context, AttributeSet attrs)
+    {
         super(context, attrs);
     }
 
-    public FXItemView(Context context, AttributeSet attrs, int defStyle) {
+    public FXItemView(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
     }
     //</editor-fold>
 
     @Override
-    protected void onFinishInflate() {
+    protected void onFinishInflate()
+    {
         super.onFinishInflate();
         init();
     }
 
-    protected void init() {
+    protected void init()
+    {
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
         fxFirstLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
         fxSecondLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
-    private void loadImage() {
+    private void loadImage()
+    {
         resetImage();
+        // TODO use FxSecurityCompactDTO.getFxPair() and FxCurrency
         if (fxFirstLogo != null)
         {
             fxFirstLogo.setImageResource(FXLogo.getFXFirstLogo(securityCompactDTO.symbol));
@@ -66,20 +75,24 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     }
 
     @Override
-    protected void onDetachedFromWindow() {
+    protected void onDetachedFromWindow()
+    {
         resetImage();
         super.onDetachedFromWindow();
     }
 
     @Override
-    public void display(final SecurityCompactDTO securityCompactDTO) {
+    public void display(final SecurityCompactDTO securityCompactDTO)
+    {
         linkWith(securityCompactDTO, true);
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay) {
+    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
         this.securityCompactDTO = securityCompactDTO;
 
-        if (andDisplay) {
+        if (andDisplay)
+        {
             displayStockName();
             displayMarketClose();
             loadImage();
@@ -87,33 +100,49 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     }
 
     //<editor-fold desc="Display Methods">
-    public void display() {
+    public void display()
+    {
         displayStockName();
         displayMarketClose();
         loadImage();
     }
 
-    public void displayStockName() {
-        if (stockName != null) {
-            if (securityCompactDTO != null) {
+    public void displayStockName()
+    {
+        if (stockName != null)
+        {
+            if (securityCompactDTO != null)
+            {
                 stockName.setText(securityCompactDTO.symbol);
-            } else {
+            }
+            else
+            {
                 stockName.setText(R.string.na);
             }
         }
     }
 
-    public void displayMarketClose() {
-        if (securityCompactDTO == null) {
+    public void displayMarketClose()
+    {
+        if (securityCompactDTO == null)
+        {
             // Nothing to do
-        } else if (securityCompactDTO.marketOpen == null) {
+        }
+        else if (securityCompactDTO.marketOpen == null)
+        {
             Timber.w("displayMarketClose marketOpen is null");
-        } else if (securityCompactDTO.marketOpen) {
-            if (marketCloseIcon != null) {
+        }
+        else if (securityCompactDTO.marketOpen)
+        {
+            if (marketCloseIcon != null)
+            {
                 marketCloseIcon.setVisibility(View.GONE);
             }
-        } else {
-            if (marketCloseIcon != null) {
+        }
+        else
+        {
+            if (marketCloseIcon != null)
+            {
                 marketCloseIcon.setVisibility(View.VISIBLE);
             }
         }
@@ -121,13 +150,15 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
 
     //</editor-fold>
 
-    private void resetImage() {
-        if (fxFirstLogo != null) {
+    private void resetImage()
+    {
+        if (fxFirstLogo != null)
+        {
             fxFirstLogo.setImageBitmap(null);
         }
-        if (fxSecondLogo != null) {
+        if (fxSecondLogo != null)
+        {
             fxSecondLogo.setImageBitmap(null);
         }
     }
-
 }

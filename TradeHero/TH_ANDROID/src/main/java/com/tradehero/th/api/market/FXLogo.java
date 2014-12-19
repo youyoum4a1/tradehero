@@ -3,6 +3,7 @@ package com.tradehero.th.api.market;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 
+@Deprecated // Use FxCurrency instead
 public enum FXLogo
 {
     NONE(R.drawable.default_image, R.drawable.default_image),
