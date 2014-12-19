@@ -67,7 +67,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
     @Override @NonNull public String getCashShareLeft()
     {
         String shareLeftText = getResources().getString(R.string.na);
-        if (quoteDTO != null)
+        if (quoteDTO != null || portfolioCompactDTO != null)
         {
             Double priceRefCcy = getPriceCcy();
             if (priceRefCcy != null && portfolioCompactDTO != null)

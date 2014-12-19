@@ -22,7 +22,7 @@ public abstract class AbstractStockTransactionDialogFragment extends AbstractTra
             @NonNull QuoteDTO quoteDTO,
             boolean isBuy)
     {
-        AbstractStockTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyDialogFragmentStock() : new SellDialogFragmentStock();
+        AbstractStockTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyStockDialogFragment() : new SellStockDialogFragment();
         Bundle args = new Bundle();
         args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
         args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
