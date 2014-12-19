@@ -15,30 +15,29 @@ import java.util.List;
 
 public class KChartsView extends KChartBase {
 
-	/** 触摸模式 */
 	private static int TOUCH_MODE;
 	private final static int NONE = 0;
 	private final static int DOWN = 1;
 	private final static int MOVE = 2;
 	private final static int ZOOM = 3;
 
-	/** 默认Y轴字体颜色 **/
+	/** color of y axis title **/
 	private static final int DEFAULT_AXIS_Y_TITLE_COLOR = Color.BLUE;
 
-	/** 默认X轴字体颜色 **/
+	/** color of x axis title **/
 	private static final int DEFAULT_AXIS_X_TITLE_COLOR = Color.BLUE;
 
-    /** 默认candle detail dkGreen color **/
+    /** candle detail dkGreen color **/
     private static final int DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR = R.color.number_green;
 
-    /** 默认candle detail red color **/
+    /** candle detail red color **/
     private static final int DEFAULT_CANDLE_DETAIL_RED_COLOR = Color.RED;
 
-	/** 显示的最小Candle数 */
+	/** min show number of candle */
 	private final static int MIN_CANDLE_NUM = 10;
 
 	/** 默认显示的Candle数 */
-	private final static int DEFAULT_CANDLE_NUM = 50;
+	private final static int DEFAULT_CANDLE_NUM = 30;
 
 	/** 最小可识别的移动距离 */
 	private final static int MIN_MOVE_DISTANCE = 15;
@@ -236,22 +235,32 @@ public class KChartsView extends KChartBase {
 		textPaint.setColor(DEFAULT_AXIS_Y_TITLE_COLOR);
 		textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
 
+        //count num after "."
+        String s = mOHLCData.get(0).closeMid + "";
+        int length = s.length() - s.indexOf(".") - 1;
+        String yTitleFormat = "#.";
+        for (int i=0;i<length;i++)
+        {
+            yTitleFormat += "#";
+        }
+
 		// Y轴Titles
+        double pricePreLatitude = (mMaxPrice - mMinPrice) / DEFAULT_UPER_LATITUDE_NUM;
         for (int i=0;i<=DEFAULT_UPER_LATITUDE_NUM;i++)
         {
             if (i == DEFAULT_UPER_LATITUDE_NUM)
             {
-                canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / (DEFAULT_UPER_LATITUDE_NUM) * i),
+                canvas.drawText(new DecimalFormat(yTitleFormat).format(mMinPrice + pricePreLatitude * i),
                         getCandleWidth() + 10, UPER_CHART_BOTTOM - getLatitudeSpacing() * i - DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE, textPaint);
             }
             else if (i == 0)
             {
-                canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / (DEFAULT_UPER_LATITUDE_NUM) * i),
+                canvas.drawText(new DecimalFormat(yTitleFormat).format(mMinPrice + pricePreLatitude * i),
                         getCandleWidth() + 10, UPER_CHART_BOTTOM - getLatitudeSpacing() * i - DEFAULT_ONE_LINE_WIDTH, textPaint);
             }
             else
             {
-                canvas.drawText(new DecimalFormat("#.##").format(mMinPrice + (mMaxPrice - mMinPrice) / (DEFAULT_UPER_LATITUDE_NUM) * i),
+                canvas.drawText(new DecimalFormat(yTitleFormat).format(mMinPrice + pricePreLatitude * i),
                         getCandleWidth() + 10, UPER_CHART_BOTTOM - getLatitudeSpacing() * i - DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE / 2, textPaint);
             }
         }
@@ -270,15 +279,24 @@ public class KChartsView extends KChartBase {
             }
             else if (i == DEFAULT_LOGITUDE_NUM)
             {
-                offset = - 4 - 4.5f * DEFAULT_AXIS_TITLE_SIZE;
+                offset = - 2 - 2.5f * DEFAULT_AXIS_TITLE_SIZE;
             }
             else
             {
-                offset = (- 4 - 4.5f * DEFAULT_AXIS_TITLE_SIZE)/2;
+                offset = - 2 - 1.2f * DEFAULT_AXIS_TITLE_SIZE;
             }
-            canvas.drawText(mOHLCData.get(position).getDate(),
-                    getCandleWidth()*i/DEFAULT_LOGITUDE_NUM + offset,
-                    UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+            String date = mOHLCData.get(position).getDate();
+            if (date.contains("T") && date.contains("."))
+            {
+                canvas.drawText(date.substring(date.indexOf("T")+1, date.indexOf(":00.")),
+                        getCandleWidth()*i/DEFAULT_LOGITUDE_NUM + offset,
+                        UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+            }
+            else
+            {
+                canvas.drawText(date, getCandleWidth()*i/DEFAULT_LOGITUDE_NUM + offset,
+                        UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+            }
         }
 	}
 
@@ -293,7 +311,6 @@ public class KChartsView extends KChartBase {
         double rate = (getUperChartHeight() - DEFAULT_TWO_LINE_WIDTH) / (mMaxPrice - mMinPrice);
 		for (int i = 0; i < mShowDataNum && mDataStartIndext + i < mOHLCData.size(); i++) {
             FXCandleDTO entity = mOHLCData.get(mDataStartIndext + i);
-//			OHLCEntity entity = mOHLCData.get(mDataStartIndext + i);
 			float open = (float) ((mMaxPrice - entity.getOpen()) * rate + DEFAULT_TWO_LINE_WIDTH);
 			float close = (float) ((mMaxPrice - entity.getClose()) * rate + DEFAULT_TWO_LINE_WIDTH);
 			float high = (float) ((mMaxPrice - entity.getHigh()) * rate + DEFAULT_TWO_LINE_WIDTH);

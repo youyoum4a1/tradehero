@@ -58,7 +58,7 @@ public class KChartBase extends View {
 	private float latitudeSpacing;
 
     /** Candle right margin */
-    private final static int DEFAULT_CANDLE_RIGHT_MARGIN = 150;
+    private final static int DEFAULT_CANDLE_RIGHT_MARGIN = 200;
 
 	public KChartBase(Context context) {
 		super(context);
