@@ -58,6 +58,7 @@ public class KChartBase extends View {
 	private float latitudeSpacing;
 
     /** Candle right margin */
+    public final static int DEFAULT_CANDLE_LEFT_MARGIN = 50;
     private final static int DEFAULT_CANDLE_RIGHT_MARGIN = 200;
 
 	public KChartBase(Context context) {
@@ -92,7 +93,7 @@ public class KChartBase extends View {
 			topTitleHeight = 0;
 		}
 
-		longitudeSpacing = (viewWidth - DEFAULT_TWO_LINE_WIDTH) / (DEFAULT_LOGITUDE_NUM);
+		longitudeSpacing = (viewWidth - DEFAULT_TWO_LINE_WIDTH - DEFAULT_CANDLE_LEFT_MARGIN) / (DEFAULT_LOGITUDE_NUM);
 
 		latitudeSpacing = (viewHeight - DEFAULT_TWO_LINE_WIDTH - topTitleHeight - DEFAULT_X_AXIS_TITLE_HEIGHT)
 				/ (DEFAULT_UPER_LATITUDE_NUM);
@@ -133,10 +134,10 @@ public class KChartBase extends View {
 		Paint paint = new Paint();
 		paint.setColor(DEFAULT_BORDER_COLOR);
 		paint.setStrokeWidth(DEFAULT_TWO_LINE_WIDTH);
-		canvas.drawLine(1, 1, viewWidth - 1, 1, paint);
-		canvas.drawLine(1, 1, 1, viewHeight - 1, paint);
+		canvas.drawLine(1 + DEFAULT_CANDLE_LEFT_MARGIN, 1, viewWidth - 1, 1, paint);
+		canvas.drawLine(1 + DEFAULT_CANDLE_LEFT_MARGIN, 1, 1 + DEFAULT_CANDLE_LEFT_MARGIN, viewHeight - 1, paint);
 		canvas.drawLine(viewWidth - 1, viewHeight - 1, viewWidth - 1, 1, paint);
-		canvas.drawLine(viewWidth - 1, viewHeight - 1, 1, viewHeight - 1, paint);
+		canvas.drawLine(viewWidth - 1, viewHeight - 1, 1 + DEFAULT_CANDLE_LEFT_MARGIN, viewHeight - 1, paint);
 	}
 
 	/**
@@ -151,7 +152,7 @@ public class KChartBase extends View {
 		paint.setColor(DEFAULT_LONGI_LAITUDE_COLOR);
 		paint.setPathEffect(DEFAULT_DASH_EFFECT);
 		for (int i = 1; i <= DEFAULT_LOGITUDE_NUM; i++) {
-			canvas.drawRect(DEFAULT_ONE_LINE_WIDTH + longitudeSpacing * i, topTitleHeight + DEFAULT_TWO_LINE_WIDTH, DEFAULT_ONE_LINE_WIDTH + longitudeSpacing * i + 2.5f,
+			canvas.drawRect(DEFAULT_CANDLE_LEFT_MARGIN + DEFAULT_ONE_LINE_WIDTH + longitudeSpacing * i, topTitleHeight + DEFAULT_TWO_LINE_WIDTH, DEFAULT_CANDLE_LEFT_MARGIN+DEFAULT_ONE_LINE_WIDTH + longitudeSpacing * i + 2.5f,
                     UPER_CHART_BOTTOM, paint);
 		}
 	}
@@ -168,7 +169,7 @@ public class KChartBase extends View {
 		paint.setColor(DEFAULT_LONGI_LAITUDE_COLOR);
 		paint.setPathEffect(DEFAULT_DASH_EFFECT);
 		for (int i = 1; i <= DEFAULT_UPER_LATITUDE_NUM; i++) {
-			canvas.drawRect(DEFAULT_ONE_LINE_WIDTH, topTitleHeight + DEFAULT_ONE_LINE_WIDTH + latitudeSpacing * i, viewWidth - 1,
+			canvas.drawRect(DEFAULT_CANDLE_LEFT_MARGIN + DEFAULT_ONE_LINE_WIDTH, topTitleHeight + DEFAULT_ONE_LINE_WIDTH + latitudeSpacing * i, viewWidth - 1,
                     topTitleHeight + DEFAULT_ONE_LINE_WIDTH + latitudeSpacing * i + 2.5f, paint);
 		}
 	}
@@ -178,10 +179,10 @@ public class KChartBase extends View {
 		paint.setColor(DEFAULT_AXIS_COLOR);
 		paint.setAlpha(150);
 		if (showTopTitles) {
-			canvas.drawLine(DEFAULT_ONE_LINE_WIDTH, DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE + DEFAULT_TWO_LINE_WIDTH, viewWidth - DEFAULT_ONE_LINE_WIDTH,
+			canvas.drawLine(DEFAULT_CANDLE_LEFT_MARGIN + DEFAULT_ONE_LINE_WIDTH, DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE + DEFAULT_TWO_LINE_WIDTH, viewWidth - DEFAULT_ONE_LINE_WIDTH,
                     DEFAULT_ONE_LINE_WIDTH + DEFAULT_AXIS_TITLE_SIZE + DEFAULT_TWO_LINE_WIDTH, paint);
 		}
-		canvas.drawLine(DEFAULT_ONE_LINE_WIDTH, UPER_CHART_BOTTOM, viewWidth - DEFAULT_ONE_LINE_WIDTH, UPER_CHART_BOTTOM, paint);
+		canvas.drawLine(DEFAULT_CANDLE_LEFT_MARGIN + DEFAULT_ONE_LINE_WIDTH, UPER_CHART_BOTTOM, viewWidth - DEFAULT_ONE_LINE_WIDTH, UPER_CHART_BOTTOM, paint);
 	}
 
 	public float getUperChartHeight() {
