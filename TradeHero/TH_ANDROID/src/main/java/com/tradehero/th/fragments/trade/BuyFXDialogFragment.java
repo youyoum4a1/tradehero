@@ -93,14 +93,6 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         return cashLeftText;
     }
 
-    @Nullable public Integer getMaxSellableShares()
-    {
-        return positionDTOCompactList == null ? null :
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
-    }
-
     @Override @Nullable protected Integer getMaxValue()
     {
         Integer maxSellableShares = getMaxSellableShares();
