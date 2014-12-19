@@ -15,9 +15,9 @@ public enum FxCurrency
     JPY(R.drawable.square_jp),
     NZD(R.drawable.square_nz),
     USD(R.drawable.square_us),
-    XAG(R.drawable.square_ad),
-    XAU(R.drawable.square_af),
-    UNKNOWN(R.drawable.square_af),
+    XAG(R.drawable.icn_fx_gold),
+    XAU(R.drawable.icn_fx_silver),
+    UNKNOWN(R.drawable.icn_fx_unknown),
     ;
 
     @DrawableRes public final int flag;
