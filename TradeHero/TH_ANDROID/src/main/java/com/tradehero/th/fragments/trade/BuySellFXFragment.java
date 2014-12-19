@@ -11,14 +11,18 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -149,7 +153,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public boolean isBuySellReady()
     {
-        return quoteDTO != null;
+        return quoteDTO != null && securityPositionDetailDTO != null;
     }
 
     @Override
@@ -206,5 +210,39 @@ public class BuySellFXFragment extends BuySellFragment
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
         }
+    }
+
+    @Override public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
+        linkWith(securityPositionDetailDTO.security, true);
+        linkWith(securityPositionDetailDTO.positions, true);
+
+        ProviderDTOList providerDTOs = securityPositionDetailDTO.providers;
+        if (providerDTOs != null)
+        {
+            for (ProviderDTO providerDTO : providerDTOs)
+            {
+                if (providerDTO.associatedPortfolio != null)
+                {
+                    mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
+                            new MenuOwnedPortfolioId(
+                                    currentUserId.toUserBaseKey(),
+                                    providerDTO.associatedPortfolio));
+                }
+            }
+        }
+
+        setInitialSellQuantityIfCan();
+
+        displayBuySellSwitch();
+        displayBuySellPrice();
+        displayBuySellContainer();
+    }
+
+    @Override protected void softFetchPortfolioCompactList()
+    {
+        // Force a proper fetch
+//        fetchPortfolioCompactList();
     }
 }

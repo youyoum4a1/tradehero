@@ -116,7 +116,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
         mSelectedPortfolioContainer.setDefaultPortfolioId(getApplicablePortfolioId(getArguments()));
 
-        mBuySellBtnContainer.setVisibility(View.GONE);
+        mBuySellBtnContainer.setVisibility(View.INVISIBLE);
 
         progressAnimation = new Animation()
         {
@@ -423,7 +423,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             boolean marketIsOpen = securityCompactDTO == null
                     || securityCompactDTO.marketOpen == null
                     || securityCompactDTO.marketOpen;
-            mMarketClosedIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            mMarketClosedIcon.setVisibility(marketIsOpen ? View.INVISIBLE : View.VISIBLE);
         }
     }
 
@@ -436,7 +436,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     public void displayBuySellContainer()
     {
-        if (isBuySellReady() && mBuySellBtnContainer.getVisibility() == View.GONE)
+        if (isBuySellReady() && mBuySellBtnContainer.getVisibility() == View.INVISIBLE)
         {
             Animation slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_from_bottom);
             slideIn.setFillAfter(true);
@@ -517,7 +517,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (mSellBtn != null)
         {
-            mSellBtn.setVisibility(getSupportSell() ? View.VISIBLE : View.GONE);
+            mSellBtn.setVisibility(getSupportSell() ? View.VISIBLE : View.INVISIBLE);
         }
     }
 

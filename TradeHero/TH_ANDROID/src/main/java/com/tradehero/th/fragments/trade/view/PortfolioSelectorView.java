@@ -76,10 +76,28 @@ public class PortfolioSelectorView extends RelativeLayout
         display();
     }
 
+    public void addMenuOwnedPortfolioIdforFX(@NonNull MenuOwnedPortfolioId menuOwnedPortfolioId)
+    {
+        if (defaultPortfolioId == null)
+        {
+            defaultPortfolioId = new OwnedPortfolioId(menuOwnedPortfolioId);
+        }
+        defaultMenuPortfolioId = menuOwnedPortfolioId;
+        currentMenu = menuOwnedPortfolioId;
+        addMenuOwnedPortfolioId(menuOwnedPortfolioId);
+        displayForFX();
+    }
+
     public void display()
     {
         selectedPortfolio.setText(currentMenu);
         setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
+    }
+
+    public void displayForFX()
+    {
+        selectedPortfolio.setText(currentMenu);
+        setVisibility(usedMenuOwnedPortfolioIds.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     @NonNull public Observable<MenuOwnedPortfolioId> createMenuObservable()
