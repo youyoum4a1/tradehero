@@ -117,6 +117,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                         .map(pair -> pair.second)
                         .share()
                         .cache(1);
+
+        new PositionDTOCompactList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -282,7 +284,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 securityPositionDetailObservable)
                 .subscribe(
                         this::linkWith,
-                        e -> Timber.e(e, "getting %s", securityId));
+                        this::handleFailedFetchSecurityPositionDetail);
     }
 
     public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
@@ -290,6 +292,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         this.securityPositionDetailDTO = securityPositionDetailDTO;
         linkWith(securityPositionDetailDTO.security, true);
         linkWith(securityPositionDetailDTO.positions, true);
+    }
+
+    protected void handleFailedFetchSecurityPositionDetail(@NonNull Throwable e)
+    {
+        THToast.show(R.string.error_fetch_detailed_security_info);
+        Timber.e(e, "getting %s", securityId);
     }
 
     protected void fetchUserProfile()
