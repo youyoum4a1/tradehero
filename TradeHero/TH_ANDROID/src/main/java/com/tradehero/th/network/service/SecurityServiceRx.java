@@ -3,9 +3,11 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import java.util.List;
 import java.util.Map;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -117,6 +119,11 @@ public interface SecurityServiceRx
     Observable<FXChartDTO> getFXHistroy(
                         @Path("securitySymbol") String securitySymbol,
                         @Path("duration") String duration);
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX All Price">
+    @GET("/FX/batchFxQuote")
+    Observable<List<QuoteDTO>> getFXSecuritiesAllPrice();
     //</editor-fold>
 }
 

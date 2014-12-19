@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -23,6 +25,7 @@ import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -36,6 +39,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
     private SubscriptionList subscriptions;
+    private SubscriptionList priceSubscriptions;
+    private BaseArrayList<SecurityCompactDTO> mData;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -47,7 +52,9 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     {
         super.onStart();
         subscriptions = new SubscriptionList();
+        priceSubscriptions = new SubscriptionList();
         fetchFXList();
+        fetchFXPrice();
     }
 
     private void fetchFXList() {
@@ -55,6 +62,13 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                 this,
                 securityServiceWrapper.getFXSecuritiesRx())
                 .subscribe(createFXListFetchObserver()));
+    }
+
+    private void fetchFXPrice() {
+        priceSubscriptions.add(AndroidObservable.bindFragment(
+                this,
+                securityServiceWrapper.getFXSecuritiesAllPriceRx())
+                .subscribe(createFXPriceFetchObserver()));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -80,6 +94,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     {
         subscriptions.unsubscribe();
         subscriptions = null;
+        priceSubscriptions.unsubscribe();
+        priceSubscriptions = null;
         super.onStop();
     }
 
@@ -107,9 +123,48 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     {
         @Override public void onNext(SecurityCompactDTOList pair)
         {
-            itemViewAdapter.clear();
-            itemViewAdapter.addPage(0, pair);
-            itemViewAdapter.notifyDataSetChanged();
+            mData = pair;
+            updateAdapter();
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
+            THToast.show(R.string.error_fetch_provider_competition_list);
+        }
+    }
+
+    private void updateAdapter() {
+        itemViewAdapter.clear();
+        itemViewAdapter.addPage(0, mData);
+        itemViewAdapter.notifyDataSetChanged();
+    }
+
+    @NonNull protected Observer<List<QuoteDTO>> createFXPriceFetchObserver()
+    {
+        return new TrendingFXPriceFetchObserver();
+    }
+
+    protected class TrendingFXPriceFetchObserver implements Observer<List<QuoteDTO>>
+    {
+        @Override public void onNext(List<QuoteDTO> list)
+        {
+            for (SecurityCompactDTO dto : mData)
+            {
+                for (QuoteDTO price : list)
+                {
+                    if (dto.id == price.securityId)
+                    {
+                        dto.askPrice = price.ask;
+                        dto.bidPrice = price.bid;
+                        continue;
+                    }
+                }
+            }
+            updateAdapter();
         }
 
         @Override public void onCompleted()

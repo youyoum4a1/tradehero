@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/flags_container"
     android:layout_width="@dimen/big_image_w_h"
-    android:layout_height="@dimen/big_image_w_h">
+    android:layout_height="wrap_content">
+    <!--android:layout_height="@dimen/big_image_w_h">-->
 
   <ImageView
       android:id="@+id/flag_right"
