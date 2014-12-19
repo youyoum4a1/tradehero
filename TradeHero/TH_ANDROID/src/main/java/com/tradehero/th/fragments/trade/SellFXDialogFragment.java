@@ -34,7 +34,8 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         THSignedNumber sthSignedNumber = THSignedMoney
                 .builder(quoteDTO.bid)
                 .withOutSign()
-                .currency(securityCompactDTO == null ? "-" : securityCompactDTO.currencyDisplay)
+                .relevantDigitCount(10)
+                .currency("")
                 .build();
         return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
     }
@@ -73,12 +74,37 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
             if (priceRefCcy != null && portfolioCompactDTO != null)
             {
                 Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null && maxSellableShares != 0)
+                if (maxSellableShares != null && maxSellableShares > 0)
                 {
                     shareLeftText = THSignedNumber.builder(maxSellableShares - mTransactionQuantity)
                             .relevantDigitCount(1)
                             .withOutSign()
                             .build().toString();
+                }
+                else
+                {
+                    double availableRefCcy;
+                    if (portfolioCompactDTO.marginAvailableRefCcy != null
+                            && portfolioCompactDTO.leverage != null)
+                    {
+                        availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
+                    }
+                    else
+                    {
+                        Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
+                        availableRefCcy = portfolioCompactDTO.cashBalance;
+                    }
+
+                    if (priceRefCcy != null)
+                    {
+                        double value = mTransactionQuantity * priceRefCcy;
+                        THSignedNumber thSignedNumber = THSignedMoney
+                                .builder(availableRefCcy - value)
+                                .withOutSign()
+                                .currency(portfolioCompactDTO.currencyDisplay)
+                                .build();
+                        shareLeftText = thSignedNumber.toString();
+                    }
                 }
             }
         }
@@ -87,6 +113,11 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Integer getMaxValue()
     {
+        Integer maxSellableShares = getMaxSellableShares();
+        if (maxSellableShares == null || maxSellableShares < 0)
+        {
+            return getMaxPurchasableShares();
+        }
         return getMaxSellableShares();
     }
 
@@ -141,10 +172,17 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
                         this.portfolioCompactDTO);
     }
 
+    @Nullable public Integer getMaxPurchasableShares()
+    {
+        return portfolioCompactDTOUtil.getMaxPurchasableSharesForFX(
+                portfolioCompactDTO,
+                quoteDTO);
+    }
+
     protected boolean hasValidInfoForSell()
     {
         return securityId != null
-//                && securityCompactDTO != null
+                && securityCompactDTO != null
                 && quoteDTO != null
                 && quoteDTO.bid != null;
     }
@@ -157,7 +195,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         }
         else
         {
-            mConfirm.setEnabled(hasValidInfo());
+            mConfirm.setEnabled(hasValidInfo() && mTransactionQuantity != 0);
         }
     }
 }
