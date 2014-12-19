@@ -26,6 +26,7 @@
         android:hint="@string/login_account_hint"
         android:singleLine="true"
         android:textColorHint="#bfbfbf"
+        android:enabled="false"
         android:background="@color/white"/>
   </LinearLayout>
 
@@ -33,6 +34,7 @@
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="0dp"
       android:src="#bfbfbf"
       android:background="@color/white"/>
 

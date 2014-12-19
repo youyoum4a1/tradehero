@@ -27,9 +27,10 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
 
 public class MyEditAccountFragment extends DashboardFragment implements View.OnClickListener
 {
@@ -43,12 +44,6 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     private MiddleCallback<UserProfileDTO> middleCallbackUpdateUserProfile;
     private String mSavedPassword;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -97,11 +92,6 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
         return view;
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
     @Override public void onClick(View view)
     {
         switch (view.getId())
@@ -129,11 +119,6 @@ public class MyEditAccountFragment extends DashboardFragment implements View.OnC
                 }
                 break;
         }
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
     }
 
     @Override public void onDestroyView()

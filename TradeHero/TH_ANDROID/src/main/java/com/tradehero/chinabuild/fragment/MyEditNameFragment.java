@@ -24,9 +24,10 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
-public class MyEditNameFragment extends DashboardFragment implements View.OnClickListener
+public class MyEditNameFragment extends DashboardFragment
 {
     @InjectView(R.id.display_name) EditText mName;
     @Inject CurrentUserId currentUserId;
@@ -62,32 +63,10 @@ public class MyEditNameFragment extends DashboardFragment implements View.OnClic
         return view;
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-        }
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override public void onClickHeadLeft()
@@ -122,7 +101,7 @@ public class MyEditNameFragment extends DashboardFragment implements View.OnClic
     public UserFormDTO createForm()
     {
         UserFormDTO created = new UserFormDTO();
-            created.displayName = mName.getText().toString();
+        created.displayName = mName.getText().toString();
         return created;
     }
 
