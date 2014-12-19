@@ -52,7 +52,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         super.onDestroyView();
     }
 
-    private static final String[] CONTENT = new String[] {"推荐榜", "人气榜", "土豪榜", "更多榜"};
+    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 人气榜 ", " 土豪榜 ", " 更多榜 "};
 
     class CustomAdapter extends FragmentPagerAdapter
     {

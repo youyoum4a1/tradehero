@@ -144,7 +144,7 @@
           android:layout_marginTop="10dip"
           android:textColorLink="@color/timeline_item_link"
           android:textColor="@color/timeline_item"
-          android:textSize="14sp"
+          android:textSize="15sp"
           android:textStyle="normal"
           android:text="CONTENT "
           android:lineSpacingExtra="4dp"
