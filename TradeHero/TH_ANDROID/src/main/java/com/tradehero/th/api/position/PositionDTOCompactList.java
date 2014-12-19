@@ -79,9 +79,9 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     public Double getNetSellProceedsUsd(
-            @Nullable Integer shareCount,
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioId portfolioId,
+            @Nullable Integer shareCount, // This Nullable is ok with Proguard
+            @Nullable QuoteDTO quoteDTO, // This Nullable is ok with Proguard
+            PortfolioId portfolioId,
             boolean includeTransactionCostUsd)
     {
         return getNetSellProceedsUsd(
@@ -93,9 +93,9 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     public Double getNetSellProceedsUsd(
-            @Nullable Integer shareCount,
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioId portfolioId,
+            Integer shareCount,
+            QuoteDTO quoteDTO, // Do not add Nullable here as it is not ok with Proguard
+            PortfolioId portfolioId,
             boolean includeTransactionCostUsd,
             double txnCostUsd)
     {
@@ -113,8 +113,8 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
 
     public Double getNetSellProceedsRefCcy(
             @Nullable Integer shareCount,
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioId portfolioId,
+            @Nullable QuoteDTO quoteDTO, // This Nullable is ok with Proguard
+            PortfolioId portfolioId,
             boolean includeTransactionCostUsd)
     {
         return getNetSellProceedsRefCcy(
@@ -126,9 +126,9 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     public Double getNetSellProceedsRefCcy(
-            @Nullable Integer shareCount,
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioId portfolioId,
+            Integer shareCount,
+            @Nullable QuoteDTO quoteDTO, // This Nullable is ok with Proguard
+            PortfolioId portfolioId,
             boolean includeTransactionCostUsd,
             double txnCostUsd)
     {
