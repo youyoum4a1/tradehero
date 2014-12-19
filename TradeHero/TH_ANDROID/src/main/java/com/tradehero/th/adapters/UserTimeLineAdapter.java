@@ -434,6 +434,21 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 }
             });
 
+            holder.tvUserTLTitle.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View view)
+                {
+                    if (view instanceof MarkdownTextView)
+                    {
+                        if (!((MarkdownTextView) view).isClicked)
+                        {
+                            timeLineOperater.OnTimeLineItemClicked(position);
+                        }
+                        ((MarkdownTextView) view).isClicked = false;
+                    }
+                }
+            });
+
             holder.tvUserTLContent.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
