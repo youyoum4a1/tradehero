@@ -17,9 +17,12 @@
 package com.viewpagerindicator;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -319,11 +322,16 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             child.setSelected(isSelected);
             if (isSelected)
             {
-                ((TextView)child).setTextSize(14);
+                ((TextView)child).setTextSize(16);
+                ((TextView)child).setTextColor(Color.parseColor("#FFFFFF"));
+                ((TextView)child).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
             }
             else
             {
-                ((TextView)child).setTextSize(12);
+                ((TextView)child).setTextColor(Color.parseColor("#cde0f3"));
+                ((TextView)child).setTextSize(13);
+                TextPaint tp = ((TextView)child).getPaint();
+                ((TextView)child).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
             }
             if (isSelected)
             {
