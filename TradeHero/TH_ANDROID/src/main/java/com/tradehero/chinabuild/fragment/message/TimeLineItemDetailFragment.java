@@ -305,14 +305,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             return;
         }
-        if (tvIsReward == null)
-        {
-            tvIsReward = (TextView) mRefreshView.findViewById(R.id.tvIsReward);
-        }
-        if (tvUserTVTitle == null)
-        {
-            tvUserTVTitle = (TextView) mRefreshView.findViewById(R.id.tvUserTVTitle);
-        }
+        tvIsReward = (TextView) mRefreshView.findViewById(R.id.tvIsReward);
+        tvUserTVTitle = (TextView) mRefreshView.findViewById(R.id.tvUserTVTitle);
         if (!TextUtils.isEmpty(getHeader()))
         {
             tvUserTVTitle.setVisibility(View.VISIBLE);
@@ -322,7 +316,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         {
             tvUserTVTitle.setVisibility(View.GONE);
         }
-        if (isRewardTimeLine())
+        if (isRewardTimeLine() && !TextUtils.isEmpty(getRewardCount()))
         {
             tvIsReward.setVisibility(View.VISIBLE);
             tvIsReward.setText(getRewardCount());
@@ -1357,11 +1351,14 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (dataDto instanceof TimelineItemDTO)
         {
             TimelineItemDTO dto = (TimelineItemDTO) dataDto;
+            THLog.d("aaaaaaa");
             if (dto.isQuestionItem)
             {
+                THLog.d("bbbbbbb");
                 return dto.getRewardString();
             }
         }
+        THLog.d("ccccccc");
         return "";
     }
 
