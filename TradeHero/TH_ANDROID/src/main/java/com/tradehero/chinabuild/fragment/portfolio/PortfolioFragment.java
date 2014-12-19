@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,6 +26,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.MyTradePositionListAdapter;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
+import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
+import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -79,6 +82,7 @@ public class PortfolioFragment extends DashboardFragment
     public int portfolioUserKey = 0;//通过查看他人主账户进入持仓，需要知道UserID
     public PortfolioCompactDTO portfolioCompactDTO;//直接查看portforlioCompactDTO
     public int competitionId;
+    public int leaderboardPage = 1;
 
     @Inject Analytics analytics;
 
@@ -221,9 +225,10 @@ public class PortfolioFragment extends DashboardFragment
     {
         if (item instanceof SecurityPositionItem)
         {
-            if(portfolio_type == PORTFOLIO_TYPE_MINE && ((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
+            if (portfolio_type == PORTFOLIO_TYPE_MINE && ((SecurityPositionItem) item).type == SecurityPositionItem.TYPE_ACTIVE)
             {//只有我的比赛持仓才需要直接跳转至股票详情页面
-                enterSecurityToSecurityDetail(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,((SecurityPositionItem) item).position);
+                enterSecurityToSecurityDetail(((SecurityPositionItem) item).security.getSecurityId(), ((SecurityPositionItem) item).security.name,
+                        ((SecurityPositionItem) item).position);
             }
             else
             {//其他只需要跳转到持仓详情页
@@ -357,17 +362,18 @@ public class PortfolioFragment extends DashboardFragment
             portfolioCompactDTO = (PortfolioCompactDTO) bundle.getSerializable(BUNLDE_PORTFOLIO_DTO);
             competitionId = bundle.getInt(BUNLDE_COMPETITION_ID);
             if (leaderboardUserMarkId != 0)
-            {   //来自比赛的持仓
+            {   //来自比赛的榜单进入持仓
                 portfolio_type = PORTFOLIO_TYPE_COMPETITION;
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
-                getPositionsDTOKey = new LeaderboardMarkUserId((int) leaderboardUserMarkId);
+                //getPositionsDTOKey = new LeaderboardMarkUserId((int) leaderboardUserMarkId);
+                //getPositionsDTOKey = new PagedLeaderboardMarkUserId((int) leaderboardUserMarkId, leaderboardPage );
+                getPositionsDTOKey = new PerPagedLeaderboardMarkUserId((int) leaderboardUserMarkId, 1, 100);
             }
             else if (portfolioUserKey != 0)
             {
                 //来自股神持仓，股神的主账户持仓
                 portfolio_type = PORTFOLIO_TYPE_OTHER_USER;
                 showUserBaseKey = new UserBaseKey(portfolioUserKey);
-                //getDataFromNormalUser();
             }
             else if (portfolioCompactDTO != null)
             {   //来自比赛的持仓，我的当前比赛持仓
@@ -528,9 +534,6 @@ public class PortfolioFragment extends DashboardFragment
             getPositionsCache.get().register(getPositionsDTOKey, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(getPositionsDTOKey, force);
         }
-        //startLoadding();
-        //getDataFromNormalUser();
-        //getPositionDirectly(showUserBaseKey);
 
         if (adapter != null && adapter.getCount() == 0)
         {
