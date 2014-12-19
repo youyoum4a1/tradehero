@@ -91,7 +91,7 @@
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
           android:dropDownSelector="@drawable/basic_transparent_selector"
-          style="@style/TH.Spinner"
+          android:background="@drawable/tradehero_spinner_default_holo_light"
           />
 
     </LinearLayout>
