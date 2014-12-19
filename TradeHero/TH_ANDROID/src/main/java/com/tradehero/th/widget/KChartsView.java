@@ -11,6 +11,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.fx.FXCandleDTO;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class KChartsView extends KChartBase {
@@ -51,7 +52,6 @@ public class KChartsView extends KChartBase {
 
 	/** OHLC数据 */
 	private List<FXCandleDTO> mOHLCData;
-//	private List<OHLCEntity> mOHLCData;
 
 	/** 显示的OHLC数据起始位置 */
 	private int mDataStartIndext;
@@ -91,8 +91,7 @@ public class KChartsView extends KChartBase {
 		mMaxPrice = -1;
 		mMinPrice = -1;
 
-		mOHLCData = new ArrayList<FXCandleDTO>();
-//		mOHLCData = new ArrayList<OHLCEntity>();
+		mOHLCData = new ArrayList<>();
 	}
 
 	@Override
@@ -109,11 +108,11 @@ public class KChartsView extends KChartBase {
 	private void drawCandleDetails(Canvas canvas) {
 		if (showDetails) {
 			float width = getCandleWidth();
-			float left = (float) DEFAULT_AXIS_TITLE_SIZE;
+			float left = (float) DEFAULT_AXIS_TITLE_SIZE + DEFAULT_CANDLE_LEFT_MARGIN;
 			float leftText = left + (float)DEFAULT_AXIS_TITLE_SIZE / 4;
 			float top = (float) DEFAULT_AXIS_TITLE_SIZE;
 			float lineHeight = (float) 7*DEFAULT_AXIS_TITLE_SIZE/6;
-			float right = (float)8.5 * DEFAULT_AXIS_TITLE_SIZE + 4f;
+			float right = (float)8.5 * DEFAULT_AXIS_TITLE_SIZE + 4f + DEFAULT_CANDLE_LEFT_MARGIN;
 			float bottom = (float)8 * DEFAULT_AXIS_TITLE_SIZE + DEFAULT_AXIS_TITLE_SIZE / 3;
 			if (mStartX < width / 2.0f) {
 				right = width - (float)DEFAULT_AXIS_TITLE_SIZE + 4f;
@@ -142,10 +141,28 @@ public class KChartsView extends KChartBase {
 			textPaint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
 			textPaint.setColor(Color.DKGRAY);
 			textPaint.setFakeBoldText(true);
-			canvas.drawText("日期: " + mOHLCData.get(selectIndext).getDate(), leftText, top + lineHeight, textPaint);
+            FXCandleDTO data = mOHLCData.get(selectIndext);
+            String date = data.getDate();
+            if (date.contains("T") && date.contains("."))
+            {
+			    canvas.drawText("日期: " + date.substring(date.indexOf("T")+1, date.indexOf(":00.")), leftText, top + lineHeight, textPaint);
+            }
+            else
+            {
+			    canvas.drawText("日期: " + date, leftText, top + lineHeight, textPaint);
+            }
+
+            //count num after "."
+            String s = mOHLCData.get(0).closeMid + "";
+            int length = s.length() - s.indexOf(".") - 1;
+            String yTitleFormat = "#.";
+            for (int i=0;i<length;i++)
+            {
+                yTitleFormat += "#";
+            }
 
 			canvas.drawText("开盘:", leftText, top + 2*lineHeight, textPaint);
-			double open = mOHLCData.get(selectIndext).getOpen();
+			double open = data.getOpen();
 			try {
 				double ysdclose = mOHLCData.get(selectIndext + 1).getClose();
 				if (open >= ysdclose) {
@@ -153,30 +170,30 @@ public class KChartsView extends KChartBase {
 				} else {
 					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
 				}
-				canvas.drawText(new DecimalFormat("#.##").format(open), leftText
+				canvas.drawText(new DecimalFormat(yTitleFormat).format(open), leftText
 						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 2*lineHeight,
 						textPaint);
 			} catch (Exception e) {
-				canvas.drawText(new DecimalFormat("#.##").format(open), leftText
+				canvas.drawText(new DecimalFormat(yTitleFormat).format(open), leftText
 						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 2*lineHeight,
 						textPaint);
 			}
 
 			textPaint.setColor(Color.DKGRAY);
 			canvas.drawText("最高:", leftText, top + 3*lineHeight, textPaint);
-			double high = mOHLCData.get(selectIndext).getHigh();
+			double high = data.getHigh();
 			if (open < high) {
 				textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
 			} else {
 				textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
 			}
-			canvas.drawText(new DecimalFormat("#.##").format(high), leftText
+			canvas.drawText(new DecimalFormat(yTitleFormat).format(high), leftText
 					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 3*lineHeight,
 					textPaint);
 
 			textPaint.setColor(Color.DKGRAY);
 			canvas.drawText("最低:", leftText, top + 4*lineHeight, textPaint);
-			double low = mOHLCData.get(selectIndext).getLow();
+			double low = data.getLow();
 			try {
 				double yesterday = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
 						selectIndext + 1).getHigh()) / 2.0f;
@@ -188,13 +205,13 @@ public class KChartsView extends KChartBase {
 			} catch (Exception e) {
 
 			}
-			canvas.drawText(new DecimalFormat("#.##").format(low), leftText
+			canvas.drawText(new DecimalFormat(yTitleFormat).format(low), leftText
 					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 4*lineHeight,
 					textPaint);
 
 			textPaint.setColor(Color.DKGRAY);
 			canvas.drawText("收盘:", leftText, top + 5*lineHeight, textPaint);
-			double close = mOHLCData.get(selectIndext).getClose();
+			double close = data.getClose();
 			try {
 				double yesdopen = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
 						selectIndext + 1).getHigh()) / 2.0f;
@@ -206,7 +223,7 @@ public class KChartsView extends KChartBase {
 			} catch (Exception e) {
 
 			}
-			canvas.drawText(new DecimalFormat("#.##").format(close), leftText
+			canvas.drawText(new DecimalFormat(yTitleFormat).format(close), leftText
 					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 5*lineHeight,
 					textPaint);
 
@@ -220,7 +237,7 @@ public class KChartsView extends KChartBase {
 				} else {
 					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
 				}
-				canvas.drawText(new DecimalFormat("#.##%").format(priceRate), leftText
+				canvas.drawText(new DecimalFormat("#.###%").format(priceRate), leftText
 						+ DEFAULT_AXIS_TITLE_SIZE * 3.5f, top + 6*lineHeight,
 						textPaint);
 			} catch (Exception e) {
@@ -289,12 +306,12 @@ public class KChartsView extends KChartBase {
             if (date.contains("T") && date.contains("."))
             {
                 canvas.drawText(date.substring(date.indexOf("T")+1, date.indexOf(":00.")),
-                        getCandleWidth()*i/DEFAULT_LOGITUDE_NUM + offset,
+                        DEFAULT_CANDLE_LEFT_MARGIN + (getCandleWidth()-DEFAULT_CANDLE_LEFT_MARGIN)*i/DEFAULT_LOGITUDE_NUM + offset,
                         UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
             }
             else
             {
-                canvas.drawText(date, getCandleWidth()*i/DEFAULT_LOGITUDE_NUM + offset,
+                canvas.drawText(date, DEFAULT_CANDLE_LEFT_MARGIN + (getCandleWidth()-DEFAULT_CANDLE_LEFT_MARGIN)*i/DEFAULT_LOGITUDE_NUM + offset,
                         UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
             }
         }
@@ -307,7 +324,7 @@ public class KChartsView extends KChartBase {
 		Paint greenPaint = new Paint();
 		greenPaint.setColor(Color.GREEN);
 		int width = getCandleWidth();
-		mCandleWidth = (width - 4) / 10.0 * 10.0 / mShowDataNum;
+		mCandleWidth = (width - 4 - DEFAULT_CANDLE_LEFT_MARGIN) / 10.0 * 10.0 / mShowDataNum;
         double rate = (getUperChartHeight() - DEFAULT_TWO_LINE_WIDTH) / (mMaxPrice - mMinPrice);
 		for (int i = 0; i < mShowDataNum && mDataStartIndext + i < mOHLCData.size(); i++) {
             FXCandleDTO entity = mOHLCData.get(mDataStartIndext + i);
@@ -330,7 +347,6 @@ public class KChartsView extends KChartBase {
 				canvas.drawRect(left, close, right, open, redPaint);
 				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
 			}
-
 		}
 	}
 
@@ -424,7 +440,6 @@ public class KChartsView extends KChartBase {
 		for (int i = mDataStartIndext + 1; i < mOHLCData.size()
 				&& i < mShowDataNum + mDataStartIndext; i++) {
             FXCandleDTO entity = mOHLCData.get(i);
-//			OHLCEntity entity = mOHLCData.get(i);
 			mMinPrice = mMinPrice < entity.getLow() ? mMinPrice : entity.getLow();
 			mMaxPrice = mMaxPrice > entity.getHigh() ? mMaxPrice : entity.getHigh();
 		}
@@ -461,11 +476,11 @@ public class KChartsView extends KChartBase {
 	}
 
 	public void setOHLCData(List<FXCandleDTO> OHLCData) {
-//	public void setOHLCData(List<OHLCEntity> OHLCData) {
 		if (OHLCData == null || OHLCData.size() <= 0) {
 			return;
 		}
 		this.mOHLCData = OHLCData;
+		Collections.reverse(mOHLCData);
 
 		setCurrentData();
 		postInvalidate();
