@@ -48,10 +48,24 @@
 
   </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
 
+  <com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView
+      android:id="@+id/margin_close_out_status"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/margin_xsmall"
+      style="@style/TH.Subhead.Inverse"
+      tools:background="@color/orange"
+      tools:text="Margin is approaching"
+      android:gravity="center"
+      android:visibility="gone"
+      tools:visibility="visible"
+      />
+
   <RelativeLayout
       android:id="@+id/chart_frame"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="0dp"
+      android:layout_weight="1"
       android:orientation="vertical"
       >
 

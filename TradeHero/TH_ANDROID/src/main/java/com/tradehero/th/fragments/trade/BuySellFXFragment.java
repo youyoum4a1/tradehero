@@ -12,6 +12,10 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.fx.FXChartDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -29,6 +33,7 @@ public class BuySellFXFragment extends BuySellFragment
 {
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
+    @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
     @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
     @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
@@ -70,6 +75,12 @@ public class BuySellFXFragment extends BuySellFragment
         fxHistorySubscription = null;
     }
 
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(portfolioCompactDTO, andDisplay);
+        marginCloseOutStatus.linkWith(portfolioCompactDTO);
+    }
+
     private void fetchKChart(String code)
     {
         fxHistorySubscription = AndroidObservable.bindFragment(
@@ -79,6 +90,18 @@ public class BuySellFXFragment extends BuySellFragment
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
+
+    @Override public void displayStockName()
+    {
+        super.displayStockName();
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+            setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
+            setActionBarSubtitle(null);
+        }
+    }
+
     @Override public void displayBuySellPrice()
     {
         if (mBuyBtn != null && mSellBtn != null)
