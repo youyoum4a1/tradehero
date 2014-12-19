@@ -10,8 +10,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.market.FXLogo;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
 import timber.log.Timber;
 
@@ -20,9 +21,7 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     public static final float DIVISOR_PC_50_COLOR = 5f;
 
     @InjectView(R.id.stock_name) TextView stockName;
-    // TODO use FxFlagContainer perhaps?
-    @InjectView(R.id.fx_first_logo) ImageView fxFirstLogo;
-    @InjectView(R.id.fx_second_logo) ImageView fxSecondLogo;
+    @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.buy_price) TextView buyPrice;
     @InjectView(R.id.sell_price) TextView sellPrice;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
@@ -56,29 +55,6 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     {
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
-        fxFirstLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
-        fxSecondLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
-    }
-
-    private void loadImage()
-    {
-        resetImage();
-        // TODO use FxSecurityCompactDTO.getFxPair() and FxCurrency
-        if (fxFirstLogo != null)
-        {
-            fxFirstLogo.setImageResource(FXLogo.getFXFirstLogo(securityCompactDTO.symbol));
-        }
-        if (fxSecondLogo != null)
-        {
-            fxSecondLogo.setImageResource(FXLogo.getFXSecondLogo(securityCompactDTO.symbol));
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow()
-    {
-        resetImage();
-        super.onDetachedFromWindow();
     }
 
     @Override
@@ -90,12 +66,11 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         this.securityCompactDTO = securityCompactDTO;
-
+        displayFlagContainer();
         if (andDisplay)
         {
             displayStockName();
             displayMarketClose();
-            loadImage();
         }
     }
 
@@ -104,14 +79,19 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     {
         displayStockName();
         displayMarketClose();
-        loadImage();
+        displayFlagContainer();
     }
 
     public void displayStockName()
     {
         if (stockName != null)
         {
-            if (securityCompactDTO != null)
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                stockName.setText(String.format("%s/%s", pair.left, pair.right));
+            }
+            else if (securityCompactDTO != null)
             {
                 stockName.setText(securityCompactDTO.symbol);
             }
@@ -148,17 +128,15 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
         }
     }
 
-    //</editor-fold>
-
-    private void resetImage()
+    public void displayFlagContainer()
     {
-        if (fxFirstLogo != null)
+        if (flagsContainer != null)
         {
-            fxFirstLogo.setImageBitmap(null);
-        }
-        if (fxSecondLogo != null)
-        {
-            fxSecondLogo.setImageBitmap(null);
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                flagsContainer.display(((FxSecurityCompactDTO) securityCompactDTO).getFxPair());
+            }
         }
     }
+    //</editor-fold>
 }
