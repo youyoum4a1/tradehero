@@ -13,7 +13,7 @@
     >
 
   <TextView
-      android:id="@+id/stock_name"
+      android:id="@+id/fx_pair_name"
       style="@style/TH.Subhead"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
       android:id="@+id/flags_container_outer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/stock_name"
+      android:layout_below="@id/fx_pair_name"
       android:gravity="center"
       >
 
