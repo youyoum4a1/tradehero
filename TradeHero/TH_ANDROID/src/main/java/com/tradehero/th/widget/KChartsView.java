@@ -23,10 +23,10 @@ public class KChartsView extends KChartBase {
 	private final static int ZOOM = 3;
 
 	/** color of y axis title **/
-	private static final int DEFAULT_AXIS_Y_TITLE_COLOR = Color.BLUE;
+	private static final int DEFAULT_AXIS_Y_TITLE_COLOR = Color.BLACK;
 
 	/** color of x axis title **/
-	private static final int DEFAULT_AXIS_X_TITLE_COLOR = Color.BLUE;
+	private static final int DEFAULT_AXIS_X_TITLE_COLOR = Color.BLACK;
 
     /** candle detail dkGreen color **/
     private static final int DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR = R.color.number_green;
