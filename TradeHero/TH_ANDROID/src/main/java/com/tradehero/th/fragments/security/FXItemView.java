@@ -1,6 +1,11 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -74,8 +79,27 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     }
 
     private void displayPrice() {
-        buyPrice.setText(String.valueOf(securityCompactDTO.askPrice));
-        sellPrice.setText(String.valueOf(securityCompactDTO.bidPrice));
+        coloredText(buyPrice, String.valueOf(securityCompactDTO.askPrice), securityCompactDTO.fxAskTextColor);
+        coloredText(sellPrice, String.valueOf(securityCompactDTO.bidPrice), securityCompactDTO.fxBidTextColor);
+    }
+
+    private void coloredText(TextView textView, String text, int color) {
+        if (color == 0)
+        {
+            textView.setText(text);
+        }
+        else
+        {
+            SpannableStringBuilder fontStyleBuilder = new SpannableStringBuilder(text);
+            int length = text.length();
+            fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
+                    length - 2, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+                    length - 2, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int)textView.getTextSize() + 10),
+                    length - 2, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView.setText(fontStyleBuilder);
+        }
     }
 
     //<editor-fold desc="Display Methods">

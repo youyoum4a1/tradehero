@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -67,7 +68,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     private void fetchFXPrice() {
         priceSubscriptions.add(AndroidObservable.bindFragment(
                 this,
-                securityServiceWrapper.getFXSecuritiesAllPriceRx())
+                securityServiceWrapper.getFXSecuritiesAllPriceRx()
+                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXPriceFetchObserver()));
     }
 
@@ -158,8 +160,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                 {
                     if (dto.id == price.securityId)
                     {
-                        dto.askPrice = price.ask;
-                        dto.bidPrice = price.bid;
+                        dto.setAskPrice(price.ask);
+                        dto.setBidPrice(price.bid);
                         continue;
                     }
                 }
