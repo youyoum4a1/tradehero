@@ -2,8 +2,8 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -11,7 +11,7 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.FxCurrency;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 
-public class FxFlagContainer extends FrameLayout
+public class FxFlagContainer extends LinearLayout
     implements DTOView<FxPairSecurityId>
 {
     @InjectView(R.id.flag_left) protected ImageView flagLeft;

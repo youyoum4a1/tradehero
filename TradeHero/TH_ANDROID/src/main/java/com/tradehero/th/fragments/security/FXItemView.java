@@ -18,12 +18,10 @@ import timber.log.Timber;
 
 public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {
-    public static final float DIVISOR_PC_50_COLOR = 5f;
-
-    @InjectView(R.id.stock_name) TextView stockName;
+    @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
-    @InjectView(R.id.buy_price) TextView buyPrice;
-    @InjectView(R.id.sell_price) TextView sellPrice;
+    @InjectView(R.id.fx_price_buy) TextView buyPrice;
+    @InjectView(R.id.fx_price_sell) TextView sellPrice;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     protected SecurityCompactDTO securityCompactDTO;
 
@@ -91,20 +89,20 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
 
     public void displayStockName()
     {
-        if (stockName != null)
+        if (fxPairName != null)
         {
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
-                stockName.setText(String.format("%s/%s", pair.left, pair.right));
+                fxPairName.setText(String.format("%s/%s", pair.left, pair.right));
             }
             else if (securityCompactDTO != null)
             {
-                stockName.setText(securityCompactDTO.symbol);
+                fxPairName.setText(securityCompactDTO.symbol);
             }
             else
             {
-                stockName.setText(R.string.na);
+                fxPairName.setText(R.string.na);
             }
         }
     }
