@@ -9,11 +9,12 @@
     android:background="@drawable/grid_fx_item_bg"
     android:gravity="center_vertical"
     android:padding="@dimen/grid_item_bg_border_width"
+    android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
     >
 
   <TextView
-      android:id="@+id/stock_name"
+      android:id="@+id/fx_pair_name"
       style="@style/TH.Subhead"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -24,18 +25,18 @@
       android:marqueeRepeatLimit="marquee_forever"
       android:singleLine="true"
       android:textColor="@color/trending_grid_item_stock_name"
-      tools:text="Company Name"
+      tools:text="AUD/JPY"
       />
 
   <LinearLayout
       android:id="@+id/flags_container_outer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/stock_name"
+      android:layout_below="@id/fx_pair_name"
       android:gravity="center"
       >
 
-    <include layout="@layout/fx_flags"/>
+    <include layout="@layout/fx_flags" />
 
   </LinearLayout>
 
@@ -48,24 +49,32 @@
       >
 
     <TextView
-        android:id="@+id/buy_price"
+        android:id="@+id/fx_price_sell"
         style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="@dimen/size_9"
+        android:gravity="center"
         android:lines="1"
         android:textStyle="bold"
-        tools:text="@string/arrow_prefix_positive"
+        tools:text="146.264"
+        />
+
+    <Space
+        android:layout_width="@dimen/size_1"
+        android:layout_height="0dp"
         />
 
     <TextView
-        android:id="@+id/sell_price"
+        android:id="@+id/fx_price_buy"
         style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
+        android:minWidth="@dimen/size_9"
+        android:gravity="center"
         android:lines="1"
         android:textStyle="bold"
-        tools:text="1,014"
+        tools:text="146.254"
         />
 
   </LinearLayout>
