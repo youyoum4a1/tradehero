@@ -22,7 +22,6 @@
   <string name="warrant_price_header">价格</string>
   <string name="warrant_code_header">代码</string>
   <string name="warrant_strike_header">履约</string>
-  <string name="warrant_strike_value">%1$s &lt;b>%2$.2f&lt;/b> (%3$s)</string>
   <string name="warrant_expiry_header">逾期</string>
   <string name="warrant_info_header_warrant_data">保证数据</string>
   <string name="warrant_info_type">类型</string>

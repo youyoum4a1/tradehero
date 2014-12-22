@@ -1,10 +1,9 @@
 package com.tradehero.th.models.security;
 
 import android.content.Context;
-import android.text.Html;
-import android.text.Spanned;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.tradehero.th.models.number.THSignedMoney;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -14,14 +13,13 @@ import javax.inject.Singleton;
     {
         super();
     }
-    
-    public Spanned getCombinedStrikePriceType(Context context, WarrantDTO warrantDTO)
+
+    public String getCombinedStrikePriceType(Context context, WarrantDTO warrantDTO)
     {
-        return Html.fromHtml(context.getString(
-                R.string.warrant_strike_value,
-                warrantDTO.strikePriceCcy,
-                warrantDTO.strikePrice,
-                warrantDTO.warrantType
-        ));
+        if (warrantDTO.strikePrice == null)
+        {
+            return context.getString(R.string.na);
+        }
+        return THSignedMoney.builder(warrantDTO.strikePrice).currency(warrantDTO.strikePriceCcy).build().toString();
     }
 }
