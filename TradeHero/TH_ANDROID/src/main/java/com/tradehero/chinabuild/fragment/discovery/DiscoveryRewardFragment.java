@@ -40,10 +40,11 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
 
 /*
 悬赏帖
@@ -108,7 +109,7 @@ public class DiscoveryRewardFragment extends DashboardFragment
             {
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 enterTimeLineDetail(dto);
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_DISCOVERY_HOT, String.valueOf(position)));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_DISCOVERY_REWARD, String.valueOf(position)));
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)

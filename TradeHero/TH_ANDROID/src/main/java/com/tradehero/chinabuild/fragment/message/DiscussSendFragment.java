@@ -222,6 +222,11 @@ public class DiscussSendFragment extends DashboardFragment
             handleExtraInput(extraInput);
             selectionFragment = null;
         }
+        if(isReward){
+            rewardContentET.requestFocus();
+        }else{
+            discussionPostContent.requestFocus();
+        }
     }
 
     @Override public void onDetach()

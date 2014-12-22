@@ -27,12 +27,14 @@ import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerInfoFetcher;
 import com.tradehero.th.fragments.social.hero.HeroManagerInfoFetcher;
+import com.tradehero.th.utils.InputTools;
 import com.tradehero.th.widget.ABCDView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
+import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 /*
    股神或者粉丝列表显示
@@ -143,6 +145,14 @@ public class UserFriendsListFragment extends DashboardFragment implements HasSel
             }
         });
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(getActivity()!=null) {
+            InputTools.dismissKeyBoard(getActivity());
+        }
     }
 
     public void initArgument()

@@ -23,8 +23,8 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class MainTabFragmentCompetition extends AbsBaseFragment
 {
@@ -52,32 +52,15 @@ public class MainTabFragmentCompetition extends AbsBaseFragment
         return view;
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
-
     @OnClick(R.id.imgSearch)
     public void CompetitionSearchClicked()
     {
-        Timber.d("CompetitionSearchClicked!");
-        //gotoDashboard(CompetitionSearchFragment.class.getName());
         Bundle bundle =  new Bundle();
         bundle.putInt(SearchUniteFragment.BUNDLE_DEFAULT_TAB_PAGE,SearchUniteFragment.TAB_SEARCH_COMPETITION);
         gotoDashboard(SearchUniteFragment.class.getName(),bundle);

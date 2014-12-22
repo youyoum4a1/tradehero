@@ -152,7 +152,6 @@ public class AnalyticsConstants
     public static final String BUTTON_LOGIN_QQ = "QQ";
     public static final String BUTTON_LOGIN_LINKEDIN = "Linkedin";
     public static final String BUTTON_LOGIN_TWITTER = "Twitter";
-    public static final String BUTTON_LOGIN_FACEBOOK = "Facebook";
 
     public static final String BUTTON_LOGIN_OFFICAL = "BUTTON_LOGIN_OFFICAL";
     public static final String BUTTON_LOGIN_REGISTER = "BUTTON_LOGIN_REGISTER";

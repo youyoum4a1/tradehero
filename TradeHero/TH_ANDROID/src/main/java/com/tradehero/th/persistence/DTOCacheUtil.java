@@ -39,11 +39,7 @@ import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
-import com.tradehero.th.persistence.position.GetPositionsCache;
-import com.tradehero.th.persistence.position.PositionCache;
-import com.tradehero.th.persistence.position.PositionCompactCache;
-import com.tradehero.th.persistence.position.PositionCompactIdCache;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCache;
+import com.tradehero.th.persistence.position.*;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
 import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.social.UserFollowerCache;
@@ -56,10 +52,11 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class DTOCacheUtil
 {
@@ -273,49 +270,6 @@ import org.jetbrains.annotations.Nullable;
         serverEndpointPreference.delete();
     }
 
-    //public void anonymousPrefetches()
-    //{
-    //    preFetchExchanges();
-    //    preFetchProviders();
-    //}
-
-    //public void preFetchExchanges()
-    //{
-    //    exchangeCompactListCache.get().getOrFetchAsync(new ExchangeListType());
-    //}
-
-    //public void preFetchTrending()
-    //{
-    //    UserProfileDTO currentUserProfile = userProfileCache.get().get(currentUserId.toUserBaseKey());
-    //    ExchangeCompactDTOList exchangeCompactDTOs = exchangeCompactListCache.get().get(new ExchangeListType());
-    //    if (currentUserProfile != null && exchangeCompactDTOs != null)
-    //    {
-    //        preFetchTrending(currentUserProfile, exchangeCompactDTOs);
-    //    }
-    //}
-    //
-    //protected void preFetchTrending(
-    //        @NotNull UserBaseDTO userBaseDTO,
-    //        @NotNull List<? extends ExchangeCompactDTO> exchangeCompactDTOs)
-    //{
-    //    ExchangeCompactDTO initialExchange = userBaseDTOUtil.getInitialExchange(userBaseDTO, exchangeCompactDTOs);
-    //    ExchangeCompactSpinnerDTO initialExchangeSpinner;
-    //    if (initialExchange == null)
-    //    {
-    //        initialExchangeSpinner = new ExchangeCompactSpinnerDTO(
-    //                context.getResources());
-    //    }
-    //    else
-    //    {
-    //        initialExchangeSpinner = new ExchangeCompactSpinnerDTO(
-    //                context.getResources(),
-    //                initialExchange);
-    //    }
-    //    TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
-    //
-    //    this.securityCompactListCache.get().getOrFetchAsync(
-    //            filterTypeBasicDTO.getSecurityListType(1, TrendingFragment.DEFAULT_PER_PAGE));
-    //}
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
     {
@@ -335,52 +289,6 @@ import org.jetbrains.annotations.Nullable;
                 }
             }
         }
-
-        //initialPrefetches();
     }
 
-    //public void initialPrefetches()
-    //{
-    //    preFetchWatchlist();
-    //
-    //    conveniencePrefetches(); // TODO move them so time after the others
-    //}
-    
-    //public void preFetchWatchlist()
-    //{
-    //    userWatchlistPositionCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-    //}
-
-    //public void preFetchProviders()
-    //{
-    //    this.providerListCache.get().getOrFetchAsync(new ProviderListKey());
-    //}
-
-    //public void conveniencePrefetches()
-    //{
-    //    preFetchAlerts();
-    //    preFetchTranslationToken();
-    //    preFetchLeaderboardDefs();
-    //    preFetchHomeContent();
-    //}
-
-    //public void preFetchAlerts()
-    //{
-    //    alertCompactListCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-    //}
-    //
-    //public void preFetchTranslationToken()
-    //{
-    //    translationTokenCache.get().getOrFetchAsync(new TranslationTokenKey());
-    //}
-    //
-    //public void preFetchLeaderboardDefs()
-    //{
-    //    leaderboardDefListCache.get().getOrFetchAsync(new LeaderboardDefListKey());
-    //}
-    //
-    //public void preFetchHomeContent()
-    //{
-    //    homeContentCache.get().getOrFetchAsync(currentUserId.toUserBaseKey());
-    //}
 }
