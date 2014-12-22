@@ -212,32 +212,12 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    @Override public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
+    @Override protected void processPortfolioForProvider(ProviderDTO providerDTO)
     {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        linkWith(securityPositionDetailDTO.security, true);
-        linkWith(securityPositionDetailDTO.positions, true);
-
-        ProviderDTOList providerDTOs = securityPositionDetailDTO.providers;
-        if (providerDTOs != null)
-        {
-            for (ProviderDTO providerDTO : providerDTOs)
-            {
-                if (providerDTO.associatedPortfolio != null)
-                {
-                    mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
-                            new MenuOwnedPortfolioId(
-                                    currentUserId.toUserBaseKey(),
-                                    providerDTO.associatedPortfolio));
-                }
-            }
-        }
-
-        setInitialSellQuantityIfCan();
-
-        displayBuySellSwitch();
-        displayBuySellPrice();
-        displayBuySellContainer();
+        mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
+                new MenuOwnedPortfolioId(
+                        currentUserId.toUserBaseKey(),
+                        providerDTO.associatedPortfolio));
     }
 
     @Override protected void softFetchPortfolioCompactList()

@@ -282,10 +282,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             {
                 if (providerDTO.associatedPortfolio != null)
                 {
-                    mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
-                            new MenuOwnedPortfolioId(
-                                    currentUserId.toUserBaseKey(),
-                                    providerDTO.associatedPortfolio));
+                    processPortfolioForProvider(providerDTO);
                 }
             }
         }
@@ -295,6 +292,14 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
         displayBuySellPrice();
         displayBuySellContainer();
+    }
+
+    protected void processPortfolioForProvider(ProviderDTO providerDTO)
+    {
+        mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
+                new MenuOwnedPortfolioId(
+                        currentUserId.toUserBaseKey(),
+                        providerDTO.associatedPortfolio));
     }
 
     @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -739,7 +744,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         return new BuySellPortfolioCompactListObserver();
     }
-
 
     protected class BuySellPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
     {
