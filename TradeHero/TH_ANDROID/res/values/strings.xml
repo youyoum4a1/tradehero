@@ -318,7 +318,7 @@
   <string name="authentication_agreement">《隐私条款和服务政策》</string>
   <string name="authentication_next">Next</string>
   <string name="register_diaplay_name_hint">Username (Needed)</string>
-  <string name="register_finish">Register Completed</string>
+  <string name="register_finish">Register</string>
   <string name="register_error_account">Email Error</string>
   <string name="register_error_password">Password 6-20 Letters or Numbers</string>
   <string name="register_error_displayname">No Nickname</string>
