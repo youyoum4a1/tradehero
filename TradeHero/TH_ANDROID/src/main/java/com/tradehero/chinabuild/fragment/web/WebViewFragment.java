@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.test;
+package com.tradehero.chinabuild.fragment.web;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
-public class WebViewSimpleFragment extends DashboardFragment
+public class WebViewFragment extends DashboardFragment
 {
     public static final String BUNDLE_WEBVIEW_URL = "bundle_webview_url";
     public static final String BUNDLE_WEBVIEW_TITLE = "bundle_webview_title";
@@ -60,24 +60,10 @@ public class WebViewSimpleFragment extends DashboardFragment
         });
     }
 
-    @Override public void onStop()
-    {
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.reset(this);
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-    }
 }

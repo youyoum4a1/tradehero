@@ -9,13 +9,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -28,8 +22,8 @@ import com.tradehero.chinabuild.data.UserCompetitionDTO;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
-import com.tradehero.chinabuild.fragment.test.WebViewSimpleFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
@@ -71,12 +65,13 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.GuideView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-9. 比赛详情页
@@ -617,32 +612,6 @@ public class CompetitionDetailFragment extends DashboardFragment
         }
 
 
-        //if (!userCompetitionDTO.isOngoing)
-        //{
-        //    //比赛结束后显示自己的最终ROI
-        //    if (leaderboardDTO != null)
-        //    {
-        //        LeaderboardUserDTO dto = null;
-        //        try
-        //        {
-        //            dto = leaderboardDTO.users.get(0);
-        //        } catch (Exception e)
-        //        {
-        //
-        //        }
-        //
-        //        if (dto != null)
-        //        {
-        //            THSignedNumber roi = THSignedPercentage.builder(leaderboardDTO.users.get(0).roiInPeriod * 100)
-        //                    .withSign()
-        //                    .signTypeArrow()
-        //                    .build();
-        //            tvUserExtraValue.setText(roi.toString());
-        //            tvUserExtraValue.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
-        //        }
-        //    }
-        //}
-
         if (ordinaPosition != -1)
         {
             if (ordinaPosition < 3)
@@ -988,9 +957,9 @@ public class CompetitionDetailFragment extends DashboardFragment
         Bundle bundle = new Bundle();
         String url = userCompetitionDTO.detailUrl;
 
-        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_URL, url);
-        bundle.putString(WebViewSimpleFragment.BUNDLE_WEBVIEW_TITLE, userCompetitionDTO.name);
-        pushFragment(WebViewSimpleFragment.class, bundle);
+        bundle.putString(WebViewFragment.BUNDLE_WEBVIEW_URL, url);
+        bundle.putString(WebViewFragment.BUNDLE_WEBVIEW_TITLE, userCompetitionDTO.name);
+        pushFragment(WebViewFragment.class, bundle);
     }
 
     public void onClickMyPosition()

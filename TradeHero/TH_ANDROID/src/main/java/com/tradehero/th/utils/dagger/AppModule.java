@@ -19,14 +19,11 @@ import com.tradehero.chinabuild.fragment.search.SearchUniteFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
-import com.tradehero.chinabuild.fragment.test.FragmentTest01;
-import com.tradehero.chinabuild.fragment.test.FragmentTest02;
-import com.tradehero.chinabuild.fragment.test.FragmentTest03;
-import com.tradehero.chinabuild.fragment.test.WebViewSimpleFragment;
 import com.tradehero.chinabuild.fragment.trade.*;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFriendsListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityExpandableListView;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.billing.googleplay.IABBillingAvailableTester;
@@ -98,7 +95,6 @@ import com.tradehero.th.fragments.updatecenter.messages.MessageListAdapter;
 import com.tradehero.th.fragments.watchlist.WatchlistItemView;
 import com.tradehero.th.fragments.watchlist.WatchlistPortfolioHeaderView;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.SearchStockPageListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
@@ -330,8 +326,6 @@ import java.util.Locale;
                         ContestCenterBaseFragment.class,
                         ContestCenterActiveFragment.class,
                         ContestCenterJoinedFragment.class,
-                        //SocialFriendsFragmentFacebook.class,
-                        //SocialFriendsFragmentTwitter.class,
                         SocialFriendsFragmentLinkedIn.class,
                         SocialFriendsFragmentWeibo.class,
                         HomeFragment.class,
@@ -361,10 +355,6 @@ import java.util.Locale;
 
                         SearchFragment.class,
                         SettingFragment.class,
-
-                        FragmentTest01.class,
-                        FragmentTest02.class,
-                        FragmentTest03.class,
 
                         SecurityListView.class,
                         SecurityExpandableListView.class,
@@ -430,7 +420,7 @@ import java.util.Locale;
                         ShareDialogFragment.class,
                         ShareSheetDialogLayout.class,
                         PositionTradeListAdapter.class,
-                        WebViewSimpleFragment.class,
+                        WebViewFragment.class,
                         NotificationFragment.class,
                         NotificationListAdapter.class,
                         TimeLineItemDetailFragment.class,
