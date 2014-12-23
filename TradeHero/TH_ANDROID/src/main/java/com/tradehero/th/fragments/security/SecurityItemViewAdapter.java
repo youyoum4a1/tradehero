@@ -2,22 +2,19 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
+import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.filter.security.SecurityCompactDTOFilter;
 import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
 
-abstract public class SecurityItemViewAdapter
-        extends ArrayDTOAdapter<SecurityCompactDTO, SecurityItemView>
+abstract public class SecurityItemViewAdapter<SecurityDTOType extends SecurityCompactDTO>
+        extends ArrayDTOAdapter<SecurityDTOType, DTOView<SecurityDTOType>>
 {
-    public int itemHeight = 0;
-
-    protected List<? extends SecurityCompactDTO> originalItems;
+    protected List<SecurityDTOType> originalItems;
 
     //<editor-fold desc="Constructors">
     public SecurityItemViewAdapter(Context context, int layoutResourceId)
@@ -27,21 +24,21 @@ abstract public class SecurityItemViewAdapter
     }
     //</editor-fold>
 
-    @Override public void setItems(@NonNull List<SecurityCompactDTO> items)
+    @Override public void setItems(@NonNull List<SecurityDTOType> items)
     {
         originalItems = items;
         setItemsToShow(getPredicateFilter().filter(items));
     }
 
-    protected void setItemsToShow(List<SecurityCompactDTO> showItems)
+    protected void setItemsToShow(List<SecurityDTOType> showItems)
     {
         super.setItems(showItems);
     }
 
-    abstract public ListCharSequencePredicateFilter<SecurityCompactDTO> getPredicateFilter();
+    abstract public ListCharSequencePredicateFilter<SecurityDTOType> getPredicateFilter();
     abstract public Filter getFilter();
 
-    @Override protected void fineTune(int position, SecurityCompactDTO securityCompact, final SecurityItemView dtoView)
+    @Override protected void fineTune(int position, SecurityDTOType securityCompact, final DTOView<SecurityDTOType> dtoView)
     {
         // Nothing to do
     }
@@ -57,21 +54,10 @@ abstract public class SecurityItemViewAdapter
         return item == null ? 0 : item.hashCode();
     }
 
-    @Override public View getView(int position, View convertView, ViewGroup viewGroup)
-    {
-        convertView = conditionalInflate(position, convertView, viewGroup);
-
-        SecurityItemView dtoView = (SecurityItemView) convertView;
-        SecurityCompactDTO dto = (SecurityCompactDTO) getItem(position);
-        dtoView.display(dto);
-        fineTune(position, dto, dtoView);
-        return convertView;
-    }
-
     protected class SecurityItemFilter
-            extends SecurityCompactDTOFilter<SecurityCompactDTO>
+            extends SecurityCompactDTOFilter<SecurityDTOType>
     {
-        public SecurityItemFilter(ListCharSequencePredicateFilter<SecurityCompactDTO> predicateFilter)
+        public SecurityItemFilter(ListCharSequencePredicateFilter<SecurityDTOType> predicateFilter)
         {
             super(predicateFilter);
         }
@@ -82,7 +68,7 @@ abstract public class SecurityItemViewAdapter
             return performFiltering(charSequence, originalItems);
         }
 
-        @Override protected void publishResults(CharSequence charSequence, SecurityFilterResults<SecurityCompactDTO> filterResults)
+        @Override protected void publishResults(CharSequence charSequence, SecurityFilterResults<SecurityDTOType> filterResults)
         {
             setItemsToShow(filterResults.castedValues);
             notifyDataSetChanged();
