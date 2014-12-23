@@ -17,6 +17,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
@@ -140,6 +141,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     }
 
     private void updateAdapter() {
+        itemViewAdapter.setNotifyOnChange(false);
         itemViewAdapter.clear();
         itemViewAdapter.addPage(0, mData);
         itemViewAdapter.notifyDataSetChanged();
@@ -158,11 +160,10 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
             {
                 for (QuoteDTO price : list)
                 {
-                    if (dto.id == price.securityId)
+                    if (dto.id.equals(price.securityId) && dto instanceof FxSecurityCompactDTO)
                     {
-                        dto.setAskPrice(price.ask);
-                        dto.setBidPrice(price.bid);
-                        continue;
+                        ((FxSecurityCompactDTO) dto).setAskPrice(getActivity(), price.ask);
+                        ((FxSecurityCompactDTO) dto).setBidPrice(getActivity(), price.bid);
                     }
                 }
             }

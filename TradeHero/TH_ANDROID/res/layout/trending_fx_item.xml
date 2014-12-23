@@ -9,6 +9,7 @@
     android:background="@drawable/grid_fx_item_bg"
     android:gravity="center_vertical"
     android:padding="@dimen/grid_item_bg_border_width"
+    android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
     >
 
@@ -55,7 +56,6 @@
         android:minWidth="@dimen/size_9"
         android:gravity="center"
         android:lines="1"
-        android:textColor="@color/text_gray_normal"
         tools:text="146.264"
         />
 
@@ -72,7 +72,6 @@
         android:minWidth="@dimen/size_9"
         android:gravity="center"
         android:lines="1"
-        android:textColor="@color/text_gray_normal"
         tools:text="146.254"
         />
 
