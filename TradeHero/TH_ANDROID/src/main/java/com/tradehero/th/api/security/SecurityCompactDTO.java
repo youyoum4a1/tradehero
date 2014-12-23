@@ -1,6 +1,5 @@
 package com.tradehero.th.api.security;
 
-import android.graphics.Color;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,9 +85,6 @@ public class SecurityCompactDTO implements DTO
     public Double low;
     public Double pe;
     public Double eps;
-
-    public int fxAskTextColor = 0;
-    public int fxBidTextColor = 0;
 
     @Nullable public Boolean marketOpen;
 
@@ -222,36 +218,6 @@ public class SecurityCompactDTO implements DTO
         }
 
         return null;
-    }
-
-    public void setAskPrice(Double newAskPrice) {
-        if (askPrice != null)
-        {
-            if (askPrice.compareTo(newAskPrice) > 0)
-            {
-                fxAskTextColor = Color.RED;
-            }
-            else if (askPrice.compareTo(newAskPrice) < 0)
-            {
-                fxAskTextColor = Color.GREEN;
-            }
-        }
-        askPrice = newAskPrice;
-    }
-
-    public void setBidPrice(Double newBidPrice) {
-        if (bidPrice != null)
-        {
-            if (bidPrice.compareTo(newBidPrice) > 0)
-            {
-                fxBidTextColor = Color.RED;
-            }
-            else if (bidPrice.compareTo(newBidPrice) < 0)
-            {
-                fxBidTextColor = Color.GREEN;
-            }
-        }
-        this.bidPrice = newBidPrice;
     }
 
     @Override public String toString()
