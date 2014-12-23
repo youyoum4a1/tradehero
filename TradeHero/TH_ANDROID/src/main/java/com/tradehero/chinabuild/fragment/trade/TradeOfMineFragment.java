@@ -1,15 +1,12 @@
 package com.tradehero.chinabuild.fragment.trade;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.data.PositionInterface;
@@ -20,7 +17,6 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
@@ -54,7 +50,6 @@ import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -85,7 +80,6 @@ public class TradeOfMineFragment extends DashboardFragment
     private TextView tvItemCash;
 
     @InjectView(R.id.tradeheroprogressbar_trade_mine) TradeHeroProgressBar progressBar;
-    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
 
     @InjectView(R.id.rlListAll) RelativeLayout rlListAll;
@@ -110,16 +104,10 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         adapter = new CNPersonTradePositionListAdapter(getActivity());
-        fetchGetPositionsDTOListener = createGetPositionsCacheListener();
-        userWatchlistPositionFetchListener = createWatchlistListener();
-        portfolioFetchListener = createPortfolioCacheListener();
-        portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
+        fetchGetPositionsDTOListener = new GetPositionsListener();
+        userWatchlistPositionFetchListener = new WatchlistPositionFragmentSecurityIdListCacheListener();
+        portfolioFetchListener = new WatchlistPositionFragmentPortfolioCacheListener();
+        portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
     }
 
     @Override
@@ -133,20 +121,11 @@ public class TradeOfMineFragment extends DashboardFragment
         lv.addHeaderView(mRefreshView);
         mRefreshView.setOnClickListener(null);
         initRoot(mRefreshView);
-
+        initView();
         if (adapter.getTotalCount() == 0)
         {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.tradeheroprogressbar_trade_mine);
             progressBar.startLoading();
         }
-        else
-        {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
-        }
-        startTimerForView();
-        initView();
-        fetchPortfolio();
-
         return view;
     }
 
@@ -168,7 +147,6 @@ public class TradeOfMineFragment extends DashboardFragment
         listView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ExpandableListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ExpandableListView> refreshView) {
-                refreshData(true);
                 fetchPortfolio(true);
             }
 
@@ -240,6 +218,12 @@ public class TradeOfMineFragment extends DashboardFragment
         super.onStart();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        fetchPortfolioCompactList(true);
+    }
+
     @Override public void onStop()
     {
         availableShowDialog = false;
@@ -255,31 +239,19 @@ public class TradeOfMineFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    @Override public void onResume()
-    {
-        super.onResume();
-        Timber.d("------> Analytics TradeOfMineFragment onResume");
-
-        refreshData(false);
-    }
-
-    public void refreshData(boolean force)
-    {
-        fetchPortfolioCompactList(force);
-        fetchWatchPositionList(force);
-    }
-
+    //Download portfolio about my stock
     protected void fetchSimplePage(boolean force)
     {
         if (shownPortfolioId != null)
         {
             detachGetPositionsTask();
-            fetchGetPositionsDTOListener = createGetPositionsCacheListener();
+            fetchGetPositionsDTOListener = new GetPositionsListener();
             getPositionsCache.get().register(shownPortfolioId, fetchGetPositionsDTOListener);
             getPositionsCache.get().getOrFetchAsync(shownPortfolioId, force);
         }
     }
 
+    //Need to download first
     private void fetchPortfolioCompactList(boolean force)
     {
         detachPortfolioCompactListCache();
@@ -287,42 +259,7 @@ public class TradeOfMineFragment extends DashboardFragment
         portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
-    protected void fetchPortfolio()
-    {
-        fetchPortfolio(false);
-    }
-
-    private Handler handler = new Handler();
-
-    private Runnable runnable;
-
-    public void startTimerForView()
-    {
-        runnable = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                closeTimerForView();
-                onResume();
-            }
-        };
-        //Timber.d("Windy : startTimerForView");
-        handler.postDelayed(runnable, 8000);
-    }
-
-    public void closeTimerForView()
-    {
-        //Timber.d("Windy : closeTimerForView");
-        try
-        {
-            betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
-            handler.removeCallbacks(runnable);
-        } catch (Exception e)
-        {
-        }
-    }
-
+    //Download my stock information
     protected void fetchPortfolio(boolean force)
     {
         if (shownPortfolioId == null || portfolioFetchListener == null) return;
@@ -331,6 +268,7 @@ public class TradeOfMineFragment extends DashboardFragment
         portfolioCache.getOrFetchAsync(shownPortfolioId, force);
     }
 
+    //Download portfolio about watch list
     protected void fetchWatchPositionList(boolean force)
     {
         detachUserWatchlistFetchTask();
@@ -358,11 +296,6 @@ public class TradeOfMineFragment extends DashboardFragment
         portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
     }
 
-    @NotNull protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> createGetPositionsCacheListener()
-    {
-        return new GetPositionsListener();
-    }
-
     protected class GetPositionsListener
             implements DTOCacheNew.HurriedListener<GetPositionsDTOKey, GetPositionsDTO>
     {
@@ -372,7 +305,7 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
-            finish();
+            onFinish();
         }
 
         @Override public void onDTOReceived(
@@ -381,27 +314,20 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
-            finish();
+            onFinish();
         }
 
         @Override public void onErrorThrown(
                 @NotNull GetPositionsDTOKey key,
                 @NotNull Throwable error)
         {
-            finish();
+            onFinish();
         }
 
-        public void finish()
+        private void onFinish()
         {
-            //Timber.d("Windy : GetPositionsListener");
             listView.onRefreshComplete();
-            closeTimerForView();
         }
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> createWatchlistListener()
-    {
-        return new WatchlistPositionFragmentSecurityIdListCacheListener();
     }
 
     protected class WatchlistPositionFragmentSecurityIdListCacheListener implements DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList>
@@ -420,10 +346,10 @@ public class TradeOfMineFragment extends DashboardFragment
         private void onFinish()
         {
             listView.onRefreshComplete();
-            fetchSimplePage(false);
             if (progressBar != null)
             {
                 progressBar.stopLoading();
+                progressBar.setVisibility(View.GONE);
             }
         }
     }
@@ -439,16 +365,13 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             shownPortfolioDTO = value;
             displayProfolioDTO(shownPortfolioDTO);
+            fetchWatchPositionList(true);
+            fetchSimplePage(true);
         }
 
         @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error)
         {
         }
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> createPortfolioCompactListFetchListener()
-    {
-        return new BasePurchaseManagementPortfolioCompactListFetchListener();
     }
 
     protected class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>
@@ -460,8 +383,6 @@ public class TradeOfMineFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_portfolio_list_info);
-            //betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
     }
 
@@ -473,8 +394,7 @@ public class TradeOfMineFragment extends DashboardFragment
         }
         if (shownPortfolioId != null)
         {
-            fetchPortfolio();
-            fetchSimplePage(false);
+            fetchPortfolio(true);
         }
     }
 
@@ -550,9 +470,9 @@ public class TradeOfMineFragment extends DashboardFragment
         if (watchList != null)
         {
             int sizeWatchList = watchList.size();
-            if (sizeWatchList >= 0)
+            if (sizeWatchList > 0)
             {
-                ArrayList<WatchPositionItem> list = new ArrayList<WatchPositionItem>();
+                ArrayList<WatchPositionItem> list = new ArrayList<>();
                 for (int i = 0; i < sizeWatchList; i++)
                 {
                     list.add(new WatchPositionItem(watchList.get(i)));
@@ -566,7 +486,7 @@ public class TradeOfMineFragment extends DashboardFragment
     {
         if (psList != null && psList.openPositionsCount >= 0)
         {
-            ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
+            ArrayList<SecurityPositionItem> list = new ArrayList<>();
             List<PositionDTO> listData = psList.getOpenPositions();
             int sizePosition = listData.size();
             for (int i = 0; i < sizePosition; i++)
@@ -602,7 +522,7 @@ public class TradeOfMineFragment extends DashboardFragment
 
         if (psList != null && psList.closedPositionsCount > 0)
         {
-            ArrayList<SecurityPositionItem> list = new ArrayList<SecurityPositionItem>();
+            ArrayList<SecurityPositionItem> list = new ArrayList<>();
             List<PositionDTO> listData = psList.getClosedPositions();
             int sizePosition = listData.size();
             for (int i = 0; i < sizePosition; i++)

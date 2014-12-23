@@ -263,7 +263,6 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
         } else {
             watchPositionList = list;
         }
-        watchPositionList = list;
         initGeneralTypes();
         notifyDataSetChanged();
     }
