@@ -32,9 +32,4 @@ public class ContactEntry
     {
         return photoUri;
     }
-
-    public void setPhotoUri(Uri photoUri)
-    {
-        this.photoUri = photoUri;
-    }
 }

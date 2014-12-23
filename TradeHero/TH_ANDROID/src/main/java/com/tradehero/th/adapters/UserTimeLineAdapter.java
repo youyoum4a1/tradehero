@@ -42,13 +42,14 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserTimeLineAdapter extends TimeLineBaseAdapter
 {
@@ -227,7 +228,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         final TimelineItemDTO item = (TimelineItemDTO) getItem(position);
         if (item != null)
         {
-            ViewHolder holder = null;
+            ViewHolder holder;
             if (convertView == null)
             {
                 convertView = inflater.inflate(R.layout.user_time_line_item, viewGroup, false);
@@ -248,7 +249,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
                 holder.imgUserTLUserHeader = (ImageView) convertView.findViewById(R.id.imgUserTLUserHeader);
                 holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
-                //holder.tvUserTLTimeStamp2 = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp2);
                 holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
 
                 //是股票交易
@@ -265,7 +265,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
                 holder.llTLPraiseDown = (LinearLayout) convertView.findViewById(R.id.llTLPraiseDown);
                 holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
-                //holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
                 holder.llTLBuy = (LinearLayout) convertView.findViewById(R.id.llTLBuy);
                 holder.btnTLBuy = (TextView) convertView.findViewById(R.id.btnTLBuy);
                 holder.tvTLBuy = (TextView) convertView.findViewById(R.id.tvTLBuy);
@@ -275,8 +274,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvTLPraiseDown = (TextView) convertView.findViewById(R.id.tvTLPraiseDown);
                 holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
                 holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
-                //holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
-                //holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
 
 
                 holder.tvTipInTopSimple = (TextView) convertView.findViewById(R.id.tvTipInTopSimple);
@@ -296,13 +293,10 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.llNormalAll.setVisibility(item.isHighlight?View.GONE:View.VISIBLE);
             holder.llSimpleAll.setVisibility(item.isHighlight?View.VISIBLE:View.GONE);
 
-
-            //holder.llTLShare.setVisibility((!isMySelf && isTrade) ? View.GONE : View.VISIBLE);
             holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.INVISIBLE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(View.VISIBLE);
-            //holder.tvUserTLTimeStamp2.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.tvTipInTop.setVisibility((isShowHeadAndName && item.isHighlight) ? View.VISIBLE : View.INVISIBLE);
             holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
@@ -352,7 +346,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.getUnitPriceCurrency());
                     holder.tvTradeCount.setText(tradeDTO.displayTradeQuantity());
                     holder.tvTradeMoney.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.displayTradeMoney());
-                    //holder.tvTradeCost.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.transactionCost);
                     holder.title0.setText(tradeDTO.isBuy() ? "买入股票：" : "卖出股票：");
                     holder.title1.setText(tradeDTO.isBuy() ? "买入价格：" : "卖出价格：");
                     holder.title2.setText(tradeDTO.isBuy() ? "买入数量：" : "卖出数量：");
@@ -495,18 +488,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             {
                 @Override public void onClick(View view)
                 {
-                    //timeLineOperater.OnTimeLineCommentsClicked(position);
                     timeLineOperater.OnTimeLineItemClicked(position);
                 }
             });
-
-            //holder.llTLShare.setOnClickListener(new View.OnClickListener()
-            //{
-            //    @Override public void onClick(View view)
-            //    {
-            //        timeLineOperater.OnTimeLineShareClicked(position);
-            //    }
-            //});
 
 
         }

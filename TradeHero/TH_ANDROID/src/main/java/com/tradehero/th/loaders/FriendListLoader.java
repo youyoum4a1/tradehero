@@ -13,10 +13,11 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
-import timber.log.Timber;
 
 public class FriendListLoader extends ListLoader<UserFriendsDTO>
 {
@@ -111,7 +112,6 @@ public class FriendListLoader extends ListLoader<UserFriendsDTO>
             @Override public void uncaughtException(Thread thread, Throwable ex)
             {
                 THToast.show(toastResId);
-                //Timber.e(ex, getContext().getString(toastResId));
             }
         };
     }
