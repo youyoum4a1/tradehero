@@ -83,13 +83,6 @@
         android:src="@drawable/market_sleep_grey"
         />
 
-    <Space
-        android:id="@+id/buy_sell_action_buttons_bottom_margin"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_xsmall"
-        android:layout_below="@id/buy_sell_action_buttons"
-        />
-
       <com.tradehero.common.widget.BetterViewAnimator
           android:id="@+id/chart_image_wrapper"
           android:layout_width="match_parent"
