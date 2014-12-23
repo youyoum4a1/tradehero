@@ -117,8 +117,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                         .map(pair -> pair.second)
                         .share()
                         .cache(1);
-
-        new PositionDTOCompactList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

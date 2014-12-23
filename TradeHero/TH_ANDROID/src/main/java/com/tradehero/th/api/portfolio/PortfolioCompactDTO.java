@@ -161,6 +161,7 @@ public class PortfolioCompactDTO implements DTO
                 ", txnCostUsd=" + txnCostUsd +
                 ", userId=" + userId +
                 ", marginAvailableRefCcy=" + marginAvailableRefCcy +
+                ", marginCloseOutPercent=" + marginCloseOutPercent +
                 ']';
     }
 }
