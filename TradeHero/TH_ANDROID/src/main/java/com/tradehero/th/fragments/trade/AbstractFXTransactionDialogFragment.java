@@ -86,29 +86,14 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
                     i = 0.75f;
                     break;
             }
-            if (quoteDTO == null) {
-                // Nothing to do
-            } else {
-                Double priceRefCcy = getPriceCcy();
-                if (priceRefCcy == null || priceRefCcy == 0) {
-                    // Nothing to do
-                } else {
-                    Integer maxSellableShares = getMaxSellableShares();
-                    if (maxSellableShares == null || maxSellableShares == 0)
-                    {
-                        linkWithQuantity((int) Math.floor(i * getMaxValue() / priceRefCcy), true);
-                    }
-                    else
-                    {
-                        linkWithQuantity((int) Math.floor(i * getMaxValue()), true);
-                    }
-                }
+            if (quoteDTO != null)
+            {
+                linkWithQuantity((int) Math.floor(i * getMaxValue()), true);
             }
 
             Integer selectedQuantity = mTransactionQuantity;
             mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
             updateTransactionDialog();
-//            mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
         };
     }
 }

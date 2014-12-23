@@ -520,8 +520,24 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             ProviderSecurityListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
+        if (providerDTO.associatedPortfolio.portfolioType != null)
+        {
+            switch (providerDTO.associatedPortfolio.portfolioType)
+            {
 
-        navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
+                case FX:
+                    navigator.get().pushFragment(ProviderFxListFragment.class, args);
+                    break;
+                case STOCKS:
+                default:
+                    navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
+                    break;
+            }
+        }
+        else
+        {
+            navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
+        }
     }
 
     private void pushPortfolioElement(@NonNull CompetitionZonePortfolioDTO competitionZoneDTO)

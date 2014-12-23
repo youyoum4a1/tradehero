@@ -1,8 +1,14 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -10,20 +16,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
 import timber.log.Timber;
 
-public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
+public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
+    private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 2;
     @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
     @InjectView(R.id.fx_price_sell) TextView sellPrice;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
-    protected SecurityCompactDTO securityCompactDTO;
+    protected FxSecurityCompactDTO fxSecurityCompactDTO;
+    private int mBlinkDuration;
+    private int mDefaultTextColor;
 
     //<editor-fold desc="Constructors">
     public FXItemView(Context context)
@@ -53,17 +61,19 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     {
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
+        mDefaultTextColor = getResources().getColor(R.color.text_primary);
+        mBlinkDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
 
     @Override
-    public void display(final SecurityCompactDTO securityCompactDTO)
+    public void display(final FxSecurityCompactDTO securityCompactDTO)
     {
         linkWith(securityCompactDTO, true);
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    public void linkWith(FxSecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
-        this.securityCompactDTO = securityCompactDTO;
+        this.fxSecurityCompactDTO = securityCompactDTO;
         displayFlagContainer();
         if (andDisplay)
         {
@@ -73,9 +83,31 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
         }
     }
 
-    private void displayPrice() {
-        buyPrice.setText(String.valueOf(securityCompactDTO.askPrice));
-        sellPrice.setText(String.valueOf(securityCompactDTO.bidPrice));
+    private void displayPrice()
+    {
+        coloredText(buyPrice, String.valueOf(fxSecurityCompactDTO.askPrice), fxSecurityCompactDTO.fxAskTextColor);
+        coloredText(sellPrice, String.valueOf(fxSecurityCompactDTO.bidPrice), fxSecurityCompactDTO.fxBidTextColor);
+    }
+
+    private void coloredText(TextView textView, String text, int color)
+    {
+        SpannableStringBuilder fontStyleBuilder = new SpannableStringBuilder(text);
+        int length = text.length();
+
+        fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 10),
+                length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (color != 0 && color != mDefaultTextColor)
+        {
+            fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
+                    length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            //Adds a blinking animation
+            textView.setAlpha(0.1f);
+            textView.animate().alpha(1).setDuration(mBlinkDuration).setInterpolator(new AccelerateInterpolator(3)).start();
+        }
+
+        textView.setText(fontStyleBuilder);
     }
 
     //<editor-fold desc="Display Methods">
@@ -91,14 +123,10 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     {
         if (fxPairName != null)
         {
-            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            if (fxSecurityCompactDTO != null)
             {
-                FxPairSecurityId pair = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+                FxPairSecurityId pair = fxSecurityCompactDTO.getFxPair();
                 fxPairName.setText(String.format("%s/%s", pair.left, pair.right));
-            }
-            else if (securityCompactDTO != null)
-            {
-                fxPairName.setText(securityCompactDTO.symbol);
             }
             else
             {
@@ -109,15 +137,15 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
 
     public void displayMarketClose()
     {
-        if (securityCompactDTO == null)
+        if (fxSecurityCompactDTO == null)
         {
             // Nothing to do
         }
-        else if (securityCompactDTO.marketOpen == null)
+        else if (fxSecurityCompactDTO.marketOpen == null)
         {
             Timber.w("displayMarketClose marketOpen is null");
         }
-        else if (securityCompactDTO.marketOpen)
+        else if (fxSecurityCompactDTO.marketOpen)
         {
             if (marketCloseIcon != null)
             {
@@ -137,9 +165,9 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     {
         if (flagsContainer != null)
         {
-            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            if (fxSecurityCompactDTO != null)
             {
-                flagsContainer.display(((FxSecurityCompactDTO) securityCompactDTO).getFxPair());
+                flagsContainer.display(fxSecurityCompactDTO.getFxPair());
             }
         }
     }
