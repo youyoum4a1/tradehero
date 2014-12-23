@@ -54,6 +54,7 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.security.WarrantCompetitionPagerFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
@@ -524,9 +525,12 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             switch (providerDTO.associatedPortfolio.portfolioType)
             {
-
                 case FX:
                     navigator.get().pushFragment(ProviderFxListFragment.class, args);
+                    break;
+                case WARRANT:
+                    WarrantCompetitionPagerFragment.putProviderId(args, providerId);
+                    navigator.get().pushFragment(WarrantCompetitionPagerFragment.class, args);
                     break;
                 case STOCKS:
                 default:

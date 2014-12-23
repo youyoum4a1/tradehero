@@ -278,6 +278,8 @@
   <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>
   <string name="retry">Retry</string>
-    <string name="stocks">Stocks</string>
-    <string name="fx">FX</string>
+  <string name="stocks">Stocks</string>
+  <string name="fx">FX</string>
+
+  <string name="warrants_all">All Warrants</string>
 </resources>
