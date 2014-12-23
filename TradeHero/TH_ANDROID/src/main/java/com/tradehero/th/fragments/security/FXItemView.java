@@ -23,6 +23,7 @@ import timber.log.Timber;
 
 public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
+    private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 2;
     @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
@@ -94,12 +95,12 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         int length = text.length();
 
         fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 10),
-                length - 2, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (color != 0 && color != mDefaultTextColor)
         {
             fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
-                    length - 2, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             //Adds a blinking animation
             textView.setAlpha(0.1f);
