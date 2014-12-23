@@ -12,14 +12,6 @@
             android:id="@+id/rlListAll"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent">
-        <com.tradehero.th.widget.TradeHeroProgressBar
-                android:id="@+id/tradeheroprogressbar_trade_mine"
-                android:layout_width="@dimen/loading_logo_width"
-                android:layout_height="@dimen/loading_logo_height"
-                android:layout_gravity="center"
-                android:background="@drawable/logo"
-                android:visibility="gone"/>
-
         <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView
                 xmlns:ptr="http://schemas.android.com/apk/res-auto"
                 ptr:ptrHeaderTextColor="@color/black"
@@ -32,7 +24,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
         </com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView>
-
     </RelativeLayout>
 
 

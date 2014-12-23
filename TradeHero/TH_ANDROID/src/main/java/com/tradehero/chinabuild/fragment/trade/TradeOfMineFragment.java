@@ -46,7 +46,6 @@ import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.metrics.Analytics;
-import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,7 +78,6 @@ public class TradeOfMineFragment extends DashboardFragment
     private TextView tvItemDynamicAmount;
     private TextView tvItemCash;
 
-    @InjectView(R.id.tradeheroprogressbar_trade_mine) TradeHeroProgressBar progressBar;
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
 
     @InjectView(R.id.rlListAll) RelativeLayout rlListAll;
@@ -122,10 +120,6 @@ public class TradeOfMineFragment extends DashboardFragment
         mRefreshView.setOnClickListener(null);
         initRoot(mRefreshView);
         initView();
-        if (adapter.getTotalCount() == 0)
-        {
-            progressBar.startLoading();
-        }
         return view;
     }
 
@@ -305,7 +299,7 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
-            onFinish();
+            listView.onRefreshComplete();
         }
 
         @Override public void onDTOReceived(
@@ -314,17 +308,12 @@ public class TradeOfMineFragment extends DashboardFragment
         {
             MainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
-            onFinish();
+            listView.onRefreshComplete();
         }
 
         @Override public void onErrorThrown(
                 @NotNull GetPositionsDTOKey key,
                 @NotNull Throwable error)
-        {
-            onFinish();
-        }
-
-        private void onFinish()
         {
             listView.onRefreshComplete();
         }
@@ -335,22 +324,12 @@ public class TradeOfMineFragment extends DashboardFragment
         @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull WatchlistPositionDTOList value)
         {
             initWatchList(value);
-            onFinish();
+            listView.onRefreshComplete();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            onFinish();
-        }
-
-        private void onFinish()
-        {
             listView.onRefreshComplete();
-            if (progressBar != null)
-            {
-                progressBar.stopLoading();
-                progressBar.setVisibility(View.GONE);
-            }
         }
     }
 
