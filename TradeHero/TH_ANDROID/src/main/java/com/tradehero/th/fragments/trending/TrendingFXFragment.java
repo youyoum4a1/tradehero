@@ -164,7 +164,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                     {
                         ((FxSecurityCompactDTO) dto).setAskPrice(getActivity(), price.ask);
                         ((FxSecurityCompactDTO) dto).setBidPrice(getActivity(), price.bid);
-                        continue;
+                        break;
                     }
                 }
             }
