@@ -38,6 +38,8 @@ import timber.log.Timber;
 public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         implements WithTutorial
 {
+    private static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
+
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
     private SubscriptionList subscriptions;
@@ -70,7 +72,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         priceSubscriptions.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
-                .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
+                .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXPriceFetchObserver()));
     }
 
