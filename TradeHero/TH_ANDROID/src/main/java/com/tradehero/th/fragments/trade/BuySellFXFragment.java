@@ -216,6 +216,7 @@ public class BuySellFXFragment extends BuySellFragment
                 new MenuOwnedPortfolioId(
                         currentUserId.toUserBaseKey(),
                         providerDTO.associatedPortfolio));
+        linkWith(providerDTO.associatedPortfolio, true);
     }
 
     @Override protected void softFetchPortfolioCompactList()
