@@ -45,7 +45,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_search_stock, container, false);
+        return inflater.inflate(R.layout.fragment_provider_warrant_list, container, false);
     }
 
     @NonNull @Override protected PagedArrayDTOAdapterNew<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
