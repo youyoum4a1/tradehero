@@ -5,6 +5,8 @@ import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -23,7 +25,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.api.social.BatchFollowFormDTO;
 import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
@@ -277,5 +278,12 @@ public interface UserServiceRx
     @POST("/analytics")
     Observable<Response> sendAnalytics(
             @Body BatchAnalyticsEventForm batchAnalyticsEventForm);
+    //</editor-fold>
+
+    //<editor-fold desc="Create FX Portfolio">
+    @POST("/users/{userId}/portfolios/createFX")
+    Observable<PortfolioDTO> createFXPortfolioRx(
+            @Path("userId") int userId
+    );
     //</editor-fold>
 }

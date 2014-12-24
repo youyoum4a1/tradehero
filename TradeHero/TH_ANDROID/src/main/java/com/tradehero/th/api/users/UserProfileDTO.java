@@ -38,6 +38,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     public Double ccBalance;       // non-recurring: CC spot level
 
     public PortfolioDTO portfolio;
+    public PortfolioDTO fxPortfolio;
 
     public String paypalEmailAddress;
     public String alipayAccount;
