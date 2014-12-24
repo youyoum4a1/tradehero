@@ -54,6 +54,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -419,8 +420,16 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (securityCompactDTO != null)
         {
-            setActionBarTitle(securityCompactDTO.name);
-            setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
+            if(!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            {
+                setActionBarTitle(securityCompactDTO.name);
+                setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
+            }
+            else
+            {
+                setActionBarTitle(securityCompactDTO.getExchangeSymbol());
+                setActionBarSubtitle(null);
+            }
         }
 
         if (mMarketClosedIcon != null)
