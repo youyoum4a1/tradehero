@@ -235,6 +235,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
                 holder = new ViewHolder();
 
+                holder.headerV = convertView.findViewById(R.id.view_header);
+                holder.footerV = convertView.findViewById(R.id.view_footer);
+
                 holder.llItemAll = (LinearLayout) convertView.findViewById(R.id.llItemAll);
                 holder.llNormalAll = (LinearLayout) convertView.findViewById(R.id.llNormalAll);
                 holder.llSimpleAll = (LinearLayout) convertView.findViewById(R.id.llSimpleAll);
@@ -303,6 +306,26 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.tvUserTLTitle.setVisibility(StringUtils.isNullOrEmpty(item.header) ? View.GONE : View.VISIBLE);
 
 
+            if(position==0){
+                holder.headerV.setVisibility(View.VISIBLE);
+                if(position == (getCount()-1)){
+                    holder.footerV.setVisibility(View.VISIBLE);
+                }else{
+                    holder.footerV.setVisibility(View.GONE);
+                }
+            }else{
+                if(item.isHighlight){
+                    holder.headerV.setVisibility(View.GONE);
+                    holder.footerV.setVisibility(View.GONE);
+                }else{
+                    holder.headerV.setVisibility(View.VISIBLE);
+                    if(position == (getCount()-1)){
+                        holder.footerV.setVisibility(View.VISIBLE);
+                    }else{
+                        holder.footerV.setVisibility(View.GONE);
+                    }
+                }
+            }
 
             if (isShowLastCommentUtc)
             {
@@ -567,61 +590,11 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         return null;
     }
 
-    static class ViewHolder
-    {
-        public LinearLayout llItemAll = null;
-        public LinearLayout llNormalAll = null;
-        public LinearLayout llSimpleAll = null;
 
-        public TextView tvUserTLTimeStamp = null;
-        public TextView tvUserTLTitle = null;
-        public TextView tvUserTLContent = null;
-
-        public ImageView imgUserTLUserHeader = null;
-        //public TextView tvUserTLTimeStamp2 = null;
-        public TextView tvTipInTop = null;
-        public TextView tvReward = null;
-        public TextView tvUserTLName = null;
-
-        //不是一个交易相关
-        public LinearLayout llUserTLNoTrade = null;
-        public LinearLayout llTLBuy = null;
-        public LinearLayout llTLPraise = null;
-        public LinearLayout llTLPraiseDown = null;
-        public LinearLayout llTLComment = null;
-        //public LinearLayout llTLShare = null;
-        public TextView btnTLBuy = null;
-        public TextView tvTLBuy = null;
-        public TextView btnTLPraise = null;
-        public TextView tvTLPraise = null;
-        public TextView btnTLPraiseDown = null;
-        public TextView tvTLPraiseDown = null;
-        public TextView btnTLComment = null;
-        public TextView tvTLComment = null;
-        //public TextView btnTLShare = null;
-        //public TextView tvTLShare = null;
-
-        //是一个交易相关的
-        public RelativeLayout rlUserTLTrade;
-        public TextView tvTradeName;
-        public TextView tvTradePrice;
-        public TextView tvTradeCount;
-        public TextView tvTradeMoney;
-        //public TextView tvTradeCost;
-        public TextView title0;//买入股票
-        public TextView title1;//买入价格
-        public TextView title2;//买入数量
-
-        public TextView tvUserTLTitleSimple = null;
-        public TextView tvTipInTopSimple = null;
-    }
 
     public void clickedBuy(int position)
     {
         SecurityId securityId = ((TimelineItemDTO) getItem(position)).getMedias().get(0).createSecurityId();
-        //SecurityId securityId = new SecurityId("SHA","600246");
-        //SecurityId securityId = new SecurityId("SHE","000887");
-        //SecurityId securityId = new SecurityId("SHE","000020");
         Timber.d("跟买：POSITION ＝ " + securityId.toString());
 
         Bundle bundle = new Bundle();
@@ -803,5 +776,52 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 }
             }
         }
+    }
+
+    static class ViewHolder
+    {
+        public LinearLayout llItemAll = null;
+        public LinearLayout llNormalAll = null;
+        public LinearLayout llSimpleAll = null;
+
+        public TextView tvUserTLTimeStamp = null;
+        public TextView tvUserTLTitle = null;
+        public TextView tvUserTLContent = null;
+
+        public ImageView imgUserTLUserHeader = null;
+        public TextView tvTipInTop = null;
+        public TextView tvReward = null;
+        public TextView tvUserTLName = null;
+
+        //不是一个交易相关
+        public LinearLayout llUserTLNoTrade = null;
+        public LinearLayout llTLBuy = null;
+        public LinearLayout llTLPraise = null;
+        public LinearLayout llTLPraiseDown = null;
+        public LinearLayout llTLComment = null;
+        public TextView btnTLBuy = null;
+        public TextView tvTLBuy = null;
+        public TextView btnTLPraise = null;
+        public TextView tvTLPraise = null;
+        public TextView btnTLPraiseDown = null;
+        public TextView tvTLPraiseDown = null;
+        public TextView btnTLComment = null;
+        public TextView tvTLComment = null;
+
+        //是一个交易相关的
+        public RelativeLayout rlUserTLTrade;
+        public TextView tvTradeName;
+        public TextView tvTradePrice;
+        public TextView tvTradeCount;
+        public TextView tvTradeMoney;
+        public TextView title0;//买入股票
+        public TextView title1;//买入价格
+        public TextView title2;//买入数量
+
+        public TextView tvUserTLTitleSimple = null;
+        public TextView tvTipInTopSimple = null;
+
+        public View headerV;
+        public View footerV;
     }
 }
