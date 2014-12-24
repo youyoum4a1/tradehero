@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -76,5 +77,10 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
             userProfileDTO.achievementCount += count;
             onNext(userBaseKey, userProfileDTO);
         }
+    }
+
+    public Observable<PortfolioDTO> createFXPortfolio(@NonNull UserBaseKey userBaseKey)
+    {
+        return userServiceWrapper.get().createFXPortfolioRx(userBaseKey);
     }
 }

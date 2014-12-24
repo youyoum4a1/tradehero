@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,31 +16,39 @@ import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
     @Inject SecurityServiceWrapper securityServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
     @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
     @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
 
-    @Nullable protected Subscription fxHistorySubscription;
+    private SubscriptionList subscriptionList;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -54,6 +62,21 @@ public class BuySellFXFragment extends BuySellFragment
 
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
+        addDefaultFXPortfolio();
+    }
+
+    private void addDefaultFXPortfolio() {
+        subscriptionList.add(AndroidObservable.bindFragment(this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
+                    @Override
+                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
+                        mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
+                                new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(),
+                                        args.second.fxPortfolio));
+                        linkWith(args.second.fxPortfolio, true);
+                    }
+                }));
     }
 
     private void initTimeSpanButton()
@@ -65,16 +88,16 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void onStop()
     {
-        unsubscribe(fxHistorySubscription);
-        fxHistorySubscription = null;
+        subscriptionList.unsubscribe();
+        subscriptionList = null;
         super.onStop();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        unsubscribe(fxHistorySubscription);
-        fxHistorySubscription = null;
+        subscriptionList.unsubscribe();
+        subscriptionList = null;
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
@@ -85,10 +108,10 @@ public class BuySellFXFragment extends BuySellFragment
 
     private void fetchKChart(String code)
     {
-        fxHistorySubscription = AndroidObservable.bindFragment(
+        subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, code))
-                .subscribe(createFXHistoryFetchObserver());
+                .subscribe(createFXHistoryFetchObserver()));
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
