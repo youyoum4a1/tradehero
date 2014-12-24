@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
-import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.WarrantType;
@@ -65,7 +65,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
 
     @NonNull @Override public SecurityListType makePagedDtoKey(int page)
     {
-        return new BasicProviderSecurityListType(providerId, page, perPage);
+        return new WarrantProviderSecurityListType(providerId, warrantType, page, perPage);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)

@@ -19,7 +19,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 
 public class WarrantCompetitionPagerFragment extends DashboardFragment
 {
-    private static final String BUNDLE_PROVIDER_ID = WarrantCompetitionPagerFragment.class.getName()+".providerId";
+    private static final String BUNDLE_PROVIDER_ID = WarrantCompetitionPagerFragment.class.getName() + ".providerId";
 
     @InjectView(R.id.android_tabs) SlidingTabLayout slidingTabLayout;
     @InjectView(R.id.pager) ViewPager pager;
@@ -59,7 +59,7 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
         public WarrantPagerAdapter(FragmentManager fm)
         {
             super(fm);
-            EXTRA_PAGE_TITLE = new int[]{R.string.warrants_all};
+            EXTRA_PAGE_TITLE = new int[] {R.string.warrants_all};
         }
 
         @Override public Fragment getItem(int position)
@@ -67,6 +67,11 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
             Fragment warrant = new ProviderWarrantListRxFragment();
             Bundle b = new Bundle(getArguments());
             ProviderWarrantListRxFragment.putProviderId(b, providerId);
+            WarrantType type = getType(position);
+            if (type != null)
+            {
+                ProviderWarrantListRxFragment.putWarrantType(b, type);
+            }
             warrant.setArguments(b);
             return warrant;
         }
@@ -78,14 +83,27 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
 
         @Override public CharSequence getPageTitle(int position)
         {
-            if (position < EXTRA_PAGE_TITLE.length)
+            WarrantType type = getType(position);
+            if (type == null)
             {
                 return getString(EXTRA_PAGE_TITLE[position]);
             }
             else
             {
+                return getString(type.stringResId);
+            }
+        }
+
+        @Nullable private WarrantType getType(int position)
+        {
+            if (position < EXTRA_PAGE_TITLE.length)
+            {
+                return null;
+            }
+            else
+            {
                 int adjusted = position - EXTRA_PAGE_TITLE.length;
-                return getString(WarrantType.values()[adjusted].stringResId);
+                return WarrantType.values()[adjusted];
             }
         }
     }

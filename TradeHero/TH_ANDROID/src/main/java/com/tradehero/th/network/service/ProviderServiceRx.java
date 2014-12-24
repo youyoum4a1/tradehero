@@ -89,4 +89,13 @@ public interface ProviderServiceRx
     @GET("/providers/{providerId}/prizepool")
     Observable<ProviderPrizePoolDTO> getProviderPrizePool(@Path("providerId") int providerId);
     //</editor-fold>
+
+    //<editor-fold desc="Get Provider Warrants">
+    @GET("/providers/{providerId}/securities")
+    Observable<SecurityCompactDTOList> getProviderWarrants(
+            @Path("providerId") int providerId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage,
+            @Query("warrantType") String warrantShortCode);
+    //</editor-fold>
 }

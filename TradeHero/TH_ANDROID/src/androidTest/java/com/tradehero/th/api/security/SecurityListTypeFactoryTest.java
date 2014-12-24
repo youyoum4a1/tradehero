@@ -3,7 +3,7 @@ package com.tradehero.th.api.security;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
-import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantUnderlyersProviderSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.SecurityListTypeFactory;
@@ -71,9 +71,9 @@ public class SecurityListTypeFactoryTest
         return new BasicProviderSecurityListType(new ProviderId(14), page, 16);
     }
 
-    private WarrantProviderSecurityListType getWarrantProvider(int page)
+    private WarrantUnderlyersProviderSecurityListType getWarrantProvider(int page)
     {
-        return new WarrantProviderSecurityListType(new ProviderId(17), page, 19);
+        return new WarrantUnderlyersProviderSecurityListType(new ProviderId(17), page, 19);
     }
     //</editor-fold>
 
