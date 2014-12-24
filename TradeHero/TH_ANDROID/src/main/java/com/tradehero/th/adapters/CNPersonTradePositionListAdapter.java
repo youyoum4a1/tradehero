@@ -185,6 +185,8 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
             //price
             if (item.security.lastPrice != null) {
                 tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.security.lastPrice));
+            }else if(item.security.previousClose != null){
+                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.security.previousClose));
             }
             //currency
             tvSecurityCurrency.setText(item.security.getCurrencyDisplay());
@@ -221,6 +223,8 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
             //price
             if (item.watchlistPosition.securityDTO.lastPrice != null) {
                 tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.watchlistPosition.securityDTO.lastPrice));
+            }else if(item.watchlistPosition.securityDTO.previousClose != null){
+                tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.watchlistPosition.securityDTO.previousClose));
             }
 
             //currency
