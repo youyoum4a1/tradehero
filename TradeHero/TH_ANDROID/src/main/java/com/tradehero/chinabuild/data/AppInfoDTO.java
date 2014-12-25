@@ -1,6 +1,7 @@
 package com.tradehero.chinabuild.data;
 
 /**
+ * For update TradeHero
  * Created by palmer on 14-10-21.
  */
 public class AppInfoDTO {

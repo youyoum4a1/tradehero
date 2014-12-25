@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
+ *
  * Created by palmer on 14/11/21.
  */
 
@@ -19,6 +20,10 @@ public class ShareServiceWrapper {
         this.shareServiceAsync = shareServiceAsync;
     }
 
+    /**
+     * Retrieve share end point from server.
+     * @param callback
+     */
     public void getShareEndPoint(Callback<String> callback){
         shareServiceAsync.getShareEndPoint(callback);
     }

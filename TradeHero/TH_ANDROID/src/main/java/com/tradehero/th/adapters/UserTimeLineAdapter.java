@@ -237,6 +237,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
                 holder.headerV = convertView.findViewById(R.id.view_header);
                 holder.footerV = convertView.findViewById(R.id.view_footer);
+                holder.dividerHighLightV = convertView.findViewById(R.id.view_divider_highlight);
 
                 holder.llItemAll = (LinearLayout) convertView.findViewById(R.id.llItemAll);
                 holder.llNormalAll = (LinearLayout) convertView.findViewById(R.id.llNormalAll);
@@ -246,7 +247,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvUserTLTimeStamp = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp);
 
                 //不是股票交易
-                holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.llUserTLNoTrade);
+                holder.llUserTLNoTrade = (LinearLayout) convertView.findViewById(R.id.linearlayout_usertlnotrade);
                 holder.tvUserTLTitle = (TextView) convertView.findViewById(R.id.tvUserTLTitle);
                 holder.tvUserTLContent = (TextView) convertView.findViewById(R.id.tvUserTLContent);
 
@@ -324,6 +325,13 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     }else{
                         holder.footerV.setVisibility(View.GONE);
                     }
+                }
+            }
+            if(item.isHighlight){
+                if( position != 0) {
+                    holder.dividerHighLightV.setVisibility(View.VISIBLE);
+                }else{
+                    holder.dividerHighLightV.setVisibility(View.GONE);
                 }
             }
 
@@ -823,5 +831,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
         public View headerV;
         public View footerV;
+        public View dividerHighLightV;
     }
 }

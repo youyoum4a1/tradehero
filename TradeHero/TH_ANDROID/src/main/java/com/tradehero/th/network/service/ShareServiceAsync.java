@@ -8,5 +8,10 @@ import retrofit.http.GET;
  */
 public interface ShareServiceAsync {
 
+    /**
+     * Retrieve share end point from server.
+     *
+     * @param callback
+     */
     @GET("/social/endpoint") void getShareEndPoint(Callback<String> callback);
 }

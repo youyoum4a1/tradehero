@@ -35,7 +35,6 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.widget.GuideView;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -108,7 +107,6 @@ public class DashboardActivity extends SherlockFragmentActivity
             if (args != null)
             {
                 String CLASS_NAME = args.getString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME);
-                Timber.d("CLASS_NAME = " + CLASS_NAME);
                 try
                 {
                     Class onwClass = Class.forName(CLASS_NAME);
@@ -223,7 +221,7 @@ public class DashboardActivity extends SherlockFragmentActivity
                 THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_COMPETITION_JOIN);
                 return;
             }
-            if(guideType == GuideView.TYPE_GUIDE_STOCK_BUG){
+            if(guideType == GuideView.TYPE_GUIDE_STOCK_BUY){
                 THSharePreferenceManager.setGuideShowed(this, THSharePreferenceManager.GUIDE_STOCK_BUY);
                 return;
             }
