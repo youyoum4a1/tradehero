@@ -346,6 +346,7 @@ public class PositionListFragment
     {
         this.userProfileDTO = userProfileDTO;
         displayHeaderView();
+        positionItemAdapter.linkWith(userProfileDTO);
     }
 
     public void handleUserProfileError(Throwable e)
@@ -386,6 +387,7 @@ public class PositionListFragment
 
         preparePortfolioHeaderView(portfolioDTO);
         portfolioHeaderView.linkWith(portfolioDTO);
+        positionItemAdapter.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
