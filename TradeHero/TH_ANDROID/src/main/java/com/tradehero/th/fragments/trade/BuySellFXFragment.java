@@ -59,7 +59,7 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
+        subscriptionList = new SubscriptionList();
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
         addDefaultFXPortfolio();
