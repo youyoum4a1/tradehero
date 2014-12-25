@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionStatus;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionView;
@@ -33,6 +35,8 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     public static final int VIEW_TYPE_CLOSED_IN_PERIOD = 8;
 
     protected Map<Integer, Integer> itemTypeToLayoutId;
+    private PortfolioDTO portfolioDTO;
+    private UserProfileDTO userProfileDTO;
 
     //<editor-fold desc="Constructors">
     public PositionItemAdapter(@NonNull Context context, @NonNull Map<Integer, Integer> itemTypeToLayoutId)
@@ -311,11 +315,23 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     public String getOpenLongHeaderText(HeaderDTO headerDTO)
     {
-        if (headerDTO == null || headerDTO.count == null)
+        if (userProfileDTO != null && portfolioDTO != null && userProfileDTO.fxPortfolio != null
+                && userProfileDTO.fxPortfolio.id == portfolioDTO.id)
         {
-            return getContext().getString(R.string.position_list_header_open_long_unsure);
+            if (headerDTO == null || headerDTO.count == null)
+            {
+                return getContext().getString(R.string.position_list_header_open_long_unsure);
+            }
+            return getContext().getString(R.string.position_list_header_open_long, (int) headerDTO.count);
         }
-        return getContext().getString(R.string.position_list_header_open_long, (int) headerDTO.count);
+        else
+        {
+            if (headerDTO == null || headerDTO.count == null)
+            {
+                return getContext().getString(R.string.position_list_header_open_unsure);
+            }
+            return getContext().getString(R.string.position_list_header_open, (int) headerDTO.count);
+        }
     }
 
     public String getOpenShortHeaderText(HeaderDTO headerDTO)
@@ -340,6 +356,14 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     {
         cell.linkWith((PositionDTO) item, false);
         cell.display();
+    }
+
+    public void linkWith(PortfolioDTO portfolioDTO) {
+        this.portfolioDTO = portfolioDTO;
+    }
+
+    public void linkWith(UserProfileDTO userProfileDTO) {
+        this.userProfileDTO = userProfileDTO;
     }
 
     public static class HeaderDTO
