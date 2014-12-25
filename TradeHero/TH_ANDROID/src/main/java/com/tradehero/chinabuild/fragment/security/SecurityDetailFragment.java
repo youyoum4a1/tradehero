@@ -1960,7 +1960,9 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
 
         displayDiscussOrNewsDTO();
-        btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.vote_ani));
+        if(item.voteDirection != 0) {
+            btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
+        }
 
     }
 
@@ -1987,9 +1989,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             item.downvoteCount = item.downvoteCount > 0 ? (item.downvoteCount - 1) : 0;
             updateVoting(VoteDirection.UnVote, item);
         }
-
         displayDiscussOrNewsDTO();
-        btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
+        if(item.voteDirection != 0){
+            btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
+        }
     }
 
 

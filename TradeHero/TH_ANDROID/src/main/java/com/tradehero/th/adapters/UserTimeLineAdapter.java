@@ -71,6 +71,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     @Inject Analytics analytics;
     public Animation animation;
+    public Animation praiseAnimation;
 
     private static int timeLineItemDeleted = -1;
     private static int timeLineItemAnswerd = -1;
@@ -81,6 +82,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         animation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
+        praiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_praise);
     }
 
     public UserTimeLineAdapter(Context context, boolean isMySelf)
@@ -502,7 +504,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLinePraiseClicked(position);
                     clickedPraise(position);
-                    copyHolder.btnTLPraise.startAnimation(animation);
+                    if(item.voteDirection != 0) {
+                        copyHolder.btnTLPraise.startAnimation(praiseAnimation);
+                    }
                 }
             });
             holder.llTLPraiseDown.setOnClickListener(new View.OnClickListener()
@@ -511,7 +515,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 {
                     timeLineOperater.OnTimeLinePraiseDownClicked(position);
                     clickedPraiseDown(position);
-                    copyHolder.btnTLPraiseDown.startAnimation(animation);
+                    if(item.voteDirection != 0) {
+                        copyHolder.btnTLPraiseDown.startAnimation(animation);
+                    }
                 }
             });
 
