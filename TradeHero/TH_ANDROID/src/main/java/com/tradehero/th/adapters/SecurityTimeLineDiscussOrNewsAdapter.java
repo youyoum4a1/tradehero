@@ -6,6 +6,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,12 +28,12 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.List;
 
 public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 {
@@ -43,16 +45,17 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
     public boolean isSimpleModule = false;//是否支持 赞分享等
 
+    private Animation praiseAnimation;
+    private Animation despiseAnimation;
+
     public SecurityTimeLineDiscussOrNewsAdapter(Context context)
     {
         DaggerUtils.inject(this);
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
 
-    public SecurityTimeLineDiscussOrNewsAdapter(Context context, boolean isSimpleModule)
-    {
-        this(context);
+        praiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_praise);
+        despiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
     }
 
     public void setListData(List<AbstractDiscussionCompactDTO> listCompactDTO)
@@ -129,16 +132,12 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
             holder.llTLPraiseDown = (LinearLayout)convertView.findViewById(R.id.llTLPraiseDown);
             holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
-            //holder.llTLShare = (LinearLayout) convertView.findViewById(R.id.llTLShare);
             holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
             holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
             holder.btnTLPraiseDown = (TextView) convertView.findViewById(R.id.btnTLPraiseDown);
             holder.tvTLPraiseDown = (TextView) convertView.findViewById(R.id.tvTLPraiseDown);
             holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
             holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
-            //holder.btnTLShare = (TextView) convertView.findViewById(R.id.btnTLShare);
-            //holder.tvTLShare = (TextView) convertView.findViewById(R.id.tvTLShare);
-            //holder.includeTLOperater = (LinearLayout) convertView.findViewById(R.id.includeTLOperater);
 
             convertView.setTag(holder);
         }
@@ -147,6 +146,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder = (ViewHolder) convertView.getTag();
         }
 
+        final ViewHolder copyHolder = holder;
         //fixed a bug ..
         if (item instanceof EmptyDiscussionCompactDTO)
         {
@@ -223,6 +223,9 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                     timeLineOperater.OnTimeLinePraiseClicked(position);
                 }
                 clickedPraise(position);
+                if(item.voteDirection!=0){
+                    copyHolder.btnTLPraise.startAnimation(praiseAnimation);
+                }
             }
         });
 
@@ -235,6 +238,9 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
                     timeLineOperater.OnTimeLinePraiseDownClicked(position);
                 }
                 clickedPraiseDown(position);
+                if(item.voteDirection!=0){
+                    copyHolder.btnTLPraiseDown.startAnimation(despiseAnimation);
+                }
             }
         });
 
@@ -242,34 +248,18 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         {
             @Override public void onClick(View view)
             {
-                //if (timeLineOperater != null)
-                //{
-                //    timeLineOperater.OnTimeLineCommentsClicked(position);
-                //}
                 if (timeLineOperater != null)
                 {
                     timeLineOperater.OnTimeLineItemClicked(position);
                 }
             }
         });
-
-        //holder.llTLShare.setOnClickListener(new View.OnClickListener()
-        //{
-        //    @Override public void onClick(View view)
-        //    {
-        //        if (timeLineOperater != null)
-        //        {
-        //            timeLineOperater.OnTimeLineShareClicked(position);
-        //        }
-        //    }
-        //});
-        //}
         return convertView;
     }
 
     public void clickedPraise(int position)
     {
-        AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
+        AbstractDiscussionCompactDTO item = getItem(position);
 
         if (item.voteDirection == 1)
         {
@@ -296,7 +286,7 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
     public void clickedPraiseDown(int position)
     {
-        AbstractDiscussionCompactDTO item = (AbstractDiscussionCompactDTO) getItem(position);
+        AbstractDiscussionCompactDTO item = getItem(position);
 
         if (item.voteDirection == 1)
         {
@@ -318,6 +308,8 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             updateVoting(VoteDirection.UnVote, item);
         }
         notifyDataSetChanged();
+
+
     }
 
     static class ViewHolder
@@ -344,10 +336,6 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
         public TextView tvTLPraiseDown = null;
         public TextView btnTLComment = null;
         public TextView tvTLComment = null;
-        //public TextView btnTLShare = null;
-        //public TextView tvTLShare = null;
-
-        //public LinearLayout includeTLOperater;
     }
 
     private DashboardNavigator getNavigator()
@@ -410,12 +398,10 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
 
         @Override public void success(DiscussionDTO discussionDTO, Response response)
         {
-            Timber.d("VoteCallback success");
         }
 
         @Override public void failure(RetrofitError error)
         {
-            Timber.d("VoteCallback failed :" + error.toString());
         }
     }
 }
