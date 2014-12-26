@@ -130,8 +130,8 @@ public class TrendingFilterSelectorView extends RelativeLayout
     {
         if (Constants.RELEASE)
         {
-            analytics.fireProfileEvent(new ProfileEvent(
-//            analytics.localytics().setProfileAttribute(new ProfileEvent(
+//            analytics.fireProfileEvent(new ProfileEvent(
+            analytics.localytics().setProfileAttribute(new ProfileEvent(
                     AnalyticsConstants.InterestedExchange,
                     Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
         }
