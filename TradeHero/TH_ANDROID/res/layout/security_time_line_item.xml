@@ -74,13 +74,14 @@
           android:layout_height="wrap_content"
           android:layout_marginTop="6dip"
           android:textColorLink="@color/timeline_item_link"
-          android:textColor="@color/timeline_item"
+          android:textColor="#000000"
           android:textSize="@dimen/text_medium"
           android:textStyle="normal"
           android:maxLines="3"
           />
       <RelativeLayout
           android:layout_below="@id/tvUserTLContent"
+          android:layout_marginTop="5dp"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content">
         <include layout="@layout/timeline_operater_line"/>

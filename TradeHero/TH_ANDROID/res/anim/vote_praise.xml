@@ -10,16 +10,6 @@
                android:interpolator="@android:anim/accelerate_decelerate_interpolator"
                android:toYDelta="-20"/>
 
-    <rotate
-            android:duration="400"
-            android:fromDegrees="0"
-            android:toDegrees="-30"
-            android:fillAfter="false"
-            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            />
-
     <scale android:duration="400"
            android:fromXScale="1.0"
            android:toXScale="1.1"
@@ -30,14 +20,6 @@
            android:fillAfter="false"
            android:pivotY="50%"/>
     <set android:interpolator="@android:anim/accelerate_decelerate_interpolator">
-        <rotate android:startOffset="400"
-                android:duration="400"
-                android:fromDegrees="0"
-                android:toDegrees="30"
-                android:fillBefore="false"
-                android:pivotX="50%"
-                android:pivotY="50%"
-                />
 
         <scale android:duration="400"
                android:fromXScale="1.0"

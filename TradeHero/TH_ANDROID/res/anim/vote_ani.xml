@@ -35,7 +35,7 @@
                    android:fromYDelta="0"
                    android:fillBefore="false"
                    android:startOffset="400"
-                   android:toYDelta="30"/>
+                   android:toYDelta="15"/>
 
         <scale android:duration="300"
                android:fromXScale="1.0"
@@ -55,13 +55,6 @@
                 android:startOffset="400"
                 android:pivotX="50%"
                 android:pivotY="50%"
-                />
-        <alpha
-                android:fromAlpha="1.0"
-                android:toAlpha="0.5"
-                android:fillBefore="false"
-                android:startOffset="400"
-                android:duration="300"
                 />
     </set>
 </set>
