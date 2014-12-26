@@ -404,6 +404,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return 0;
     }
 
+    public Double getUnRealizedPLRefCcy()
+    {
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if (ownedPortfolioId != null && positionDTOCompactList != null && this.quoteDTO!=null )
+        {
+            return positionDTOCompactList.getUnRealizedPLRefCcy(
+                    this.quoteDTO,
+                    this.portfolioCompactDTO,
+                    positionDTOCompactList);
+        }
+        return null;
+    }
+
     abstract public void display();
 
     protected void displayMarketClose()

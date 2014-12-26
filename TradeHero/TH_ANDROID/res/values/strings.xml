@@ -278,6 +278,7 @@
   <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>
   <string name="retry">Retry</string>
+<<<<<<< HEAD
   <string name="fx_onboard_header_title">Virtual Forex On TradeHero</string>
   <string name="powered_by">Powered by</string>
   <string name="fx_onboard_introduction_video_introduction">We\'ve prepared some educational videos to prepare you before diving into Forex. Happy trading!</string>
@@ -295,4 +296,7 @@
   <string name="congratulation_description">You now have an\nFX Portfolio on TradeHero.\nCheck it out on your profile screen.</string>
     <string name="stocks">Stocks</string>
     <string name="fx">FX</string>
+
+    <string name="short_position_units">Short position: %d units</string>
+    <string name="long_position_units">Long position: %d units</string>
 </resources>
