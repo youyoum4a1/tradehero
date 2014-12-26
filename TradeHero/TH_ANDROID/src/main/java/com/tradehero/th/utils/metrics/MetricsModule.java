@@ -48,7 +48,8 @@ public class MetricsModule
     @Provides @Singleton public Analytics provideAnalytics(Context context)
     {
         return Analytics.with(context)
-                .withLocalytics(LOCALYTICS_KEY, LOCALYTICS_PUSH_ENABLED)
+                .withLocalytics(LOCALYTICS_KEY)
+//                .withLocalytics(LOCALYTICS_KEY, LOCALYTICS_PUSH_ENABLED)
                 .withTalkingData(TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name())
                 .build();
     }

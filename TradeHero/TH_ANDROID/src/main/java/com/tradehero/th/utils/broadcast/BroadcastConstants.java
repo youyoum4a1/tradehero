@@ -2,7 +2,7 @@ package com.tradehero.th.utils.broadcast;
 
 import android.content.IntentFilter;
 
-public class BroadcastConstants
+public final class BroadcastConstants
 {
     public static final String KEY_USER_ACHIEVEMENT_ID = BroadcastConstants.class.getName() + ".achievementId";
     public static final String KEY_ACHIEVEMENT_NODE = "achievements";

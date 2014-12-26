@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+  <com.tradehero.th.fragments.fxonboard.IntroductionView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/TH.FxOnBoardDialog">
+
+    <include layout="@layout/fx_onboard_header_view"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="@string/fx_onboard_introduction_video_introduction"
+        />
+
+    <TextView
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        style="@style/TH.FxOnBoardDialog.NextButton"
+        />
+  </com.tradehero.th.fragments.fxonboard.IntroductionView>
+</merge>
