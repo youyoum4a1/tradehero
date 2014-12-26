@@ -5,7 +5,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -92,9 +91,9 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     private void coloredText(TextView textView, String text, int color)
     {
         SpannableStringBuilder fontStyleBuilder = new SpannableStringBuilder(text);
-        int length = text.length();
+        int length = text.length() - 1;
 
-        fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 10),
+        fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 15),
                 length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (color != 0 && color != mDefaultTextColor)
