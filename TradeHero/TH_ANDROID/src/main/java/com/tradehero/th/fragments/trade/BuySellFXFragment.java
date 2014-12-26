@@ -6,6 +6,9 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -22,10 +25,12 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
@@ -47,6 +52,10 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
     @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
     @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
+
+    @InjectView(R.id.llPositionStatus) protected LinearLayout llPositionStatus;
+    @InjectView(R.id.tvPositionUnits) protected TextView tvPositionUnits;
+    @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
 
     private SubscriptionList subscriptionList;
 
@@ -124,6 +133,44 @@ public class BuySellFXFragment extends BuySellFragment
             FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
             setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
             setActionBarSubtitle(null);
+        }
+    }
+
+    @Override
+    public void displayPositionStatus()
+    {
+        Integer share = getMaxSellableShares();
+        Double unRealizedPLRefccy = getUnRealizedPLRefCcy();
+
+        llPositionStatus.setVisibility((share==null||share==0)?View.GONE:View.VISIBLE);
+        if(share!=null)
+        {
+            if(share >= 0)
+            {
+                tvPositionUnits.setText(getString(R.string.short_position_units,share));
+            }
+            else
+            {
+                tvPositionUnits.setText(getString(R.string.long_position_units,Math.abs(share)));
+            }
+
+
+            String unrealised;
+            if (unRealizedPLRefccy != null)
+            {
+                THSignedMoney unrealisedMoney = THSignedMoney.builder(unRealizedPLRefccy)
+                        .currency(SecurityUtils.getDefaultCurrency())
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                tvPositionMoney.setTextColor(unrealisedMoney.getColor());
+                unrealised = unrealisedMoney.toString();
+            }
+            else
+            {
+                unrealised = getResources().getString(R.string.na);
+            }
+            tvPositionMoney.setText(unrealised);
         }
     }
 

@@ -280,4 +280,7 @@
   <string name="retry">Retry</string>
     <string name="stocks">Stocks</string>
     <string name="fx">FX</string>
+
+    <string name="short_position_units">Short position: %d units</string>
+    <string name="long_position_units">Long position: %d units</string>
 </resources>
