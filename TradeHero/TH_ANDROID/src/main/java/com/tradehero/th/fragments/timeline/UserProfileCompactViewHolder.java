@@ -13,23 +13,21 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DaggerUtils;
+
 import javax.inject.Inject;
 
 public class UserProfileCompactViewHolder
 {
     @InjectView(R.id.user_profile_avatar) @Optional public ImageView avatar;
     @InjectView(R.id.user_profile_roi) @Optional public TextView roiSinceInception;
-    @InjectView(R.id.user_profile_profit_value) @Optional public TextView profitValue;
     @InjectView(R.id.user_profile_followers_count_wrapper) @Optional public View followersCountWrapper;
     @InjectView(R.id.user_profile_followers_count) @Optional public TextView followersCount;
     @InjectView(R.id.user_profile_heroes_count_wrapper) @Optional public View heroesCountWrapper;
     @InjectView(R.id.user_profile_heroes_count)  @Optional public TextView heroesCount;
     @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
-    @InjectView(R.id.btn_user_profile_default_portfolio) @Optional public ImageView btnDefaultPortfolio;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
@@ -72,30 +70,7 @@ public class UserProfileCompactViewHolder
 
     protected void displayProfitValue()
     {
-        if (profitValue != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                Double pl = userProfileDTO.portfolio.plSinceInception;
-                if (pl == null)
-                {
-                    pl = 0.0;
-                }
-                THSignedNumber thPlSinceInception = THSignedMoney.builder(pl)
-                        .withSign()
-                        .signTypePlusMinusAlways()
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                profitValue.setText(thPlSinceInception.toString());
-                profitValue.setTextColor(
-                        context.getResources().getColor(thPlSinceInception.getColorResId()));
-            }
-            else
-            {
-                profitValue.setText(R.string.na);
-                profitValue.setTextColor(context.getResources().getColor(R.color.black));
-            }
-        }
+
     }
 
     protected void loadUserPicture()
@@ -212,15 +187,6 @@ public class UserProfileCompactViewHolder
         }
     }
 
-    @OnClick(R.id.btn_user_profile_default_portfolio) @Optional
-    protected void notifyDefaultPortfolioClicked()
-    {
-        OnProfileClickedListener listener = profileClickedListener;
-        if (listener != null)
-        {
-            listener.onDefaultPortfolioClicked();
-        }
-    }
 
     public static interface OnProfileClickedListener
     {

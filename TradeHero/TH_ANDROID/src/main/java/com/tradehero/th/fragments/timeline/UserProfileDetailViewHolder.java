@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -17,22 +16,18 @@ import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.GraphicUtil;
-import java.text.SimpleDateFormat;
+
 import javax.inject.Inject;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
     @InjectView(R.id.profile_screen_user_detail_top) @Optional protected View profileTop;
-    @InjectView(R.id.user_profile_first_last_name) @Optional protected TextView firstLastName;
-    @InjectView(R.id.txt_member_since) @Optional protected TextView memberSince;
     @InjectView(R.id.txt_profile_tradeprofit) @Optional protected TextView profitFromTrades;
     @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
     @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
     @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
     @InjectView(R.id.user_profile_trade_count_wrapper) @Optional protected View tradesCountWrapper;
     @InjectView(R.id.user_profile_trade_count) @Optional protected TextView tradesCount;
-    @InjectView(R.id.user_profile_exchanges_count_wrapper) @Optional protected View exchangesCountWrapper;
-    @InjectView(R.id.user_profile_exchanges_count) @Optional protected TextView exchangesCount;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
     @Inject GraphicUtil graphicUtil;
@@ -123,36 +118,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     protected void displayFirstLastName()
     {
-        if (firstLastName != null)
-        {
-            if (userProfileDTO != null)
-            {
-                firstLastName.setText(context.getString(
-                        R.string.user_profile_first_last_name_display,
-                        userProfileDTO.firstName != null ? userProfileDTO.firstName : "",
-                        userProfileDTO.lastName != null ? userProfileDTO.lastName : ""));
-            }
-            else
-            {
-                firstLastName.setText(R.string.na);
-            }
-        }
     }
 
     protected void displayMemberSince()
     {
-        if (memberSince != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.memberSince != null)
-            {
-                SimpleDateFormat memberSinceFormat = new SimpleDateFormat("MMM yyyy");
-                memberSince.setText(memberSinceFormat.format(userProfileDTO.memberSince));
-            }
-            else
-            {
-                memberSince.setText(R.string.na);
-            }
-        }
     }
 
     protected void displayProfitFromTrades()
@@ -173,22 +142,8 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
                         .build();
                 profitFromTrades.setText(thPlSinceInception.toString());
                 profitFromTrades.setTextColor(thPlSinceInception.getColor());
-                if (profitValue != null)
-                {
-                    profitValue.setText(thPlSinceInception.toString());
-                    profitValue.setTextColor(thPlSinceInception.getColor());
-                }
             }
-            else
-            {
-                profitFromTrades.setText(R.string.na);
-                profitFromTrades.setTextColor(context.getResources().getColor(R.color.black));
-                if (profitValue != null)
-                {
-                    profitValue.setText(R.string.na);
-                    profitValue.setTextColor(context.getResources().getColor(R.color.black));
-                }
-            }
+
         }
     }
 
@@ -248,17 +203,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 
     protected void displayExchangesCount()
     {
-        if (exchangesCount != null)
-        {
-            if (userProfileDTO != null && userProfileDTO.portfolio != null)
-            {
-                exchangesCount.setText(Integer.toString(userProfileDTO.portfolio.countExchanges));
-            }
-            else
-            {
-                exchangesCount.setText(R.string.na);
-            }
-        }
     }
 
     protected void displayTradesCount()
@@ -308,11 +252,5 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     protected class DefaultBackgroundTarget
 			extends BackgroundTarget
     {
-    }
-
-    @OnClick(R.id.user_profile_trade_count_wrapper) @Optional
-    @Override protected void notifyDefaultPortfolioClicked()
-    {
-        super.notifyDefaultPortfolioClicked();
     }
 }

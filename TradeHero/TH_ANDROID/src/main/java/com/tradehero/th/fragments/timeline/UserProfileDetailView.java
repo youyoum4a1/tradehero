@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.LinearLayout;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -46,26 +45,12 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         super.onAttachedToWindow();
         userProfileDetailViewHolder.initViews(this);
         userProfileDetailViewHolder.setProfileClickedListener(createProfileClickListener());
-        if (userProfileDetailViewHolder.btnDefaultPortfolio != null)
-        {
-            userProfileDetailViewHolder.btnDefaultPortfolio.setOnClickListener(new OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    notifyDefaultPortfolioRequested();
-                }
-            });
-        }
     }
 
     @Override protected void onDetachedFromWindow()
     {
         userProfileDetailViewHolder.detachViews();
         userProfileDetailViewHolder.setProfileClickedListener(null);
-        if (userProfileDetailViewHolder.btnDefaultPortfolio != null)
-        {
-            userProfileDetailViewHolder.btnDefaultPortfolio.setOnClickListener(null);
-        }
         super.onDetachedFromWindow();
     }
 

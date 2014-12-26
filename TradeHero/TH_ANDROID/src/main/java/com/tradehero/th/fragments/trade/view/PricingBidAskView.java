@@ -2,10 +2,7 @@ package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TableRow;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -17,14 +14,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 public class PricingBidAskView extends LinearLayout
 {
     private TextView mLastPrice;
-    private TextView mLastPriceUSD;
-    private TableRow mRowBidAskPrice;
-    private TextView mAskPrice;
-    private TextView mBidPrice;
-    private TableRow mRowBidAskHint;
-    private TextView mAskPriceHint;
-    private TextView mBidPriceHint;
-    private ProgressBar mProgressBar;
     private int activeColor;
     private int inactiveColor;
 
@@ -76,14 +65,6 @@ public class PricingBidAskView extends LinearLayout
     public void setRefreshingQuote(boolean refreshingQuote)
     {
         this.refreshingQuote = refreshingQuote;
-        if (mRowBidAskHint != null && refreshingQuote)
-        {
-            mRowBidAskHint.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out));
-        }
-        if (mRowBidAskPrice != null && refreshingQuote)
-        {
-            mRowBidAskPrice.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.alpha_out));
-        }
         display();
     }
     //</editor-fold>
@@ -103,14 +84,6 @@ public class PricingBidAskView extends LinearLayout
     private void initView()
     {
         mLastPrice = (TextView) findViewById(R.id.last_price);
-        mLastPriceUSD = (TextView) findViewById(R.id.bid_price_usd);
-        mRowBidAskPrice = (TableRow) findViewById(R.id.row_bid_ask_price);
-        mAskPrice = (TextView) findViewById(R.id.ask_price);
-        mBidPrice = (TextView) findViewById(R.id.bid_price);
-        mRowBidAskHint = (TableRow) findViewById(R.id.row_bid_ask_hint);
-        mAskPriceHint = (TextView) findViewById(R.id.ask_price_hint);
-        mBidPriceHint = (TextView) findViewById(R.id.bid_price_hint);
-        //mProgressBar = (ProgressBar) findViewById(R.id.progress);
         display();
     }
 
@@ -171,11 +144,6 @@ public class PricingBidAskView extends LinearLayout
 
     public void displayAskPrice()
     {
-        TextView askPriceView = mAskPrice;
-        if (askPriceView != null)
-        {
-            askPriceView.setText(getAskPriceText());
-        }
     }
 
     public String getAskPriceText()
@@ -196,11 +164,6 @@ public class PricingBidAskView extends LinearLayout
 
     public void displayBidPrice()
     {
-        TextView bidPriceView = mBidPrice;
-        if (bidPriceView != null)
-        {
-            bidPriceView.setText(getBidPriceText());
-        }
     }
 
     public String getBidPriceText()
@@ -221,11 +184,7 @@ public class PricingBidAskView extends LinearLayout
 
     public void displayLastPriceRefCcy()
     {
-        TextView lastPrice = mLastPriceUSD;
-        if (lastPrice != null)
-        {
-            lastPrice.setText(getLastPriceRefCcyText());
-        }
+
     }
 
     public String getLastPriceRefCcyText()
@@ -251,40 +210,6 @@ public class PricingBidAskView extends LinearLayout
 
     private void updateVisibilities()
     {
-        if (mRowBidAskPrice != null)
-        {
-            if (!refreshingQuote)
-            {
-                mRowBidAskPrice.clearAnimation();
-                mRowBidAskPrice.setAlpha(1);
-            }
-        }
-
-        if (mRowBidAskHint != null)
-        {
-            if (!refreshingQuote)
-            {
-                mRowBidAskHint.clearAnimation();
-                mRowBidAskHint.setAlpha(1);
-            }
-        }
-
-        if (mAskPriceHint != null)
-        {
-            mAskPriceHint.setTextColor(buy ? activeColor : inactiveColor);
-        }
-        if (mAskPrice != null)
-        {
-            mAskPrice.setTextColor(buy ? activeColor : inactiveColor);
-        }
-        if (mBidPriceHint != null)
-        {
-            mBidPriceHint.setTextColor(buy ? inactiveColor : activeColor);
-        }
-        if (mBidPrice != null)
-        {
-            mBidPrice.setTextColor(buy ? inactiveColor : activeColor);
-        }
     }
 
     public String getCurrencyDisplay()
