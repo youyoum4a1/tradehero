@@ -436,7 +436,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         }
         if (collection.size() > 0 && Constants.RELEASE)
         {
-            analytics.localytics().setProfileAttribute(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
+            analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
+//            analytics.localytics().setProfileAttribute(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
         }
     }
 

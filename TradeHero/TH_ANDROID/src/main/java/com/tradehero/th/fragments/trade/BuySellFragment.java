@@ -529,11 +529,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         {
             mSellBtn.setVisibility(getSupportSell() ? View.VISIBLE : View.GONE);
         }
-<<<<<<< HEAD
-=======
 
         displayPositionStatus();
->>>>>>> origin/develop
     }
 
     abstract protected boolean getSupportSell();
