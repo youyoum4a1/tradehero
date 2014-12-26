@@ -22,8 +22,6 @@
   <string name="buy_sell_switch_buy">买入</string>
   <string name="buy_sell_switch_sell">卖出</string>
   <string name="buy_sell_usd_price_unit_left">= US$</string>
-  <string name="buy_sell_market_status">市场状态</string>
-  <string name="buy_sell_toggle">切换 买入/卖出 模式</string>
   <string name="buy_sell_portfolio_selected_title">投资组合:</string>
   <string name="alert_dialog_buy_sell_order_null_title">真有点尴尬</string>
   <string name="alert_dialog_buy_sell_order_null_message">交易请求出了点问题</string>

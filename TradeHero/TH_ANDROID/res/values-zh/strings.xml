@@ -7,7 +7,6 @@
   <string name="following_premium">关注中\n(高级)</string>
   <string name="select_endpoint">选择 Api 端口</string>
   <string name="current_endpoint">"目前端口: "</string>
-  <string name="action_menu_about">关于</string>
   <string name="leaderboard_empty">开始交易并成为第一个上此英雄榜的人吧</string>
   <string name="action_search">搜索</string>
   <string name="action_invite">邀请好友</string>

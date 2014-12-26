@@ -14,17 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -84,12 +78,13 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import timber.log.Timber;
+
+import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
 public class BuySellFragment extends AbstractBuySellFragment
@@ -256,13 +251,6 @@ public class BuySellFragment extends AbstractBuySellFragment
     {
         super.onViewCreated(view, savedInstanceState);
         securityAlertAssistant.setOnPopulatedListener(this);
-    }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.buy_sell_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)

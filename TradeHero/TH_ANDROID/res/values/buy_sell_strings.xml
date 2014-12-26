@@ -32,8 +32,6 @@
   <string name="buy_sell_switch_buy">Buy</string>
   <string name="buy_sell_switch_sell">Sell</string>
   <string name="buy_sell_usd_price_unit_left">= US$</string>
-  <string name="buy_sell_market_status">Market status</string>
-  <string name="buy_sell_toggle">Toggle Buy/Sell mode</string>
 
   <string name="buy_sell_no_quote_title">Unable to Transact</string>
   <string name="buy_sell_no_quote_message">No stock quote available.</string>

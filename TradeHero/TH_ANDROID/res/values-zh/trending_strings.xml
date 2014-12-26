@@ -9,7 +9,6 @@
   <string name="trending_search_empty_result_for_people">请输入要查找人的姓名</string>
   <string name="trending_search_no_people_found">找不到相关用户</string>
   <string name="trending_search_no_stock_found">找不到相关股票</string>
-  <string name="trending_search_mode">搜索模式</string>
 
   <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">热门证劵</string>

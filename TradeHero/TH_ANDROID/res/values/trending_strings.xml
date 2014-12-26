@@ -9,7 +9,6 @@
   <string name="trending_search_empty_result_for_people">Please input people\'s name</string>
   <string name="trending_search_no_people_found">No people found</string>
   <string name="trending_search_no_stock_found">No stock found</string>
-  <string name="trending_search_mode">Search mode</string>
 
   <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">Trending Securities</string>
