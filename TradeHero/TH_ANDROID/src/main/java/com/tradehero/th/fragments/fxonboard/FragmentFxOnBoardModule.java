@@ -4,7 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
-                FxOnBoardDialogFragment.class
+                FxOnboardDialogFragment.class
         },
         library = true,
         complete = false

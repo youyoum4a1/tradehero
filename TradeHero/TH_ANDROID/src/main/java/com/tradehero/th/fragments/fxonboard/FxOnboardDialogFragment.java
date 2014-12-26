@@ -16,9 +16,9 @@ import java.util.List;
 import rx.Observable;
 import timber.log.Timber;
 
-public class FxOnBoardDialogFragment extends BaseDialogFragment
+public class FxOnboardDialogFragment extends BaseDialogFragment
 {
-    private static final String TAG = FxOnBoardDialogFragment.class.getName();
+    private static final String TAG = FxOnboardDialogFragment.class.getName();
 
     @InjectView(R.id.view_animator) ViewAnimator viewAnimator;
 
@@ -70,9 +70,9 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         // TODO mark fx onboard handled
     }
 
-    public static FxOnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
+    public static FxOnboardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
-        FxOnBoardDialogFragment dialogFragment = new FxOnBoardDialogFragment();
+        FxOnboardDialogFragment dialogFragment = new FxOnboardDialogFragment();
         dialogFragment.show(fragmentManager, TAG);
         return dialogFragment;
     }

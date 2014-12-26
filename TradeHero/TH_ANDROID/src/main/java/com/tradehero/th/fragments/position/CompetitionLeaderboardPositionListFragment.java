@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.os.Bundle;
+import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import javax.inject.Inject;
@@ -38,8 +39,7 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
         navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
     }
 
-    /*@VisibleForTesting*/
-    public ProviderId getProviderId()
+    @VisibleForTesting public ProviderId getProviderId()
     {
         return providerId;
     }

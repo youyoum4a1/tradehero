@@ -55,6 +55,7 @@ import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
 import com.tradehero.th.fragments.level.LevelUpDialogFragment;
+import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
@@ -73,8 +74,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
-
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.SendLove.SEND_LOVE_BROADCAST_DATA;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
 {
@@ -579,7 +578,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onDismiss(DialogInterface dialog)
     {
         super.onDismiss(dialog);
-        broadcastUtils.enqueue(SEND_LOVE_BROADCAST_DATA);
+        broadcastUtils.enqueue(new SendLoveBroadcastSignal());
         broadcastUtils.nextPlease();
     }
 

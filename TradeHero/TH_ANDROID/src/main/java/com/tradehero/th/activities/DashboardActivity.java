@@ -60,17 +60,19 @@ import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.NavigationAnalyticsReporter;
 import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
+import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
-import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnboardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
+import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.AboutFragment;
 import com.tradehero.th.fragments.settings.AdminSettingsFragment;
@@ -124,17 +126,13 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.Achievement.ACHIEVEMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.Achievement.KEY_USER_ACHIEVEMENT_ID;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.CompetitionEnrollment.COMPETITION_ENROLLMENT_BROADCAST_DATA;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.CompetitionEnrollment.ENROLLMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.FxOnBoard.FX_ONBOARD_BROADCAST_DATA;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.FxOnBoard.FX_ONBOARD_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.OnBoard.ONBOARD_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.OnBoard.ON_BOARDING_BROADCAST_DATA;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.SendLove.SEND_LOVE_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.KEY_XP_BROADCAST;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.XP_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.observables.AndroidObservable.bindActivity;
 import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
 
@@ -410,12 +408,6 @@ public class DashboardActivity extends BaseActivity
                     OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
                 }, throwable -> {}));
 
-        subscriptions.add(fromLocalBroadcast(this, FX_ONBOARD_INTENT_FILTER)
-                .subscribe(intent -> {
-                    isFxShown.set(true);
-                    FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-                }, throwable -> {}));
-
         // get providers for enrollment page
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                         .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
@@ -438,8 +430,6 @@ public class DashboardActivity extends BaseActivity
         subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(intent ->
                         AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
-
-        if (!Constants.RELEASE) FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -530,23 +520,21 @@ public class DashboardActivity extends BaseActivity
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
                     {
-                        if (!isOnboardShown.get())
+                        UserProfileDTO userProfileDTO = args.second;
+                        if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                         {
-                            UserProfileDTO userProfileDTO = args.second;
-                            if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
-                            {
-                                broadcastUtilsLazy.get().enqueue(ON_BOARDING_BROADCAST_DATA);
-                            }
+                            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
                             return;
                         }
 
                         if (!isFxShown.get())
                         {
-                            broadcastUtilsLazy.get().enqueue(FX_ONBOARD_BROADCAST_DATA);
+                            isFxShown.set(true);
+                            FxOnboardDialogFragment.showOnBoardDialog(getFragmentManager());
                             return;
                         }
 
-                        broadcastUtilsLazy.get().enqueue(COMPETITION_ENROLLMENT_BROADCAST_DATA);
+                        broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
                     }
                 });
     }

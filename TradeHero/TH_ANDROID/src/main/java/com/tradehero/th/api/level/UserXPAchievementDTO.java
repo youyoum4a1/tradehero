@@ -8,8 +8,8 @@ import com.tradehero.th.utils.broadcast.BroadcastData;
 import java.util.ArrayList;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.KEY_XP_BROADCAST;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP.XP_INTENT_ACTION_NAME;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_ACTION_NAME;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData
 {

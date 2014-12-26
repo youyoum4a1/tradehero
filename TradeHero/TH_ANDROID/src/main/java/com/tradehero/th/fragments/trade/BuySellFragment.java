@@ -64,6 +64,7 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
+import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -96,8 +97,6 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import timber.log.Timber;
-
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.SendLove.SEND_LOVE_BROADCAST_DATA;
 
 @Routable("security/:securityRawInfo")
 public class BuySellFragment extends AbstractBuySellFragment
@@ -1123,7 +1122,7 @@ public class BuySellFragment extends AbstractBuySellFragment
         {
             if (mShowAskForReviewDialogPreference.isItTime())
             {
-                broadcastUtils.enqueue(SEND_LOVE_BROADCAST_DATA);
+                broadcastUtils.enqueue(new SendLoveBroadcastSignal());
             }
             else if (mShowAskForInviteDialogPreference.isItTime())
             {

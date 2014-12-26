@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -265,7 +266,7 @@ public class UserLevelProgressBar extends RelativeLayout
         mCurrentXP = xp;
     }
 
-    /*@VisibleForTesting*/
+    @VisibleForTesting
     public List<Animator> getAnimatorQueue(int xpGained)
     {
         List<Animator> aList = new ArrayList<>();
