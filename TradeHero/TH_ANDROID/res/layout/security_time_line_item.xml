@@ -73,9 +73,9 @@
           android:lineSpacingExtra="4dp"
           android:layout_height="wrap_content"
           android:layout_marginTop="6dip"
-          android:textColorLink="@color/black"
-          android:textColor="#000000"
-          android:textSize="@dimen/text_small"
+          android:textColorLink="@color/timeline_item_link"
+          android:textColor="@color/timeline_item_content"
+          android:textSize="@dimen/text_medium_decrease"
           android:textStyle="normal"
           android:maxLines="3"
           />

@@ -109,6 +109,7 @@
     <color name="authentication_button_light">#808080</color>
     <color name="timeline_item_title">#000000</color>
     <color name="timeline_item">#6F6F6F</color>
+    <color name="timeline_item_content">#585858</color>
     <color name="timeline_item_link">#1789d5</color>
     <color name="trending_grid_item_stock_name">#384152</color>
     <color name="leaderboard_ranking_position">#4d6d9d</color>
@@ -150,7 +151,6 @@
     <color name="notification_text_color">@color/white</color>
 
     <color name="message_button_blue">#6e96fa</color>
-    <!-- <color name="message_button_blue_pressed">#ffa6befa</color> -->
     <color name="message_button_blue_pressed">#f4f4f4</color>
     <color name="message_button_blue_overlay">#0d6cfb</color>
 
