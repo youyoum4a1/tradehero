@@ -20,7 +20,8 @@
         android:layout_marginTop="@dimen/margin_xsmall"
         android:layout_gravity="center_horizontal"
         android:text="@string/powered_by"
-        android:drawableRight="@drawable/fx_onboard_oanda_logo"
+        android:drawablePadding="@dimen/size_1"
+        android:drawableRight="@drawable/fx_onboard_oanda"
         />
   </LinearLayout>
 </merge>
