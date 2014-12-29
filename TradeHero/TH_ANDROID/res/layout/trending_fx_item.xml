@@ -54,23 +54,19 @@
         style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/size_9"
+        android:minWidth="@dimen/size_8"
         android:gravity="center"
         android:lines="1"
         tools:text="146.264"
         />
 
-    <Space
-        android:layout_width="@dimen/size_1"
-        android:layout_height="0dp"
-        />
 
     <TextView
         android:id="@+id/fx_price_buy"
         style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/size_9"
+        android:minWidth="@dimen/size_8"
         android:gravity="center"
         android:lines="1"
         tools:text="146.254"

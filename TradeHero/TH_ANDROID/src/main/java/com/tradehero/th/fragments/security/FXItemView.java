@@ -5,6 +5,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -22,7 +23,7 @@ import timber.log.Timber;
 
 public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
-    private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 2;
+    private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 3;
     @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
@@ -91,9 +92,12 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     private void coloredText(TextView textView, String text, int color)
     {
         SpannableStringBuilder fontStyleBuilder = new SpannableStringBuilder(text);
-        int length = text.length() - 1;
+        int length = text.length();
 
         fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 15),
+                length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                 length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (color != 0 && color != mDefaultTextColor)
