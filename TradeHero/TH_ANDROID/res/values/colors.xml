@@ -88,4 +88,8 @@
     <item>#3FFF12</item>
     <item>#16FF11</item>
   </string-array>
+
+  <color name="magenta_normal">#BD10E0</color>
+  <color name="magenta_pressed">#ff660e84</color>
+  <color name="magenta_focused">#ffdc10ff</color>
 </resources>
