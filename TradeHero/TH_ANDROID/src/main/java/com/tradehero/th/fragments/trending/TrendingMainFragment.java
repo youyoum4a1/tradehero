@@ -13,16 +13,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
+
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
 
+import java.util.Random;
+
 public class TrendingMainFragment extends DashboardFragment
 {
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+
+    public static int lastType = 0;
 
     private TradingPagerAdapter tradingPagerAdapter;
 
@@ -51,6 +57,8 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
+
+        tabViewPager.setCurrentItem(lastType,true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -65,6 +73,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        lastType = tabViewPager.getCurrentItem();
         tabViewPager.setAdapter(null);
         ButterKnife.reset(this);
         super.onDestroyView();
