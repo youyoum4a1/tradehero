@@ -8,7 +8,8 @@
     android:background="@color/bg_fragment"
     android:orientation="vertical"
     >
-
+  <TextView android:layout_height="0dp" android:layout_width="0dp" android:visibility="visible"
+            android:focusable="true" android:focusableInTouchMode="true"/>
   <include layout="@layout/search_line_layout"/>
 
   <LinearLayout

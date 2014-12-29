@@ -10,11 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -53,11 +49,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SearchHotSecurityListType;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.api.users.UserSearchResultDTOList;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -69,12 +61,12 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import com.viewpagerindicator.SquarePageIndicator;
 import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 /*
    整合搜索
@@ -141,7 +133,6 @@ public class SearchUniteFragment extends DashboardFragment
     boolean isFristLunch;
 
     private int pageSecurity = 1;
-    //private int pageCompetition = 2;
     private int pageUser = 3;
 
     @Override
@@ -249,17 +240,6 @@ public class SearchUniteFragment extends DashboardFragment
     }
 
     @Override
-    public void onStop()
-    {
-        super.onStop();
-    }
-
-    @Override public void onPause()
-    {
-        super.onPause();
-    }
-
-    @Override
     public void onDestroyView()
     {
         detachSecurityHotListCache();
@@ -272,27 +252,12 @@ public class SearchUniteFragment extends DashboardFragment
     }
 
     @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override
     public void onResume()
     {
         super.onResume();
         setOnclickListener();
-        //hideInputMethod();
-    }
 
-    //public void hideInputMethod()
-    //{
-    //    if(getActivity()!=null)
-    //    {
-    //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-    //        imm.hideSoftInputFromWindow(tvSearchInput.getWindowToken(), 0);
-    //    }
-    //}
+    }
 
     protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
     {
@@ -690,7 +655,6 @@ public class SearchUniteFragment extends DashboardFragment
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 if (!StringUtils.isNullOrEmpty(getSearchString()))
                 {
                     fetchUnite(tabSelect, true);
@@ -726,7 +690,6 @@ public class SearchUniteFragment extends DashboardFragment
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 if (!StringUtils.isNullOrEmpty(getSearchString()))
                 {
                     fetchUnite(tabSelect, true);
@@ -762,7 +725,6 @@ public class SearchUniteFragment extends DashboardFragment
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
             {
-                Timber.d("下拉刷新");
                 if (!StringUtils.isNullOrEmpty(getSearchString()))
                 {
                     fetchUnite(tabSelect, true);
@@ -940,7 +902,6 @@ public class SearchUniteFragment extends DashboardFragment
         {
             if (key instanceof SearchUserListType)
             {
-                Timber.d("success");
                 if (((SearchUserListType) key).getPage() == 1)
                 {
                     initSearchUserResult(value);
@@ -957,7 +918,6 @@ public class SearchUniteFragment extends DashboardFragment
 
         public void onErrorThrown(@NotNull UserListType key, @NotNull Throwable error)
         {
-            Timber.e("Error fetching the list of securities " + key, error);
             onFinish();
         }
 
