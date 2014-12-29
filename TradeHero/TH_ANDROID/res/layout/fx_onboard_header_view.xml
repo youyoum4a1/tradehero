@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="@string/powered_by"
-        android:drawableRight="@drawable/logo_bing"
+        android:drawablePadding="@dimen/size_1"
+        android:drawableRight="@drawable/fx_onboard_oanda"
         />
   </LinearLayout>
 </merge>
