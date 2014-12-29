@@ -13,13 +13,15 @@
         android:layout_height="wrap_content"
         android:text="@string/congratulation"
         android:layout_gravity="center_horizontal"
-        style="@style/TH.Achievement.Header"
+        android:gravity="center"
+        style="@style/TH.Title"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/congratulation_description"
         android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
         />
     <TextView
         android:id="@+id/start_trading"

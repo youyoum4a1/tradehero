@@ -65,6 +65,7 @@
     <item name="android:textAllCaps">true</item>
     <item name="android:gravity">center</item>
     <item name="android:textStyle">bold</item>
+    <item name="android:minWidth">@dimen/button_min_width</item>
   </style>
 
   <style name="TH.Button.Small" parent="TH.Button">

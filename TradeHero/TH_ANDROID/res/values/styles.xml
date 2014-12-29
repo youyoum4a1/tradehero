@@ -600,6 +600,7 @@
     <item name="android:paddingTop">@dimen/margin_medium</item>
     <item name="android:paddingBottom">@dimen/margin_medium</item>
     <item name="android:layout_gravity">bottom|center</item>
+    <item name="android:background">@drawable/basic_transparent_selector</item>
   </style>
 
   <style name="TH.OnBoardDialog" parent="TH.Dialog">
