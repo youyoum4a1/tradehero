@@ -129,7 +129,7 @@
 
   <dimen name="grid_item_bg_border_width">0.5dp</dimen>
   <dimen name="grid_item_bg_radius">@dimen/global_corner_radius</dimen>
-  <dimen name="grid_item_height">@dimen/size_17</dimen>
+  <dimen name="grid_item_height">@dimen/size_18</dimen>
 
   <dimen name="security_logo_width">@dimen/size_15</dimen>
   <dimen name="security_logo_height">@dimen/size_5</dimen>
