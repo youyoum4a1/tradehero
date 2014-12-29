@@ -74,12 +74,15 @@ public class BuySellFXFragment extends BuySellFragment
         addDefaultFXPortfolio();
     }
 
-    private void addDefaultFXPortfolio() {
+    private void addDefaultFXPortfolio()
+    {
         subscriptionList.add(AndroidObservable.bindFragment(this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
                     @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
+                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
+                    {
                         mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
                                 new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(),
                                         args.second.fxPortfolio));
@@ -142,35 +145,36 @@ public class BuySellFXFragment extends BuySellFragment
         Integer share = getMaxSellableShares();
         Double unRealizedPLRefccy = getUnRealizedPLRefCcy();
 
-        llPositionStatus.setVisibility((share==null||share==0)?View.GONE:View.VISIBLE);
-        if(share!=null)
+        if (llPositionStatus != null)
         {
-            if(share >= 0)
+            llPositionStatus.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
+            if (share != null)
             {
-                tvPositionUnits.setText(getString(R.string.long_position_units,share));
+                if (share >= 0)
+                {
+                    tvPositionUnits.setText(getString(R.string.short_position_units, share));
+                }
+                else
+                {
+                    tvPositionUnits.setText(getString(R.string.long_position_units, Math.abs(share)));
+                }
+                String unrealised;
+                if (unRealizedPLRefccy != null)
+                {
+                    THSignedMoney unrealisedMoney = THSignedMoney.builder(unRealizedPLRefccy)
+                            .currency(SecurityUtils.getDefaultCurrency())
+                            .withSign()
+                            .signTypeArrow()
+                            .build();
+                    tvPositionMoney.setTextColor(unrealisedMoney.getColor());
+                    unrealised = unrealisedMoney.toString();
+                }
+                else
+                {
+                    unrealised = getResources().getString(R.string.na);
+                }
+                tvPositionMoney.setText(unrealised);
             }
-            else
-            {
-                tvPositionUnits.setText(getString(R.string.short_position_units,Math.abs(share)));
-            }
-
-
-            String unrealised;
-            if (unRealizedPLRefccy != null)
-            {
-                THSignedMoney unrealisedMoney = THSignedMoney.builder(unRealizedPLRefccy)
-                        .currency(SecurityUtils.getDefaultCurrency())
-                        .withSign()
-                        .signTypeArrow()
-                        .build();
-                tvPositionMoney.setTextColor(unrealisedMoney.getColor());
-                unrealised = unrealisedMoney.toString();
-            }
-            else
-            {
-                unrealised = getResources().getString(R.string.na);
-            }
-            tvPositionMoney.setText(unrealised);
         }
     }
 
@@ -225,27 +229,29 @@ public class BuySellFXFragment extends BuySellFragment
     }
 
     @Override
-    public void onTimeSpanButtonSelected(ChartTimeSpan selected) {
+    public void onTimeSpanButtonSelected(ChartTimeSpan selected)
+    {
         fetchKChart(checkTime(selected.duration));
         mChartWrapper.setDisplayedChild(0);
     }
 
-    private String checkTime(long duration) {
-        switch ((int)duration)
+    private String checkTime(long duration)
+    {
+        switch ((int) duration)
         {
-            case (int)ChartTimeSpan.MIN_1:
+            case (int) ChartTimeSpan.MIN_1:
                 return YahooTimeSpan.min1.code;
-            case (int)ChartTimeSpan.MIN_5:
+            case (int) ChartTimeSpan.MIN_5:
                 return YahooTimeSpan.min5.code;
-            case (int)ChartTimeSpan.MIN_15:
+            case (int) ChartTimeSpan.MIN_15:
                 return YahooTimeSpan.min15.code;
-            case (int)ChartTimeSpan.MIN_30:
+            case (int) ChartTimeSpan.MIN_30:
                 return YahooTimeSpan.min30.code;
-            case (int)ChartTimeSpan.HOUR_1:
+            case (int) ChartTimeSpan.HOUR_1:
                 return YahooTimeSpan.hour1.code;
-            case (int)ChartTimeSpan.HOUR_4:
+            case (int) ChartTimeSpan.HOUR_4:
                 return YahooTimeSpan.hour4.code;
-            case (int)ChartTimeSpan.DAY_1:
+            case (int) ChartTimeSpan.DAY_1:
                 return "D";
         }
         return YahooTimeSpan.min1.code;
@@ -292,6 +298,6 @@ public class BuySellFXFragment extends BuySellFragment
     @Override protected void softFetchPortfolioCompactList()
     {
         // Force a proper fetch
-//        fetchPortfolioCompactList();
+        //        fetchPortfolioCompactList();
     }
 }
