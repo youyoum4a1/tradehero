@@ -60,6 +60,10 @@
         tools:text="146.264"
         />
 
+    <Space
+        android:layout_width="@dimen/size_1"
+        android:layout_height="0dp"
+        />
 
     <TextView
         android:id="@+id/fx_price_buy"
