@@ -474,9 +474,9 @@
   <string name="discovery_discuss_send_comment">回复</string>
   <string name="discovery_discuss_send_apply">采纳</string>
   <string name="discovery_discuss_send_report_a">广告信息</string>
-  <string name="discovery_discuss_send_report_b">钓鱼／欺诈</string>
-  <string name="discovery_discuss_send_report_c">诽谤／造谣</string>
-  <string name="discovery_discuss_send_report_d">暴力／色情</string>
+  <string name="discovery_discuss_send_report_b">灌水刷屏</string>
+  <string name="discovery_discuss_send_report_c">诽谤造谣</string>
+  <string name="discovery_discuss_send_report_d">暴力色情</string>
   <string name="discovery_discuss_report_successfully">举报成功，我们会及时处理</string>
   <string name="discovery_discuss_apply_successfully">采纳成功</string>
   <string name="discovery_discuss_dlg_btn_ok">确认</string>

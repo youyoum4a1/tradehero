@@ -73,11 +73,9 @@ public class SecurityListAdapter extends BaseAdapter
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
         SecurityCompactDTO item = (SecurityCompactDTO) getItem(position);
-        if (item != null)
-        {
+        if (item != null) {
             ViewHolder holder = null;
-            if (convertView == null)
-            {
+            if (convertView == null) {
                 convertView = inflater.inflate(R.layout.security_list_item, viewGroup, false);
                 holder = new ViewHolder();
                 holder.tvSecurityName = (TextView) convertView.findViewById(R.id.tvSecurityName);
@@ -86,36 +84,26 @@ public class SecurityListAdapter extends BaseAdapter
                 holder.tvSecurityPrice = (TextView) convertView.findViewById(R.id.tvSecurityPrice);
                 holder.tvSecurityCurrency = (TextView) convertView.findViewById(R.id.tvSecurityCurrency);
                 convertView.setTag(holder);
-            }
-            else
-            {
+            } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
             holder.tvSecurityName.setText(item.name);
-            if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT)
-            {
+            if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_RISE_PERCENT) {
                 holder.tvSecurityExtroInfo.setVisibility(View.GONE);
                 //holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.people_watched, item.watchCount));
-            }
-            else  if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
-            {
+            } else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD) {
                 holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.people_holded, item.holdCount));
-            }
-            else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT)
-            {
+            } else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_CHINA_CONCEPT) {
                 holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.security_market_cap_usd, "" + NumberDisplayUtils.getString(item.marketCapRefUSD)));
-            }
-            else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION
-                    || securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH)
-            {
+            } else if (securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION
+                    || securityType == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH) {
                 holder.tvSecurityExtroInfo.setVisibility(View.GONE);
                 holder.tvSecurityExtroInfo.setText(context.getResources().getString(R.string.people_holded, item.holdCount));
             }
 
             //ROI
-            if (item.risePercent != null)
-            {
+            if (item.risePercent != null) {
                 THSignedNumber roi = THSignedPercentage.builder(item.risePercent * 100)
                         .withSign()
                         .signTypeArrow()
@@ -124,7 +112,11 @@ public class SecurityListAdapter extends BaseAdapter
                 holder.tvSecurityRate.setTextColor(context.getResources().getColor(roi.getColorResId()));
             }
 
-            holder.tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.lastPrice));
+            if (item.lastPrice == null) {
+                holder.tvSecurityPrice.setText("--");
+            }else{
+                holder.tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(item.lastPrice));
+            }
             holder.tvSecurityCurrency.setText(item.getCurrencyDisplay());
         }
         return convertView;
@@ -132,7 +124,6 @@ public class SecurityListAdapter extends BaseAdapter
 
     static class ViewHolder
     {
-        //public ImageView localImageView = null;
         public TextView tvSecurityName = null;
         public TextView tvSecurityExtroInfo = null;
         public TextView tvSecurityRate = null;

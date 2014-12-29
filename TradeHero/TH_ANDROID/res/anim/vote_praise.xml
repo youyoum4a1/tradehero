@@ -4,12 +4,20 @@
 
     <translate android:duration="400"
                android:fromXDelta="0"
-               android:toXDelta="-15"
+               android:toXDelta="0"
                android:fromYDelta="0"
                android:fillAfter="false"
                android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-               android:toYDelta="-20"/>
-
+               android:toYDelta="-15"/>
+    <rotate
+            android:duration="400"
+            android:fromDegrees="0"
+            android:toDegrees="-30"
+            android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+            android:fillAfter="false"
+            android:pivotX="50%"
+            android:pivotY="50%"
+            />
     <scale android:duration="400"
            android:fromXScale="1.0"
            android:toXScale="1.1"
@@ -34,9 +42,18 @@
         <translate android:duration="400"
                    android:startOffset="400"
                    android:fromXDelta="0"
-                   android:toXDelta="15"
+                   android:toXDelta="8"
                    android:fromYDelta="0"
                    android:fillBefore="false"
-                   android:toYDelta="20"/>
+                   android:toYDelta="15"/>
+        <rotate
+                android:duration="300"
+                android:fromDegrees="0"
+                android:toDegrees="30"
+                android:fillBefore="false"
+                android:startOffset="400"
+                android:pivotX="50%"
+                android:pivotY="50%"
+                />
     </set>
 </set>
