@@ -127,6 +127,7 @@
     <item name="android:textAllCaps">true</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:textStyle">bold</item>
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="TradeHero.TabText"
