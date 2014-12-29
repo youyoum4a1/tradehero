@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.portfolio.PortfolioType;
+import com.tradehero.th.api.portfolio.AssetClass;
 import java.io.IOException;
 import java.util.Date;
 
@@ -25,7 +25,7 @@ public class LeaderboardDTO extends BaseHasExpiration
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
-    @Nullable public PortfolioType leaderboardType;
+    @Nullable public AssetClass leaderboardType;
 
     public int minPositionCount;
     @JsonProperty("max_sharpeRatioInPeriod_vsSP500")
@@ -108,13 +108,13 @@ public class LeaderboardDTO extends BaseHasExpiration
     @JsonIgnore
     public boolean isStock()
     {
-        return leaderboardType == null || leaderboardType.equals(PortfolioType.STOCKS);
+        return leaderboardType == null || leaderboardType.equals(AssetClass.STOCKS);
     }
 
     @JsonIgnore
     public boolean isFX()
     {
-        return leaderboardType != null && leaderboardType.equals(PortfolioType.FX);
+        return leaderboardType != null && leaderboardType.equals(AssetClass.FX);
     }
 
 }

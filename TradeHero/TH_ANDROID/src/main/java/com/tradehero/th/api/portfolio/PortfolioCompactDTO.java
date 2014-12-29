@@ -21,7 +21,7 @@ public class PortfolioCompactDTO implements DTO
     public Integer providerId;
     public String title;
 
-    @Nullable public PortfolioType portfolioType;
+    @Nullable public AssetClass portfolioType;
 
     public double cashBalance;
     public double totalValue;
@@ -84,7 +84,7 @@ public class PortfolioCompactDTO implements DTO
 
     @JsonIgnore public boolean isFx()
     {
-        return portfolioType != null && portfolioType.equals(PortfolioType.FX);
+        return portfolioType != null && portfolioType.equals(AssetClass.FX);
     }
 
     @JsonIgnore public boolean isAllowedAddCash()
