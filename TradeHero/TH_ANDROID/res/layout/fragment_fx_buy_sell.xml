@@ -61,6 +61,20 @@
       tools:visibility="visible"
       />
 
+    <LinearLayout
+        android:id="@+id/llPositionStatus"
+        android:layout_margin="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+        <TextView android:id="@+id/tvPositionUnits" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text=""/>
+
+        <TextView android:id="@+id/tvPositionMoney" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginLeft="20dp"/>
+    </LinearLayout>
+
   <RelativeLayout
       android:id="@+id/chart_frame"
       android:layout_width="match_parent"
@@ -81,13 +95,6 @@
         android:visibility="visible"
         android:background="@drawable/basic_transparent_selector"
         android:src="@drawable/market_sleep_grey"
-        />
-
-    <Space
-        android:id="@+id/buy_sell_action_buttons_bottom_margin"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_xsmall"
-        android:layout_below="@id/buy_sell_action_buttons"
         />
 
       <com.tradehero.common.widget.BetterViewAnimator
@@ -145,23 +152,21 @@
           android:paddingBottom="@dimen/dashboard_tabhost_height"
           android:animateLayoutChanges="true"
           >
-
-          <Button
-              android:id="@+id/btn_buy"
-              style="@style/TH.Btn_Buy_Sell"
-              android:layout_marginBottom="5dp"
-              android:text="@string/fx_buy"
-              />
-
           <Button
               android:id="@+id/btn_sell"
               style="@style/TH.Btn_Buy_Sell"
-              android:layout_marginLeft="@dimen/margin_xsmall"
               android:layout_marginBottom="5dp"
               android:text="@string/fx_sell"
               android:visibility="gone"
               />
 
+          <Button
+              android:id="@+id/btn_buy"
+              style="@style/TH.Btn_Buy_Sell"
+              android:layout_marginLeft="@dimen/margin_xsmall"
+              android:layout_marginBottom="5dp"
+              android:text="@string/fx_buy"
+              />
       </LinearLayout>
   </RelativeLayout>
 

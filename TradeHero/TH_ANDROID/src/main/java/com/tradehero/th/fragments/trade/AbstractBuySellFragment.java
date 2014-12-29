@@ -117,8 +117,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                         .map(pair -> pair.second)
                         .share()
                         .cache(1);
-
-        new PositionDTOCompactList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -404,6 +402,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                     this.portfolioCompactDTO);
         }
         return 0;
+    }
+
+    public Double getUnRealizedPLRefCcy()
+    {
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if (ownedPortfolioId != null && positionDTOCompactList != null && this.quoteDTO!=null )
+        {
+            return positionDTOCompactList.getUnRealizedPLRefCcy(
+                    this.quoteDTO,
+                    this.portfolioCompactDTO,
+                    positionDTOCompactList);
+        }
+        return null;
     }
 
     abstract public void display();

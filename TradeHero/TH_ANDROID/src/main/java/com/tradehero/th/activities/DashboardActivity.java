@@ -67,6 +67,7 @@ import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnboardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -127,11 +128,11 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.observables.AndroidObservable.bindActivity;
 import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
@@ -520,20 +521,18 @@ public class DashboardActivity extends BaseActivity
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
                     {
-                        if (!isOnboardShown.get())
+                        UserProfileDTO userProfileDTO = args.second;
+                        if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                         {
-                            UserProfileDTO userProfileDTO = args.second;
-                            if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
-                            {
-                                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            }
+                            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
                             return;
                         }
 
                         if (!isFxShown.get())
                         {
-                            //broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            //return;
+                            isFxShown.set(true);
+                            FxOnboardDialogFragment.showOnBoardDialog(getFragmentManager());
+                            return;
                         }
 
                         broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());

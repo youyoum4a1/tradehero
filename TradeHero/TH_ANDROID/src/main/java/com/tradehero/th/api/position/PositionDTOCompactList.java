@@ -36,6 +36,24 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return sum;
     }
 
+    public double getShareAverageUsAmont(@Nullable PortfolioId portfolioId)
+    {
+        if (portfolioId == null)
+        {
+            return 0;
+        }
+
+        double sum = 0;
+        for (PositionDTOCompact positionDTOCompact: this)
+        {
+            if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
+            {
+                sum += positionDTOCompact.shares * positionDTOCompact.averagePriceRefCcy;
+            }
+        }
+        return sum;
+    }
+
     //<editor-fold desc="Net Sell Proceeds USD">
     /**
      * If it returns a negative number it means it will eat into the cash available.
@@ -213,4 +231,13 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return netSellProceedsUsd < 0 ? 0 : shareCount;
     }
     //</editor-fold>
+
+    public Double getUnRealizedPLRefCcy(QuoteDTO quoteDTO,PortfolioCompactDTO portfolioCompactDTO,PositionDTOCompactList positionDTOCompacts)
+    {
+        double shareAverageUsAmont = getShareAverageUsAmont(portfolioCompactDTO.getPortfolioId());
+        Integer shareCount = getShareCountIn(portfolioCompactDTO.getPortfolioId());
+        double shareQuoteUsAmont = quoteDTO.bid * shareCount * quoteDTO.toUSDRate;
+        double result = shareQuoteUsAmont - shareAverageUsAmont;
+        return result;
+    }
 }

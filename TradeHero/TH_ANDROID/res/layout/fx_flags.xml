@@ -9,7 +9,7 @@
     >
 
   <ImageView
-      android:id="@+id/flag_right"
+      android:id="@+id/flag_left"
       android:layout_gravity="center_vertical|right"
       android:layout_width="@dimen/big_image_w_h"
       android:layout_height="@dimen/big_image_w_h"
@@ -22,7 +22,7 @@
       />
 
   <ImageView
-      android:id="@+id/flag_left"
+      android:id="@+id/flag_right"
       android:layout_gravity="center_vertical|left"
       android:layout_width="@dimen/big_image_w_h"
       android:layout_height="@dimen/big_image_w_h"

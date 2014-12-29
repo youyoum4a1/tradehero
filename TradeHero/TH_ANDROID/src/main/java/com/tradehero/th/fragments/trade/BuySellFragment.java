@@ -441,6 +441,11 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
+    public void displayPositionStatus()
+    {
+
+    }
+
     abstract public void displayBuySellPrice();
 
     public void displayActionBarElements()
@@ -533,6 +538,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         {
             mSellBtn.setVisibility(getSupportSell() ? View.VISIBLE : View.GONE);
         }
+
+        displayPositionStatus();
     }
 
     abstract protected boolean getSupportSell();

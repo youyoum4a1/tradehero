@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,11 +15,15 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
@@ -26,13 +31,18 @@ import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import dagger.Lazy;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import timber.log.Timber;
+import rx.observers.EmptyObserver;
 
 //@Routable("trending-securities")
 public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
@@ -41,9 +51,12 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     private static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject SecurityCompactCacheRx securityCompactCache;
+    @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
 
-    private SubscriptionList subscriptions;
-    private SubscriptionList priceSubscriptions;
+    private SubscriptionList subscriptionList;
     private BaseArrayList<SecurityCompactDTO> mData;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,25 +68,53 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Override public void onStart()
     {
         super.onStart();
-        subscriptions = new SubscriptionList();
-        priceSubscriptions = new SubscriptionList();
+        subscriptionList = new SubscriptionList();
         fetchFXList();
         fetchFXPrice();
+        checkFXPortfolio();
     }
 
     private void fetchFXList() {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesRx())
                 .subscribe(createFXListFetchObserver()));
     }
 
     private void fetchFXPrice() {
-        priceSubscriptions.add(AndroidObservable.bindFragment(
+        subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
-                .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXPriceFetchObserver()));
+    }
+
+    private void checkFXPortfolio() {
+        subscriptionList.add(AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
+                    @Override
+                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
+                        if (args.second.fxPortfolio == null) {
+                            createFXProtfolio();
+                        }
+                    }
+                }));
+    }
+
+    private void createFXProtfolio() {
+        subscriptionList.add(AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get().createFXPortfolio(currentUserId.toUserBaseKey()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new EmptyObserver<PortfolioDTO>() {
+                    @Override
+                    public void onNext(PortfolioDTO portfolioDTO) {
+                        userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+                        securityPositionDetailCache.invalidateAll();
+                    }
+                }));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -97,26 +138,14 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
 
     @Override public void onStop()
     {
-        subscriptions.unsubscribe();
-        subscriptions = null;
-        priceSubscriptions.unsubscribe();
-        priceSubscriptions = null;
+        subscriptionList.unsubscribe();
+        subscriptionList = null;
         super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
     }
 
     @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
     {
         return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_fx_item);
-    }
-
-    protected void onErrorFilter(@NonNull Throwable e)
-    {
-        Timber.e(e, "Error with filter");
     }
 
     @NonNull protected Observer<SecurityCompactDTOList> createFXListFetchObserver()
@@ -126,10 +155,12 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
 
     protected class TrendingFXListFetchObserver implements Observer<SecurityCompactDTOList>
     {
-        @Override public void onNext(SecurityCompactDTOList pair)
+        @Override public void onNext(SecurityCompactDTOList securityCompactDTOList)
         {
-            mData = pair;
+            mData = securityCompactDTOList;
             updateAdapter();
+            //TODO may run too many times
+            securityCompactCache.onNext(securityCompactDTOList);
         }
 
         @Override public void onCompleted()

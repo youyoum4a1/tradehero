@@ -157,7 +157,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
     protected boolean hasValidInfoForBuy()
     {
         return securityId != null
-                //                && securityCompactDTO != null
+                && securityCompactDTO != null
                 && quoteDTO != null
                 && quoteDTO.ask != null;
     }

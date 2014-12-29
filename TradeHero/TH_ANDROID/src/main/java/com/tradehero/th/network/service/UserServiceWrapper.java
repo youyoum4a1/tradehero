@@ -7,6 +7,8 @@ import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -32,7 +34,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.api.social.BatchFollowFormDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
@@ -571,6 +572,15 @@ import rx.functions.Func1;
     @NonNull public Observable<Response> sendAnalyticsRx(@NonNull BatchAnalyticsEventForm batchAnalyticsEventForm)
     {
         return userServiceRx.sendAnalytics(batchAnalyticsEventForm);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Create FX Portfolio">
+    @NonNull public Observable<PortfolioDTO> createFXPortfolioRx(UserBaseKey userBaseKey)
+    {
+        Observable<PortfolioDTO> received;
+        received = userServiceRx.createFXPortfolioRx(userBaseKey.getUserId());
+        return received;
     }
     //</editor-fold>
 }

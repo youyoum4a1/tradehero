@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  <com.tradehero.th.fragments.fxonboard.LearnMoreView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/TH.FxOnBoardDialog"
+      >
+    <include layout="@layout/fx_onboard_header_view"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray_1"/>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="300sp">
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_horizontal"
+          android:text="@string/fx_onboard_introduction_text_introduction"
+          />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TH.FxOnBoardDialog.NextButton"
+        android:text="@string/active_fx_now"
+        />
+  </com.tradehero.th.fragments.fxonboard.LearnMoreView>
+</merge>

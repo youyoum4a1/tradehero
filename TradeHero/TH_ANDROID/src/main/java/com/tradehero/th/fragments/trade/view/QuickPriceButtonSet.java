@@ -1,13 +1,14 @@
 package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,10 +100,8 @@ public class QuickPriceButtonSet extends LinearLayout
         for (QuickPriceButton button : buttons)
         {
             button.setEnabled(isEnabled() && (isFX || (button.getPrice() <= maxPrice)));
-        }
-        for (Button button : buttons)
-        {
             button.setSelected(button == currentSelected && button.isEnabled());
+            button.setTextColor(button == currentSelected ? Color.BLACK : getResources().getColor(R.color.text_secondary));
         }
     }
 

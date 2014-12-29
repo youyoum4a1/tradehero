@@ -112,11 +112,11 @@ public class KChartsView extends KChartBase {
 			float leftText = left + (float)DEFAULT_AXIS_TITLE_SIZE / 4;
 			float top = (float) DEFAULT_AXIS_TITLE_SIZE;
 			float lineHeight = (float) 7*DEFAULT_AXIS_TITLE_SIZE/6;
-			float right = (float)8.5 * DEFAULT_AXIS_TITLE_SIZE + 4f + DEFAULT_CANDLE_LEFT_MARGIN;
+			float right = (float)9 * DEFAULT_AXIS_TITLE_SIZE + 4f + DEFAULT_CANDLE_LEFT_MARGIN;
 			float bottom = (float)8 * DEFAULT_AXIS_TITLE_SIZE + DEFAULT_AXIS_TITLE_SIZE / 3;
 			if (mStartX < width / 2.0f) {
 				right = width - (float)DEFAULT_AXIS_TITLE_SIZE + 4f;
-				left = width - (float)8.5 * DEFAULT_AXIS_TITLE_SIZE;
+				left = width - (float)9 * DEFAULT_AXIS_TITLE_SIZE;
                 leftText = left + (float)DEFAULT_AXIS_TITLE_SIZE / 4;
 			}
 			int selectIndext = (int) ((width - 2.0f - mStartX) / mCandleWidth + mDataStartIndext);
@@ -145,11 +145,11 @@ public class KChartsView extends KChartBase {
             String date = data.getDate();
             if (date.contains("T") && date.contains("."))
             {
-			    canvas.drawText("日期: " + date.substring(date.indexOf("T")+1, date.indexOf(":00.")), leftText, top + lineHeight, textPaint);
+			    canvas.drawText(getResources().getString(R.string.date, date.substring(date.indexOf("T")+1, date.indexOf(":00."))), leftText, top + lineHeight, textPaint);
             }
             else
             {
-			    canvas.drawText("日期: " + date, leftText, top + lineHeight, textPaint);
+			    canvas.drawText(getResources().getString(R.string.date, date), leftText, top + lineHeight, textPaint);
             }
 
             //count num after "."
@@ -161,7 +161,8 @@ public class KChartsView extends KChartBase {
                 yTitleFormat += "#";
             }
 
-			canvas.drawText("开盘:", leftText, top + 2*lineHeight, textPaint);
+            float leftmargin = DEFAULT_AXIS_TITLE_SIZE * 3.25f;
+			canvas.drawText(getResources().getString(R.string.open), leftText, top + 2*lineHeight, textPaint);
 			double open = data.getOpen();
 			try {
 				double ysdclose = mOHLCData.get(selectIndext + 1).getClose();
@@ -170,29 +171,24 @@ public class KChartsView extends KChartBase {
 				} else {
 					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
 				}
-				canvas.drawText(new DecimalFormat(yTitleFormat).format(open), leftText
-						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 2*lineHeight,
-						textPaint);
 			} catch (Exception e) {
-				canvas.drawText(new DecimalFormat(yTitleFormat).format(open), leftText
-						+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 2*lineHeight,
-						textPaint);
 			}
+            canvas.drawText(new DecimalFormat(yTitleFormat).format(open),
+                    leftText + leftmargin, top + 2*lineHeight, textPaint);
 
 			textPaint.setColor(Color.DKGRAY);
-			canvas.drawText("最高:", leftText, top + 3*lineHeight, textPaint);
+			canvas.drawText(getResources().getString(R.string.high), leftText, top + 3*lineHeight, textPaint);
 			double high = data.getHigh();
 			if (open < high) {
 				textPaint.setColor(DEFAULT_CANDLE_DETAIL_RED_COLOR);
 			} else {
 				textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
 			}
-			canvas.drawText(new DecimalFormat(yTitleFormat).format(high), leftText
-					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 3*lineHeight,
-					textPaint);
+			canvas.drawText(new DecimalFormat(yTitleFormat).format(high), leftText + leftmargin,
+                    top + 3*lineHeight, textPaint);
 
 			textPaint.setColor(Color.DKGRAY);
-			canvas.drawText("最低:", leftText, top + 4*lineHeight, textPaint);
+			canvas.drawText(getResources().getString(R.string.low), leftText, top + 4*lineHeight, textPaint);
 			double low = data.getLow();
 			try {
 				double yesterday = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
@@ -205,12 +201,11 @@ public class KChartsView extends KChartBase {
 			} catch (Exception e) {
 
 			}
-			canvas.drawText(new DecimalFormat(yTitleFormat).format(low), leftText
-					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 4*lineHeight,
-					textPaint);
+			canvas.drawText(new DecimalFormat(yTitleFormat).format(low), leftText + leftmargin,
+                    top + 4*lineHeight, textPaint);
 
 			textPaint.setColor(Color.DKGRAY);
-			canvas.drawText("收盘:", leftText, top + 5*lineHeight, textPaint);
+			canvas.drawText(getResources().getString(R.string.close), leftText, top + 5*lineHeight, textPaint);
 			double close = data.getClose();
 			try {
 				double yesdopen = (mOHLCData.get(selectIndext + 1).getLow() + mOHLCData.get(
@@ -223,12 +218,11 @@ public class KChartsView extends KChartBase {
 			} catch (Exception e) {
 
 			}
-			canvas.drawText(new DecimalFormat(yTitleFormat).format(close), leftText
-					+ DEFAULT_AXIS_TITLE_SIZE * 2.5f, top + 5*lineHeight,
-					textPaint);
+			canvas.drawText(new DecimalFormat(yTitleFormat).format(close), leftText + leftmargin,
+                    top + 5*lineHeight, textPaint);
 
 			textPaint.setColor(Color.DKGRAY);
-			canvas.drawText("涨跌幅:", leftText, top + 6*lineHeight, textPaint);
+			canvas.drawText(getResources().getString(R.string.change), leftText, top + 6*lineHeight, textPaint);
 			try {
 				double yesdclose = mOHLCData.get(selectIndext + 1).getClose();
 				double priceRate = (close - yesdclose) / yesdclose;
@@ -238,11 +232,9 @@ public class KChartsView extends KChartBase {
 					textPaint.setColor(getResources().getColor(DEFAULT_CANDLE_DETAIL_DKGREEN_COLOR));
 				}
 				canvas.drawText(new DecimalFormat("#.###%").format(priceRate), leftText
-						+ DEFAULT_AXIS_TITLE_SIZE * 3.5f, top + 6*lineHeight,
-						textPaint);
+						+ leftmargin, top + 6*lineHeight, textPaint);
 			} catch (Exception e) {
-				canvas.drawText("--", leftText + DEFAULT_AXIS_TITLE_SIZE * 3.5f, top
-						+ 6*lineHeight, textPaint);
+				canvas.drawText("--", leftText + leftmargin, top + 6*lineHeight, textPaint);
 			}
 		}
 	}
@@ -338,14 +330,14 @@ public class KChartsView extends KChartBase {
 			float right = (float) (width - mCandleWidth * i - lineWidth*2);
 			float startX = (float) (width - mCandleWidth * i - (mCandleWidth - 1) / 2);
 			if (open < close) {
-				canvas.drawRect(left, open, right, close, greenPaint);
-				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, greenPaint);
+				canvas.drawRect(left, open, right, close, redPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
 			} else if (open == close) {
-				canvas.drawRect(left, open, right, open + lineWidth*2, redPaint);
-				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
+				canvas.drawRect(left, open, right, open + lineWidth*2, greenPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, greenPaint);
 			} else {
-				canvas.drawRect(left, close, right, open, redPaint);
-				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, redPaint);
+				canvas.drawRect(left, close, right, open, greenPaint);
+				canvas.drawRect(startX - lineWidth, high, startX + lineWidth, low, greenPaint);
 			}
 		}
 	}

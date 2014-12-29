@@ -10,6 +10,7 @@ import com.tradehero.th.fragments.contestcenter.FragmentContestCenterModule;
 import com.tradehero.th.fragments.discovery.FragmentDiscoveryModule;
 import com.tradehero.th.fragments.discussion.FragmentDiscussionModule;
 import com.tradehero.th.fragments.education.FragmentEducationModule;
+import com.tradehero.th.fragments.fxonboard.FragmentFxOnBoardModule;
 import com.tradehero.th.fragments.games.FragmentGamesModule;
 import com.tradehero.th.fragments.home.FragmentHomeModule;
 import com.tradehero.th.fragments.leaderboard.FragmentLeaderboardModule;
@@ -59,6 +60,7 @@ import dagger.Module;
                 FragmentUpdateCenterModule.class,
                 FragmentWatchlistModule.class,
                 FragmentWebModule.class,
+                FragmentFxOnBoardModule.class
         },
         injects = {
                 DashboardFragment.class,

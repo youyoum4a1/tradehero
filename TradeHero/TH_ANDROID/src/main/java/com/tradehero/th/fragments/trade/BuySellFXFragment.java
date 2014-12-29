@@ -2,10 +2,13 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -16,31 +19,45 @@ import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
+import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
     @Inject SecurityServiceWrapper securityServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
     @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
     @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
 
-    @Nullable protected Subscription fxHistorySubscription;
+    @InjectView(R.id.llPositionStatus) protected LinearLayout llPositionStatus;
+    @InjectView(R.id.tvPositionUnits) protected TextView tvPositionUnits;
+    @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
+
+    private SubscriptionList subscriptionList;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -51,9 +68,24 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
+        subscriptionList = new SubscriptionList();
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
+        addDefaultFXPortfolio();
+    }
+
+    private void addDefaultFXPortfolio() {
+        subscriptionList.add(AndroidObservable.bindFragment(this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
+                    @Override
+                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
+                        mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
+                                new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(),
+                                        args.second.fxPortfolio));
+                        linkWith(args.second.fxPortfolio, true);
+                    }
+                }));
     }
 
     private void initTimeSpanButton()
@@ -65,16 +97,16 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void onStop()
     {
-        unsubscribe(fxHistorySubscription);
-        fxHistorySubscription = null;
+        subscriptionList.unsubscribe();
+        subscriptionList = null;
         super.onStop();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        unsubscribe(fxHistorySubscription);
-        fxHistorySubscription = null;
+        subscriptionList.unsubscribe();
+        subscriptionList = null;
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
@@ -85,10 +117,10 @@ public class BuySellFXFragment extends BuySellFragment
 
     private void fetchKChart(String code)
     {
-        fxHistorySubscription = AndroidObservable.bindFragment(
+        subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, code))
-                .subscribe(createFXHistoryFetchObserver());
+                .subscribe(createFXHistoryFetchObserver()));
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
@@ -101,6 +133,44 @@ public class BuySellFXFragment extends BuySellFragment
             FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
             setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
             setActionBarSubtitle(null);
+        }
+    }
+
+    @Override
+    public void displayPositionStatus()
+    {
+        Integer share = getMaxSellableShares();
+        Double unRealizedPLRefccy = getUnRealizedPLRefCcy();
+
+        llPositionStatus.setVisibility((share==null||share==0)?View.GONE:View.VISIBLE);
+        if(share!=null)
+        {
+            if(share >= 0)
+            {
+                tvPositionUnits.setText(getString(R.string.short_position_units,share));
+            }
+            else
+            {
+                tvPositionUnits.setText(getString(R.string.long_position_units,Math.abs(share)));
+            }
+
+
+            String unrealised;
+            if (unRealizedPLRefccy != null)
+            {
+                THSignedMoney unrealisedMoney = THSignedMoney.builder(unRealizedPLRefccy)
+                        .currency(SecurityUtils.getDefaultCurrency())
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                tvPositionMoney.setTextColor(unrealisedMoney.getColor());
+                unrealised = unrealisedMoney.toString();
+            }
+            else
+            {
+                unrealised = getResources().getString(R.string.na);
+            }
+            tvPositionMoney.setText(unrealised);
         }
     }
 
@@ -216,6 +286,7 @@ public class BuySellFXFragment extends BuySellFragment
                 new MenuOwnedPortfolioId(
                         currentUserId.toUserBaseKey(),
                         providerDTO.associatedPortfolio));
+        linkWith(providerDTO.associatedPortfolio, true);
     }
 
     @Override protected void softFetchPortfolioCompactList()
