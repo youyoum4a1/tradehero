@@ -38,7 +38,7 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_contest_center, container, false);
+        return inflater.inflate(R.layout.fragment_tabbed, container, false);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
