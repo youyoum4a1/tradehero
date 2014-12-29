@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:paddingLeft="@dimen/dashboard_padding"
+    android:paddingRight="@dimen/dashboard_padding"
+    >
+
+  <ListView
+      android:id="@+id/listview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:cacheColorHint="@android:color/transparent"
+      android:divider="@null"
+      android:dividerHeight="@dimen/trending_grid_spacing"
+      android:padding="@dimen/search_stock_people_list_padding"
+      android:scrollbarStyle="outsideOverlay"
+      android:clipToPadding="false"
+      android:listSelector="@drawable/basic_transparent_selector"
+      android:drawSelectorOnTop="true"
+      />
+
+  <RelativeLayout
+      android:id="@+id/search_empty_container"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:gravity="center"
+      >
+
+    <TextView
+        android:id="@+id/search_empty_textview"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        style="@style/TH.Loading_Empty_Text"
+        android:text="@string/provider_warrant_not_found"
+        />
+
+  </RelativeLayout>
+
+  <ProgressBar
+      android:id="@+id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:visibility="gone"
+      android:background="@drawable/round_square"
+      />
+
+</RelativeLayout>

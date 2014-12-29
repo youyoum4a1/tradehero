@@ -17,6 +17,8 @@ import dagger.Module;
                 ChartFragment.class,
                 StockInfoValueFragment.class,
                 WarrantInfoValueFragment.class,
+                ProviderWarrantListRxFragment.class,
+                WarrantCompetitionPagerFragment.class,
                 StockInfoFragment.class,
                 WatchlistEditFragment.class,
                 SecurityActionListLinear.class,

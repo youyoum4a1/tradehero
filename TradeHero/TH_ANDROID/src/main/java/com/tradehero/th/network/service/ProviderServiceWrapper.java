@@ -16,10 +16,11 @@ import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantUnderlyersProviderSecurityListType;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.social.SocialShareReqFormDTO;
+import com.tradehero.th.api.security.WarrantType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
@@ -127,7 +128,7 @@ import rx.Observable;
                     key.getPage(),
                     key.perPage);
         }
-        else if (key instanceof WarrantProviderSecurityListType)
+        else if (key instanceof WarrantUnderlyersProviderSecurityListType)
         {
             received = this.providerService.getWarrantUnderlyers(
                     key.getProviderId().key,
@@ -160,12 +161,21 @@ import rx.Observable;
                     key.getPage(),
                     key.perPage);
         }
-        else if (key instanceof WarrantProviderSecurityListType)
+        else if (key instanceof WarrantUnderlyersProviderSecurityListType)
         {
             received = this.providerServiceRx.getWarrantUnderlyers(
                     key.getProviderId().key,
                     key.getPage(),
                     key.perPage);
+        }
+        else if (key instanceof WarrantProviderSecurityListType)
+        {
+            WarrantType warrantType = ((WarrantProviderSecurityListType) key).getWarrantType();
+            received = this.providerServiceRx.getProviderWarrants(
+                    key.getProviderId().key,
+                    key.getPage(),
+                    key.perPage,
+                    warrantType != null ? warrantType.shortCode : null);
         }
         else
         {

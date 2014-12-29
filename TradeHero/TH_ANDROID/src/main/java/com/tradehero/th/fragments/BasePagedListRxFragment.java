@@ -136,6 +136,7 @@ abstract public class BasePagedListRxFragment<
         }
         if (itemViewAdapter != null)
         {
+            itemViewAdapter.setNotifyOnChange(false);
             itemViewAdapter.clear();
             itemViewAdapter.notifyDataSetChanged();
         }
@@ -155,6 +156,7 @@ abstract public class BasePagedListRxFragment<
                 lastPageInAdapter = FIRST_PAGE - 1;
             }
 
+            itemViewAdapter.setNotifyOnChange(false);
             while (pagedDtos.containsKey(++lastPageInAdapter))
             {
                 itemViewAdapter.addPage(lastPageInAdapter, pagedDtos.get(lastPageInAdapter));
@@ -356,7 +358,9 @@ abstract public class BasePagedListRxFragment<
             nearEndScrollListener.deactivateEnd();
             if (key.getPage() == FIRST_PAGE)
             {
+                itemViewAdapter.setNotifyOnChange(false);
                 itemViewAdapter.clear();
+                itemViewAdapter.notifyDataSetChanged();
             }
         }
     }

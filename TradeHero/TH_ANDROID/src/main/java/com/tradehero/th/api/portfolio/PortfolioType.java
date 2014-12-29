@@ -8,6 +8,7 @@ public enum PortfolioType
 {
     STOCKS(1),
     FX(2),
+    WARRANT(3),
     ;
 
     private int value;

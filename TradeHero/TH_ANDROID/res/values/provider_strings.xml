@@ -55,4 +55,6 @@
   <string name="provider_current_prize_pool">Current prize pool :</string>
   <string name="provider_prize_pool_new_players_need">New players needed to unlock extra **%1$s** :</string>
 
+  <string name="provider_warrant_not_found">No Warrants Found.</string>
+
 </resources>
