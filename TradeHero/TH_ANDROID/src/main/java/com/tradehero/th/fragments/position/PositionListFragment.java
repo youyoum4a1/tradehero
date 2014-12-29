@@ -24,6 +24,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
@@ -46,6 +47,7 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.fragments.trending.TrendingFXFragment;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
@@ -219,7 +221,14 @@ public class PositionListFragment
             TrendingStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        navigator.get().pushFragment(TrendingStockFragment.class, args);
+        if(portfolioDTO.portfolioType == AssetClass.FX)
+        {
+            navigator.get().pushFragment(TrendingFXFragment.class, args);
+        }
+        else
+        {
+            navigator.get().pushFragment(TrendingStockFragment.class, args);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
