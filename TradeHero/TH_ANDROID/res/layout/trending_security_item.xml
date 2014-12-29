@@ -36,6 +36,7 @@
       android:contentDescription="@null"
       android:adjustViewBounds="false"
       android:scaleType="fitCenter"
+      android:layout_margin="@dimen/margin_xsmall"
       tools:src="@drawable/flag_country_round_united_states"/>
 
   <TextView
