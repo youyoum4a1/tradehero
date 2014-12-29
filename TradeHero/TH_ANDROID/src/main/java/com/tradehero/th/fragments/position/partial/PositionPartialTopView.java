@@ -339,7 +339,7 @@ public class PositionPartialTopView extends LinearLayout
                 }
                 else
                 {
-                    count = THSignedNumber.builder(positionDTO.shares)
+                    count = THSignedNumber.builder(Math.abs(positionDTO.shares))
                             .build().toString();
                 }
                 shareCount.setText(getResources().getString(R.string.position_unit_count, count));
