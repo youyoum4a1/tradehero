@@ -29,6 +29,9 @@ public class LeaderboardDefListKeyFactory
             case MostSkilledLeaderboardDefListKey.MOST_SKILLED:
                 return new MostSkilledLeaderboardDefListKey(args);
 
+            case MostSkilledContainerLeaderboardDefListKey.MOST_SKILLED_CONTAINER:
+                return new MostSkilledContainerLeaderboardDefListKey(args);
+
             case SectorLeaderboardDefListKey.SECTOR:
                 return new SectorLeaderboardDefListKey(args);
 

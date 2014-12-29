@@ -57,7 +57,8 @@ import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
 
-public class LeaderboardMarkUserItemView extends RelativeLayout
+public class LeaderboardMarkUserItemView
+        extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
@@ -94,23 +95,22 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
+    private boolean shouldHideStatistics = true;
 
-    //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
-    }
-
-    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
-    {
-        super(context, attrs);
     }
 
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
-    //</editor-fold>
+
+    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
 
     @Override protected void onFinishInflate()
     {
@@ -206,7 +206,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         leaderboardOwnUserRankingSubscription = null;
     }
 
-    private void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
+    protected void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
     {
         this.leaderboardItem = leaderboardUserDTO;
 
@@ -326,22 +326,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
-    }
-
-    @Override public void onExpand(boolean expand)
-    {
-        if (userStatisticView != null)
-        {
-            if (expand)
-            {
-                userStatisticView.display(leaderboardItem);
-            }
-            else
-            {
-                userStatisticView.display(null);
-                Timber.d("clearExpandAnimation");
-            }
-        }
     }
 
     protected String getLbmuPlCurrencyDisplay()
@@ -571,6 +555,38 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
+    }
+
+    @Override public void onExpand(boolean expand)
+    {
+        if (userStatisticView != null && leaderboardItem != null && !shouldHideStatistics)
+        {
+            if (expand)
+            {
+                userStatisticView.display(leaderboardItem);
+            }
+            else
+            {
+                userStatisticView.display(null);
+                Timber.d("clearExpandAnimation");
+            }
+        }
+    }
+
+    public void shouldHideStatistics(boolean hide)
+    {
+        this.shouldHideStatistics = hide;
+        if (userStatisticView != null)
+        {
+            if (hide)
+            {
+                userStatisticView.setVisibility(View.GONE);
+            }
+            else
+            {
+                userStatisticView.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public static interface OnFollowRequestedListener

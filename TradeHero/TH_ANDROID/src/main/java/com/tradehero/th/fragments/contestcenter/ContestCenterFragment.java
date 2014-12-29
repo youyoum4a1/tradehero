@@ -37,7 +37,7 @@ public class ContestCenterFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
+        View view = inflater.inflate(R.layout.fragment_tabbed, container, false);
         ButterKnife.inject(this, view);
         initViews();
         return view;

@@ -63,7 +63,7 @@ public class LeaderboardDefDTO implements DTO
         {
             return new TimePeriodLeaderboardDefListKey();
         }
-        if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
+        if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID || id == LeaderboardDefKeyKnowledge.MOST_SKILLED_FOREX_ID)
         {
             return new MostSkilledLeaderboardDefListKey();
         }
