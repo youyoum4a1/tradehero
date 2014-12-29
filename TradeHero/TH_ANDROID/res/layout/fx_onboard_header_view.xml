@@ -12,14 +12,15 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         style="@style/TH.Title"
+        android:textStyle="bold"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:layout_gravity="center_horizontal"
         android:text="@string/powered_by"
-        android:drawablePadding="@dimen/size_1"
-        android:drawableRight="@drawable/fx_onboard_oanda"
+        android:drawableRight="@drawable/fx_onboard_oanda_logo"
         />
   </LinearLayout>
 </merge>

@@ -15,7 +15,6 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -24,6 +23,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.fxonboard.FxOnboardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
@@ -31,7 +31,6 @@ import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -40,9 +39,9 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 //@Routable("trending-securities")
 public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
@@ -54,10 +53,10 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
 
     private SubscriptionList subscriptionList;
     private BaseArrayList<SecurityCompactDTO> mData;
+    private boolean fxIsShowed = false;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -96,23 +95,10 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
                     @Override
                     public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
-                        if (args.second.fxPortfolio == null) {
-                            createFXProtfolio();
+                        if (args.second.fxPortfolio == null && !fxIsShowed) {
+                            fxIsShowed = true;
+                            FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
                         }
-                    }
-                }));
-    }
-
-    private void createFXProtfolio() {
-        subscriptionList.add(AndroidObservable.bindFragment(
-                this,
-                userProfileCache.get().createFXPortfolio(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<PortfolioDTO>() {
-                    @Override
-                    public void onNext(PortfolioDTO portfolioDTO) {
-                        userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
-                        securityPositionDetailCache.invalidateAll();
                     }
                 }));
     }

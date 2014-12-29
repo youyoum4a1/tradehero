@@ -23,6 +23,14 @@
         android:gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_small"
         />
+
+      <ImageView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_small"
+          android:layout_marginBottom="@dimen/margin_large"
+          android:background="@drawable/fx_onboard_image_3"/>
+
     <TextView
         android:id="@+id/start_trading"
         android:layout_width="match_parent"
