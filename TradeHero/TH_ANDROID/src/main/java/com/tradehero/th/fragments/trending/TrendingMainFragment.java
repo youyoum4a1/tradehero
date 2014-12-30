@@ -13,15 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
-
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
-
-import java.util.Random;
 
 public class TrendingMainFragment extends DashboardFragment
 {

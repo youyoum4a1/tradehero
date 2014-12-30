@@ -41,7 +41,6 @@ import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
-import timber.log.Timber;
 
 //@Routable("trending-securities")
 public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
@@ -67,10 +66,11 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Override public void onStart()
     {
         super.onStart();
-        subscriptionList = new SubscriptionList();
-        fetchFXList();
+        if (subscriptionList == null)
+        {
+            subscriptionList = new SubscriptionList();
+        }
         fetchFXPrice();
-        checkFXPortfolio();
     }
 
     private void fetchFXList() {
@@ -89,6 +89,10 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     }
 
     private void checkFXPortfolio() {
+        if (subscriptionList == null)
+        {
+            subscriptionList = new SubscriptionList();
+        }
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
@@ -98,6 +102,10 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                         if (args.second.fxPortfolio == null && !fxIsShowed) {
                             fxIsShowed = true;
                             FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                        }
+                        else if (args.second.fxPortfolio != null)
+                        {
+                            fetchFXList();
                         }
                     }
                 }));
@@ -263,5 +271,15 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         }
 
         navigator.get().pushFragment(BuySellFXFragment.class, args);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser)
+        {
+            fxIsShowed = false;
+            checkFXPortfolio();
+        }
     }
 }
