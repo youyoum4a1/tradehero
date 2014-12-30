@@ -68,6 +68,22 @@ public class WarrantSecurityItemView extends SecurityItemView
         displayExpiryDate();
     }
 
+    @Override public void displayExchangeSymbol()
+    {
+        if (exchangeSymbol != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                exchangeSymbol.setText(securityCompactDTO.symbol);
+            }
+            else
+            {
+                exchangeSymbol.setText(R.string.na);
+            }
+            exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
+        }
+    }
+
     public void displayCombinedStrikePriceType()
     {
         if (combinedStrikePriceType != null)
