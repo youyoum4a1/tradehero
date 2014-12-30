@@ -258,7 +258,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
-        return new LeaderboardMarkUserListAdapter(getActivity(), currentLeaderboardType.getAssetClass().getValue());
+        return new LeaderboardMarkUserListAdapter(getActivity(), getLeaderboardLoaderCustomId());
     }
 
     protected void prepareLeaderboardMarkUserAdapter()
@@ -305,7 +305,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
-                currentLeaderboardType.getAssetClass().getValue(), loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+                getLeaderboardLoaderCustomId(), loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
         leaderboardMarkUserLoader.setLeaderboardLoaderListener(new LeaderboardLoadedListener());
     }
 
@@ -363,7 +363,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
-        getActivity().getSupportLoaderManager().destroyLoader(currentLeaderboardType.getAssetClass().getValue());
+        getActivity().getSupportLoaderManager().destroyLoader(getLeaderboardLoaderCustomId());
         super.onDestroy();
     }
 
@@ -606,6 +606,11 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         return (currentLeaderboardType != null && currentLeaderboardType.getAssetClass().equals(
                 AssetClass.FX));
+    }
+
+    private int getLeaderboardLoaderCustomId()
+    {
+        return currentLeaderboardType != null? currentLeaderboardType.getAssetClass().getValue() : leaderboardDefKey.key;
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardMarkUserItemView.OnFollowRequestedListener
