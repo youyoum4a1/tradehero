@@ -1,81 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
-    android:layout_width="fill_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
-  <LinearLayout
-      android:layout_width="fill_parent"
-      android:layout_height="32dp">
-    <Button
-        android:id="@+id/btnTabChart0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res/com.tradehero.th"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="1天"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:background="@drawable/tab_blue_head_active"
-        android:layout_weight="1"/>
-    <Button
-        android:id="@+id/btnTabChart1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="5天"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:background="@drawable/tab_blue_head_xml"
-        android:layout_weight="1"/>
-    <Button
-        android:id="@+id/btnTabChart2"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="3个月"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:background="@drawable/tab_blue_head_xml"
-        android:layout_weight="1"/>
-    <Button
-        android:id="@+id/btnTabChart3"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:text="1年"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:background="@drawable/tab_blue_head_xml"
-        android:layout_weight="1"/>
-  </LinearLayout>
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:layout_height="32dp">
+        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+        <Button
+                android:id="@+id/btnTabChart0"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="1天"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:background="@drawable/tab_blue_head_active"
+                android:layout_weight="1"/>
+        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+        <Button
+                android:id="@+id/btnTabChart1"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="5天"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:background="@drawable/tab_blue_head_normal"
+                android:layout_weight="1"/>
+        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+        <Button
+                android:id="@+id/btnTabChart2"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="3个月"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:background="@drawable/tab_blue_head_normal"
+                android:layout_weight="1"/>
+        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+        <Button
+                android:id="@+id/btnTabChart3"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="1年"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:layout_marginRight="1px"
+                android:background="@drawable/tab_blue_head_normal"
+                android:layout_weight="1"/>
+        <View android:layout_width="1px" android:layout_height="match_parent" android:background="#cecece"/>
+    </LinearLayout>
 
-  <com.tradehero.common.widget.BetterViewAnimator
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/chart_image_wrapper"
-      >
+    <com.tradehero.common.widget.BetterViewAnimator
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chart_image_wrapper"
+            >
 
-    <TextView
-        android:id="@+id/chart_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:minHeight="@dimen/chart_loading_text_height"
-        android:gravity="center"
-        android:text="@string/chart_loading_image"
-        />
+        <TextView
+                android:id="@+id/chart_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:minHeight="@dimen/chart_loading_text_height"
+                android:gravity="center"
+                android:text="@string/chart_loading_image"
+                />
 
-    <com.tradehero.th.fragments.security.ChartImageView
-        android:id="@+id/chart_imageView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/chart_vertical_padding"
-        android:paddingBottom="@dimen/chart_vertical_padding"
-        android:contentDescription="@null"
-        android:background="@drawable/basic_transparent_selector"
-        app:includeVolume="false"
-        app:dominantMeasurement="width"
-        app:aspectRatioEnabled="false"
-        />
+        <com.tradehero.th.fragments.security.ChartImageView
+                android:id="@+id/chart_imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/chart_vertical_padding"
+                android:paddingBottom="@dimen/chart_vertical_padding"
+                android:contentDescription="@null"
+                android:background="@drawable/basic_transparent_selector"
+                app:includeVolume="false"
+                app:dominantMeasurement="width"
+                app:aspectRatioEnabled="false"
+                />
 
-  </com.tradehero.common.widget.BetterViewAnimator>
+    </com.tradehero.common.widget.BetterViewAnimator>
 </LinearLayout>
 
