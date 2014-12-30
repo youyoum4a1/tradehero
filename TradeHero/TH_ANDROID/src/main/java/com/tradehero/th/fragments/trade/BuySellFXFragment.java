@@ -282,7 +282,7 @@ public class BuySellFXFragment extends BuySellFragment
 
         @Override public void onError(Throwable e)
         {
-            THToast.show(R.string.error_fetch_provider_competition_list);
+            THToast.show(R.string.error_fx_candle_charts_load_fail);
         }
     }
 

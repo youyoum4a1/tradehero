@@ -63,16 +63,6 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         return inflater.inflate(R.layout.fragment_fx_trending, container, false);
     }
 
-    @Override public void onStart()
-    {
-        super.onStart();
-        if (subscriptionList == null)
-        {
-            subscriptionList = new SubscriptionList();
-        }
-        fetchFXPrice();
-    }
-
     private void fetchFXList() {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
@@ -106,6 +96,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                         else if (args.second.fxPortfolio != null)
                         {
                             fetchFXList();
+                            fetchFXPrice();
                         }
                     }
                 }));
@@ -163,7 +154,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
 
         @Override public void onError(Throwable e)
         {
-            THToast.show(R.string.error_fetch_provider_competition_list);
+            THToast.show(R.string.error_fetch_fx_list);
         }
     }
 
@@ -183,6 +174,10 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     {
         @Override public void onNext(List<QuoteDTO> list)
         {
+            if (mData.size() == 0)
+            {
+                return;
+            }
             for (SecurityCompactDTO dto : mData)
             {
                 for (QuoteDTO price : list)
@@ -204,7 +199,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
 
         @Override public void onError(Throwable e)
         {
-            THToast.show(R.string.error_fetch_provider_competition_list);
+            THToast.show(R.string.error_fetch_fx_list_price);
         }
     }
 
