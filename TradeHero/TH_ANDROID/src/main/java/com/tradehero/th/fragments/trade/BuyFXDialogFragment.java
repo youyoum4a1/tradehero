@@ -89,17 +89,21 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
                 {
                     double availableRefCcy;
                     if (portfolioCompactDTO.marginAvailableRefCcy != null
-                            && portfolioCompactDTO.leverage != null) {
+                            && portfolioCompactDTO.leverage != null)
+                    {
                         availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
-                    } else {
+                    }
+                    else
+                    {
                         Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
                         availableRefCcy = portfolioCompactDTO.cashBalance;
                     }
 
-                    if (priceRefCcy != null) {
+                    if (priceRefCcy != null)
+                    {
                         double value = mTransactionQuantity * priceRefCcy;
                         THSignedNumber thSignedNumber = THSignedMoney
-                                .builder(availableRefCcy - value)
+                                .builder((availableRefCcy - value)/portfolioCompactDTO.leverage)
                                 .withOutSign()
                                 .currency(portfolioCompactDTO.currencyDisplay)
                                 .build();
@@ -166,18 +170,18 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    @Nullable public Integer getMaxPurchasableShares()
-    {
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(
-                portfolioCompactDTO,
-                quoteDTO);
-    }
-
     protected boolean hasValidInfoForBuy()
     {
         return securityId != null
                 && securityCompactDTO != null
                 && quoteDTO != null
                 && quoteDTO.ask != null;
+    }
+
+    @Nullable public Integer getMaxPurchasableShares()
+    {
+        return portfolioCompactDTOUtil.getMaxPurchasableSharesForFX(
+                portfolioCompactDTO,
+                quoteDTO, true);
     }
 }

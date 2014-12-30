@@ -29,9 +29,9 @@ public class PortfolioCompactDTOUtil
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, true);
     }
 
-    @Nullable public Integer getMaxPurchasableSharesForFX(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
+    @Nullable public Integer getMaxPurchasableSharesForFX(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO, boolean isBuy)
     {
-        return getMaxPurchasableSharesForFX(portfolioCompactDTO, quoteDTO, true);
+        return getMaxPurchasableSharesForFX(portfolioCompactDTO, quoteDTO, true, isBuy);
     }
 
     @Nullable public Integer getMaxPurchasableShares(
@@ -67,14 +67,15 @@ public class PortfolioCompactDTOUtil
     @Nullable public Integer getMaxPurchasableSharesForFX(
             PortfolioCompactDTO portfolioCompactDTO,
             QuoteDTO quoteDTO,
-            boolean includeTransactionCostUsd)
+            boolean includeTransactionCostUsd,
+            boolean isBuy)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
         {
             return null;
         }
         double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
-        Double bidUSD = quoteDTO.getBidUSD();
+        Double askUSD = isBuy ? quoteDTO.getAskUSD() : quoteDTO.getBidUSD();
         double availableUsd;
         if (portfolioCompactDTO.marginAvailableRefCcy != null
                 && portfolioCompactDTO.leverage != null)
@@ -87,11 +88,11 @@ public class PortfolioCompactDTOUtil
         {
             availableUsd = portfolioCompactDTO.getCashBalanceUsd();
         }
-        if (bidUSD == null || bidUSD == 0)
+        if (askUSD == null || askUSD == 0)
         {
             return null;
         }
-        return (int) Math.floor((availableUsd - (includeTransactionCostUsd ? txnCostUsd : 0)) / bidUSD);
+        return (int) Math.floor((availableUsd - (includeTransactionCostUsd ? txnCostUsd : 0)) / askUSD);
     }
     //</editor-fold>
 

@@ -111,7 +111,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
                     {
                         double value = mTransactionQuantity * priceRefCcy;
                         THSignedNumber thSignedNumber = THSignedMoney
-                                .builder(availableRefCcy - value)
+                                .builder((availableRefCcy - value)/portfolioCompactDTO.leverage)
                                 .withOutSign()
                                 .currency(portfolioCompactDTO.currencyDisplay)
                                 .build();
@@ -176,13 +176,6 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
     }
 
-    @Nullable public Integer getMaxPurchasableShares()
-    {
-        return portfolioCompactDTOUtil.getMaxPurchasableSharesForFX(
-                portfolioCompactDTO,
-                quoteDTO);
-    }
-
     protected boolean hasValidInfoForSell()
     {
         return securityId != null
@@ -201,5 +194,12 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             mConfirm.setEnabled(hasValidInfo() && mTransactionQuantity != 0);
         }
+    }
+
+    @Nullable public Integer getMaxPurchasableShares()
+    {
+        return portfolioCompactDTOUtil.getMaxPurchasableSharesForFX(
+                portfolioCompactDTO,
+                quoteDTO, false);
     }
 }
