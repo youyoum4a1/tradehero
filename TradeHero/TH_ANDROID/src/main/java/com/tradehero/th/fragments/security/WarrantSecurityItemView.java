@@ -114,7 +114,7 @@ public class WarrantSecurityItemView extends SecurityItemView
         }
     }
 
-    @Override public void displayLastPrice()
+    @Override public void displayMarketClose()
     {
         if (securityCompactDTO == null)
         {
