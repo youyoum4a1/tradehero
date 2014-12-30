@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -154,6 +155,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         menu.findItem(R.id.btn_security_action).setVisible(shouldActionBeVisible());
+        if (securityCompactDTO!=null && securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            menu.findItem(R.id.btn_security_action).setVisible(false);
+        }
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -401,9 +406,19 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         this.securityCompactDTO = securityCompactDTO;
         displayActionBarTitle();
+        setActionBarEnable();
+    }
+
+    public void setActionBarEnable()
+    {
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            getActivity().getWindow().invalidatePanelMenu(Window.FEATURE_OPTIONS_PANEL);
+        }
     }
 
     public void displayActionBarTitle()
+
     {
         SecurityId securityId = this.securityId;
         if (securityCompactDTO != null)
