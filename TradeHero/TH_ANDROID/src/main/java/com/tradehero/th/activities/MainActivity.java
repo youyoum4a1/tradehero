@@ -24,7 +24,6 @@ import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -70,6 +69,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
+    private UserProfileDTO myProfileDTO = null;
     @Inject CurrentActivityHolder currentActivityHolder;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
@@ -302,7 +302,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     {
         super.onResume();
         analytics.openSession();
-        showNewVersionRecord();
+        showNewVersionOrUnreadNotificationsRecord();
     }
 
     @Override protected void onPause()
@@ -666,10 +666,10 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         shareServiceWrapper.getShareEndPoint(new Callback<String>() {
             @Override
             public void success(String endpoint, Response response) {
-                if(TextUtils.isEmpty(endpoint)){
+                if (TextUtils.isEmpty(endpoint)) {
                     return;
                 }
-                if(MainActivity.this != null) {
+                if (MainActivity.this != null) {
                     THSharePreferenceManager.setShareEndpoint(MainActivity.this, endpoint);
                 }
             }
@@ -686,17 +686,16 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
             @Override
             protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
                 {
-                    if(appInfoDTO==null || MainActivity.this ==null){
+                    if (appInfoDTO == null || MainActivity.this == null) {
                         return;
                     }
                     boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
-                    THLog.d(appInfoDTO.toString());
                     boolean forceUpdate = appInfoDTO.isForceUpgrade();
                     String url = appInfoDTO.getLatestVersionDownloadUrl();
-                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(MainActivity.this, url, suggestUpdate,forceUpdate);
-                    if(suggestUpdate || forceUpdate){
+                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(MainActivity.this, url, suggestUpdate, forceUpdate);
+                    if (suggestUpdate || forceUpdate) {
                         showUpdateDialog();
-                    }else{
+                    } else {
                         ShareDialogFragment.isDialogShowing = false;
                     }
                     onFinish();
@@ -709,8 +708,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 onFinish();
             }
 
-            private void onFinish(){
-                showNewVersionRecord();
+            private void onFinish() {
+                showNewVersionOrUnreadNotificationsRecord();
             }
         });
     }
@@ -770,14 +769,17 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         finish();
     }
 
-    private void showNewVersionRecord(){
+    private void showNewVersionOrUnreadNotificationsRecord(){
+        myProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         AppInfoDTO appInfoDTO = THSharePreferenceManager.getAppVersionInfo(this);
         if(appInfoDTO.isForceUpgrade() || appInfoDTO.isSuggestUpgrade()){
             guideTab4IV.setVisibility(View.VISIBLE);
         }else{
-            guideTab4IV.setVisibility(View.INVISIBLE);
+            if(myProfileDTO!=null && myProfileDTO.unreadNotificationsCount > 0){
+                guideTab4IV.setVisibility(View.VISIBLE);
+            }else {
+                guideTab4IV.setVisibility(View.INVISIBLE);
+            }
         }
     }
-
-
 }

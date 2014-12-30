@@ -354,14 +354,12 @@ public class MainTabFragmentMe extends AbsBaseFragment
             return;
         }
         int count = value.unreadNotificationsCount;
-        if(count<=0){
+        if(count <= 0){
             tvMeNotificationCount.setVisibility(View.GONE);
             return;
         }
-        if(count>99){
-            tvMeNotificationCount.setText(String.valueOf("99"));
-            tvMeNotificationCount.setVisibility(View.VISIBLE);
-            return;
+        if(count > 99){
+            count = 99;
         }
         tvMeNotificationCount.setText(String.valueOf(count));
         tvMeNotificationCount.setVisibility(View.VISIBLE);
