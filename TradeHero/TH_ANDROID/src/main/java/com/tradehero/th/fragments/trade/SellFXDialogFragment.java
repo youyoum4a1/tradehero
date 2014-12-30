@@ -46,6 +46,10 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             return null;
         }
+        if(positionDTOCompactList.getMaxSellableShares(quoteDTO,portfolioCompactDTO).intValue() <= 0)
+        {
+            return null;
+        }
         Double netProceedsUsd = positionDTOCompactList.getNetSellProceedsUsd(
                 mTransactionQuantity,
                 quoteDTO,

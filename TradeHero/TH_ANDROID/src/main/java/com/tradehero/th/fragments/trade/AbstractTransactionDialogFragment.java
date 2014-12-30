@@ -534,6 +534,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void updateProfitLoss()
     {
+        mProfitLossView.setVisibility(getProfitOrLossUsd()==null?View.GONE:View.VISIBLE);
         Double profitLoss = showProfitLossUsd ? getProfitOrLossUsd() : getProfitOrLossUsd();
         if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0 && quoteDTO != null)
         {

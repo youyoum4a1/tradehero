@@ -201,6 +201,8 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return total;
     }
 
+
+
     //<editor-fold desc="Max Sellable Shares">
     public Integer getMaxSellableShares(
             QuoteDTO quoteDTO,
@@ -240,4 +242,6 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         double result = shareQuoteUsAmont - shareAverageUsAmont;
         return result;
     }
+
+
 }

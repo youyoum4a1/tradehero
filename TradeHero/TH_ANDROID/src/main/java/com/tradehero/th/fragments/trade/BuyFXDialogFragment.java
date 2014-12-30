@@ -42,7 +42,18 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Double getProfitOrLossUsd()
     {
-        return null;
+        if (positionDTOCompactList == null || portfolioCompactDTO == null)
+        {
+            return null;
+        }
+        if(positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId()).intValue() >= 0)
+        {
+            return null;
+        } 
+
+        double total = positionDTOCompactList.getUnRealizedPLRefCcy(quoteDTO,portfolioCompactDTO,positionDTOCompactList);
+        double result = (total * (double)mTransactionQuantity / Math.abs((double)positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId()).intValue()));
+        return result;
     }
 
     @Override protected int getCashLeftLabelResId()
