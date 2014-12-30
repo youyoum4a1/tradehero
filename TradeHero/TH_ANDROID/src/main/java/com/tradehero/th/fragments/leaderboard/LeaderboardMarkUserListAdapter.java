@@ -25,7 +25,6 @@ public class LeaderboardMarkUserListAdapter
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
-    private boolean hideStatistics;
 
     //<editor-fold desc="Constructors">
     public LeaderboardMarkUserListAdapter(Context context, int loaderId)
@@ -72,7 +71,6 @@ public class LeaderboardMarkUserListAdapter
     {
         dtoView.linkWith(currentUserProfileDTO, true);
         dtoView.linkWith(applicablePortfolioId);
-        dtoView.shouldHideStatistics(hideStatistics);
         dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 
         final ExpandingLayout expandingLayout = (ExpandingLayout) dtoView.findViewById(R.id.expanding_layout);
@@ -100,10 +98,5 @@ public class LeaderboardMarkUserListAdapter
         {
             followRequestedListenerCopy.onFollowRequested(userBaseDTO);
         }
-    }
-
-    public void setHideStatistics(boolean hideStatistics)
-    {
-        this.hideStatistics = hideStatistics;
     }
 }

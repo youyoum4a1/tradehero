@@ -95,7 +95,6 @@ public class LeaderboardMarkUserItemView
     @InjectView(R.id.lbmu_inner_view_container) @Optional @Nullable ViewGroup innerViewContainer;
 
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
-    private boolean shouldHideStatistics = true;
 
     public LeaderboardMarkUserItemView(Context context)
     {
@@ -559,7 +558,7 @@ public class LeaderboardMarkUserItemView
 
     @Override public void onExpand(boolean expand)
     {
-        if (userStatisticView != null && leaderboardItem != null && !shouldHideStatistics)
+        if (userStatisticView != null && leaderboardItem != null)
         {
             if (expand)
             {
@@ -569,22 +568,6 @@ public class LeaderboardMarkUserItemView
             {
                 userStatisticView.display(null);
                 Timber.d("clearExpandAnimation");
-            }
-        }
-    }
-
-    public void shouldHideStatistics(boolean hide)
-    {
-        this.shouldHideStatistics = hide;
-        if (userStatisticView != null)
-        {
-            if (hide)
-            {
-                userStatisticView.setVisibility(View.GONE);
-            }
-            else
-            {
-                userStatisticView.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -594,18 +594,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             {
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
-            leaderboardMarkUserListAdapter.setHideStatistics(shouldHideStatistics());
-            if (mRankHeaderView != null && mRankHeaderView instanceof LeaderboardMarkUserItemView)
-            {
-                ((LeaderboardMarkUserItemView) mRankHeaderView).shouldHideStatistics(shouldHideStatistics());
-            }
         }
-    }
-
-    private boolean shouldHideStatistics()
-    {
-        return (currentLeaderboardType != null && currentLeaderboardType.getAssetClass().equals(
-                AssetClass.FX));
     }
 
     private int getLeaderboardLoaderCustomId()

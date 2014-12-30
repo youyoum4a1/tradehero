@@ -229,10 +229,7 @@ abstract public class BasePagedListRxFragment<
     protected void unsubscribeListCache(int page)
     {
         Subscription subscription = pagedSubscriptions.get(page);
-        if (subscription != null)
-        {
-            subscription.unsubscribe();
-        }
+        unsubscribe(subscription);
     }
 
     protected void scheduleRequestData()
