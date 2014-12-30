@@ -107,12 +107,11 @@
           android:id="@+id/share_count"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:maxLines="1"
           android:layout_alignParentLeft="true"
           android:layout_toLeftOf="@id/btn_position_close"
           android:layout_toStartOf="@id/btn_position_close"
           style="@style/TH.Body"
-          tools:text="100 units"
+          tools:text="100,000 units"
           />
 
     </RelativeLayout>
