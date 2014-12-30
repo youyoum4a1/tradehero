@@ -6,7 +6,6 @@ import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledContainerLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
@@ -32,7 +31,6 @@ public class LeaderboardDefDTOFactory
         leaderboardDefDTOs.add(new FollowerLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new ExchangeContainerLeaderboardDefDTO(context));
-        leaderboardDefDTOs.add(new MostSkilledContainerLeaderboardDefDTO(context));
     }
 
     @NonNull
@@ -46,7 +44,6 @@ public class LeaderboardDefDTOFactory
         filed.put(new ExchangeLeaderboardDefListKey(), new LeaderboardDefDTOList());
         filed.put(new TimePeriodLeaderboardDefListKey(), new LeaderboardDefDTOList());
         filed.put(new MostSkilledLeaderboardDefListKey(), new LeaderboardDefDTOList());
-        filed.put(new MostSkilledContainerLeaderboardDefListKey(), new LeaderboardDefDTOList());
 
         for (LeaderboardDefDTO leaderboardDefDTO: leaderboardDefDTOs)
         {

@@ -25,8 +25,6 @@ public class LeaderboardDTO extends BaseHasExpiration
     public int userIsAtPositionZeroBased;
     public Date markUtc;
 
-    @Nullable public AssetClass leaderboardType;
-
     public int minPositionCount;
     @JsonProperty("max_sharpeRatioInPeriod_vsSP500")
     public double maxSharpeRatioInPeriodVsSP500;
@@ -104,17 +102,4 @@ public class LeaderboardDTO extends BaseHasExpiration
         }
         return (double)2;
     }
-
-    @JsonIgnore
-    public boolean isStock()
-    {
-        return leaderboardType == null || leaderboardType.equals(AssetClass.STOCKS);
-    }
-
-    @JsonIgnore
-    public boolean isFX()
-    {
-        return leaderboardType != null && leaderboardType.equals(AssetClass.FX);
-    }
-
 }

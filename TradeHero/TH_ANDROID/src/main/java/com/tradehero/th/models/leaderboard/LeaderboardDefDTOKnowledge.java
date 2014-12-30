@@ -44,4 +44,9 @@ public class LeaderboardDefDTOKnowledge
         }
         return iconResIds;
     }
+
+    public boolean hasForexType(int leaderboardId)
+    {
+        return leaderboardDefKeyKnowledge.hasForex(leaderboardId);
+    }
 }

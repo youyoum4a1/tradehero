@@ -22,7 +22,6 @@ import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.def.MostSkilledContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
@@ -39,6 +38,7 @@ import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -60,6 +60,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
+    @Inject Lazy<LeaderboardDefDTOKnowledge> leaderboardDefDTOKnowledge;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
@@ -81,9 +82,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 throw new IllegalArgumentException("Unhandled drillDownLeaderboardDefDTO " + drillDownLeaderboardDefDTO);
             }
         }
-        else if (leaderboardDefDTO instanceof MostSkilledContainerLeaderboardDefDTO)
+        else if (leaderboardDefDTOKnowledge.get().hasForexType(leaderboardDefDTO.id))
         {
-            pushMostSkilledFragment(leaderboardDefDTO);
+            pushTabbedLeaderboardFragment(leaderboardDefDTO);
         }
         else
         {
@@ -294,10 +295,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void pushMostSkilledFragment(LeaderboardDefDTO leaderboardDefDTO)
+    private void pushTabbedLeaderboardFragment(LeaderboardDefDTO leaderboardDefDTO)
     {
         Bundle bundle = new Bundle(getArguments());
-        (new MostSkilledLeaderboardDefListKey()).putParameters(bundle);
         LeaderboardMarkUserPagerFragment.putLeaderboardDefKey(bundle, leaderboardDefDTO.getLeaderboardDefKey());
         if (navigator != null)
         {

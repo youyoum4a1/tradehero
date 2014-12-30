@@ -33,4 +33,9 @@ public enum AssetClass
         Timber.e(new IllegalArgumentException(), "Unknown PortfolioType value: %d", value);
         return null;
     }
+
+    public int getValue()
+    {
+        return value;
+    }
 }

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.leaderboard.main;
 import com.tradehero.th.api.leaderboard.key.ConnectedLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.DrillDownLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledContainerLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ class MainLeaderboardDefListKeyFactory
             case Connected:
                 return new ConnectedLeaderboardDefListKey();
             case SkillAndCountry:
-                return new MostSkilledContainerLeaderboardDefListKey();
+                return new MostSkilledLeaderboardDefListKey();
             case TimeRestricted:
                 return new TimePeriodLeaderboardDefListKey();
             case DrillDown:

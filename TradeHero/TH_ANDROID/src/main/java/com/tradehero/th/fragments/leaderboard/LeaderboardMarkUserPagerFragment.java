@@ -14,12 +14,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import java.util.Collections;
-import java.util.List;
 import javax.inject.Inject;
 
-public class LeaderboardMarkUserPagerFragment extends LeaderboardDefFragment
+public class LeaderboardMarkUserPagerFragment extends BaseLeaderboardFragment
 {
     @Inject Context context;
     @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
@@ -44,10 +41,6 @@ public class LeaderboardMarkUserPagerFragment extends LeaderboardDefFragment
         viewPager.setAdapter(leaderboardPagerAdapter);
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_tab_indicator, android.R.id.title);
         pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
-    }
-
-    private void refreshViewpager()
-    {
         pagerSlidingTabLayout.setViewPager(viewPager);
     }
 
@@ -57,48 +50,31 @@ public class LeaderboardMarkUserPagerFragment extends LeaderboardDefFragment
         super.onDestroyView();
     }
 
-    @Override protected void onLeaderboardDefListLoaded(List<LeaderboardDefDTO> leaderboardDefDTOs)
-    {
-        leaderboardPagerAdapter.setItems(leaderboardDefDTOs);
-    }
-
     private class LeaderboardPagerAdapter extends FragmentPagerAdapter
     {
-        List<LeaderboardDefDTO> leaderboardDefDTOs = Collections.<LeaderboardDefDTO>emptyList();
-
         public LeaderboardPagerAdapter(FragmentManager fm)
         {
             super(fm);
         }
 
-        public void setItems(List<LeaderboardDefDTO> items)
-        {
-            leaderboardDefDTOs = items;
-            notifyDataSetChanged();
-            refreshViewpager();
-        }
-
         @Override public Fragment getItem(int position)
         {
-            LeaderboardDefDTO dto = leaderboardDefDTOs.get(position);
-            Bundle args = getArguments();
-            if (args == null)
-            {
-                args = new Bundle();
-            }
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-            return Fragment.instantiate(getActivity(), LeaderboardMarkUserListFragment.class.getName(), args);
+            Bundle args = new Bundle(getArguments());
+            LeaderboardMarkUserListFragment.putLeaderboardDefKey(args, leaderboardDefKey);
+            LeaderboardMarkUserListFragment.putLeaderboardType(args, LeaderboardType.values()[position]);
+            Fragment f = new LeaderboardMarkUserListFragment();
+            f.setArguments(args);
+            return f;
         }
 
         @Override public int getCount()
         {
-            return leaderboardDefDTOs.size();
+            return LeaderboardType.values().length;
         }
 
         @Override public CharSequence getPageTitle(int position)
         {
-            //TODO
-            return getString(R.string.leaderboard_type_stocks);
+            return getString(LeaderboardType.values()[position].getTitleResId());
         }
     }
 }
