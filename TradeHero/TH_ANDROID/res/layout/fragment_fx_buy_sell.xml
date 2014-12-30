@@ -97,77 +97,88 @@
         android:src="@drawable/market_sleep_grey"
         />
 
-      <com.tradehero.common.widget.BetterViewAnimator
-          android:id="@+id/chart_image_wrapper"
+      <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_above="@+id/chart_time_span_button_set"
-          android:animateLayoutChanges="true"
-          >
+          android:layout_above="@+id/bottom_wrapper"
+          android:orientation="vertical">
 
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:minHeight="@dimen/chart_loading_text_height"
-              android:gravity="center"
-              android:text="@string/chart_loading_image"
-              />
-
-          <com.tradehero.th.widget.KChartsView
-              android:id="@+id/my_charts_view"
+          <com.tradehero.common.widget.BetterViewAnimator
+              android:id="@+id/chart_image_wrapper"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"/>
+              android:layout_height="0dp"
+              android:layout_weight="1"
+              android:animateLayoutChanges="true"
+              >
 
-      </com.tradehero.common.widget.BetterViewAnimator>
+              <TextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:minHeight="@dimen/chart_loading_text_height"
+                  android:gravity="center"
+                  android:text="@string/chart_loading_image"
+                  />
 
-      <com.tradehero.th.widget.news.TimeSpanButtonSet
-          android:id="@+id/chart_time_span_button_set"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/timespan_button_min_height"
-          android:layout_above="@+id/bottom_button"
-          android:layout_marginLeft="@dimen/timespan_horizontal_margin"
-          android:layout_marginRight="@dimen/timespan_horizontal_margin"
-          android:layout_marginTop="@dimen/timespan_vertical_margin"
-          android:layout_marginBottom="@dimen/timespan_vertical_margin"
-          android:background="@drawable/trend_price_bar"
-          android:orientation="horizontal"
-          tools:visibility="visible"
-          >
+              <com.tradehero.th.widget.KChartsView
+                  android:id="@+id/my_charts_view"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"/>
+          </com.tradehero.common.widget.BetterViewAnimator>
 
-          <include layout="@layout/fx_chart_buttons_merge"/>
+          <com.tradehero.th.widget.news.TimeSpanButtonSet
+              android:id="@+id/chart_time_span_button_set"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/timespan_button_min_height"
+              android:layout_marginLeft="@dimen/timespan_horizontal_margin"
+              android:layout_marginRight="@dimen/timespan_horizontal_margin"
+              android:layout_marginTop="@dimen/timespan_vertical_margin"
+              android:layout_marginBottom="@dimen/timespan_vertical_margin"
+              android:background="@drawable/trend_price_bar"
+              android:orientation="horizontal"
+              tools:visibility="visible"
+              >
 
-      </com.tradehero.th.widget.news.TimeSpanButtonSet>
+              <include layout="@layout/fx_chart_buttons_merge"/>
+          </com.tradehero.th.widget.news.TimeSpanButtonSet>
+      </LinearLayout>
 
       <LinearLayout
-          android:id="@+id/bottom_button"
+          android:id="@+id/bottom_wrapper"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_centerHorizontal="true"
           android:layout_alignParentBottom="true"
-          android:paddingTop="@dimen/margin_xsmall"
-          android:paddingLeft="@dimen/margin_small"
-          android:paddingRight="@dimen/margin_small"
-          android:background="@drawable/buy_sell_action_buttons_background"
-          android:paddingBottom="@dimen/dashboard_tabhost_height"
-          android:animateLayoutChanges="true"
-          >
-          <Button
-              android:id="@+id/btn_sell"
-              style="@style/TH.Btn_Buy_Sell"
-              android:background="@drawable/magenta_rounded_button_selector"
-              android:layout_marginBottom="5dp"
-              android:text="@string/fx_sell"
-              android:visibility="gone"
-              />
+          android:layout_centerHorizontal="true"
+          android:minHeight="@dimen/dashboard_tabhost_height">
 
-          <Button
-              android:id="@+id/btn_buy"
-              style="@style/TH.Btn_Buy_Sell"
-              android:layout_marginLeft="@dimen/margin_xsmall"
-              android:layout_marginBottom="5dp"
-              android:text="@string/fx_buy"
-              />
+          <LinearLayout
+              android:id="@+id/bottom_button"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:paddingTop="@dimen/margin_xsmall"
+              android:paddingLeft="@dimen/margin_small"
+              android:paddingRight="@dimen/margin_small"
+              android:background="@drawable/buy_sell_action_buttons_background"
+              android:paddingBottom="@dimen/dashboard_tabhost_height"
+              android:animateLayoutChanges="true"
+              >
+              <Button
+                  android:id="@+id/btn_sell"
+                  style="@style/TH.Btn_Buy_Sell"
+                  android:background="@drawable/magenta_rounded_button_selector"
+                  android:layout_marginBottom="5dp"
+                  android:text="@string/fx_sell"
+                  android:visibility="gone"
+                  />
+
+              <Button
+                  android:id="@+id/btn_buy"
+                  style="@style/TH.Btn_Buy_Sell"
+                  android:layout_marginLeft="@dimen/margin_xsmall"
+                  android:layout_marginBottom="5dp"
+                  android:text="@string/fx_buy"
+                  />
+          </LinearLayout>
       </LinearLayout>
   </RelativeLayout>
 
