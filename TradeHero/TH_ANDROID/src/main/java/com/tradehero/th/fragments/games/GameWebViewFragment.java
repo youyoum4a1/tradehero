@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -109,6 +111,14 @@ public class GameWebViewFragment extends BaseWebViewFragment
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void initViews(View v) {
+        super.initViews(v);
+        webView.getSettings().setUseWideViewPort(false);
+        webView.getSettings().setBuiltInZoomControls(false);
+        webView.getSettings().setSupportZoom(false);
+    }
+
     @Override public void onStart()
     {
         super.onStart();
@@ -125,12 +135,14 @@ public class GameWebViewFragment extends BaseWebViewFragment
 
     @Override public void onPause()
     {
+        webView.clearCache(true);
         reportAnalytics();
         super.onPause();
     }
 
     @Override public void onStop()
     {
+        webView.clearCache(true);
         unsubscribe(miniGameDefSubscription);
         miniGameDefSubscription = null;
         unsubscribe(scoreSubmitSubscription);
