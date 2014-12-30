@@ -90,7 +90,7 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
             }
             else
             {
-                return getString(type.stringResId);
+                return getString(type.titleResId);
             }
         }
 

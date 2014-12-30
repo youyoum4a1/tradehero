@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
@@ -11,6 +12,7 @@ import com.tradehero.th.models.security.WarrantDTOFormatter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class WarrantSecurityItemView extends SecurityItemView
 {
@@ -108,6 +110,32 @@ public class WarrantSecurityItemView extends SecurityItemView
             else
             {
                 expiryDate.setText(R.string.na);
+            }
+        }
+    }
+
+    @Override public void displayLastPrice()
+    {
+        if (securityCompactDTO == null)
+        {
+            // Nothing to do
+        }
+        else if (securityCompactDTO.marketOpen == null)
+        {
+            Timber.w("displayMarketClose marketOpen is null");
+        }
+        else if (securityCompactDTO.marketOpen)
+        {
+            if (marketCloseIcon != null)
+            {
+                marketCloseIcon.setVisibility(View.GONE);
+            }
+        }
+        else
+        {
+            if (marketCloseIcon != null)
+            {
+                marketCloseIcon.setVisibility(View.VISIBLE);
             }
         }
     }

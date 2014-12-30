@@ -18,8 +18,10 @@
 
   <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>
+  <string name="warrant_type_call_only">Calls Only</string>
   <string name="warrant_type_put">Put</string>
-  <string name="warrant_price_header">Price</string>
+  <string name="warrant_type_put_only">Puts Only</string>
+  <string name="warrant_price_header">Bid Price</string>
   <string name="warrant_code_header">Code</string>
   <string name="warrant_strike_header">Strike</string>
   <string name="warrant_strike_value">%1$s %2$.2f</string>
