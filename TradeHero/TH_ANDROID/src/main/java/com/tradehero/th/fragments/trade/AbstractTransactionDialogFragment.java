@@ -294,6 +294,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                     {
                         positionDTOCompactList = securityIdSecurityPositionDetailDTOPair.second.positions;
                         clampQuantity(true);
+                        mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
                     }
                 });
     }

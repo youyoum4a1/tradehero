@@ -4,9 +4,12 @@
   <string name="buy_sell_price_as_of">As of</string>
   <string name="buy_sell_cash_available">Cash Avail.</string>
   <string name="buy_sell_cash_left">Cash Left</string>
+  <string name="buy_sell_fx_cash_left">Margin Available</string>
   <string name="buy_sell_share_available">Shares Avail.</string>
   <string name="buy_sell_share_left">Shares Left</string>
   <string name="buy_sell_quantity">Quantity</string>
+  <string name="buy_sell_fx_quantity">Units</string>
+  <string name="buy_sell_fx_quantity_left">Units left</string>
   <string name="buy_sell_trade_value">Value</string>
   <string name="buy_sell_projected_p_and_l_value">Projected P&amp;L</string>
   <string name="buy_sell_bid_with_bracket">(bid)</string>

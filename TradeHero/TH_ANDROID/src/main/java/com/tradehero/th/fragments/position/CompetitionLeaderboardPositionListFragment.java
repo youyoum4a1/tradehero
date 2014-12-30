@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import dagger.Lazy;
 import javax.inject.Inject;
