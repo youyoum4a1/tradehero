@@ -123,8 +123,11 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
 
     @Override public void onStop()
     {
-        subscriptionList.unsubscribe();
-        subscriptionList = null;
+        if (subscriptionList != null)
+        {
+            subscriptionList.unsubscribe();
+            subscriptionList = null;
+        }
         super.onStop();
     }
 
