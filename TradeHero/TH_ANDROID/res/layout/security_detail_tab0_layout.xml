@@ -78,10 +78,10 @@
         </LinearLayout>
 
         <include layout="@layout/security_time_line_item" android:id="@+id/llDisscurssOrNews"/>
-
+        <include layout="@layout/separate_line"/>
       </LinearLayout>
 
-      <include layout="@layout/separate_line"/>
+
       <TextView
           android:id="@+id/tvSecurityDiscussOrNewsMore"
           android:background="@drawable/listview_item_selector"
