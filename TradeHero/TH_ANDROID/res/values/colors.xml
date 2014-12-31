@@ -5,7 +5,6 @@
     <color name="number_up">@color/number_green</color>
     <color name="number_down">@color/number_red</color>
     <color name="red">#D42621</color>
-    <color name="actionbar_gradient1">#6B748E</color>
     <color name="actionbar_gradient2">#929CBA</color>
     <color name="textbox_border_color_light">#555555</color>
     <color name="btn_new_user_color_dark">#2B4170</color>
@@ -50,9 +49,7 @@
     <color name="exchange_symbol">#556380</color>
 
     <!-- Trending detail -->
-    <color name="price_bar_bg_selected">#ff636363</color>
     <color name="price_bar_text_default">#ff636363</color>
-    <color name="price_bar_text_selected">#ffbfbdbd</color>
     <color name="stock_info_bg">#ffebebeb</color>
     <color name="tab_color">#e0111111</color>
     <color name="authentication_background_color">#f2f2f2</color>
@@ -75,7 +72,6 @@
 
     <drawable name="white">#ffffff</drawable>
     <drawable name="gray">#eeeeef</drawable>
-    <color name="authentication_button_dark">#9e9e9e</color>
     <color name="authentication_button_light">#808080</color>
     <color name="timeline_item_title">#000000</color>
     <color name="timeline_item">#6F6F6F</color>
@@ -123,9 +119,6 @@
     <color name="light_green_selector_overlay">#54A700</color>
 
     <color name="private_message_item_bg">@color/white</color>
-    <color name="light_green1">#30D720</color>
-    <color name="light_green">#6ED200</color>
-    <color name="dark_green">#54A700</color>
     <color name="dark_dark_yellow">#FAB000</color>
     <color name="light_yellow">#FFD000</color>
     <color name="pale_yellow">#fff39c</color>
