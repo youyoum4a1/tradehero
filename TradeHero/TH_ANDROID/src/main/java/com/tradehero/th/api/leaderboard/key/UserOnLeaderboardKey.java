@@ -18,7 +18,7 @@ public class UserOnLeaderboardKey extends LeaderboardKey
             @NonNull LeaderboardKey leaderboardKey,
             @NonNull UserBaseKey userBaseKey)
     {
-        super(leaderboardKey.id);
+        super(leaderboardKey.id, leaderboardKey.getAssetClass());
         this.userBaseKey = userBaseKey;
     }
     //</editor-fold>
