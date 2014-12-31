@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -305,5 +304,11 @@ public class BuySellFXFragment extends BuySellFragment
     {
         // Force a proper fetch
         //        fetchPortfolioCompactList();
+    }
+
+    @Override
+    protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
+    {
+
     }
 }

@@ -81,9 +81,13 @@ public class PortfolioSelectorView extends RelativeLayout
         if (defaultPortfolioId == null)
         {
             defaultPortfolioId = new OwnedPortfolioId(menuOwnedPortfolioId);
+            defaultMenuPortfolioId = menuOwnedPortfolioId;
+            currentMenu = menuOwnedPortfolioId;
         }
-        defaultMenuPortfolioId = menuOwnedPortfolioId;
-        currentMenu = menuOwnedPortfolioId;
+        if (currentMenu == null)
+        {
+            currentMenu = defaultMenuPortfolioId == null ? menuOwnedPortfolioId : defaultMenuPortfolioId;
+        }
         addMenuOwnedPortfolioId(menuOwnedPortfolioId);
         displayForFX();
     }
