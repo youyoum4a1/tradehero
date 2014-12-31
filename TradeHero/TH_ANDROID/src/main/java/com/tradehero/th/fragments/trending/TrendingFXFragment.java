@@ -54,7 +54,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Inject SecurityCompactCacheRx securityCompactCache;
 
     private SubscriptionList subscriptionList;
-    private BaseArrayList<SecurityCompactDTO> mData;
+    private static BaseArrayList<SecurityCompactDTO> mData;
     private boolean fxIsShowed = false;
     private boolean checkPortfolioDone = false;
 
@@ -107,11 +107,18 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                         }
                         else if (args.second.fxPortfolio != null && !checkPortfolioDone)
                         {
-                            checkPortfolioDone = true;
-                            //show list after join fx
-                            updateAdapter();
-                            securityCompactCache.onNext(mData);
-                            fetchFXPrice();
+                            if (mData != null && mData.size() > 0)
+                            {
+                                checkPortfolioDone = true;
+                                //show list after join fx
+                                updateAdapter();
+                                securityCompactCache.onNext(mData);
+                                fetchFXPrice();
+                            }
+                            else
+                            {
+                                fetchFXList();
+                            }
                         }
                     }
                 }));
