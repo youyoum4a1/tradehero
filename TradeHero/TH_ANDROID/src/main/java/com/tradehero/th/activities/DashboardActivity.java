@@ -40,6 +40,7 @@ import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.api.achievement.key.UserAchievementId;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.level.UserXPAchievementDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
@@ -112,6 +113,7 @@ import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -128,11 +130,11 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.observables.AndroidObservable.bindActivity;
 import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
@@ -175,6 +177,7 @@ public class DashboardActivity extends BaseActivity
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
+    private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
@@ -418,8 +421,12 @@ public class DashboardActivity extends BaseActivity
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 providerDTO -> {
-                                    enrollmentScreenOpened.add(providerDTO.id);
-                                    navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                    if (!enrollmentScreenIsOpened)
+                                    {
+                                        enrollmentScreenIsOpened = true;
+                                        enrollmentScreenOpened.add(providerDTO.id);
+                                        navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                    }
                                 },
                                 throwable -> {
                                     THToast.show(R.string.error_fetch_provider_competition_list);
