@@ -293,6 +293,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
         displayBuySellPrice();
         displayBuySellContainer();
+        displayPositionStatus();
     }
 
     protected void processPortfolioForProvider(ProviderDTO providerDTO)
@@ -538,8 +539,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         {
             mSellBtn.setVisibility(getSupportSell() ? View.VISIBLE : View.GONE);
         }
-
-        displayPositionStatus();
     }
 
     abstract protected boolean getSupportSell();

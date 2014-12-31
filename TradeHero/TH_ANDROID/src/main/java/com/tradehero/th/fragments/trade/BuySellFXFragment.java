@@ -147,10 +147,16 @@ public class BuySellFXFragment extends BuySellFragment
 
         if (llPositionStatus != null)
         {
-            llPositionStatus.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
+            llPositionStatus.setVisibility((share == null) ? View.GONE : View.VISIBLE);
+
+            tvPositionMoney.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
             if (share != null)
             {
-                if (share >= 0)
+                if(share ==0)
+                {
+                    tvPositionUnits.setText(getString(R.string.no_current_position_units));
+                }
+                else if (share > 0)
                 {
                     tvPositionUnits.setText(getString(R.string.short_position_units, share));
                 }
