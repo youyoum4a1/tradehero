@@ -25,7 +25,7 @@ public class SecurityActionDialogFactory
     {
         SecurityActionListLinear contentView = (SecurityActionListLinear) LayoutInflater.from(context)
                 .inflate(R.layout.security_action_list_dialog_layout, null);
-        contentView.setSecurityIdToActOn(securityId);
+        contentView.setSecurityIdToActOnlyBuySaleOn(securityId);
         contentView.setMenuClickedListener(menuClickedListener);
         return THDialog.showUpDialog(context, contentView);
     }

@@ -78,6 +78,17 @@ public class SecurityActionListLinear extends LinearLayout
         shareTitleView.setText(String.format("%s:%s", securityIdToActOn.getExchange(), securityIdToActOn.getSecuritySymbol()));
     }
 
+    public void setSecurityIdToActOnlyBuySaleOn(@NonNull SecurityId securityIdToActOn)
+    {
+        adapter.clear();
+        adapter.add(new SecurityActionDTO(
+                SecurityActionDTO.ACTION_ID_TRADE,
+                getContext().getString(R.string.buy_sell),
+                securityIdToActOn));
+        adapter.notifyDataSetChanged();
+        shareTitleView.setText(String.format("%s:%s", securityIdToActOn.getExchange(), securityIdToActOn.getSecuritySymbol()));
+    }
+
     public void setMenuClickedListener(@Nullable OnActionMenuClickedListener menuClickedListener)
     {
         this.menuClickedListener = menuClickedListener;
