@@ -234,4 +234,5 @@
   <dimen name="share_container_vertical_padding">4dp</dimen>
   <!-- Buy Sell -->
 
+  <dimen name="button_corner_radius">4dp</dimen>
 </resources>

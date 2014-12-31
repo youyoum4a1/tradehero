@@ -23,9 +23,6 @@
     <style name="TH.common_up_dialog" parent="@style/TH.common_dialog">
         <item name="android:windowAnimationStyle">@style/anim_up</item>
     </style>
-
-    <style name="TH.common_down_dialog" parent="@style/TH.common_dialog">
-        <item name="android:windowAnimationStyle">@style/anim_down</item>
-    </style>
+    
 </resources>
 

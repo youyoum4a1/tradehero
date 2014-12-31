@@ -9,12 +9,6 @@
     <color name="actionbar_gradient2">#929CBA</color>
     <color name="textbox_border_color_light">#555555</color>
     <color name="btn_new_user_color_dark">#2B4170</color>
-    <color name="round_rectangle1">#4E6DAE</color>
-    <color name="round_rectangle2">#2B4170</color>
-    <color name="round_rectangle3">#00CCED</color>
-    <color name="round_rectangle4">#0087CE</color>
-    <color name="round_rectangle5">#009CDA</color>
-    <color name="round_rectangle6">#0167A3</color>
     <color name="black">@android:color/black</color>
     <color name="black2">#737373</color>
     <color name="light_grey">#D0D0D0</color>
@@ -22,7 +16,6 @@
     <color name="light_grey_transparent">#99BFBFBF</color>
     <color name="white">@android:color/white</color>
     <color name="textbox_light_background_color">#fafafa</color>
-    <color name="signinfnt_color">#47454A</color>
 
     <color name="btn_facebook_color_start">#5776b6</color>
     <color name="btn_facebook_color_end">#3d5c9b</color>
@@ -49,13 +42,6 @@
     <color name="gray_4">#F6F6F6</color>
     <color name="font_roi">#00CC00</color>
 
-    <color name="fbook_color1">#4E6DAE</color>
-    <color name="fbook_color2">#2B4170</color>
-    <color name="twit_color1">#00CCED</color>
-    <color name="twit_color2">#0087CE</color>
-    <color name="linkd_color1">#009CDA</color>
-    <color name="linkd_color2">#0167A3</color>
-
     <!-- What's Trending -->
     <color name="trending_grid_item_bg">#FFFFFFFF</color>
     <color name="trending_gray_border">#A0787878</color>
@@ -64,28 +50,15 @@
     <color name="exchange_symbol">#556380</color>
 
     <!-- Trending detail -->
-    <color name="trending_detail_bg">#ffebebeb</color>
-    <color name="price_bar_bg">@color/transparent</color>
     <color name="price_bar_bg_selected">#ff636363</color>
     <color name="price_bar_text_default">#ff636363</color>
     <color name="price_bar_text_selected">#ffbfbdbd</color>
-    <color name="btn_buy_default">#ff636363</color>
-    <color name="btn_buy_pressed">#ff636363</color>
     <color name="stock_info_bg">#ffebebeb</color>
     <color name="tab_color">#e0111111</color>
-    <color name="tab_scroll_color">#217ac8</color>
-    <color name="authentication_welcome_bg">#f2f2f2</color>
     <color name="authentication_background_color">#f2f2f2</color>
 
-    <!-- Search stock fragment -->
-    <color name="empty_text_bg">#ddffffff</color>
-
     <!-- Trade Fragment -->
-    <color name="trade_highlight_share_quantity">#40929CBA</color>
-    <color name="projected_pl_gain">#ff00cc00</color>
-    <color name="projected_pl_loss">#ffee0000</color>
     <color name="btn_bg_yellow">#fffcf9de</color>
-    <color name="btn_text_blue">#ff1376FB</color>
 
 
     <!-- china build start -->
@@ -95,7 +68,6 @@
     <color name="separate_line_color">#d3d2d6</color>
 
     <color name="bg_fragment">#FFFFFF</color>
-    <color name="orange_color">#FFAE00</color>
     <color name="color_gray">#bfbfbf</color>
     <color name="color_blue">#1789d5</color>
     <color name="color_gray_plus">#333333</color>
@@ -103,8 +75,6 @@
 
     <drawable name="white">#ffffff</drawable>
     <drawable name="gray">#eeeeef</drawable>
-    <color name="authentication_link_text">#324f85</color>
-    <color name="authentication_forgot_password_link">#9F9F9F</color>
     <color name="authentication_button_dark">#9e9e9e</color>
     <color name="authentication_button_light">#808080</color>
     <color name="timeline_item_title">#000000</color>
@@ -116,30 +86,24 @@
     <color name="timeline_list_item_background">@color/white</color>
     <color name="timeline_background_color">#E3E8EE</color>
     <color name="timeline_action_button_text_color">#80929292</color>
-    <color name="timeline_action_button_text_color_shadow">#000000</color>
     <color name="timeline_action_button_text_color_pressed">@color/tradehero_blue</color>
-    <color name="notification_background_color">#181818</color>
     <color name="dashboard_background_color">#E3E8EE</color>
     <color name="profile_view_gradient_top">#80ffffff</color>
     <color name="authentication_edit_text_bg">#D0ffffff</color>
-    <color name="profile_view_gradient_bottom">#ffffff</color>
     <color name="invite_friend_header_background_color">@color/invite_friend_background_color</color>
     <color name="invite_friend_background_color">#e3e4e6</color>
     <color name="refer_friend_item_background">@color/white</color>
     <color name="invite_friend_announcement_header">#dbd9da</color>
     <color name="transparent">@android:color/transparent</color>
     <color name="divider_gray">#80aaaaaa</color>
-    <color name="orange">@android:color/holo_orange_light</color>
     <color name="splash_background_solid">#58b0dd</color>
     <color name="follow_button_background">@color/tradehero_blue</color>
     <color name="follow_button_background_pressed">#58b0dd</color>
     <color name="follow_button_background_pressed_not_active">#ffc3f1fb</color>
     <color name="connect_accounts">#1376FB</color>
 
-    <!--<color name="tradehero_blue">#1376FB</color>-->
     <color name="tradehero_blue">#1789d5</color>
 
-    <color name="actionbar_menu_text_color">@android:color/darker_gray</color>
     <color name="leaderboard_user_item_text_color">#4C566B</color>
     <color name="invite_friend_button_color">@color/tradehero_blue</color>
     <drawable name="share_item_pressed_bg_grey">#ddd</drawable>
@@ -158,7 +122,6 @@
     <color name="light_green_selector_pressed">#ffc7ff8b</color>
     <color name="light_green_selector_overlay">#54A700</color>
 
-    <color name="broadcast_message_item_bg">#dfefff</color>
     <color name="private_message_item_bg">@color/white</color>
     <color name="light_green1">#30D720</color>
     <color name="light_green">#6ED200</color>
@@ -173,7 +136,6 @@
 
     <color name="loading_progress_background">#ea2c2c2c</color>
 
-    <color name="leaderboard_current_user_rank_header_background">#ffbecfe8</color>
 
     <string-array name="rangeColors2" translatable="false">
         <item>#FF0C2B</item>
@@ -220,4 +182,9 @@
     <color name="discovery_discuss_reward_gray">#bfbfbf</color>
     <color name="discovery_discuss_reward_orange">#ffae00</color>
     <!-- Discovery Discuss Reward -->
+
+    <color name="button_blue">@color/tradehero_blue</color>
+    <color name="button_green">#7fe072</color>
+    <color name="button_green_light">#a7fb9c</color>
+    <color name="button_yellow">#F0E68C</color>
 </resources>
