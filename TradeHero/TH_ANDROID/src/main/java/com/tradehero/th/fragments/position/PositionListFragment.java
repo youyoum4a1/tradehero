@@ -493,6 +493,7 @@ public class PositionListFragment
         positionItemAdapter.notifyDataSetChanged();
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
+        positionListView.smoothScrollToPosition(0);
         display();
     }
 
