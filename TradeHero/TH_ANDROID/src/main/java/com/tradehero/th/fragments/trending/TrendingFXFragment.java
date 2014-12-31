@@ -56,11 +56,22 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     private SubscriptionList subscriptionList;
     private BaseArrayList<SecurityCompactDTO> mData;
     private boolean fxIsShowed = false;
+    private boolean checkPortfolioDone = false;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_fx_trending, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (subscriptionList == null)
+        {
+            subscriptionList = new SubscriptionList();
+        }
+        fetchFXList();
     }
 
     private void fetchFXList() {
@@ -85,7 +96,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         }
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
                     @Override
                     public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
@@ -93,9 +105,12 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                             fxIsShowed = true;
                             FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
                         }
-                        else if (args.second.fxPortfolio != null)
+                        else if (args.second.fxPortfolio != null && !checkPortfolioDone)
                         {
-                            fetchFXList();
+                            checkPortfolioDone = true;
+                            //show list after join fx
+                            updateAdapter();
+                            securityCompactCache.onNext(mData);
                             fetchFXPrice();
                         }
                     }
@@ -146,9 +161,6 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         @Override public void onNext(SecurityCompactDTOList securityCompactDTOList)
         {
             mData = securityCompactDTOList;
-            updateAdapter();
-            //TODO may run too many times
-            securityCompactCache.onNext(securityCompactDTOList);
         }
 
         @Override public void onCompleted()
