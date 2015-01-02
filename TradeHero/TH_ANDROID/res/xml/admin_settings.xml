@@ -5,7 +5,6 @@
   <Preference
       android:key="user_info"
       android:title="@string/app_name"
-      android:icon="@drawable/superman_facebook"
       />
 
   <ListPreference
