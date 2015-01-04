@@ -815,6 +815,9 @@ public class BuySaleSecurityFragment extends DashboardFragment
             {
                 THToast.show("出售成功!");
             }
+            if(isBuyDirectly){
+                onFinishBuyDirectlyLoading();
+            }
             if (mShareToSocialCheckBox!=null && mShareToSocialCheckBox.isChecked())
             {
                 if (isBuy)
@@ -859,14 +862,16 @@ public class BuySaleSecurityFragment extends DashboardFragment
                             currentUserId.get().toString(), String.valueOf(positionId), String.valueOf(securityPositionDetailDTO.tradeId),
                             profitLoss);
                 }
+            }else{
+                if(isBuyDirectly){
+                    //跟买后，如果没有分享则直接退出该页面。
+                    popCurrentFragment();
+                }
             }
             if(!isBuyDirectly)
             {
                 //正常流程，退出前先获取自己的持仓
                 ExitBuySellFragment();
-            }else{
-                //跟买后，直接退出该页面。
-                popCurrentFragment();
             }
 
         }
@@ -935,9 +940,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
             Timber.e("No portfolioId to apply to", new IllegalStateException());
             return null;
         }
-        //Timber.d("fb=%b tw=%b li=%b location=%b public=%b quantity=%d", publishToFb,
-        //        publishToTw, publishToLi, shareLocation, sharePublic,
-        //        isBuy ? mBuyQuantity : mSellQuantity);
 
         return new TransactionFormDTO(
                 null,
@@ -1120,8 +1122,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error)
         {
-            //THToast.show(R.string.error_fetch_portfolio_list_info);
-            //betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlListAll);
         }
     }
 
