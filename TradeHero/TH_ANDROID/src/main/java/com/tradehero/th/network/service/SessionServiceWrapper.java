@@ -3,11 +3,7 @@ package com.tradehero.th.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.LoginFormDTO;
-import com.tradehero.th.api.users.LoginSignUpFormDTO;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.*;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
@@ -18,11 +14,13 @@ import com.tradehero.th.persistence.DTOCacheUtil;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class SessionServiceWrapper
 {
@@ -83,11 +81,13 @@ import retrofit.Callback;
     //<editor-fold desc="Login">
     public UserLoginDTO login(String authorization, LoginFormDTO loginFormDTO)
     {
+        loginFormDTO.channelType = Constants.TAP_STREAM_TYPE.type;
         return createUserLoginProcessor().process(sessionService.login(authorization, loginFormDTO));
     }
 
     public MiddleCallback<UserLoginDTO> login(String authorization, LoginFormDTO loginFormDTO, Callback<UserLoginDTO> callback)
     {
+        loginFormDTO.channelType = Constants.TAP_STREAM_TYPE.type;
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
         sessionServiceAsync.login(authorization, loginFormDTO, middleCallback);
         return middleCallback;
@@ -97,11 +97,13 @@ import retrofit.Callback;
     //<editor-fold desc="Login and social register">
     public UserLoginDTO signupAndLogin(String authorization, LoginSignUpFormDTO loginSignUpFormDTO)
     {
+        loginSignUpFormDTO.channelType = Constants.TAP_STREAM_TYPE.type;
         return sessionService.signupAndLogin(authorization, loginSignUpFormDTO);
     }
 
     public MiddleCallback<UserLoginDTO> signupAndLogin(String authorization, LoginSignUpFormDTO loginSignUpFormDTO, Callback<UserLoginDTO> callback)
     {
+        loginSignUpFormDTO.channelType = Constants.TAP_STREAM_TYPE.type;
         MiddleCallback<UserLoginDTO> middleCallback = new BaseMiddleCallback<>(callback, createUserLoginProcessor());
         sessionServiceAsync.signupAndLogin(authorization, loginSignUpFormDTO, middleCallback);
         return middleCallback;
