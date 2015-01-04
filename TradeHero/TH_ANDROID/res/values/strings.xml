@@ -299,7 +299,12 @@
   <string name="no_current_position_units">No current position</string>
   <string name="short_position_units">Short position: %d units</string>
   <string name="long_position_units">Long position: %d units</string>
-    <string name="error_fx_candle_charts_load_fail">load ex candle charts fail error</string>
-    <string name="error_fetch_fx_list">fetch fx list error</string>
-    <string name="error_fetch_fx_list_price">fetch fx list price error</string>
+  <string name="error_fx_candle_charts_load_fail">load ex candle charts fail error</string>
+  <string name="error_fetch_fx_list">fetch fx list error</string>
+  <string name="error_fetch_fx_list_price">fetch fx list price error</string>
+
+  <string name="position_title_info">Info</string>
+  <string name="position_short_info">position short info</string>
+  <string name="position_long_info">position long info</string>
+  <string name="position_close_info">position close info</string>
 </resources>

@@ -252,6 +252,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 {
                     showPrettyReviewAndInvite(isBuy);
                     pushPortfolioFragment(securityPositionTransactionDTO);
+                    securityPositionDetailCache.invalidate(securityPositionTransactionDTO.getSecurityId());
                 }
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
@@ -402,6 +403,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             // TODO max purchasable shares
             displayBuySellPrice();
             displayBuySellSwitch();
+            displayPositionStatus();
         }
     }
 

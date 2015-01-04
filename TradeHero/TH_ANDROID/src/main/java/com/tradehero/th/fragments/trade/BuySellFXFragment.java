@@ -157,11 +157,11 @@ public class BuySellFXFragment extends BuySellFragment
                 }
                 else if (share > 0)
                 {
-                    tvPositionUnits.setText(getString(R.string.short_position_units, share));
+                    tvPositionUnits.setText(getString(R.string.long_position_units, share));
                 }
                 else
                 {
-                    tvPositionUnits.setText(getString(R.string.long_position_units, Math.abs(share)));
+                    tvPositionUnits.setText(getString(R.string.short_position_units, Math.abs(share)));
                 }
                 String unrealised;
                 if (unRealizedPLRefccy != null)

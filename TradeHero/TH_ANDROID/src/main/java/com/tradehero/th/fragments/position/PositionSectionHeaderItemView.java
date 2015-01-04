@@ -2,15 +2,26 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tradehero.th.R;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import timber.log.Timber;
+
 public class PositionSectionHeaderItemView extends RelativeLayout
 {
+    public static final int INFO_TYPE_LONG = 0;
+    public static final int INFO_TYPE_SHORT = 1;
+    public static final int INFO_TYPE_CLOSED = 2;
+
     protected TextView headerText;
+    protected TextView headerGetInfo;
     protected TextView timeBaseText;
     protected SimpleDateFormat sdf;
 
@@ -45,6 +56,16 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     {
         headerText = (TextView) findViewById(R.id.header_text);
         timeBaseText = (TextView) findViewById(R.id.header_time_base);
+        headerGetInfo = (TextView) findViewById(R.id.header_get_info);
+    }
+
+    public void setHeaderGetInfoVisable(int visable ,OnClickListener onClickListener)
+    {
+        headerGetInfo.setVisibility(visable);
+        if(visable == View.VISIBLE)
+        {
+            headerGetInfo.setOnClickListener(onClickListener);
+        }
     }
 
     public void setHeaderTextContent(String text)
@@ -72,4 +93,5 @@ public class PositionSectionHeaderItemView extends RelativeLayout
             }
         }
     }
+
 }

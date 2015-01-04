@@ -19,6 +19,17 @@
     />
 
   <TextView
+        android:id="@+id/header_get_info"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/header_text"
+        style="@style/TH.Subhead"
+        android:visibility="gone"
+        android:background="@drawable/buyscreen_info"
+        />
+
+  <TextView
       android:id="@+id/header_time_base"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
