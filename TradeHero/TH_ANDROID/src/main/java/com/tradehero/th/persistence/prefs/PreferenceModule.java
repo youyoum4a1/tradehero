@@ -47,8 +47,9 @@ public class PreferenceModule
     private static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
     private static final String PREF_SAVED_TRANSLATION_SETTING_KEY = "PREF_SAVED_TRANSLATION_SETTING_KEY";
+    private static final String PREF_SAVED_USER_NAME_KEY = "PREF_SAVED_USER_NAME_KEY";
 
-    private static final String USER_PREFERENCE_KEY = "th";
+    public static final String USER_PREFERENCE_KEY = "th";
     private static final String APP_PREFERENCE_KEY = "th_app";
     private static final String PREF_IS_ONBOARD_SHOWN_FLAG = "PREF_IS_ONBOARD_SHOWN";
     private static final String PREF_IS_FX_SHOWN_FLAG = "PREF_IS_FX_SHOWN_FLAG";
@@ -164,5 +165,10 @@ public class PreferenceModule
 
         Timber.e(new NullPointerException(), "There was no AuthHeader available");
         return null;
+    }
+
+    @Provides @Singleton @SavedUserName StringPreference provideSavedUserName(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new StringPreference(sharedPreferences, PREF_SAVED_USER_NAME_KEY, "");
     }
 }

@@ -3,10 +3,12 @@ package com.tradehero.th.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import com.tradehero.th.persistence.prefs.PreferenceModule;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,9 @@ public class VersionUtils
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PreferenceModule.USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
+        String userName = sharedPreferences.getString("PREF_SAVED_USER_NAME_KEY", "");
+        parameters.add("User DisplayName: " + userName);
         parameters.add("Device Name: " + getDeviceName());
         if (longInfo)
         {

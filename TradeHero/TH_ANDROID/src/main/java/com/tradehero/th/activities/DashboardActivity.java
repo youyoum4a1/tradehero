@@ -27,6 +27,7 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.special.residemenu.ResideMenu;
 import com.tradehero.common.billing.BillingPurchaseRestorer;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
@@ -98,6 +99,7 @@ import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.notification.NotificationCacheRx;
 import com.tradehero.th.persistence.prefs.IsFxShown;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
+import com.tradehero.th.persistence.prefs.SavedUserName;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.ui.AppContainer;
@@ -171,6 +173,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject AbstractAchievementDialogFragment.Creator achievementDialogCreator;
     @Inject @IsOnBoardShown BooleanPreference isOnboardShown;
+    @Inject @SavedUserName StringPreference userName;
     @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
@@ -529,6 +532,7 @@ public class DashboardActivity extends BaseActivity
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
                     {
                         UserProfileDTO userProfileDTO = args.second;
+                        userName.set(userProfileDTO.displayName);
                         if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                         {
                             broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
