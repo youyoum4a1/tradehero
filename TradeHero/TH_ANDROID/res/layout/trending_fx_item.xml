@@ -78,17 +78,4 @@
 
   </LinearLayout>
 
-  <ImageView
-      android:id="@+id/ic_market_close"
-      android:layout_width="@dimen/small_image_w_h"
-      android:layout_height="@dimen/small_image_w_h"
-      android:layout_alignParentBottom="true"
-      android:layout_alignParentRight="true"
-      android:contentDescription="@null"
-      android:paddingBottom="8dp"
-      android:paddingRight="8dp"
-      android:scaleType="centerInside"
-      android:src="@drawable/market_sleep_grey"
-      />
-
 </com.tradehero.th.fragments.security.FXItemView>

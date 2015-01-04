@@ -7,9 +7,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -19,7 +17,6 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
-import timber.log.Timber;
 
 public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
@@ -28,7 +25,6 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
     @InjectView(R.id.fx_price_sell) TextView sellPrice;
-    @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     protected FxSecurityCompactDTO fxSecurityCompactDTO;
     private int mBlinkDuration;
     private int mDefaultTextColor;
@@ -78,7 +74,6 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         if (andDisplay)
         {
             displayStockName();
-            displayMarketClose();
             displayPrice();
         }
     }
@@ -117,7 +112,6 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     public void display()
     {
         displayStockName();
-        displayMarketClose();
         displayFlagContainer();
         displayPrice();
     }
@@ -134,32 +128,6 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
             else
             {
                 fxPairName.setText(R.string.na);
-            }
-        }
-    }
-
-    public void displayMarketClose()
-    {
-        if (fxSecurityCompactDTO == null)
-        {
-            // Nothing to do
-        }
-        else if (fxSecurityCompactDTO.marketOpen == null)
-        {
-            Timber.w("displayMarketClose marketOpen is null");
-        }
-        else if (fxSecurityCompactDTO.marketOpen)
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.GONE);
-            }
-        }
-        else
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.VISIBLE);
             }
         }
     }

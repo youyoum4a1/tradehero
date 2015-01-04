@@ -47,7 +47,7 @@ public class PortfolioCompactDTOUtil
         Double askUsd = quoteDTO.getAskUSD();
         double availableUsd;
         if (portfolioCompactDTO.marginAvailableRefCcy != null
-                && portfolioCompactDTO.leverage != null)
+                && portfolioCompactDTO.leverage > 2)//stock is 1, fx is 50
         {
             availableUsd = portfolioCompactDTO.marginAvailableRefCcy
                     * portfolioCompactDTO.leverage
