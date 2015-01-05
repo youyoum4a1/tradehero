@@ -7,9 +7,6 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
 
@@ -22,6 +19,7 @@ import dagger.Module;
                 PositionPartialBottomOpenView.class,
                 PositionLockedView.class,
                 PositionPartialBottomInPeriodViewHolder.class,
+                PositionSectionHeaderItemView.class,
         },
         library = true,
         complete = false

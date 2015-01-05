@@ -57,7 +57,6 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -114,7 +113,6 @@ public class PositionListFragment
     @Nullable protected Subscription userProfileSubscription;
     @Nullable protected UserProfileDTO userProfileDTO;
 
-    @Inject AlertDialogUtil alertDialogUtil;
     protected PositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
@@ -313,8 +311,7 @@ public class PositionListFragment
     {
         return new PositionItemAdapter(
                 getActivity(),
-                getLayoutResIds(),
-                alertDialogUtil);
+                getLayoutResIds());
     }
 
     @NonNull protected Map<Integer, Integer> getLayoutResIds()

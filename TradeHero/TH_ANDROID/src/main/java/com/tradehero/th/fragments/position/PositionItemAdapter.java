@@ -17,15 +17,10 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionView;
-import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
 {
@@ -42,15 +37,12 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     protected Map<Integer, Integer> itemTypeToLayoutId;
     private PortfolioDTO portfolioDTO;
     private UserProfileDTO userProfileDTO;
-    private AlertDialogUtil alertDialogUtil;
-
 
     //<editor-fold desc="Constructors">
-    public PositionItemAdapter(@NonNull Context context, @NonNull Map<Integer, Integer> itemTypeToLayoutId,AlertDialogUtil alertDialogUtil)
+    public PositionItemAdapter(@NonNull Context context, @NonNull Map<Integer, Integer> itemTypeToLayoutId)
     {
         super(context, 0);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
-        this.alertDialogUtil = alertDialogUtil;
     }
     //</editor-fold>
 
@@ -160,7 +152,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
             // Split in open / closed
             for (PositionDTO positionDTO : dtos)
             {
-                switch(getItemViewType(positionDTO))
+                switch (getItemViewType(positionDTO))
                 {
                     case VIEW_TYPE_LOCKED:
                         lockedPositions.add(positionDTO);
@@ -293,46 +285,14 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         return convertView;
     }
 
-    protected void prepareHeaderView(PositionSectionHeaderItemView convertView,final HeaderDTO info)
+    protected void prepareHeaderView(PositionSectionHeaderItemView convertView, final HeaderDTO info)
     {
         convertView.setHeaderTextContent(getHeaderText(info));
         convertView.setTimeBaseTextContent(
                 info == null ? null : info.dateStart,
                 info == null ? null : info.dateEnd);
-
-//        if (userProfileDTO != null && portfolioDTO != null && userProfileDTO.fxPortfolio != null
-//                && userProfileDTO.fxPortfolio.id == portfolioDTO.id)
-//        {
-//            convertView.setHeaderGetInfoVisable(View.VISIBLE,new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    openDialogForPositionInfo(getHeaderType(info));
-//                }
-//            });
-//        }
+        convertView.setType(getHeaderType(info));
     }
-
-//    public void openDialogForPositionInfo(int type)
-//    {
-//        int resInt = -1;
-//        if(type == PositionSectionHeaderItemView.INFO_TYPE_LONG)
-//        {
-//            resInt = R.string.position_long_info;
-//        }
-//        else if(type == PositionSectionHeaderItemView.INFO_TYPE_SHORT)
-//        {
-//            resInt = R.string.position_short_info;
-//        }
-//        else if(type == PositionSectionHeaderItemView.INFO_TYPE_CLOSED)
-//        {
-//            resInt = R.string.position_close_info;
-//        }
-//
-//        if(resInt != -1 && alertDialogUtil!=null)
-//        {
-//            alertDialogUtil.popWithNegativeButton(getContext(),R.string.position_title_info,resInt,R.string.ok);
-//        }
-//    }
 
     public int getHeaderType(HeaderDTO headerDTO)
     {
@@ -371,7 +331,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         {
             return getClosedHeaderText(headerDTO);
         }
-        throw new IllegalArgumentException("Unhandled " + headerDTO.toString() );
+        throw new IllegalArgumentException("Unhandled " + headerDTO.toString());
     }
 
     public String getOpenLongHeaderText(HeaderDTO headerDTO)
@@ -419,11 +379,13 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         cell.display();
     }
 
-    public void linkWith(PortfolioDTO portfolioDTO) {
+    public void linkWith(PortfolioDTO portfolioDTO)
+    {
         this.portfolioDTO = portfolioDTO;
     }
 
-    public void linkWith(UserProfileDTO userProfileDTO) {
+    public void linkWith(UserProfileDTO userProfileDTO)
+    {
         this.userProfileDTO = userProfileDTO;
     }
 

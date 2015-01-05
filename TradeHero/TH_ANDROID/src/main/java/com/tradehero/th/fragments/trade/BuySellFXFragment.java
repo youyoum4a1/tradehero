@@ -59,7 +59,7 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.tvPositionUnits) protected TextView tvPositionUnits;
     @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
 
-    private SubscriptionList subscriptionList;
+    @NonNull private SubscriptionList subscriptionList;
     private int closeUnits;
     private boolean portfolioToBeClosed = false;
 
@@ -73,6 +73,12 @@ public class BuySellFXFragment extends BuySellFragment
         return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
     }
 
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        subscriptionList = new SubscriptionList();
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -82,7 +88,6 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        subscriptionList = new SubscriptionList();
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
         addDefaultFXPortfolio();
@@ -131,11 +136,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void onStop()
     {
-        if (subscriptionList != null)
-        {
-            subscriptionList.unsubscribe();
-            subscriptionList = null;
-        }
+        subscriptionList.unsubscribe();
         super.onStop();
     }
 
@@ -143,7 +144,6 @@ public class BuySellFXFragment extends BuySellFragment
     {
         super.onSaveInstanceState(outState);
         subscriptionList.unsubscribe();
-        subscriptionList = null;
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
@@ -161,7 +161,6 @@ public class BuySellFXFragment extends BuySellFragment
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
-
     @Override public void displayStockName()
     {
         super.displayStockName();
