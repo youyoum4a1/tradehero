@@ -57,6 +57,12 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     {
         super.initViews();
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+        if (getArguments().getInt(KEY_QUANTITY, 0) > 0)
+        {
+            mSeekBar.setMax(getArguments().getInt(KEY_QUANTITY, 0));
+            mSeekBar.setEnabled(getArguments().getInt(KEY_QUANTITY, 0) > 0);
+            mSeekBar.setProgress(getArguments().getInt(KEY_QUANTITY, 0));
+        }
     }
 
     public void displayQuickPriceButtonSet()
