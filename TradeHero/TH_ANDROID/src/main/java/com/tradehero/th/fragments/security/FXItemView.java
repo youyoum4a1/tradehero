@@ -24,6 +24,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
     private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 3;
+    private static final int DECIMAL_PLACES_TO_BE_SKIPPED = 1;
     @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
@@ -94,10 +95,10 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         int length = text.length();
 
         fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 15),
-                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length - DECIMAL_PLACES_TO_BE_SKIPPED, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length - DECIMAL_PLACES_TO_BE_SKIPPED, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (color != Color.BLACK && color != mDefaultTextColor)
         {
