@@ -200,7 +200,7 @@ public class PositionPartialTopView extends LinearLayout
         {
             BuySellFXFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
             BuySellFXFragment.putSecurityId(args, securityId);
-            BuySellFXFragment.putCloseAttribute(args, positionDTO.shares > 0, Math.abs(positionDTO.shares));
+            BuySellFXFragment.putCloseAttribute(args, positionDTO.shares);
             // TODO add command to go direct to pop-up
             navigator.pushFragment(BuySellFXFragment.class, args);
         }

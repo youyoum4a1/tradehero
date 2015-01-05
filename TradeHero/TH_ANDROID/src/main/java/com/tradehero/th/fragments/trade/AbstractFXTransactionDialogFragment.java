@@ -15,6 +15,8 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 
 public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
+    protected static final String KEY_QUANTITY = AbstractFXTransactionDialogFragment.class.getName() + ".quantity";
+
     @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     public static AbstractFXTransactionDialogFragment newInstance(
@@ -29,14 +31,20 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
         args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
         args.putBundle(KEY_QUOTE_DTO, quoteDTO.getArgs());
+        args.putInt(KEY_QUANTITY, closeUnits);
         abstractBuySellDialogFragment.setArguments(args);
-        mTransactionQuantity = closeUnits;
         return abstractBuySellDialogFragment;
     }
 
     protected AbstractFXTransactionDialogFragment()
     {
         super();
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        mTransactionQuantity = getArguments().getInt(KEY_QUANTITY, 0);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -604,7 +604,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         notifyMarketClosed();
     }
 
-    public void showBuySellDialog(int closeUints)
+    public void showBuySellDialog(int closeUnits)
     {
         if (quoteDTO != null
                 && BuyStockDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
@@ -618,7 +618,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                             securityId,
                             currentMenu.getPortfolioIdKey(),
                             quoteDTO,
-                            isTransactionTypeBuy, closeUints);
+                            isTransactionTypeBuy,
+                            closeUnits);
                 }
                 else
                 {

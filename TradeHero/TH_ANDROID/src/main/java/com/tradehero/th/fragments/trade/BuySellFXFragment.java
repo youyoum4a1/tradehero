@@ -39,12 +39,13 @@ import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
-import timber.log.Timber;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
+    public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
+
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -59,20 +60,17 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
 
     private SubscriptionList subscriptionList;
-    private static boolean closeLong;
-    private static int closeUnits;
-    private static boolean closePortfolioDone = false;
+    private int closeUnits;
+    private boolean portfolioToBeClosed = false;
 
-    public static void putCloseAttribute(@NonNull Bundle args, boolean isLong, int units)
+    public static void putCloseAttribute(@NonNull Bundle args, int units)
     {
-        args.putBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, isLong);
         args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
     }
 
-    public static void getCloseAttribute(@NonNull Bundle args)
+    private static int getCloseAttribute(@NonNull Bundle args)
     {
-        closeLong = args.getBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, true);
-        closeUnits = args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,7 +86,7 @@ public class BuySellFXFragment extends BuySellFragment
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
         addDefaultFXPortfolio();
-        getCloseAttribute(getArguments());
+        closeUnits = getCloseAttribute(getArguments());
     }
 
     private void addDefaultFXPortfolio()
@@ -106,19 +104,20 @@ public class BuySellFXFragment extends BuySellFragment
                         linkWith(args.second.fxPortfolio, true);
                         if (args.second.fxPortfolio.id == mSelectedPortfolioContainer.getDefaultPortfolioId().portfolioId)
                         {
-                            closePortfolioDone = true;
+                            portfolioToBeClosed = true;
                             showCloseDialog();
                         }
                     }
                 }));
     }
 
-    private void showCloseDialog() {
-        if (closeUnits > 0 && quoteDTO != null && closePortfolioDone)
+    private void showCloseDialog()
+    {
+        if (closeUnits != 0 && quoteDTO != null && portfolioToBeClosed)
         {
-            isTransactionTypeBuy = !closeLong;
-            showBuySellDialog(closeUnits);
-            closePortfolioDone = false;
+            isTransactionTypeBuy = closeUnits < 0;
+            showBuySellDialog(Math.abs(closeUnits));
+            portfolioToBeClosed = false;
             closeUnits = 0;
         }
     }
@@ -187,7 +186,7 @@ public class BuySellFXFragment extends BuySellFragment
             tvPositionMoney.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
             if (share != null)
             {
-                if(share ==0)
+                if (share == 0)
                 {
                     tvPositionUnits.setText(getString(R.string.no_current_position_units));
                 }
@@ -336,7 +335,7 @@ public class BuySellFXFragment extends BuySellFragment
         linkWith(providerDTO.associatedPortfolio, true);
         if (providerDTO.associatedPortfolio.id == mSelectedPortfolioContainer.getDefaultPortfolioId().portfolioId)
         {
-            closePortfolioDone = true;
+            portfolioToBeClosed = true;
             showCloseDialog();
         }
     }
