@@ -13,9 +13,9 @@ public class FxSecurityCompactDTO extends SecurityCompactDTO
     public static final String DTO_DESERIALISING_TYPE = "14";
 
     @JsonIgnore
-    public int fxAskTextColor = 0;
+    public int fxAskTextColor = Color.BLACK;
     @JsonIgnore
-    public int fxBidTextColor = 0;
+    public int fxBidTextColor = Color.BLACK;
 
     @NonNull @Override public Integer getSecurityTypeStringResourceId()
     {

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
@@ -98,7 +99,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                 length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        if (color != 0 && color != mDefaultTextColor)
+        if (color != Color.BLACK && color != mDefaultTextColor)
         {
             fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
                     length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
