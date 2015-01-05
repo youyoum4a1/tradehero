@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum HeroType
 {
-    PREMIUM(0, "Premium"),
+    ALL(2, "All"),
     FREE(1, "Free"),
-    ALL(2, "All");
+    PREMIUM(0, "Premium"),
+    ;
 
     public final int typeId;
     @NonNull public final String description;
