@@ -33,7 +33,7 @@
   <string name="position_margin_close_out_ok">Margin is healthy (%s)</string>
   <color name="position_margin_close_out_ok_start">@color/number_green</color>
   <color name="position_margin_close_out_ok_end">@color/number_green</color>
-  <item name="position_margin_close_out_ok" format="float" type="dimen">0.5</item>
+  <item name="position_margin_close_out_ok" format="float" type="dimen">0.4999</item>
   <string name="position_margin_close_out_warn">Margin is approaching closeout (%s)</string>
   <color name="position_margin_close_out_warn_start">@color/light_yellow</color>
   <color name="position_margin_close_out_warn_end">@color/orange</color>
