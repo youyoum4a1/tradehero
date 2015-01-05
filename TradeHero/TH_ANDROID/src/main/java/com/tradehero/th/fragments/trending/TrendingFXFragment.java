@@ -65,7 +65,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
         if (subscriptionList == null)
         {
@@ -74,14 +75,16 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         fetchFXList();
     }
 
-    private void fetchFXList() {
+    private void fetchFXList()
+    {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesRx())
                 .subscribe(createFXListFetchObserver()));
     }
 
-    private void fetchFXPrice() {
+    private void fetchFXPrice()
+    {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
@@ -89,7 +92,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                 .subscribe(createFXPriceFetchObserver()));
     }
 
-    private void checkFXPortfolio() {
+    private void checkFXPortfolio()
+    {
         if (subscriptionList == null)
         {
             subscriptionList = new SubscriptionList();
@@ -98,10 +102,13 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
                     @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
-                        if (args.second.fxPortfolio == null && !fxIsShowed) {
+                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
+                    {
+                        if (args.second.fxPortfolio == null && !fxIsShowed)
+                        {
                             fxIsShowed = true;
                             FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
                         }
@@ -180,7 +187,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         }
     }
 
-    private void updateAdapter() {
+    private void updateAdapter()
+    {
         itemViewAdapter.setNotifyOnChange(false);
         itemViewAdapter.clear();
         itemViewAdapter.addPage(0, mData);
@@ -238,7 +246,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @NonNull @Override public SecurityListType makePagedDtoKey(int page)
     {
         return null;
-//        return trendingFilterTypeDTO.getSecurityListType(page, perPage);
+        //        return trendingFilterTypeDTO.getSecurityListType(page, perPage);
     }
 
     @Override public int getTutorialLayout()
@@ -267,7 +275,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         }
         else if (item instanceof TileType)
         {
-//            handleExtraTileItemOnClick((TileType) item, child);
+            //            handleExtraTileItemOnClick((TileType) item, child);
         }
         else
         {
@@ -291,7 +299,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
+    public void setUserVisibleHint(boolean isVisibleToUser)
+    {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser)
         {

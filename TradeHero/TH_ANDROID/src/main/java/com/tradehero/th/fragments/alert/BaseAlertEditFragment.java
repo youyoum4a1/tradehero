@@ -667,7 +667,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     protected Double getSeekingTargetPrice()
     {
-        if (securityCompactDTO == null || targetPriceSeekBar == null)
+        if (securityCompactDTO == null || securityCompactDTO.lastPrice == null || targetPriceSeekBar == null)
         {
             return null;
         }

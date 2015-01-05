@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import java.util.List;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class ImagePickerView extends LinearLayout
 {
@@ -37,6 +39,7 @@ public class ImagePickerView extends LinearLayout
         ButterKnife.inject(this);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.request_image_from_camera) void onImageFromCameraRequested()
     {
         PackageManager pm = activity
@@ -60,14 +63,23 @@ public class ImagePickerView extends LinearLayout
         }
     }
 
-    @OnClick(R.id.request_image_from_library) void onImageFromLibraryRequested()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.request_image_from_library)
+    void onImageFromLibraryRequested()
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
         Fragment currentFragment = dashboardNavigator.getCurrentFragment();
         if (currentFragment != null)
         {
-            currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            try
+            {
+                currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            } catch (ActivityNotFoundException e)
+            {
+                Timber.e(e, "Could not request gallery");
+                THToast.show(R.string.error_launch_photo_library);
+            }
         }
     }
 }

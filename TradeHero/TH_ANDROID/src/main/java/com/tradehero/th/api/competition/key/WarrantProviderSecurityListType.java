@@ -1,28 +1,36 @@
 package com.tradehero.th.api.competition.key;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.WarrantType;
 import com.tradehero.th.api.security.key.SecurityListType;
 
 public class WarrantProviderSecurityListType extends ProviderSecurityListType
 {
-    private WarrantType warrantType;
+    @Nullable private WarrantType warrantType;
 
     //<editor-fold desc="Constructors">
-    public WarrantProviderSecurityListType(ProviderId providerId, WarrantType warrantType, Integer page, Integer perPage)
+    public WarrantProviderSecurityListType(
+            @NonNull ProviderId providerId,
+            @Nullable WarrantType warrantType,
+            @Nullable Integer page,
+            @Nullable Integer perPage)
     {
         super(providerId, page, perPage);
         this.warrantType = warrantType;
     }
 
-    public WarrantProviderSecurityListType(ProviderId providerId, WarrantType warrantType, Integer page)
+    public WarrantProviderSecurityListType(
+            @NonNull ProviderId providerId,
+            @Nullable WarrantType warrantType,
+            @Nullable Integer page)
     {
         super(providerId, page);
         this.warrantType = warrantType;
     }
 
-    public WarrantProviderSecurityListType(ProviderId providerId, WarrantType warrantType)
+    public WarrantProviderSecurityListType(@NonNull ProviderId providerId, @Nullable WarrantType warrantType)
     {
         super(providerId);
         this.warrantType = warrantType;
@@ -35,7 +43,7 @@ public class WarrantProviderSecurityListType extends ProviderSecurityListType
                 && other instanceof WarrantProviderSecurityListType;
     }
 
-    public WarrantType getWarrantType()
+    @Nullable public WarrantType getWarrantType()
     {
         return warrantType;
     }

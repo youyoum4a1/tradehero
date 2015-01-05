@@ -10,7 +10,7 @@ abstract public class SecurityListType implements Comparable<SecurityListType>, 
     @Nullable public final Integer perPage;
 
     //<editor-fold desc="Constructors">
-    protected SecurityListType(SecurityListType other)
+    protected SecurityListType(@NonNull SecurityListType other)
     {
         this.page = other.page;
         this.perPage = other.perPage;

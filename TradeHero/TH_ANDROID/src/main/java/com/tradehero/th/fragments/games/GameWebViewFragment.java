@@ -112,7 +112,8 @@ public class GameWebViewFragment extends BaseWebViewFragment
     }
 
     @Override
-    protected void initViews(View v) {
+    protected void initViews(View v)
+    {
         super.initViews(v);
         webView.getSettings().setUseWideViewPort(false);
         webView.getSettings().setBuiltInZoomControls(false);

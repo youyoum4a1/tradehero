@@ -282,9 +282,9 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                         {
                             if (e instanceof FacebookOperationCanceledException)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                THToast.show(R.string.invite_friend_request_cancelled);
                             }
-                            Timber.e(e, "error");
+                            Timber.e(e, "Error on subscribing to Facebook");
                         }
 
                         @Override public void onNext(Bundle bundle)
@@ -296,7 +296,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                THToast.show(R.string.invite_friend_request_cancelled);
                             }
 
                             Timber.d("next %s", bundle);

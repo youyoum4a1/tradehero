@@ -28,7 +28,7 @@ public class SubscriberOnCompleteListener implements WebDialog.OnCompleteListene
         {
             if (error instanceof FacebookOperationCanceledException && !Constants.RELEASE)
             {
-                THToast.show(R.string.invite_friend_request_canceled);
+                THToast.show(R.string.invite_friend_request_cancelled);
             }
             observer.onError(error);
         }
@@ -41,7 +41,7 @@ public class SubscriberOnCompleteListener implements WebDialog.OnCompleteListene
             }
             else if (!Constants.RELEASE)
             {
-                THToast.show(R.string.invite_friend_request_canceled);
+                THToast.show(R.string.invite_friend_request_cancelled);
             }
             observer.onNext(requestId);
         }

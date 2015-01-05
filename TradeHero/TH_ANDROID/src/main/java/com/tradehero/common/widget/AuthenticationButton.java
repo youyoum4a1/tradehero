@@ -33,6 +33,15 @@ public class AuthenticationButton extends Button
     private void init(Context context, AttributeSet attrs)
     {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AuthenticationButton);
+        int indexEnum = a.getInt(R.styleable.AuthenticationButton_type, -1);
+        if (indexEnum == -1)
+        {
+            throw new IllegalArgumentException("There was no Type defined");
+        }
+        if (indexEnum >= SocialNetworkEnum.values().length)
+        {
+            throw new IllegalArgumentException("IndexEnum of " + indexEnum + " is too large");
+        }
         type = SocialNetworkEnum.fromIndex(a.getInt(R.styleable.AuthenticationButton_type, -1));
         a.recycle();
     }

@@ -223,7 +223,7 @@ public class PositionListFragment
             TrendingStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        if(portfolioDTO.portfolioType == AssetClass.FX)
+        if(portfolioDTO != null && portfolioDTO.portfolioType == AssetClass.FX)
         {
             navigator.get().pushFragment(TrendingFXFragment.class, args);
         }
