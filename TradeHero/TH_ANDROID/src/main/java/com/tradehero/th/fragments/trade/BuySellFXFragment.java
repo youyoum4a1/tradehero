@@ -61,21 +61,18 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
 
     @NonNull private SubscriptionList subscriptionList;
-    private static boolean closeLong;
-    private static int closeUnits;
-    private static boolean portfolioToBeClosed = false;
+    private int closeUnits;
+    private boolean portfolioToBeClosed = false;
     private static boolean positionIsNull = false;
 
-    public static void putCloseAttribute(@NonNull Bundle args, boolean isLong, int units)
+    public static void putCloseAttribute(@NonNull Bundle args, int units)
     {
-        args.putBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, isLong);
         args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
     }
 
-    public static void getCloseAttribute(@NonNull Bundle args)
+    public static int getCloseAttribute(@NonNull Bundle args)
     {
-        closeLong = args.getBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, true);
-        closeUnits = args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -96,7 +93,7 @@ public class BuySellFXFragment extends BuySellFragment
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
         addDefaultFXPortfolio();
-        getCloseAttribute(getArguments());
+        closeUnits = getCloseAttribute(getArguments());
     }
 
     private void addDefaultFXPortfolio()
