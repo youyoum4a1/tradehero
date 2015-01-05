@@ -164,8 +164,7 @@
               >
               <Button
                   android:id="@+id/btn_sell"
-                  style="@style/TH.Btn_Buy_Sell"
-                  android:background="@drawable/magenta_rounded_button_selector"
+                  style="@style/TH.Btn_Buy_Sell.Dark"
                   android:layout_marginBottom="5dp"
                   android:text="@string/fx_sell"
                   android:visibility="gone"
@@ -173,7 +172,7 @@
 
               <Button
                   android:id="@+id/btn_buy"
-                  style="@style/TH.Btn_Buy_Sell"
+                  style="@style/TH.Btn_Buy_Sell.Dark"
                   android:layout_marginLeft="@dimen/margin_xsmall"
                   android:layout_marginBottom="5dp"
                   android:text="@string/fx_buy"

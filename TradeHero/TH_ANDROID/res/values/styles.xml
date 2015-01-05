@@ -50,6 +50,11 @@
     <item name="android:textColor">@color/text_primary_inverse</item>
   </style>
 
+  <style name="TH.Btn_Buy_Sell.Dark"
+      parent="TH.Btn_Buy_Sell">
+    <item name="android:background">@drawable/dark_blue_rounded_button_selector</item>
+  </style>
+
   <style name="TH.Btn_Time_Span"
       parent="TH.Btn_Bar_Base">
     <item name="android:textColor">@color/text_secondary</item>
