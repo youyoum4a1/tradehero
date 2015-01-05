@@ -20,7 +20,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
-import rx.Observer;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
@@ -37,6 +37,7 @@ public class AchievementListFragment extends DashboardFragment
     protected AchievementListAdapter achievementListAdapter;
 
     @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
+    private Subscription achievementListSubscription;
     UserBaseKey shownUserId;
 
     public static void putUserId(Bundle bundle, UserBaseKey userBaseKey)
@@ -96,9 +97,12 @@ public class AchievementListFragment extends DashboardFragment
     protected void attachAndFetchAchievementCategoryListener()
     {
         hideEmpty();
-        AndroidObservable.bindFragment(this,
+        unsubscribe(achievementListSubscription);
+        achievementListSubscription = AndroidObservable.bindFragment(this,
                 achievementCategoryListCache.get(shownUserId))
-                .subscribe(createAchievementCategoryListCacheObserver());
+                .subscribe(
+                        this::onReceivedAchievementList,
+                        this::onReceivedAchievementFailed);
     }
 
     private void displayProgress()
@@ -121,6 +125,12 @@ public class AchievementListFragment extends DashboardFragment
         emptyView.setVisibility(View.GONE);
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(achievementListSubscription);
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         listView.setOnScrollListener(null);
@@ -128,37 +138,25 @@ public class AchievementListFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    protected Observer<Pair<UserBaseKey, AchievementCategoryDTOList>> createAchievementCategoryListCacheObserver()
+    protected void onReceivedAchievementList(Pair<UserBaseKey, AchievementCategoryDTOList> pair)
     {
-        return new AchievementCategoryListCacheObserver();
-    }
-
-    protected class AchievementCategoryListCacheObserver implements Observer<Pair<UserBaseKey, AchievementCategoryDTOList>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, AchievementCategoryDTOList> pair)
+        swipeRefreshLayout.setRefreshing(false);
+        achievementListAdapter.clear();
+        achievementListAdapter.addAll(pair.second);
+        achievementListAdapter.notifyDataSetChanged();
+        hideProgress();
+        if (achievementListAdapter.isEmpty())
         {
-            swipeRefreshLayout.setRefreshing(false);
-            achievementListAdapter.clear();
-            achievementListAdapter.addAll(pair.second);
-            achievementListAdapter.notifyDataSetChanged();
-            hideProgress();
-            if (achievementListAdapter.isEmpty())
-            {
-                displayEmpty();
-            }
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            swipeRefreshLayout.setRefreshing(false);
-            THToast.show(getString(R.string.error_fetch_achievements));
-            Timber.e(e, "Error fetching the list of competition info cell");
-            hideProgress();
             displayEmpty();
         }
+    }
+
+    protected void onReceivedAchievementFailed(Throwable e)
+    {
+        swipeRefreshLayout.setRefreshing(false);
+        THToast.show(getString(R.string.error_fetch_achievements));
+        Timber.e(e, "Error fetching the list of competition info cell");
+        hideProgress();
+        displayEmpty();
     }
 }
