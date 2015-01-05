@@ -16,6 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -38,6 +39,7 @@ import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
@@ -57,6 +59,21 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
 
     private SubscriptionList subscriptionList;
+    private static boolean closeLong;
+    private static int closeUnits;
+    private static boolean closePortfolioDone = false;
+
+    public static void putCloseAttribute(@NonNull Bundle args, boolean isLong, int units)
+    {
+        args.putBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, isLong);
+        args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
+    }
+
+    public static void getCloseAttribute(@NonNull Bundle args)
+    {
+        closeLong = args.getBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, true);
+        closeUnits = args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -71,6 +88,7 @@ public class BuySellFXFragment extends BuySellFragment
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
         addDefaultFXPortfolio();
+        getCloseAttribute(getArguments());
     }
 
     private void addDefaultFXPortfolio()
@@ -86,8 +104,23 @@ public class BuySellFXFragment extends BuySellFragment
                                 new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(),
                                         args.second.fxPortfolio));
                         linkWith(args.second.fxPortfolio, true);
+                        if (args.second.fxPortfolio.id == mSelectedPortfolioContainer.getDefaultPortfolioId().portfolioId)
+                        {
+                            closePortfolioDone = true;
+                            showCloseDialog();
+                        }
                     }
                 }));
+    }
+
+    private void showCloseDialog() {
+        if (closeUnits > 0 && quoteDTO != null && closePortfolioDone)
+        {
+            isTransactionTypeBuy = !closeLong;
+            showBuySellDialog(closeUnits);
+            closePortfolioDone = false;
+            closeUnits = 0;
+        }
     }
 
     private void initTimeSpanButton()
@@ -99,8 +132,11 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void onStop()
     {
-        subscriptionList.unsubscribe();
-        subscriptionList = null;
+        if (subscriptionList != null)
+        {
+            subscriptionList.unsubscribe();
+            subscriptionList = null;
+        }
         super.onStop();
     }
 
@@ -298,6 +334,11 @@ public class BuySellFXFragment extends BuySellFragment
                         currentUserId.toUserBaseKey(),
                         providerDTO.associatedPortfolio));
         linkWith(providerDTO.associatedPortfolio, true);
+        if (providerDTO.associatedPortfolio.id == mSelectedPortfolioContainer.getDefaultPortfolioId().portfolioId)
+        {
+            closePortfolioDone = true;
+            showCloseDialog();
+        }
     }
 
     @Override protected void softFetchPortfolioCompactList()
@@ -310,5 +351,12 @@ public class BuySellFXFragment extends BuySellFragment
     protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
     {
 
+    }
+
+    @Override
+    protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    {
+        super.linkWith(quoteDTO, andDisplay);
+        showCloseDialog();
     }
 }

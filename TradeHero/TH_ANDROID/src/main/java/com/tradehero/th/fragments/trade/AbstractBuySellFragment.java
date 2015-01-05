@@ -50,6 +50,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
     public final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
+    public final static String BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE = AbstractBuySellFragment.class.getName() + ".isLong";
+    public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = AbstractBuySellFragment.class.getName() + ".units";
 
     public final static long MILLISEC_QUOTE_REFRESH = 30000;
 
@@ -174,6 +176,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onStop()
     {
+        quoteDTO = null;
         unsubscribe(quoteSubscription);
         quoteSubscription = null;
         unsubscribe(securityPositionDetailSubscription);

@@ -594,7 +594,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             default:
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
-        showBuySellDialog();
+        showBuySellDialog(0);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -604,7 +604,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         notifyMarketClosed();
     }
 
-    public void showBuySellDialog()
+    public void showBuySellDialog(int closeUints)
     {
         if (quoteDTO != null
                 && BuyStockDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
@@ -618,7 +618,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                             securityId,
                             currentMenu.getPortfolioIdKey(),
                             quoteDTO,
-                            isTransactionTypeBuy);
+                            isTransactionTypeBuy, closeUints);
                 }
                 else
                 {

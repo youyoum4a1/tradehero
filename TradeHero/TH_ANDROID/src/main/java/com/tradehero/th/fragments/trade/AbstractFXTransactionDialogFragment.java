@@ -21,7 +21,8 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
             @NonNull SecurityId securityId,
             @NonNull PortfolioId portfolioId,
             @NonNull QuoteDTO quoteDTO,
-            boolean isBuy)
+            boolean isBuy,
+            int closeUnits)
     {
         AbstractFXTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyFXDialogFragment() : new SellFXDialogFragment();
         Bundle args = new Bundle();
@@ -29,6 +30,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
         args.putBundle(KEY_QUOTE_DTO, quoteDTO.getArgs());
         abstractBuySellDialogFragment.setArguments(args);
+        mTransactionQuantity = closeUnits;
         return abstractBuySellDialogFragment;
     }
 

@@ -40,6 +40,10 @@ public class PortfolioSelectorView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
+    @Nullable public OwnedPortfolioId getDefaultPortfolioId() {
+        return defaultPortfolioId;
+    }
+
     public void setDefaultPortfolioId(@Nullable OwnedPortfolioId defaultPortfolioId)
     {
         this.defaultPortfolioId = defaultPortfolioId;

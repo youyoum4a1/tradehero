@@ -118,7 +118,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     protected PortfolioId portfolioId;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
-    protected Integer mTransactionQuantity = 0;
+    protected static Integer mTransactionQuantity = 0;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
