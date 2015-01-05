@@ -11,11 +11,12 @@ import com.tradehero.th.api.security.key.FxPairSecurityId;
 public class FxSecurityCompactDTO extends SecurityCompactDTO
 {
     public static final String DTO_DESERIALISING_TYPE = "14";
+    public static final int DEFAULT_TEXT_COLOR = Color.BLACK;
 
     @JsonIgnore
-    public int fxAskTextColor = Color.BLACK;
+    public int fxAskTextColor = DEFAULT_TEXT_COLOR;
     @JsonIgnore
-    public int fxBidTextColor = Color.BLACK;
+    public int fxBidTextColor = DEFAULT_TEXT_COLOR;
 
     @NonNull @Override public Integer getSecurityTypeStringResourceId()
     {

@@ -100,7 +100,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
                 length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length - DECIMAL_PLACES_TO_BE_SKIPPED, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        if (color != Color.BLACK && color != mDefaultTextColor)
+        if (color != FxSecurityCompactDTO.DEFAULT_TEXT_COLOR && color != mDefaultTextColor)
         {
             fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
                     length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
