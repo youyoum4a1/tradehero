@@ -206,14 +206,34 @@ import rx.observers.EmptyObserver;
 
     @Override public void clearSystemCaches()
     {
-        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
-        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
+//        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
+//        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
+
+        for(int i = 0, length = systemCacheNews.size(); i < length; i++)
+        {
+            systemCacheNews.get(i).invalidateAll();
+        }
+
+        for(int i = 0, length = systemCacheRxs.size(); i < length; i++)
+        {
+            systemCacheRxs.get(i).invalidateAll();
+        }
     }
 
     @Override public void clearUserCaches()
     {
-        CollectionUtils.apply(userCacheNews, DTOCacheNew::invalidateAll);
-        CollectionUtils.apply(userCacheRxs, DTOCacheRx::invalidateAll);
+//        CollectionUtils.apply(userCacheNews, DTOCacheNew::invalidateAll);
+//        CollectionUtils.apply(userCacheRxs, DTOCacheRx::invalidateAll);
+
+        for(int i = 0, length = userCacheRxs.size(); i < length; i++)
+        {
+            userCacheRxs.get(i).invalidateAll();
+        }
+
+        for(int i = 0, length = userCacheNews.size(); i < length; i++)
+        {
+            userCacheNews.get(i).invalidateAll();
+        }
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
