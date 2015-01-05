@@ -160,9 +160,9 @@ public class THSignedNumber
         return removeTrailingZeros(formatted);
     }
 
-    public static String removeTrailingZeros(String formattedNumber)
+    public static String removeTrailingZeros(@NonNull String formattedNumber)
     {
-        if (formattedNumber != null && formattedNumber.contains("."))
+        if (formattedNumber.contains("."))
         {
             int length = formattedNumber.length();
             do

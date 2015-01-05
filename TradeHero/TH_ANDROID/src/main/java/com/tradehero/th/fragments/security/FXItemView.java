@@ -7,6 +7,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -80,8 +82,9 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
 
     private void displayPrice()
     {
-        coloredText(buyPrice, String.valueOf(fxSecurityCompactDTO.askPrice), fxSecurityCompactDTO.fxAskTextColor);
-        coloredText(sellPrice, String.valueOf(fxSecurityCompactDTO.bidPrice), fxSecurityCompactDTO.fxBidTextColor);
+        Pair<String, String> formattedPrices = new SecurityCompactDTOUtil().getFormattedAndPaddedAskBid(fxSecurityCompactDTO);
+        coloredText(buyPrice, formattedPrices.first, fxSecurityCompactDTO.fxAskTextColor);
+        coloredText(sellPrice, formattedPrices.second, fxSecurityCompactDTO.fxBidTextColor);
     }
 
     private void coloredText(TextView textView, String text, int color)
@@ -90,15 +93,15 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         int length = text.length();
 
         fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 15),
-                length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         if (color != 0 && color != mDefaultTextColor)
         {
             fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
-                    length - DECIMAL_PLACES_TO_BE_ENHANCED, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             //Adds a blinking animation
             textView.setAlpha(0.1f);
