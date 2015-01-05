@@ -116,9 +116,9 @@ public interface SecurityServiceRx
 
     //<editor-fold desc="Get FX KChart">
     @GET("/FX/{securitySymbol}/{duration}/history")
-    Observable<FXChartDTO> getFXHistroy(
-                        @Path("securitySymbol") String securitySymbol,
-                        @Path("duration") String duration);
+    Observable<FXChartDTO> getFXHistory(
+            @Path("securitySymbol") String securitySymbol,
+            @Path("duration") String duration);
     //</editor-fold>
 
     //<editor-fold desc="Get FX All Price">

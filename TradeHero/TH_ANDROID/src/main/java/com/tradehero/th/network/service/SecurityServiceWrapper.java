@@ -313,10 +313,10 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get FX KChart">
-    @NonNull public Observable<FXChartDTO> getFXHistory(SecurityId securityId, String duration)
+    @NonNull public Observable<FXChartDTO> getFXHistory(@NonNull SecurityId securityId, String duration)
     {
         Observable<FXChartDTO> received;
-        received = securityServiceRx.getFXHistroy(securityId.getSecuritySymbol(), duration);
+        received = securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
         return received;
     }
     //</editor-fold>
