@@ -455,8 +455,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         else
         {
             detachSecurityActionDialog();
-            securityActionDialog =
-                    securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                securityActionDialog =
+                        securityActionDialogFactory.createSecurityActionOnlyBuySaleDialog(getActivity(), securityId, createSecurityActionMenuListener());
+            }
+            else
+            {
+                securityActionDialog =
+                        securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+            }
         }
     }
 
@@ -536,6 +544,19 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 if (navigator != null)
                 {
                     navigator.get().pushFragment(BuySellFXFragment.class, args);
+                }
+            }
+            else
+            {
+                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+                if (applicablePortfolioId != null)
+                {
+                    BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                }
+                BuySellStockFragment.putSecurityId(args, securityId);
+                if (navigator != null)
+                {
+                    navigator.get().pushFragment(BuySellStockFragment.class, args);
                 }
             }
         }
