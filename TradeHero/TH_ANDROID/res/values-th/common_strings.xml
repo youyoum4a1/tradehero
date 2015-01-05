@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">TradeHero</string>
+  <string name="service_retry">ล้มเหลว ลองใหม่อีก %1$d ครั้ง\n%2$s</string>
   <string name="app_name_dev">TradeHeroDev</string>
 
   <string name="na">N/A</string>

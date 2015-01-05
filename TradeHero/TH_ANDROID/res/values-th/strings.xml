@@ -162,5 +162,10 @@
   <string name="games">เกมส์</string>
   <string name="coming_soon">เร็วๆนี้!</string>
   <string name="articles">บทความ</string>
-  <string name="best_roi">ROI:</string>
+  <string name="best_roi">ผลตอบแทนจากเงินลงทุน (ROI):</string>
+  <string name="content_sharing_started">กำลังแชร์…</string>
+  <string name="content_shared">แชร์แล้ว!</string>
+  <string name="retry">ลองใหม่</string>
+  <string name="stocks">หุ้น</string>
+  <string name="fx">เงินตราต่างประเทศ (FX)</string>
 </resources>

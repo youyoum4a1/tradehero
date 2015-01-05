@@ -71,4 +71,5 @@
   <string name="leaderboard_see_competition_rules">ดูข้อบังคับการแข่งขัน ที่นี่</string>
 
   <string name="leaderboard_empty">เริ่มเทรดเลย เพื่อเป็นเทรดเดอร์คนแรกบนบอร์ดผู้นำนี้</string>
+  <string name="leaderboard_ranks_needed">อันดับเลื่อนขึ้น %s เพื่อชนะ!</string>
 </resources>

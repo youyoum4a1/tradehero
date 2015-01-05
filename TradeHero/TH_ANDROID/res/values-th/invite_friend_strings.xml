@@ -2,6 +2,7 @@
 <resources>
 
   <string name="invite">เชิญชวน</string>
+  <string name="invite_number">เชิญชวน (%s)</string>
   <string name="invite_friends">เชิญชวนเพื่อนๆ</string>
   <string name="invite_your_friends_now">เชิญชวนเพื่อนๆของคุณเลย !</string>
   <string name="invite_all">เชิญชวนทั้งหมด</string>

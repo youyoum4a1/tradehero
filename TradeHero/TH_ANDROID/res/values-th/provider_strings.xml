@@ -43,4 +43,13 @@
 
   <!-- eToro specific strings, providerId == 22 -->
 
+  <string name="share_now">แชร์เลย!</string>
+  <string name="tncs_apply">ข้อตกลงและเงื่อนไข</string>
+  <string name="preseason_giveaway">รางวัลในช่วงก่อนฤดูกาล</string>
+  <string name="preseason_error_message">เกิดข้อผิดพลาด ในการรับรายละเอียดในช่วงก่อนฤดูกาล</string>
+  <string name="preseason_share_error_message">เกิดข้อผิดพลาด ในการแชร์รายละเอียดในช่วงก่อนฤดูกาล</string>
+
+  <!-- Prize pool group -->
+  <string name="provider_current_prize_pool">เงินรางวัลในปัจจุบัน :</string>
+  <string name="provider_prize_pool_new_players_need">ผู้เล่นใหม่ต้องปลดล็อค **%1$s** พิเศษ :</string>
 </resources>

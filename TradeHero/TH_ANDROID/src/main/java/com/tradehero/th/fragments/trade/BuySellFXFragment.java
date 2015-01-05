@@ -16,6 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
@@ -60,17 +61,21 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
 
     @NonNull private SubscriptionList subscriptionList;
-    private int closeUnits;
-    private boolean portfolioToBeClosed = false;
+    private static boolean closeLong;
+    private static int closeUnits;
+    private static boolean portfolioToBeClosed = false;
+    private static boolean positionIsNull = false;
 
-    public static void putCloseAttribute(@NonNull Bundle args, int units)
+    public static void putCloseAttribute(@NonNull Bundle args, boolean isLong, int units)
     {
+        args.putBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, isLong);
         args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
     }
 
-    private static int getCloseAttribute(@NonNull Bundle args)
+    public static void getCloseAttribute(@NonNull Bundle args)
     {
-        return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
+        closeLong = args.getBoolean(BUNDLE_KEY_CLOSE_IS_LONG_BUNDLE, true);
+        closeUnits = args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -91,7 +96,7 @@ public class BuySellFXFragment extends BuySellFragment
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
         addDefaultFXPortfolio();
-        closeUnits = getCloseAttribute(getArguments());
+        getCloseAttribute(getArguments());
     }
 
     private void addDefaultFXPortfolio()
@@ -136,7 +141,11 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void onStop()
     {
-        subscriptionList.unsubscribe();
+        positionIsNull = false;
+        if (subscriptionList != null)
+        {
+            subscriptionList.unsubscribe();
+        }
         super.onStop();
     }
 
@@ -148,8 +157,20 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
-        super.linkWith(portfolioCompactDTO, andDisplay);
+        if (portfolioCompactDTO.id == mSelectedPortfolioContainer.getCurrentMenu().portfolioId)
+        {
+            this.portfolioCompactDTO = portfolioCompactDTO;
+        }
+        clampBuyQuantity(andDisplay);
+        clampSellQuantity(andDisplay);
+        if (andDisplay)
+        {
+            // TODO max purchasable shares
+            displayBuySellPrice();
+            displayBuySellSwitch();
+        }
         marginCloseOutStatus.linkWith(portfolioCompactDTO);
+        displayPositionStatus();
     }
 
     private void fetchKChart(String code)
@@ -172,7 +193,27 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    @Override
+    @Override public Integer getMaxSellableShares()
+    {
+        if (positionDTOCompactList != null)
+        {
+            return positionDTOCompactList.getMaxSellableShares(
+                    this.quoteDTO,
+                    this.portfolioCompactDTO);
+        }
+        return positionIsNull ? 0 : null;
+    }
+
+    @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
+    {
+        super.linkWith(positionDTOCompacts, andDisplay);
+        if (positionDTOCompacts == null)
+        {
+            positionIsNull = true;
+        }
+        displayPositionStatus();
+    }
+
     public void displayPositionStatus()
     {
         Integer share = getMaxSellableShares();
@@ -356,5 +397,6 @@ public class BuySellFXFragment extends BuySellFragment
     {
         super.linkWith(quoteDTO, andDisplay);
         showCloseDialog();
+        displayPositionStatus();
     }
 }

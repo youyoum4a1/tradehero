@@ -294,7 +294,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
         displayBuySellPrice();
         displayBuySellContainer();
-        displayPositionStatus();
     }
 
     protected void processPortfolioForProvider(ProviderDTO providerDTO)
@@ -403,7 +402,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             // TODO max purchasable shares
             displayBuySellPrice();
             displayBuySellSwitch();
-            displayPositionStatus();
         }
     }
 
@@ -442,11 +440,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                     || securityCompactDTO.marketOpen;
             mMarketClosedIcon.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
         }
-    }
-
-    public void displayPositionStatus()
-    {
-
     }
 
     abstract public void displayBuySellPrice();

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="security_type_label_short">ประเภท</string>
-
+  <string name="security_type_index">ดัชนี</string>
+  <string name="security_type_unit_trust">หน่วยลงทุน</string>
+  <string name="security_type_fx">เงินตราต่างประเทศ (FX)</string>
   <string name="security_type_equity">หุ้นสามัญ</string>
   <string name="security_type_fund">กองทุน</string>
   <string name="security_type_warrant">ใบสำคัญแสดงสิทธิในการซื้อหลักทรัพย์ (วอร์แรนท์)</string>
