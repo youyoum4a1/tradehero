@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import com.fasterxml.jackson.core.util.VersionUtil;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.metrics.Analytics;
@@ -21,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import junit.runner.Version;
 
 abstract public class BillingAlertDialogUtil<
         ProductIdentifierType extends ProductIdentifier,
@@ -39,15 +41,18 @@ abstract public class BillingAlertDialogUtil<
 {
     @NonNull public final ActivityUtil activityUtil;
     @NonNull private final Analytics analytics;
+    @NonNull protected final VersionUtils versionUtils;
 
     //<editor-fold desc="Constructors">
     public BillingAlertDialogUtil(
             @NonNull Analytics analytics,
-            @NonNull ActivityUtil activityUtil)
+            @NonNull ActivityUtil activityUtil,
+            @NonNull VersionUtils versionUtils)
     {
         super();
         this.analytics = analytics;
         this.activityUtil = activityUtil;
+        this.versionUtils = versionUtils;
     }
     //</editor-fold>
 
@@ -223,7 +228,7 @@ abstract public class BillingAlertDialogUtil<
 
     public void sendSupportEmailPurchaseNotRestored(final Context context)
     {
-        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        Intent emailIntent = versionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
         activityUtil.sendSupportEmail(context, emailIntent);
     }
@@ -266,7 +271,7 @@ abstract public class BillingAlertDialogUtil<
     public void sendSupportEmailBillingUnknownError(final Context context, final Exception exception)
     {
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
-                VersionUtils.getExceptionStringsAndTraceParameters(context, exception));
+                versionUtils.getExceptionStringsAndTraceParameters(context, exception));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
         activityUtil.sendSupportEmail(context, emailIntent);
     }
@@ -290,7 +295,7 @@ abstract public class BillingAlertDialogUtil<
 
     public void sendSupportEmailCancelledPurchase(final Context context)
     {
-        Intent emailIntent = VersionUtils.getSupportEmailIntent(context, true);
+        Intent emailIntent = versionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
         activityUtil.sendSupportEmail(context, emailIntent);
     }

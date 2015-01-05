@@ -3,6 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import android.content.Context;
 import android.content.Intent;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.billing.BillingUtils;
@@ -22,9 +23,9 @@ class GooglePlayUtils
         THIABPurchase>
 {
     //<editor-fold desc="Constructors">
-    @Inject public GooglePlayUtils()
+    @Inject public GooglePlayUtils(@NonNull VersionUtils versionUtils)
     {
-        super();
+        super(versionUtils);
     }
     //</editor-fold>
 
@@ -52,7 +53,7 @@ class GooglePlayUtils
     public Intent getSupportPurchaseConsumeEmailIntent(Context context, Exception exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem consuming my purchase with " + getStoreName() + "\n\n-----\n" +
-                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
+                StringUtils.join("\n", versionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);

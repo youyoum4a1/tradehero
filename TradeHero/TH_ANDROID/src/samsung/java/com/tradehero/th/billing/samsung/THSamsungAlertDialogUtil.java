@@ -17,6 +17,7 @@ import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,10 +37,11 @@ public class THSamsungAlertDialogUtil extends BillingAlertDialogUtil<
     @Inject public THSamsungAlertDialogUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil,
+            @NonNull VersionUtils versionUtils,
             @NonNull THSamsungPurchaseCacheRx thSamsungPurchaseCache,
             @NonNull SamsungStoreUtils samsungStoreUtils)
     {
-        super(analytics, activityUtil);
+        super(analytics, activityUtil, versionUtils);
         this.thSamsungPurchaseCache = thSamsungPurchaseCache;
         this.samsungStoreUtils = samsungStoreUtils;
     }

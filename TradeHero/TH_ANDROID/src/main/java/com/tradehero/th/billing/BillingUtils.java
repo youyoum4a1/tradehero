@@ -3,6 +3,7 @@ package com.tradehero.th.billing;
 import android.content.Context;
 import android.content.Intent;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.OrderId;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.ProductIdentifier;
@@ -18,10 +19,13 @@ abstract public class BillingUtils<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
 {
+    @NonNull protected final VersionUtils versionUtils;
+
     //<editor-fold desc="Constructors">
-    public BillingUtils()
+    public BillingUtils(@NonNull VersionUtils versionUtils)
     {
         super();
+        this.versionUtils = versionUtils;
     }
     //</editor-fold>
 
@@ -40,7 +44,7 @@ abstract public class BillingUtils<
     public List<String> getAllPurchaseReportStrings(Context context, ProductPurchaseType purchase)
     {
         List<String> reported = getPurchaseReportStrings(purchase);
-        reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
+        reported.addAll(versionUtils.getSupportEmailTraceParameters(context, true));
 
         return reported;
     }
@@ -60,7 +64,7 @@ abstract public class BillingUtils<
     public Intent getSupportPurchaseRestoreEmailIntent(Context context, Exception exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem restoring my purchase with " + getStoreName() + "\n\n-----\n" +
-                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context,
+                StringUtils.join("\n", versionUtils.getExceptionStringsAndTraceParameters(context,
                         exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);

@@ -3,23 +3,33 @@ package com.tradehero.th.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import com.tradehero.th.persistence.prefs.PreferenceModule;
+import com.tradehero.th.api.users.CurrentUserId;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 public class VersionUtils
 {
-    public static Intent getSupportEmailIntent(Context context)
+    @NonNull private final CurrentUserId currentUserId;
+
+    //<editor-fold desc="Constructors">
+    @Inject public VersionUtils(@NonNull CurrentUserId currentUserId)
+    {
+        this.currentUserId = currentUserId;
+    }
+    //</editor-fold>
+
+    public Intent getSupportEmailIntent(Context context)
     {
         return getSupportEmailIntent(context, false);
     }
 
-    public static Intent getSupportEmailIntent(Context context, boolean longInfo)
+    public Intent getSupportEmailIntent(Context context, boolean longInfo)
     {
         return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
     }
@@ -37,13 +47,11 @@ public class VersionUtils
         return intent;
     }
 
-    public static List<String> getSupportEmailTraceParameters(Context context, boolean longInfo)
+    public List<String> getSupportEmailTraceParameters(Context context, boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PreferenceModule.USER_PREFERENCE_KEY, Context.MODE_PRIVATE);
-        String userName = sharedPreferences.getString("PREF_SAVED_USER_NAME_KEY", "");
-        parameters.add("User DisplayName: " + userName);
+        parameters.add("User Id: " + currentUserId.get());
         parameters.add("Device Name: " + getDeviceName());
         if (longInfo)
         {
@@ -60,11 +68,11 @@ public class VersionUtils
         return parameters;
     }
 
-    public static List<String> getExceptionStringsAndTraceParameters(Context context,
+    public List<String> getExceptionStringsAndTraceParameters(Context context,
             Exception exception)
     {
         List<String> reported = getExceptionStrings(context, exception);
-        reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
+        reported.addAll(getSupportEmailTraceParameters(context, true));
         return reported;
     }
 

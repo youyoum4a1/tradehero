@@ -17,6 +17,7 @@ import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.utils.ActivityUtil;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
@@ -36,10 +37,11 @@ public class THIABAlertDialogUtil extends BillingAlertDialogUtil<
     @Inject public THIABAlertDialogUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil,
+            @NonNull VersionUtils versionUtils,
             @NonNull THIABPurchaseCacheRx thiabPurchaseCache,
             @NonNull GooglePlayUtils googlePlayUtils)
     {
-        super(analytics, activityUtil);
+        super(analytics, activityUtil, versionUtils);
         this.thiabPurchaseCache = thiabPurchaseCache;
         this.googlePlayUtils = googlePlayUtils;
     }
