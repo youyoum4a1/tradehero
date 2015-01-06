@@ -45,6 +45,7 @@ import rx.schedulers.Schedulers;
     }
 
     //<editor-fold desc="Get Quote">
+    //TODO this can not be repeat, please refer getQuoteFXRx
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
@@ -65,7 +66,18 @@ import rx.schedulers.Schedulers;
                 }
             }
         })
+//                ;
                 .subscribeOn(Schedulers.io());
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Quote fx">
+    @NonNull public Observable<Response> getQuoteFXRx(@NonNull SecurityId securityId)
+    {
+        basicCheck(securityId);
+        Observable<Response> received;
+        received = quoteServiceRx.getRawQuoteFX(securityId.getExchange(), securityId.getSecuritySymbol());
+        return received;
     }
     //</editor-fold>
 }
