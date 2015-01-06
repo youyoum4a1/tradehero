@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.fxonboard;
 
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -38,9 +38,9 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     private SubscriptionList subscriptionList;
-    private CloseListener closeListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -87,29 +87,36 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
                         throwable -> Timber.e(throwable, "Unable to handle Forex onboard views"));
     }
 
-    private void checkFXPortfolio() {
+    private void checkFXPortfolio()
+    {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>() {
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
                     @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args) {
-                        if (args.second.fxPortfolio == null) {
-                            createFXProtfolio();
+                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
+                    {
+                        if (args.second.fxPortfolio == null)
+                        {
+                            createFXPortfolio();
                         }
                     }
                 }));
     }
 
-    private void createFXProtfolio() {
+    private void createFXPortfolio()
+    {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().createFXPortfolio(currentUserId.toUserBaseKey()))
+                userServiceWrapper.get().createFXPortfolioRx(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<PortfolioDTO>() {
+                .subscribe(new EmptyObserver<PortfolioDTO>()
+                {
                     @Override
-                    public void onNext(PortfolioDTO portfolioDTO) {
-                        userProfileCache.get().invalidate(currentUserId.toUserBaseKey());
+                    public void onNext(PortfolioDTO portfolioDTO)
+                    {
+                        userProfileCache.get().get(currentUserId.toUserBaseKey());
                         securityPositionDetailCache.invalidateAll();
                     }
                 }));
@@ -127,24 +134,5 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
         FxOnboardDialogFragment dialogFragment = new FxOnboardDialogFragment();
         dialogFragment.show(fragmentManager, TAG);
         return dialogFragment;
-    }
-
-    @Override public void onDismiss(DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
-        if (closeListener != null)
-        {
-            closeListener.onClose();
-        }
-    }
-
-    public void setOnCloseListener(CloseListener closeListener)
-    {
-        this.closeListener = closeListener;
-    }
-
-    public interface CloseListener
-    {
-        void onClose();
     }
 }

@@ -7,6 +7,8 @@ import com.tradehero.th.api.education.PagedVideoCategoryId;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.PaginatedVideoDTO;
 import com.tradehero.th.api.education.VideoCategoryId;
+import com.tradehero.th.api.education.VideoDTO;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -47,6 +49,11 @@ import rx.Observable;
                     ((PagedVideoCategoryId) videoCategoryId).perPage);
         }
         return videoServiceRx.getVideos(videoCategoryId.id, null, null);
+    }
+
+    @NonNull public Observable<List<VideoDTO>> getFXVideosRx()
+    {
+        return videoServiceRx.getFXVideos();
     }
     //</editor-fold>
 }

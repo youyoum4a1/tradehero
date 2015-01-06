@@ -19,9 +19,9 @@ public abstract class BaseDialogFragment extends DialogFragment
 {
     private BehaviorSubject<DialogInterface> dismissedSubject;
 
-    @Override public void onCreate(Bundle savedInstanceState)
+    public BaseDialogFragment()
     {
-        super.onCreate(savedInstanceState);
+        super();
         dismissedSubject = BehaviorSubject.create();
     }
 

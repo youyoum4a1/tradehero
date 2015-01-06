@@ -57,21 +57,17 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         mBlinkDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
 
-    @Override
-    public void display(final FxSecurityCompactDTO securityCompactDTO)
+    @Override public void display(final FxSecurityCompactDTO securityCompactDTO)
     {
-        linkWith(securityCompactDTO, true);
+        linkWith(securityCompactDTO);
     }
 
-    public void linkWith(FxSecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    public void linkWith(FxSecurityCompactDTO securityCompactDTO)
     {
         this.fxSecurityCompactDTO = securityCompactDTO;
         displayFlagContainer();
-        if (andDisplay)
-        {
-            displayStockName();
-            displayPrice();
-        }
+        displayStockName();
+        displayPrice();
     }
 
     private void displayPrice()

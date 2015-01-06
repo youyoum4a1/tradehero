@@ -41,7 +41,7 @@
   <string name="error_fetch_quote">There was an error fetching quote information</string>
   <string name="security_close">Close</string>
 
-  <!--do not thanslate-->
+  <!--do not translate-->
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
 
   <string name="market_on_board_error_fetch_exchange_sector">There was an error fetching the list of exchanges and sectors</string>
@@ -50,5 +50,7 @@
   <string name="market_on_board_country_from">What country are you from?</string>
   <string name="security_on_board_select_invitation_title">Stocks to Watch!</string>
   <string name="security_on_board_select_invitation_come_on">These stocks are hot! Add them to your watchlist now!</string>
+
+  <string name="security_fx_enroll_button">Click to enroll in Forex</string>
 
 </resources>
