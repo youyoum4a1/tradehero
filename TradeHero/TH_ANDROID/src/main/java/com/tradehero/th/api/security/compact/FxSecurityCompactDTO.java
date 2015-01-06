@@ -30,7 +30,8 @@ public class FxSecurityCompactDTO extends SecurityCompactDTO
     }
 
     @JsonIgnore
-    public void setAskPrice(Context context, Double newAskPrice) {
+    public void setAskPrice(Context context, Double newAskPrice)
+    {
         if (askPrice != null)
         {
             if (askPrice.compareTo(newAskPrice) > 0)
@@ -50,7 +51,8 @@ public class FxSecurityCompactDTO extends SecurityCompactDTO
     }
 
     @JsonIgnore
-    public void setBidPrice(Context context, Double newBidPrice) {
+    public void setBidPrice(Context context, Double newBidPrice)
+    {
         if (bidPrice != null)
         {
             if (bidPrice.compareTo(newBidPrice) > 0)

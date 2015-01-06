@@ -301,7 +301,7 @@
   <string name="long_position_units">Long position: %d units</string>
   <string name="error_fx_candle_charts_load_fail">Loading of candle chart failed</string>
   <string name="error_fetch_fx_list">Error when fetching FX list</string>
-  <string name="error_fetch_fx_list_price">Error when fetching fx prices</string>
+  <string name="error_fetch_fx_list_price">Error when fetching FX prices</string>
 
   <string name="position_title_info">Info</string>
   <string name="position_short_info">position short info</string>

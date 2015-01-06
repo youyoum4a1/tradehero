@@ -361,5 +361,4 @@ abstract public class BasePagedListRxFragment<
             }
         }
     }
-
 }
