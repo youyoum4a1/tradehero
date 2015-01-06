@@ -242,7 +242,7 @@ public class THSignedNumber
     {
         if (signSpanBuilder == null)
         {
-            if (signValue != null && signColorResId == null)
+            if (signValue != null && signColorResId == null && withColor)
             {
                 signColorResId = THColorUtils.getColorResourceIdForNumber(signValue);
             }
