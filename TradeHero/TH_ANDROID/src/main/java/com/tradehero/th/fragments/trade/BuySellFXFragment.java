@@ -324,7 +324,7 @@ public class BuySellFXFragment extends BuySellFragment
                 .build()
                 .into(btn);
 
-        btn.setText(TextUtils.concat(prefix, mBuyBtn.getText()));
+        btn.setText(TextUtils.concat(prefix, btn.getText()));
     }
 
     @Override public boolean isBuySellReady()
