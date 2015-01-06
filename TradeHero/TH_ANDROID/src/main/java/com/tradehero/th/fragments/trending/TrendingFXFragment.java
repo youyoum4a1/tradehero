@@ -57,6 +57,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     private static BaseArrayList<SecurityCompactDTO> mData;
     private boolean fxIsShowed = false;
     private boolean checkPortfolioDone = false;
+    private FxOnboardDialogFragment mFxOnboardDiaog;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -100,8 +101,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
         }
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
                     @Override
@@ -110,7 +110,14 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                         if (args.second.fxPortfolio == null && !fxIsShowed)
                         {
                             fxIsShowed = true;
-                            FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                            mFxOnboardDiaog = FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                            mFxOnboardDiaog.setOnCloseListener(new FxOnboardDialogFragment.CloseListener() {
+                                @Override
+                                public void onClose()
+                                {
+                                    checkFXPortfolio();
+                                }
+                            });
                         }
                         else if (args.second.fxPortfolio != null && !checkPortfolioDone)
                         {

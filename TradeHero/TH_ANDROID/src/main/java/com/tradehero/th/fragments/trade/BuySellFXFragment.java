@@ -415,6 +415,7 @@ public class BuySellFXFragment extends BuySellFragment
             e.printStackTrace();
         }
     }
+
     @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
         super.linkWith(quoteDTO, andDisplay);

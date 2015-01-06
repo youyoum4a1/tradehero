@@ -66,7 +66,6 @@ import rx.schedulers.Schedulers;
                 }
             }
         })
-//                ;
                 .subscribeOn(Schedulers.io());
     }
     //</editor-fold>

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.fxonboard;
 
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     private SubscriptionList subscriptionList;
+    private CloseListener closeListener;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -125,5 +127,21 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
         FxOnboardDialogFragment dialogFragment = new FxOnboardDialogFragment();
         dialogFragment.show(fragmentManager, TAG);
         return dialogFragment;
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        closeListener.onClose();
+    }
+
+    public void setOnCloseListener(CloseListener closeListener)
+    {
+        this.closeListener = closeListener;
+    }
+
+    public interface CloseListener
+    {
+        void onClose();
     }
 }
