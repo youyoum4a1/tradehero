@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
+
   <com.tradehero.th.fragments.fxonboard.IntroductionView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      style="@style/TH.FxOnBoardDialog">
+      style="@style/TH.FxOnBoardDialog"
+      >
 
-    <include layout="@layout/fx_onboard_header_view"/>
+    <include layout="@layout/fx_onboard_header_view" />
 
     <TextView
         android:layout_width="match_parent"
@@ -17,40 +19,36 @@
         android:text="@string/fx_onboard_introduction_video_introduction"
         />
 
-      <LinearLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <TextView
+          android:id="@android:id/empty"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_small"
-          android:orientation="horizontal">
-          <ImageView
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:background="@drawable/fx_onboard_image_1"/>
-          <ImageView
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:layout_marginLeft="@dimen/margin_small"
-              android:background="@drawable/fx_onboard_image_1"/>
-          </LinearLayout>
-      <LinearLayout
+          style="@style/TH.Loading_Empty_Text"
+          android:visibility="gone"
+          android:text="@string/empty_video_list"
+          android:layout_centerInParent="true"
+          android:padding="@dimen/margin_xsmall"
+          />
+
+      <GridView
+          android:id="@+id/introduction_videos_grid"
           android:layout_width="match_parent"
+          android:layout_height="@dimen/size_21"
+          android:listSelector="@drawable/basic_transparent_selector"
+          />
+
+      <ProgressBar
+          android:id="@+id/progress"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_small"
-          android:orientation="horizontal">
-          <ImageView
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:background="@drawable/fx_onboard_image_1"/>
-          <ImageView
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:layout_marginLeft="@dimen/margin_small"
-              android:background="@drawable/fx_onboard_image_1"/>
-      </LinearLayout>
+          android:layout_centerInParent="true"
+          />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/next_button"

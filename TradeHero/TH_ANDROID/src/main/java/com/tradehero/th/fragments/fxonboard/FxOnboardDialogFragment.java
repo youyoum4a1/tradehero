@@ -6,17 +6,22 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.fragments.education.VideoAdapter;
+import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -24,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
@@ -35,12 +41,17 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     private static final String TAG = FxOnboardDialogFragment.class.getName();
 
     @InjectView(R.id.view_animator) ViewAnimator viewAnimator;
+    @InjectView(R.id.introduction_videos_grid) GridView videosGrid;
+    @InjectView(android.R.id.empty) View emptyView;
+    @InjectView(R.id.progress) View progressBar;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @Inject VideoServiceWrapper videoServiceWrapper;
     private SubscriptionList subscriptionList;
+    private VideoAdapter videoAdapter;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -85,6 +96,33 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
                             }
                         },
                         throwable -> Timber.e(throwable, "Unable to handle Forex onboard views"));
+        subscriptionList.add(AndroidObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
+                .subscribe(new Subscriber<List<VideoDTO>>()
+                {
+                    @Override public void onCompleted()
+                    {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override public void onError(Throwable e)
+                    {
+                        THToast.show(R.string.error_loading_videos);
+                    }
+
+                    @Override public void onStart()
+                    {
+                        super.onStart();
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override public void onNext(List<VideoDTO> videoDTOs)
+                    {
+                        videoAdapter.appendHead(videoDTOs);
+                    }
+                }));
+        videosGrid.setEmptyView(emptyView);
+        videoAdapter = new VideoAdapter(getActivity(), null, R.layout.video_view);
+        videosGrid.setAdapter(videoAdapter);
     }
 
     private void checkFXPortfolio()
