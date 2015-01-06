@@ -332,6 +332,12 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
+                if (positionDTO != null && positionDTO.positionStatus == PositionStatus.CLOSED
+                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
+                {
+                    shareCount.setVisibility(GONE);
+                    return;
+                }
                 shareCount.setVisibility(VISIBLE);
                 String count;
                 if (positionDTO == null || positionDTO.shares == null)
@@ -461,7 +467,17 @@ public class PositionPartialTopView extends LinearLayout
                 String unrealised;
                 if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null)
                 {
-                    THSignedMoney unrealisedMoney = THSignedMoney.builder(positionDTO.unrealizedPLRefCcy)
+                    Double PLR;
+                    if (positionDTO.positionStatus == PositionStatus.CLOSED
+                            || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
+                    {
+                        PLR = positionDTO.realizedPLRefCcy;
+                    }
+                    else
+                    {
+                        PLR = positionDTO.unrealizedPLRefCcy;
+                    }
+                    THSignedMoney unrealisedMoney = THSignedMoney.builder(PLR)
                             .currency(positionDTO.getNiceCurrency())
                             .withSign()
                             .signTypeArrow()
