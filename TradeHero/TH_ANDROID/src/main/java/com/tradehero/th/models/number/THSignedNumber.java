@@ -1,6 +1,5 @@
 package com.tradehero.th.models.number;
 
-import android.graphics.Typeface;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
@@ -40,7 +39,7 @@ public class THSignedNumber
     private String formattedNumber;
     private Integer colorResId;
 
-    private final boolean colorAll;
+    private final boolean withColor;
     private final boolean boldSign;
     private final boolean boldValue;
     private Integer signColorResId;
@@ -55,7 +54,7 @@ public class THSignedNumber
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
-        public boolean colorAll = COLOR_ALL;
+        public boolean withColor = COLOR_ALL;
         private int signColorResId = USE_DEFAULT_COLOR;
         private int valueColorResId = USE_DEFAULT_COLOR;
         private boolean boldSign;
@@ -108,7 +107,7 @@ public class THSignedNumber
 
         public BuilderType noColor()
         {
-            this.colorAll = NO_COLOR;
+            this.withColor = NO_COLOR;
             return self();
         }
 
@@ -181,7 +180,7 @@ public class THSignedNumber
         this.signType = builder.signType;
         this.value = builder.value;
         this.relevantDigitCount = builder.relevantDigitCount;
-        this.colorAll = builder.colorAll;
+        this.withColor = builder.withColor;
         this.boldSign = builder.boldSign;
         this.boldValue = builder.boldValue;
         if (builder.signColorResId != USE_DEFAULT_COLOR)
@@ -229,7 +228,7 @@ public class THSignedNumber
 
     public void into(TextView textView)
     {
-        if (colorAll)
+        if (withColor)
         {
             textView.setTextColor(getColor());
         }
@@ -268,13 +267,16 @@ public class THSignedNumber
         {
             signSpanBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        if (colorResId != null)
+        if(withColor)
         {
-            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor(colorResId)), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        else
-        {
-            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (colorResId != null)
+            {
+                signSpanBuilder.setSpan(new ForegroundColorSpan(getColor(colorResId)), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            else
+            {
+                signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         }
         return signSpanBuilder;
     }
