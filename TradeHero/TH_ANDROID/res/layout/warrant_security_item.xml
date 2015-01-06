@@ -50,7 +50,8 @@
 
     <TableRow
         android:layout_weight="1"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        >
 
       <TextView
           android:id="@+id/exchange_symbol"
@@ -78,7 +79,8 @@
 
     <TableRow
         android:layout_weight="0.5"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        >
 
       <TextView
           android:layout_width="wrap_content"
@@ -103,39 +105,16 @@
 
     </TableRow>
 
-    <TableRow
-        android:layout_weight="0.5">
+    <TableRow android:layout_weight="0.5">
 
-      <LinearLayout
+      <TextView
+          android:id="@+id/last_price"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/currency_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            style="@style/TH.Body"
-            tools:text="SG$"
-            />
-
-        <Space
-            android:layout_width="4dp"
-            android:layout_height="0dp"
-            />
-
-        <TextView
-            android:id="@+id/last_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            tools:text="0.026"
-            style="@style/TH.Body"
-            />
-
-      </LinearLayout>
+          android:lines="1"
+          tools:text="0.026"
+          style="@style/TH.Body"
+          />
 
       <TextView
           android:id="@+id/combined_strike_price_type"

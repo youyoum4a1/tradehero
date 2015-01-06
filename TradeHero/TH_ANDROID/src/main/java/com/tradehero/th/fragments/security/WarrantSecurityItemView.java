@@ -129,30 +129,4 @@ public class WarrantSecurityItemView extends SecurityItemView
             }
         }
     }
-
-    @Override public void displayMarketClose()
-    {
-        if (securityCompactDTO == null)
-        {
-            // Nothing to do
-        }
-        else if (securityCompactDTO.marketOpen == null)
-        {
-            Timber.w("displayMarketClose marketOpen is null");
-        }
-        else if (securityCompactDTO.marketOpen)
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.GONE);
-            }
-        }
-        else
-        {
-            if (marketCloseIcon != null)
-            {
-                marketCloseIcon.setVisibility(View.VISIBLE);
-            }
-        }
-    }
 }

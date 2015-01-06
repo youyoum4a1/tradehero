@@ -61,32 +61,12 @@
       >
 
     <TextView
-        android:id="@+id/profit_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        tools:text="@string/arrow_prefix_positive"
-        style="@style/TH.Body"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/currency_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        style="@style/TH.Body"
-        tools:text="US$"
-        />
-
-    <TextView
         android:id="@+id/last_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
         tools:text="1,014"
         style="@style/TH.Body"
-        android:textStyle="bold"
         />
 
   </LinearLayout>

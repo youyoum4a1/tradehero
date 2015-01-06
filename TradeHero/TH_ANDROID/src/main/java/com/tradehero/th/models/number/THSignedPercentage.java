@@ -1,13 +1,14 @@
 package com.tradehero.th.models.number;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
 
 public class THSignedPercentage extends THSignedNumber
 {
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
-        extends THSignedNumber.Builder<BuilderType>
+            extends THSignedNumber.Builder<BuilderType>
     {
         //<editor-fold desc="Constructors">
         protected Builder(double value)
@@ -49,12 +50,9 @@ public class THSignedPercentage extends THSignedNumber
     }
     //</editor-fold>
 
-    @Override protected String getFormatted()
+    @Override protected CharSequence getCombinedSpan()
     {
-        return String.format(
-                "%s%s%s",
-                getConditionalSignPrefix(),
-                createPlainNumber(),
+        return TextUtils.concat(getSpannedSign(), getSpannedValue(),
                 THApp.getResourceString(R.string.percentage_suffix));
     }
 }
