@@ -24,6 +24,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.THColorUtils;
@@ -33,16 +34,12 @@ import timber.log.Timber;
 public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
-    public static final float DIVISOR_PC_50_COLOR = 5f;
-
     @Inject protected Picasso mPicasso;
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
-    @InjectView(R.id.profit_indicator) @Optional TextView profitIndicator;
-    @InjectView(R.id.currency_display) TextView currencyDisplay;
     @InjectView(R.id.last_price) TextView lastPrice;
     @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
     @InjectView(R.id.date) @Optional TextView date;
@@ -150,10 +147,8 @@ public class SecurityItemView extends RelativeLayout
         {
             displayStockName();
             displayExchangeSymbol();
-            displayCurrencyDisplay();
             displayDate();
             displayLastPrice();
-            displayProfitIndicator();
             displayMarketClose();
             displaySecurityType();
             displayCountryLogo();
@@ -167,10 +162,8 @@ public class SecurityItemView extends RelativeLayout
     {
         displayStockName();
         displayExchangeSymbol();
-        displayCurrencyDisplay();
         displayDate();
         displayLastPrice();
-        displayProfitIndicator();
         displayMarketClose();
         displaySecurityType();
         displayCountryLogo();
@@ -209,21 +202,6 @@ public class SecurityItemView extends RelativeLayout
         }
     }
 
-    public void displayCurrencyDisplay()
-    {
-        if (currencyDisplay != null)
-        {
-            if (securityCompactDTO != null)
-            {
-                currencyDisplay.setText(securityCompactDTO.currencyDisplay);
-            }
-            else
-            {
-                currencyDisplay.setText(R.string.na);
-            }
-        }
-    }
-
     public void displayDate()
     {
         if (date != null)
@@ -255,45 +233,19 @@ public class SecurityItemView extends RelativeLayout
             if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(
                     securityCompactDTO.lastPrice))
             {
-                lastPrice.setText(THSignedNumber.builder(securityCompactDTO.lastPrice)
-                                .withOutSign()
-                            .build().toString());
+                THSignedMoney.builder(securityCompactDTO.lastPrice)
+                        .signTypeArrow()
+                        .valueColor(R.color.exchange_symbol)
+                        .currencyColor(R.color.exchange_symbol)
+                        .signValue(securityCompactDTO.pc50DMA)
+                        .currency(securityCompactDTO.currencyDisplay)
+                        .boldValue()
+                        .build()
+                        .into(lastPrice);
             }
             else
             {
                 lastPrice.setText(R.string.na);
-            }
-        }
-    }
-
-    public void displayProfitIndicator()
-    {
-        if (profitIndicator != null)
-        {
-            if (securityCompactDTO != null)
-            {
-                if (securityCompactDTO.pc50DMA == null)
-                {
-                    Timber.w("displayProfitIndicator, pc50DMA was null");
-                    profitIndicator.setText("");
-                    profitIndicator.setTextColor(getResources().getColor(R.color.black));
-                }
-                else
-                {
-                    if (securityCompactDTO.pc50DMA > 0)
-                    {
-                        profitIndicator.setText(R.string.arrow_prefix_positive);
-                    }
-                    else if (securityCompactDTO.pc50DMA < 0)
-                    {
-                        profitIndicator.setText(R.string.arrow_prefix_negative);
-                    }
-                    else
-                    {
-                        profitIndicator.setText("");
-                    }
-                    profitIndicator.setTextColor(THColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
-                }
             }
         }
     }
@@ -314,28 +266,12 @@ public class SecurityItemView extends RelativeLayout
             {
                 marketCloseIcon.setVisibility(View.GONE);
             }
-            if (currencyDisplay != null)
-            {
-                currencyDisplay.setTextColor(getResources().getColor(R.color.exchange_symbol));
-            }
-            if (lastPrice != null)
-            {
-                lastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
-            }
         }
         else
         {
             if (marketCloseIcon != null)
             {
                 marketCloseIcon.setVisibility(View.VISIBLE);
-            }
-            if (currencyDisplay != null)
-            {
-                currencyDisplay.setTextColor(getResources().getColor(android.R.color.darker_gray));
-            }
-            if (lastPrice != null)
-            {
-                lastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
             }
         }
     }

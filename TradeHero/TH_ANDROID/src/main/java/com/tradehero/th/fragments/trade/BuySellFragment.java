@@ -421,7 +421,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (securityCompactDTO != null)
         {
-            if(!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
             {
                 setActionBarTitle(securityCompactDTO.name);
                 setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());

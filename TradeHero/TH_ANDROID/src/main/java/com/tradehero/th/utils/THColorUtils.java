@@ -1,5 +1,6 @@
 package com.tradehero.th.utils;
 
+import android.support.annotation.ColorRes;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.th.R;
 
@@ -15,6 +16,11 @@ public class THColorUtils
 
     public static int getColorResourceIdForNumber(double n)
     {
-        return n < 0 ? R.color.number_down : n > 0 ? R.color.number_up : R.color.black;
+        return getColorResourceIdForNumber(n, R.color.black);
+    }
+
+    public static int getColorResourceIdForNumber(double n, @ColorRes int defaultColorResId)
+    {
+        return n < 0 ? R.color.number_down : n > 0 ? R.color.number_up : defaultColorResId;
     }
 }

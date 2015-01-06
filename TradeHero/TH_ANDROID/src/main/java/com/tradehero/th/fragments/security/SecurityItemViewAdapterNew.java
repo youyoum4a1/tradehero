@@ -38,10 +38,10 @@ public class SecurityItemViewAdapterNew
         {
             map.put(quote.getSecurityIntegerId(), quote);
         }
-        updatePrices(context, map);
+        updatePrices(map);
     }
 
-    public void updatePrices(@NonNull Context context, @NonNull Map<SecurityIntegerId, ? extends QuoteDTO> quotes)
+    public void updatePrices(@NonNull Map<SecurityIntegerId, ? extends QuoteDTO> quotes)
     {
         SecurityCompactDTO securityCompactDTO;
         QuoteDTO quote;
@@ -55,8 +55,8 @@ public class SecurityItemViewAdapterNew
                 {
                     if (securityCompactDTO instanceof FxSecurityCompactDTO)
                     {
-                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(context, quote.ask);
-                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(context, quote.bid);
+                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(quote.ask);
+                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(quote.bid);
                     }
                     else
                     {
