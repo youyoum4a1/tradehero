@@ -1053,7 +1053,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
         else if (dto instanceof DiscussionDTO)
         {
-            discussReportDTO.discussionType = ((DiscussionDTO) dto).type.value;
+            //The type of all DiscussionDTO is 1 when report.
+            discussReportDTO.discussionType = 1;
         }
         else
         {
