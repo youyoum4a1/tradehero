@@ -212,7 +212,7 @@ public class THSignedNumber
         return getColor(getColorResId());
     }
 
-    private int getColor(int colorResId)
+    protected int getColor(int colorResId)
     {
         return THApp.context().getResources().getColor(colorResId);
     }

@@ -1,14 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,11 +13,10 @@ import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.number.THSignedFXRate;
 
 public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
-    private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 3;
-    private static final int DECIMAL_PLACES_TO_BE_SKIPPED = 1;
     @InjectView(R.id.fx_pair_name) TextView fxPairName;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
@@ -61,7 +53,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     {
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
-        mDefaultTextColor = getResources().getColor(R.color.text_primary);
+        mDefaultTextColor = R.color.text_primary;
         mBlinkDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }
 
@@ -84,33 +76,27 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
 
     private void displayPrice()
     {
-        Pair<String, String> formattedPrices = new SecurityCompactDTOUtil().getFormattedAndPaddedAskBid(fxSecurityCompactDTO);
-        coloredText(buyPrice, formattedPrices.first, fxSecurityCompactDTO.fxAskTextColor);
-        coloredText(sellPrice, formattedPrices.second, fxSecurityCompactDTO.fxBidTextColor);
+        int precision = SecurityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
+        coloredText(buyPrice, fxSecurityCompactDTO.askPrice, fxSecurityCompactDTO.fxAskTextColorResId, precision);
+        coloredText(sellPrice, fxSecurityCompactDTO.bidPrice, fxSecurityCompactDTO.fxBidTextColorResId, precision);
     }
 
-    private void coloredText(TextView textView, String text, int color)
+    private void coloredText(TextView textView, double value, int colorResId, int precision)
     {
-        SpannableStringBuilder fontStyleBuilder = new SpannableStringBuilder(text);
-        int length = text.length();
-
-        fontStyleBuilder.setSpan(new AbsoluteSizeSpan((int) textView.getTextSize() + 15),
-                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length - DECIMAL_PLACES_TO_BE_SKIPPED, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        fontStyleBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
-                length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length - DECIMAL_PLACES_TO_BE_SKIPPED, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        if (color != FxSecurityCompactDTO.DEFAULT_TEXT_COLOR && color != mDefaultTextColor)
+        THSignedFXRate.builder(value)
+                .enhanceTo((int) (textView.getTextSize() + 15))
+                .enhanceWith(colorResId)
+                .minPrecision(precision)
+                .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
+                .noColor()
+                .build()
+                .into(textView);
+        if (colorResId != mDefaultTextColor)
         {
-            fontStyleBuilder.setSpan(new ForegroundColorSpan(color),
-                    length - Math.min(length, DECIMAL_PLACES_TO_BE_ENHANCED), length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            //Adds a blinking animation
+            //Adds a blinking animation.
             textView.setAlpha(0.1f);
             textView.animate().alpha(1).setDuration(mBlinkDuration).setInterpolator(new AccelerateInterpolator(3)).start();
         }
-
-        textView.setText(fontStyleBuilder);
     }
 
     //<editor-fold desc="Display Methods">

@@ -214,8 +214,8 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                 {
                     if (dto.id.equals(price.securityId) && dto instanceof FxSecurityCompactDTO)
                     {
-                        ((FxSecurityCompactDTO) dto).setAskPrice(getActivity(), price.ask);
-                        ((FxSecurityCompactDTO) dto).setBidPrice(getActivity(), price.bid);
+                        ((FxSecurityCompactDTO) dto).setAskPrice(price.ask);
+                        ((FxSecurityCompactDTO) dto).setBidPrice(price.bid);
                         break;
                     }
                 }
@@ -268,7 +268,6 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
-        View child = parent.getChildAt(position - parent.getFirstVisiblePosition());
         if (item instanceof SecurityCompactDTO)
         {
             handleSecurityItemOnClick((SecurityCompactDTO) item);
