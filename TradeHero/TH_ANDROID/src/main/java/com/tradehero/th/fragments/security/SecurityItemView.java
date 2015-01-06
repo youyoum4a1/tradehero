@@ -34,16 +34,12 @@ import timber.log.Timber;
 public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
-    public static final float DIVISOR_PC_50_COLOR = 5f;
-
     @Inject protected Picasso mPicasso;
 
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
-    //@InjectView(R.id.profit_indicator) @Optional TextView profitIndicator;
-    //@InjectView(R.id.currency_display) TextView currencyDisplay;
     @InjectView(R.id.last_price) TextView lastPrice;
     @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
     @InjectView(R.id.date) @Optional TextView date;
