@@ -18,6 +18,7 @@ import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -35,7 +36,11 @@ import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+import retrofit.client.Response;
+import retrofit.converter.ConversionException;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
@@ -46,10 +51,12 @@ public class BuySellFXFragment extends BuySellFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
     public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
+    public final static long MILLISEC_FX_QUOTE_REFRESH = 5000;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject RawQuoteParser rawQuoteParser;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
@@ -386,8 +393,29 @@ public class BuySellFXFragment extends BuySellFragment
 
     }
 
-    @Override
-    protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    @Override protected void fetchQuote()
+    {
+        unsubscribe(quoteSubscription);
+        quoteSubscription = AndroidObservable.bindFragment(
+                this,
+                quoteServiceWrapper.getQuoteFXRx(securityId)
+                        .repeatWhen(observable -> observable.delay(MILLISEC_FX_QUOTE_REFRESH, TimeUnit.MILLISECONDS)))
+                .subscribe(
+                        quoteDTO -> linkWith(quoteDTO, true),
+                        toastOnErrorAction);
+    }
+
+    protected void linkWith(Response quoteDTO, boolean andDisplay)
+    {
+        try {
+            linkWith(rawQuoteParser.parse(quoteDTO), andDisplay);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ConversionException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
         super.linkWith(quoteDTO, andDisplay);
         showCloseDialog();
