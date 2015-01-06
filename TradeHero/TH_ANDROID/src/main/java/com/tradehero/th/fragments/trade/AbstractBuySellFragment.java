@@ -222,13 +222,18 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
+    protected long getMillisecQuoteRefresh()
+    {
+        return MILLISEC_QUOTE_REFRESH;
+    }
+
     protected void fetchQuote()
     {
         unsubscribe(quoteSubscription);
         quoteSubscription = AndroidObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
-                        .repeatWhen(observable -> observable.delay(MILLISEC_QUOTE_REFRESH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(observable -> observable.delay(getMillisecQuoteRefresh(), TimeUnit.MILLISECONDS)))
                 .subscribe(
                         quoteDTO -> linkWith(quoteDTO, true),
                         toastOnErrorAction);

@@ -124,12 +124,12 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             @Override protected void applyTransformation(float interpolatedTime, android.view.animation.Transformation t)
             {
                 super.applyTransformation(interpolatedTime, t);
-                mQuoteRefreshProgressBar.setProgress((int) (MILLISEC_QUOTE_REFRESH * (1 - interpolatedTime)));
+                mQuoteRefreshProgressBar.setProgress((int) (getMillisecQuoteRefresh() * (1 - interpolatedTime)));
             }
         };
-        progressAnimation.setDuration(MILLISEC_QUOTE_REFRESH);
-        mQuoteRefreshProgressBar.setMax((int) MILLISEC_QUOTE_REFRESH);
-        mQuoteRefreshProgressBar.setProgress((int) MILLISEC_QUOTE_REFRESH);
+        progressAnimation.setDuration(getMillisecQuoteRefresh());
+        mQuoteRefreshProgressBar.setMax((int) getMillisecQuoteRefresh());
+        mQuoteRefreshProgressBar.setProgress((int) getMillisecQuoteRefresh());
         mQuoteRefreshProgressBar.setAnimation(progressAnimation);
 
         listenToBuySellDialog();
