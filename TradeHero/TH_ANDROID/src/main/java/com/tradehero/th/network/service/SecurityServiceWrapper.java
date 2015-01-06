@@ -18,6 +18,7 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
@@ -133,7 +134,7 @@ import rx.Observable;
         {
             ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
             received = this.securityService.getBySectorAndExchange(
-                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
                     exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
                     key.perPage);
@@ -182,6 +183,18 @@ import rx.Observable;
             else
             {
                 throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
+            }
+        }
+        else if (key instanceof TrendingFxSecurityListType)
+        {
+            // FIXME when the server offers pagination
+            if (key.page != null && key.page == 1)
+            {
+                received = this.securityServiceRx.getFXSecurities();
+            }
+            else
+            {
+                received = Observable.just(new SecurityCompactDTOList());
             }
         }
         else if (key instanceof SearchSecurityListType)
@@ -300,15 +313,6 @@ import rx.Observable;
             return buyRx(securityId, transactionFormDTO);
         }
         return sellRx(securityId, transactionFormDTO);
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Get FX Security">
-    @NonNull public Observable<SecurityCompactDTOList> getFXSecuritiesRx()
-    {
-        Observable<SecurityCompactDTOList> received;
-        received = securityServiceRx.getFXSecurities();
-        return received;
     }
     //</editor-fold>
 
