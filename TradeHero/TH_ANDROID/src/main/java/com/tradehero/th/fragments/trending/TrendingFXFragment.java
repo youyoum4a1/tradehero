@@ -129,10 +129,6 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                                 securityCompactCache.onNext(mData);
                                 fetchFXPrice();
                             }
-                            else
-                            {
-                                fetchFXList();
-                            }
                         }
                     }
                 }));

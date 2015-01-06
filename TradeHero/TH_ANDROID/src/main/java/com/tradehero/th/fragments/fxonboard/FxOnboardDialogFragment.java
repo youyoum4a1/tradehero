@@ -132,7 +132,10 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @Override public void onDismiss(DialogInterface dialog)
     {
         super.onDismiss(dialog);
-        closeListener.onClose();
+        if (closeListener != null)
+        {
+            closeListener.onClose();
+        }
     }
 
     public void setOnCloseListener(CloseListener closeListener)
