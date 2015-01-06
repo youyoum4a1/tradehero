@@ -267,16 +267,13 @@ public class THSignedNumber
         {
             signSpanBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        if(withColor)
+        if (colorResId != null)
         {
-            if (colorResId != null)
-            {
-                signSpanBuilder.setSpan(new ForegroundColorSpan(getColor(colorResId)), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            else
-            {
-                signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor(colorResId)), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else if (withColor)
+        {
+            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return signSpanBuilder;
     }
