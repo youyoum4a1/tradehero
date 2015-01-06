@@ -17,10 +17,15 @@ public class SecurityCompactDTOUtil
 
     public static int getExpectedPrecision(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        String askPrice = THSignedNumber.builder(securityCompactDTO.askPrice)
+        return getExpectedPrecision(securityCompactDTO.askPrice, securityCompactDTO.bidPrice);
+    }
+
+    public static int getExpectedPrecision(double ask, double bid)
+    {
+        String askPrice = THSignedNumber.builder(ask)
                 .relevantDigitCount(DEFAULT_RELEVANT_DIGITS)
                 .build().toString();
-        String bidPrice = THSignedNumber.builder(securityCompactDTO.bidPrice)
+        String bidPrice = THSignedNumber.builder(bid)
                 .relevantDigitCount(DEFAULT_RELEVANT_DIGITS)
                 .build().toString();
         int askDecimalPlace = askPrice.indexOf('.');

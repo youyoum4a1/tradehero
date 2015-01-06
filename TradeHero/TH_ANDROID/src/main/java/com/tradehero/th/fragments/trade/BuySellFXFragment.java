@@ -2,10 +2,12 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -19,6 +21,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.quote.RawQuoteParser;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -27,12 +30,13 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
+import com.tradehero.th.models.number.THSignedFXRate;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
+import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
@@ -71,6 +75,7 @@ public class BuySellFXFragment extends BuySellFragment
     private int closeUnits;
     private boolean portfolioToBeClosed = false;
     private boolean positionIsNull = false;
+    private QuoteDTO oldQuoteDTO;
 
     public static void putCloseAttribute(@NonNull Bundle args, int units)
     {
@@ -154,6 +159,12 @@ public class BuySellFXFragment extends BuySellFragment
     {
         super.onSaveInstanceState(outState);
         subscriptionList.unsubscribe();
+    }
+
+    @Override public void onDestroyView()
+    {
+        super.onDestroyView();
+        this.oldQuoteDTO = null;
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
@@ -263,45 +274,57 @@ public class BuySellFXFragment extends BuySellFragment
     {
         if (mBuyBtn != null && mSellBtn != null)
         {
-            String bPrice;
-            String sPrice;
-            THSignedNumber bthSignedNumber;
-            THSignedNumber sthSignedNumber;
             if (quoteDTO == null)
             {
                 return;
             }
             else
             {
+                int precision = 0;
+                if (quoteDTO.ask != null && quoteDTO.bid != null)
+                {
+                    precision = SecurityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
+                }
+
                 if (quoteDTO.ask == null)
                 {
-                    bPrice = getString(R.string.buy_sell_ask_price_not_available);
+                    mBuyBtn.setText(R.string.buy_sell_ask_price_not_available);
                 }
                 else
                 {
-                    bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
-                            .signTypeArrow()
-                            .relevantDigitCount(10)
-                            .build();
-                    bPrice = bthSignedNumber.toString();
+                    double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
+                    formatButtonText(quoteDTO.ask, diff, precision, mBuyBtn, getString(R.string.fx_buy));
                 }
 
                 if (quoteDTO.bid == null)
                 {
-                    sPrice = getString(R.string.buy_sell_bid_price_not_available);
+                    mSellBtn.setText(R.string.buy_sell_bid_price_not_available);
                 }
                 else
                 {
-                    sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
-                            .signTypeArrow()
-                            .relevantDigitCount(10)
-                            .build();
-                    sPrice = sthSignedNumber.toString();
+                    double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
+                    formatButtonText(quoteDTO.bid, diff, precision, mSellBtn, getString(R.string.fx_sell));
                 }
             }
-            mBuyBtn.setText(getString(R.string.fx_buy, bPrice));
-            mSellBtn.setText(getString(R.string.fx_sell, sPrice));
         }
+    }
+
+    protected void formatButtonText(double value, double diff, int precision, Button btn, String prefix)
+    {
+        THSignedFXRate.builder(value)
+                .signTypeArrow()
+                .signValue(diff)
+                .signColor(THColorUtils.getColorResourceIdForNumber(diff, R.color.text_primary_inverse))
+                .enhanceTo((int) (btn.getTextSize() + 15))
+                .enhanceWith(THColorUtils.getColorResourceIdForNumber(diff, R.color.text_primary_inverse))
+                .valueColor(R.color.text_primary_inverse)
+                .noColor()
+                .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
+                .minPrecision(precision)
+                .build()
+                .into(btn);
+
+        btn.setText(TextUtils.concat(prefix, mBuyBtn.getText()));
     }
 
     @Override public boolean isBuySellReady()
@@ -407,16 +430,21 @@ public class BuySellFXFragment extends BuySellFragment
 
     protected void linkWith(Response quoteDTO, boolean andDisplay)
     {
-        try {
+        try
+        {
             linkWith(rawQuoteParser.parse(quoteDTO), andDisplay);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
-        } catch (ConversionException e) {
+        } catch (ConversionException e)
+        {
             e.printStackTrace();
         }
     }
+
     @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
     {
+        this.oldQuoteDTO = this.quoteDTO;
         super.linkWith(quoteDTO, andDisplay);
         showCloseDialog();
         displayPositionStatus();
