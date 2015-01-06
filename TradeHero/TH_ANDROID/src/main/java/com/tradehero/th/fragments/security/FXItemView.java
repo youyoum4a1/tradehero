@@ -76,9 +76,12 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
 
     private void displayPrice()
     {
-        int precision = SecurityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
-        coloredText(buyPrice, fxSecurityCompactDTO.askPrice, fxSecurityCompactDTO.fxAskTextColorResId, precision);
-        coloredText(sellPrice, fxSecurityCompactDTO.bidPrice, fxSecurityCompactDTO.fxBidTextColorResId, precision);
+        if(fxSecurityCompactDTO.askPrice != null && fxSecurityCompactDTO.bidPrice != null)
+        {
+            int precision = SecurityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
+            coloredText(buyPrice, fxSecurityCompactDTO.askPrice, fxSecurityCompactDTO.fxAskTextColorResId, precision);
+            coloredText(sellPrice, fxSecurityCompactDTO.bidPrice, fxSecurityCompactDTO.fxBidTextColorResId, precision);
+        }
     }
 
     private void coloredText(TextView textView, double value, int colorResId, int precision)
