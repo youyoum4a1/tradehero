@@ -63,14 +63,14 @@ public class BuySellFXFragment extends BuySellFragment
     @NonNull private SubscriptionList subscriptionList;
     private int closeUnits;
     private boolean portfolioToBeClosed = false;
-    private static boolean positionIsNull = false;
+    private boolean positionIsNull = false;
 
     public static void putCloseAttribute(@NonNull Bundle args, int units)
     {
         args.putInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, units);
     }
 
-    public static int getCloseAttribute(@NonNull Bundle args)
+    private static int getCloseAttribute(@NonNull Bundle args)
     {
         return args.getInt(BUNDLE_KEY_CLOSE_UNITS_BUNDLE, 0);
     }
@@ -138,11 +138,8 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void onStop()
     {
+        subscriptionList.unsubscribe();
         positionIsNull = false;
-        if (subscriptionList != null)
-        {
-            subscriptionList.unsubscribe();
-        }
         super.onStop();
     }
 
