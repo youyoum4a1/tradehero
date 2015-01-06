@@ -1,11 +1,17 @@
 package com.tradehero.th.fragments.fxonboard;
 
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
@@ -18,12 +24,16 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.fragments.education.VideoDTOUtil;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.fragments.education.VideoAdapter;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +60,7 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject VideoServiceWrapper videoServiceWrapper;
+    @Inject Lazy<DashboardNavigator> navigator;
     private SubscriptionList subscriptionList;
     private VideoAdapter videoAdapter;
 
@@ -63,6 +74,10 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
+        videoAdapter = new VideoAdapter(getActivity(), null, R.layout.video_view);
+        videosGrid.setAdapter(videoAdapter);
+
         subscriptionList = new SubscriptionList();
         Observable.just(viewAnimator)
                 .flatMapIterable(animator -> {
@@ -102,6 +117,10 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
                     @Override public void onCompleted()
                     {
                         progressBar.setVisibility(View.GONE);
+                        if(videoAdapter.isEmpty())
+                        {
+                            emptyView.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override public void onError(Throwable e)
@@ -113,16 +132,19 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
                     {
                         super.onStart();
                         progressBar.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
                     }
 
                     @Override public void onNext(List<VideoDTO> videoDTOs)
                     {
                         videoAdapter.appendHead(videoDTOs);
+                        videoAdapter.notifyDataSetChanged();
                     }
                 }));
-        videosGrid.setEmptyView(emptyView);
-        videoAdapter = new VideoAdapter(getActivity(), null, R.layout.video_view);
-        videosGrid.setAdapter(videoAdapter);
+        videosGrid.setOnItemClickListener((parent, view1, position, id) -> {
+            VideoDTO videoDTO = videoAdapter.getItem(position);
+            VideoDTOUtil.openVideoDTO(getActivity(), navigator.get(), videoDTO);
+        });
     }
 
     private void checkFXPortfolio()

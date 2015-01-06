@@ -109,23 +109,7 @@ public class VideoCategoryView extends RelativeLayout
 
     private void handleItemClicked(@NonNull VideoDTO videoDTO)
     {
-        if (!videoDTO.locked && !StringUtils.isNullOrEmpty(videoDTO.url))
-        {
-            Uri url = Uri.parse(videoDTO.url);
-            Intent videoIntent = new Intent(Intent.ACTION_VIEW, url);
-            PackageManager packageManager = getContext().getPackageManager();
-            List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(videoIntent, 0);
-            if (handlerActivities.size() > 0)
-            {
-                getContext().startActivity(videoIntent);
-            }
-            else if (navigator != null)
-            {
-                Bundle bundle = new Bundle();
-                WebViewFragment.putUrl(bundle, videoDTO.url);
-                navigator.pushFragment(WebViewFragment.class, bundle);
-            }
-        }
+        VideoDTOUtil.openVideoDTO(getContext(), navigator, videoDTO);
     }
 
     @Override public void display(@NonNull VideoCategoryDTO dto)
