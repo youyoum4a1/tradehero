@@ -40,6 +40,7 @@ import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import dagger.Lazy;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
@@ -191,7 +192,8 @@ public class BuySellFXFragment extends BuySellFragment
     {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
-                securityServiceWrapper.getFXHistory(securityId, code))
+                securityServiceWrapper.getFXHistory(securityId, code)
+                    .repeatWhen(observable -> observable.delay(60000, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXHistoryFetchObserver()));
     }
 
