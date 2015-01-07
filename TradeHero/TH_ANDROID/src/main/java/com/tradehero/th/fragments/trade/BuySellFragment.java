@@ -95,7 +95,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     protected Animation progressAnimation;
     protected BroadcastReceiver chartImageButtonClickReceiver;
-    @Nullable protected Subscription quoteTimerSubscription;
 
     @Nullable protected Subscription alertCompactListCacheSubscription;
     @Inject Lazy<SocialSharer> socialSharerLazy;
@@ -183,8 +182,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     @Override public void onStop()
     {
-        unsubscribe(quoteTimerSubscription);
-        quoteTimerSubscription = null;
         unsubscribe(portfolioCacheSubscription);
         portfolioCacheSubscription = null;
         unsubscribe(alertCompactListCacheSubscription);
@@ -209,8 +206,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        unsubscribe(quoteTimerSubscription);
-        quoteTimerSubscription = null;
         unsubscribe(portfolioCacheSubscription);
         portfolioCacheSubscription = null;
         unsubscribe(alertCompactListCacheSubscription);

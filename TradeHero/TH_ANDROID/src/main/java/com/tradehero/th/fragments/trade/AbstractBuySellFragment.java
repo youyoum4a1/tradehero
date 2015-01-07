@@ -125,12 +125,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        fetchQuote();
-    }
-
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
@@ -141,6 +135,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onStart()
     {
         super.onStart();
+        fetchQuote();
         fetchSecurityCompact();
         fetchSecurityPositionDetail();
         fetchUserProfile();
