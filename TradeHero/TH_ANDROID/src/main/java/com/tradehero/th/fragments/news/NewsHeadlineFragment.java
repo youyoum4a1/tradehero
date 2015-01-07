@@ -18,8 +18,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -28,11 +26,9 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -67,14 +63,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
     @Nullable Subscription securitySubscription;
     @Nullable Subscription securityNewsSubscription;
-    protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
-    @Nullable Subscription newsSusbcription;
 
     public static final String TEST_KEY = "News-Test";
     public static long start = 0;
-
-    private int tempPosition = 0;
-    private NewsItemDTOKey tempDto = null;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -106,8 +97,6 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         securitySubscription = null;
         unsubscribe(securityNewsSubscription);
         securityNewsSubscription = null;
-        unsubscribe(newsSusbcription);
-        newsSusbcription = null;
         super.onStop();
     }
 
@@ -235,79 +224,11 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     protected void listItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         Object o = parent.getItemAtPosition(position);
-        if (o instanceof NewsItemDTOKey)
+        if (o instanceof NewsItemCompactDTO && ((NewsItemCompactDTO) o).url != null)
         {
-            handleNewsClicked(position, (NewsItemDTOKey) o);
-        }
-    }
-
-    protected void handleNewsClicked(int position, @Nullable NewsItemDTOKey news)
-    {
-        tempPosition = position;
-        tempDto = news;
-        if (news != null)
-        {
-            fetchDiscussionDetail(news);
-        }
-    }
-
-    private void fetchDiscussionDetail(NewsItemDTOKey discussionKey)
-    {
-        unsubscribe(newsSusbcription);
-        newsSusbcription = AndroidObservable.bindFragment(this, discussionCache.get(discussionKey))
-                .take(1)
-                .subscribe(createDiscussionFetchObserver());
-    }
-
-    protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
-    {
-        return new DiscussionFetchObserver();
-    }
-
-    private class DiscussionFetchObserver
-            implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
-    {
-        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-    }
-
-    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO)
-    {
-        this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
-        Bundle bundle = new Bundle();
-        if (abstractDiscussionCompactDTO != null
-                && ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url != null)
-        {
-            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) abstractDiscussionCompactDTO).url);
-            navigator.get().pushFragment(WebViewFragment.class, bundle);
-        }
-        else
-        {
-            handleNewClicked(tempPosition, tempDto);
-        }
-    }
-
-    protected void handleNewClicked(int position, NewsItemDTOKey news)
-    {
-        if (news != null)
-        {
-            int resId = adapter.getBackgroundRes(position);
             Bundle bundle = new Bundle();
-            NewsDiscussionFragment.putBackgroundResId(bundle, resId);
-            NewsDiscussionFragment.putSecuritySymbol(bundle, securityId.getSecuritySymbol());
-            NewsDiscussionFragment.putDiscussionKey(bundle, news);
-            navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
+            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) o).url);
+            navigator.get().pushFragment(WebViewFragment.class, bundle);
         }
     }
 }
