@@ -19,8 +19,8 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -109,7 +109,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
-            BasePurchaseManagerFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
