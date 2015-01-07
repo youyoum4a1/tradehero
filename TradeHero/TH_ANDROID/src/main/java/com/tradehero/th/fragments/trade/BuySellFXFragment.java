@@ -31,6 +31,7 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.models.number.THSignedFXRate;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -239,17 +240,21 @@ public class BuySellFXFragment extends BuySellFragment
             tvPositionMoney.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
             if (share != null)
             {
+                String shareStr = THSignedNumber.builder(share)
+                        .withOutSign()
+                        .build()
+                        .toString();
                 if (share == 0)
                 {
                     tvPositionUnits.setText(getString(R.string.no_current_position_units));
                 }
                 else if (share > 0)
                 {
-                    tvPositionUnits.setText(getString(R.string.long_position_units, share));
+                    tvPositionUnits.setText(getString(R.string.long_position_units, shareStr));
                 }
                 else
                 {
-                    tvPositionUnits.setText(getString(R.string.short_position_units, Math.abs(share)));
+                    tvPositionUnits.setText(getString(R.string.short_position_units, shareStr));
                 }
                 if (unRealizedPLRefccy != null)
                 {
