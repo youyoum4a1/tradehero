@@ -23,10 +23,13 @@ public class DisplayablePortfolioDTOWithinUserComparator implements Comparator<D
         {
             return -1;
         }
-        int portfolioComp = this.portfolioCompactDTODisplayComparator.compare(lhs.portfolioDTO, rhs.portfolioDTO);
-        if (portfolioComp != 0)
+        if (lhs.portfolioDTO != null && rhs.portfolioDTO != null)
         {
-            return portfolioComp;
+            int portfolioComp = this.portfolioCompactDTODisplayComparator.compare(lhs.portfolioDTO, rhs.portfolioDTO);
+            if (portfolioComp != 0)
+            {
+                return portfolioComp;
+            }
         }
         return this.ownedPortfolioIdDisplayComparator.compare(lhs.ownedPortfolioId, rhs.ownedPortfolioId);
     }
