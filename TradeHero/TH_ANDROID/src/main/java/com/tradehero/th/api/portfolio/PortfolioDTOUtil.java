@@ -22,9 +22,9 @@ public class PortfolioDTOUtil
     {
         if (portfolioDTO != null)
         {
-            if (portfolioDTO.isDefault())
+            if (portfolioDTO.isDefault() && portfolioDTO.title != null)
             {
-                return context.getString(R.string.portfolio_default_title);
+                return portfolioDTO.title;
             }
             if (portfolioDTO.isWatchlist)
             {
