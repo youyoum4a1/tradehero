@@ -148,7 +148,7 @@ public class PortfolioCompactDTO implements DTO
                 "cashBalance=" + cashBalance +
                 ", id=" + id +
                 ", providerId=" + providerId +
-                ", portfolioType=" + assetClass +
+                ", assetClass=" + assetClass +
                 ", title='" + title + '\'' +
                 ", totalValue=" + totalValue +
                 ", totalExtraCashPurchased=" + totalExtraCashPurchased +

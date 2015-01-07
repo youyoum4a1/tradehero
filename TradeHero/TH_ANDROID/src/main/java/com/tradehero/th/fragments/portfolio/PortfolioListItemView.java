@@ -30,7 +30,6 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -266,7 +265,7 @@ public class PortfolioListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(displayablePortfolioUtil.getLongTitleType(getContext(),
+            title.setText(displayablePortfolioUtil.getLongTitle(getContext(),
                     displayablePortfolioDTO));
         }
     }

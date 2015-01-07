@@ -1,6 +1,8 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
@@ -18,34 +20,22 @@ public class DisplayablePortfolioUtil
         super();
     }
 
-    public String getLongTitle(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
+    @NonNull public String getLongTitle(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
-        if (displayablePortfolioDTO != null &&
-                displayablePortfolioDTO.userBaseDTO != null &&
-                !currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey()))
-        {
-            return displayablePortfolioDTO.userBaseDTO.displayName;
-        }
-
+        String title = null;
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
         {
-            return displayablePortfolioDTO.portfolioDTO.title;
-        }
-
-        return context.getString(R.string.portfolio_item_title_loading);
-    }
-
-    public String getLongTitleType(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
-    {
-        if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
-        {
-            return portfolioDTOUtil.get().getLongTitleType(context,
+            title = portfolioDTOUtil.get().getLongTitle(context,
                     displayablePortfolioDTO.portfolioDTO);
+        }
+        if (title != null)
+        {
+            return title;
         }
         return context.getString(R.string.portfolio_title_unnamed);
     }
 
-    public String getLongSubTitle(Context context, DisplayablePortfolioDTO displayablePortfolioDTO)
+    public String getLongSubTitle(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         String subTitle = null;
         if (displayablePortfolioDTO != null)
