@@ -84,7 +84,7 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         return shareLeftText;
     }
 
-    @Override @Nullable protected Integer getMaxValue()
+    @Override protected Integer getMaxValue()
     {
         return getMaxSellableShares();
     }

@@ -71,7 +71,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
         return cashLeftText;
     }
 
-    @Override @Nullable protected Integer getMaxValue()
+    @Override protected Integer getMaxValue()
     {
         return getMaxPurchasableShares();
     }
