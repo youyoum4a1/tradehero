@@ -64,7 +64,7 @@ public class TransformationModule
             }
         };
         transformation.add(new StackBlurTransformation(25));
-        transformation.add(new AlphaTransformation(0.3f));
+        transformation.add(new AlphaTransformation(picasso, 0.3f));
         return transformation;
     }
 
@@ -105,7 +105,7 @@ public class TransformationModule
         };
         backgroundTransformation.add(new GrayscaleTransformation(picasso));
         backgroundTransformation.add(new StackBlurTransformation(10));
-        backgroundTransformation.add(new AlphaTransformation(0.2f));
+        backgroundTransformation.add(new AlphaTransformation(picasso, 0.2f));
         return backgroundTransformation;
     }
 
