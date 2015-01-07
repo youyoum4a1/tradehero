@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trending;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
 
@@ -13,11 +12,11 @@ enum TrendingTabType
     ;
 
     @StringRes public final int titleStringResId;
-    @NonNull public final Class<? extends Fragment> fragmentClass;
+    @NonNull public final Class<? extends TrendingBaseFragment> fragmentClass;
     @NonNull public final AssetClass assetClass;
 
     TrendingTabType(@StringRes int titleStringResId,
-            @NonNull Class<? extends Fragment> fragmentClass,
+            @NonNull Class<? extends TrendingBaseFragment> fragmentClass,
             @NonNull AssetClass assetClass)
     {
         this.titleStringResId = titleStringResId;

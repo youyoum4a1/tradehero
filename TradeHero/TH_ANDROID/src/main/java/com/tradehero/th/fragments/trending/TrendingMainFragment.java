@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trending;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -84,11 +83,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-        {
-            actionBar.setTitle(R.string.trending_header);
-        }
+        setActionBarTitle(R.string.trending_header);
     }
 
     @Override public void onDestroyView()

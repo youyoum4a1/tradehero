@@ -22,20 +22,14 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnboardDialogFragment;
-import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
-import com.tradehero.th.fragments.security.SecurityListRxFragment;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import dagger.Lazy;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -44,14 +38,12 @@ import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
 
 //@Routable("trending-securities")
-public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
+public class TrendingFXFragment extends TrendingBaseFragment
         implements WithTutorial
 {
     private static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
     @InjectView(R.id.btn_enroll) View btnEnroll;
 
@@ -68,8 +60,7 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(R.string.trending_header);
-        inflater.inflate(R.menu.search_menu, menu);
+        //inflater.inflate(R.menu.search_menu, menu); // Put back when Fx is searchable
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -155,6 +146,16 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
                                             },
                                             error -> THToast.show(new THException(error))
                                     );
+                            //onboardDialogFragment.getUserActionTypeObservable()
+                            //        .subscribe(
+                            //                action -> {
+                            //                    if (action.equals(FxOnboardDialogFragment.UserActionType.CANCELLED))
+                            //                    {
+                            //                        // TODO show Stocks
+                            //                    }
+                            //                },
+                            //                error -> {}
+                            //        );
                         }
                     }
                 });
@@ -196,12 +197,6 @@ public class TrendingFXFragment extends SecurityListRxFragment<SecurityItemView>
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_trending_screen;
-    }
-
-    public void pushSearchIn()
-    {
-        Bundle args = new Bundle();
-        navigator.get().pushFragment(SecuritySearchFragment.class, args);
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)

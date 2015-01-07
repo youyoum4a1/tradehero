@@ -34,17 +34,13 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
-import com.tradehero.th.fragments.security.SecurityListRxFragment;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -57,7 +53,6 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
@@ -71,12 +66,10 @@ import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("trending-securities")
-public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemView>
+public class TrendingStockFragment extends TrendingBaseFragment
         implements WithTutorial
 {
-    @Inject CurrentUserId currentUserId;
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
-    @Inject UserProfileCacheRx userProfileCache;
     @Inject ProviderListCacheRx providerListCache;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject Analytics analytics;
@@ -139,7 +132,6 @@ public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemVi
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarTitle(R.string.trending_header);
         inflater.inflate(R.menu.search_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
@@ -270,7 +262,7 @@ public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemVi
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get(currentUserId.toUserBaseKey()))
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileFetchObserver()));
     }
 
@@ -393,12 +385,6 @@ public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemVi
         }
     }
 
-    public void pushSearchIn()
-    {
-        Bundle args = new Bundle();
-        navigator.get().pushFragment(SecuritySearchFragment.class, args);
-    }
-
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
@@ -463,7 +449,7 @@ public class TrendingStockFragment extends SecurityListRxFragment<SecurityItemVi
 
     private void handleSurveyItemOnClick()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
