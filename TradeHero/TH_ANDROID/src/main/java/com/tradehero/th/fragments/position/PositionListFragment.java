@@ -42,13 +42,13 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.fragments.security.SecurityListRxFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFXFragment;
-import com.tradehero.th.fragments.trending.TrendingStockFragment;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -218,17 +218,14 @@ public class PositionListFragment
 
         if (ownedPortfolioId != null)
         {
-            TrendingStockFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            SecurityListRxFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        if(portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX)
+        if(portfolioDTO != null && portfolioDTO.assetClass != null)
         {
-            navigator.get().pushFragment(TrendingFXFragment.class, args);
+            TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
         }
-        else
-        {
-            navigator.get().pushFragment(TrendingStockFragment.class, args);
-        }
+        navigator.get().pushFragment(TrendingMainFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)

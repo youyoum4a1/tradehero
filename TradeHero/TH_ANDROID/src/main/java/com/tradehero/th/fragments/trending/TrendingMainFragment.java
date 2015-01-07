@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.trending;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,23 +17,45 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
 
 public class TrendingMainFragment extends DashboardFragment
 {
+    private static final String KEY_ASSET_CLASS = TrendingMainFragment.class.getName() + ".assetClass";
+
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    public static int lastType = 0;
+    public int lastType = 0;
 
     private TradingPagerAdapter tradingPagerAdapter;
+
+    public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
+    {
+        args.putInt(KEY_ASSET_CLASS, assetClass.getValue());
+    }
+
+    @Nullable private static AssetClass getAssetClass(@NonNull Bundle args)
+    {
+        if (!args.containsKey(KEY_ASSET_CLASS))
+        {
+            return null;
+        }
+        return AssetClass.create(args.getInt(KEY_ASSET_CLASS));
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         tradingPagerAdapter = new TradingPagerAdapter(this.getChildFragmentManager());
+        AssetClass askedAssetClass = getAssetClass(getArguments());
+        if (askedAssetClass != null)
+        {
+            lastType = TrendingTabType.getForAssetClass(askedAssetClass).ordinal();
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -54,7 +78,7 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_blue));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
-        tabViewPager.setCurrentItem(lastType,true);
+        tabViewPager.setCurrentItem(lastType, true);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -105,6 +129,5 @@ public class TrendingMainFragment extends DashboardFragment
         {
             return TrendingTabType.values().length;
         }
-
     }
 }
