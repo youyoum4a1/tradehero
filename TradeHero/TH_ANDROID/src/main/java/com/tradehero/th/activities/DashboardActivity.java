@@ -67,7 +67,7 @@ import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
-import com.tradehero.th.fragments.fxonboard.FxOnboardDialogFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -536,7 +536,7 @@ public class DashboardActivity extends BaseActivity
                         if (!isFxShown.get())
                         {
                             isFxShown.set(true);
-                            FxOnboardDialogFragment.showOnBoardDialog(getFragmentManager());
+                            FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
                             return;
                         }
 

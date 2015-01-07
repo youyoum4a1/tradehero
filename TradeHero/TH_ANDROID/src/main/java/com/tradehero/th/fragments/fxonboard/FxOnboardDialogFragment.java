@@ -41,9 +41,9 @@ import rx.observers.EmptyObserver;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class FxOnboardDialogFragment extends BaseDialogFragment
+public class FxOnBoardDialogFragment extends BaseDialogFragment
 {
-    private static final String TAG = FxOnboardDialogFragment.class.getName();
+    private static final String TAG = FxOnBoardDialogFragment.class.getName();
 
     @InjectView(R.id.view_animator) ViewAnimator viewAnimator;
     @InjectView(R.id.introduction_videos_grid) GridView videosGrid;
@@ -61,7 +61,7 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @NonNull private BehaviorSubject<UserActionType> userActionTypeBehaviorSubject;
 
     //<editor-fold desc="Constructors">
-    public FxOnboardDialogFragment()
+    public FxOnBoardDialogFragment()
     {
         super();
         userActionTypeBehaviorSubject = BehaviorSubject.create();
@@ -212,9 +212,9 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
         userActionTypeBehaviorSubject.onCompleted();
     }
 
-    public static FxOnboardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
+    public static FxOnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
-        FxOnboardDialogFragment dialogFragment = new FxOnboardDialogFragment();
+        FxOnBoardDialogFragment dialogFragment = new FxOnBoardDialogFragment();
         dialogFragment.show(fragmentManager, TAG);
         return dialogFragment;
     }

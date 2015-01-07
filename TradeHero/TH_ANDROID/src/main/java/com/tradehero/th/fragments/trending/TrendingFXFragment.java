@@ -22,7 +22,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.fxonboard.FxOnboardDialogFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -50,7 +50,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     @Nullable private Subscription waitForEnrolledSubscription;
     @Nullable private Subscription fetchFxPriceSubscription;
             // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
-    @Nullable FxOnboardDialogFragment onboardDialogFragment;
+    @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -139,20 +139,20 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     protected void handleUserProfileForOnBoardReceived(@NonNull UserProfileDTO userProfileDTO)
     {
-        if (userProfileDTO.fxPortfolio == null && onboardDialogFragment == null)
+        if (userProfileDTO.fxPortfolio == null && onBoardDialogFragment == null)
         {
-            onboardDialogFragment = FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-            onboardDialogFragment.getDismissedObservable()
+            onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+            onBoardDialogFragment.getDismissedObservable()
                     .subscribe(
                             dialog -> {
-                                onboardDialogFragment = null;
+                                onBoardDialogFragment = null;
                             },
                             error -> THToast.show(new THException(error))
                     );
-            onboardDialogFragment.getUserActionTypeObservable()
+            onBoardDialogFragment.getUserActionTypeObservable()
                     .subscribe(
                             action -> {
-                                if (action.equals(FxOnboardDialogFragment.UserActionType.CANCELLED))
+                                if (action.equals(FxOnBoardDialogFragment.UserActionType.CANCELLED))
                                 {
                                     trendingTabTypeBehaviorSubject.onNext(TrendingTabType.STOCK);
                                 }
