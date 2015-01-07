@@ -4,13 +4,9 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.quote.RawQuoteParser;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.UrlEncoderHelper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import retrofit.client.Response;
 import rx.Observable;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
 
 @Singleton public class QuoteServiceWrapper
 {
@@ -48,24 +44,17 @@ import rx.schedulers.Schedulers;
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
-        //noinspection Convert2Lambda
-        return Observable.create(new Observable.OnSubscribe<QuoteDTO>()
-        {
-            @Override public void call(Subscriber<? super QuoteDTO> subscriber)
-            {
-                try
-                {
-                    Response response = quoteServiceRx.getRawQuote(
-                            UrlEncoderHelper.transform(securityId.getExchange()),
-                            UrlEncoderHelper.transform(securityId.getSecuritySymbol()));
-                    subscriber.onNext(rawQuoteParser.parse(response));
-                } catch (Exception e)
-                {
-                    subscriber.onError(e);
-                }
-            }
-        })
-                .subscribeOn(Schedulers.io());
+        return quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol())
+                .flatMap(response -> {
+                    try
+                    {
+                        QuoteDTO parsed = rawQuoteParser.parse(response);
+                        return Observable.just(parsed);
+                    } catch (Throwable e)
+                    {
+                        return Observable.error(e);
+                    }
+                });
     }
     //</editor-fold>
 }

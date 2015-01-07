@@ -23,8 +23,8 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
@@ -66,6 +66,7 @@ import timber.log.Timber;
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserListFragment.class.getName();
+    private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserListFragment.class.getName() + ".leaderboardTypeId";
 
     @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
@@ -87,20 +88,33 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected LeaderboardUserDTO currentLeaderboardUserDTO;
 
     protected LeaderboardMarkUserLoader leaderboardMarkUserLoader;
-    protected LeaderboardMarkUserListAdapter leaderboardMarkUserListAdapter;
+    protected LeaderboardMarkUserListAdapter
+            leaderboardMarkUserListAdapter;
 
     protected LeaderboardFilterFragment leaderboardFilterFragment;
-
     protected PerPagedLeaderboardKeyPreference savedPreference;
-    protected PerPagedLeaderboardKey currentLeaderboardKey;
 
+    protected PerPagedLeaderboardKey currentLeaderboardKey;
+    protected LeaderboardType currentLeaderboardType;
     protected FollowDialogCombo followDialogCombo;
+    private LeaderboardMarkUserListViewFragmentListLoaderCallback leaderboardMarkUserListViewFragmentListLoaderCallback =
+            new LeaderboardMarkUserListViewFragmentListLoaderCallback();
+
+    public static void putLeaderboardType(@NonNull Bundle args, @NonNull LeaderboardType leaderboardType)
+    {
+        args.putInt(BUNDLE_KEY_LEADERBOARD_TYPE_ID, leaderboardType.getLeaderboardTypeId());
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         subscriptions = new SubscriptionList();
         currentLeaderboardKey = getInitialLeaderboardKey();
+        currentLeaderboardType = getInitialLeaderboardType();
+        if(currentLeaderboardType != null && currentLeaderboardType.getAssetClass() != null)
+        {
+            currentLeaderboardKey.setAssetClass(currentLeaderboardType.getAssetClass());
+        }
     }
 
     protected PerPagedLeaderboardKey getInitialLeaderboardKey()
@@ -116,12 +130,22 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         return new PerPagedFilteredLeaderboardKey(initialKey, leaderboardDefKey.key, null, null);
     }
 
+    protected LeaderboardType getInitialLeaderboardType()
+    {
+        if(getArguments() != null && getArguments().getInt(BUNDLE_KEY_LEADERBOARD_TYPE_ID) != 0)
+        {
+            int val = getArguments().getInt(BUNDLE_KEY_LEADERBOARD_TYPE_ID);
+            return LeaderboardType.from(val);
+        }
+        return null;
+    }
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_listview, container, false);
         ButterKnife.inject(this, view);
         leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
-        inflateHeaderView(inflater, container);
+        inflateHeaderView(inflater);
 
         if (leaderboardMarkUserListView != null)
         {
@@ -140,8 +164,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     }
 
     protected void inflateHeaderView(
-            @NonNull LayoutInflater inflater,
-            @SuppressWarnings("UnusedParameters") ViewGroup container)
+            @NonNull LayoutInflater inflater)
     {
         if (leaderboardMarkUserListView != null)
         {
@@ -235,8 +258,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
-        return new LeaderboardMarkUserListAdapter(
-                getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_roi_mode);
+        return new LeaderboardMarkUserListAdapter(getActivity(), getLeaderboardLoaderCustomId());
     }
 
     protected void prepareLeaderboardMarkUserAdapter()
@@ -246,7 +268,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserListAdapter.setFollowRequestedListener(null);
         }
         leaderboardMarkUserListAdapter = createLeaderboardMarkUserAdapter();
-        leaderboardMarkUserListAdapter.setDTOLoaderCallback(new LeaderboardMarkUserListViewFragmentListLoaderCallback());
+        leaderboardMarkUserListAdapter.setDTOLoaderCallback(leaderboardMarkUserListViewFragmentListLoaderCallback);
         leaderboardMarkUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
         leaderboardMarkUserListAdapter.setApplicablePortfolioId(getApplicablePortfolioId());
         leaderboardMarkUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
@@ -283,7 +305,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         Bundle loaderBundle = new Bundle(getArguments());
         leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) getActivity().getSupportLoaderManager().initLoader(
-                leaderboardDefKey.key, loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+                getLeaderboardLoaderCustomId(), loaderBundle, leaderboardMarkUserListAdapter.getLoaderCallback());
+        leaderboardMarkUserLoader.setLeaderboardLoaderListener(new LeaderboardLoadedListener());
     }
 
     @Override public void onResume()
@@ -340,7 +363,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     {
         this.leaderboardFilterFragment = null;
         saveCurrentFilterKey();
-        getActivity().getSupportLoaderManager().destroyLoader(leaderboardDefKey.key);
+        getActivity().getSupportLoaderManager().destroyLoader(getLeaderboardLoaderCustomId());
         super.onDestroy();
     }
 
@@ -391,7 +414,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected void fetchUserOnLeaderboard()
     {
         UserOnLeaderboardKey userOnLeaderboardKey =
-                new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
+                new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key, currentLeaderboardType != null? currentLeaderboardType.getAssetClass() : null), currentUserId.toUserBaseKey());
         unsubscribe(userOnLeaderboardCacheSubscription);
         userOnLeaderboardCacheSubscription = AndroidObservable.bindFragment(
                 this,
@@ -439,6 +462,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
                 // user is not ranked, disable expandable view
                 leaderboardMarkUserItemView.setOnClickListener(null);
             }
+
         }
     }
 
@@ -498,7 +522,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         Timber.d("initialLoad %s", currentLeaderboardKey);
         leaderboardMarkUserLoader.setPagedLeaderboardKey(currentLeaderboardKey);
         leaderboardMarkUserLoader.reload();
-        //invalidateCachedItemView();
     }
 
     private void updateListViewRow(@NonNull final UserBaseKey heroId)
@@ -547,16 +570,26 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
         @Override public void onLoadFinished(ListLoader<LeaderboardUserDTO> loader, List<LeaderboardUserDTO> data)
         {
-            // display marking time
-            LeaderboardMarkUserLoader leaderboardMarkUserLoader = (LeaderboardMarkUserLoader) loader;
-            Date markingTime = leaderboardMarkUserLoader.getMarkUtc();
+            leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.swipe_container);
+            swipeContainer.setRefreshing(false);
+        }
+    }
+
+    protected class LeaderboardLoadedListener implements LeaderboardMarkUserLoader.LeaderboardLoaderListener
+    {
+        @Override public void onLoadedInBackground(final LeaderboardDTO leaderboardDTO)
+        {
+            Date markingTime = leaderboardDTO.markUtc;
             if (markingTime != null && leaderboardMarkUserMarkingTime != null)
             {
                 leaderboardMarkUserMarkingTime.setText(String.format("(%s)", prettyTime.get().format(markingTime)));
             }
-            leaderboardMarkUserScreen.setDisplayedChildByLayoutId(R.id.swipe_container);
-            swipeContainer.setRefreshing(false);
         }
+    }
+
+    private int getLeaderboardLoaderCustomId()
+    {
+        return currentLeaderboardType != null? currentLeaderboardType.getAssetClass().getValue() : leaderboardDefKey.key;
     }
 
     protected class LeaderboardMarkUserListFollowRequestedListener implements LeaderboardMarkUserItemView.OnFollowRequestedListener

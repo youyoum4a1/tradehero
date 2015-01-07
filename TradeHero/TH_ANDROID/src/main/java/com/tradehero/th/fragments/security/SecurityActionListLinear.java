@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,23 +16,32 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.th.R;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
+import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class SecurityActionListLinear extends LinearLayout
 {
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
+
     @InjectView(R.id.security_action_title2) protected TextView shareTitleView;
-    @InjectView(R.id.security_action_cancel) protected View cancelView;
     @InjectView(R.id.security_action_list_sharing_items) protected ListView listViewActionOptions;
 
+    protected SecurityCompactDTO securityCompactDTO;
     protected ArrayAdapter<SecurityActionDTO> adapter;
-    @Nullable protected OnActionMenuClickedListener menuClickedListener;
+    @NonNull protected BehaviorSubject<MenuAction> menuActionBehaviorSubject;
 
     //<editor-fold desc="Constructors">
     public SecurityActionListLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
+        menuActionBehaviorSubject = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -59,63 +67,58 @@ public class SecurityActionListLinear extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    public void setSecurityIdToActOn(@NonNull SecurityId securityIdToActOn)
+    public void setSecurityToActOn(@NonNull SecurityCompactDTO securityCompact)
     {
+        this.securityCompactDTO = securityCompact;
+        SecurityId securityIdToActOn = securityCompact.getSecurityId();
         adapter.clear();
-        adapter.add(new SecurityActionDTO(
-                SecurityActionDTO.ACTION_ID_WATCHLIST,
-                getContext().getString(R.string.watchlist_add_title),
-                securityIdToActOn));
-        adapter.add(new SecurityActionDTO(
-                SecurityActionDTO.ACTION_ID_ALERT,
-                getContext().getString(R.string.stock_alert_add_alert),
-                securityIdToActOn));
+
+        if (!(securityCompact instanceof FxSecurityCompactDTO))
+        {
+            adapter.add(new SecurityActionDTO(
+                    SecurityActionDTO.ACTION_ID_WATCHLIST,
+                    getContext().getString(R.string.watchlist_add_title),
+                    securityIdToActOn));
+            adapter.add(new SecurityActionDTO(
+                    SecurityActionDTO.ACTION_ID_ALERT,
+                    getContext().getString(R.string.stock_alert_add_alert),
+                    securityIdToActOn));
+        }
         adapter.add(new SecurityActionDTO(
                 SecurityActionDTO.ACTION_ID_TRADE,
                 getContext().getString(R.string.buy_sell),
                 securityIdToActOn));
-        adapter.notifyDataSetChanged();
-        shareTitleView.setText(String.format("%s:%s", securityIdToActOn.getExchange(), securityIdToActOn.getSecuritySymbol()));
-    }
 
-    public void setMenuClickedListener(@Nullable OnActionMenuClickedListener menuClickedListener)
-    {
-        this.menuClickedListener = menuClickedListener;
+        adapter.notifyDataSetChanged();
+        shareTitleView.setText(securityCompactDTOUtil.getShortSymbol(securityCompactDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.security_action_cancel)
     protected void onCancelClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        OnActionMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onCancelClicked();
-        }
+        //noinspection ConstantConditions
+        sendAndComplete(new MenuAction(MenuActionType.CANCEL, null));
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnItemClick(R.id.security_action_list_sharing_items)
     protected void onShareOptionsItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        OnActionMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
+        SecurityActionDTO actionDTO = (SecurityActionDTO) parent.getItemAtPosition(position);
+        switch (actionDTO.actionId)
         {
-            SecurityActionDTO actionDTO = (SecurityActionDTO) parent.getItemAtPosition(position);
-            switch (actionDTO.actionId)
-            {
-                case SecurityActionDTO.ACTION_ID_ALERT:
-                    listenerCopy.onAddAlertRequested(actionDTO.securityToActOn);
-                    break;
-                case SecurityActionDTO.ACTION_ID_WATCHLIST:
-                    listenerCopy.onAddToWatchlistRequested(actionDTO.securityToActOn);
-                    break;
-                case SecurityActionDTO.ACTION_ID_TRADE:
-                    listenerCopy.onBuySellRequested(actionDTO.securityToActOn);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unhandled type " + actionDTO.getClass().getCanonicalName());
-            }
+            case SecurityActionDTO.ACTION_ID_ALERT:
+                sendAndComplete(new MenuAction(MenuActionType.ADD_ALERT, securityCompactDTO));
+                break;
+            case SecurityActionDTO.ACTION_ID_WATCHLIST:
+                sendAndComplete(new MenuAction(MenuActionType.ADD_TO_WATCHLIST, securityCompactDTO));
+                break;
+            case SecurityActionDTO.ACTION_ID_TRADE:
+                sendAndComplete(new MenuAction(MenuActionType.BUY_SELL, securityCompactDTO));
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled type " + actionDTO.getClass().getCanonicalName());
         }
     }
 
@@ -139,11 +142,31 @@ public class SecurityActionListLinear extends LinearLayout
         }
     }
 
-    public static interface OnActionMenuClickedListener
+    @NonNull public Observable<MenuAction> getMenuActionObservable()
     {
-        void onCancelClicked();
-        void onAddToWatchlistRequested(@NonNull SecurityId securityId);
-        void onAddAlertRequested(@NonNull SecurityId securityId);
-        void onBuySellRequested(@NonNull SecurityId securityId);
+        return menuActionBehaviorSubject.asObservable();
+    }
+
+    protected void sendAndComplete(@NonNull MenuAction menuAction)
+    {
+        menuActionBehaviorSubject.onNext(menuAction);
+        menuActionBehaviorSubject.onCompleted();
+    }
+
+    public static enum MenuActionType
+    {
+        CANCEL, ADD_TO_WATCHLIST, ADD_ALERT, BUY_SELL
+    }
+
+    public static class MenuAction
+    {
+        @NonNull public final MenuActionType actionType;
+        @NonNull public final SecurityCompactDTO securityCompactDTO;
+
+        public MenuAction(@NonNull MenuActionType actionType, @NonNull SecurityCompactDTO securityCompactDTO)
+        {
+            this.actionType = actionType;
+            this.securityCompactDTO = securityCompactDTO;
+        }
     }
 }

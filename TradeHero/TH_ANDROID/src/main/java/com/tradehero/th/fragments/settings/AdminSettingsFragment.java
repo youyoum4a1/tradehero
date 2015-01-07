@@ -25,6 +25,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
+import com.tradehero.th.fragments.ForKChartFragment;
 import com.tradehero.th.fragments.ForTypographyFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForQuestListTestingFragment;
@@ -52,6 +53,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     private static final CharSequence KEY_XP_TEST_SCREEN = "show_xp_test_screen";
     private static final CharSequence KEY_TYPOGRAPHY_SCREEN = "show_typography_examples";
     private static final CharSequence KEY_PRESEASON = "show_preseason_dialog";
+    private static final CharSequence KEY_KCHART = "show_kchart_examples";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -60,6 +62,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject @ForAchievementListTestingFragment Provider<Class> achievementListTestingFragmentClassProvider;
     @Inject @ForXpTestingFragment Provider<Class> xpTestingFragmentClassProvider;
     @Inject @ForTypographyFragment Provider<Class> typographyFragmentClassProvider;
+    @Inject @ForKChartFragment Provider<Class> kChartFragmentClassProvider;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
@@ -187,6 +190,14 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
             return true;
         });
+
+        Preference showKChart = findPreference(KEY_KCHART);
+        showKChart.setEnabled(kChartFragmentClassProvider.get() != null);
+        showKChart.setOnPreferenceClickListener(preference -> {
+            navigator.get().pushFragment(kChartFragmentClassProvider.get());
+            return true;
+        });
+
     }
 
     private boolean askForNotificationId()

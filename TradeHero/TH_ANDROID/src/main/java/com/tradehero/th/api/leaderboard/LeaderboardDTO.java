@@ -1,12 +1,14 @@
 package com.tradehero.th.api.leaderboard;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.portfolio.AssetClass;
 import java.io.IOException;
 import java.util.Date;
 

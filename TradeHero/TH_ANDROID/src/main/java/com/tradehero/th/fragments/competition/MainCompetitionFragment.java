@@ -54,10 +54,12 @@ import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserList
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
+import com.tradehero.th.fragments.security.WarrantCompetitionPagerFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
@@ -100,6 +102,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject ProviderServiceWrapper providerServiceWrapper;
+    @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -514,14 +517,8 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void pushTradeNowElement()
     {
         Bundle args = new Bundle();
-        ProviderSecurityListFragment.putProviderId(args, providerId);
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            ProviderSecurityListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
+        providerTradableSecuritiesHelperLazy.get().pushTradableSecuritiesList(args, ownedPortfolioId, providerDTO.associatedPortfolio, providerId);
     }
 
     private void pushPortfolioElement(@NonNull CompetitionZonePortfolioDTO competitionZoneDTO)

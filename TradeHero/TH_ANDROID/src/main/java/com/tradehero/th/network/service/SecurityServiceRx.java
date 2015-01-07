@@ -1,10 +1,13 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import java.util.List;
 import java.util.Map;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -84,6 +87,12 @@ public interface SecurityServiceRx
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
+
+    @POST("/securities/{exchange}/{securitySymbol}/fxbuy")
+    Observable<SecurityPositionTransactionDTO> buyFx(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
@@ -92,6 +101,29 @@ public interface SecurityServiceRx
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
+
+    @POST("/securities/{exchange}/{securitySymbol}/fxsell")
+    Observable<SecurityPositionTransactionDTO> sellFx(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            @Body() TransactionFormDTO transactionFormDTO);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Basic FX Trending">
+    @GET("/securities/trendingFx")
+    Observable<SecurityCompactDTOList> getFXSecurities();
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX KChart">
+    @GET("/FX/{securitySymbol}/{duration}/history")
+    Observable<FXChartDTO> getFXHistory(
+            @Path("securitySymbol") String securitySymbol,
+            @Path("duration") String duration);
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX All Price">
+    @GET("/FX/batchFxQuote")
+    Observable<List<QuoteDTO>> getFXSecuritiesAllPrice();
     //</editor-fold>
 }
 

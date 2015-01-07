@@ -12,7 +12,6 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;

@@ -19,14 +19,33 @@
   <string name="portfolio_header_total_value">Total Value</string>
   <string name="portfolio_header_value">Value</string>
   <string name="portfolio_header_cash_value">Cash Value</string>
-  <string name="portfolio_header_net_asset_value">Net Asset Value</string>
+  <string name="portfolio_header_total_asset_value">Total Asset Value</string>
+  <string name="portfolio_header_total_profit">Total Profit</string>
   <string name="portfolio_header_margin_title">Margin</string>
-  <string name="portfolio_header_margin_available_title">Available</string>
-  <string name="portfolio_header_margin_used_title">Used</string>
+  <string name="portfolio_header_margin_available_title">Margin Available</string>
+  <string name="portfolio_header_margin_used_title">Margin Used</string>
   <string name="portfolio_header_pl_unrealised_title">Unrealised</string>
   <string name="portfolio_header_pl_realised_title">Realised</string>
 
   <string name="portfolio_title_unnamed">Unnamed Portfolio</string>
+
+  <item name="position_margin_close_out_zero" format="float" type="dimen">0</item>
+  <string name="position_margin_close_out_ok">Margin is healthy (%s)</string>
+  <color name="position_margin_close_out_ok_start">@color/number_green</color>
+  <color name="position_margin_close_out_ok_end">@color/number_green</color>
+  <item name="position_margin_close_out_ok" format="float" type="dimen">0.4999</item>
+  <string name="position_margin_close_out_warn">Margin is approaching closeout (%s)</string>
+  <color name="position_margin_close_out_warn_start">@color/light_yellow</color>
+  <color name="position_margin_close_out_warn_end">@color/orange</color>
+  <item name="position_margin_close_out_warn" format="float" type="dimen">0.9</item>
+  <string name="position_margin_close_out_danger">Margin is dangerously near closeout (%s)</string>
+  <color name="position_margin_close_out_danger_start">@color/number_red</color>
+  <color name="position_margin_close_out_danger_end">@color/dark_red</color>
+  <item name="position_margin_close_out_danger_one" format="float" type="dimen">1</item>
+
+  <string name="portfolio_margin_call_title">Margin Call</string>
+  <string name="portfolio_margin_call_description">You have a margin call on your portfolio, close positions and avoid a forced close-out</string>
+  <string name="portfolio_margin_call_ok">Deal with it now!</string>
 
   <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
   <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>

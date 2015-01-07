@@ -127,6 +127,7 @@
     <item name="android:textAllCaps">true</item>
     <item name="android:textSize">@dimen/text_caption</item>
     <item name="android:textStyle">bold</item>
+    <item name="android:gravity">center</item>
   </style>
 
   <style name="TradeHero.TabText"
@@ -227,6 +228,8 @@
     <item name="android:paddingLeft">@dimen/margin_small</item>
     <item name="android:paddingRight">@dimen/margin_small</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+    <item name="android:clipToPadding">false</item>
+    <item name="android:clipChildren">false</item>
   </style>
 
   <style name="TH.ListItem.Clickable" parent="TH.ListItem">
@@ -588,8 +591,22 @@
     <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 
-  <style name="TH.onBoardDialog"
-      parent="TH.Dialog">
+  <style name="TH.FxOnBoardDialog" parent="TH">
+    <item name="android:paddingTop">@dimen/margin_medium</item>
+    <item name="android:paddingRight">@dimen/margin_medium</item>
+    <item name="android:paddingLeft">@dimen/margin_medium</item>
+  </style>
+
+  <style name="TH.FxOnBoardDialog.NextButton" parent="TH.Button.Inverse">
+    <item name="android:layout_marginTop">@dimen/margin_xsmall</item>
+    <item name="android:layout_marginBottom">@dimen/margin_xsmall</item>
+    <item name="android:paddingTop">@dimen/margin_xsmall</item>
+    <item name="android:paddingBottom">@dimen/margin_xsmall</item>
+    <item name="android:layout_gravity">bottom|center</item>
+    <item name="android:background">@drawable/authentication_button</item>
+  </style>
+
+  <style name="TH.OnBoardDialog" parent="TH.Dialog">
     <item name="android:windowCloseOnTouchOutside">true</item>
   </style>
 

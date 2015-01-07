@@ -1,10 +1,20 @@
 package com.tradehero.th.models.number;
 
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.THColorUtils;
 import java.text.DecimalFormat;
+import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class THSignedNumber
 {
@@ -17,6 +27,8 @@ public class THSignedNumber
 
     public static final boolean WITH_SIGN = true;
     public static final boolean WITHOUT_SIGN = false;
+    public static final boolean USE_DEFAULT_COLOR = true;
+    public static final boolean DO_NOT_USE_DEFAULT_COLOR = false;
     //</editor-fold>
 
     private final boolean withSign;
@@ -24,14 +36,31 @@ public class THSignedNumber
     private final Double value;
     private final int relevantDigitCount;
     private String formattedNumber;
-    private Integer colorResId;
+    @Nullable @ColorRes private Integer colorResId;
+
+    private final boolean useDefaultColor;
+    private final boolean boldSign;
+    private final boolean boldValue;
+    @Nullable private Double signValue;
+    @Nullable @ColorRes private Integer signColorResId;
+    @Nullable @ColorRes private Integer valueColorResId;
+    private Spanned signSpanBuilder;
+    private Spanned valueSpanBuilder;
+    @Nullable private String format;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
         private double value;
+        @Nullable private Double signValue;
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
+        public boolean useDefaultColor = USE_DEFAULT_COLOR;
+        @Nullable @ColorRes private Integer signColorResId;
+        @Nullable @ColorRes private Integer valueColorResId;
+        private boolean boldSign;
+        private boolean boldValue;
+        @Nullable private String format;
 
         //<editor-fold desc="Constructors">
         protected Builder(double value)
@@ -78,9 +107,57 @@ public class THSignedNumber
             return self();
         }
 
+        public BuilderType skipDefaultColor()
+        {
+            this.useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
+            return self();
+        }
+
+        public BuilderType boldSign()
+        {
+            this.boldSign = true;
+            return self();
+        }
+
+        public BuilderType boldValue()
+        {
+            this.boldValue = true;
+            return self();
+        }
+
+        public BuilderType withSignColor(@ColorRes int colorResId)
+        {
+            if(colorResId > 0)
+            {
+                this.signColorResId = colorResId;
+            }
+            return self();
+        }
+
+        public BuilderType withValueColor(@ColorRes int colorResId)
+        {
+            if(colorResId > 0)
+            {
+                valueColorResId = colorResId;
+            }
+            return self();
+        }
+
+        public BuilderType withSignValue(double value)
+        {
+            this.signValue = value;
+            return self();
+        }
+
         public BuilderType relevantDigitCount(int relevantDigitCount)
         {
             this.relevantDigitCount = relevantDigitCount;
+            return self();
+        }
+
+        public BuilderType format(String format)
+        {
+            this.format = format;
             return self();
         }
 
@@ -117,10 +194,26 @@ public class THSignedNumber
         this.signType = builder.signType;
         this.value = builder.value;
         this.relevantDigitCount = builder.relevantDigitCount;
+        this.useDefaultColor = builder.useDefaultColor;
+        this.boldSign = builder.boldSign;
+        this.boldValue = builder.boldValue;
+        if (builder.signColorResId != null)
+        {
+            this.signColorResId = builder.signColorResId;
+        }
+        if (builder.valueColorResId != null)
+        {
+            this.valueColorResId = builder.valueColorResId;
+        }
+        if (builder.signValue != null)
+        {
+            this.signValue = builder.signValue;
+        }
+        this.format = builder.format;
     }
     //</editor-fold>
 
-    public int getColorResId()
+    protected int getColorResId()
     {
         if (colorResId == null)
         {
@@ -129,9 +222,14 @@ public class THSignedNumber
         return colorResId;
     }
 
-    public int getColor()
+    protected int getColor()
     {
-        return THApp.context().getResources().getColor(getColorResId());
+        return getColor(getColorResId());
+    }
+
+    protected int getColor(int colorResId)
+    {
+        return THApp.context().getResources().getColor(colorResId);
     }
 
     @Override public String toString()
@@ -143,12 +241,71 @@ public class THSignedNumber
         return formattedNumber;
     }
 
+    public void into(TextView textView)
+    {
+        if (useDefaultColor)
+        {
+            textView.setTextColor(getColor());
+        }
+
+        Spanned result = (Spanned) getCombinedSpan();
+
+        if(format != null)
+        {
+            result = SpanFormatter.format(format, result);
+        }
+
+        textView.setText(result);
+    }
+
+    protected Spanned getSpannedSign()
+    {
+        if (signSpanBuilder == null)
+        {
+            if (signValue != null && signColorResId == null && useDefaultColor)
+            {
+                signColorResId = THColorUtils.getColorResourceIdForNumber(signValue);
+            }
+            signSpanBuilder = initSpanned(getConditionalSignPrefix(), boldSign, signColorResId);
+        }
+        return signSpanBuilder;
+    }
+
+    protected Spanned getSpannedValue()
+    {
+        if (valueSpanBuilder == null)
+        {
+            valueSpanBuilder = initSpanned(createPlainNumber(), boldValue, valueColorResId);
+        }
+        return valueSpanBuilder;
+    }
+
+    protected Spanned initSpanned(String text, boolean bold, Integer colorResId)
+    {
+        SpannableStringBuilder signSpanBuilder = new SpannableStringBuilder(text);
+        if (bold)
+        {
+            signSpanBuilder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        if (colorResId != null)
+        {
+            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor(colorResId)), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else if (useDefaultColor)
+        {
+            signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return signSpanBuilder;
+    }
+
+    protected CharSequence getCombinedSpan()
+    {
+        return TextUtils.concat(getSpannedSign(), getSpannedValue());
+    }
+
     protected String getFormatted()
     {
-        return String.format(
-                "%s%s",
-                getConditionalSignPrefix(),
-                createPlainNumber());
+        return getCombinedSpan().toString();
     }
 
     protected String createPlainNumber()
@@ -160,9 +317,9 @@ public class THSignedNumber
         return removeTrailingZeros(formatted);
     }
 
-    public static String removeTrailingZeros(String formattedNumber)
+    public static String removeTrailingZeros(@NonNull String formattedNumber)
     {
-        if (formattedNumber != null && formattedNumber.contains("."))
+        if (formattedNumber.contains("."))
         {
             int length = formattedNumber.length();
             do
@@ -230,7 +387,7 @@ public class THSignedNumber
         switch (signType)
         {
             case TYPE_SIGN_ARROW:
-                return getArrowPrefix(value);
+                return getArrowPrefix(signValue != null ? signValue : value);
 
             case TYPE_SIGN_MINUS_ONLY:
                 return getMinusOnlyPrefix(value);

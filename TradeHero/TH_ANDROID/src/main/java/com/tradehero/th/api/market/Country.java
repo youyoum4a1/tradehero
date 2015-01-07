@@ -213,10 +213,11 @@ public enum Country
     TG(R.drawable.square_tg, R.string.location_name_tg),
     TH(R.drawable.square_th, R.string.location_name_th),
     TJ(R.drawable.square_tj, R.string.location_name_tj),
+    TL(R.drawable.square_tp, R.string.location_name_tp), // Necessary duplicate with TP
     TM(R.drawable.square_tm, R.string.location_name_tm),
     TN(R.drawable.square_tn, R.string.location_name_tn),
     TO(R.drawable.square_to, R.string.location_name_to),
-    TP(R.drawable.square_tp, R.string.location_name_tp),
+    TP(R.drawable.square_tp, R.string.location_name_tp), // Necessary duplicate with TL
     TR(R.drawable.square_tr, R.string.location_name_tr),
     TT(R.drawable.square_tt, R.string.location_name_tt),
     TV(R.drawable.square_tv, R.string.location_name_tv),

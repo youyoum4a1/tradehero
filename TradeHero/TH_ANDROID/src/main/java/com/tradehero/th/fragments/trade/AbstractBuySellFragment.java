@@ -125,12 +125,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        fetchQuote();
-    }
-
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
@@ -141,6 +135,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onStart()
     {
         super.onStart();
+        fetchQuote();
         fetchSecurityCompact();
         fetchSecurityPositionDetail();
         fetchUserProfile();
@@ -174,6 +169,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Override public void onStop()
     {
+        quoteDTO = null;
         unsubscribe(quoteSubscription);
         quoteSubscription = null;
         unsubscribe(securityPositionDetailSubscription);
@@ -221,13 +217,18 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
+    protected long getMillisecQuoteRefresh()
+    {
+        return MILLISEC_QUOTE_REFRESH;
+    }
+
     protected void fetchQuote()
     {
         unsubscribe(quoteSubscription);
         quoteSubscription = AndroidObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
-                        .repeatWhen(observable -> observable.delay(MILLISEC_QUOTE_REFRESH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(observable -> observable.delay(getMillisecQuoteRefresh(), TimeUnit.MILLISECONDS)))
                 .subscribe(
                         quoteDTO -> linkWith(quoteDTO, true),
                         toastOnErrorAction);
@@ -282,7 +283,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 securityPositionDetailObservable)
                 .subscribe(
                         this::linkWith,
-                        e -> Timber.e(e, "getting %s", securityId));
+                        this::handleFailedFetchSecurityPositionDetail);
     }
 
     public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
@@ -290,6 +291,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         this.securityPositionDetailDTO = securityPositionDetailDTO;
         linkWith(securityPositionDetailDTO.security, true);
         linkWith(securityPositionDetailDTO.positions, true);
+    }
+
+    protected void handleFailedFetchSecurityPositionDetail(@NonNull Throwable e)
+    {
+        THToast.show(R.string.error_fetch_detailed_security_info);
+        Timber.e(e, "getting %s", securityId);
     }
 
     protected void fetchUserProfile()
@@ -396,6 +403,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                     this.portfolioCompactDTO);
         }
         return 0;
+    }
+
+    public Double getUnRealizedPLRefCcy()
+    {
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        if (ownedPortfolioId != null && positionDTOCompactList != null && this.quoteDTO!=null )
+        {
+            return positionDTOCompactList.getUnRealizedPLRefCcy(
+                    this.quoteDTO,
+                    this.portfolioCompactDTO,
+                    positionDTOCompactList);
+        }
+        return null;
     }
 
     abstract public void display();

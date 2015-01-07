@@ -2,7 +2,7 @@ package com.tradehero.th.api.security.key;
 
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
-import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.competition.key.WarrantUnderlyersProviderSecurityListType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -50,9 +50,9 @@ import javax.inject.Singleton;
             {
                 return new BasicProviderSecurityListType(providerSecurityListType.getProviderId(), page, initial.perPage);
             }
-            else if (providerSecurityListType instanceof WarrantProviderSecurityListType)
+            else if (providerSecurityListType instanceof WarrantUnderlyersProviderSecurityListType)
             {
-                return new WarrantProviderSecurityListType(providerSecurityListType.getProviderId(), page, initial.perPage);
+                return new WarrantUnderlyersProviderSecurityListType(providerSecurityListType.getProviderId(), page, initial.perPage);
             }
         }
         return null;

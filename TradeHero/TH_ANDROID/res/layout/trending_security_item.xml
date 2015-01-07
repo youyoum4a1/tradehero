@@ -5,26 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_item_height"
+    android:layout_height="wrap_content"
     android:minHeight="@dimen/grid_item_height"
     tools:context=".activities.DashboardActivity"
     android:gravity="center_vertical"
-    android:padding="@dimen/grid_item_bg_border_width"
+    android:padding="@dimen/margin_xsmall"
     android:background="@drawable/grid_item_bg"
     >
-
-  <com.makeramen.RoundedImageView
-      android:id="@+id/stock_bg_logo"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
-      android:contentDescription="@null"
-      app:oval="false"
-      app:corner_radius="@dimen/grid_item_bg_radius"
-      android:scaleType="centerCrop"
-      tools:background="@color/red"
-      android:visibility="gone"
-      />
 
   <TextView
       android:id="@+id/stock_name"
@@ -49,6 +36,7 @@
       android:contentDescription="@null"
       android:adjustViewBounds="false"
       android:scaleType="fitCenter"
+      android:layout_margin="@dimen/margin_xsmall"
       tools:src="@drawable/flag_country_round_united_states"/>
 
   <TextView
@@ -73,32 +61,12 @@
       >
 
     <TextView
-        android:id="@+id/profit_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        tools:text="@string/arrow_prefix_positive"
-        style="@style/TH.Body"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/currency_display"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        style="@style/TH.Body"
-        tools:text="US$"
-        />
-
-    <TextView
         android:id="@+id/last_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
         tools:text="1,014"
         style="@style/TH.Body"
-        android:textStyle="bold"
         />
 
   </LinearLayout>

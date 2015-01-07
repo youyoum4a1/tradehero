@@ -69,10 +69,13 @@ import rx.Observable;
     //<editor-fold desc="Get Leaderboard">
     public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
     {
+        Integer lbType =
+                leaderboardKey.getAssetClass() != null? leaderboardKey.getAssetClass().getValue() : null;
         if (leaderboardKey instanceof UserOnLeaderboardKey)
         {
             return leaderboardServiceRx.getUserOnLeaderboard(
                     leaderboardKey.id,
+                    lbType,
                     ((UserOnLeaderboardKey) leaderboardKey).userBaseKey.key,
                     null);
         }
@@ -89,6 +92,7 @@ import rx.Observable;
         {
             PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey = (PerPagedFilteredLeaderboardKey) leaderboardKey;
             return leaderboardServiceRx.getFilteredLeaderboard(perPagedFilteredLeaderboardKey.id,
+                    lbType,
                     perPagedFilteredLeaderboardKey.winRatio,
                     perPagedFilteredLeaderboardKey.averageMonthlyTradeCount,
 
@@ -110,6 +114,7 @@ import rx.Observable;
             PerPagedLeaderboardKey perPagedLeaderboardKey = (PerPagedLeaderboardKey) leaderboardKey;
             return leaderboardServiceRx.getLeaderboard(
                     perPagedLeaderboardKey.id,
+                    lbType,
                     perPagedLeaderboardKey.page,
                     perPagedLeaderboardKey.perPage);
         }
@@ -118,10 +123,11 @@ import rx.Observable;
             PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
             return leaderboardServiceRx.getLeaderboard(
                     pagedLeaderboardKey.id,
+                    lbType,
                     pagedLeaderboardKey.page,
                     null);
         }
-        return leaderboardServiceRx.getLeaderboard(leaderboardKey.id, null, null);
+        return leaderboardServiceRx.getLeaderboard(leaderboardKey.id, lbType, null, null);
     }
 
     public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx()

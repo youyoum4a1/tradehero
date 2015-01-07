@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.security.WarrantSecurityItemView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.security.WarrantSecurityItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,18 +7,6 @@
     android:padding="@dimen/grid_item_bg_border_width"
     android:background="@drawable/grid_item_bg"
     >
-
-    <com.makeramen.RoundedImageView
-      android:id="@+id/stock_bg_logo"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentTop="true"
-      app:oval="false"
-      app:corner_radius="@dimen/grid_item_bg_radius"
-      android:contentDescription="@null"
-      android:scaleType="centerCrop"
-      android:src="@null"
-      />
 
   <TextView
       android:id="@+id/stock_name"
@@ -32,174 +19,119 @@
       android:lines="1"
       android:textColor="@color/trending_grid_item_stock_name"
       tools:text="Ascendas REOT MB"
-      android:textStyle="bold"/>
+      android:textStyle="bold"
+      android:visibility="gone"
+      />
 
   <ImageView
       android:id="@+id/stock_logo"
-      android:layout_width="match_parent"
-      android:layout_height="45dp"
-      android:layout_below="@id/stock_name"
-      android:layout_centerHorizontal="true"
-      android:layout_marginBottom="2dp"
-      android:layout_marginTop="0dp"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
-      android:adjustViewBounds="true"
+      android:layout_width="@dimen/big_image_w_h"
+      android:layout_height="@dimen/big_image_w_h"
       android:contentDescription="@null"
-      android:scaleType="centerInside"
-      tools:src="@drawable/flag_country_round_australia"/>
+      android:scaleType="fitCenter"
+      android:layout_marginTop="@dimen/size_1"
+      android:layout_marginStart="@dimen/size_1"
+      android:layout_marginLeft="@dimen/size_1"
+      android:layout_marginBottom="@dimen/size_1"
+      tools:src="@drawable/square_au"
+      />
 
   <TableLayout
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@id/stock_logo"
-      android:layout_alignParentBottom="true"
+      android:layout_toRightOf="@id/stock_logo"
+      android:layout_toEndOf="@id/stock_logo"
+      android:layout_below="@id/stock_name"
+      android:layout_alignBottom="@id/stock_logo"
+      android:stretchColumns="*"
+      android:padding="@dimen/size_1"
       android:layout_centerHorizontal="true"
-      android:padding="8dp"
       >
 
-    <TableRow>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="8dp"
-          android:text="@string/warrant_price_header"
-          />
-
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/currency_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:lines="1"
-            android:textColor="@color/black"
-            tools:text="SG$"
-            />
-
-        <TextView
-            android:id="@+id/last_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:lines="1"
-            tools:text="0.026"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            />
-
-      </LinearLayout>
-
-    </TableRow>
-
-    <TableRow>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="8dp"
-          android:text="@string/warrant_code_header"
-          />
+    <TableRow
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        >
 
       <TextView
           android:id="@+id/exchange_symbol"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:ellipsize="end"
+          android:layout_span="2"
           android:lines="1"
-          android:textColor="@color/trending_grid_item_stock_name"
-          tools:text="T1HW"/>
-
-    </TableRow>
-
-    <TableRow>
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="8dp"
-          android:text="@string/warrant_strike_header"
+          style="@style/TH.Subhead"
+          android:textAllCaps="true"
+          tools:text="T1HW"
           />
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/combined_strike_price_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:textSize="@dimen/text_caption"
-            android:textColor="@color/black"
-            tools:text="SG$ 2.10 (C)"
-            android:focusable="false"
-            android:singleLine="true"
-            />
-
-      </LinearLayout>
-
-      <LinearLayout
+      <TextView
+          android:id="@+id/warrant_type"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:visibility="gone"
-          >
-
-        <TextView
-            android:id="@+id/strike_currency_display"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:lines="1"
-            android:textColor="@color/black"
-            tools:text="SG$"
-            />
-
-        <TextView
-            android:id="@+id/strike_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:lines="1"
-            tools:text="2.1"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            />
-
-        <TextView
-            android:id="@+id/warrant_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            tools:text="(c)"
-            />
-
-      </LinearLayout>
+          style="@style/TH.Body"
+          android:textAllCaps="true"
+          android:gravity="center"
+          tools:text="Call"
+          />
 
     </TableRow>
 
-    <TableRow>
+    <TableRow
+        android:layout_weight="0.5"
+        android:gravity="bottom"
+        >
 
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginRight="8dp"
+          android:text="@string/warrant_price_header"
+          style="@style/TH.Caption"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/warrant_strike_header"
+          style="@style/TH.Caption"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
           android:text="@string/warrant_expiry_header"
+          style="@style/TH.Caption"
+          />
+
+    </TableRow>
+
+    <TableRow android:layout_weight="0.5">
+
+      <TextView
+          android:id="@+id/last_price"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:lines="1"
+          tools:text="0.026"
+          style="@style/TH.Body"
+          />
+
+      <TextView
+          android:id="@+id/combined_strike_price_type"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:lines="1"
+          style="@style/TH.Body"
+          tools:text="SG$ 2.10"
+          android:focusable="false"
+          android:singleLine="true"
           />
 
       <TextView
           android:id="@+id/expiry_date"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColor="@color/black"
+          style="@style/TH.Body"
           tools:text="1 Apr 14"
           />
 
@@ -207,7 +139,7 @@
 
   </TableLayout>
 
-    <ImageView
+  <ImageView
       android:id="@+id/ic_market_close"
       android:layout_width="20dp"
       android:layout_height="20dp"
@@ -218,7 +150,7 @@
       android:contentDescription="@null"
       android:scaleType="centerInside"
       android:src="@drawable/market_sleep_grey"
-        android:visibility="gone"
+      android:visibility="gone"
       />
 
 </com.tradehero.th.fragments.security.WarrantSecurityItemView>

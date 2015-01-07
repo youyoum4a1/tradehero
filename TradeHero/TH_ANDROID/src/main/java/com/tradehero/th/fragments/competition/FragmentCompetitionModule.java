@@ -19,6 +19,7 @@ import dagger.Module;
                 ProviderVideoListFragment.class,
                 ProviderVideoListItemView.class,
                 ProviderSecurityListFragment.class,
+                ProviderFxListFragment.class,
                 AdView.class,
         },
         library = true,

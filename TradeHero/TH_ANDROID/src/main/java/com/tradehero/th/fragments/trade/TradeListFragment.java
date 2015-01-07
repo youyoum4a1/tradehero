@@ -28,6 +28,8 @@ import com.tradehero.th.api.position.PositionDTOKeyFactory;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -53,10 +55,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -74,7 +74,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
-    SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
+    @Inject SecurityActionDialogFactory securityActionDialogFactory;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -93,6 +93,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Nullable protected SecurityId securityId;
     @Nullable protected Subscription securityCompactSubscription;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected Subscription actionDialogSubscription;
 
     protected TradeListItemAdapter adapter;
 
@@ -103,7 +104,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
     }
 
-    @NonNull private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKeyFactory positionDTOKeyFactory)
+    @NonNull
+    private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKeyFactory positionDTOKeyFactory)
     {
         return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
@@ -186,12 +188,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         securityIdSubscription = null;
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = null;
+        unsubscribe(actionDialogSubscription);
+        actionDialogSubscription = null;
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        detachSecurityActionDialog();
         tradeListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -208,28 +211,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         return new TradeListItemAdapter(getActivity());
     }
 
-    protected void detachSecurityActionDialog()
-    {
-        if (securityActionDialog != null)
-        {
-            android.view.Window window = securityActionDialog.getWindow();
-            if (window != null)
-            {
-                View decorView = window.getDecorView();
-                if (decorView != null)
-                {
-                    View innerView = decorView.findViewById(android.R.id.content);
-                    if (innerView instanceof SecurityActionListLinear)
-                    {
-                        ((SecurityActionListLinear) innerView).setMenuClickedListener(null);
-                    }
-                }
-            }
-            securityActionDialog.dismiss();
-        }
-        securityActionDialog = null;
-    }
-
     protected void fetchAlertList()
     {
         if (alertsSubscription == null)
@@ -237,22 +218,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             alertsSubscription = AndroidObservable.bindFragment(
                     this,
                     alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
-                    .subscribe(createAlertMapObserver());
+                    .subscribe(
+                            this::onAlertMapReceived,
+                            error -> Timber.e(error, ""));
         }
     }
 
-    @NonNull protected Observer<Map<SecurityId, AlertId>> createAlertMapObserver()
+    protected void onAlertMapReceived(@NonNull Map<SecurityId, AlertId> securityIdAlertIdMap)
     {
-        return new AlertMapObserver();
-    }
-
-    protected class AlertMapObserver extends EmptyObserver<Map<SecurityId, AlertId>>
-    {
-        @Override public void onNext(Map<SecurityId, AlertId> securityIdAlertIdMap)
-        {
-            mappedAlerts = securityIdAlertIdMap;
-            getActivity().invalidateOptionsMenu();
-        }
+        mappedAlerts = securityIdAlertIdMap;
+        getActivity().invalidateOptionsMenu();
     }
 
     protected void fetchPosition()
@@ -260,25 +235,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionSubscription == null)
         {
             positionSubscription = AndroidObservable.bindFragment(this, positionCache.get(positionDTOKey))
-                    .subscribe(createPositionCacheObserver());
-        }
-    }
-
-    protected Observer<Pair<PositionDTOKey, PositionDTO>> createPositionCacheObserver()
-    {
-        return new PositionCacheObserver();
-    }
-
-    protected class PositionCacheObserver extends EmptyObserver<Pair<PositionDTOKey, PositionDTO>>
-    {
-        @Override public void onNext(Pair<PositionDTOKey, PositionDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_position_list_info);
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            error -> THToast.show(R.string.error_fetch_position_list_info));
         }
     }
 
@@ -296,26 +256,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionDTO != null && tradesSubscription == null)
         {
             tradesSubscription = AndroidObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
-                    .subscribe(createTradeListeCacheObserver());
-        }
-    }
-
-    protected Observer<Pair<OwnedPositionId, TradeDTOList>> createTradeListeCacheObserver()
-    {
-        return new GetTradesObserver();
-    }
-
-    private class GetTradesObserver extends EmptyObserver<Pair<OwnedPositionId, TradeDTOList>>
-    {
-        @Override public void onNext(Pair<OwnedPositionId, TradeDTOList> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_trade_list_info);
-            Timber.e("Error fetching the list of trades", e);
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            error -> {
+                                THToast.show(R.string.error_fetch_trade_list_info);
+                                Timber.e("Error fetching the list of trades", error);
+                            });
         }
     }
 
@@ -350,28 +297,17 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 securityIdSubscription = AndroidObservable.bindFragment(
                         this,
                         securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
-                        .subscribe(createSecurityIdObserver());
+                        .map(pair -> pair.second)
+                        .subscribe(
+                                this::linkWith,
+                                error -> {});
             }
-        }
-    }
-
-    @NonNull protected Observer<Pair<SecurityIntegerId, SecurityId>> createSecurityIdObserver()
-    {
-        return new SecurityIdObserver();
-    }
-
-    protected class SecurityIdObserver extends EmptyObserver<Pair<SecurityIntegerId, SecurityId>>
-    {
-        @Override public void onNext(Pair<SecurityIntegerId, SecurityId> args)
-        {
-            linkWith(args.second);
         }
     }
 
     protected void linkWith(@NonNull SecurityId securityId)
     {
         this.securityId = securityId;
-        getActivity().invalidateOptionsMenu();
         fetchSecurityCompact();
     }
 
@@ -380,24 +316,17 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (securityId != null && securityCompactSubscription == null)
         {
             securityCompactSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                    .subscribe(new EmptyObserver<Pair<SecurityId, SecurityCompactDTO>>()
-                    {
-                        @Override public void onError(Throwable e)
-                        {
-                            THToast.show(new THException(e));
-                        }
-
-                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                        {
-                            linkWith(pair.second);
-                        }
-                    });
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            error -> THToast.show(new THException(error)));
         }
     }
 
     protected void linkWith(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
+        getActivity().invalidateOptionsMenu();
         displayActionBarTitle();
     }
 
@@ -408,8 +337,18 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             securityId = securityCompactDTO.getSecurityId();
         }
+        FxPairSecurityId fxPairSecurityId = null;
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+        }
 
-        if (securityId != null)
+        if (fxPairSecurityId != null)
+        {
+            setActionBarTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
+            setActionBarSubtitle(null);
+        }
+        else if (securityId != null)
         {
             if (securityCompactDTO == null || securityCompactDTO.name == null)
             {
@@ -429,99 +368,122 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected boolean shouldActionBeVisible()
     {
-        return mappedAlerts != null && securityId != null;
+        return mappedAlerts != null && securityCompactDTO != null;
     }
 
     protected void handleActionButtonClicked()
     {
-        if (securityId == null || mappedAlerts == null)
+        if (securityCompactDTO == null || mappedAlerts == null)
         {
             throw new IllegalStateException("We should not allow entering here");
         }
         else
         {
-            detachSecurityActionDialog();
-            securityActionDialog = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+            unsubscribe(actionDialogSubscription);
+            Pair<Dialog, SecurityActionListLinear> pair = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityCompactDTO);
+            securityActionDialog = pair.first;
+            actionDialogSubscription = pair.second.getMenuActionObservable()
+                    .subscribe(
+                            this::handleMenuAction,
+                            error -> Timber.e(error, ""));
         }
     }
 
-    protected SecurityActionListLinear.OnActionMenuClickedListener createSecurityActionMenuListener()
+    protected void handleMenuAction(@NonNull SecurityActionListLinear.MenuAction menuAction)
     {
-        return new TradeListSecurityActionListener();
+        dismissShareDialog();
+        switch (menuAction.actionType)
+        {
+            case CANCEL:
+                break;
+            case ADD_TO_WATCHLIST:
+                handleAddToWatchlistRequested(menuAction.securityCompactDTO);
+                break;
+            case ADD_ALERT:
+                handleAddAlertRequested(menuAction.securityCompactDTO);
+                break;
+            case BUY_SELL:
+                handleBuySellRequested(menuAction.securityCompactDTO);
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled SecurityActionListLinear.MenuActionType." + menuAction.actionType);
+        }
     }
 
-    protected class TradeListSecurityActionListener implements SecurityActionListLinear.OnActionMenuClickedListener
+    protected void handleAddToWatchlistRequested(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        @Override public void onCancelClicked()
+        Bundle args = new Bundle();
+        WatchlistEditFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        if (watchlistPositionCache.getValue(securityCompactDTO.getSecurityId()) != null)
         {
-            dismissShareDialog();
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
         }
-
-        @Override public void onAddToWatchlistRequested(@NonNull SecurityId securityId)
+        else
         {
-            dismissShareDialog();
-            Bundle args = new Bundle();
-            WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.getValue(securityId) != null)
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+        }
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(WatchlistEditFragment.class, args);
+        }
+    }
+
+    protected void handleAddAlertRequested(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        Bundle args = new Bundle();
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        }
+        if (mappedAlerts != null)
+        {
+            AlertId alertId = mappedAlerts.get(securityCompactDTO.getSecurityId());
+            if (alertId != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+                AlertEditFragment.putAlertId(args, alertId);
+                if (navigator != null)
+                {
+                    navigator.get().pushFragment(AlertEditFragment.class, args);
+                }
             }
             else
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
-            }
-            if (navigator != null)
-            {
-                navigator.get().pushFragment(WatchlistEditFragment.class, args);
-            }
-        }
-
-        @Override public void onAddAlertRequested(@NonNull SecurityId securityId)
-        {
-            dismissShareDialog();
-            Bundle args = new Bundle();
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
-            if (mappedAlerts != null)
-            {
-                AlertId alertId = mappedAlerts.get(securityId);
-                if (alertId != null)
+                AlertCreateFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+                if (navigator != null)
                 {
-                    AlertEditFragment.putAlertId(args, alertId);
-                    if (navigator != null)
-                    {
-                        navigator.get().pushFragment(AlertEditFragment.class, args);
-                    }
-                }
-                else
-                {
-                    AlertCreateFragment.putSecurityId(args, securityId);
-                    if (navigator != null)
-                    {
-                        navigator.get().pushFragment(AlertCreateFragment.class, args);
-                    }
+                    navigator.get().pushFragment(AlertCreateFragment.class, args);
                 }
             }
         }
+    }
 
-        @Override public void onBuySellRequested(@NonNull SecurityId securityId)
+    protected void handleBuySellRequested(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        Bundle args = new Bundle();
+        if (this.securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            dismissShareDialog();
-            Bundle args = new Bundle();
+            BuySellFXFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+            BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            // TODO add command to go direct to pop-up
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(BuySellFXFragment.class, args);
+            }
+        }
+        else
+        {
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
-                BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
-            BuySellFragment.putSecurityId(args, securityId);
+            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
             if (navigator != null)
             {
-                navigator.get().pushFragment(BuySellFragment.class, args);
+                navigator.get().pushFragment(BuySellStockFragment.class, args);
             }
         }
     }

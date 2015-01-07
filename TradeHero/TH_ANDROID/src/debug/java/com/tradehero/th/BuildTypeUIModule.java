@@ -1,7 +1,9 @@
 package com.tradehero.th;
 
 import com.tradehero.th.fragments.DebugFragmentModule;
+import com.tradehero.th.fragments.ForKChartFragment;
 import com.tradehero.th.fragments.ForTypographyFragment;
+import com.tradehero.th.fragments.TestKChartsFragment;
 import com.tradehero.th.fragments.TypographyExampleFragment;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.ForAchievementListTestingFragment;
@@ -41,5 +43,10 @@ public class BuildTypeUIModule implements BuildTypeUIModuleExpectation
     @Provides @ForTypographyFragment @Override public Class provideTypographyExampleFragment()
     {
         return TypographyExampleFragment.class;
+    }
+
+    @Provides @ForKChartFragment @Override public Class provideKChartExampleFragment()
+    {
+        return TestKChartsFragment.class;
     }
 }

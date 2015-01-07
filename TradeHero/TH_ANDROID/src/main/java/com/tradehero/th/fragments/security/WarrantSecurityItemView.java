@@ -2,7 +2,9 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
+import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
@@ -10,14 +12,13 @@ import com.tradehero.th.models.security.WarrantDTOFormatter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 public class WarrantSecurityItemView extends SecurityItemView
 {
-    protected TextView combinedStrikePriceType;
-    protected TextView strikePrice;
-    protected TextView strikePriceCcy;
-    protected TextView warrantType;
-    protected TextView expiryDate;
+    @InjectView(R.id.combined_strike_price_type) TextView combinedStrikePriceType;
+    @InjectView(R.id.warrant_type) TextView warrantType;
+    @InjectView(R.id.expiry_date) TextView expiryDate;
 
     @Inject protected WarrantDTOFormatter warrantDTOFormatter;
 
@@ -41,22 +42,10 @@ public class WarrantSecurityItemView extends SecurityItemView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-
-        initViews();
-
         if (combinedStrikePriceType != null)
         {
             combinedStrikePriceType.setSelected(true);
         }
-    }
-
-    private void initViews()
-    {
-        combinedStrikePriceType = (TextView) findViewById(R.id.combined_strike_price_type);
-        strikePrice = (TextView) findViewById(R.id.strike_price);
-        strikePriceCcy = (TextView) findViewById(R.id.strike_currency_display);
-        warrantType = (TextView) findViewById(R.id.strike_currency_display);
-        expiryDate = (TextView) findViewById(R.id.expiry_date);
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -66,8 +55,6 @@ public class WarrantSecurityItemView extends SecurityItemView
         if (andDisplay)
         {
             displayCombinedStrikePriceType();
-            displayStrikePrice();
-            displayStrikePriceCcy();
             displayWarrantType();
             displayExpiryDate();
         }
@@ -76,12 +63,25 @@ public class WarrantSecurityItemView extends SecurityItemView
     @Override public void display()
     {
         super.display();
-
         displayCombinedStrikePriceType();
-        displayStrikePrice();
-        displayStrikePriceCcy();
         displayWarrantType();
         displayExpiryDate();
+    }
+
+    @Override public void displayExchangeSymbol()
+    {
+        if (exchangeSymbol != null)
+        {
+            if (securityCompactDTO != null)
+            {
+                exchangeSymbol.setText(securityCompactDTO.symbol);
+            }
+            else
+            {
+                exchangeSymbol.setText(R.string.na);
+            }
+            exchangeSymbol.setTextColor(getResources().getColor(R.color.exchange_symbol));
+        }
     }
 
     public void displayCombinedStrikePriceType()
@@ -99,43 +99,13 @@ public class WarrantSecurityItemView extends SecurityItemView
         }
     }
 
-    public void displayStrikePrice()
-    {
-        if (strikePrice != null)
-        {
-            if (securityCompactDTO instanceof WarrantDTO)
-            {
-                strikePrice.setText(String.format("%.2f", ((WarrantDTO) securityCompactDTO).strikePrice));
-            }
-            else
-            {
-                strikePrice.setText(R.string.na);
-            }
-        }
-    }
-
-    public void displayStrikePriceCcy()
-    {
-        if (strikePriceCcy != null)
-        {
-            if (securityCompactDTO instanceof WarrantDTO)
-            {
-                strikePriceCcy.setText(((WarrantDTO) securityCompactDTO).strikePriceCcy);
-            }
-            else
-            {
-                strikePriceCcy.setText(R.string.na);
-            }
-        }
-    }
-
     public void displayWarrantType()
     {
         if (warrantType != null)
         {
             if (securityCompactDTO instanceof WarrantDTO)
             {
-                warrantType.setText(String.format("(%s)", ((WarrantDTO) securityCompactDTO).warrantType));
+                warrantType.setText(((WarrantDTO) securityCompactDTO).getWarrantType().stringResId);
             }
             else
             {

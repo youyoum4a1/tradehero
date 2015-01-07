@@ -18,12 +18,14 @@
 
   <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>
+  <string name="warrant_type_call_only">Calls Only</string>
   <string name="warrant_type_put">Put</string>
-  <string name="warrant_price_header">Price</string>
+  <string name="warrant_type_put_only">Puts Only</string>
+  <string name="warrant_price_header">Bid Price</string>
   <string name="warrant_code_header">Code</string>
   <string name="warrant_strike_header">Strike</string>
-  <string name="warrant_strike_value">%1$s &lt;b>%2$.2f&lt;/b> (%3$s)</string>
-  <string name="warrant_expiry_header">Expiry</string>
+  <string name="warrant_strike_value">%1$s %2$.2f</string>
+  <string name="warrant_expiry_header">Last Trading Date</string>
   <string name="warrant_info_header_warrant_data">Warrant Data</string>
   <string name="warrant_info_type">Type</string>
   <string name="warrant_info_code">Code</string>
@@ -39,7 +41,7 @@
   <string name="error_fetch_quote">There was an error fetching quote information</string>
   <string name="security_close">Close</string>
 
-  <!--do not thanslate-->
+  <!--do not translate-->
   <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
 
   <string name="market_on_board_error_fetch_exchange_sector">There was an error fetching the list of exchanges and sectors</string>
@@ -48,5 +50,7 @@
   <string name="market_on_board_country_from">What country are you from?</string>
   <string name="security_on_board_select_invitation_title">Stocks to Watch!</string>
   <string name="security_on_board_select_invitation_come_on">These stocks are hot! Add them to your watchlist now!</string>
+
+  <string name="security_fx_enroll_button">Click to enroll in Forex</string>
 
 </resources>

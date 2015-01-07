@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="game_nothing_description">ไม่มีเกมส์</string>
+  <string name="game_play_now">เล่นเกมส์เลย!</string>
+  <string name="game_how_to_menu">วิธีเล่นเกมส์</string>
+  <string name="error_fetch_info_game">ไม่สามารถรับข้อมูลของมินิเกมส์</string>
+  <string name="error_submit_score_game_id_mismatch">คะแนนที่ส่งมา เป็นของเกมส์อื่น</string>
+  <string name="game_score_header">คะแนน:</string>
+  <string name="game_reward_header">รางวัล:</string>
+  <string name="game_reward_value">%s TH Dollars</string>
+
+</resources>

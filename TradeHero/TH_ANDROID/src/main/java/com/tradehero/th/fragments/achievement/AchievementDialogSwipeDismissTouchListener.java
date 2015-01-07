@@ -198,7 +198,10 @@ public class AchievementDialogSwipeDismissTouchListener implements View.OnTouchL
                             .setDuration(mAnimationTime)
                             .setListener(null);
                 }
-                mVelocityTracker.recycle();
+                if (mVelocityTracker != null)
+                {
+                    mVelocityTracker.recycle();
+                }
                 mVelocityTracker = null;
                 mTranslationX = 0;
                 mDownX = 0;

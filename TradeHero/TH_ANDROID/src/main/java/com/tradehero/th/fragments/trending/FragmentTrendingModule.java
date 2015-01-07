@@ -5,12 +5,13 @@ import dagger.Module;
 
 @Module(
         injects = {
-                TrendingFragment.class,
+                TrendingMainFragment.class,
+                TrendingStockFragment.class,
+                TrendingFXFragment.class,
                 TrendingFilterSelectorView.class,
                 SearchPeopleItemView.class,
 
                 // Extra Tile needs to know about userProfile data for survey tile element
-                ExtraTileAdapter.class,
                 ProviderTileView.class,
                 SurveyTileView.class,
                 ResetPortfolioTileView.class,

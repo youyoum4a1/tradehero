@@ -143,4 +143,5 @@
     <attr name="ringMinRadian"
         format="dimension" />
   </declare-styleable>
+
 </resources>

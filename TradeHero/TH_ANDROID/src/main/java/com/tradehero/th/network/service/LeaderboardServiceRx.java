@@ -27,6 +27,7 @@ interface LeaderboardServiceRx
     @GET("/leaderboards/{leaderboardId}")
     Observable<LeaderboardDTO> getLeaderboard(
             @Path("leaderboardId") int leaderboardId,
+            @Query("lbType") Integer lbType,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
@@ -42,6 +43,7 @@ interface LeaderboardServiceRx
     @GET("/filteredLeaderboards/{leaderboardId}")
     Observable<LeaderboardDTO> getFilteredLeaderboard(
             @Path("leaderboardId") int leaderboardId,
+            @Query("lbType") Integer lbType,
             @Query("winRatio") Float winRatio,
             @Query("avgMonthlyTradeCount") Float averageMonthlyTradeCount,
             @Query("avgHoldingDays") Float averageHoldingDays,
@@ -55,6 +57,7 @@ interface LeaderboardServiceRx
     @GET("/leaderboards/{leaderboardId}/users/{userId}")
     Observable<LeaderboardDTO> getUserOnLeaderboard(
             @Path("leaderboardId") int leaderboardId,
+            @Query("lbType") Integer lbType,
             @Path("userId") int userId,
             @Query("sortType") Integer sortType);
     //</editor-fold>

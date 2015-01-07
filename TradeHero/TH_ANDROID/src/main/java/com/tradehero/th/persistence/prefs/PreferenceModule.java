@@ -149,8 +149,16 @@ public class PreferenceModule
 
     @Provides @AuthHeader String provideAuthenticationHeader(final AccountManager accountManager)
     {
-        Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
-        if (accounts.length != 0)
+        Account[] accounts = null;
+        try
+        {
+            accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
+        } catch (SecurityException e)
+        {
+            Timber.e(e, "Failed to getAccountsByType");
+        }
+
+        if (accounts != null && accounts.length != 0)
         {
             for (Account account: accounts)
             {

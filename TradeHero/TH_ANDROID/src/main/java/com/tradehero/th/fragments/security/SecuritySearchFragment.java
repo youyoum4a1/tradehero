@@ -14,12 +14,14 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -42,6 +44,9 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     {
         super.onViewCreated(view, savedInstanceState);
         searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+
+        //We set this to true so that the item will show selected state when pressed.
+        listView.setDrawSelectorOnTop(true);
     }
 
     //<editor-fold desc="ActionBar">
@@ -94,20 +99,28 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         }
         else
         {
-            pushTradeFragmentIn(clicked.getSecurityId());
+            pushTradeFragmentIn(clicked);
         }
     }
 
-    protected void pushTradeFragmentIn(SecurityId securityId)
+    protected void pushTradeFragmentIn(SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, securityId);
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        navigator.get().pushFragment(BuySellFragment.class, args);
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            navigator.get().pushFragment(BuySellFXFragment.class, args);
+        }
+        else
+        {
+            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            navigator.get().pushFragment(BuySellStockFragment.class, args);
+        }
     }
 
     @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)

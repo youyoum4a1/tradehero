@@ -21,7 +21,7 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLi
 import com.tradehero.th.fragments.discussion.TimelineDiscussionFragment;
 import com.tradehero.th.fragments.discussion.TimelineItemViewHolder;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -152,9 +152,9 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
             {
                 SecurityId securityId = new SecurityId(flavorSecurityForDisplay.exchange, flavorSecurityForDisplay.symbol);
                 Bundle args = new Bundle();
-                BuySellFragment.putSecurityId(args, securityId);
+                BuySellStockFragment.putSecurityId(args, securityId);
 
-                getNavigator().pushFragment(BuySellFragment.class, args);
+                getNavigator().pushFragment(BuySellStockFragment.class, args);
             }
         }
     }

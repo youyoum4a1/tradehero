@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <com.tradehero.th.fragments.fxonboard.IntroductionView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      style="@style/TH.FxOnBoardDialog"
+      >
+
+    <include layout="@layout/fx_onboard_header_view" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/fx_onboard_introduction_video_introduction"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <TextView
+          android:id="@android:id/empty"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          style="@style/TH.Loading_Empty_Text"
+          android:visibility="gone"
+          android:text="@string/empty_video_list"
+          android:layout_centerInParent="true"
+          android:padding="@dimen/margin_xsmall"
+          />
+
+      <GridView
+          android:id="@+id/introduction_videos_grid"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/size_21"
+          android:listSelector="@drawable/basic_transparent_selector"
+          />
+
+      <ProgressBar
+          android:id="@+id/progress"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/next"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        style="@style/TH.FxOnBoardDialog.NextButton"
+        />
+  </com.tradehero.th.fragments.fxonboard.IntroductionView>
+</merge>

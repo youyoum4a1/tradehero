@@ -9,17 +9,28 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import com.tradehero.th.api.users.CurrentUserId;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 public class VersionUtils
 {
-    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context)
+    @NonNull private final CurrentUserId currentUserId;
+
+    //<editor-fold desc="Constructors">
+    @Inject public VersionUtils(@NonNull CurrentUserId currentUserId)
+    {
+        this.currentUserId = currentUserId;
+    }
+    //</editor-fold>
+
+    public Intent getSupportEmailIntent(Context context)
     {
         return getSupportEmailIntent(context, false);
     }
 
-    @NonNull public static Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
+    @NonNull public Intent getSupportEmailIntent(@NonNull Context context, boolean longInfo)
     {
         return getSupportEmailIntent(getSupportEmailTraceParameters(context, longInfo));
     }
@@ -37,10 +48,11 @@ public class VersionUtils
         return intent;
     }
 
-    @NonNull public static List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
+    @NonNull public List<String> getSupportEmailTraceParameters(@NonNull Context context, boolean longInfo)
     {
         List<String> parameters = new ArrayList<>();
         parameters.add("TradeHero: " + getAppVersion(context));
+        parameters.add("User Id: " + currentUserId.get());
         parameters.add("Device Name: " + getDeviceName());
         if (longInfo)
         {
@@ -57,7 +69,7 @@ public class VersionUtils
         return parameters;
     }
 
-    @NonNull public static List<String> getExceptionStringsAndTraceParameters(
+    @NonNull public List<String> getExceptionStringsAndTraceParameters(
             @NonNull Context context,
             @NonNull List<Throwable> exceptions)
     {
@@ -75,7 +87,7 @@ public class VersionUtils
             @NonNull Throwable exception)
     {
         List<String> reported = getExceptionStrings(context, exception);
-        reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
+        reported.addAll(getSupportEmailTraceParameters(context, true));
         return reported;
     }
 

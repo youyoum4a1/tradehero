@@ -1,7 +1,9 @@
 package com.tradehero.th.billing.samsung;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.billing.BillingUtils;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -13,9 +15,9 @@ public class SamsungStoreUtils
         THSamsungOrderId,
         THSamsungPurchase>
 {
-    @Inject public SamsungStoreUtils()
+    @Inject public SamsungStoreUtils(@NonNull VersionUtils versionUtils)
     {
-        super();
+        super(versionUtils);
     }
 
     @Override public String getStoreName()

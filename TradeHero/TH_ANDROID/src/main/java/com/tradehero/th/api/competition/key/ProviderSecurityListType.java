@@ -1,50 +1,39 @@
 package com.tradehero.th.api.competition.key;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.key.SecurityListType;
 
 abstract public class ProviderSecurityListType extends SecurityListType
 {
-    public final ProviderId providerId;
+    @NonNull public final ProviderId providerId;
 
     //<editor-fold desc="Constructors">
-    protected ProviderSecurityListType(ProviderSecurityListType other)
+    protected ProviderSecurityListType(@NonNull ProviderSecurityListType other)
     {
         super(other);
         this.providerId = other.providerId;
-        validate();
     }
 
-    protected ProviderSecurityListType(ProviderId providerId, Integer page, Integer perPage)
+    protected ProviderSecurityListType(@NonNull ProviderId providerId, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(page, perPage);
         this.providerId = providerId;
-        validate();
     }
 
-    protected ProviderSecurityListType(ProviderId providerId, Integer page)
+    protected ProviderSecurityListType(@NonNull ProviderId providerId, @Nullable Integer page)
     {
         super(page);
         this.providerId = providerId;
-        validate();
     }
 
-    protected ProviderSecurityListType(ProviderId providerId)
+    protected ProviderSecurityListType(@NonNull ProviderId providerId)
     {
         super();
         this.providerId = providerId;
-        validate();
     }
     //</editor-fold>
-
-    private void validate()
-    {
-        if (providerId == null)
-        {
-            throw new NullPointerException("Null is not a valid ProviderId");
-        }
-    }
 
     public ProviderId getProviderId()
     {
@@ -81,7 +70,7 @@ abstract public class ProviderSecurityListType extends SecurityListType
         return compareTo(ProviderSecurityListType.class.cast(another));
     }
 
-    public int compareTo(ProviderSecurityListType another)
+    public int compareTo(@Nullable ProviderSecurityListType another)
     {
         if (another == null)
         {

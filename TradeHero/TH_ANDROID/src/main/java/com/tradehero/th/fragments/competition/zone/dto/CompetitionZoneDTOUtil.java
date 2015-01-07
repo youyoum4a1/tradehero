@@ -91,12 +91,6 @@ public class CompetitionZoneDTOUtil
                         portfolioUserProfileCompact));
             }
 
-            if (providerDTO.hasHelpVideo)
-            {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-                preparedOrderedItems.add(new CompetitionZoneVideoDTO(providerDTO.helpVideoText, null));
-            }
-
             if (preSeasonDTOs == null)
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
@@ -126,16 +120,6 @@ public class CompetitionZoneDTOUtil
             {
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING);
                 preparedOrderedItems.add(new DummyLoadingCompetitionDTO());
-            }
-
-            if (providerDTO.hasWizard())
-            {
-                preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM);
-
-                String wizardTitle = providerDTO.wizardTitle != null && !providerDTO.wizardTitle.isEmpty() ?
-                        providerDTO.wizardTitle : context.getString(R.string.provider_competition_wizard_title);
-                preparedOrderedItems.add(new CompetitionZoneWizardDTO(
-                        wizardTitle, null, providerDTO.wizardImageUrl, providerDTO.wizardUrl));
             }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);

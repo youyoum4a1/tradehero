@@ -37,8 +37,10 @@ public class LeaderboardDefKeyKnowledge
     public static final int QUARTER_4_B = 39;
     public static final int DAYS_30 = 40;
     public static final int DAYS_90 = 41;
-    public static final int MOST_SKILLED_ID = 49;
     public static final int MONTHS_6 = 285;
+    public static final int MOST_SKILLED_ID = 49;
+
+    public static final int[] HAS_FOREX_LEADERBOARDS = new int[] {MOST_SKILLED_ID, DAYS_30, DAYS_90};
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefKeyKnowledge()
@@ -136,5 +138,17 @@ public class LeaderboardDefKeyKnowledge
             default:
                 return null;
         }
+    }
+
+    public boolean hasForex(int leaderboardId)
+    {
+        for (int i = 0; i < HAS_FOREX_LEADERBOARDS.length; i++)
+        {
+            if (leaderboardId == HAS_FOREX_LEADERBOARDS[i])
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

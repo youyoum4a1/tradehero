@@ -7,21 +7,19 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
 
                 PositionListFragment.class,
                 LeaderboardPositionListFragment.class,
                 CompetitionLeaderboardPositionListFragment.class,
-
+                PositionItemAdapter.class,
                 PositionPartialTopView.class,
                 PositionPartialBottomClosedView.class,
                 PositionPartialBottomOpenView.class,
                 PositionLockedView.class,
                 PositionPartialBottomInPeriodViewHolder.class,
+                PositionSectionHeaderItemView.class,
         },
         library = true,
         complete = false

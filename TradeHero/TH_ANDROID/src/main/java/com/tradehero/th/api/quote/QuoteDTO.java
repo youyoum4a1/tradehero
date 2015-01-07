@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.RawResponseKeeper;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.security.SecurityIntegerId;
 import java.util.Date;
 import timber.log.Timber;
 
@@ -107,6 +108,12 @@ public class QuoteDTO implements RawResponseKeeper
         }
         timeStamp = bundle.getString(BUNDLE_KEY_TIMESTAMP);
         rawResponse = bundle.getString(BUNDLE_KEY_RAW_RESPONSE);
+    }
+
+    @JsonIgnore
+    public SecurityIntegerId getSecurityIntegerId()
+    {
+        return new SecurityIntegerId(securityId);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -273,5 +280,27 @@ public class QuoteDTO implements RawResponseKeeper
         Bundle args = new Bundle();
         putParameters(args);
         return args;
+    }
+
+    @Override
+    public String toString() {
+        return "QuoteDTO{" +
+                "securityId=" + securityId +
+                ", asOfUtc=" + asOfUtc +
+                ", asOfEst=" + asOfEst +
+                ", bid=" + bid +
+                ", ask=" + ask +
+                ", currencyISO='" + currencyISO + '\'' +
+                ", currencyDisplay='" + currencyDisplay + '\'' +
+                ", fromCache=" + fromCache +
+                ", quoteType=" + quoteType +
+                ", toUSDRate=" + toUSDRate +
+                ", toUSDRateDate=" + toUSDRateDate +
+                ", timeStamp='" + timeStamp + '\'' +
+                ", isInverted=" + isInverted +
+                ", isOneSided=" + isOneSided +
+                ", isValid=" + isValid +
+                ", rawResponse='" + rawResponse + '\'' +
+                '}';
     }
 }

@@ -108,19 +108,6 @@ public class LeaderboardDefView extends RelativeLayout
         leaderboardDefUserRankWrapper.setVisibility(GONE);
     }
 
-    private void showUserBestROI(LeaderboardUserDTO leaderboardUserDTO)
-    {
-        THSignedNumber roi = THSignedPercentage
-                .builder(leaderboardUserDTO.roiInPeriod * 100)
-                .withSign()
-                .signTypeArrow()
-                .relevantDigitCount(3)
-                .build();
-        leaderboardDefUserRank.setText(roi.toString());
-        leaderboardDefUserRank.setTextColor(getResources().getColor(roi.getColorResId()));
-        leaderboardDefUserRankWrapper.setVisibility(VISIBLE);
-    }
-
     protected void linkWith(LeaderboardDefDTO dto, boolean andDisplay)
     {
         this.dto = dto;

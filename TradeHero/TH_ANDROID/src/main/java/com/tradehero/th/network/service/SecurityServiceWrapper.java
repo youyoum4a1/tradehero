@@ -3,8 +3,10 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
@@ -16,6 +18,7 @@ import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
+import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
@@ -27,6 +30,7 @@ import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionU
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -130,7 +134,7 @@ import rx.Observable;
         {
             ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
             received = this.securityService.getBySectorAndExchange(
-                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
                     exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
                     key.perPage);
@@ -179,6 +183,18 @@ import rx.Observable;
             else
             {
                 throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
+            }
+        }
+        else if (key instanceof TrendingFxSecurityListType)
+        {
+            // FIXME when the server offers pagination
+            if (key.page != null && key.page == 1)
+            {
+                received = this.securityServiceRx.getFXSecurities();
+            }
+            else
+            {
+                received = Observable.just(new SecurityCompactDTOList());
             }
         }
         else if (key instanceof SearchSecurityListType)
@@ -261,6 +277,11 @@ import rx.Observable;
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
+        if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
+        {
+            return this.securityServiceRx.buyFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
+                    .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+        }
         return this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
             .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
     }
@@ -271,6 +292,11 @@ import rx.Observable;
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
+        if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
+        {
+            return this.securityServiceRx.sellFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
+                    .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+        }
         return this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
                 .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
     }
@@ -287,6 +313,24 @@ import rx.Observable;
             return buyRx(securityId, transactionFormDTO);
         }
         return sellRx(securityId, transactionFormDTO);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX KChart">
+    @NonNull public Observable<FXChartDTO> getFXHistory(@NonNull SecurityId securityId, String duration)
+    {
+        Observable<FXChartDTO> received;
+        received = securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
+        return received;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get FX All Price">
+    @NonNull public Observable<List<QuoteDTO>> getFXSecuritiesAllPriceRx()
+    {
+        Observable<List<QuoteDTO>> received;
+        received = securityServiceRx.getFXSecuritiesAllPrice();
+        return received;
     }
     //</editor-fold>
 }

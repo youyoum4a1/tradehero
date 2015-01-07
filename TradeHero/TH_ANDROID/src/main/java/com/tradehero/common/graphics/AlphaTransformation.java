@@ -3,15 +3,20 @@ package com.tradehero.common.graphics;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import com.squareup.picasso.Picasso;
+import com.tradehero.th.R;
+import java.io.IOException;
 
 public class AlphaTransformation implements com.squareup.picasso.Transformation
 {
+    private final Picasso picasso;
     private float alpha = 1f;
 
     //<editor-fold desc="Constructors">
-    public AlphaTransformation(float alpha)
+    public AlphaTransformation(Picasso picasso, float alpha)
     {
         super();
+        this.picasso = picasso;
         this.alpha = alpha;
         if (alpha > 1)
         {
@@ -42,7 +47,20 @@ public class AlphaTransformation implements com.squareup.picasso.Transformation
         //        	return imgIn;
         //        }
 
-        Bitmap result = Bitmap.createBitmap(imgIn.getWidth(), imgIn.getHeight(), imgIn.getConfig());
+        Bitmap result;
+        try
+        {
+            result = Bitmap.createBitmap(imgIn.getWidth(), imgIn.getHeight(), imgIn.getConfig());
+        } catch (Exception ignored)
+        {
+            try
+            {
+                return picasso.load(R.drawable.default_image).get();
+            } catch (IOException ignored2)
+            {
+                throw new RuntimeException("Failed to apply transformation! Missing resource.");
+            }
+        }
         Canvas canvas = new Canvas(result);
         Paint paint = new Paint();
         paint.setAlpha((int) (255 * this.alpha));

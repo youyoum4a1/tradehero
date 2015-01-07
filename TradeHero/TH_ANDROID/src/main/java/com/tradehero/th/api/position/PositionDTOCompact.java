@@ -11,6 +11,8 @@ import java.util.List;
 public class PositionDTOCompact implements DTO
 {
     public int id;
+    @NonNull public String exchange;
+    @NonNull public String symbol;
     @Nullable public Integer shares;
     public int portfolioId;
 
@@ -19,6 +21,8 @@ public class PositionDTOCompact implements DTO
     // This is the portfolio currency
     @Nullable public String currencyDisplay;
     @Nullable public String currencyISO;
+    @Nullable public Double fxRate;
+    @Nullable public PositionStatus positionStatus;
 
     //<editor-fold desc="Constructors">
     public PositionDTOCompact()
@@ -27,9 +31,15 @@ public class PositionDTOCompact implements DTO
     }
     //</editor-fold>
 
-    @JsonIgnore
+    @JsonIgnore @Nullable
     public Boolean isClosed()
     {
+        if (positionStatus != null &&
+                (positionStatus.equals(PositionStatus.CLOSED)
+                        || positionStatus.equals(PositionStatus.FORCE_CLOSED)))
+        {
+            return true;
+        }
         if (shares == null)
         {
             return null;
@@ -37,9 +47,15 @@ public class PositionDTOCompact implements DTO
         return shares == 0;
     }
 
-    @JsonIgnore
+    @JsonIgnore @Nullable
     public Boolean isOpen()
     {
+        if (positionStatus != null &&
+                (positionStatus.equals(PositionStatus.CLOSED)
+                        || positionStatus.equals(PositionStatus.FORCE_CLOSED)))
+        {
+            return false;
+        }
         if (shares == null)
         {
             return null;
@@ -73,7 +89,7 @@ public class PositionDTOCompact implements DTO
         }
 
         List<PositionCompactId> positionCompactIds = new ArrayList<>();
-        for (PositionDTOCompact positionDTOCompact: positionDTOCompacts)
+        for (PositionDTOCompact positionDTOCompact : positionDTOCompacts)
         {
             positionCompactIds.add(positionDTOCompact.getPositionCompactId());
         }

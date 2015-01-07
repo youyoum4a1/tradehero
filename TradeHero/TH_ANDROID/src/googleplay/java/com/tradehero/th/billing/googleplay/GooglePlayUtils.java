@@ -21,9 +21,9 @@ class GooglePlayUtils
         THIABPurchase>
 {
     //<editor-fold desc="Constructors">
-    @Inject public GooglePlayUtils()
+    @Inject public GooglePlayUtils(@NonNull VersionUtils versionUtils)
     {
-        super();
+        super(versionUtils);
     }
     //</editor-fold>
 
@@ -77,7 +77,7 @@ class GooglePlayUtils
             @NonNull Throwable exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem consuming my purchase with " + getStoreName() + "\n\n-----\n" +
-                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
+                StringUtils.join("\n", versionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);

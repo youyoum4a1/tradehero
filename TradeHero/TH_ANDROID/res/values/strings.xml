@@ -88,7 +88,9 @@
   <string name="buy_sell_loading_ask_price">Loading ask price…</string>
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
   <string name="sell">Sell</string>
+  <string name="fx_sell">SELL @\n%1$s</string>
   <string name="buy">Buy</string>
+  <string name="fx_buy">BUY @\n%1$s</string>
   <string name="chart_loading_image">Loading chart image…</string>
 
   <string name="plus_symbol" translatable="false">+</string>
@@ -276,4 +278,34 @@
   <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>
   <string name="retry">Retry</string>
+
+  <string name="stocks">Stocks</string>
+  <string name="fx">FX</string>
+
+  <string name="warrants_all">All Warrants</string>
+  <string name="fx_onboard_header_title">Virtual Forex On TradeHero</string>
+  <string name="powered_by">Powered by</string>
+  <string name="fx_onboard_introduction_video_introduction">We\'ve prepared some educational videos to prepare you before diving into Forex. Happy trading!</string>
+  <string name="start_trading">Start Trading!</string>
+  <string name="active_fx_now">Activate FX Now!</string>
+  <string name="fx_onboard_introduction_text_introduction">TradeHero offers virtual trading of major
+      currency pairs 24 hrs a day, five and half times a week.  One can Buy, Sell or Short an FX
+      pair.\n\nThe 50:1 leverage allows one to control a position of up to 50 times your cash
+      balance.  The (displayed) margin details will help manage open exposure in the market.\n\n
+      Please ACTIVATE your FX Portfolio and start trading !!
+  </string>
+  <string name="congratulation">Congratulation!</string>
+  <string name="congratulation_description">You now have an\nFX Portfolio on TradeHero.\nCheck it out on your profile screen.</string>
+
+  <string name="no_current_position_units">No current position</string>
+  <string name="short_position_units">Short position: %1$s units</string>
+  <string name="long_position_units">Long position: %1$s units</string>
+  <string name="error_fx_candle_charts_load_fail">Loading of candle chart failed</string>
+  <string name="error_fetch_fx_list">Error when fetching FX list</string>
+  <string name="error_fetch_fx_list_price">Error when fetching FX prices</string>
+
+  <string name="position_title_info">Info</string>
+  <string name="position_short_info">position short info</string>
+  <string name="position_long_info">position long info</string>
+  <string name="position_close_info">position close info</string>
 </resources>

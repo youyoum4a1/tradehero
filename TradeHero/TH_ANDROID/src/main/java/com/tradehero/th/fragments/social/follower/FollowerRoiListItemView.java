@@ -45,12 +45,10 @@ public class FollowerRoiListItemView extends FollowerListItemView
         {
             if (userFollowerDTO != null)
             {
-                THSignedNumber thRoiSinceInception = THSignedPercentage
+                THSignedPercentage
                         .builder(userFollowerDTO.roiSinceInception * 100)
-                        .build();
-                roiInfo.setText(thRoiSinceInception.toString());
-                roiInfo.setTextColor(
-                        getContext().getResources().getColor(thRoiSinceInception.getColorResId()));
+                        .build()
+                        .into(roiInfo);
             }
             else
             {

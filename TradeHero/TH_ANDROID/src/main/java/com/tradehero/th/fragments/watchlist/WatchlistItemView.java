@@ -33,7 +33,7 @@ import com.tradehero.th.fragments.alert.AlertCreateFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.security.StockInfoFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -279,8 +279,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             THSignedNumber value = getGainLoss(showInPercentage);
             if (value != null)
             {
-                gainLossLabel.setText(value.toString());
-                gainLossLabel.setTextColor(value.getColor());
+                value.into(gainLossLabel);
             }
             else
             {
@@ -500,8 +499,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     private void openSecurityProfile()
     {
         Bundle args = new Bundle();
-        BuySellFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
-        navigator.pushFragment(BuySellFragment.class, args);
+        BuySellStockFragment.putSecurityId(args, watchlistPositionDTO.securityDTO.getSecurityId());
+        navigator.pushFragment(BuySellStockFragment.class, args);
     }
 
     private void openSecurityGraph()

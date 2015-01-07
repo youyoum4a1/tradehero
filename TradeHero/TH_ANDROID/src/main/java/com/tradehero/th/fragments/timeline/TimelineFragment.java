@@ -58,6 +58,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -424,9 +425,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 collection.add(String.valueOf(displayablePortfolioDTOs.get(i).portfolioDTO.providerId));
             }
         }
-        if (collection.size() > 0)
+        if (collection.size() > 0 && Constants.RELEASE)
         {
-            analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
+//            analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
+            analytics.localytics().setProfileAttribute(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
         }
     }
 

@@ -66,6 +66,7 @@ import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
@@ -79,9 +80,10 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellFXFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
@@ -168,6 +170,7 @@ public class DashboardActivity extends BaseActivity
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
+    private boolean enrollmentScreenIsOpened = false;
 
     @InjectView(R.id.xp_toast_box) XpToast xpToast;
 
@@ -409,8 +412,12 @@ public class DashboardActivity extends BaseActivity
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 providerDTO -> {
-                                    enrollmentScreenOpened.add(providerDTO.id);
-                                    navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                    if (!enrollmentScreenIsOpened)
+                                    {
+                                        enrollmentScreenIsOpened = true;
+                                        enrollmentScreenOpened.add(providerDTO.id);
+                                        navigator.pushFragment(CompetitionEnrollmentWebViewFragment.class, providerDTO.getProviderId().getArgs());
+                                    }
                                 },
                                 throwable -> {
                                     THToast.show(R.string.error_fetch_provider_competition_list);
@@ -505,20 +512,18 @@ public class DashboardActivity extends BaseActivity
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
                     {
-                        if (!isOnboardShown.get())
+                        UserProfileDTO userProfileDTO = args.second;
+                        if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                         {
-                            UserProfileDTO userProfileDTO = args.second;
-                            if (userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
-                            {
-                                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            }
+                            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
                             return;
                         }
 
                         if (!isFxShown.get())
                         {
-                            //broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            //return;
+                            isFxShown.set(true);
+                            FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+                            return;
                         }
 
                         broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
@@ -669,11 +674,12 @@ public class DashboardActivity extends BaseActivity
                     NotificationsCenterFragment.class,
                     MessagesCenterFragment.class,
                     UpdateCenterFragment.class,
-                    TrendingFragment.class,
+                    TrendingStockFragment.class,
                     FriendsInvitationFragment.class,
                     SettingsFragment.class,
                     MainCompetitionFragment.class,
-                    BuySellFragment.class,
+                    BuySellStockFragment.class,
+                    BuySellFXFragment.class,
                     StoreScreenFragment.class,
                     LeaderboardCommunityFragment.class,
                     CompetitionWebViewFragment.class,

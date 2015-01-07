@@ -176,7 +176,7 @@ public class PositionPartialBottomOpenView
         {
             if (positionDTO != null && positionDTO.shares != null)
             {
-                quantityValue.setText(String.format("%,d", positionDTO.shares));
+                quantityValue.setText(String.format("%,d", Math.abs(positionDTO.shares)));
             }
             else
             {

@@ -1,18 +1,34 @@
 package com.tradehero.th.fragments.position;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.tradehero.th.R;
+import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.utils.AlertDialogUtil;
+import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.inject.Inject;
 
 public class PositionSectionHeaderItemView extends RelativeLayout
 {
-    protected TextView headerText;
-    protected TextView timeBaseText;
+    public static final int INFO_TYPE_LONG = 0;
+    public static final int INFO_TYPE_SHORT = 1;
+    public static final int INFO_TYPE_CLOSED = 2;
+
+    @Inject protected Lazy<AlertDialogUtil> alertDialogUtil;
+    @InjectView(R.id.header_text) protected TextView headerText;
+    @InjectView(R.id.header_time_base) protected TextView timeBaseText;
     protected SimpleDateFormat sdf;
+
+    private int type = -1;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -38,13 +54,8 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     {
         super.onFinishInflate();
         sdf = new SimpleDateFormat(getContext().getString(R.string.data_format_dd_mmm_yyyy));
-        initViews();
-    }
-
-    protected void initViews()
-    {
-        headerText = (TextView) findViewById(R.id.header_text);
-        timeBaseText = (TextView) findViewById(R.id.header_time_base);
+        HierarchyInjector.inject(this);
+        ButterKnife.inject(this);
     }
 
     public void setHeaderTextContent(String text)
@@ -55,7 +66,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
         }
     }
 
-    public void setTimeBaseTextContent(Date left, Date right)
+    public void setTimeBaseTextContent(@Nullable Date left, @Nullable Date right)
     {
         if (timeBaseText != null)
         {
@@ -70,6 +81,35 @@ public class PositionSectionHeaderItemView extends RelativeLayout
             {
                 timeBaseText.setText("");
             }
+        }
+    }
+
+    public void setType(int type)
+    {
+        this.type = type;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.header_get_info)
+    protected void handleInfoClicked(@SuppressWarnings("UnusedParameters") View view)
+    {
+        int resInt = -1;
+        if (type == PositionSectionHeaderItemView.INFO_TYPE_LONG)
+        {
+            resInt = R.string.position_long_info;
+        }
+        else if (type == PositionSectionHeaderItemView.INFO_TYPE_SHORT)
+        {
+            resInt = R.string.position_short_info;
+        }
+        else if (type == PositionSectionHeaderItemView.INFO_TYPE_CLOSED)
+        {
+            resInt = R.string.position_close_info;
+        }
+
+        if (resInt != -1)
+        {
+            alertDialogUtil.get().popWithNegativeButton(getContext(), R.string.position_title_info, resInt, R.string.ok);
         }
     }
 }

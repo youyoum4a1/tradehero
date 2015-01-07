@@ -11,7 +11,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.models.intent.THIntent;
 import java.util.List;
 
@@ -107,7 +107,7 @@ public class SecurityPushBuyIntent extends THIntent
 
     @Override public Class<? extends Fragment> getActionFragment()
     {
-        return BuySellFragment.class;
+        return BuySellStockFragment.class;
     }
 
     @Override public void populate(Bundle bundle)

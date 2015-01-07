@@ -15,7 +15,7 @@ import com.tradehero.th.fragments.settings.AdminSettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.settings.SettingsReferralCodeFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public enum RootFragmentType
             R.drawable.icn_menu_home, MeTimelineFragment.class, AnalyticsConstants.TabBar_Me),
     TRENDING(R.layout.tab_indicator_holo,
             R.string.dashboard_trending, R.string.dashboard_trending_key,
-            R.drawable.icn_menu_trending, TrendingFragment.class, AnalyticsConstants.TabBar_Trade),
+            R.drawable.icn_menu_trending, TrendingMainFragment.class, AnalyticsConstants.TabBar_Trade),
     DISCOVERY(R.layout.tab_indicator_holo,
             R.string.discovery, R.string.dashboard_discovery_key,
             R.drawable.icn_menu_compass_white, DiscoveryMainFragment.class, AnalyticsConstants.TabBar_Discovery),

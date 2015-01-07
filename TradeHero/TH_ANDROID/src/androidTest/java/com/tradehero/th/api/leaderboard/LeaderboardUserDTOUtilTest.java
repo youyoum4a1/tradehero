@@ -41,7 +41,7 @@ public class LeaderboardUserDTOUtilTest extends LeaderboardUserDTOUtilTestBase
 
     @Test public void testEmptyReturnsEmpty()
     {
-        assertEmpty(leaderboardUserDTOUtil.map(new ArrayList<LeaderboardUserDTO>()));
+        assertEmpty(leaderboardUserDTOUtil.map(new ArrayList<>()));
     }
 
     @Test public void testList1ReturnsMap1()

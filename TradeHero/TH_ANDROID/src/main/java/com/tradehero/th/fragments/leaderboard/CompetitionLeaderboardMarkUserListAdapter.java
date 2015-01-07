@@ -10,7 +10,6 @@ import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.AdDTO;
-import com.tradehero.th.api.competition.PrizeDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import com.tradehero.th.fragments.competition.AdView;

@@ -16,37 +16,25 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
-import com.tradehero.th.models.graphics.ForSecurityItemForeground;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
 public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
-    public static final float DIVISOR_PC_50_COLOR = 5f;
-
-    @Inject @ForSecurityItemForeground Transformation foregroundTransformation;
-    @Inject @ForSecurityItemBackground2 Transformation backgroundTransformation;
-
     @Inject protected Picasso mPicasso;
 
-    @InjectView(R.id.stock_bg_logo) @Optional ImageView stockBgLogo;
     @InjectView(R.id.stock_logo) ImageView stockLogo;
     @InjectView(R.id.ic_market_close) ImageView marketCloseIcon;
     @InjectView(R.id.stock_name) TextView stockName;
     @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
-    @InjectView(R.id.profit_indicator) @Optional TextView profitIndicator;
-    @InjectView(R.id.currency_display) TextView currencyDisplay;
     @InjectView(R.id.last_price) TextView lastPrice;
     @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
     @InjectView(R.id.date) @Optional TextView date;
@@ -54,7 +42,6 @@ public class SecurityItemView extends RelativeLayout
 
     protected SecurityCompactDTO securityCompactDTO;
     private Target myLogoImageTarget;
-    private Target myBgImageTarget;
 
     //<editor-fold desc="Constructors">
     public SecurityItemView(Context context)
@@ -78,7 +65,6 @@ public class SecurityItemView extends RelativeLayout
         super.onFinishInflate();
         init();
         myLogoImageTarget = createLogoImageTarget();
-        myBgImageTarget = createBGImageTarget();
     }
 
     protected void init()
@@ -96,16 +82,6 @@ public class SecurityItemView extends RelativeLayout
         {
             myLogoImageTarget = createLogoImageTarget();
         }
-        if (getMyBgImageTarget() == null)
-        {
-            myBgImageTarget = createBGImageTarget();
-        }
-
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setVisibility(View.GONE);
-        }
-
         if (mPicasso != null)
         {
             loadImage();
@@ -115,10 +91,8 @@ public class SecurityItemView extends RelativeLayout
     @Override protected void onDetachedFromWindow()
     {
         mPicasso.cancelRequest(myLogoImageTarget);
-        mPicasso.cancelRequest(myBgImageTarget);
 
         myLogoImageTarget = null;
-        myBgImageTarget = null;
 
         if (mPicasso != null)
         {
@@ -127,10 +101,6 @@ public class SecurityItemView extends RelativeLayout
         if (stockLogo != null)
         {
             stockLogo.setImageDrawable(null);
-        }
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setImageDrawable(null);
         }
         if (countryLogo != null)
         {
@@ -172,10 +142,8 @@ public class SecurityItemView extends RelativeLayout
         {
             displayStockName();
             displayExchangeSymbol();
-            displayCurrencyDisplay();
             displayDate();
             displayLastPrice();
-            displayProfitIndicator();
             displayMarketClose();
             displaySecurityType();
             displayCountryLogo();
@@ -189,10 +157,8 @@ public class SecurityItemView extends RelativeLayout
     {
         displayStockName();
         displayExchangeSymbol();
-        displayCurrencyDisplay();
         displayDate();
         displayLastPrice();
-        displayProfitIndicator();
         displayMarketClose();
         displaySecurityType();
         displayCountryLogo();
@@ -231,21 +197,6 @@ public class SecurityItemView extends RelativeLayout
         }
     }
 
-    public void displayCurrencyDisplay()
-    {
-        if (currencyDisplay != null)
-        {
-            if (securityCompactDTO != null)
-            {
-                currencyDisplay.setText(securityCompactDTO.currencyDisplay);
-            }
-            else
-            {
-                currencyDisplay.setText(R.string.na);
-            }
-        }
-    }
-
     public void displayDate()
     {
         if (date != null)
@@ -277,45 +228,19 @@ public class SecurityItemView extends RelativeLayout
             if (securityCompactDTO != null && securityCompactDTO.lastPrice != null && !Double.isNaN(
                     securityCompactDTO.lastPrice))
             {
-                lastPrice.setText(THSignedNumber.builder(securityCompactDTO.lastPrice)
-                                .withOutSign()
-                            .build().toString());
+                THSignedMoney.builder(securityCompactDTO.lastPrice)
+                        .signTypeArrow()
+                        .withValueColor(R.color.exchange_symbol)
+                        .withCurrencyColor(R.color.exchange_symbol)
+                        .withSignValue(securityCompactDTO.pc50DMA)
+                        .currency(securityCompactDTO.currencyDisplay)
+                        .boldValue()
+                        .build()
+                        .into(lastPrice);
             }
             else
             {
                 lastPrice.setText(R.string.na);
-            }
-        }
-    }
-
-    public void displayProfitIndicator()
-    {
-        if (profitIndicator != null)
-        {
-            if (securityCompactDTO != null)
-            {
-                if (securityCompactDTO.pc50DMA == null)
-                {
-                    Timber.w("displayProfitIndicator, pc50DMA was null");
-                    profitIndicator.setText("");
-                    profitIndicator.setTextColor(getResources().getColor(R.color.black));
-                }
-                else
-                {
-                    if (securityCompactDTO.pc50DMA > 0)
-                    {
-                        profitIndicator.setText(R.string.arrow_prefix_positive);
-                    }
-                    else if (securityCompactDTO.pc50DMA < 0)
-                    {
-                        profitIndicator.setText(R.string.arrow_prefix_negative);
-                    }
-                    else
-                    {
-                        profitIndicator.setText("");
-                    }
-                    profitIndicator.setTextColor(THColorUtils.getProperColorForNumber(((float) securityCompactDTO.pc50DMA) / DIVISOR_PC_50_COLOR));
-                }
             }
         }
     }
@@ -336,28 +261,12 @@ public class SecurityItemView extends RelativeLayout
             {
                 marketCloseIcon.setVisibility(View.GONE);
             }
-            if (currencyDisplay != null)
-            {
-                currencyDisplay.setTextColor(getResources().getColor(R.color.exchange_symbol));
-            }
-            if (lastPrice != null)
-            {
-                lastPrice.setTextColor(getResources().getColor(R.color.exchange_symbol));
-            }
         }
         else
         {
             if (marketCloseIcon != null)
             {
                 marketCloseIcon.setVisibility(View.VISIBLE);
-            }
-            if (currencyDisplay != null)
-            {
-                currencyDisplay.setTextColor(getResources().getColor(android.R.color.darker_gray));
-            }
-            if (lastPrice != null)
-            {
-                lastPrice.setTextColor(getResources().getColor(android.R.color.darker_gray));
             }
         }
     }
@@ -405,16 +314,6 @@ public class SecurityItemView extends RelativeLayout
         {
             stockLogo.setImageBitmap(null);
         }
-
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setImageBitmap(null);
-        }
-    }
-
-    public Target getMyBgImageTarget()
-    {
-        return this.myBgImageTarget;
     }
 
     public Target getMyLogoImageTarget()
@@ -429,7 +328,6 @@ public class SecurityItemView extends RelativeLayout
         if (isMyUrlOk())
         {
             picassoSetupLogoParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyLogoImageTarget());
-            picassoSetupBGParam(mPicasso.load(securityCompactDTO.imageBlobUrl)).into(getMyBgImageTarget());
         }
         else
         {
@@ -446,7 +344,6 @@ public class SecurityItemView extends RelativeLayout
                 Exchange exchange = Exchange.valueOf(securityCompactDTO.exchange);
 
                 mPicasso.load(exchange.logoId).into(getMyLogoImageTarget());
-                picassoSetupBGParam(mPicasso.load(exchange.logoId)).into(getMyBgImageTarget());
             } catch (IllegalArgumentException e)
             {
                 Timber.e("Unknown Exchange %s", securityCompactDTO.exchange, e);
@@ -466,30 +363,13 @@ public class SecurityItemView extends RelativeLayout
             stockLogo.setVisibility(View.VISIBLE);
             stockLogo.setImageResource(R.drawable.default_image);
         }
-        if (stockBgLogo != null)
-        {
-            stockBgLogo.setVisibility(View.GONE);
-        }
     }
 
     private RequestCreator picassoSetupLogoParam(@NonNull RequestCreator creator)
     {
-        return creator.transform(foregroundTransformation)
+        return creator
                 .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
                 .centerInside();
-    }
-
-    private RequestCreator picassoSetupBGParam(@NonNull RequestCreator creator)
-    {
-        return creator.transform(backgroundTransformation)
-                .resizeDimen(R.dimen.security_logo_width, R.dimen.security_logo_height)
-                .centerCrop();
-    }
-
-    protected Target createBGImageTarget()
-
-    {
-        return new SecurityItemViewBgImageTarget();
     }
 
     protected Target createLogoImageTarget()
@@ -520,29 +400,4 @@ public class SecurityItemView extends RelativeLayout
         }
     }
 
-    protected class SecurityItemViewBgImageTarget
-            implements Target
-    {
-
-        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
-            if (stockBgLogo != null)
-            {
-                stockBgLogo.setImageBitmap(bitmap);
-                stockBgLogo.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-            }
-        }
-
-        @Override public void onBitmapFailed(Drawable errorDrawable)
-        {
-        }
-
-        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
-        {
-
-        }
-    }
 }

@@ -30,7 +30,20 @@ public class GrayscaleTransformation implements Transformation
 
     @Override public Bitmap transform(Bitmap source)
     {
-        Bitmap result = createBitmap(source.getWidth(), source.getHeight(), source.getConfig());
+        Bitmap result;
+        try
+        {
+            result = createBitmap(source.getWidth(), source.getHeight(), source.getConfig());
+        } catch (Exception ignored)
+        {
+            try
+            {
+                return picasso.load(R.drawable.default_image).get();
+            } catch (IOException ignored2)
+            {
+                throw new RuntimeException("Failed to apply transformation! Missing resource.");
+            }
+        }
         Bitmap noise;
         try
         {

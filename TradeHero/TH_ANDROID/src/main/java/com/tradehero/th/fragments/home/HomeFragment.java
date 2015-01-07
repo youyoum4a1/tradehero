@@ -231,7 +231,7 @@ public final class HomeFragment extends BaseWebViewFragment
                         {
                             if (e instanceof FacebookOperationCanceledException)
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                THToast.show(R.string.invite_friend_request_cancelled);
                             }
                             Timber.e(e, "error");
                         }
@@ -246,7 +246,7 @@ public final class HomeFragment extends BaseWebViewFragment
                             }
                             else
                             {
-                                THToast.show(R.string.invite_friend_request_canceled);
+                                THToast.show(R.string.invite_friend_request_cancelled);
                             }
 
                             Timber.d("next %s", bundle);

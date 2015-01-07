@@ -40,6 +40,10 @@ public class PortfolioSelectorView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
+    @Nullable public OwnedPortfolioId getDefaultPortfolioId() {
+        return defaultPortfolioId;
+    }
+
     public void setDefaultPortfolioId(@Nullable OwnedPortfolioId defaultPortfolioId)
     {
         this.defaultPortfolioId = defaultPortfolioId;
@@ -76,10 +80,32 @@ public class PortfolioSelectorView extends RelativeLayout
         display();
     }
 
+    public void addMenuOwnedPortfolioIdforFX(@NonNull MenuOwnedPortfolioId menuOwnedPortfolioId)
+    {
+        if (defaultPortfolioId == null)
+        {
+            defaultPortfolioId = new OwnedPortfolioId(menuOwnedPortfolioId);
+            defaultMenuPortfolioId = menuOwnedPortfolioId;
+            currentMenu = menuOwnedPortfolioId;
+        }
+        if (currentMenu == null)
+        {
+            currentMenu = defaultMenuPortfolioId == null ? menuOwnedPortfolioId : defaultMenuPortfolioId;
+        }
+        addMenuOwnedPortfolioId(menuOwnedPortfolioId);
+        displayForFX();
+    }
+
     public void display()
     {
         selectedPortfolio.setText(currentMenu);
         setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
+    }
+
+    public void displayForFX()
+    {
+        selectedPortfolio.setText(currentMenu);
+        setVisibility(usedMenuOwnedPortfolioIds.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     @NonNull public Observable<MenuOwnedPortfolioId> createMenuObservable()

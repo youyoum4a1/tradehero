@@ -82,6 +82,8 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
     public void set(@NonNull LeaderboardFriendsDTO leaderboardFriendsDTO)
     {
+        clear();
+        notifyDataSetChanged();
         Observable.from(leaderboardFriendsDTO.leaderboard.users)
                 .subscribeOn(Schedulers.computation())
                 .map(this::createUserDTOFrom)
@@ -149,8 +151,10 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
 
         if (convertView instanceof LeaderboardMarkUserItemView)
         {
+            LeaderboardUserDTO leaderboardUserDTO =
+                    ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO;
             ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK FIXME
-            ((LeaderboardMarkUserItemView) convertView).display(((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO);
+            ((LeaderboardMarkUserItemView) convertView).display(leaderboardUserDTO);
             ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
             ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
         }
@@ -159,10 +163,10 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
             ((LeaderboardFriendsItemView) convertView).display(((FriendLeaderboardSocialUserDTO) item).userFriendsDTO);
         }
 
-        final View expandingLayout = convertView.findViewById(R.id.expanding_layout);
+        final ExpandingLayout expandingLayout = (ExpandingLayout) convertView.findViewById(R.id.expanding_layout);
         if (expandingLayout != null)
         {
-            expandingLayout.setVisibility(item.isExpanded() ? View.VISIBLE : View.GONE);
+            expandingLayout.expandWithNoAnimation(item.isExpanded());
             if (item.isExpanded() && convertView instanceof ExpandingLayout.OnExpandListener)
             {
                 ((ExpandingLayout.OnExpandListener) convertView).onExpand(true);

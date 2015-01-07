@@ -64,7 +64,7 @@ public class TransformationModule
             }
         };
         transformation.add(new StackBlurTransformation(25));
-        transformation.add(new AlphaTransformation(0.3f));
+        transformation.add(new AlphaTransformation(picasso, 0.3f));
         return transformation;
     }
 
@@ -83,22 +83,6 @@ public class TransformationModule
         transformation.add(new GradientTransformation(
                 context.getResources().getColor(R.color.profile_view_gradient_top),
                 context.getResources().getColor(R.color.black)));
-        return transformation;
-    }
-
-    @Provides @ForSecurityItemBackground2 @Singleton
-    public Transformation provideSecurityItemBackgroundTransformation2(Context context, Picasso picasso)
-    {
-        AbstractSequentialTransformation transformation = new AbstractSequentialTransformation()
-        {
-            @Override public String key()
-            {
-                return "toFastBlurGrayScale2";
-            }
-        };
-        transformation.add(new GrayscaleTransformation(picasso));
-        transformation.add(new StackBlurTransformation(10));
-        transformation.add(new AlphaTransformation(0.2f));
         return transformation;
     }
 
@@ -121,7 +105,7 @@ public class TransformationModule
         };
         backgroundTransformation.add(new GrayscaleTransformation(picasso));
         backgroundTransformation.add(new StackBlurTransformation(10));
-        backgroundTransformation.add(new AlphaTransformation(0.2f));
+        backgroundTransformation.add(new AlphaTransformation(picasso, 0.2f));
         return backgroundTransformation;
     }
 

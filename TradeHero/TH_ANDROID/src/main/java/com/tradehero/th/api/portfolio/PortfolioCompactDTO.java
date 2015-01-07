@@ -3,6 +3,7 @@ package com.tradehero.th.api.portfolio;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -18,8 +19,11 @@ public class PortfolioCompactDTO implements DTO
     @NonNull public Integer userId;
     //</editor-fold>
 
-    public Integer providerId;
+    @Nullable public Integer providerId;
     public String title;
+
+    @JsonProperty("portfolioType")
+    @Nullable public AssetClass assetClass;
 
     public double cashBalance;
     public double totalValue;
@@ -36,6 +40,13 @@ public class PortfolioCompactDTO implements DTO
     public String currencyISO;
     @Nullable public Double refCcyToUsdRate;
     @Nullable public Double txnCostUsd;
+
+    public Double leverage;
+    public Double nav; // Net asset value
+    public Double marginAvailableRefCcy;
+    public Double marginUsedRefCcy;
+    public Double unrealizedPLRefCcy;
+    @Nullable public Double marginCloseOutPercent;
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -71,6 +82,11 @@ public class PortfolioCompactDTO implements DTO
     @JsonIgnore public boolean isDefault()
     {
         return providerId == null && !isWatchlist;
+    }
+
+    @JsonIgnore public boolean isFx()
+    {
+        return assetClass != null && assetClass.equals(AssetClass.FX);
     }
 
     @JsonIgnore public boolean isAllowedAddCash()
@@ -132,6 +148,7 @@ public class PortfolioCompactDTO implements DTO
                 "cashBalance=" + cashBalance +
                 ", id=" + id +
                 ", providerId=" + providerId +
+                ", assetClass=" + assetClass +
                 ", title='" + title + '\'' +
                 ", totalValue=" + totalValue +
                 ", totalExtraCashPurchased=" + totalExtraCashPurchased +
@@ -146,6 +163,9 @@ public class PortfolioCompactDTO implements DTO
                 ", refCcyToUsdRate=" + refCcyToUsdRate +
                 ", txnCostUsd=" + txnCostUsd +
                 ", userId=" + userId +
+                ", marginAvailableRefCcy=" + marginAvailableRefCcy +
+                ", marginCloseOutPercent=" + marginCloseOutPercent +
+                ", leverage=" + leverage +
                 ']';
     }
 }

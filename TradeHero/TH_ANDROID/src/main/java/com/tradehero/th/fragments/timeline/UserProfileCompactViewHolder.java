@@ -119,14 +119,12 @@ public class UserProfileCompactViewHolder
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
                 double roi = userProfileDTO.portfolio.roiSinceInception != null ? userProfileDTO.portfolio.roiSinceInception : 0;
-                THSignedNumber thRoiSinceInception = THSignedPercentage
+                THSignedPercentage
                         .builder(roi * 100)
                         .withSign()
                         .signTypeArrow()
-                        .build();
-                roiSinceInception.setText(thRoiSinceInception.toString());
-                roiSinceInception.setTextColor(
-                        context.getResources().getColor(thRoiSinceInception.getColorResId()));
+                        .build()
+                        .into(roiSinceInception);
             }
             else
             {

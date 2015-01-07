@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.th.api.portfolio.AssetClass;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,12 +20,19 @@ public class LeaderboardKey implements DTOKey
     public static final String STRING_SET_LEFT_KEY = "id";
 
     @NonNull public final Integer id;
+    @Nullable private AssetClass assetClass;
 
     //<editor-fold desc="Constructors">
     public LeaderboardKey(int id)
     {
         super();
         this.id = id;
+    }
+
+    public LeaderboardKey(@NonNull Integer id, @Nullable AssetClass assetClass)
+    {
+        this.id = id;
+        this.assetClass = assetClass;
     }
 
     public LeaderboardKey(@NonNull Bundle args)
@@ -113,7 +121,8 @@ public class LeaderboardKey implements DTOKey
 
     protected boolean equalFields(@NonNull LeaderboardKey other)
     {
-        return id.equals(other.id);
+        return id.equals(other.id)
+                && (assetClass != null && assetClass.equals(other.assetClass));
     }
 
     @Override public String toString()
@@ -121,11 +130,20 @@ public class LeaderboardKey implements DTOKey
         try
         {
             return THJsonAdapter.getInstance().toStringBody(this);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
-            Timber.e(e,"Failed toString");
+            Timber.e(e, "Failed toString");
             return "";
         }
+    }
+
+    public AssetClass getAssetClass()
+    {
+        return assetClass;
+    }
+
+    public void setAssetClass(@NonNull AssetClass assetClass)
+    {
+        this.assetClass = assetClass;
     }
 }

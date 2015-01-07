@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
+import dagger.Lazy;
 import javax.inject.Inject;
 
 public class CompetitionLeaderboardPositionListFragment extends LeaderboardPositionListFragment
@@ -14,6 +16,7 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
 
     protected ProviderId providerId;
+    @Inject Lazy<ProviderTradableSecuritiesHelper> providerTradableSecuritiesHelperLazy;
 
     public static void putProviderId(Bundle args, ProviderId providerId)
     {
@@ -34,9 +37,8 @@ public class CompetitionLeaderboardPositionListFragment extends LeaderboardPosit
     @Override protected void pushSecurityFragment()
     {
         Bundle args = new Bundle();
-        ProviderSecurityListFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
-        ProviderSecurityListFragment.putProviderId(args, providerId);
-        navigator.get().pushFragment(ProviderSecurityListFragment.class, args);
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        providerTradableSecuritiesHelperLazy.get().pushTradableSecuritiesList(args, ownedPortfolioId, portfolioDTO, providerId);
     }
 
     @VisibleForTesting public ProviderId getProviderId()

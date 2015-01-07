@@ -9,10 +9,13 @@ import javax.inject.Inject;
 
 public class SendFeedbackViewHolder extends OneSettingViewHolder
 {
+    @NonNull protected final VersionUtils versionUtils;
+
     //<editor-fold desc="Constructors">
-    @Inject public SendFeedbackViewHolder()
+    @Inject public SendFeedbackViewHolder(@NonNull VersionUtils versionUtils)
     {
         super();
+        this.versionUtils = versionUtils;
     }
     //</editor-fold>
 
@@ -44,7 +47,7 @@ public class SendFeedbackViewHolder extends OneSettingViewHolder
         if (preferenceFragmentCopy != null)
         {
             preferenceFragmentCopy.startActivity(
-                    Intent.createChooser(VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getActivity()),
+                    Intent.createChooser(versionUtils.getSupportEmailIntent(preferenceFragmentCopy.getActivity()),
                             ""));
         }
     }
@@ -55,7 +58,7 @@ public class SendFeedbackViewHolder extends OneSettingViewHolder
         if (preferenceFragmentCopy != null)
         {
             preferenceFragmentCopy.startActivity(Intent.createChooser(
-                    VersionUtils.getSupportEmailIntent(preferenceFragmentCopy.getActivity(), true), ""));
+                    versionUtils.getSupportEmailIntent(preferenceFragmentCopy.getActivity(), true), ""));
         }
     }
 }

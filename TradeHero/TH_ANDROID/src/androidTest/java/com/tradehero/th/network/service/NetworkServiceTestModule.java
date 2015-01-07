@@ -36,7 +36,7 @@ import dagger.Module;
                 UserTimelineMarkerServiceWrapper.class,
                 UserTimelineServiceWrapper.class,
                 VideoServiceWrapper.class,
-                GamesServiceWrapper.class,
+                MiniGameServiceWrapper.class,
                 WatchlistServiceWrapper.class,
                 WeChatServiceWrapper.class,
                 YahooNewsServiceWrapper.class,

@@ -13,8 +13,6 @@ import javax.inject.Inject;
 
 public class PositionDTOUtils
 {
-    protected static final int PERCENT_STRETCHING_FOR_COLOR = 20;
-
     @Inject public PositionDTOUtils()
     {
         super();
@@ -241,13 +239,11 @@ public class PositionDTOUtils
         }
         else
         {
-            THSignedNumber roiNumber = THSignedPercentage.builder(roiValue * 100.0)
+            THSignedPercentage.builder(roiValue * 100.0)
                     .signTypeArrow()
                     .relevantDigitCount(3)
-                    .build();
-            textView.setText(roiNumber.toString());
-            textView.setTextColor(
-                    THColorUtils.getProperColorForNumber(roiValue.floatValue() * PERCENT_STRETCHING_FOR_COLOR));
+                    .build()
+                    .into(textView);
         }
     }
 

@@ -5,7 +5,6 @@
   <Preference
       android:key="user_info"
       android:title="@string/app_name"
-      android:icon="@drawable/superman_facebook"
       />
 
   <ListPreference
@@ -67,5 +66,9 @@
     android:key="show_preseason_dialog"
     android:title="Show Preseason Dialog"
     android:icon="@drawable/icn_competition_prize"/>
+
+    <Preference
+    android:key="show_kchart_examples"
+    android:title="show_kchart_examples"/>
 
 </PreferenceScreen>

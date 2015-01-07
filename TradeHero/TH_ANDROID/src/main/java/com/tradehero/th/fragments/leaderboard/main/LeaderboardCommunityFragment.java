@@ -24,17 +24,21 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
+import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardDefFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserPagerFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.models.leaderboard.LeaderboardDefDTOKnowledge;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -56,13 +60,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
+    @Inject Lazy<LeaderboardDefDTOKnowledge> leaderboardDefDTOKnowledge;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnItemClickSticky(R.id.leaderboard_community_list)
-    void handleLeaderboardItemClicked(AdapterView<?> parent, View view, int position, long id)
+    @OnItemClickSticky(R.id.leaderboard_community_list) void handleLeaderboardItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         LeaderboardDefDTO leaderboardDefDTO = (LeaderboardDefDTO) parent.getItemAtPosition(position);
         if (leaderboardDefDTO instanceof DrillDownLeaderboardDefDTO)
@@ -77,6 +81,10 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             {
                 throw new IllegalArgumentException("Unhandled drillDownLeaderboardDefDTO " + drillDownLeaderboardDefDTO);
             }
+        }
+        else if (leaderboardDefDTOKnowledge.get().hasForexType(leaderboardDefDTO.id))
+        {
+            pushTabbedLeaderboardFragment(leaderboardDefDTO);
         }
         else
         {
@@ -280,10 +288,20 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         Bundle bundle = new Bundle(getArguments());
         (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
-        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
+        LeaderboardDefFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
         if (navigator != null)
         {
             navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);
+        }
+    }
+
+    private void pushTabbedLeaderboardFragment(LeaderboardDefDTO leaderboardDefDTO)
+    {
+        Bundle bundle = new Bundle(getArguments());
+        LeaderboardMarkUserPagerFragment.putLeaderboardDefKey(bundle, leaderboardDefDTO.getLeaderboardDefKey());
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(LeaderboardMarkUserPagerFragment.class, bundle);
         }
     }
 

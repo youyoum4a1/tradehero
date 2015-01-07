@@ -27,22 +27,20 @@ import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messages.MessagesCenterFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
-import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import static org.robolectric.Robolectric.shadowOf;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowDialog;
@@ -50,6 +48,9 @@ import org.robolectric.shadows.ShadowHandler;
 import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.shadows.ShadowWebViewNew;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.robolectric.Robolectric.shadowOf;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(shadows = ShadowWebViewNew.class)
@@ -194,7 +195,7 @@ public class THRouterTest
     {
         thRouter.open("security/4_NASDAQ_AAPL");
 
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(BuySellFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(BuySellStockFragment.class);
     }
     //endregion
 
@@ -300,6 +301,6 @@ public class THRouterTest
     @Test public void shouldOpenTrendingScreen()
     {
         thRouter.open("trending-securities");
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TrendingFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(TrendingStockFragment.class);
     }
 }

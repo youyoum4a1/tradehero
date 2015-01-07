@@ -69,7 +69,7 @@ android {
 
   compileSdkVersion 20
 
-  buildToolsVersion "20.0.0"
+  buildToolsVersion "21.1.1"
   //useOldManifestMerger=true
 
   dexOptions {
@@ -306,7 +306,7 @@ dependencies {
     exclude module: 'xpp3'
     exclude group: 'com.squareup.retrofit', module: 'retrofit'
   }
-  compile 'com.tradehero:metrics:1.2-SNAPSHOT'
+  compile 'com.tradehero:metrics:2.0-SNAPSHOT'
   compile 'com.squareup.dagger:dagger:1.2.2'
   provided 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'io.reactivex:rxandroid:0.21.0'

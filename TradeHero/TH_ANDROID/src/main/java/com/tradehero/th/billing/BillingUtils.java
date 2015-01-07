@@ -20,10 +20,13 @@ abstract public class BillingUtils<
         OrderIdType extends OrderId,
         ProductPurchaseType extends ProductPurchase<ProductIdentifierType, OrderIdType>>
 {
+    @NonNull protected final VersionUtils versionUtils;
+
     //<editor-fold desc="Constructors">
-    public BillingUtils()
+    public BillingUtils(@NonNull VersionUtils versionUtils)
     {
         super();
+        this.versionUtils = versionUtils;
     }
     //</editor-fold>
 
@@ -46,7 +49,7 @@ abstract public class BillingUtils<
             @Nullable ProductPurchaseType purchase)
     {
         List<String> reported = getPurchaseReportStrings(purchase);
-        reported.addAll(VersionUtils.getSupportEmailTraceParameters(context, true));
+        reported.addAll(versionUtils.getSupportEmailTraceParameters(context, true));
 
         return reported;
     }
@@ -68,7 +71,7 @@ abstract public class BillingUtils<
             @NonNull Exception exception)
     {
         String deviceDetails = "\n\nThere appears to have been a problem restoring my purchase with " + getStoreName() + "\n\n-----\n" +
-                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context,
+                StringUtils.join("\n", versionUtils.getExceptionStringsAndTraceParameters(context,
                         exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);

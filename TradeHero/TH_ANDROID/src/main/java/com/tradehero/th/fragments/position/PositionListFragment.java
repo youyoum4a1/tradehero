@@ -4,19 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
@@ -39,12 +41,13 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.fragments.security.SecurityListRxFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingFragment;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -57,14 +60,13 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
@@ -93,7 +95,6 @@ public class PositionListFragment
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
 
-    //@InjectView(R.id.position_list) protected ListView positionsListView;
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
@@ -180,12 +181,6 @@ public class PositionListFragment
 
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(this::refreshSimplePage);
-        positionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
-
-        // portfolio header
-        int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey);
-        headerStub.setLayoutResource(headerLayoutId);
-        portfolioHeaderView = (PortfolioHeaderView) headerStub.inflate();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -225,10 +220,14 @@ public class PositionListFragment
 
         if (ownedPortfolioId != null)
         {
-            TrendingFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            SecurityListRxFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        navigator.get().pushFragment(TrendingFragment.class, args);
+        if(portfolioDTO != null && portfolioDTO.assetClass != null)
+        {
+            TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
+        }
+        navigator.get().pushFragment(TrendingMainFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
@@ -241,8 +240,7 @@ public class PositionListFragment
     @Override public void onStart()
     {
         super.onStart();
-        portfolioHeaderView.setFollowRequestedListener(this);
-        portfolioHeaderView.setTimelineRequestedListener(this);
+        linkPortfolioHeader();
         fetchUserProfile();
         fetchPortfolio();
         fetchSimplePage();
@@ -269,8 +267,11 @@ public class PositionListFragment
         userProfileSubscription = null;
         unsubscribe(getPositionsSubscription);
         getPositionsSubscription = null;
-        portfolioHeaderView.setFollowRequestedListener(null);
-        portfolioHeaderView.setTimelineRequestedListener(null);
+        if (portfolioHeaderView != null)
+        {
+            portfolioHeaderView.setFollowRequestedListener(null);
+            portfolioHeaderView.setTimelineRequestedListener(null);
+        }
         super.onStop();
     }
 
@@ -291,6 +292,7 @@ public class PositionListFragment
         positionListView.setOnScrollListener(null);
         positionListView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
+        portfolioHeaderView = null;
         super.onDestroyView();
     }
 
@@ -322,40 +324,38 @@ public class PositionListFragment
         return layouts;
     }
 
+    protected void linkPortfolioHeader()
+    {
+        if (portfolioHeaderView != null)
+        {
+            portfolioHeaderView.setFollowRequestedListener(this);
+            portfolioHeaderView.setTimelineRequestedListener(this);
+        }
+    }
+    
     protected void fetchUserProfile()
     {
         if (userProfileSubscription == null)
         {
-            userProfileSubscription = AndroidObservable.bindFragment(this, userProfileCache.get(shownUser))
-                    .subscribe(createProfileCacheObserver());
+            userProfileSubscription = AndroidObservable.bindFragment(
+                    this,
+                    userProfileCache.get(shownUser))
+                    .subscribe(
+                            pair -> linkWith(pair.second),
+                            this::handleUserProfileError);
         }
     }
 
-    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createProfileCacheObserver()
-    {
-        return new AbstractPositionListProfileCacheObserver();
-    }
-
-    protected class AbstractPositionListProfileCacheObserver extends EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_user_profile);
-        }
-    }
-
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    public void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
-        if (andDisplay)
-        {
-            displayHeaderView();
-        }
+        displayHeaderView();
+        positionItemAdapter.linkWith(userProfileDTO);
+    }
+
+    public void handleUserProfileError(Throwable e)
+    {
+        THToast.show(R.string.error_fetch_user_profile);
     }
 
     public boolean isShownOwnedPortfolioIdForOtherPeople(@Nullable OwnedPortfolioId ownedPortfolioId)
@@ -373,41 +373,25 @@ public class PositionListFragment
                 portfolioSubscription = AndroidObservable.bindFragment(
                         this,
                         portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
-                        .subscribe(createPortfolioCacheObserver());
+                        .subscribe(
+                                pair -> linkWith(pair.second),
+                                error -> THToast.show(R.string.error_fetch_portfolio_info)
+                        );
             }
             // We do not need to fetch for other players
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
     }
 
-    protected Observer<Pair<OwnedPortfolioId, PortfolioDTO>> createPortfolioCacheObserver()
-    {
-        return new PortfolioCacheObserver();
-    }
-
-    protected class PortfolioCacheObserver implements Observer<Pair<OwnedPortfolioId, PortfolioDTO>>
-    {
-        @Override public void onNext(Pair<OwnedPortfolioId, PortfolioDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_portfolio_info);
-        }
-    }
-
     protected void linkWith(@NonNull PortfolioDTO portfolioDTO)
     {
         this.portfolioDTO = portfolioDTO;
-        portfolioHeaderView.linkWith(portfolioDTO);
         displayActionBarTitle();
         showPrettyReviewAndInvite(portfolioDTO);
+
+        preparePortfolioHeaderView(portfolioDTO);
+        portfolioHeaderView.linkWith(portfolioDTO);
+        positionItemAdapter.linkWith(portfolioDTO);
     }
 
     private void showPrettyReviewAndInvite(@NonNull PortfolioCompactDTO compactDTO)
@@ -433,40 +417,70 @@ public class PositionListFragment
         }
     }
 
+    private void preparePortfolioHeaderView(@NonNull PortfolioCompactDTO portfolioCompactDTO)
+    {
+        if (portfolioHeaderView == null)
+        {
+            // portfolio header
+            int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO);
+            headerStub.setLayoutResource(headerLayoutId);
+            View inflatedHeader = headerStub.inflate();
+            portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;
+            linkPortfolioHeader();
+
+            positionListView.post(new Runnable()
+            {
+                @Override public void run()
+                {
+                    AbsListView listView = positionListView;
+                    if (listView != null)
+                    {
+                        int headerHeight = inflatedHeader.getMeasuredHeight();
+                        listView.setPadding(listView.getPaddingLeft(),
+                                headerHeight,
+                                listView.getPaddingRight(),
+                                listView.getPaddingBottom());
+                        listView.setOnScrollListener(new MultiScrollListener(
+                                dashboardBottomTabsListViewScrollListener.get(),
+                                new QuickReturnListViewOnScrollListener(QuickReturnType.HEADER,
+                                        inflatedHeader,
+                                        -headerHeight,
+                                        null, 0)));
+                    }
+                }
+            });
+        }
+        else
+        {
+            Timber.d("Not inflating portfolioHeaderView because already not null");
+        }
+    }
+
     protected void fetchSimplePage()
     {
         if (getPositionsDTOKey.isValid() && getPositionsSubscription == null)
         {
-            getPositionsSubscription = AndroidObservable.bindFragment(this, getPositionsCache.get(getPositionsDTOKey))
-                    .subscribe(createGetPositionsCacheObserver());
+            getPositionsSubscription = AndroidObservable.bindFragment(
+                    this,
+                    getPositionsCache.get(getPositionsDTOKey))
+                    .subscribe(
+                            pair -> this.linkWith(pair.second),
+                            this::handleGetPositionsError);
         }
     }
 
-    @NonNull protected Observer<Pair<GetPositionsDTOKey, GetPositionsDTO>> createGetPositionsCacheObserver()
+    public void handleGetPositionsError(Throwable e)
     {
-        return new GetPositionsObserver();
-    }
-
-    protected class GetPositionsObserver extends EmptyObserver<Pair<GetPositionsDTOKey, GetPositionsDTO>>
-    {
-        @Override public void onNext(Pair<GetPositionsDTOKey, GetPositionsDTO> pair)
+        if (getPositionsDTO == null)
         {
-            linkWith(pair.second, true);
-        }
+            listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
 
-        @Override public void onError(Throwable e)
-        {
-            if (getPositionsDTO == null)
-            {
-                listViewFlipper.setDisplayedChild(FLIPPER_INDEX_ERROR);
-
-                THToast.show(getString(R.string.error_fetch_position_list_info));
-                Timber.d(e, "Error fetching the positionList info");
-            }
+            THToast.show(getString(R.string.error_fetch_position_list_info));
+            Timber.d(e, "Error fetching the positionList info");
         }
     }
 
-    public void linkWith(GetPositionsDTO getPositionsDTO, boolean andDisplay)
+    public void linkWith(GetPositionsDTO getPositionsDTO)
     {
         this.getPositionsDTO = getPositionsDTO;
         positionItemAdapter.clear();
@@ -474,12 +488,8 @@ public class PositionListFragment
         positionItemAdapter.notifyDataSetChanged();
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
-
-        if (andDisplay)
-        {
-            // TODO finer grained
-            display();
-        }
+        positionListView.smoothScrollToPosition(0);
+        display();
     }
 
     protected void refreshSimplePage()

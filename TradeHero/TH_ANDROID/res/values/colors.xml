@@ -88,4 +88,8 @@
     <item>#3FFF12</item>
     <item>#16FF11</item>
   </string-array>
+
+  <color name="dark_blue_normal">#06439A</color>
+  <color name="dark_blue_pressed">#ff052040</color>
+  <color name="dark_blue_focused">#ff0765e7</color>
 </resources>

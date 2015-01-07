@@ -19,7 +19,7 @@ public class LeaderboardUserDTOUtil
     public Map<LeaderboardUserId, LeaderboardUserDTO> map(@NonNull List<LeaderboardUserDTO> leaderboardUserDTOs)
     {
         Map<LeaderboardUserId, LeaderboardUserDTO> returned = new HashMap<>();
-        for (LeaderboardUserDTO leaderboardUserDTO: leaderboardUserDTOs)
+        for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
         {
             returned.put(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO);
         }

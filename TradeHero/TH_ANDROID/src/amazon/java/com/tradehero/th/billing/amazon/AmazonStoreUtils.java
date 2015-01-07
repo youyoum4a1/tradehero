@@ -15,9 +15,9 @@ public class AmazonStoreUtils
         THAmazonOrderId,
         THAmazonPurchase>
 {
-    @Inject public AmazonStoreUtils()
+    @Inject public AmazonStoreUtils(@NonNull VersionUtils versionUtils)
     {
-        super();
+        super(versionUtils);
     }
 
     @Override @NonNull public String getStoreName()

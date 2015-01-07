@@ -107,16 +107,14 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
                 LeaderboardUserDTO leaderboardUserDTO = ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO.leaderboardUser;
                 if(leaderboardUserDTO != null)
                 {
-                    THSignedNumber thRoi = THSignedPercentage
+                    THSignedPercentage
                             .builder(leaderboardUserDTO.roiInPeriod * 100)
-                            .build();
-
-                    roiView.setText(thRoi.toString());
-                    roiView.setTextColor(getResources().getColor(thRoi.getColorResId()));
+                            .build()
+                            .into(roiView);
                 }
                 else
                 {
-                    roiView.setTextColor(Color.BLACK);
+                    roiView.setTextColor(getResources().getColor(R.color.text_primary));
                     roiView.setText(R.string.na);
                 }
             }

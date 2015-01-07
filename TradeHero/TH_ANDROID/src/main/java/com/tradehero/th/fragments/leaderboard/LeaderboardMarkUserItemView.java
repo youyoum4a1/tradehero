@@ -57,7 +57,8 @@ import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
 
-public class LeaderboardMarkUserItemView extends RelativeLayout
+public class LeaderboardMarkUserItemView
+        extends RelativeLayout
         implements DTOView<LeaderboardUserDTO>,
         ExpandingLayout.OnExpandListener
 {
@@ -95,22 +96,20 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
     @Nullable private Subscription leaderboardOwnUserRankingSubscription;
 
-    //<editor-fold desc="Constructors">
     public LeaderboardMarkUserItemView(Context context)
     {
         super(context);
-    }
-
-    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
-    {
-        super(context, attrs);
     }
 
     public LeaderboardMarkUserItemView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
     }
-    //</editor-fold>
+
+    public LeaderboardMarkUserItemView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
 
     @Override protected void onFinishInflate()
     {
@@ -206,7 +205,7 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         leaderboardOwnUserRankingSubscription = null;
     }
 
-    private void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
+    protected void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
     {
         this.leaderboardItem = leaderboardUserDTO;
 
@@ -307,14 +306,13 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
     protected void displayExpandableSection()
     {
         // display Roi
-        THSignedNumber roi = THSignedPercentage
+        THSignedPercentage
                 .builder(leaderboardItem.roiInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
-                .build();
-        lbmuRoi.setText(roi.toString());
-        lbmuRoi.setTextColor(getResources().getColor(roi.getColorResId()));
+                .build()
+                .into(lbmuRoi);
 
         // display Roi annualized
         THSignedNumber roiAnnualizedVal = THSignedPercentage
@@ -326,22 +324,6 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
         String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
         String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
         lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
-    }
-
-    @Override public void onExpand(boolean expand)
-    {
-        if (userStatisticView != null)
-        {
-            if (expand)
-            {
-                userStatisticView.display(leaderboardItem);
-            }
-            else
-            {
-                userStatisticView.display(null);
-                Timber.d("clearExpandAnimation");
-            }
-        }
     }
 
     protected String getLbmuPlCurrencyDisplay()
@@ -571,6 +553,22 @@ public class LeaderboardMarkUserItemView extends RelativeLayout
 
         lbmuRoi.setText(R.string.leaderboard_not_ranked);
         lbmuPosition.setText("-");
+    }
+
+    @Override public void onExpand(boolean expand)
+    {
+        if (userStatisticView != null && leaderboardItem != null)
+        {
+            if (expand)
+            {
+                userStatisticView.display(leaderboardItem);
+            }
+            else
+            {
+                userStatisticView.display(null);
+                Timber.d("clearExpandAnimation");
+            }
+        }
     }
 
     public static interface OnFollowRequestedListener
