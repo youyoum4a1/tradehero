@@ -53,6 +53,9 @@ public class BuySellFXFragment extends BuySellFragment
 {
     public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
     public final static long MILLISEC_FX_QUOTE_REFRESH = 5000;
+    public final static long TIME_SECOND_DURATION = 5 * 1000;
+
+    private long timeStart;
 
     private static int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
 
@@ -104,6 +107,7 @@ public class BuySellFXFragment extends BuySellFragment
         initTimeSpanButton();
         addDefaultFXPortfolio();
         closeUnits = getCloseAttribute(getArguments());
+        timeStart = System.currentTimeMillis();
     }
 
     private void addDefaultFXPortfolio()
@@ -232,6 +236,7 @@ public class BuySellFXFragment extends BuySellFragment
 
     public void displayPositionStatus()
     {
+        if((!isValidTimer()) && positionDTOCompactList == null )return;
         Integer share = getMaxSellableShares();
         Double unRealizedPLRefccy = getUnRealizedPLRefCcy();
 
@@ -428,5 +433,10 @@ public class BuySellFXFragment extends BuySellFragment
         super.linkWith(quoteDTO, andDisplay);
         showCloseDialog();
         displayPositionStatus();
+    }
+
+    private boolean isValidTimer()
+    {
+        return System.currentTimeMillis() > (timeStart + TIME_SECOND_DURATION);
     }
 }

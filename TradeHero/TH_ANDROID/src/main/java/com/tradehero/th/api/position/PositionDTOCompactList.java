@@ -213,6 +213,10 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
         double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         Integer shareCount = getShareCountIn(portfolioCompactDTO.getPortfolioId());
+        if(shareCount <0)
+        {
+            return shareCount;
+        }
         Double netSellProceedsUsd = getMaxNetSellProceedsUsd(quoteDTO, portfolioCompactDTO.getPortfolioId(), includeTransactionCost, txnCostUsd);
         if (netSellProceedsUsd == null)
         {
