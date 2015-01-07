@@ -1,6 +1,10 @@
 package com.tradehero.th.api.security;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.th.R;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
@@ -47,5 +51,22 @@ public class SecurityCompactDTOUtil
             return bidDecimalPlace;
         }
         return 0;
+    }
+
+    @NonNull public String getShortSymbol(
+            @NonNull Context context,
+            @NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            FxPairSecurityId fxPairSecurityId = ((FxSecurityCompactDTO) securityCompactDTO).getFxPair();
+            return String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right);
+        }
+
+        SecurityId securityId = securityCompactDTO.getSecurityId();
+        return context.getString(
+                R.string.trade_list_title_with_security,
+                securityId.getExchange(),
+                securityId.getSecuritySymbol());
     }
 }

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -92,6 +93,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Nullable protected SecurityId securityId;
     @Nullable protected Subscription securityCompactSubscription;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
+    @Nullable protected Subscription actionDialogSubscription;
 
     protected TradeListItemAdapter adapter;
 
@@ -186,12 +188,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         securityIdSubscription = null;
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = null;
+        unsubscribe(actionDialogSubscription);
+        actionDialogSubscription = null;
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        detachSecurityActionDialog();
         tradeListView.setOnScrollListener(null);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -206,28 +209,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected TradeListItemAdapter createAdapter()
     {
         return new TradeListItemAdapter(getActivity());
-    }
-
-    protected void detachSecurityActionDialog()
-    {
-        if (securityActionDialog != null)
-        {
-            android.view.Window window = securityActionDialog.getWindow();
-            if (window != null)
-            {
-                View decorView = window.getDecorView();
-                if (decorView != null)
-                {
-                    View innerView = decorView.findViewById(android.R.id.content);
-                    if (innerView instanceof SecurityActionListLinear)
-                    {
-                        ((SecurityActionListLinear) innerView).setMenuClickedListener(null);
-                    }
-                }
-            }
-            securityActionDialog.dismiss();
-        }
-        securityActionDialog = null;
     }
 
     protected void fetchAlertList()
@@ -327,7 +308,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected void linkWith(@NonNull SecurityId securityId)
     {
         this.securityId = securityId;
-        getActivity().invalidateOptionsMenu();
         fetchSecurityCompact();
     }
 
@@ -346,6 +326,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected void linkWith(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         this.securityCompactDTO = securityCompactDTO;
+        getActivity().invalidateOptionsMenu();
         displayActionBarTitle();
     }
 
@@ -387,122 +368,122 @@ public class TradeListFragment extends BasePurchaseManagerFragment
 
     protected boolean shouldActionBeVisible()
     {
-        return mappedAlerts != null && securityId != null;
+        return mappedAlerts != null && securityCompactDTO != null;
     }
 
     protected void handleActionButtonClicked()
     {
-        if (securityId == null || mappedAlerts == null)
+        if (securityCompactDTO == null || mappedAlerts == null)
         {
             throw new IllegalStateException("We should not allow entering here");
         }
         else
         {
-            detachSecurityActionDialog();
-            if (securityCompactDTO instanceof FxSecurityCompactDTO)
+            unsubscribe(actionDialogSubscription);
+            Pair<Dialog, SecurityActionListLinear> pair = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityCompactDTO);
+            securityActionDialog = pair.first;
+            actionDialogSubscription = pair.second.getMenuActionObservable()
+                    .subscribe(
+                            this::handleMenuAction,
+                            error -> Timber.e(error, ""));
+        }
+    }
+
+    protected void handleMenuAction(@NonNull SecurityActionListLinear.MenuAction menuAction)
+    {
+        dismissShareDialog();
+        switch (menuAction.actionType)
+        {
+            case CANCEL:
+                break;
+            case ADD_TO_WATCHLIST:
+                handleAddToWatchlistRequested(menuAction.securityCompactDTO);
+                break;
+            case ADD_ALERT:
+                handleAddAlertRequested(menuAction.securityCompactDTO);
+                break;
+            case BUY_SELL:
+                handleBuySellRequested(menuAction.securityCompactDTO);
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled SecurityActionListLinear.MenuActionType." + menuAction.actionType);
+        }
+    }
+
+    protected void handleAddToWatchlistRequested(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        Bundle args = new Bundle();
+        WatchlistEditFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        if (watchlistPositionCache.getValue(securityCompactDTO.getSecurityId()) != null)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+        }
+        else
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+        }
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(WatchlistEditFragment.class, args);
+        }
+    }
+
+    protected void handleAddAlertRequested(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        Bundle args = new Bundle();
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        }
+        if (mappedAlerts != null)
+        {
+            AlertId alertId = mappedAlerts.get(securityCompactDTO.getSecurityId());
+            if (alertId != null)
             {
-                securityActionDialog =
-                        securityActionDialogFactory.createSecurityActionOnlyBuySaleDialog(getActivity(), securityId,
-                                createSecurityActionMenuListener());
+                AlertEditFragment.putAlertId(args, alertId);
+                if (navigator != null)
+                {
+                    navigator.get().pushFragment(AlertEditFragment.class, args);
+                }
             }
             else
             {
-                securityActionDialog =
-                        securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityId, createSecurityActionMenuListener());
+                AlertCreateFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+                if (navigator != null)
+                {
+                    navigator.get().pushFragment(AlertCreateFragment.class, args);
+                }
             }
         }
     }
 
-    protected SecurityActionListLinear.OnActionMenuClickedListener createSecurityActionMenuListener()
+    protected void handleBuySellRequested(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        return new TradeListSecurityActionListener();
-    }
-
-    protected class TradeListSecurityActionListener implements SecurityActionListLinear.OnActionMenuClickedListener
-    {
-        @Override public void onCancelClicked()
+        Bundle args = new Bundle();
+        if (this.securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            dismissShareDialog();
-        }
-
-        @Override public void onAddToWatchlistRequested(@NonNull SecurityId securityId)
-        {
-            dismissShareDialog();
-            Bundle args = new Bundle();
-            WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.getValue(securityId) != null)
-            {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
-            }
-            else
-            {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
-                ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
-            }
+            BuySellFXFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+            BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            // TODO add command to go direct to pop-up
             if (navigator != null)
             {
-                navigator.get().pushFragment(WatchlistEditFragment.class, args);
+                navigator.get().pushFragment(BuySellFXFragment.class, args);
             }
         }
-
-        @Override public void onAddAlertRequested(@NonNull SecurityId securityId)
+        else
         {
-            dismissShareDialog();
-            Bundle args = new Bundle();
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
             if (applicablePortfolioId != null)
             {
-                BaseAlertEditFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
             }
-            if (mappedAlerts != null)
+            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            if (navigator != null)
             {
-                AlertId alertId = mappedAlerts.get(securityId);
-                if (alertId != null)
-                {
-                    AlertEditFragment.putAlertId(args, alertId);
-                    if (navigator != null)
-                    {
-                        navigator.get().pushFragment(AlertEditFragment.class, args);
-                    }
-                }
-                else
-                {
-                    AlertCreateFragment.putSecurityId(args, securityId);
-                    if (navigator != null)
-                    {
-                        navigator.get().pushFragment(AlertCreateFragment.class, args);
-                    }
-                }
-            }
-        }
-
-        @Override public void onBuySellRequested(@NonNull SecurityId securityId)
-        {
-            dismissShareDialog();
-            Bundle args = new Bundle();
-            if (securityCompactDTO instanceof FxSecurityCompactDTO)
-            {
-                BuySellFXFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-                BuySellFXFragment.putSecurityId(args, securityId);
-                // TODO add command to go direct to pop-up
-                if (navigator != null)
-                {
-                    navigator.get().pushFragment(BuySellFXFragment.class, args);
-                }
-            }
-            else
-            {
-                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-                if (applicablePortfolioId != null)
-                {
-                    BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-                }
-                BuySellStockFragment.putSecurityId(args, securityId);
-                if (navigator != null)
-                {
-                    navigator.get().pushFragment(BuySellStockFragment.class, args);
-                }
+                navigator.get().pushFragment(BuySellStockFragment.class, args);
             }
         }
     }
