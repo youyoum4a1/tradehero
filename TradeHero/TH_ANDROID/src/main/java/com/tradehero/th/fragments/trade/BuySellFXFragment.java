@@ -52,6 +52,8 @@ public class BuySellFXFragment extends BuySellFragment
     public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
     public final static long MILLISEC_FX_QUOTE_REFRESH = 5000;
 
+    private static int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
+
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -312,14 +314,14 @@ public class BuySellFXFragment extends BuySellFragment
     {
         THSignedFXRate.builder(value)
                 .signTypeArrow()
-                .signValue(diff)
-                .signColor(THColorUtils.getColorResourceIdForNumber(diff, R.color.text_primary_inverse))
+                .skipDefaultColor()
+                .withSignValue(diff)
+                .withSignColor(THColorUtils.getColorResourceIdForNumber(diff, DEFAULT_BUTTON_TEXT_COLOR))
                 .enhanceTo((int) (btn.getTextSize() + 15))
-                .enhanceWith(THColorUtils.getColorResourceIdForNumber(diff, R.color.text_primary_inverse))
-                .valueColor(R.color.text_primary_inverse)
-                .noColor()
+                .enhanceWithColor(THColorUtils.getColorResourceIdForNumber(diff, DEFAULT_BUTTON_TEXT_COLOR))
+                .withValueColor(DEFAULT_BUTTON_TEXT_COLOR)
                 .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
-                .minPrecision(precision)
+                .expectedPrecision(precision)
                 .build()
                 .into(btn);
 

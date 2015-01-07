@@ -84,10 +84,10 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     {
         THSignedFXRate.builder(value)
                 .enhanceTo((int) (textView.getTextSize() + 15))
-                .enhanceWith(colorResId)
-                .minPrecision(precision)
+                .enhanceWithColor(colorResId)
+                .expectedPrecision(precision)
                 .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
-                .noColor()
+                .skipDefaultColor()
                 .build()
                 .into(textView);
         if (colorResId != mDefaultTextColor)

@@ -2,6 +2,7 @@ package com.tradehero.th.models.number;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -13,15 +14,15 @@ public class THSignedFXRate extends THSignedNumber
 {
     private static final int DECIMAL_PLACES_TO_BE_ENHANCED = 3;
     private static final int DECIMAL_PLACES_TO_BE_SKIPPED = 1;
-    private Integer enhancedSize;
 
-    private Integer enhancedLastDigitsColor;
-    private Integer minPrecision;
+    @Nullable private Integer enhancedSize;
+    @Nullable @ColorRes private Integer enhancedLastDigitsColor;
+    @Nullable private Integer minPrecision;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
             extends THSignedNumber.Builder<BuilderType>
     {
-        private int colorResId = USE_DEFAULT_COLOR;
+        @Nullable @ColorRes private Integer colorResId;
         private int minPrecision;
         private int enhancedSize;
 
@@ -38,13 +39,16 @@ public class THSignedFXRate extends THSignedNumber
             return self();
         }
 
-        public BuilderType enhanceWith(@ColorRes int colorResId)
+        public BuilderType enhanceWithColor(@ColorRes int colorResId)
         {
-            this.colorResId = colorResId;
+            if(colorResId > 0)
+            {
+                this.colorResId = colorResId;
+            }
             return self();
         }
 
-        public BuilderType minPrecision(int precision)
+        public BuilderType expectedPrecision(int precision)
         {
             this.minPrecision = precision;
             return self();
@@ -80,7 +84,7 @@ public class THSignedFXRate extends THSignedNumber
     protected THSignedFXRate(@NonNull Builder<?> builder)
     {
         super(builder);
-        if (builder.colorResId != USE_DEFAULT_COLOR)
+        if (builder.colorResId != null)
         {
             this.enhancedLastDigitsColor = builder.colorResId;
         }

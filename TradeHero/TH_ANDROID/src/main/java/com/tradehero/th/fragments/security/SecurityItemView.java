@@ -16,18 +16,13 @@ import butterknife.Optional;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForSecurityItemBackground2;
-import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.THColorUtils;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -235,9 +230,9 @@ public class SecurityItemView extends RelativeLayout
             {
                 THSignedMoney.builder(securityCompactDTO.lastPrice)
                         .signTypeArrow()
-                        .valueColor(R.color.exchange_symbol)
-                        .currencyColor(R.color.exchange_symbol)
-                        .signValue(securityCompactDTO.pc50DMA)
+                        .withValueColor(R.color.exchange_symbol)
+                        .withCurrencyColor(R.color.exchange_symbol)
+                        .withSignValue(securityCompactDTO.pc50DMA)
                         .currency(securityCompactDTO.currencyDisplay)
                         .boldValue()
                         .build()

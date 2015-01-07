@@ -11,14 +11,14 @@ public class THSignedMoney extends THSignedNumber
 {
     private final String currency;
     private final boolean boldCurrency;
-    private Integer currencyColorResId;
+    @Nullable @ColorRes private Integer currencyColorResId;
     private Spanned currencySpanBuilder;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
             extends THSignedNumber.Builder<BuilderType>
     {
         @Nullable private String currency;
-        private int currencyColorResId = USE_DEFAULT_COLOR;
+        @Nullable private Integer currencyColorResId;
         private boolean boldCurrency;
 
         //<editor-fold desc="Constructors">
@@ -40,9 +40,12 @@ public class THSignedMoney extends THSignedNumber
             return self();
         }
 
-        public BuilderType currencyColor(@ColorRes int currencyColorResId)
+        public BuilderType withCurrencyColor(@ColorRes int currencyColorResId)
         {
-            this.currencyColorResId = currencyColorResId;
+            if(currencyColorResId > 0)
+            {
+                this.currencyColorResId = currencyColorResId;
+            }
             return self();
         }
 
@@ -85,7 +88,7 @@ public class THSignedMoney extends THSignedNumber
         {
             this.currency = builder.currency;
         }
-        if(builder.currencyColorResId != USE_DEFAULT_COLOR)
+        if(builder.currencyColorResId != null)
         {
             this.currencyColorResId = builder.currencyColorResId;
         }

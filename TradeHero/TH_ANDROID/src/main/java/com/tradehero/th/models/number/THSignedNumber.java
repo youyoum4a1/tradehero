@@ -2,6 +2,7 @@ package com.tradehero.th.models.number;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -25,38 +26,36 @@ public class THSignedNumber
 
     public static final boolean WITH_SIGN = true;
     public static final boolean WITHOUT_SIGN = false;
-    public static final boolean COLOR_ALL = true;
-    public static final boolean NO_COLOR = false;
-
-    public static final int USE_DEFAULT_COLOR = -1;
+    public static final boolean USE_DEFAULT_COLOR = true;
+    public static final boolean DO_NOT_USE_DEFAULT_COLOR = false;
     //</editor-fold>
 
     private final boolean withSign;
     private final int signType;
     private final Double value;
     private final int relevantDigitCount;
-    private Double signValue;
     private String formattedNumber;
-    private Integer colorResId;
+    @Nullable @ColorRes private Integer colorResId;
 
-    private final boolean withColor;
+    private final boolean useDefaultColor;
     private final boolean boldSign;
     private final boolean boldValue;
-    private Integer signColorResId;
-    private Integer valueColorResId;
+    @Nullable private Double signValue;
+    @Nullable @ColorRes private Integer signColorResId;
+    @Nullable @ColorRes private Integer valueColorResId;
     private Spanned signSpanBuilder;
     private Spanned valueSpanBuilder;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
         private double value;
-        private Double signValue;
+        @Nullable private Double signValue;
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
-        public boolean withColor = COLOR_ALL;
-        private int signColorResId = USE_DEFAULT_COLOR;
-        private int valueColorResId = USE_DEFAULT_COLOR;
+        public boolean useDefaultColor = USE_DEFAULT_COLOR;
+        @Nullable @ColorRes private Integer signColorResId;
+        @Nullable @ColorRes private Integer valueColorResId;
         private boolean boldSign;
         private boolean boldValue;
 
@@ -105,9 +104,9 @@ public class THSignedNumber
             return self();
         }
 
-        public BuilderType noColor()
+        public BuilderType skipDefaultColor()
         {
-            this.withColor = NO_COLOR;
+            this.useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
             return self();
         }
 
@@ -123,19 +122,25 @@ public class THSignedNumber
             return self();
         }
 
-        public BuilderType signColor(@ColorRes int colorResId)
+        public BuilderType withSignColor(@ColorRes int colorResId)
         {
-            this.signColorResId = colorResId;
+            if(colorResId > 0)
+            {
+                this.signColorResId = colorResId;
+            }
             return self();
         }
 
-        public BuilderType valueColor(@ColorRes int colorResId)
+        public BuilderType withValueColor(@ColorRes int colorResId)
         {
-            valueColorResId = colorResId;
+            if(colorResId > 0)
+            {
+                valueColorResId = colorResId;
+            }
             return self();
         }
 
-        public BuilderType signValue(double value)
+        public BuilderType withSignValue(double value)
         {
             this.signValue = value;
             return self();
@@ -180,14 +185,14 @@ public class THSignedNumber
         this.signType = builder.signType;
         this.value = builder.value;
         this.relevantDigitCount = builder.relevantDigitCount;
-        this.withColor = builder.withColor;
+        this.useDefaultColor = builder.useDefaultColor;
         this.boldSign = builder.boldSign;
         this.boldValue = builder.boldValue;
-        if (builder.signColorResId != USE_DEFAULT_COLOR)
+        if (builder.signColorResId != null)
         {
             this.signColorResId = builder.signColorResId;
         }
-        if (builder.valueColorResId != USE_DEFAULT_COLOR)
+        if (builder.valueColorResId != null)
         {
             this.valueColorResId = builder.valueColorResId;
         }
@@ -228,7 +233,7 @@ public class THSignedNumber
 
     public void into(TextView textView)
     {
-        if (withColor)
+        if (useDefaultColor)
         {
             textView.setTextColor(getColor());
         }
@@ -242,7 +247,7 @@ public class THSignedNumber
     {
         if (signSpanBuilder == null)
         {
-            if (signValue != null && signColorResId == null && withColor)
+            if (signValue != null && signColorResId == null && useDefaultColor)
             {
                 signColorResId = THColorUtils.getColorResourceIdForNumber(signValue);
             }
@@ -271,7 +276,7 @@ public class THSignedNumber
         {
             signSpanBuilder.setSpan(new ForegroundColorSpan(getColor(colorResId)), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        else if (withColor)
+        else if (useDefaultColor)
         {
             signSpanBuilder.setSpan(new ForegroundColorSpan(getColor()), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
