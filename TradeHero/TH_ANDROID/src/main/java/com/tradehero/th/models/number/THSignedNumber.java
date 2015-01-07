@@ -203,7 +203,7 @@ public class THSignedNumber
     }
     //</editor-fold>
 
-    public int getColorResId()
+    protected int getColorResId()
     {
         if (colorResId == null)
         {
@@ -212,7 +212,7 @@ public class THSignedNumber
         return colorResId;
     }
 
-    public int getColor()
+    protected int getColor()
     {
         return getColor(getColorResId());
     }

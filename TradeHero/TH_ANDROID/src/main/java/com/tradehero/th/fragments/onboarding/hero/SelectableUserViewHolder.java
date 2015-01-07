@@ -119,14 +119,13 @@ class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
             }
             else
             {
-                THSignedNumber roi = THSignedPercentage
+                THSignedPercentage
                         .builder(selectableDTO.value.roiInPeriod * 100)
                         .withSign()
                         .signTypeArrow()
                         .relevantDigitCount(3)
-                        .build();
-                roiView.setText(roi.toString());
-                roiView.setTextColor(context.getResources().getColor(roi.getColorResId()));
+                        .build()
+                        .into(roiView);
             }
         }
     }

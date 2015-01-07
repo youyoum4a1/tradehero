@@ -306,14 +306,13 @@ public class LeaderboardMarkUserItemView
     protected void displayExpandableSection()
     {
         // display Roi
-        THSignedNumber roi = THSignedPercentage
+        THSignedPercentage
                 .builder(leaderboardItem.roiInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
-                .build();
-        lbmuRoi.setText(roi.toString());
-        lbmuRoi.setTextColor(getResources().getColor(roi.getColorResId()));
+                .build()
+                .into(lbmuRoi);
 
         // display Roi annualized
         THSignedNumber roiAnnualizedVal = THSignedPercentage
