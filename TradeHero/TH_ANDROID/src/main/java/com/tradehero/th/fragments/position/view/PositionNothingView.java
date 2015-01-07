@@ -35,17 +35,18 @@ public class PositionNothingView extends RelativeLayout
         ButterKnife.inject(this);
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        display();
-    }
-
-    public void display()
+    public void display(boolean isCurrentUser)
     {
         if (description != null)
         {
-            description.setText(R.string.position_nothing_description);
+            if(isCurrentUser)
+            {
+                description.setText(R.string.position_nothing_description);
+            }
+            else
+            {
+                description.setText(R.string.position_nothing_description_other_user);
+            }
         }
     }
 }

@@ -15,19 +15,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
-      android:layout_toLeftOf="@+id/ic_more_info"
       style="@style/TH.Loading_Empty_Text"
       android:text="@string/position_nothing_description"
-    />
-
-  <ImageView
-      android:id="@+id/ic_more_info"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"
-      android:src="@drawable/settings_forward_light"
-      android:contentDescription="@null"
     />
 
 </com.tradehero.th.fragments.position.view.PositionNothingView>

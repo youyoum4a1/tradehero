@@ -14,14 +14,18 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionStatus;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
+import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.position.view.PositionView;
+import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
 {
@@ -39,10 +43,13 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     private PortfolioDTO portfolioDTO;
     private UserProfileDTO userProfileDTO;
 
+    @Inject CurrentUserId currentUserId;
+
     //<editor-fold desc="Constructors">
     public PositionItemAdapter(@NonNull Context context, @NonNull Map<Integer, Integer> itemTypeToLayoutId)
     {
         super(context, 0);
+        HierarchyInjector.inject(context, this);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
     }
     //</editor-fold>
@@ -115,7 +122,15 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     @Override public boolean isEnabled(int position)
     {
-        return getItemViewType(position) != VIEW_TYPE_HEADER;
+        int viewType = getItemViewType(position);
+        if(viewType != VIEW_TYPE_HEADER)
+        {
+            if(viewType == VIEW_TYPE_PLACEHOLDER && userProfileDTO != null)
+            {
+                return userProfileDTO.getBaseKey().equals(currentUserId.toUserBaseKey());
+            }
+        }
+        return false;
     }
 
     protected int getLayoutForPosition(int position)
@@ -271,7 +286,10 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         }
         else if (itemViewType == VIEW_TYPE_PLACEHOLDER)
         {
-            // Do nothing
+            if(convertView instanceof PositionNothingView)
+            {
+                ((PositionNothingView) convertView).display(isEnabled(position));
+            }
         }
         else if (convertView instanceof PositionView)
         {

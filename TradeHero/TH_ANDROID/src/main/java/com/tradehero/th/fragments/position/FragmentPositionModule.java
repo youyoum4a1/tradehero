@@ -13,7 +13,7 @@ import dagger.Module;
                 PositionListFragment.class,
                 LeaderboardPositionListFragment.class,
                 CompetitionLeaderboardPositionListFragment.class,
-
+                PositionItemAdapter.class,
                 PositionPartialTopView.class,
                 PositionPartialBottomClosedView.class,
                 PositionPartialBottomOpenView.class,
