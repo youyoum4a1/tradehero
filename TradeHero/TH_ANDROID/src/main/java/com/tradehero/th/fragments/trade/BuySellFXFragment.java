@@ -251,22 +251,19 @@ public class BuySellFXFragment extends BuySellFragment
                 {
                     tvPositionUnits.setText(getString(R.string.short_position_units, Math.abs(share)));
                 }
-                String unrealised;
                 if (unRealizedPLRefccy != null)
                 {
-                    THSignedMoney unrealisedMoney = THSignedMoney.builder(unRealizedPLRefccy)
+                    THSignedMoney.builder(unRealizedPLRefccy)
                             .currency(SecurityUtils.getDefaultCurrency())
                             .withSign()
                             .signTypeArrow()
-                            .build();
-                    tvPositionMoney.setTextColor(unrealisedMoney.getColor());
-                    unrealised = unrealisedMoney.toString();
+                            .build()
+                            .into(tvPositionMoney);
                 }
                 else
                 {
-                    unrealised = getResources().getString(R.string.na);
+                    tvPositionMoney.setText(R.string.na);
                 }
-                tvPositionMoney.setText(unrealised);
             }
         }
     }

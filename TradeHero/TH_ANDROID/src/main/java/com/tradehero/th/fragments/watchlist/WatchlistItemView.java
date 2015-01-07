@@ -279,8 +279,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             THSignedNumber value = getGainLoss(showInPercentage);
             if (value != null)
             {
-                gainLossLabel.setText(value.toString());
-                gainLossLabel.setTextColor(value.getColor());
+                value.into(gainLossLabel);
             }
             else
             {

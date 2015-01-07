@@ -464,7 +464,6 @@ public class PositionPartialTopView extends LinearLayout
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 positionUnrealisedPL.setVisibility(VISIBLE);
-                String unrealised;
                 if (positionDTO != null && positionDTO.unrealizedPLRefCcy != null)
                 {
                     Double PLR;
@@ -477,19 +476,18 @@ public class PositionPartialTopView extends LinearLayout
                     {
                         PLR = positionDTO.unrealizedPLRefCcy;
                     }
-                    THSignedMoney unrealisedMoney = THSignedMoney.builder(PLR)
+                    THSignedMoney.builder(PLR)
                             .currency(positionDTO.getNiceCurrency())
                             .withSign()
                             .signTypeArrow()
-                            .build();
-                    positionUnrealisedPL.setTextColor(unrealisedMoney.getColor());
-                    unrealised = unrealisedMoney.toString();
+                            .build()
+                            .into(positionUnrealisedPL);
                 }
                 else
                 {
-                    unrealised = getResources().getString(R.string.na);
+                    positionUnrealisedPL.setText(R.string.na);
                 }
-                positionUnrealisedPL.setText(unrealised);
+
             }
             else
             {

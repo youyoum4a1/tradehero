@@ -127,12 +127,11 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
             {
                 if (portfolioCompactDTO.unrealizedPLRefCcy != null)
                 {
-                    THSignedMoney unrealised = THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
+                    THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
                             .currency(portfolioCompactDTO.getNiceCurrency())
                             .withOutSign()
-                            .build();
-                    unrealisedPl.setText(unrealised.toString());
-                    unrealisedPl.setTextColor(unrealised.getColor());
+                            .build()
+                            .into(unrealisedPl);
                 }
                 else
                 {
