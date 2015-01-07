@@ -240,21 +240,24 @@ public class BuySellFXFragment extends BuySellFragment
             tvPositionMoney.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
             if (share != null)
             {
-                String shareStr = THSignedNumber.builder(share)
+                THSignedNumber.Builder builder = THSignedNumber.builder(share)
                         .withOutSign()
-                        .build()
-                        .toString();
+                        .skipDefaultColor();
                 if (share == 0)
                 {
                     tvPositionUnits.setText(getString(R.string.no_current_position_units));
                 }
                 else if (share > 0)
                 {
-                    tvPositionUnits.setText(getString(R.string.long_position_units, shareStr));
+                    builder.format(getString(R.string.long_position_units))
+                            .build()
+                            .into(tvPositionUnits);
                 }
                 else
                 {
-                    tvPositionUnits.setText(getString(R.string.short_position_units, shareStr));
+                    builder.format(getString(R.string.short_position_units))
+                            .build()
+                            .into(tvPositionUnits);
                 }
                 if (unRealizedPLRefccy != null)
                 {

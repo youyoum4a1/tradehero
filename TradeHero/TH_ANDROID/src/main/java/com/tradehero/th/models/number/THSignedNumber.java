@@ -14,6 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.THColorUtils;
 import java.text.DecimalFormat;
+import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class THSignedNumber
 {
@@ -45,6 +46,7 @@ public class THSignedNumber
     @Nullable @ColorRes private Integer valueColorResId;
     private Spanned signSpanBuilder;
     private Spanned valueSpanBuilder;
+    @Nullable private String format;
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
@@ -58,6 +60,7 @@ public class THSignedNumber
         @Nullable @ColorRes private Integer valueColorResId;
         private boolean boldSign;
         private boolean boldValue;
+        @Nullable private String format;
 
         //<editor-fold desc="Constructors">
         protected Builder(double value)
@@ -152,6 +155,12 @@ public class THSignedNumber
             return self();
         }
 
+        public BuilderType format(String format)
+        {
+            this.format = format;
+            return self();
+        }
+
         public THSignedNumber build()
         {
             return new THSignedNumber(this);
@@ -200,6 +209,7 @@ public class THSignedNumber
         {
             this.signValue = builder.signValue;
         }
+        this.format = builder.format;
     }
     //</editor-fold>
 
@@ -239,6 +249,11 @@ public class THSignedNumber
         }
 
         Spanned result = (Spanned) getCombinedSpan();
+
+        if(format != null)
+        {
+            result = SpanFormatter.format(format, result);
+        }
 
         textView.setText(result);
     }
