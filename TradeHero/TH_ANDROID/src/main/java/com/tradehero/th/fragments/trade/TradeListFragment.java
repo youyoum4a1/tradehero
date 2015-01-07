@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,10 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -76,7 +73,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
-    SecurityActionDialogFactory securityActionDialogFactory = new SecurityActionDialogFactory(); // no inject, 65k
+    @Inject SecurityActionDialogFactory securityActionDialogFactory;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -240,22 +237,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             alertsSubscription = AndroidObservable.bindFragment(
                     this,
                     alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
-                    .subscribe(createAlertMapObserver());
+                    .subscribe(
+                            this::onAlertMapReceived,
+                            error -> Timber.e(error, ""));
         }
     }
 
-    @NonNull protected Observer<Map<SecurityId, AlertId>> createAlertMapObserver()
+    protected void onAlertMapReceived(@NonNull Map<SecurityId, AlertId> securityIdAlertIdMap)
     {
-        return new AlertMapObserver();
-    }
-
-    protected class AlertMapObserver extends EmptyObserver<Map<SecurityId, AlertId>>
-    {
-        @Override public void onNext(Map<SecurityId, AlertId> securityIdAlertIdMap)
-        {
-            mappedAlerts = securityIdAlertIdMap;
-            getActivity().invalidateOptionsMenu();
-        }
+        mappedAlerts = securityIdAlertIdMap;
+        getActivity().invalidateOptionsMenu();
     }
 
     protected void fetchPosition()
@@ -263,25 +254,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionSubscription == null)
         {
             positionSubscription = AndroidObservable.bindFragment(this, positionCache.get(positionDTOKey))
-                    .subscribe(createPositionCacheObserver());
-        }
-    }
-
-    protected Observer<Pair<PositionDTOKey, PositionDTO>> createPositionCacheObserver()
-    {
-        return new PositionCacheObserver();
-    }
-
-    protected class PositionCacheObserver extends EmptyObserver<Pair<PositionDTOKey, PositionDTO>>
-    {
-        @Override public void onNext(Pair<PositionDTOKey, PositionDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_position_list_info);
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            error -> THToast.show(R.string.error_fetch_position_list_info));
         }
     }
 
@@ -299,26 +275,13 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionDTO != null && tradesSubscription == null)
         {
             tradesSubscription = AndroidObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
-                    .subscribe(createTradeListeCacheObserver());
-        }
-    }
-
-    protected Observer<Pair<OwnedPositionId, TradeDTOList>> createTradeListeCacheObserver()
-    {
-        return new GetTradesObserver();
-    }
-
-    private class GetTradesObserver extends EmptyObserver<Pair<OwnedPositionId, TradeDTOList>>
-    {
-        @Override public void onNext(Pair<OwnedPositionId, TradeDTOList> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_trade_list_info);
-            Timber.e("Error fetching the list of trades", e);
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            error -> {
+                                THToast.show(R.string.error_fetch_trade_list_info);
+                                Timber.e("Error fetching the list of trades", error);
+                            });
         }
     }
 
@@ -353,21 +316,11 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 securityIdSubscription = AndroidObservable.bindFragment(
                         this,
                         securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
-                        .subscribe(createSecurityIdObserver());
+                        .map(pair -> pair.second)
+                        .subscribe(
+                                this::linkWith,
+                                error -> {});
             }
-        }
-    }
-
-    @NonNull protected Observer<Pair<SecurityIntegerId, SecurityId>> createSecurityIdObserver()
-    {
-        return new SecurityIdObserver();
-    }
-
-    protected class SecurityIdObserver extends EmptyObserver<Pair<SecurityIntegerId, SecurityId>>
-    {
-        @Override public void onNext(Pair<SecurityIntegerId, SecurityId> args)
-        {
-            linkWith(args.second);
         }
     }
 
@@ -383,18 +336,10 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (securityId != null && securityCompactSubscription == null)
         {
             securityCompactSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                    .subscribe(new EmptyObserver<Pair<SecurityId, SecurityCompactDTO>>()
-                    {
-                        @Override public void onError(Throwable e)
-                        {
-                            THToast.show(new THException(e));
-                        }
-
-                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                        {
-                            linkWith(pair.second);
-                        }
-                    });
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            error -> THToast.show(new THException(error)));
         }
     }
 
