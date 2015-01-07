@@ -41,9 +41,9 @@ import rx.observers.EmptyObserver;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class FxOnoardDialogFragment extends BaseDialogFragment
+public class FxOnBoardDialogFragment extends BaseDialogFragment
 {
-    private static final String TAG = FxOnoardDialogFragment.class.getName();
+    private static final String TAG = FxOnBoardDialogFragment.class.getName();
 
     @InjectView(R.id.view_animator) ViewAnimator viewAnimator;
     @InjectView(R.id.introduction_videos_grid) GridView videosGrid;
@@ -61,7 +61,7 @@ public class FxOnoardDialogFragment extends BaseDialogFragment
     @NonNull private BehaviorSubject<UserActionType> userActionTypeBehaviorSubject;
 
     //<editor-fold desc="Constructors">
-    public FxOnoardDialogFragment()
+    public FxOnBoardDialogFragment()
     {
         super();
         userActionTypeBehaviorSubject = BehaviorSubject.create();
@@ -85,7 +85,7 @@ public class FxOnoardDialogFragment extends BaseDialogFragment
         subscriptionList = new SubscriptionList();
         Observable.just(viewAnimator)
                 .flatMapIterable(animator -> {
-                    List<FxOnBoardView<Boolean>> onboardViews = new ArrayList<>();
+                    List<FxOnBoardView<Boolean>> onBoardViews = new ArrayList<>();
                     for (int i = 0; i < animator.getChildCount(); ++i)
                     {
                         View child = animator.getChildAt(i);
@@ -93,10 +93,10 @@ public class FxOnoardDialogFragment extends BaseDialogFragment
                         {
                             @SuppressWarnings("unchecked")
                             FxOnBoardView<Boolean> fxOnBoardView = (FxOnBoardView<Boolean>) child;
-                            onboardViews.add(fxOnBoardView);
+                            onBoardViews.add(fxOnBoardView);
                         }
                     }
-                    return onboardViews;
+                    return onBoardViews;
                 })
                 .flatMap(FxOnBoardView::result)
                 .subscribe(
@@ -212,9 +212,9 @@ public class FxOnoardDialogFragment extends BaseDialogFragment
         userActionTypeBehaviorSubject.onCompleted();
     }
 
-    public static FxOnoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
+    public static FxOnBoardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
     {
-        FxOnoardDialogFragment dialogFragment = new FxOnoardDialogFragment();
+        FxOnBoardDialogFragment dialogFragment = new FxOnBoardDialogFragment();
         dialogFragment.show(fragmentManager, TAG);
         return dialogFragment;
     }
