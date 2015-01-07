@@ -123,15 +123,8 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     @Override public boolean isEnabled(int position)
     {
         int viewType = getItemViewType(position);
-        if(viewType != VIEW_TYPE_HEADER)
-        {
-            if(viewType == VIEW_TYPE_PLACEHOLDER && userProfileDTO != null)
-            {
-                return userProfileDTO.getBaseKey().equals(currentUserId.toUserBaseKey());
-            }
-            return true;
-        }
-        return false;
+        return viewType != VIEW_TYPE_HEADER && (!(viewType == VIEW_TYPE_PLACEHOLDER && userProfileDTO != null) || userProfileDTO.getBaseKey()
+                .equals(currentUserId.toUserBaseKey()));
     }
 
     protected int getLayoutForPosition(int position)
