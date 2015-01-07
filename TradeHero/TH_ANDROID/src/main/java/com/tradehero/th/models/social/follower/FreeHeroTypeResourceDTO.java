@@ -12,11 +12,11 @@ public class FreeHeroTypeResourceDTO extends HeroTypeResourceDTO
     {
         super(
                 R.string.leaderboard_community_hero_free,
-                1,
+                HeroType.FREE.ordinal(),
                 FreeHeroFragment.class,
 
                 R.string.leaderboard_community_hero_free,
-                1,
+                HeroType.FREE.ordinal(),
                 FreeFollowerFragment.class);
     }
 

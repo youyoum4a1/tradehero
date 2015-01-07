@@ -12,11 +12,11 @@ public class AllHeroTypeResourceDTO extends HeroTypeResourceDTO
     {
         super(
                 R.string.leaderboard_community_hero_all,
-                0,
+                HeroType.ALL.ordinal(),
                 AllHeroFragment.class,
 
                 R.string.leaderboard_community_hero_all,
-                0,
+                HeroType.ALL.ordinal(),
                 AllFollowerFragment.class);
     }
 

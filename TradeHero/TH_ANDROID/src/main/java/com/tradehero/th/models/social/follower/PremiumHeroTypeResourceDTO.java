@@ -12,11 +12,11 @@ public class PremiumHeroTypeResourceDTO extends HeroTypeResourceDTO
     {
         super(
                 R.string.leaderboard_community_hero_premium,
-                2,
+                HeroType.PREMIUM.ordinal(),
                 PremiumHeroFragment.class,
 
                 R.string.leaderboard_community_hero_premium,
-                2,
+                HeroType.PREMIUM.ordinal(),
                 PremiumFollowerFragment.class);
     }
 
