@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -32,7 +31,6 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -325,11 +323,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             THToast.show(R.string.error_fetch_provider_competition_list);
         }
-    }
-
-    @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
-    {
-        return securityCompactListCache;
     }
 
     @Override public boolean canMakePagedDtoKey()

@@ -13,13 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -36,6 +34,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
+import timber.log.Timber;
 
 //@Routable("trending-securities")
 public class TrendingFXFragment extends TrendingBaseFragment
@@ -49,7 +48,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     @Nullable private Subscription checkEnrollmentSubscription;
     @Nullable private Subscription waitForEnrolledSubscription;
-    @Nullable private Subscription fetchFxPriceSubscription; // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
+    @Nullable private Subscription fetchFxPriceSubscription;
+            // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
     @Nullable FxOnboardDialogFragment onboardDialogFragment;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -129,36 +129,37 @@ public class TrendingFXFragment extends TrendingBaseFragment
         unsubscribe(checkEnrollmentSubscription);
         checkEnrollmentSubscription = AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .take(1)
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        if (args.second.fxPortfolio == null && onboardDialogFragment == null)
-                        {
-                            onboardDialogFragment = FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-                            onboardDialogFragment.getDismissedObservable()
-                                    .subscribe(
-                                            dialog -> {
-                                                onboardDialogFragment = null;
-                                            },
-                                            error -> THToast.show(new THException(error))
-                                    );
-                            //onboardDialogFragment.getUserActionTypeObservable()
-                            //        .subscribe(
-                            //                action -> {
-                            //                    if (action.equals(FxOnboardDialogFragment.UserActionType.CANCELLED))
-                            //                    {
-                            //                        // TODO show Stocks
-                            //                    }
-                            //                },
-                            //                error -> {}
-                            //        );
-                        }
-                    }
-                });
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .take(1)
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::handleUserProfileForOnBoardReceived,
+                        error -> Timber.e(error, ""));
+    }
+
+    protected void handleUserProfileForOnBoardReceived(@NonNull UserProfileDTO userProfileDTO)
+    {
+        if (userProfileDTO.fxPortfolio == null && onboardDialogFragment == null)
+        {
+            onboardDialogFragment = FxOnboardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+            onboardDialogFragment.getDismissedObservable()
+                    .subscribe(
+                            dialog -> {
+                                onboardDialogFragment = null;
+                            },
+                            error -> THToast.show(new THException(error))
+                    );
+            onboardDialogFragment.getUserActionTypeObservable()
+                    .subscribe(
+                            action -> {
+                                if (action.equals(FxOnboardDialogFragment.UserActionType.CANCELLED))
+                                {
+                                    trendingTabTypeBehaviorSubject.onNext(TrendingTabType.STOCK);
+                                }
+                            },
+                            error -> Timber.e(error, "")
+                    );
+        }
     }
 
     private void fetchFXPrice()
@@ -177,11 +178,6 @@ public class TrendingFXFragment extends TrendingBaseFragment
     {
         ((SecurityItemViewAdapterNew) itemViewAdapter).updatePrices(getActivity(), list);
         itemViewAdapter.notifyDataSetChanged();
-    }
-
-    @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
-    {
-        return securityCompactListCache;
     }
 
     @Override public boolean canMakePagedDtoKey()
@@ -212,7 +208,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
         }
     }
 
-    private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
+    private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
         BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());

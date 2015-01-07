@@ -1,17 +1,13 @@
 package com.tradehero.th.fragments.fxonboard;
 
 import android.app.FragmentManager;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
@@ -26,14 +22,12 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.fragments.education.VideoDTOUtil;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.fragments.education.VideoAdapter;
+import com.tradehero.th.fragments.education.VideoDTOUtil;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.VideoServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.StringUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +38,7 @@ import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class FxOnboardDialogFragment extends BaseDialogFragment
@@ -63,6 +58,15 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @Inject Lazy<DashboardNavigator> navigator;
     private SubscriptionList subscriptionList;
     private VideoAdapter videoAdapter;
+    @NonNull private BehaviorSubject<UserActionType> userActionTypeBehaviorSubject;
+
+    //<editor-fold desc="Constructors">
+    public FxOnboardDialogFragment()
+    {
+        super();
+        userActionTypeBehaviorSubject = BehaviorSubject.create();
+    }
+    //</editor-fold>
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -147,8 +151,20 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
         });
     }
 
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+        userActionTypeBehaviorSubject.onCompleted();
+    }
+
+    @NonNull public Observable<UserActionType> getUserActionTypeObservable()
+    {
+        return userActionTypeBehaviorSubject.asObservable();
+    }
+
     private void checkFXPortfolio()
     {
+        notifyUserAction(UserActionType.ENROLLED);
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
@@ -185,8 +201,15 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
     @OnClick(R.id.close)
     public void onCloseClicked()
     {
+        notifyUserAction(UserActionType.CANCELLED);
         dismiss();
         // TODO mark fx onboard handled
+    }
+
+    protected void notifyUserAction(@NonNull UserActionType actionType)
+    {
+        userActionTypeBehaviorSubject.onNext(actionType);
+        userActionTypeBehaviorSubject.onCompleted();
     }
 
     public static FxOnboardDialogFragment showOnBoardDialog(FragmentManager fragmentManager)
@@ -194,5 +217,10 @@ public class FxOnboardDialogFragment extends BaseDialogFragment
         FxOnboardDialogFragment dialogFragment = new FxOnboardDialogFragment();
         dialogFragment.show(fragmentManager, TAG);
         return dialogFragment;
+    }
+
+    public static enum UserActionType
+    {
+        CANCELLED, ENROLLED
     }
 }

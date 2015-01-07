@@ -20,6 +20,7 @@ import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
+import timber.log.Timber;
 
 public class TrendingMainFragment extends DashboardFragment
 {
@@ -112,7 +113,14 @@ public class TrendingMainFragment extends DashboardFragment
             TrendingTabType tabType = TrendingTabType.values()[position];
             Bundle args = new Bundle();
             ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
-            return Fragment.instantiate(getActivity(), tabType.fragmentClass.getName(), args);
+            TrendingBaseFragment subFragment = (TrendingBaseFragment) Fragment.instantiate(getActivity(), tabType.fragmentClass.getName(), args);
+            subFragment
+                    .getRequestedTrendingTabTypeObservable()
+                    .subscribe(
+                            TrendingMainFragment.this::handleRequestedTabType,
+                            error -> Timber.e(error, "")
+                    );
+            return subFragment;
         }
 
         @Override public CharSequence getPageTitle(int position)
@@ -124,5 +132,10 @@ public class TrendingMainFragment extends DashboardFragment
         {
             return TrendingTabType.values().length;
         }
+    }
+
+    public void handleRequestedTabType(@NonNull TrendingTabType tabType)
+    {
+        tabViewPager.setCurrentItem(tabType.ordinal(), true);
     }
 }
