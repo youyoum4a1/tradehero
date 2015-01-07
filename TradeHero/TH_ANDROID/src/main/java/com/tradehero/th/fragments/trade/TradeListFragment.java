@@ -405,7 +405,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     }
 
     public void displayActionBarTitle()
-
     {
         SecurityId securityId = this.securityId;
         if (securityCompactDTO != null)
@@ -458,7 +457,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
                 securityActionDialog =
-                        securityActionDialogFactory.createSecurityActionOnlyBuySaleDialog(getActivity(), securityId, createSecurityActionMenuListener());
+                        securityActionDialogFactory.createSecurityActionOnlyBuySaleDialog(getActivity(), securityId,
+                                createSecurityActionMenuListener());
             }
             else
             {

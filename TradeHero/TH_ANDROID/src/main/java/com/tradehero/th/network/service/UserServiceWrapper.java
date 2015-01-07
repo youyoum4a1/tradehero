@@ -576,11 +576,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Create FX Portfolio">
-    @NonNull public Observable<PortfolioDTO> createFXPortfolioRx(UserBaseKey userBaseKey)
+    @NonNull public Observable<PortfolioDTO> createFXPortfolioRx(@NonNull UserBaseKey userBaseKey)
     {
-        Observable<PortfolioDTO> received;
-        received = userServiceRx.createFXPortfolioRx(userBaseKey.getUserId());
-        return received;
+        return userServiceRx.createFXPortfolioRx(userBaseKey.getUserId());
     }
     //</editor-fold>
 }

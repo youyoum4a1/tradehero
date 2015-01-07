@@ -26,7 +26,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
 
         int sum = 0;
-        for (PositionDTOCompact positionDTOCompact: this)
+        for (PositionDTOCompact positionDTOCompact : this)
         {
             if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
             {
@@ -44,7 +44,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
 
         double sum = 0;
-        for (PositionDTOCompact positionDTOCompact: this)
+        for (PositionDTOCompact positionDTOCompact : this)
         {
             if (positionDTOCompact.portfolioId == portfolioId.key && positionDTOCompact.shares != null)
             {
@@ -55,12 +55,9 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     //<editor-fold desc="Net Sell Proceeds USD">
+
     /**
      * If it returns a negative number it means it will eat into the cash available.
-     * @param quoteDTO
-     * @param portfolioId
-     * @param includeTransactionCostUsd
-     * @return
      */
     public Double getMaxNetSellProceedsUsd(
             @Nullable QuoteDTO quoteDTO,
@@ -76,11 +73,6 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
 
     /**
      * If it returns a negative number it means it will eat into the cash available.
-     * @param quoteDTO
-     * @param portfolioId
-     * @param includeTransactionCostUsd
-     * @param txnCostUsd
-     * @return
      */
     public Double getMaxNetSellProceedsUsd(
             @Nullable QuoteDTO quoteDTO,
@@ -166,7 +158,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
             return null;
         }
         Double total = null;
-        for (PositionDTOCompact positionDTO: this)
+        for (PositionDTOCompact positionDTO : this)
         {
             if (portfolioId.key.equals(positionDTO.portfolioId)
                     && positionDTO.averagePriceRefCcy != null
@@ -183,14 +175,15 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
             @NonNull PortfolioCompactDTO portfolioCompactDTO)
     {
         Double total = null;
-        for (PositionDTOCompact positionDTO: this)
+        for (PositionDTOCompact positionDTO : this)
         {
             if (portfolioCompactDTO.id == positionDTO.portfolioId
                     && positionDTO.averagePriceRefCcy != null
                     && positionDTO.shares != null)
             {
                 int localShareCount = Math.max(0, Math.min(shareCount, positionDTO.shares));
-                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * localShareCount;
+                total = (total == null ? 0 : total)
+                        + positionDTO.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * localShareCount;
                 shareCount -= localShareCount;
             }
         }
@@ -201,19 +194,17 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return total;
     }
 
-
-
     //<editor-fold desc="Max Sellable Shares">
     public Integer getMaxSellableShares(
-            QuoteDTO quoteDTO,
-            PortfolioCompactDTO portfolioCompactDTO)
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         return getMaxSellableShares(quoteDTO, portfolioCompactDTO, true);
     }
 
     public Integer getMaxSellableShares(
-            QuoteDTO quoteDTO,
-            PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
             boolean includeTransactionCost)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
@@ -234,7 +225,9 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
     //</editor-fold>
 
-    public Double getUnRealizedPLRefCcy(QuoteDTO quoteDTO,PortfolioCompactDTO portfolioCompactDTO,PositionDTOCompactList positionDTOCompacts)
+    public Double getUnRealizedPLRefCcy(
+            @NonNull QuoteDTO quoteDTO,
+            @NonNull PortfolioCompactDTO portfolioCompactDTO, PositionDTOCompactList positionDTOCompacts)
     {
         double shareAverageUsAmont = getShareAverageUsAmont(portfolioCompactDTO.getPortfolioId());
         Integer shareCount = getShareCountIn(portfolioCompactDTO.getPortfolioId());
@@ -242,6 +235,4 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         double result = shareQuoteUsAmont - shareAverageUsAmont;
         return result;
     }
-
-
 }
