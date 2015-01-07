@@ -1,8 +1,6 @@
 package com.tradehero.th.api.security;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -53,9 +51,7 @@ public class SecurityCompactDTOUtil
         return 0;
     }
 
-    @NonNull public String getShortSymbol(
-            @NonNull Context context,
-            @NonNull SecurityCompactDTO securityCompactDTO)
+    @NonNull public String getShortSymbol(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
@@ -64,8 +60,8 @@ public class SecurityCompactDTOUtil
         }
 
         SecurityId securityId = securityCompactDTO.getSecurityId();
-        return context.getString(
-                R.string.trade_list_title_with_security,
+        return String.format(
+                "%s:%s",
                 securityId.getExchange(),
                 securityId.getSecuritySymbol());
     }

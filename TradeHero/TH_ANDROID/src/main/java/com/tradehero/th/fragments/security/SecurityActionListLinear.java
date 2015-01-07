@@ -90,7 +90,7 @@ public class SecurityActionListLinear extends LinearLayout
                 securityIdToActOn));
 
         adapter.notifyDataSetChanged();
-        shareTitleView.setText(securityCompactDTOUtil.getShortSymbol(getContext(), securityCompactDTO));
+        shareTitleView.setText(securityCompactDTOUtil.getShortSymbol(securityCompactDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")
