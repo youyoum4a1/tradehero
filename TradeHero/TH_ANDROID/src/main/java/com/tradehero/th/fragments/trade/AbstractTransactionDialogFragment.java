@@ -54,16 +54,19 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observer;
@@ -104,6 +107,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject Analytics analytics;
+    @Inject QuoteServiceWrapper quoteServiceWrapper;
+    @Inject ToastOnErrorAction toastOnErrorAction;
 
     @Inject THBillingInteractor userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
@@ -274,6 +279,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                     }
                 });
         quoteDTO = getBundledQuoteDTO();
+        fetchQuote();
 
         AndroidObservable.bindFragment(this, securityPositionDetailCache.get()
                 .get(this.securityId))
@@ -297,6 +303,24 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                         mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
                     }
                 });
+    }
+
+    private void fetchQuote() {
+        AndroidObservable.bindFragment(
+                this,
+                quoteServiceWrapper.getQuoteRx(securityId)
+                        .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
+                .subscribe(
+                        quoteDTO -> linkWith(quoteDTO),
+                        toastOnErrorAction);
+    }
+
+    protected void linkWith(QuoteDTO quoteDTO)
+    {
+        this.quoteDTO = quoteDTO;
+        initSecurityRelatedInfo();
+        updateProfitLoss();
+        updateTransactionDialog();
     }
 
     protected void initViews()

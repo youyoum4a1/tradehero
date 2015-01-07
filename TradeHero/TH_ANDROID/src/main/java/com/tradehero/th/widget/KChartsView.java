@@ -258,7 +258,7 @@ public class KChartsView extends KChartBase {
 
 		// Y轴Titles
         double pricePreLatitude = (mMaxPrice - mMinPrice) / DEFAULT_UPER_LATITUDE_NUM;
-        for (int i=0;i<=DEFAULT_UPER_LATITUDE_NUM;i++)
+        for (int i=1;i<DEFAULT_UPER_LATITUDE_NUM;i++)
         {
             if (i == DEFAULT_UPER_LATITUDE_NUM)
             {
@@ -279,10 +279,9 @@ public class KChartsView extends KChartBase {
 
 		// X轴Titles
 		textPaint.setColor(DEFAULT_AXIS_X_TITLE_COLOR);
-        for (int i=0;i<=DEFAULT_LOGITUDE_NUM;i++)
+        for (int i=1;i<DEFAULT_LOGITUDE_NUM;i++)
         {
             float offset;
-//            float offset = 0f;
             int position = mDataStartIndext + mShowDataNum * (DEFAULT_LOGITUDE_NUM-i) / DEFAULT_LOGITUDE_NUM;
             if (i == 0)
             {
