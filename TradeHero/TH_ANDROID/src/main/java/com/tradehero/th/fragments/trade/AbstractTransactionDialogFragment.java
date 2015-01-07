@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -322,7 +323,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
         mBtnAddCash.setOnClickListener(view -> {
             DeviceUtil.dismissKeyboard(mCommentsEditText);
-            handleBtnAddCashPressed();
+            handleBtnAddCashPressed(null);
         });
 
         displayAddCashButton();

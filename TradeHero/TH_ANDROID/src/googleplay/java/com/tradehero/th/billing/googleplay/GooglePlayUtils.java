@@ -53,7 +53,7 @@ class GooglePlayUtils
             @NonNull Throwable exception)
     {
         String deviceDetails = "\n\nI already own an SKU I am trying to purchase with " + getStoreName() + "\n\n-----\n" +
-                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
+                StringUtils.join("\n", versionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);
@@ -65,7 +65,7 @@ class GooglePlayUtils
             @NonNull Throwable exception)
     {
         String deviceDetails = "\n\nDeveloper error reported by " + getStoreName() + "\n\n-----\n" +
-                StringUtils.join("\n", VersionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
+                StringUtils.join("\n", versionUtils.getExceptionStringsAndTraceParameters(context, exception)) +
                 "\n-----\n";
         Intent intent = getIncompleteSupportPurchaseEmailIntent(context);
         intent.putExtra(Intent.EXTRA_TEXT, deviceDetails);

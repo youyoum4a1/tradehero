@@ -82,7 +82,7 @@ public class VersionUtils
         return reported;
     }
 
-    @NonNull public static List<String> getExceptionStringsAndTraceParameters(
+    @NonNull public List<String> getExceptionStringsAndTraceParameters(
             @NonNull Context context,
             @NonNull Throwable exception)
     {

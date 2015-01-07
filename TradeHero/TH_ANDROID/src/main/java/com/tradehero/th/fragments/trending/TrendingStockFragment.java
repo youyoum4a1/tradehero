@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -30,6 +31,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -239,7 +241,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get(currentUserId.toUserBaseKey()))
+                userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(
                         pair -> linkWith(pair.second),
                         error -> THToast.show(R.string.error_fetch_user_profile)
@@ -392,7 +394,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .first()
                 .subscribe(
                         args -> {
@@ -403,7 +405,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                 navigator.get().pushFragment(WebViewFragment.class, bundle, null);
                             }
                         },
-                        error -> THToast.show(new THException(error))));
+                        error -> THToast.show(new THException(error)));
     }
 
     private void handleResetPortfolioItemOnClick()

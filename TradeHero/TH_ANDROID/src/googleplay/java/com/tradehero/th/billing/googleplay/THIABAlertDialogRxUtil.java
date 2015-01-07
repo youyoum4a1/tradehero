@@ -24,6 +24,7 @@ import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
+import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.Observable;
@@ -47,10 +48,11 @@ public class THIABAlertDialogRxUtil
     @Inject public THIABAlertDialogRxUtil(
             @NonNull Analytics analytics,
             @NonNull ActivityUtil activityUtil,
+            @NonNull VersionUtils versionUtils,
             @NonNull THIABPurchaseCacheRx thiabPurchaseCache,
             @NonNull GooglePlayUtils googlePlayUtils)
     {
-        super(analytics, activityUtil);
+        super(analytics, activityUtil, versionUtils);
         this.thiabPurchaseCache = thiabPurchaseCache;
         this.googlePlayUtils = googlePlayUtils;
     }

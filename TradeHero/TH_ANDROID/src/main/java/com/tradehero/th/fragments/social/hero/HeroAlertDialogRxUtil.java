@@ -14,6 +14,7 @@ import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.VersionUtils;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,9 +22,9 @@ import rx.android.schedulers.AndroidSchedulers;
 public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
 {
     //<editor-fold desc="Constructors">
-    @Inject public HeroAlertDialogRxUtil()
+    @Inject public HeroAlertDialogRxUtil(@NonNull VersionUtils versionUtils)
     {
-        super();
+        super(versionUtils);
     }
     //</editor-fold>
 
