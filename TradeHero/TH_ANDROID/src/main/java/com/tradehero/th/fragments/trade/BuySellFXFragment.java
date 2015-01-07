@@ -53,6 +53,7 @@ public class BuySellFXFragment extends BuySellFragment
 {
     public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
     public final static long MILLISEC_FX_QUOTE_REFRESH = 5000;
+    public final static long MILLISEC_FX_CANDLE_CHART_REFRESH = 60000;
     public final static long TIME_SECOND_DURATION = 5 * 1000;
 
     private long timeStart;
@@ -197,7 +198,7 @@ public class BuySellFXFragment extends BuySellFragment
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, code)
-                    .repeatWhen(observable -> observable.delay(60000, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(observable -> observable.delay(MILLISEC_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXHistoryFetchObserver()));
     }
 
@@ -236,7 +237,10 @@ public class BuySellFXFragment extends BuySellFragment
 
     public void displayPositionStatus()
     {
-        if((!isValidTimer()) && positionDTOCompactList == null )return;
+        if (!isValidTimer() && positionDTOCompactList == null)
+        {
+            return;
+        }
         Integer share = getMaxSellableShares();
         Double unRealizedPLRefccy = getUnRealizedPLRefCcy();
 
