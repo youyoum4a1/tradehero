@@ -29,9 +29,9 @@ public class ProviderTradableSecuritiesHelper
         {
             ProviderSecurityListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
-        if (portfolioCompactDTO.portfolioType != null)
+        if (portfolioCompactDTO.assetClass != null)
         {
-            switch (portfolioCompactDTO.portfolioType)
+            switch (portfolioCompactDTO.assetClass)
             {
                 case FX:
                     navigator.pushFragment(ProviderFxListFragment.class, args);

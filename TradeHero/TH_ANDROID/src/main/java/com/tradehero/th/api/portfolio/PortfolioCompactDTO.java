@@ -3,6 +3,7 @@ package com.tradehero.th.api.portfolio;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -18,10 +19,11 @@ public class PortfolioCompactDTO implements DTO
     @NonNull public Integer userId;
     //</editor-fold>
 
-    public Integer providerId;
+    @Nullable public Integer providerId;
     public String title;
 
-    @Nullable public AssetClass portfolioType;
+    @JsonProperty("portfolioType")
+    @Nullable public AssetClass assetClass;
 
     public double cashBalance;
     public double totalValue;
@@ -84,7 +86,7 @@ public class PortfolioCompactDTO implements DTO
 
     @JsonIgnore public boolean isFx()
     {
-        return portfolioType != null && portfolioType.equals(AssetClass.FX);
+        return assetClass != null && assetClass.equals(AssetClass.FX);
     }
 
     @JsonIgnore public boolean isAllowedAddCash()
