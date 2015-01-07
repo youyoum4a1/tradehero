@@ -129,6 +129,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
             {
                 return userProfileDTO.getBaseKey().equals(currentUserId.toUserBaseKey());
             }
+            return true;
         }
         return false;
     }
