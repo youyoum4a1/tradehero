@@ -120,7 +120,10 @@ public class KChartsView extends KChartBase {
                 leftText = left + (float)DEFAULT_AXIS_TITLE_SIZE / 4;
 			}
 			int selectIndext = (int) ((width - 2.0f - mStartX) / mCandleWidth + mDataStartIndext);
-
+            if (selectIndext < 0 || selectIndext > mOHLCData.size() - 1)
+            {
+                return ;
+            }
             //draw touch detail
 			Paint paint = new Paint();
 			paint.setColor(Color.LTGRAY);
