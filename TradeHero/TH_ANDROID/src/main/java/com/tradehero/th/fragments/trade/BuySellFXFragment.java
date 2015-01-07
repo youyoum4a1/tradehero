@@ -315,7 +315,7 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    protected void formatButtonText(double value, double diff, int precision, Button btn, String prefix)
+    protected void formatButtonText(double value, double diff, int precision, Button btn, String format)
     {
         THSignedFXRate.builder(value)
                 .signTypeArrow()
@@ -327,10 +327,9 @@ public class BuySellFXFragment extends BuySellFragment
                 .withValueColor(DEFAULT_BUTTON_TEXT_COLOR)
                 .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
                 .expectedPrecision(precision)
+                .format(format)
                 .build()
                 .into(btn);
-
-        btn.setText(TextUtils.concat(prefix, btn.getText()));
     }
 
     @Override public boolean isBuySellReady()
