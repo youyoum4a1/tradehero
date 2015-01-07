@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOList;
@@ -336,8 +337,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
 
     public String getOpenLongHeaderText(HeaderDTO headerDTO)
     {
-        if (userProfileDTO != null && portfolioDTO != null && userProfileDTO.fxPortfolio != null
-                && userProfileDTO.fxPortfolio.id == portfolioDTO.id)
+        if (userProfileDTO != null && portfolioDTO != null && portfolioDTO.assetClass == AssetClass.FX)
         {
             if (headerDTO == null || headerDTO.count == null)
             {
