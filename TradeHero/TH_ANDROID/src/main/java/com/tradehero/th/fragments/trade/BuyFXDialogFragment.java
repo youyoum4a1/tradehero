@@ -116,7 +116,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         return cashLeftText;
     }
 
-    @Override protected Integer getMaxValue()
+    @Override @Nullable protected Integer getMaxValue()
     {
         if (positionDTOCompactList == null || quoteDTO == null || portfolioCompactDTO == null)
         {

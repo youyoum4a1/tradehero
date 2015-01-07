@@ -123,7 +123,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         return shareLeftText;
     }
 
-    @Override protected Integer getMaxValue()
+    @Override @Nullable protected Integer getMaxValue()
     {
         if (positionDTOCompactList == null || quoteDTO == null || portfolioCompactDTO == null)
         {

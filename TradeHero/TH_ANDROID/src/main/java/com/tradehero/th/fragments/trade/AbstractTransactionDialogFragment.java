@@ -135,7 +135,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     Editable unSpannedComment;
     private Integer purchaseRequestCode;
 
-    protected abstract Integer getMaxValue();
+    @Nullable protected abstract Integer getMaxValue();
 
     protected abstract boolean hasValidInfo();
 

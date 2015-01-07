@@ -86,11 +86,13 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     }
 
     @Override
-    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener() {
+    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
+    {
         return priceSelected -> {
             float i = 1f;
-            switch ((int)priceSelected)
+            switch ((int) priceSelected)
             {
+                // TODO rework this seriously
                 case 5000:
                     i = 0.25f;
                     break;
@@ -101,9 +103,10 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
                     i = 0.75f;
                     break;
             }
-            if (quoteDTO != null)
+            Integer maxValue = getMaxValue();
+            if (quoteDTO != null && maxValue != null)
             {
-                linkWithQuantity((int) Math.floor(i * getMaxValue()), true);
+                linkWithQuantity((int) Math.floor(i * maxValue), true);
             }
 
             Integer selectedQuantity = mTransactionQuantity;
