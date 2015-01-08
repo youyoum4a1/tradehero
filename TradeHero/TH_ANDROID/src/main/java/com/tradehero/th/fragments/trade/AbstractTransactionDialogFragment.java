@@ -361,6 +361,10 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             mSeekBar.setMax(maxValue);
             mSeekBar.setEnabled(maxValue > 0);
         }
+        else
+        {
+            mSeekBar.setMax(0);
+        }
         displayQuickPriceButtonSet();
         updateTransactionDialog();
     }

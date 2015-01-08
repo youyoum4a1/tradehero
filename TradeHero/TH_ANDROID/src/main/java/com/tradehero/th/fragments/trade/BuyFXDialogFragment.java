@@ -118,7 +118,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Integer getMaxValue()
     {
-        if (positionDTOCompactList == null || quoteDTO == null || portfolioCompactDTO == null)
+        if (/*positionDTOCompactList == null ||*/ quoteDTO == null || portfolioCompactDTO == null)
         {
             return null;
         }
