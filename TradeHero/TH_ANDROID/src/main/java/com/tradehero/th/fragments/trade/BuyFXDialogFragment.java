@@ -59,7 +59,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
     @Override protected int getCashLeftLabelResId()
     {
         Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares == null || maxSellableShares > 0)
+        if (maxSellableShares == null || maxSellableShares >= 0)
         {
             return R.string.buy_sell_fx_cash_left;
         }
@@ -118,10 +118,10 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override @Nullable protected Integer getMaxValue()
     {
-        if (positionDTOCompactList == null || quoteDTO == null || portfolioCompactDTO == null)
-        {
-            return null;
-        }
+//        if (positionDTOCompactList == null || quoteDTO == null || portfolioCompactDTO == null)
+//        {
+//            return null;
+//        }
         Integer maxSellableShares = getMaxSellableShares();
         if (maxSellableShares != null && maxSellableShares < 0)
         {
