@@ -108,7 +108,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
         waitForEnrolledSubscription = AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
+                .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
+//                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
                 .filter(pair -> pair.second.fxPortfolio != null)
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
@@ -117,7 +118,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
                     {
                         // In effect, we are waiting for the enrolled profile
                         unsubscribe(waitForEnrolledSubscription);
-                        btnEnroll.setVisibility(View.GONE);
+                        mProgress.setVisibility(View.GONE);
+//                        btnEnroll.setVisibility(View.GONE);
                         scheduleRequestData();
                         fetchFXPrice();
                     }
