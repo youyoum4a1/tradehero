@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.models.number.THSignedNumber;
+import java.text.DecimalFormatSymbols;
 import javax.inject.Inject;
 
 public class SecurityCompactDTOUtil
@@ -30,8 +31,9 @@ public class SecurityCompactDTOUtil
         String bidPrice = THSignedNumber.builder(bid)
                 .relevantDigitCount(DEFAULT_RELEVANT_DIGITS)
                 .build().toString();
-        int askDecimalPlace = askPrice.indexOf('.');
-        int bidDecimalPlace = bidPrice.indexOf('.');
+        char decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+        int askDecimalPlace = askPrice.indexOf(decimalSeparator);
+        int bidDecimalPlace = bidPrice.indexOf(decimalSeparator);
 
         if (askDecimalPlace >= 0 && bidDecimalPlace >= 0)
         {
