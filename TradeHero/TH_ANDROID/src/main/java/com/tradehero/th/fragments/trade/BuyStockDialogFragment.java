@@ -58,7 +58,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
             {
                 double value = mTransactionQuantity * priceRefCcy;
 
-                double cashAvailable = portfolioCompactDTO.cashBalance;
+                double cashAvailable = portfolioCompactDTO.cashBalanceRefCcy;
                 THSignedNumber thSignedNumber = THSignedMoney
                         .builder(cashAvailable - value)
                         .withOutSign()
@@ -94,7 +94,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
     {
         if (portfolioCompactDTO != null)
         {
-            return portfolioCompactDTO.cashBalance;
+            return portfolioCompactDTO.cashBalanceRefCcy;
         }
         return 0;
     }

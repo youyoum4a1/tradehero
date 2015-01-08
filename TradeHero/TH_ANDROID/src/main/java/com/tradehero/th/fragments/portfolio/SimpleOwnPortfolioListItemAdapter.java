@@ -110,7 +110,7 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                         }
                         else
                         {
-                            Timber.e(new RuntimeException(), "Class %s is cast as PortfolioListItemView", view.getClass().getName());
+                            Timber.e(new RuntimeException(), "Class %s is cast as PortfolioListItemView for position %d", view.getClass().getName(), position);
                         }
                     }
                     else

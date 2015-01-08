@@ -169,7 +169,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thCashOnHand = THSignedMoney.builder(userProfileDTO.portfolio.cashBalance)
+                THSignedNumber thCashOnHand = THSignedMoney.builder(userProfileDTO.portfolio.cashBalanceRefCcy)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build();
                 cashOnHand.setText(thCashOnHand.toString());

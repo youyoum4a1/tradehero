@@ -104,7 +104,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
                     else
                     {
                         Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
-                        availableRefCcy = portfolioCompactDTO.cashBalance;
+                        availableRefCcy = portfolioCompactDTO.cashBalanceRefCcy;
                     }
 
                     if (priceRefCcy != null)
