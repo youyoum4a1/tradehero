@@ -3,6 +3,10 @@ package com.tradehero.th.api.security;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.trade.BuySellFXFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import java.text.DecimalFormatSymbols;
 import javax.inject.Inject;
@@ -18,12 +22,12 @@ public class SecurityCompactDTOUtil
     }
     //</editor-fold>
 
-    public static int getExpectedPrecision(@NonNull SecurityCompactDTO securityCompactDTO)
+    public int getExpectedPrecision(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         return getExpectedPrecision(securityCompactDTO.askPrice, securityCompactDTO.bidPrice);
     }
 
-    public static int getExpectedPrecision(double ask, double bid)
+    public int getExpectedPrecision(double ask, double bid)
     {
         String askPrice = THSignedNumber.builder(ask)
                 .relevantDigitCount(DEFAULT_RELEVANT_DIGITS)
@@ -66,5 +70,17 @@ public class SecurityCompactDTOUtil
                 "%s:%s",
                 securityId.getExchange(),
                 securityId.getSecuritySymbol());
+    }
+
+    public Class<? extends BuySellFragment> fragmentFor(SecurityCompactDTO securityCompactDTO)
+    {
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            return BuySellFXFragment.class;
+        }
+        else
+        {
+            return BuySellStockFragment.class;
+        }
     }
 }

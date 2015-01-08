@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +62,7 @@ public class BuySellFXFragment extends BuySellFragment
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
@@ -300,7 +300,7 @@ public class BuySellFXFragment extends BuySellFragment
                 int precision = 0;
                 if (quoteDTO.ask != null && quoteDTO.bid != null)
                 {
-                    precision = SecurityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
+                    precision = securityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
                 }
 
                 if (quoteDTO.ask == null)

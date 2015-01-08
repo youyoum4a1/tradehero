@@ -8,13 +8,16 @@ import android.widget.ListAdapter;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import javax.inject.Inject;
 
 public class ProviderFxListFragment extends ProviderSecurityListFragment
 {
     @Inject Context dummyContext;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @Override protected ListAdapter createSecurityItemViewAdapter()
     {

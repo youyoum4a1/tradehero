@@ -14,14 +14,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -39,6 +37,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 {
     @Inject SecurityCompactListCacheRx securityCompactListCache;
     @Inject Analytics analytics;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -111,16 +110,8 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        if (securityCompactDTO instanceof FxSecurityCompactDTO)
-        {
-            BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            navigator.get().pushFragment(BuySellFXFragment.class, args);
-        }
-        else
-        {
-            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            navigator.get().pushFragment(BuySellStockFragment.class, args);
-        }
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 
     @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)

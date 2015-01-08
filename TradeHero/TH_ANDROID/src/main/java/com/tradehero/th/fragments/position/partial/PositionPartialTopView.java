@@ -21,13 +21,14 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -47,6 +48,7 @@ public class PositionPartialTopView extends LinearLayout
     @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected PositionDTOUtils positionDTOUtils;
     @Inject protected DashboardNavigator navigator;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.stock_logo) protected ImageView stockLogo;
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
@@ -196,21 +198,15 @@ public class PositionPartialTopView extends LinearLayout
     protected void handleBtnCloseClicked(@SuppressWarnings("UnusedParameters") View view)
     {
         Bundle args = new Bundle();
-        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        BuySellFragment.putSecurityId(args, securityId);
+        Class<? extends BuySellFragment> fragmentClass = securityCompactDTOUtil.fragmentFor(securityCompactDTO);
+        if (fragmentClass.equals(FxSecurityCompactDTO.class))
         {
-            BuySellFXFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-            BuySellFXFragment.putSecurityId(args, securityId);
             BuySellFXFragment.putCloseAttribute(args, positionDTO.shares);
-            // TODO add command to go direct to pop-up
-            navigator.pushFragment(BuySellFXFragment.class, args);
         }
-        else
-        {
-            BuySellStockFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-            BuySellStockFragment.putSecurityId(args, securityId);
-            // TODO add command to go direct to pop-up
-            navigator.pushFragment(BuySellStockFragment.class, args);
-        }
+        // TODO add command to go direct to pop-up
+        navigator.pushFragment(fragmentClass, args);
     }
 
     //<editor-fold desc="Display Methods">

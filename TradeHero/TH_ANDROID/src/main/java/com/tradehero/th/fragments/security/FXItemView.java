@@ -14,6 +14,7 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedFXRate;
+import javax.inject.Inject;
 
 public class FXItemView extends RelativeLayout implements DTOView<FxSecurityCompactDTO>
 {
@@ -21,6 +22,9 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
     @InjectView(R.id.fx_price_buy) TextView buyPrice;
     @InjectView(R.id.fx_price_sell) TextView sellPrice;
+
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
+
     protected FxSecurityCompactDTO fxSecurityCompactDTO;
     private int mBlinkDuration;
     private int mDefaultTextColor;
@@ -74,7 +78,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
     {
         if(fxSecurityCompactDTO.askPrice != null && fxSecurityCompactDTO.bidPrice != null)
         {
-            int precision = SecurityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
+            int precision = securityCompactDTOUtil.getExpectedPrecision(fxSecurityCompactDTO);
             coloredText(buyPrice, fxSecurityCompactDTO.askPrice, fxSecurityCompactDTO.fxAskTextColorResId, precision);
             coloredText(sellPrice, fxSecurityCompactDTO.bidPrice, fxSecurityCompactDTO.fxBidTextColorResId, precision);
         }

@@ -22,10 +22,12 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -47,6 +49,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     protected ProviderDTO providerDTO;
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
@@ -266,11 +269,10 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
-            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            BuySellStockFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+            BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellStockFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
-            // TODO use other positions
-            navigator.get().pushFragment(BuySellStockFragment.class, args);
+            navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }
 
