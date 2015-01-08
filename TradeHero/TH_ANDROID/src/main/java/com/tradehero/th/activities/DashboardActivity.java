@@ -122,6 +122,7 @@ import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -414,7 +415,14 @@ public class DashboardActivity extends BaseActivity
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                         .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
                         .flatMapIterable(pair -> pair.second)
-                        .filter(providerDTO -> !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id)))
+                        .filter(providerDTO -> {
+                            boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
+                            if(!r)
+                            {
+                                broadcastUtilsLazy.get().nextPlease();
+                            }
+                            return r;
+                        }))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
