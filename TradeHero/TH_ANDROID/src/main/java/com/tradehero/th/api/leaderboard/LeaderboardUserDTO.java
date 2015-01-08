@@ -102,16 +102,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
         return new LeaderboardUserId(id, lbmuId);
     }
 
-    public String getHeroQuotientFormatted()
-    {
-        if (starRating == null)
-        {
-            return "0";
-        }
-
-        return THSignedNumber.builder(starRating).withOutSign().build().toString();
-    }
-
     public int getCommentsCount()
     {
         return commentCount == null ? 0 : commentCount;

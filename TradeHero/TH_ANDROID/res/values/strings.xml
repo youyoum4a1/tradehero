@@ -33,6 +33,8 @@
   <string name="please_update_token_title">Social authentication expired</string>
   <string name="please_update_token_description">Please reauthenticate with your preferred social network</string>
 
+  <string name="on">On %1$1</string>
+
   <string name="press_back_again_to_exit">Press back again to exit</string>
   <string name="discussion">Discussion</string>
   <string name="more_character">…</string>

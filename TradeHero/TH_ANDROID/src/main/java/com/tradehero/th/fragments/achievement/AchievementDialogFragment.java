@@ -102,8 +102,14 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     private void displayDollarsEarned(float dollars)
     {
-        dollarEarned.setText(
-                THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
+        THSignedMoney.builder(dollars)
+                .currency("TH$")
+                .signTypePlusMinusAlways()
+                .withSign()
+                .relevantDigitCount(1)
+                .skipDefaultColor()
+                .build()
+                .into(dollarEarned);
     }
 
     private class CategoryCacheObserver implements Observer<Pair<AchievementCategoryId, AchievementCategoryDTO>>
@@ -129,8 +135,9 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         }
     }
 
-    private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy) {
-        Map<String,String> collections = Collections.emptyMap();
+    private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy)
+    {
+        Map<String, String> collections = Collections.emptyMap();
         collections.put(AnalyticsConstants.Trigger, AnalyticsConstants.Clicked);
         collections.put(AnalyticsConstants.Type, userAchievementDTOCopy.achievementDef.thName);
         collections.put(AnalyticsConstants.Level, String.valueOf(userAchievementDTOCopy.achievementDef.achievementLevel));

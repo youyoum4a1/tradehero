@@ -44,11 +44,12 @@ public class AlertEventItemView extends LinearLayout
 
     @Override public void display(AlertEventDTO alertEventDTO)
     {
-        THSignedNumber thSecurityPrice = THSignedMoney
+        THSignedMoney
                 .builder(alertEventDTO.securityPrice)
                 .withOutSign()
-                .build();
-        eventName.setText(thSecurityPrice.toString());
-        eventDate.setText("On " + alertEventDTO.triggeredAt);
+                .skipDefaultColor()
+                .build()
+                .into(eventName);
+        eventDate.setText(getContext().getString(R.string.on, alertEventDTO.triggeredAt));
     }
 }

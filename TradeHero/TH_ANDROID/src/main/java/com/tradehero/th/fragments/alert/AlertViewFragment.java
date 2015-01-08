@@ -267,30 +267,33 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         if (alertDTO.priceMovement == null)
         {
-            THSignedNumber thTargetPrice = THSignedMoney
+            THSignedMoney
                     .builder(alertDTO.targetPrice)
                     .withOutSign()
-                    .build();
-            targetPrice.setText(thTargetPrice.toString());
+                    .skipDefaultColor()
+                    .build()
+                    .into(targetPrice);
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
         }
         else
         {
-            THSignedNumber thPriceMovement = THSignedPercentage
+            THSignedPercentage
                     .builder(alertDTO.priceMovement * 100)
-                    .build();
-            targetPrice.setText(thPriceMovement.toString());
+                    .skipDefaultColor()
+                    .build()
+                    .into(targetPrice);
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
         }
     }
 
     private void displayCurrentPrice()
     {
-        THSignedNumber thCurrentPrice = THSignedMoney
+        THSignedMoney
                 .builder(alertDTO.security.lastPrice)
                 .withOutSign()
-                .build();
-        currentPrice.setText(thCurrentPrice.toString());
+                .skipDefaultColor()
+                .build()
+                .into(currentPrice);
     }
 
     private void displayCompanyName()
@@ -391,7 +394,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         @Override public void onCompleted()
         {
             hideProgressDialog();
-
         }
 
         @Override public void onError(Throwable e)
