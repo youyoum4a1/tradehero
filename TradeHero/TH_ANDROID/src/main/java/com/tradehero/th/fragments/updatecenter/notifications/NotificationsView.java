@@ -128,8 +128,9 @@ public class NotificationsView extends BetterViewAnimator
         dashboardTabHost.get().setOnTranslate((x, y) -> readAllLayout.setTranslationY(y));
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.readAllLayout)
-    protected void onReadAllLayoutClicked()
+    protected void onReadAllLayoutClicked(View view)
     {
         reportNotificationReadAll();
     }
@@ -271,11 +272,10 @@ public class NotificationsView extends BetterViewAnimator
 
             // a bit hacky here to identify whether the list is forced to be refreshed
             Integer currentPage = paginatedNotificationListKey.getPage();
-            if (currentPage != null && currentPage == 1)
+            if (currentPage == null || currentPage != 1)
             {
-                notificationListAdapter.clear();
+                setNotificationListShow();
             }
-            setNotificationListShow();
         }
     }
 
