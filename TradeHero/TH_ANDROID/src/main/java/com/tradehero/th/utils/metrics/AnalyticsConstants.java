@@ -142,6 +142,9 @@ public class AnalyticsConstants
     public static final String NewsRegional = "NewsRegional";
     public static final String NewsGlobal = "NewsGlobal";
     public static final String NewsItem_Show = "NewsItem/Show";
+    public static final String ProviderId = "ProviderId";
+    public static final String Competition_Home = "Competition/Home";
+    public static final String CompetitionJoined = "CompetitionJoined";//
 
     //Attribute
     public static final String ClickedFrom = "ClickedFrom";//
@@ -163,7 +166,6 @@ public class AnalyticsConstants
     public static final String Clicked = "Clicked";//
     public static final String Level = "Level";//
     public static final String Type = "Type";//
-    public static final String CompetitionJoined = "CompetitionJoined";//
     public static final String InterestedExchange = "InterestedExchange";//
     public static final String GamePlayed = "GamePlayed";//
     public static final String TimeInGame = "TimeInGame";//
