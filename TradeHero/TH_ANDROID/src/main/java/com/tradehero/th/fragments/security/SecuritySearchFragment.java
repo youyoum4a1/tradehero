@@ -11,6 +11,7 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -39,10 +40,33 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     @Inject Analytics analytics;
     @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
+    public AssetClass assetClass = AssetClass.STOCKS;
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+
+        if(this instanceof SecuritySearchProviderFragment)
+        {
+            assetClass =((SecuritySearchProviderFragment)this).assetClass;
+        }
+        else
+        {
+            assetClass = AssetClass.STOCKS;
+        }
+
+        switch (assetClass)
+        {
+            case STOCKS:
+                searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+                break;
+            case WARRANT:
+                searchEmptyTextView.setText(R.string.trending_search_no_warrant_found);
+                break;
+            case FX:
+                searchEmptyTextView.setText(R.string.trending_search_no_forex_found);
+                break;
+        }
 
         //We set this to true so that the item will show selected state when pressed.
         listView.setDrawSelectorOnTop(true);
@@ -53,10 +77,23 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     {
         super.onPrepareOptionsMenu(menu);
 
-        if (mSearchTextField != null)
+        if (mSearchTextField != null && assetClass != null)
         {
-            mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
+            switch (assetClass)
+            {
+                case STOCKS:
+                    mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
+                    break;
+                case WARRANT:
+                    mSearchTextField.setHint(R.string.trending_search_empty_result_for_warrant);
+                    break;
+                case FX:
+                    mSearchTextField.setHint(R.string.trending_search_empty_result_for_forex);
+                    break;
+            }
         }
+
+
     }
     //</editor-fold>
 

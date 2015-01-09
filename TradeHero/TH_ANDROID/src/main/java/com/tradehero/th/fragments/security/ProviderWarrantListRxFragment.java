@@ -14,6 +14,7 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -73,6 +74,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
+        SecuritySearchProviderFragment.putProviderType(args, AssetClass.WARRANT);
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
