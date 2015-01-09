@@ -18,6 +18,8 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -26,6 +28,7 @@ import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -224,11 +227,17 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     protected void listItemClicked(AdapterView<?> parent, View view, int position, long id)
     {
         Object o = parent.getItemAtPosition(position);
+        Bundle bundle = new Bundle();
         if (o instanceof NewsItemCompactDTO && ((NewsItemCompactDTO) o).url != null)
         {
-            Bundle bundle = new Bundle();
             WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) o).url);
             navigator.get().pushFragment(WebViewFragment.class, bundle);
+        }
+        else if (o instanceof NewsItemCompactDTO)
+        {
+            NewsDiscussionFragment.putSecuritySymbol(bundle, ((NewsItemCompactDTO) o).topReferencedSecurity.getExchangeSymbol());
+            NewsDiscussionFragment.putDiscussionKey(bundle, ((AbstractDiscussionCompactDTO) o).getDiscussionKey());
+            navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
         }
     }
 }

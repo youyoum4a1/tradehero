@@ -101,15 +101,4 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
             Timber.e(e, null);
         }
     }
-
-    @Override public boolean areAllItemsEnabled()
-    {
-        return false;
-    }
-
-    @Override public boolean isEnabled(int position)
-    {
-        NewsItemCompactDTO newsItemDTO = (NewsItemCompactDTO) getItem(position);
-        return newsItemDTO.url != null;
-    }
 }
