@@ -253,13 +253,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void fetchSecurityCompact()
     {
         unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = AndroidObservable.bindFragment(this, securityCompactCache
+        securityCompactSubscription = AndroidObservable.bindFragment(this, securityPositionDetailCache
                 .get(this.securityId))
-                .subscribe(new EmptyObserver<Pair<SecurityId, SecurityCompactDTO>>()
+                .subscribe(new EmptyObserver<Pair<SecurityId, SecurityPositionDetailDTO>>()
                 {
-                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
+                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
                     {
-                        linkWith(pair.second, true);
+                        linkWith(pair.second.security, true);
                     }
                 });
     }
