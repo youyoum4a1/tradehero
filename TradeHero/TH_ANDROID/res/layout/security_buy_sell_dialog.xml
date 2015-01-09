@@ -171,13 +171,16 @@
       android:layout_marginRight="@dimen/margin_small"
       android:background="@drawable/trend_price_bar"
       android:orientation="horizontal"
+      app:isPercent="false"
       >
 
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle5k"
         style="@style/TH.BtnQuickPriceSet"
-        android:text="@string/buy_sell_p5k"
+        app:priceText="@string/buy_sell_p5k"
         app:price="5000"
+        app:percentText="@string/buy_sell_fx_025"
+        app:percent="25"
         />
 
     <View style="@style/TH.Btn_Price_Bar_Separator"/>
@@ -185,8 +188,10 @@
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle10k"
         style="@style/TH.BtnQuickPriceSet"
-        android:text="@string/buy_sell_p10k"
+        app:priceText="@string/buy_sell_p10k"
         app:price="10000"
+        app:percentText="@string/buy_sell_fx_050"
+        app:percent="50"
         />
 
     <View style="@style/TH.Btn_Price_Bar_Separator"/>
@@ -194,8 +199,10 @@
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle25k"
         style="@style/TH.BtnQuickPriceSet"
-        android:text="@string/buy_sell_p25k"
+        app:priceText="@string/buy_sell_p25k"
         app:price="25000"
+        app:percentText="@string/buy_sell_fx_075"
+        app:percent="75"
         />
 
     <View style="@style/TH.Btn_Price_Bar_Separator"/>
@@ -203,8 +210,10 @@
     <com.tradehero.th.fragments.trade.view.QuickPriceButton
         android:id="@+id/toggle50k"
         style="@style/TH.BtnQuickPriceSet"
-        android:text="@string/buy_sell_p50k"
+        app:priceText="@string/buy_sell_p50k"
         app:price="50000"
+        app:percentText="@string/buy_sell_fx_100"
+        app:percent="100"
         />
 
   </com.tradehero.th.fragments.trade.view.QuickPriceButtonSet>

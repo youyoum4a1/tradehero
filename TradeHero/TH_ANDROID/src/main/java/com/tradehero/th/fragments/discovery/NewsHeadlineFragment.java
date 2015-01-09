@@ -20,7 +20,6 @@ import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -30,10 +29,9 @@ import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -67,6 +65,7 @@ public class NewsHeadlineFragment extends Fragment
     private AbsListView.OnScrollListener scrollListener;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
+    private NewsType newsType;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -75,8 +74,9 @@ public class NewsHeadlineFragment extends Fragment
         if (newsItemDTO != null && newsItemDTO.url != null)
         {
             Bundle bundle = new Bundle();
-            WebViewFragment.putUrl(bundle, newsItemDTO.url);
-            navigator.get().pushFragment(WebViewFragment.class, bundle);
+            NewsWebFragment.putPreviousScreen(bundle, newsType.analyticsName);
+            NewsWebFragment.putUrl(bundle, newsItemDTO.url);
+            navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
     }
 
@@ -129,7 +129,8 @@ public class NewsHeadlineFragment extends Fragment
             int newsTypeOrdinal = args.getInt(NEWS_TYPE_KEY);
             if (newsTypeOrdinal >= 0 && newsTypeOrdinal < NewsType.values().length)
             {
-                newsItemListKey = newsItemListKeyFromNewsType(NewsType.values()[newsTypeOrdinal]);
+                newsType = NewsType.values()[newsTypeOrdinal];
+                newsItemListKey = newsItemListKeyFromNewsType(newsType);
             }
         }
     }

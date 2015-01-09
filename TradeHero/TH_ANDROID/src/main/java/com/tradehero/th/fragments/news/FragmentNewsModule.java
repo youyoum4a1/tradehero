@@ -11,6 +11,7 @@ import dagger.Module;
                 NewsViewLinear.class,
                 NewsItemCompactViewHolder.class,
                 NewsItemViewHolder.class,
+                NewsWebFragment.class,
         },
         library = true,
         complete = false
