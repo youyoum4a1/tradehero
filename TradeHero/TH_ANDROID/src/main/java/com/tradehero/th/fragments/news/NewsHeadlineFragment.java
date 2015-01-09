@@ -16,10 +16,10 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -30,11 +30,11 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.security.AbstractSecurityInfoFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardTabListViewScrollListener;
+    @Inject Analytics analytics;
 
     private NewsHeadlineAdapter adapter;
     private PaginatedDTO<NewsItemCompactDTO> paginatedNews;
@@ -230,8 +231,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         Bundle bundle = new Bundle();
         if (o instanceof NewsItemCompactDTO && ((NewsItemCompactDTO) o).url != null)
         {
-            WebViewFragment.putUrl(bundle, ((NewsItemCompactDTO) o).url);
-            navigator.get().pushFragment(WebViewFragment.class, bundle);
+            NewsWebFragment.putUrl(bundle, ((NewsItemCompactDTO) o).url);
+            NewsWebFragment.putPreviousScreen(bundle, AnalyticsConstants.NewsSecurityScreen);
+            navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
         else if (o instanceof NewsItemCompactDTO)
         {
