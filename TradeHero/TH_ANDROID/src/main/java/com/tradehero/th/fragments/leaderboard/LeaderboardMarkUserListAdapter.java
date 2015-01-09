@@ -5,8 +5,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.View;
-import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.LoaderDTOAdapter;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -20,16 +18,14 @@ public class LeaderboardMarkUserListAdapter
                 LeaderboardUserDTO, LeaderboardMarkUserItemView, LeaderboardMarkUserLoader>
         implements SwipeRefreshLayout.OnRefreshListener
 {
-    @LayoutRes private static final int stockLeaderboardLayoutResId = R.layout.lbmu_item_roi_mode;
-
     protected UserProfileDTO currentUserProfileDTO;
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
     protected LeaderboardMarkUserItemView.OnFollowRequestedListener followRequestedListener;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardMarkUserListAdapter(Context context, int loaderId)
+    public LeaderboardMarkUserListAdapter(Context context, int loaderId, @LayoutRes int layoutResId)
     {
-        super(context, loaderId, 0);
+        super(context, loaderId, layoutResId);
     }
     //</editor-fold>
 
@@ -56,15 +52,6 @@ public class LeaderboardMarkUserListAdapter
         dto.setIncludeFoF(getLoader().isIncludeFoF());
 
         return dto;
-    }
-
-    @Override protected View conditionalInflate(int position, View convertView, ViewGroup viewGroup)
-    {
-        if (convertView == null)
-        {
-            convertView = getInflater().inflate(stockLeaderboardLayoutResId, viewGroup, false);
-        }
-        return super.conditionalInflate(position, convertView, viewGroup);
     }
 
     @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)

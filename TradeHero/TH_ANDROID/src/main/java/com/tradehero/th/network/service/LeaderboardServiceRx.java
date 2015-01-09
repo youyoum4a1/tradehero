@@ -34,6 +34,7 @@ interface LeaderboardServiceRx
     @Deprecated @GET("/leaderboards/{leaderboardId}")
     Observable<LeaderboardDTO> getLeaderboard(
             @Path("leaderboardId") Integer leaderboardId,
+            @Query("lbType") Integer lbType,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage,
             @Query("sortType") Integer sortType);

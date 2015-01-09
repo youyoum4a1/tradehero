@@ -257,7 +257,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
-        return new LeaderboardMarkUserListAdapter(getActivity(), getLeaderboardLoaderCustomId());
+        return new LeaderboardMarkUserListAdapter(getActivity(), getLeaderboardLoaderCustomId(), R.layout.lbmu_item_roi_mode);
     }
 
     protected void prepareLeaderboardMarkUserAdapter()
