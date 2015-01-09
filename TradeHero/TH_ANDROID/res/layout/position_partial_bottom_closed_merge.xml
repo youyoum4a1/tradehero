@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/position_partial_bottom_closed"
+    >
 
   <TableRow
       android:layout_width="match_parent"
@@ -14,8 +15,9 @@
 
     <TextView
         android:id="@+id/realised_pl_value_header"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="@dimen/size_15"
         android:layout_marginRight="2dp"
         android:layout_weight="0"
         android:gravity="right"
@@ -27,25 +29,27 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_weight="1"
-      >
+        >
 
       <TextView
           android:id="@+id/realised_pl_value"
-          android:layout_width="150dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:minWidth="@dimen/size_18"
           android:layout_alignParentLeft="true"
           style="@style/TH.InfoValue"
           tools:text="US$ 819"
           />
-       <TextView
-                android:id="@+id/roi_value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:layout_toRightOf="@id/realised_pl_value"
-                style="@style/TH.InfoValue"
-                tools:text="8.39%"
-        />
+
+      <TextView
+          android:id="@+id/roi_value"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="right"
+          android:layout_toRightOf="@id/realised_pl_value"
+          style="@style/TH.InfoValue"
+          tools:text="8.39%"
+          />
     </RelativeLayout>
 
   </TableRow>
@@ -57,7 +61,7 @@
 
     <TextView
         android:layout_height="wrap_content"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_marginRight="2dp"
         style="@style/TH.InfoKey"
         android:text="@string/position_total_invested_header"
@@ -82,7 +86,7 @@
       >
 
     <TextView
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="2dp"
         style="@style/TH.InfoKey"
@@ -113,7 +117,7 @@
         android:gravity="right"
         android:text="@string/position_expanded_close_closed_date_header"
         android:layout_weight="0"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
 
@@ -139,7 +143,7 @@
         android:gravity="right"
         android:layout_weight="0"
         android:text="@string/position_expanded_close_period_header"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
 
