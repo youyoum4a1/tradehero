@@ -201,7 +201,7 @@ public class PositionPartialTopView extends LinearLayout
         BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
         BuySellFragment.putSecurityId(args, securityId);
         Class<? extends BuySellFragment> fragmentClass = securityCompactDTOUtil.fragmentFor(securityCompactDTO);
-        if (fragmentClass.equals(FxSecurityCompactDTO.class))
+        if (securityCompactDTO.getClass().equals(FxSecurityCompactDTO.class))
         {
             BuySellFXFragment.putCloseAttribute(args, positionDTO.shares);
         }
