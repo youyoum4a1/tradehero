@@ -36,46 +36,52 @@
       tools:src="@drawable/square_au"
       />
 
+  <TextView
+      android:id="@+id/exchange_symbol"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:ellipsize="end"
+      android:lines="1"
+      android:layout_below="@id/stock_name"
+      android:layout_toRightOf="@id/stock_logo"
+      android:layout_toEndOf="@id/stock_logo"
+      android:layout_alignTop="@id/stock_logo"
+      android:layout_marginTop="@dimen/margin_xsmall"
+      android:paddingLeft="@dimen/margin_xsmall"
+      android:minWidth="@dimen/size_10"
+      style="@style/TH.Subhead"
+      android:textAllCaps="true"
+      tools:text="S5028C1412A"
+      />
+
+  <TextView
+      android:id="@+id/warrant_type"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_span="2"
+      style="@style/TH.Body"
+      android:textAllCaps="true"
+      android:gravity="center"
+      android:layout_toRightOf="@id/exchange_symbol"
+      android:layout_toEndOf="@id/exchange_symbol"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignTop="@id/exchange_symbol"
+      tools:text="@string/warrant_type_call"
+      />
+
   <TableLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_toRightOf="@id/stock_logo"
       android:layout_toEndOf="@id/stock_logo"
-      android:layout_below="@id/stock_name"
-      android:layout_alignBottom="@id/stock_logo"
+      android:layout_below="@id/exchange_symbol"
       android:stretchColumns="*"
-      android:padding="@dimen/size_1"
+      android:paddingLeft="@dimen/margin_xsmall"
+      android:paddingRight="@dimen/margin_xsmall"
+      android:layout_alignBottom="@id/stock_logo"
       android:layout_centerHorizontal="true"
       >
-
-    <TableRow
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        >
-
-      <TextView
-          android:id="@+id/exchange_symbol"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:ellipsize="end"
-          android:layout_span="2"
-          android:lines="1"
-          style="@style/TH.Subhead"
-          android:textAllCaps="true"
-          tools:text="T1HW"
-          />
-
-      <TextView
-          android:id="@+id/warrant_type"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          style="@style/TH.Body"
-          android:textAllCaps="true"
-          android:gravity="center"
-          tools:text="Call"
-          />
-
-    </TableRow>
 
     <TableRow
         android:layout_weight="0.5"
