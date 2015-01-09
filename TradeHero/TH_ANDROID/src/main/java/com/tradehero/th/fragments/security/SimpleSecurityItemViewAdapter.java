@@ -1,9 +1,18 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityIntegerId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
@@ -27,5 +36,42 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
     @Override public Filter getFilter()
     {
         return filterToUse;
+    }
+
+    public void updatePrices(@NonNull Context context, @NonNull List<? extends QuoteDTO> quotes)
+    {
+        Map<SecurityIntegerId, QuoteDTO> map = new HashMap<>();
+        for (QuoteDTO quote : quotes)
+        {
+            map.put(quote.getSecurityIntegerId(), quote);
+        }
+        updatePrices(map);
+    }
+
+    public void updatePrices(@NonNull Map<SecurityIntegerId, ? extends QuoteDTO> quotes)
+    {
+        SecurityCompactDTO securityCompactDTO;
+        QuoteDTO quote;
+        if (getCount() > 0)
+        {
+            for (int index = 0; index < getCount(); index++)
+            {
+                securityCompactDTO = (SecurityCompactDTO)getItem(index);
+                quote = quotes.get(securityCompactDTO.getSecurityIntegerId());
+                if (quote != null)
+                {
+                    if (securityCompactDTO instanceof FxSecurityCompactDTO)
+                    {
+                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(quote.ask);
+                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(quote.bid);
+                    }
+                    else
+                    {
+                        securityCompactDTO.askPrice = quote.ask;
+                        securityCompactDTO.bidPrice = quote.bid;
+                    }
+                }
+            }
+        }
     }
 }

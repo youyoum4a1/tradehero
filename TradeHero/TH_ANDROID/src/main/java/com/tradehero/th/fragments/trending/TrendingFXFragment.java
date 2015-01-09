@@ -40,7 +40,7 @@ import timber.log.Timber;
 public class TrendingFXFragment extends TrendingBaseFragment
         implements WithTutorial
 {
-    private static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
+    public static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
