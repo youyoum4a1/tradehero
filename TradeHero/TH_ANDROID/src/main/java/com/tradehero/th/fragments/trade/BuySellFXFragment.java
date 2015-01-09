@@ -19,6 +19,7 @@ import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
@@ -135,7 +136,10 @@ public class BuySellFXFragment extends BuySellFragment
 
     private void showCloseDialog()
     {
-        if (closeUnits != 0 && quoteDTO != null && portfolioToBeClosed)
+        if (closeUnits != 0
+                && quoteDTO != null
+                && portfolioToBeClosed
+                && securityCompactDTO != null)
         {
             isTransactionTypeBuy = closeUnits < 0;
             showBuySellDialog(Math.abs(closeUnits));
@@ -417,6 +421,12 @@ public class BuySellFXFragment extends BuySellFragment
     @Override
     protected void conditionalDisplayPortfolioChanged(boolean isPortfolioChanged)
     {
+    }
+
+    @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    {
+        super.linkWith(securityCompactDTO, andDisplay);
+        showCloseDialog();
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
