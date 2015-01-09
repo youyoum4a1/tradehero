@@ -277,10 +277,13 @@ abstract public class BasePagedListRxFragment<
 
     protected void updateVisibilities()
     {
-        mProgress.setVisibility(isRequesting() ? View.VISIBLE : View.INVISIBLE);
+        if(mProgress != null && emptyContainer != null)
+        {
+            mProgress.setVisibility(isRequesting() ? View.VISIBLE : View.INVISIBLE);
 
-        boolean hasItems = (itemViewAdapter != null) && (itemViewAdapter.getCount() > 0);
-        emptyContainer.setVisibility(hasItems ? View.GONE : View.VISIBLE);
+            boolean hasItems = (itemViewAdapter != null) && (itemViewAdapter.getCount() > 0);
+            emptyContainer.setVisibility(hasItems ? View.GONE : View.VISIBLE);
+        }
     }
 
     protected FlagNearEdgeScrollListener createFlagNearEdgeScrollListener()
