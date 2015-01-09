@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ public class QuickPriceButtonSet extends LinearLayout
         implements View.OnClickListener
 {
     private double maxPrice = Double.MAX_VALUE;
+    private boolean isPercent;
     @Nullable private QuickPriceButton currentSelected;
     @NonNull protected final BehaviorSubject<Double> priceSelectedSubject;
 
@@ -25,11 +27,36 @@ public class QuickPriceButtonSet extends LinearLayout
     public QuickPriceButtonSet(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init(context, attrs);
         this.priceSelectedSubject = BehaviorSubject.create();
     }
     //</editor-fold>
 
+    protected void init(@NonNull Context context, @NonNull AttributeSet attrs)
+    {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickPriceButtonSet);
+        setPercent(a.getBoolean(R.styleable.QuickPriceButtonSet_isPercent, false));
+        a.recycle();
+    }
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        propagatePercent();
+    }
+
     //<editor-fold desc="Accessors">
+    public boolean isPercent()
+    {
+        return isPercent;
+    }
+
+    public void setPercent(boolean isPercent)
+    {
+        this.isPercent = isPercent;
+        propagatePercent();
+    }
+
     @Override public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
@@ -89,11 +116,28 @@ public class QuickPriceButtonSet extends LinearLayout
         return found;
     }
 
+    protected void propagatePercent()
+    {
+        for (QuickPriceButton button : findButtons())
+        {
+            button.setPercent(isPercent);
+        }
+    }
+
     @Override public void onClick(@NonNull View view)
     {
         currentSelected = (QuickPriceButton) view;
         display();
-        priceSelectedSubject.onNext(((QuickPriceButton) view).getPrice());
+        double value;
+        if (isPercent)
+        {
+            value = ((QuickPriceButton) view).getPercentValue();
+        }
+        else
+        {
+            value = ((QuickPriceButton) view).getPrice();
+        }
+        priceSelectedSubject.onNext(value);
     }
 
     protected void display()

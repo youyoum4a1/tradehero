@@ -8,9 +8,11 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -197,6 +199,11 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         return d;
+    }
+
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -1008,6 +1015,14 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         if (quoteDTO == null)
         {
             // Nothing to do
+        }
+        else if (mQuickPriceButtonSet.isPercent())
+        {
+            Integer maxValue = getMaxValue();
+            if (maxValue != null)
+            {
+                linkWithQuantity((int) Math.floor(priceSelected * maxValue), true);
+            }
         }
         else
         {

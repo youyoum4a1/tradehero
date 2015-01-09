@@ -43,11 +43,6 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         mTransactionQuantity = getArguments().getInt(KEY_QUANTITY, 0);
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.fx_buy_sell_dialog, container, false);
-    }
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -57,6 +52,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
             mSeekBar.setEnabled(getArguments().getInt(KEY_QUANTITY, 0) > 0);
             mSeekBar.setProgress(getArguments().getInt(KEY_QUANTITY, 0));
         }
+        mQuickPriceButtonSet.setPercent(true);
     }
 
     @Override protected int getCashLeftLabelResId()
@@ -74,32 +70,5 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         {
             buttonSetCopy.setEnabled(isQuickButtonEnabled());
         }
-    }
-
-    @Override protected void handleQuickPriceSelected(double priceSelected)
-    {
-        float i = 1f;
-        switch ((int) priceSelected)
-        {
-            // TODO rework this seriously
-            case 5000:
-                i = 0.25f;
-                break;
-            case 10000:
-                i = 0.5f;
-                break;
-            case 25000:
-                i = 0.75f;
-                break;
-        }
-        Integer maxValue = getMaxValue();
-        if (quoteDTO != null && maxValue != null)
-        {
-            linkWithQuantity((int) Math.floor(i * maxValue), true);
-        }
-
-        Integer selectedQuantity = mTransactionQuantity;
-        mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
-        updateTransactionDialog();
     }
 }

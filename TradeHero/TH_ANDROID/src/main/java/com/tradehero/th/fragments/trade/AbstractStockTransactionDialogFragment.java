@@ -2,10 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -32,11 +28,6 @@ public abstract class AbstractStockTransactionDialogFragment extends AbstractTra
     protected AbstractStockTransactionDialogFragment()
     {
         super();
-    }
-
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
     }
 
     @Override protected int getCashLeftLabelResId()
