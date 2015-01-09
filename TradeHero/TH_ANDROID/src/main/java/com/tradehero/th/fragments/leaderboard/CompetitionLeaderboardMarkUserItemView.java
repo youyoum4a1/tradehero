@@ -88,55 +88,71 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         lbmuPeriod.setText(period);
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage
-                .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
-                .withSign()
-                .signTypeArrow()
-                .relevantDigitCount(3)
-                .build();
         String benchmarkRoiInPeriodFormat =
                 getContext().getString(R.string.leaderboard_benchmark_roi_format);
-        String benchmarkRoiInPeriod =
-                String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
-        lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
+        THSignedPercentage
+                .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
+                .withSign()
+                .skipDefaultColor()
+                .signTypeArrow()
+                .relevantDigitCount(3)
+                .format(benchmarkRoiInPeriodFormat)
+                .boldValue()
+                .build()
+                .into(lbmuBenchmarkRoi);
 
         // number of positions holding
         lbmuPositionsCount.setText("" + leaderboardItem.numberOfPositionsInPeriod);
 
         // number of trades
-        String numberOfTradeFormat = getContext().getString(
-                leaderboardItem.getNumberOfTrades() > 1
-                        ? R.string.leaderboard_number_of_trades_plural
-                        : R.string.leaderboard_number_of_trade);
-        String numberOfTrades =
-                String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
-        lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
+        String numberOfTradeFormat =
+                getContext().getResources().getQuantityString(R.plurals.leaderboard_number_of_trade, leaderboardItem.getNumberOfTrades());
+        THSignedNumber.builder(leaderboardItem.getNumberOfTrades())
+                .relevantDigitCount(1)
+                .skipDefaultColor()
+                .withOutSign()
+                .format(numberOfTradeFormat)
+                .boldValue()
+                .build()
+                .into(lbmuNumberOfTrades);
 
         // Number of trades in Period
         if (lbmuNumberTradesInPeriod != null)
         {
-            lbmuNumberTradesInPeriod.setText(THSignedNumber
+            THSignedNumber
                     .builder(leaderboardItem.numberOfTradesInPeriod)
-                    .build().toString());
+                    .skipDefaultColor()
+                    .build()
+                    .into(lbmuNumberTradesInPeriod);
         }
 
         // average days held
-        lbmuAvgDaysHeld.setText(THSignedNumber
+        THSignedNumber
                 .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
-                .build().toString());
-        lbmuWinRatio.setText(THSignedPercentage
+                .skipDefaultColor()
+                .build()
+                .into(lbmuAvgDaysHeld);
+
+        THSignedPercentage
                 .builder(leaderboardItem.getWinRatio() * 100)
                 .relevantDigitCount(3)
-                .build().toString());
+                .skipDefaultColor()
+                .build()
+                .into(lbmuWinRatio);
 
         // followers & comments count
-        lbmuFollowersCount.setText(THSignedNumber
+        THSignedNumber
                 .builder(leaderboardItem.getTotalFollowersCount())
-                .build().toString());
-        lbmuCommentsCount.setText(THSignedNumber
+                .skipDefaultColor()
+                .build()
+                .into(lbmuFollowersCount);
+
+        THSignedNumber
                 .builder(leaderboardItem.getCommentsCount())
-                .build().toString());
+                .skipDefaultColor()
+                .build()
+                .into(lbmuCommentsCount);
     }
 
     protected void displayLbmuPl()

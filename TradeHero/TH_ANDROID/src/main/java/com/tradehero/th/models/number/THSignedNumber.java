@@ -127,7 +127,7 @@ public class THSignedNumber
 
         public BuilderType withSignColor(@ColorRes int colorResId)
         {
-            if(colorResId > 0)
+            if (colorResId > 0)
             {
                 this.signColorResId = colorResId;
             }
@@ -136,7 +136,7 @@ public class THSignedNumber
 
         public BuilderType withValueColor(@ColorRes int colorResId)
         {
-            if(colorResId > 0)
+            if (colorResId > 0)
             {
                 valueColorResId = colorResId;
             }
@@ -241,7 +241,7 @@ public class THSignedNumber
         return formattedNumber;
     }
 
-    public void into(TextView textView)
+    public void into(@NonNull TextView textView)
     {
         if (useDefaultColor)
         {
@@ -250,7 +250,7 @@ public class THSignedNumber
 
         Spanned result = (Spanned) getCombinedSpan();
 
-        if(format != null)
+        if (format != null)
         {
             result = SpanFormatter.format(format, result);
         }

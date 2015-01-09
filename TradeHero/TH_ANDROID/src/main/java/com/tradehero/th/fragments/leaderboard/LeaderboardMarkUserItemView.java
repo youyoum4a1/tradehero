@@ -315,15 +315,17 @@ public class LeaderboardMarkUserItemView
                 .into(lbmuRoi);
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = THSignedPercentage
+        String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
+        THSignedPercentage
                 .builder(leaderboardItem.roiAnnualizedInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
-                .build();
-        String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
-        String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
-        lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
+                .skipDefaultColor()
+                .boldValue()
+                .format(roiAnnualizedFormat)
+                .build()
+                .into(lbmuRoiAnnualized);
     }
 
     protected String getLbmuPlCurrencyDisplay()

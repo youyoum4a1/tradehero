@@ -117,7 +117,7 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
     @OnClick(R.id.competition_own_ranking_info)
     public void onInfoButtonClicked()
     {
-        if(infoText.getVisibility() == View.GONE)
+        if (infoText.getVisibility() == View.GONE)
         {
             infoText.setVisibility(View.VISIBLE);
         }
@@ -135,10 +135,14 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
 
     private void updateNeededRanks()
     {
-        if(prizeDTOSize != 0 && this.getCurrentRank() != null && this.getCurrentRank() > prizeDTOSize)
+        if (prizeDTOSize != 0 && this.getCurrentRank() != null && this.getCurrentRank() > prizeDTOSize)
         {
             int needed = getCurrentRank() - prizeDTOSize;
-            infoText.setText(getContext().getString(R.string.leaderboard_ranks_needed, THSignedNumber.builder(needed).build().toString()));
+            THSignedNumber.builder(needed)
+                    .skipDefaultColor()
+                    .format(getContext().getString(R.string.leaderboard_ranks_needed))
+                    .build()
+                    .into(infoText);
             infoButtonContainer.setVisibility(View.VISIBLE);
         }
         else
