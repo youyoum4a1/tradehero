@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -15,8 +14,6 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
     protected static final String KEY_QUANTITY = AbstractFXTransactionDialogFragment.class.getName() + ".quantity";
-
-    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     public static AbstractFXTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
@@ -54,7 +51,6 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
         if (getArguments().getInt(KEY_QUANTITY, 0) > 0)
         {
             mSeekBar.setMax(getArguments().getInt(KEY_QUANTITY, 0));
@@ -76,39 +72,34 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
         if (buttonSetCopy != null)
         {
-            buttonSetCopy.setFX(true);
             buttonSetCopy.setEnabled(isQuickButtonEnabled());
-            buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
         }
     }
 
-    @Override
-    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
+    @Override protected void handleQuickPriceSelected(double priceSelected)
     {
-        return priceSelected -> {
-            float i = 1f;
-            switch ((int) priceSelected)
-            {
-                // TODO rework this seriously
-                case 5000:
-                    i = 0.25f;
-                    break;
-                case 10000:
-                    i = 0.5f;
-                    break;
-                case 25000:
-                    i = 0.75f;
-                    break;
-            }
-            Integer maxValue = getMaxValue();
-            if (quoteDTO != null && maxValue != null)
-            {
-                linkWithQuantity((int) Math.floor(i * maxValue), true);
-            }
+        float i = 1f;
+        switch ((int) priceSelected)
+        {
+            // TODO rework this seriously
+            case 5000:
+                i = 0.25f;
+                break;
+            case 10000:
+                i = 0.5f;
+                break;
+            case 25000:
+                i = 0.75f;
+                break;
+        }
+        Integer maxValue = getMaxValue();
+        if (quoteDTO != null && maxValue != null)
+        {
+            linkWithQuantity((int) Math.floor(i * maxValue), true);
+        }
 
-            Integer selectedQuantity = mTransactionQuantity;
-            mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
-            updateTransactionDialog();
-        };
+        Integer selectedQuantity = mTransactionQuantity;
+        mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
+        updateTransactionDialog();
     }
 }

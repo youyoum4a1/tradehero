@@ -11,19 +11,21 @@ import android.widget.LinearLayout;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class QuickPriceButtonSet extends LinearLayout
-    implements View.OnClickListener
+        implements View.OnClickListener
 {
-    @Nullable private OnQuickPriceButtonSelectedListener listener;
     private double maxPrice = Double.MAX_VALUE;
     @Nullable private QuickPriceButton currentSelected;
-    public boolean isFX;
+    @NonNull protected final BehaviorSubject<Double> priceSelectedSubject;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButtonSet(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        this.priceSelectedSubject = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -38,11 +40,6 @@ public class QuickPriceButtonSet extends LinearLayout
     {
         this.maxPrice = maxPrice;
         display();
-    }
-
-    public void setListener(@Nullable OnQuickPriceButtonSelectedListener listener)
-    {
-        this.listener = listener;
     }
     //</editor-fold>
 
@@ -64,7 +61,12 @@ public class QuickPriceButtonSet extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @NonNull public List<QuickPriceButton> findButtons()
+    @NonNull public Observable<Double> getPriceSelectedObservable()
+    {
+        return priceSelectedSubject.asObservable();
+    }
+
+    @NonNull protected List<QuickPriceButton> findButtons()
     {
         return findButtons(this);
     }
@@ -91,7 +93,7 @@ public class QuickPriceButtonSet extends LinearLayout
     {
         currentSelected = (QuickPriceButton) view;
         display();
-        notifyListener(((QuickPriceButton) view).getPrice());
+        priceSelectedSubject.onNext(((QuickPriceButton) view).getPrice());
     }
 
     protected void display()
@@ -99,27 +101,9 @@ public class QuickPriceButtonSet extends LinearLayout
         List<QuickPriceButton> buttons = findButtons();
         for (QuickPriceButton button : buttons)
         {
-            button.setEnabled(isEnabled() && (isFX || (button.getPrice() <= maxPrice)));
+            button.setEnabled(isEnabled() && button.getPrice() <= maxPrice);
             button.setSelected(button == currentSelected && button.isEnabled());
             button.setTextColor(button == currentSelected ? Color.BLACK : getResources().getColor(R.color.text_secondary));
         }
-    }
-
-    private void notifyListener(double price)
-    {
-        OnQuickPriceButtonSelectedListener listenerCopy = listener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onQuickPriceButtonSelected(price);
-        }
-    }
-
-    public interface OnQuickPriceButtonSelectedListener
-    {
-        public void onQuickPriceButtonSelected(double priceSelected);
-    }
-
-    public void setFX(boolean isFX) {
-        this.isFX = isFX;
     }
 }

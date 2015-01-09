@@ -90,6 +90,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @InjectView(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
 
     @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
+    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
     @InjectView(R.id.comments) protected TextView mCommentsEditText;
@@ -222,6 +223,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         super.onStart();
         initFetches();
+        attachQuickPriceButtonSet();
     }
 
     @Override public void onResume()
@@ -990,31 +992,40 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
+    protected void attachQuickPriceButtonSet()
     {
-        return priceSelected -> {
-            if (quoteDTO == null)
+        if (mQuickPriceButtonSet != null)
+        {
+            subscriptions.add(mQuickPriceButtonSet.getPriceSelectedObservable()
+                    .subscribe(
+                            this::handleQuickPriceSelected,
+                            error -> Timber.e(error, "")));
+        }
+    }
+
+    protected void handleQuickPriceSelected(double priceSelected)
+    {
+        if (quoteDTO == null)
+        {
+            // Nothing to do
+        }
+        else
+        {
+            Double priceRefCcy = getPriceCcy();
+            if (priceRefCcy == null || priceRefCcy == 0)
             {
                 // Nothing to do
             }
             else
             {
-                Double priceRefCcy = getPriceCcy();
-                if (priceRefCcy == null || priceRefCcy == 0)
-                {
-                    // Nothing to do
-                }
-                else
-                {
-                    linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
-                }
+                linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
             }
+        }
 
-            Integer selectedQuantity = mTransactionQuantity;
-            mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
-            updateTransactionDialog();
-            mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
-        };
+        Integer selectedQuantity = mTransactionQuantity;
+        mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
+        updateTransactionDialog();
+        mPriceSelectionMethod = AnalyticsConstants.MoneySelection;
     }
 
     protected class BuySellObserver implements Observer<SecurityPositionTransactionDTO>

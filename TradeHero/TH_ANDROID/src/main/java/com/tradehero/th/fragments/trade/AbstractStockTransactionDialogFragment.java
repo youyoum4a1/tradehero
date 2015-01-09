@@ -14,8 +14,6 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 
 public abstract class AbstractStockTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
-    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
-
     public static AbstractStockTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
             @NonNull PortfolioId portfolioId,
@@ -39,12 +37,6 @@ public abstract class AbstractStockTransactionDialogFragment extends AbstractTra
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
-    }
-
-    @Override public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
     }
 
     @Override protected int getCashLeftLabelResId()
