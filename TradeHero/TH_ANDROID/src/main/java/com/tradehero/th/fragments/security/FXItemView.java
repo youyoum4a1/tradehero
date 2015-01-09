@@ -91,7 +91,6 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
                 .enhanceWithColor(colorResId)
                 .expectedPrecision(precision)
                 .relevantDigitCount(SecurityCompactDTOUtil.DEFAULT_RELEVANT_DIGITS)
-                .skipDefaultColor()
                 .build()
                 .into(textView);
         if (colorResId != mDefaultTextColor)

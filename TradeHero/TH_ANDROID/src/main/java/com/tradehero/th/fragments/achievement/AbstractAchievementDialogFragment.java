@@ -437,7 +437,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign()
                 .format(getString(R.string.achievement_xp_earned_format))
-                .skipDefaultColor()
                 .build()
                 .into(xpEarned);
     }

@@ -134,7 +134,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             {
                 THSignedMoney.builder(userProfileDTO.portfolio.totalValue)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .skipDefaultColor()
                         .build()
                         .into(totalWealth);
             }
@@ -153,7 +152,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             {
                 THSignedMoney.builder(userProfileDTO.portfolio.getTotalExtraCash())
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .skipDefaultColor()
                         .build()
                         .into(additionalCash);
             }
@@ -172,7 +170,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             {
                 THSignedMoney.builder(userProfileDTO.portfolio.cashBalanceRefCcy)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .skipDefaultColor()
                         .build()
                         .into(cashOnHand);
             }

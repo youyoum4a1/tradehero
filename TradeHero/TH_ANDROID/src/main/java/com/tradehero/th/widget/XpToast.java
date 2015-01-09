@@ -199,7 +199,6 @@ public class XpToast extends RelativeLayout
             THSignedNumber.builder(value)
                     .relevantDigitCount(1)
                     .withOutSign()
-                    .skipDefaultColor()
                     .format(getContext().getString(R.string.achievement_xp_earned_format))
                     .build()
                     .into(xpValue);

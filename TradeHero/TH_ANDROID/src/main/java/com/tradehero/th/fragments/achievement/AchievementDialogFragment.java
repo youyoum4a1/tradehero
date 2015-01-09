@@ -107,7 +107,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 .signTypePlusMinusAlways()
                 .withSign()
                 .relevantDigitCount(1)
-                .skipDefaultColor()
                 .build()
                 .into(dollarEarned);
     }

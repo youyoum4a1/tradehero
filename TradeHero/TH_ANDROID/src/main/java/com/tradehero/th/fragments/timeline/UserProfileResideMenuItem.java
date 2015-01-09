@@ -27,7 +27,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
@@ -127,6 +126,7 @@ public class UserProfileResideMenuItem extends LinearLayout
             }
             THSignedPercentage
                     .builder(userProfileDTO.portfolio.roiSinceInception * 100)
+                    .withDefaultColor()
                     .build()
                     .into(userProfileRoi);
         }

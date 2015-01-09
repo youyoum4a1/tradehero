@@ -475,6 +475,7 @@ public class PositionPartialTopView extends LinearLayout
                     THSignedMoney.builder(PLR)
                             .currency(positionDTO.getNiceCurrency())
                             .withSign()
+                            .withDefaultColor()
                             .signTypeArrow()
                             .build()
                             .into(positionUnrealisedPL);

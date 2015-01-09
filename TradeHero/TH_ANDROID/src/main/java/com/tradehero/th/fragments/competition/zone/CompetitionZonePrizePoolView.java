@@ -104,7 +104,9 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
                 });
         currentPrizePool.setText(providerPrizePoolDTO.current);
         nextPrizePool.setText(getContext().getString(R.string.provider_prize_pool_new_players_need, providerPrizePoolDTO.extra));
-        THSignedNumber.builder(providerPrizePoolDTO.newPlayerNeeded).skipDefaultColor().build().into(playersNeeded);
+        THSignedNumber.builder(providerPrizePoolDTO.newPlayerNeeded)
+                .build()
+                .into(playersNeeded);
     }
 
     @SuppressWarnings("UnusedDeclaration")

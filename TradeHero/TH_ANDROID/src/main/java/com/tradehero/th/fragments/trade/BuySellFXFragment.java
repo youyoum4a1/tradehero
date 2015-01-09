@@ -241,8 +241,7 @@ public class BuySellFXFragment extends BuySellFragment
             if (share != null)
             {
                 THSignedNumber.Builder builder = THSignedNumber.builder(share)
-                        .withOutSign()
-                        .skipDefaultColor();
+                        .withOutSign();
                 if (share == 0)
                 {
                     tvPositionUnits.setText(getString(R.string.no_current_position_units));
@@ -264,6 +263,7 @@ public class BuySellFXFragment extends BuySellFragment
                     THSignedMoney.builder(unRealizedPLRefccy)
                             .currency(SecurityUtils.getDefaultCurrency())
                             .withSign()
+                            .withDefaultColor()
                             .signTypeArrow()
                             .build()
                             .into(tvPositionMoney);
@@ -319,7 +319,6 @@ public class BuySellFXFragment extends BuySellFragment
     {
         THSignedFXRate.builder(value)
                 .signTypeArrow()
-                .skipDefaultColor()
                 .withSignValue(diff)
                 .withSignColor(THColorUtils.getColorResourceIdForNumber(diff, DEFAULT_BUTTON_TEXT_COLOR))
                 .enhanceTo((int) (btn.getTextSize() + 15))

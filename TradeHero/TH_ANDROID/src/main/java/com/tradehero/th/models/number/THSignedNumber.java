@@ -55,7 +55,7 @@ public class THSignedNumber
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
-        public boolean useDefaultColor = USE_DEFAULT_COLOR;
+        public boolean useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
         @Nullable @ColorRes private Integer signColorResId;
         @Nullable @ColorRes private Integer valueColorResId;
         private boolean boldSign;
@@ -107,9 +107,9 @@ public class THSignedNumber
             return self();
         }
 
-        public BuilderType skipDefaultColor()
+        public BuilderType withDefaultColor()
         {
-            this.useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
+            this.useDefaultColor = USE_DEFAULT_COLOR;
             return self();
         }
 

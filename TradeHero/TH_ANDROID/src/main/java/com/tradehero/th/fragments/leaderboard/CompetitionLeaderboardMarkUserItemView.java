@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -93,7 +92,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         THSignedPercentage
                 .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
                 .withSign()
-                .skipDefaultColor()
                 .signTypeArrow()
                 .relevantDigitCount(3)
                 .format(benchmarkRoiInPeriodFormat)
@@ -109,7 +107,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
                 getContext().getResources().getQuantityString(R.plurals.leaderboard_number_of_trade, leaderboardItem.getNumberOfTrades());
         THSignedNumber.builder(leaderboardItem.getNumberOfTrades())
                 .relevantDigitCount(1)
-                .skipDefaultColor()
                 .withOutSign()
                 .format(numberOfTradeFormat)
                 .boldValue()
@@ -121,7 +118,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         {
             THSignedNumber
                     .builder(leaderboardItem.numberOfTradesInPeriod)
-                    .skipDefaultColor()
                     .build()
                     .into(lbmuNumberTradesInPeriod);
         }
@@ -130,27 +126,23 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         THSignedNumber
                 .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
-                .skipDefaultColor()
                 .build()
                 .into(lbmuAvgDaysHeld);
 
         THSignedPercentage
                 .builder(leaderboardItem.getWinRatio() * 100)
                 .relevantDigitCount(3)
-                .skipDefaultColor()
                 .build()
                 .into(lbmuWinRatio);
 
         // followers & comments count
         THSignedNumber
                 .builder(leaderboardItem.getTotalFollowersCount())
-                .skipDefaultColor()
                 .build()
                 .into(lbmuFollowersCount);
 
         THSignedNumber
                 .builder(leaderboardItem.getCommentsCount())
-                .skipDefaultColor()
                 .build()
                 .into(lbmuCommentsCount);
     }
@@ -163,7 +155,6 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
                     .builder(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
-                    .skipDefaultColor()
                     .build()
                     .into(lbmuPl);
         }

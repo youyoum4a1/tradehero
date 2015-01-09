@@ -295,6 +295,7 @@ public class PortfolioListItemView extends RelativeLayout
                 THSignedPercentage.builder(displayablePortfolioDTO.portfolioDTO.roiSinceInception * 100)
                         .withSign()
                         .signTypeArrow()
+                        .withDefaultColor()
                         .build()
                         .into(roiValue);
                 roiValue.setVisibility(VISIBLE);

@@ -14,7 +14,6 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 
 class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
@@ -124,6 +123,7 @@ class SelectableUserViewHolder implements DTOView<SelectableUserDTO>
                         .withSign()
                         .signTypeArrow()
                         .relevantDigitCount(3)
+                        .withDefaultColor()
                         .build()
                         .into(roiView);
             }

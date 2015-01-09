@@ -414,7 +414,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
         THSignedMoney.builder(alertDTO.targetPrice)
                 .withOutSign()
-                .skipDefaultColor()
                 .currency(securityCompactDTO.currencyDisplay)
                 .build()
                 .into(targetPrice);
@@ -473,7 +472,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THSignedMoney.builder(alertDTO.targetPrice)
                     .withOutSign()
-                    .skipDefaultColor()
                     .currency(securityCompactDTO.currencyDisplay)
                     .build()
                     .into(targetPrice);
@@ -482,7 +480,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         else
         {
             THSignedPercentage.builder(alertDTO.priceMovement * 100)
-                    .skipDefaultColor()
                     .build()
                     .into(targetPrice);
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
@@ -508,7 +505,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                 THSignedMoney.builder(securityCompactDTO.lastPrice)
                         .withOutSign()
                         .currency(securityCompactDTO.currencyDisplay)
-                        .skipDefaultColor()
                         .build()
                         .into(currentPrice);
             }
@@ -605,7 +601,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         {
             THSignedPercentage.builder((double) getSeekingMovementPercentage())
                     .withSign()
-                    .skipDefaultColor()
                     .format(getString(getPercentageChangeFormatResId()))
                     .boldValue()
                     .build()
@@ -624,7 +619,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                         .withOutSign()
                         .boldValue()
                         .currency(securityCompactDTO.currencyDisplay)
-                        .skipDefaultColor()
                         .boldValue()
                         .format(getString(getFormattedPercentageChangeTargetValue()))
                         .build()
@@ -684,7 +678,6 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             {
                 THSignedMoney.builder(seekingTargetPrice)
                         .withOutSign()
-                        .skipDefaultColor()
                         .currency(securityCompactDTO.currencyDisplay)
                         .boldValue()
                         .format(getString(getFormattedTargetPriceChange()))

@@ -139,7 +139,6 @@ public class CompetitionLeaderboardMarkUserOwnRankingView extends CompetitionLea
         {
             int needed = getCurrentRank() - prizeDTOSize;
             THSignedNumber.builder(needed)
-                    .skipDefaultColor()
                     .format(getContext().getString(R.string.leaderboard_ranks_needed))
                     .build()
                     .into(infoText);

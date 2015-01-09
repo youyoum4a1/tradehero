@@ -47,7 +47,6 @@ public class AlertEventItemView extends LinearLayout
         THSignedMoney
                 .builder(alertEventDTO.securityPrice)
                 .withOutSign()
-                .skipDefaultColor()
                 .build()
                 .into(eventName);
         eventDate.setText(getContext().getString(R.string.on, alertEventDTO.triggeredAt));

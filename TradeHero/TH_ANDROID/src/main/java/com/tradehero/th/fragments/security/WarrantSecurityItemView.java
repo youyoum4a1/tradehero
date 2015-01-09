@@ -90,7 +90,6 @@ public class WarrantSecurityItemView extends SecurityItemView
                 {
                     THSignedMoney.builder(warrantDTO.strikePrice)
                             .currency(warrantDTO.strikePriceCcy)
-                            .skipDefaultColor()
                             .build()
                             .into(combinedStrikePriceType);
                 }

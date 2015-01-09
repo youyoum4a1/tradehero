@@ -270,7 +270,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             THSignedMoney
                     .builder(alertDTO.targetPrice)
                     .withOutSign()
-                    .skipDefaultColor()
                     .build()
                     .into(targetPrice);
             targetPriceLabel.setText(getString(R.string.stock_alert_target_price));
@@ -279,7 +278,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         {
             THSignedPercentage
                     .builder(alertDTO.priceMovement * 100)
-                    .skipDefaultColor()
                     .build()
                     .into(targetPrice);
             targetPriceLabel.setText(getString(R.string.stock_alert_percentage_movement));
@@ -291,7 +289,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         THSignedMoney
                 .builder(alertDTO.security.lastPrice)
                 .withOutSign()
-                .skipDefaultColor()
                 .build()
                 .into(currentPrice);
     }

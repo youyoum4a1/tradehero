@@ -130,6 +130,7 @@ public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeader
                     THSignedMoney.builder(portfolioCompactDTO.unrealizedPLRefCcy)
                             .currency(portfolioCompactDTO.getNiceCurrency())
                             .withOutSign()
+                            .withDefaultColor()
                             .build()
                             .into(unrealisedPl);
                 }

@@ -87,7 +87,6 @@ public class AlertItemView extends RelativeLayout
         {
             THSignedPercentage.builder(alertCompactDTO.priceMovement * 100)
                     .boldValue()
-                    .skipDefaultColor()
                     .format(getContext().getString(R.string.stock_alert_when_price_move))
                     .build()
                     .into(alertDescription);
@@ -96,7 +95,6 @@ public class AlertItemView extends RelativeLayout
         {
             THSignedNumber.Builder builder = THSignedMoney.builder(alertCompactDTO.targetPrice)
                     .withOutSign()
-                    .skipDefaultColor()
                     .boldCurrency()
                     .boldValue();
             if (alertCompactDTO.upOrDown) // up

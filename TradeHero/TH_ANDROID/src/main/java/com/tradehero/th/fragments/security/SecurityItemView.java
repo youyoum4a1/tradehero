@@ -234,6 +234,7 @@ public class SecurityItemView extends RelativeLayout
                         .withCurrencyColor(R.color.exchange_symbol)
                         .withSignValue(securityCompactDTO.pc50DMA)
                         .currency(securityCompactDTO.currencyDisplay)
+                        .withDefaultColor()
                         .boldValue()
                         .build()
                         .into(lastPrice);
