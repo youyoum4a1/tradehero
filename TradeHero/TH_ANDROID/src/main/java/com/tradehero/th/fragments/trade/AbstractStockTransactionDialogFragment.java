@@ -41,10 +41,18 @@ public abstract class AbstractStockTransactionDialogFragment extends AbstractTra
         return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
     }
 
-    protected void initViews()
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.initViews();
+        super.onViewCreated(view, savedInstanceState);
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+    }
+
+    @Override protected int getCashLeftLabelResId()
+    {
+        Boolean isClosing = isClosingPosition();
+        return isClosing != null && isClosing
+                ? R.string.buy_sell_share_left
+                : R.string.buy_sell_cash_left;
     }
 
     public void displayQuickPriceButtonSet()

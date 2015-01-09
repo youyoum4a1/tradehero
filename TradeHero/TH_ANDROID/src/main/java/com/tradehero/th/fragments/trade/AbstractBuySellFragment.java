@@ -16,6 +16,7 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -76,6 +77,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
 
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    @Nullable protected PositionDTOCompact positionDTOCompact;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     @Nullable private Subscription userProfileSubscription;
     @Nullable protected UserProfileDTO userProfileDTO;
@@ -334,6 +336,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
     {
         this.positionDTOCompactList = positionDTOCompacts;
+        selectPositionDTO();
     }
 
     public void linkWith(final UserProfileDTO userProfileDTO, boolean andDisplay)
@@ -344,6 +347,15 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
         this.portfolioCompactDTO = portfolioCompactDTO;
+        selectPositionDTO();
+    }
+
+    protected void selectPositionDTO()
+    {
+        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        {
+            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(position -> position.portfolioId == portfolioCompactDTO.id);
+        }
     }
 
     protected void clampBuyQuantity(boolean andDisplay)
@@ -370,7 +382,8 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         return portfolioCompactDTOUtil.getMaxPurchasableShares(
                 this.portfolioCompactDTO,
-                this.quoteDTO);
+                this.quoteDTO,
+                this.positionDTOCompact);
     }
 
     protected void clampSellQuantity(boolean andDisplay)
@@ -393,16 +406,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         return Math.min(candidate, maxSellable);
     }
 
-    public Integer getMaxSellableShares()
+    @Nullable public Integer getMaxSellableShares()
     {
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && positionDTOCompactList != null)
-        {
-            return positionDTOCompactList.getMaxSellableShares(
-                    this.quoteDTO,
-                    this.portfolioCompactDTO);
-        }
-        return 0;
+        return portfolioCompactDTOUtil.getMaxSellableShares(
+                this.portfolioCompactDTO,
+                this.quoteDTO,
+                this.positionDTOCompact);
     }
 
     public Double getUnRealizedPLRefCcy()

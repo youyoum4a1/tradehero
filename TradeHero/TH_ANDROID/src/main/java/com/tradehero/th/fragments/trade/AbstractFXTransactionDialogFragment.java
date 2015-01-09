@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,13 +48,12 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        // TODO FX
         return inflater.inflate(R.layout.fx_buy_sell_dialog, container, false);
     }
 
-    protected void initViews()
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        super.initViews();
+        super.onViewCreated(view, savedInstanceState);
         mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
         if (getArguments().getInt(KEY_QUANTITY, 0) > 0)
         {
@@ -63,6 +61,14 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
             mSeekBar.setEnabled(getArguments().getInt(KEY_QUANTITY, 0) > 0);
             mSeekBar.setProgress(getArguments().getInt(KEY_QUANTITY, 0));
         }
+    }
+
+    @Override protected int getCashLeftLabelResId()
+    {
+        Boolean isClosing = isClosingPosition();
+        return isClosing != null && isClosing
+                ? R.string.buy_sell_fx_quantity_left
+                : R.string.buy_sell_fx_cash_left;
     }
 
     public void displayQuickPriceButtonSet()
@@ -74,15 +80,6 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
             buttonSetCopy.setEnabled(isQuickButtonEnabled());
             buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
         }
-    }
-
-    @Nullable
-    public Integer getMaxSellableShares()
-    {
-        return positionDTOCompactList == null ? null :
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
     }
 
     @Override

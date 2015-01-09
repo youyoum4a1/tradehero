@@ -214,17 +214,6 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    @Override public Integer getMaxSellableShares()
-    {
-        if (positionDTOCompactList != null)
-        {
-            return positionDTOCompactList.getMaxSellableShares(
-                    this.quoteDTO,
-                    this.portfolioCompactDTO);
-        }
-        return positionIsNull ? 0 : null;
-    }
-
     @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
     {
         super.linkWith(positionDTOCompacts, andDisplay);

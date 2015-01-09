@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Pair;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.billing.ProductPurchase;
@@ -30,6 +30,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioId;
+import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
@@ -38,7 +39,6 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractor;
@@ -72,7 +72,7 @@ import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
@@ -116,6 +116,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected ProgressDialog mTransactionDialog;
 
+    @NonNull protected SubscriptionList subscriptions;
     protected Subscription buySellSubscription;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
@@ -124,7 +125,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     protected QuoteDTO quoteDTO;
     protected Integer mTransactionQuantity = 0;
+    @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
+    @Nullable protected PositionDTOCompact positionDTOCompact;
     protected boolean showProfitLossUsd = true; // false will show in RefCcy
 
     protected BuySellTransactionListener buySellTransactionListener;
@@ -156,6 +159,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     protected AbstractTransactionDialogFragment()
     {
         super();
+        subscriptions = new SubscriptionList();
     }
 
     protected SecurityId getSecurityId()
@@ -197,8 +201,27 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        init();
-        initViews();
+        mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
+        mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
+        mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
+        mQuantityEditText.setOnEditorActionListener((textView, i, keyEvent) -> false);
+
+        mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
+
+        mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
+
+        mBtnAddCash.setOnClickListener(ignored -> {
+            DeviceUtil.dismissKeyboard(mCommentsEditText);
+            handleBtnAddCashPressed();
+        });
+
+        displayAddCashButton();
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        initFetches();
     }
 
     @Override public void onResume()
@@ -220,6 +243,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onDetach();
     }
 
+    @Override public void onStop()
+    {
+        subscriptions.unsubscribe();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
@@ -228,6 +257,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         destroyTransactionDialog();
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
@@ -240,107 +270,127 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onDestroy();
     }
 
-    private void init()
+    //<editor-fold desc="Fetches">
+    private void initFetches()
     {
-        AndroidObservable.bindFragment(this, securityCompactCache.get(getSecurityId()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                    }
-
-                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                    {
-                        securityCompactDTO = pair.second;
-                        initSecurityRelatedInfo();
-                    }
-                });
-        AndroidObservable.bindFragment(this, portfolioCompactCache.get(getPortfolioId()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Pair<PortfolioId, PortfolioCompactDTO>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                    }
-
-                    @Override public void onNext(Pair<PortfolioId, PortfolioCompactDTO> pair)
-                    {
-                        portfolioCompactDTO = pair.second;
-                        initPortfolioRelatedInfo();
-                    }
-                });
+        fetchSecurityCompact();
+        fetchPortfolioCompact();
         quoteDTO = getBundledQuoteDTO();
         fetchQuote();
-
-        AndroidObservable.bindFragment(this, securityPositionDetailCache.get()
-                .get(this.securityId))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Pair<SecurityId, SecurityPositionDetailDTO>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                        Timber.d("on completed");
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        Timber.e(e, "error");
-                    }
-
-                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> securityIdSecurityPositionDetailDTOPair)
-                    {
-                        positionDTOCompactList = securityIdSecurityPositionDetailDTOPair.second.positions;
-                        clampQuantity(true);
-                        mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
-                    }
-                });
+        fetchSecurityPositionDetail();
     }
 
-    private void fetchQuote() {
-        AndroidObservable.bindFragment(
+    private void fetchSecurityCompact()
+    {
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                securityCompactCache.get(getSecurityId())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        error -> {
+                        }));
+    }
+
+    protected void linkWith(SecurityCompactDTO securityCompactDTO)
+    {
+        this.securityCompactDTO = securityCompactDTO;
+        initSecurityRelatedInfo();
+    }
+
+    private void fetchPortfolioCompact()
+    {
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                portfolioCompactCache.get(getPortfolioId())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        error -> {
+                        }));
+    }
+
+    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
+    {
+        this.portfolioCompactDTO = portfolioCompactDTO;
+        setPositionDTO();
+        initPortfolioRelatedInfo();
+    }
+
+    private void fetchQuote()
+    {
+        subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
                 .subscribe(
-                        quoteDTO -> linkWith(quoteDTO),
-                        toastOnErrorAction);
+                        this::linkWith,
+                        toastOnErrorAction));
     }
 
     protected void linkWith(QuoteDTO quoteDTO)
     {
         this.quoteDTO = quoteDTO;
         initSecurityRelatedInfo();
+        initPortfolioRelatedInfo();
         updateProfitLoss();
         updateTransactionDialog();
+        displayCashShareLabel();
     }
 
-    protected void initViews()
+    private void fetchSecurityPositionDetail()
     {
-        mQuantityEditText.setText(String.valueOf(mTransactionQuantity));
-        mQuantityEditText.addTextChangedListener(getQuantityTextChangeListener());
-        mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
-        mQuantityEditText.setOnEditorActionListener((textView, i, keyEvent) -> false);
-
-        mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
-
-        mSeekBar.setOnSeekBarChangeListener(createSeekBarListener());
-
-        mBtnAddCash.setOnClickListener(view -> {
-            DeviceUtil.dismissKeyboard(mCommentsEditText);
-            handleBtnAddCashPressed();
-        });
-
-        displayAddCashButton();
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                securityPositionDetailCache.get()
+                        .get(this.securityId)
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        toastOnErrorAction));
     }
+
+    protected void linkWith(SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        this.securityPositionDetailDTO = securityPositionDetailDTO;
+        this.positionDTOCompactList = securityPositionDetailDTO.positions;
+        setPositionDTO();
+        initPortfolioRelatedInfo();
+        clampQuantity(true);
+        displayCashShareLabel();
+    }
+
+    protected void fetchPortfolioCompactList()
+    {
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                portfolioCompactListCache.get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        error -> {
+                            Timber.e(error, "Failed fetching the list of porfolios");
+                            THToast.show(R.string.error_fetch_portfolio_list_info);
+                        }));
+    }
+
+    protected void linkWith(PortfolioCompactDTOList value)
+    {
+        this.portfolioCompactDTOs = value;
+        portfolioCompactDTO = value.findFirstWhere(portfolioCompactDTO1 -> portfolioCompactDTO1.getPortfolioId().equals(getPortfolioId()));
+        updateTransactionDialog();
+        displayAddCashButton();
+        displayCashShareLabel();
+    }
+
+    protected void setPositionDTO()
+    {
+        if (positionDTOCompactList != null && portfolioCompactDTO != null)
+        {
+            this.positionDTOCompact = positionDTOCompactList.findFirstWhere(position -> position.portfolioId == portfolioCompactDTO.id);
+        }
+    }
+    //</editor-fold>
 
     private void initSecurityRelatedInfo()
     {
@@ -367,6 +417,14 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         }
         displayQuickPriceButtonSet();
         updateTransactionDialog();
+    }
+
+    protected void displayCashShareLabel()
+    {
+        if (mCashShareLeftLabelTextView != null)
+        {
+            mCashShareLeftLabelTextView.setText(getCashLeftLabelResId());
+        }
     }
 
     protected abstract void displayQuickPriceButtonSet();
@@ -403,6 +461,143 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         return mStockPriceTextView.getText().toString();
     }
 
+    @Nullable abstract protected Boolean isClosingPosition();
+
+    @Nullable protected Integer getMaxPurchasableShares()
+    {
+        if (securityPositionDetailDTO == null)
+        {
+            // This means we have incomplete information
+            return null;
+        }
+        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+                portfolioCompactDTO,
+                quoteDTO,
+                positionDTOCompact);
+    }
+
+    @Nullable protected Integer getMaxSellableShares()
+    {
+        if (securityPositionDetailDTO == null)
+        {
+            // This means we have incomplete information
+            return null;
+        }
+        return portfolioCompactDTOUtil.getMaxSellableShares(
+                portfolioCompactDTO,
+                quoteDTO,
+                positionDTOCompact);
+    }
+
+    @Nullable protected Double getRemainingForPurchaseInPortfolioRefCcy()
+    {
+        QuoteDTO quoteInPortfolioCcy = portfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
+        if (quoteInPortfolioCcy != null
+                && quoteInPortfolioCcy.ask != null
+                && portfolioCompactDTO != null)
+        {
+            double available = portfolioCompactDTO.getUsableForTransactionRefCcy();
+            double value = mTransactionQuantity * quoteInPortfolioCcy.ask;
+            return available - value;
+        }
+        return null;
+    }
+
+    @Nullable protected Double getRemainingForShortingInPortfolioRefCcy()
+    {
+        QuoteDTO quoteInPortfolioCcy = portfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
+        if (quoteInPortfolioCcy != null
+                && quoteInPortfolioCcy.bid != null
+                && portfolioCompactDTO != null)
+        {
+            double available = portfolioCompactDTO.getUsableForTransactionRefCcy();
+            double value = mTransactionQuantity * quoteInPortfolioCcy.bid;
+            return available - value;
+        }
+        return null;
+    }
+
+    @NonNull public String getRemainingWhenBuy()
+    {
+        String cashLeftText = null;
+        Boolean isClosing = isClosingPosition();
+        if (isClosing != null && isClosing)
+        {
+            Integer maxPurchasableShares = getMaxPurchasableShares();
+            if (maxPurchasableShares != null && maxPurchasableShares != 0)
+            {
+                cashLeftText = THSignedNumber.builder(maxPurchasableShares - mTransactionQuantity)
+                        .relevantDigitCount(1)
+                        .withOutSign()
+                        .build().toString();
+            }
+        }
+        else if (isClosing != null)
+        {
+            Double remaining = getRemainingForPurchaseInPortfolioRefCcy();
+            if (remaining != null && portfolioCompactDTO != null)
+            {
+                if (portfolioCompactDTO.leverage != null && portfolioCompactDTO.leverage != 0)
+                {
+                    remaining /= portfolioCompactDTO.leverage;
+                }
+                THSignedNumber thSignedNumber = THSignedMoney
+                        .builder(remaining)
+                        .withOutSign()
+                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .build();
+                cashLeftText = thSignedNumber.toString();
+            }
+        }
+
+        if (cashLeftText == null)
+        {
+            cashLeftText = getResources().getString(R.string.na);
+        }
+
+        return cashLeftText;
+    }
+
+    @NonNull public String getRemainingWhenSell()
+    {
+        String shareLeftText = null;
+        Boolean isClosing = isClosingPosition();
+        if (isClosing != null && isClosing)
+        {
+            Integer maxSellableShares = getMaxSellableShares();
+            if (maxSellableShares != null && maxSellableShares != 0)
+            {
+                shareLeftText = THSignedNumber.builder(maxSellableShares - mTransactionQuantity)
+                        .relevantDigitCount(1)
+                        .withOutSign()
+                        .build().toString();
+            }
+        }
+        else if (isClosing != null)
+        {
+            Double remaining = getRemainingForShortingInPortfolioRefCcy();
+            if (remaining != null && portfolioCompactDTO != null)
+            {
+                if (portfolioCompactDTO.leverage != null && portfolioCompactDTO.leverage != 0)
+                {
+                    remaining /= portfolioCompactDTO.leverage;
+                }
+                THSignedNumber thSignedNumber = THSignedMoney
+                        .builder(remaining)
+                        .withOutSign()
+                        .currency(portfolioCompactDTO.currencyDisplay)
+                        .build();
+                shareLeftText = thSignedNumber.toString();
+            }
+        }
+
+        if (shareLeftText == null)
+        {
+            shareLeftText = getResources().getString(R.string.na);
+        }
+        return shareLeftText;
+    }
+
     public String getTradeValueText()
     {
         String valueText = "-";
@@ -434,21 +629,21 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.vquantity)
-    public void onQuantityClicked(/*View v*/)
+    public void onQuantityClicked(View v)
     {
         mPriceSelectionMethod = AnalyticsConstants.ManualQuantityInput;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.dialog_btn_cancel)
-    public void onCancelClicked(/*View v*/)
+    public void onCancelClicked(View v)
     {
         getDialog().dismiss();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.dialog_btn_confirm)
-    public void onConfirmClicked(/*View v*/)
+    public void onConfirmClicked(View v)
     {
         updateConfirmButton(true);
         saveShareSettings();
@@ -456,52 +651,14 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         launchBuySell();
     }
 
-    @OnClick(R.id.comments) void onCommentAreaClicked(/*View commentTextBox*/)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.comments) void onCommentAreaClicked(View commentTextBox)
     {
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, securityId);
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
 
         getDialog().hide();
-    }
-
-    protected void fetchPortfolioCompactList()
-    {
-        AndroidObservable.bindFragment(this,
-                portfolioCompactListCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createPortfolioCompactListCacheObserver());
-    }
-
-    protected Observer<Pair<UserBaseKey, PortfolioCompactDTOList>> createPortfolioCompactListCacheObserver()
-    {
-        return new TransactionDialogPortfolioCompactListCacheObserver();
-    }
-
-    protected class TransactionDialogPortfolioCompactListCacheObserver implements Observer<Pair<UserBaseKey, PortfolioCompactDTOList>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed fetching the list of porfolios");
-            THToast.show(R.string.error_fetch_portfolio_list_info);
-        }
-    }
-
-    protected void linkWith(PortfolioCompactDTOList value)
-    {
-        this.portfolioCompactDTOs = value;
-        portfolioCompactDTO = value.findFirstWhere(portfolioCompactDTO1 -> portfolioCompactDTO1.getPortfolioId().equals(getPortfolioId()));
-        updateTransactionDialog();
-        displayAddCashButton();
     }
 
     public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -563,7 +720,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void updateProfitLoss()
     {
-        mProfitLossView.setVisibility(getProfitOrLossUsd()==null?View.GONE:View.VISIBLE);
+        mProfitLossView.setVisibility(getProfitOrLossUsd() == null ? View.GONE : View.VISIBLE);
         Double profitLoss = showProfitLossUsd ? getProfitOrLossUsd() : getProfitOrLossUsd();
         if (profitLoss != null && mTransactionQuantity != null && mTransactionQuantity > 0 && quoteDTO != null)
         {

@@ -95,9 +95,19 @@ public class PortfolioCompactDTO implements DTO
         return leverage != null && marginAvailableRefCcy != null && marginUsedRefCcy != null;
     }
 
+    @JsonIgnore public double getUsableForTransactionRefCcy()
+    {
+        if (usesMargin())
+        {
+            return marginAvailableRefCcy * leverage;
+        }
+        return cashBalanceRefCcy;
+    }
+
     @JsonIgnore public boolean isAllowedAddCash()
     {
-        return isDefault();
+        // TODO remove the usesMargin when the server is fixed to allow that
+        return isDefault() && !usesMargin();
     }
 
     @JsonIgnore public double getTotalExtraCash()
@@ -124,9 +134,9 @@ public class PortfolioCompactDTO implements DTO
         return Integer.valueOf(id).equals(other.id);
     }
 
-    @JsonIgnore public double getCashBalanceUsd()
+    @JsonIgnore public double getUsableForTransactionUsd()
     {
-        return cashBalanceRefCcy * getProperRefCcyToUsdRate();
+        return getUsableForTransactionRefCcy() * getProperRefCcyToUsdRate();
     }
 
     @JsonIgnore @NonNull public String getNiceCurrency()

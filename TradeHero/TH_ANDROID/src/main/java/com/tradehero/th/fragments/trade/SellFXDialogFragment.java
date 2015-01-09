@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -11,7 +12,6 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import timber.log.Timber;
 
 public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
 {
@@ -46,7 +46,8 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             return null;
         }
-        if(positionDTOCompactList.getMaxSellableShares(quoteDTO,portfolioCompactDTO).intValue() <= 0)
+        Integer maxSellableShares = getMaxSellableShares();
+        if(maxSellableShares == null || maxSellableShares <= 0)
         {
             return null;
         }
@@ -64,77 +65,26 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         return netProceedsUsd - totalSpentUsd;
     }
 
-    @Override protected int getCashLeftLabelResId()
+    @Override @Nullable protected Boolean isClosingPosition()
     {
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares == null || maxSellableShares <= 0)
+        if (securityPositionDetailDTO == null)
         {
-            return R.string.buy_sell_fx_cash_left;
+            // This means we have incomplete information
+            return null;
         }
-        else
-        {
-            return R.string.buy_sell_fx_quantity_left;
-        }
+        return positionDTOCompact != null
+                && positionDTOCompact.positionStatus != null
+                && positionDTOCompact.positionStatus.equals(PositionStatus.LONG);
     }
 
     @Override @NonNull public String getCashShareLeft()
     {
-        String shareLeftText = getResources().getString(R.string.na);
-        if (quoteDTO != null || portfolioCompactDTO != null)
-        {
-            Double priceRefCcy = getPriceCcy();
-            if (priceRefCcy != null && portfolioCompactDTO != null)
-            {
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null && maxSellableShares > 0)
-                {
-                    shareLeftText = THSignedNumber.builder(maxSellableShares - mTransactionQuantity)
-                            .relevantDigitCount(1)
-                            .withOutSign()
-                            .build().toString();
-                }
-                else
-                {
-                    double availableRefCcy;
-                    if (portfolioCompactDTO.marginAvailableRefCcy != null
-                            && portfolioCompactDTO.leverage != null)
-                    {
-                        availableRefCcy = portfolioCompactDTO.marginAvailableRefCcy * portfolioCompactDTO.leverage;
-                    }
-                    else
-                    {
-                        Timber.e(new IllegalStateException(), "Unable to proper collect leverage as FX, %s", portfolioCompactDTO);
-                        availableRefCcy = portfolioCompactDTO.cashBalanceRefCcy;
-                    }
-
-                    if (priceRefCcy != null)
-                    {
-                        double value = mTransactionQuantity * priceRefCcy;
-                        THSignedNumber thSignedNumber = THSignedMoney
-                                .builder((availableRefCcy - value)/portfolioCompactDTO.leverage)
-                                .withOutSign()
-                                .currency(portfolioCompactDTO.currencyDisplay)
-                                .build();
-                        shareLeftText = thSignedNumber.toString();
-                    }
-                }
-            }
-        }
-        return shareLeftText;
+        return getRemainingWhenSell();
     }
 
     @Override @Nullable protected Integer getMaxValue()
     {
-        if (/*positionDTOCompactList == null ||*/ quoteDTO == null || portfolioCompactDTO == null)
-        {
-            return null;
-        }
-        Integer maxSellableShares = getMaxSellableShares();
-        if (maxSellableShares == null || maxSellableShares <= 0)
-        {
-            return getMaxPurchasableShares();
-        }
-        return maxSellableShares;
+        return getMaxSellableShares();
     }
 
     @Override protected boolean hasValidInfo()
@@ -198,12 +148,5 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             mConfirm.setEnabled(hasValidInfo() && mTransactionQuantity != 0);
         }
-    }
-
-    @Nullable public Integer getMaxPurchasableShares()
-    {
-        return portfolioCompactDTOUtil.getMaxPurchasableSharesForFX(
-                portfolioCompactDTO,
-                quoteDTO, false);
     }
 }
