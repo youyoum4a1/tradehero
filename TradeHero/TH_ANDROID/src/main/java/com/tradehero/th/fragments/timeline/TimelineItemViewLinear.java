@@ -116,11 +116,18 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     protected void openTimelineDiscussion()
     {
-        if (discussionKey != null)
+        try
         {
-            Bundle args = new Bundle();
-            TimelineDiscussionFragment.putDiscussionKey(args, discussionKey.getDiscussionKey());
-            getNavigator().pushFragment(TimelineDiscussionFragment.class, args);
+            if (discussionKey != null)
+            {
+                Bundle args = new Bundle();
+                TimelineDiscussionFragment.putDiscussionKey(args, discussionKey.getDiscussionKey());
+                getNavigator().pushFragment(TimelineDiscussionFragment.class, args);
+            }
+        }
+        catch (java.lang.ClassCastException e)
+        {
+
         }
     }
 
