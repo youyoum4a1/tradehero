@@ -51,6 +51,12 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         return inflater.inflate(R.layout.achievement_dialog_fragment, container, false);
     }
 
+    @Override protected void init()
+    {
+        super.init();
+        reportAnalytics(userAchievementDTO);
+    }
+
     @Override protected void initView()
     {
         super.initView();
@@ -122,8 +128,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 achievementProgressIndicator.setAchievementDef(pair.second.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
                 achievementProgressIndicator.animateCurrentLevel();
             }
-
-            reportAnalytics(userAchievementDTOCopy);
         }
 
         @Override public void onCompleted()
