@@ -18,6 +18,7 @@ import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
 import java.util.Collections;
@@ -103,7 +104,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     private void displayDollarsEarned(float dollars)
     {
         THSignedMoney.builder(dollars)
-                .currency("TH$")
+                .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_BONUS_CURRENCY_DISPLAY)
                 .signTypePlusMinusAlways()
                 .withSign()
                 .relevantDigitCount(1)
