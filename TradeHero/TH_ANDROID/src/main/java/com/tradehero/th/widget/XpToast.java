@@ -196,8 +196,13 @@ public class XpToast extends RelativeLayout
     {
         if (xpValue != null)
         {
-            xpValue.setText(getContext().getString(R.string.achievement_xp_earned_format,
-                    THSignedNumber.builder(value).relevantDigitCount(1).withOutSign().build().toString()));
+            THSignedNumber.builder(value)
+                    .relevantDigitCount(1)
+                    .withOutSign()
+                    .skipDefaultColor()
+                    .format(getContext().getString(R.string.achievement_xp_earned_format))
+                    .build()
+                    .into(xpValue);
         }
     }
 
@@ -312,7 +317,6 @@ public class XpToast extends RelativeLayout
             isLevelDefError = true;
             cleanUp();
             hideAndReleaseFlag();
-
         }
     }
 

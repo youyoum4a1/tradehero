@@ -159,12 +159,13 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney
+            THSignedMoney
                     .builder(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
-                    .build();
-            lbmuPl.setText(formattedNumber.toString());
+                    .skipDefaultColor()
+                    .build()
+                    .into(lbmuPl);
         }
     }
 
