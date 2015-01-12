@@ -335,32 +335,40 @@ abstract public class BasePagedListRxFragment<
 
         @Override public void onCompleted()
         {
-            pagedSubscriptions.remove(key.getPage());
+            if(pagedSubscriptions!=null)
+            {
+                pagedSubscriptions.remove(key.getPage());
+            }
         }
 
         @Override public void onError(Throwable error)
         {
-            pagedSubscriptions.remove(key.getPage());
-            nearEndScrollListener.lowerEndFlag();
+            if(pagedSubscriptions!=null && nearEndScrollListener!=null)
+            {
+                pagedSubscriptions.remove(key.getPage());
+                nearEndScrollListener.lowerEndFlag();
+            }
         }
     }
 
     protected void onNext(PagedDTOKeyType key, ContainerDTOType value)
     {
-        pagedDtos.put(key.getPage(), value.getList());
-        pagedSubscriptions.remove(key.getPage());
-
-        loadAdapterWithAvailableData();
-
-        nearEndScrollListener.lowerEndFlag();
-        if (value.size() == 0)
+        if(pagedSubscriptions!=null && nearEndScrollListener!=null)
         {
-            nearEndScrollListener.deactivateEnd();
-            if (key.getPage() == FIRST_PAGE)
+            pagedDtos.put(key.getPage(), value.getList());
+            pagedSubscriptions.remove(key.getPage());
+
+            loadAdapterWithAvailableData();
+            nearEndScrollListener.lowerEndFlag();
+            if (value.size() == 0)
             {
-                itemViewAdapter.setNotifyOnChange(false);
-                itemViewAdapter.clear();
-                itemViewAdapter.notifyDataSetChanged();
+                nearEndScrollListener.deactivateEnd();
+                if (key.getPage() == FIRST_PAGE)
+                {
+                    itemViewAdapter.setNotifyOnChange(false);
+                    itemViewAdapter.clear();
+                    itemViewAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
