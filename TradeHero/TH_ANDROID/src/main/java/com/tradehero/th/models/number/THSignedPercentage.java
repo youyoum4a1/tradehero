@@ -1,6 +1,8 @@
 package com.tradehero.th.models.number;
 
 import android.support.annotation.NonNull;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
@@ -50,9 +52,8 @@ public class THSignedPercentage extends THSignedNumber
     }
     //</editor-fold>
 
-    @Override protected CharSequence getCombinedSpan()
+    @Override protected String createPlainNumber()
     {
-        return TextUtils.concat(getSpannedSign(), getSpannedValue(),
-                THApp.getResourceString(R.string.percentage_suffix));
+        return super.createPlainNumber() + THApp.getResourceString(R.string.percentage_suffix);
     }
 }

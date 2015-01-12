@@ -29,6 +29,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.THColorUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
@@ -85,7 +86,7 @@ public class UserProfileResideMenuItem extends LinearLayout
 
     private void fetchAndDisplayUserProfile()
     {
-        if (userProfileSubscription == null)
+        if (!isInEditMode() && userProfileSubscription == null)
         {
             userProfileSubscription = userProfileCache.get().get(currentUserId.toUserBaseKey())
             .observeOn(AndroidSchedulers.mainThread())
@@ -126,7 +127,8 @@ public class UserProfileResideMenuItem extends LinearLayout
             }
             THSignedPercentage
                     .builder(userProfileDTO.portfolio.roiSinceInception * 100)
-                    .withDefaultColor()
+                    .format(getContext().getString(R.string.user_profile_roi))
+                    .withValueColor(THColorUtils.getColorResourceIdForNumber(userProfileDTO.portfolio.roiSinceInception * 100, R.color.text_primary_inverse))
                     .build()
                     .into(userProfileRoi);
         }

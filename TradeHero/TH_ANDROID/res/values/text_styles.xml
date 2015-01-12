@@ -225,6 +225,10 @@
     <item name="android:textStyle">bold</item>
   </style>
 
+  <style name="TH.UserROI.Inverse" parent="TH.Body">
+    <item name="android:textColor">@color/text_primary_inverse</item>
+  </style>
+
   <style name="UserProfile.Contained.Value" parent="TH.Title.Accented">
     <item name="android:textStyle">bold</item>
   </style>
