@@ -22,7 +22,7 @@
   <string name="warrant_price_header">ราคา</string>
   <string name="warrant_code_header">รหัส</string>
   <string name="warrant_strike_header">ราคาใช้สิทธิ</string>
-  <string name="warrant_expiry_header">หมดอายุ</string>
+  <string name="warrant_expiry_header">วันซื้อขายสุดท้าย</string>
   <string name="warrant_info_header_warrant_data">ข้อมูลวอร์แรนท์</string>
   <string name="warrant_info_type">ประเภท</string>
   <string name="warrant_info_code">รหัส</string>

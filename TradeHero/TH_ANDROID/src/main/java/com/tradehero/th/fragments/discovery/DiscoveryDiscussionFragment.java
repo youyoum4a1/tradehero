@@ -143,10 +143,10 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private void subscribes()
     {
-        timelineSubscriptions.clear();
+        timelineSubscriptions = new CompositeSubscription();
 
         PublishSubject<List<TimelineItemDTO>> timelineSubject = PublishSubject.create();
-        timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
+        timelineSubscriptions.add(timelineSubject.subscribe(creatRefreshCompleteObserver()));
         timelineSubscriptions.add(timelineSubject.subscribe(discoveryDiscussionAdapter::setItems));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
@@ -181,6 +181,13 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
+    }
+
+    private RefreshCompleteObserver refreshCompleteObserver;
+    private RefreshCompleteObserver creatRefreshCompleteObserver()
+    {
+        if(refreshCompleteObserver!=null)return refreshCompleteObserver;
+        return refreshCompleteObserver = new RefreshCompleteObserver();
     }
 
     private class RefreshCompleteObserver implements Observer<List<TimelineItemDTO>>
