@@ -25,8 +25,9 @@
   <string name="position_expanded_close_opened_date_header">先前持仓</string>
   <string name="position_expanded_close_closed_date_header">平仓</string>
   <string name="position_expanded_close_period_header">持有时间</string>
-  <string name="position_period_held_day_singular">%d 日</string>
-  <string name="position_period_held_day_plural">%d 日</string>
+  <plurals name="position_period_held_day">
+    <item quantity="other">%1%d 日</item>
+  </plurals>
   <string name="position_locked_follow_to_unlock">关注用户解锁!</string>
   <string name="position_locked_title">持仓</string>
   <string name="positions_in_period">周期内</string>

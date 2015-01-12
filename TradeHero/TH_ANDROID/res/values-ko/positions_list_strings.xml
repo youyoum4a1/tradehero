@@ -23,9 +23,9 @@
   <string name="position_expanded_close_opened_date_header">거래시작</string>
   <string name="position_expanded_close_closed_date_header">거래 종료</string>
   <string name="position_expanded_close_period_header">보유기간</string>
-  <string name="position_period_held_day_singular">%d일</string>
-  <string name="position_period_held_day_plural">%d일</string>
-
+  <plurals name="position_period_held_day">
+    <item quantity="other">%1%d 일</item>
+  </plurals>
   <string name="position_locked_follow_to_unlock">다음단계로 넘어가려면 팔로우하세요!</string>
   <string name="position_locked_title">보유종목</string>
 
