@@ -237,7 +237,10 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         }
         else if (o instanceof NewsItemCompactDTO)
         {
-            NewsDiscussionFragment.putSecuritySymbol(bundle, ((NewsItemCompactDTO) o).topReferencedSecurity.getExchangeSymbol());
+            if(((NewsItemCompactDTO) o).topReferencedSecurity!=null)
+            {
+                NewsDiscussionFragment.putSecuritySymbol(bundle, ((NewsItemCompactDTO) o).topReferencedSecurity.getExchangeSymbol());
+            }
             NewsDiscussionFragment.putDiscussionKey(bundle, ((AbstractDiscussionCompactDTO) o).getDiscussionKey());
             navigator.get().pushFragment(NewsDiscussionFragment.class, bundle);
         }
