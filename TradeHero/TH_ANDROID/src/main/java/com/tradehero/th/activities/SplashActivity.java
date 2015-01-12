@@ -2,7 +2,6 @@ package com.tradehero.th.activities;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import com.appsflyer.AppsFlyerLib;
 import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
@@ -18,6 +17,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MetricsModule;
+import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
@@ -30,6 +30,7 @@ public class SplashActivity extends BaseActivity
 
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
+    @Inject THAppsFlyer thAppsFlyer;
     @Inject Analytics analytics;
     @Inject @AuthHeader String authToken;
 
@@ -60,8 +61,8 @@ public class SplashActivity extends BaseActivity
         mobileAppTracker.setReferralSources(this);
         mobileAppTracker.measureSession();
 
-        AppsFlyerLib.setAppsFlyerKey(MetricsModule.APP_FLYER_KEY);
-        AppsFlyerLib.sendTracking(getApplicationContext());
+        thAppsFlyer.setAppsFlyerKey(MetricsModule.APP_FLYER_KEY);
+        thAppsFlyer.sendTracking(getApplicationContext());
 
         if (!Constants.RELEASE)
         {

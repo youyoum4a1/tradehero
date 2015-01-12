@@ -1,0 +1,31 @@
+package com.tradehero.th.utils.metrics;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import com.appsflyer.AppsFlyerLib;
+import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
+import dagger.Module;
+import dagger.Provides;
+
+@Module(
+        library = true,
+        complete = false
+)
+public class MetricsFlavorModule
+{
+    @Provides public THAppsFlyer provideTHAppsFlyer(Context context)
+    {
+        return new THAppsFlyer()
+        {
+            @Override public void setAppsFlyerKey(@NonNull String key)
+            {
+                AppsFlyerLib.setAppsFlyerKey(key);
+            }
+
+            @Override public void sendTracking(@NonNull Context applicationContext)
+            {
+                AppsFlyerLib.sendTracking(applicationContext);
+            }
+        };
+    }
+}
