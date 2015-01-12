@@ -36,24 +36,38 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         SecurityItemView>
         implements HasSelectedItem
 {
+    private static final String BUNDLE_KEY_ASSET_CLASS = SecuritySearchProviderFragment.class.getName() + ".assetClass";
+
     @Inject SecurityCompactListCacheRx securityCompactListCache;
     @Inject Analytics analytics;
     @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
-    public AssetClass assetClass = AssetClass.STOCKS;
+    @NonNull protected AssetClass assetClass;
+
+    public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
+    {
+        args.putInt(BUNDLE_KEY_ASSET_CLASS, assetClass.getValue());
+    }
+
+    @NonNull protected static AssetClass getAssetClass(@NonNull Bundle args)
+    {
+        AssetClass retrieved = AssetClass.create(args.getInt(BUNDLE_KEY_ASSET_CLASS, AssetClass.STOCKS.getValue()));
+        if (retrieved == null)
+        {
+            retrieved = AssetClass.STOCKS;
+        }
+        return retrieved;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        assetClass = getAssetClass(getArguments());
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
-        if(this instanceof SecuritySearchProviderFragment)
-        {
-            assetClass =((SecuritySearchProviderFragment)this).assetClass;
-        }
-        else
-        {
-            assetClass = AssetClass.STOCKS;
-        }
 
         switch (assetClass)
         {
@@ -77,7 +91,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     {
         super.onPrepareOptionsMenu(menu);
 
-        if (mSearchTextField != null && assetClass != null)
+        if (mSearchTextField != null)
         {
             switch (assetClass)
             {
@@ -92,8 +106,6 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
                     break;
             }
         }
-
-
     }
     //</editor-fold>
 
