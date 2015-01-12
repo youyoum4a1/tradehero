@@ -94,7 +94,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
         displayTitle();
-        inflater.inflate(R.menu.provider_security_list_menu, menu);
+    }
+
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        getActivity().getMenuInflater().inflate(R.menu.provider_security_list_menu, menu);
 
         wizardButton = menu.findItem(R.id.btn_wizard);
         if (wizardButton != null)
@@ -171,6 +176,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.providerDTO = providerDTO;
 
         getActivity().invalidateOptionsMenu();
+        getActivity().supportInvalidateOptionsMenu();
 
         if (andDisplay)
         {
@@ -227,7 +233,14 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        SecuritySearchProviderFragment.putAssetClass(args, AssetClass.FX);
+        if(providerDTO != null && providerDTO.associatedPortfolio. assetClass != null)
+        {
+            SecuritySearchProviderFragment.putAssetClass(args, providerDTO.associatedPortfolio.assetClass);
+        }
+        else
+        {
+            SecuritySearchProviderFragment.putAssetClass(args, AssetClass.STOCKS);
+        }
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
