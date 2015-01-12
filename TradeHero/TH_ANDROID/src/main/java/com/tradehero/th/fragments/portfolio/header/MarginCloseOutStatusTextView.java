@@ -14,7 +14,7 @@ import com.tradehero.th.api.portfolio.MarginCloseOutState;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedNumber;
+
 import java.util.HashMap;
 import javax.inject.Inject;
 
@@ -69,11 +69,10 @@ public class MarginCloseOutStatusTextView extends TextView
                     getResources(),
                     portfolioCompactDTO.marginCloseOutPercent);
 
+            double margin = keepTwoDecimals(portfolioCompactDTO.marginCloseOutPercent);
             setText(getResources().getString(
-                    closeOutState.labelResId,
-                    THSignedNumber.builder(portfolioCompactDTO.marginCloseOutPercent)
-                            .relevantDigitCount(2)
-                            .build().toString()));
+                    closeOutState.labelResId, margin
+            ));
 
             ObjectAnimator animator = getOrCreateMarginCloseOutPulsator(this, closeOutState);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
@@ -90,6 +89,14 @@ public class MarginCloseOutStatusTextView extends TextView
             setVisibility(GONE);
         }
     }
+
+    private double keepTwoDecimals(Double number){
+        if(number==null){
+            return 0;
+        }
+        return Math.floor(number*100d)/100;
+    }
+
 
     @NonNull private ObjectAnimator getOrCreateMarginCloseOutPulsator(
             @NonNull View view,
