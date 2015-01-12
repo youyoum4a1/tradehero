@@ -57,6 +57,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/position_list_bottom_in_period_container"
+      android:stretchColumns="1"
       >
 
     <TableRow
