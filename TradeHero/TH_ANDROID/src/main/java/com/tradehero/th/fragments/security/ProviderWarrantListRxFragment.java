@@ -74,7 +74,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        SecuritySearchProviderFragment.putProviderType(args, AssetClass.WARRANT);
+        SecuritySearchProviderFragment.putAssetClass(args, AssetClass.WARRANT);
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {

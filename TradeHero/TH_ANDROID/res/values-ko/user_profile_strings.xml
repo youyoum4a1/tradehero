@@ -22,7 +22,7 @@
   <string name="user_profile_first_name">이름</string>
   <string name="user_profile_last_name">성</string>
 
-  <string name="user_profile_roi">"수익률: "</string>
+  <string name="user_profile_roi">수익률: %1$s</string>
   <string name="user_profile_member_since">회원가입 기간 </string>
   <string name="user_profile_trade_profit">트레이드히어로에서 발생한 수익</string>
   <string name="user_profile_total_wealth">총 자산</string>

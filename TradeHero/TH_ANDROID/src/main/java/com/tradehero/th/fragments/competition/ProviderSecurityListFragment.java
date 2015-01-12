@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -56,6 +57,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     private BaseWebViewFragment webViewFragment;
 
     private MenuItem wizardButton;
+    @NonNull protected SubscriptionList subscriptions;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -79,6 +81,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             this.providerId = getProviderId(getArguments());
         }
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
+        this.subscriptions = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -91,12 +94,20 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
         displayTitle();
-        inflater.inflate(R.menu.provider_security_list_menu, menu);
+    }
 
-        wizardButton = menu.findItem(R.id.btn_wizard);
-        if (wizardButton != null)
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        if(providerDTO != null)
         {
-            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
+            getActivity().getMenuInflater().inflate(R.menu.provider_security_list_menu, menu);
+
+            wizardButton = menu.findItem(R.id.btn_wizard);
+            if (wizardButton != null)
+            {
+                wizardButton.setVisible(providerDTO.hasWizard());
+            }
         }
     }
 
@@ -133,6 +144,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.webViewFragment = null;
     }
 
+    @Override public void onStop()
+    {
+        subscriptions.unsubscribe();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         DeviceUtil.dismissKeyboard(getActivity());
@@ -147,9 +164,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected void fetchProviderDTO()
     {
-        AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(createProviderCacheObserver());
+        subscriptions.add(AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProviderCacheObserver()));
     }
 
     protected void prepareSecurityLoader()
@@ -162,6 +179,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.providerDTO = providerDTO;
 
         getActivity().invalidateOptionsMenu();
+        getActivity().supportInvalidateOptionsMenu();
 
         if (andDisplay)
         {
@@ -218,7 +236,14 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        SecuritySearchProviderFragment.putProviderType(args, AssetClass.FX);
+        if(providerDTO != null && providerDTO.associatedPortfolio. assetClass != null)
+        {
+            SecuritySearchProviderFragment.putAssetClass(args, providerDTO.associatedPortfolio.assetClass);
+        }
+        else
+        {
+            SecuritySearchProviderFragment.putAssetClass(args, AssetClass.STOCKS);
+        }
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {

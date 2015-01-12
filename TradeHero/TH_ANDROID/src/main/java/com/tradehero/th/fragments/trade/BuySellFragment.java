@@ -188,7 +188,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         alertCompactListCacheSubscription = null;
         unsubscribe(portfolioChangedSubscription);
         portfolioChangedSubscription = null;
-        detachPortfolioMenuSubscription();
+        unsubscribe(portfolioMenuSubscription);
+        portfolioMenuSubscription = null;
         stopListeningToBuySellDialog();
 
         super.onStop();
@@ -210,7 +211,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioCacheSubscription = null;
         unsubscribe(alertCompactListCacheSubscription);
         alertCompactListCacheSubscription = null;
-        detachPortfolioMenuSubscription();
+        unsubscribe(portfolioMenuSubscription);
+        portfolioMenuSubscription = null;
     }
 
     @Override public void onDestroy()
@@ -374,7 +376,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     protected void fetchPortfolio(OwnedPortfolioId purchaseApplicablePortfolioId)
     {
-        unsubscribe(portfolioMenuSubscription);
+        unsubscribe(portfolioCacheSubscription);
         portfolioCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 portfolioObservable)
@@ -553,7 +555,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @OnClick(R.id.portfolio_selector_container)
     protected void showPortfolioSelector()
     {
-        detachPortfolioMenuSubscription();
+        unsubscribe(portfolioMenuSubscription);
         portfolioMenuSubscription = AndroidObservable.bindFragment(
                 this,
                 mSelectedPortfolioContainer.createMenuObservable())

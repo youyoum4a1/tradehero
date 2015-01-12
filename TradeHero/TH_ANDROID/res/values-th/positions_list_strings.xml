@@ -27,9 +27,9 @@
   <string name="position_expanded_close_opened_date_header">ซื้อเมื่อ</string>
   <string name="position_expanded_close_closed_date_header">ขายเมื่อ</string>
   <string name="position_expanded_close_period_header">ระยะเวลา</string>
-  <string name="position_period_held_day_singular">%d วัน</string>
-  <string name="position_period_held_day_plural">%d วัน</string>
-
+  <plurals name="position_period_held_day">
+    <item quantity="other">%1%d วัน</item>
+  </plurals>
   <string name="position_locked_follow_to_unlock">ติดตามผู้ใช้เพื่อปลดล็อค!</string>
   <string name="position_locked_title">สถานะเปิด</string>
 

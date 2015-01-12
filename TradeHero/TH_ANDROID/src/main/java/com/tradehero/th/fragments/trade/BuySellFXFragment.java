@@ -18,6 +18,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.PositionDTOCompactList;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
@@ -54,9 +55,6 @@ public class BuySellFXFragment extends BuySellFragment
     public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
     public final static long MILLISEC_FX_QUOTE_REFRESH = 5000;
     public final static long MILLISEC_FX_CANDLE_CHART_REFRESH = 60000;
-    public final static long TIME_SECOND_DURATION = 5 * 1000;
-
-    private long timeStart;
 
     private static int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
 
@@ -70,14 +68,13 @@ public class BuySellFXFragment extends BuySellFragment
     @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
     @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
 
-    @InjectView(R.id.llPositionStatus) protected LinearLayout llPositionStatus;
-    @InjectView(R.id.tvPositionUnits) protected TextView tvPositionUnits;
-    @InjectView(R.id.tvPositionMoney) protected TextView tvPositionMoney;
+    @InjectView(R.id.ll_position_status) protected LinearLayout llPositionStatus;
+    @InjectView(R.id.tv_position_units) protected TextView tvPositionUnits;
+    @InjectView(R.id.tv_position_money) protected TextView tvPositionMoney;
 
     @NonNull private SubscriptionList subscriptionList;
     private int closeUnits;
     private boolean portfolioToBeClosed = false;
-    private boolean positionIsNull = false;
     private QuoteDTO oldQuoteDTO;
 
     public static void putCloseAttribute(@NonNull Bundle args, int units)
@@ -109,7 +106,6 @@ public class BuySellFXFragment extends BuySellFragment
         initTimeSpanButton();
         addDefaultFXPortfolio();
         closeUnits = getCloseAttribute(getArguments());
-        timeStart = System.currentTimeMillis();
     }
 
     private void addDefaultFXPortfolio()
@@ -158,7 +154,6 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onStop()
     {
         subscriptionList.unsubscribe();
-        positionIsNull = false;
         super.onStop();
     }
 
@@ -221,51 +216,52 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
     {
         super.linkWith(positionDTOCompacts, andDisplay);
-        if (positionDTOCompacts == null)
-        {
-            positionIsNull = true;
-        }
         displayPositionStatus();
     }
 
     public void displayPositionStatus()
     {
-        if (!isValidTimer() && positionDTOCompactList == null)
+        if (securityPositionDetailDTO == null)
         {
+            // Not enough info
             return;
         }
-        Integer share = getMaxSellableShares();
-        Double unRealizedPLRefccy = getUnRealizedPLRefCcy();
 
         if (llPositionStatus != null)
         {
-            llPositionStatus.setVisibility((share == null) ? View.GONE : View.VISIBLE);
-
-            tvPositionMoney.setVisibility((share == null || share == 0) ? View.GONE : View.VISIBLE);
-            if (share != null)
+            boolean toShow = positionDTOCompact != null
+                    && positionDTOCompact.shares != null
+                    && positionDTOCompact.positionStatus != null;
+            llPositionStatus.setVisibility(toShow ? View.VISIBLE : View.GONE);
+            if (toShow)
             {
-                THSignedNumber.Builder builder = THSignedNumber.builder(share)
+                THSignedNumber.Builder builder = THSignedNumber.builder(positionDTOCompact.shares)
                         .withOutSign();
-                if (share == 0)
+                if (positionDTOCompact.shares == 0)
                 {
                     tvPositionUnits.setText(getString(R.string.no_current_position_units));
                 }
-                else if (share > 0)
-                {
-                    builder.format(getString(R.string.long_position_units))
-                            .build()
-                            .into(tvPositionUnits);
-                }
                 else
                 {
-                    builder.format(getString(R.string.short_position_units))
-                            .build()
-                            .into(tvPositionUnits);
+                    if (positionDTOCompact.positionStatus.equals(PositionStatus.LONG))
+                    {
+                        builder.format(getString(R.string.long_position_units));
+                    }
+                    else if (positionDTOCompact.positionStatus.equals(PositionStatus.SHORT))
+                    {
+                        builder.format(getString(R.string.short_position_units));
+                    }
+                    builder.build().into(tvPositionUnits);
                 }
-                if (unRealizedPLRefccy != null)
+
+                Double unRealizedPLRefCcy = getUnRealizedPLRefCcy();
+
+                if (unRealizedPLRefCcy != null)
                 {
-                    THSignedMoney.builder(unRealizedPLRefccy)
-                            .currency(SecurityUtils.getDefaultCurrency())
+                    THSignedMoney.builder(unRealizedPLRefCcy)
+                            .currency(portfolioCompactDTO == null
+                                    ? SecurityUtils.getDefaultCurrency()
+                                    : portfolioCompactDTO.getNiceCurrency())
                             .withSign()
                             .withDefaultColor()
                             .signTypeArrow()
@@ -435,10 +431,5 @@ public class BuySellFXFragment extends BuySellFragment
         super.linkWith(quoteDTO, andDisplay);
         showCloseDialog();
         displayPositionStatus();
-    }
-
-    private boolean isValidTimer()
-    {
-        return System.currentTimeMillis() > (timeStart + TIME_SECOND_DURATION);
     }
 }

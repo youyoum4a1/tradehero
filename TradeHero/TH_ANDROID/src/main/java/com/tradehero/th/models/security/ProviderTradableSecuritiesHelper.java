@@ -1,6 +1,8 @@
 package com.tradehero.th.models.security;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -16,13 +18,18 @@ public class ProviderTradableSecuritiesHelper
 {
     private DashboardNavigator navigator;
 
+    //<editor-fold desc="Constructors">
     @Inject ProviderTradableSecuritiesHelper(DashboardNavigator navigator)
     {
         this.navigator = navigator;
     }
+    //</editor-fold>
 
-    public void pushTradableSecuritiesList(Bundle args, OwnedPortfolioId ownedPortfolioId, PortfolioCompactDTO portfolioCompactDTO,
-            ProviderId providerId)
+    public void pushTradableSecuritiesList(
+            @NonNull Bundle args,
+            @Nullable OwnedPortfolioId ownedPortfolioId,
+            @NonNull PortfolioCompactDTO portfolioCompactDTO,
+            @NonNull ProviderId providerId)
     {
         ProviderSecurityListFragment.putProviderId(args, providerId);
         if (ownedPortfolioId != null)

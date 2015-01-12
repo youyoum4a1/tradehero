@@ -14,6 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.THColorUtils;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class THSignedNumber
@@ -29,6 +30,8 @@ public class THSignedNumber
     public static final boolean WITHOUT_SIGN = false;
     public static final boolean USE_DEFAULT_COLOR = true;
     public static final boolean DO_NOT_USE_DEFAULT_COLOR = false;
+    private static String DECIMAL_SEPARATOR = String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator());
+    private static String THOUSAND_SEPARATOR = String.valueOf(DecimalFormatSymbols.getInstance().getGroupingSeparator());
     //</editor-fold>
 
     private final boolean withSign;
@@ -319,7 +322,7 @@ public class THSignedNumber
 
     public static String removeTrailingZeros(@NonNull String formattedNumber)
     {
-        if (formattedNumber.contains("."))
+        if (formattedNumber.contains(DECIMAL_SEPARATOR))
         {
             int length = formattedNumber.length();
             do
@@ -330,7 +333,7 @@ public class THSignedNumber
 
             formattedNumber = formattedNumber.substring(0, length + 1);
 
-            if (formattedNumber.endsWith("."))
+            if (formattedNumber.endsWith(DECIMAL_SEPARATOR))
             {
                 formattedNumber = formattedNumber.substring(0, length);
             }
@@ -341,10 +344,11 @@ public class THSignedNumber
     public static StringBuilder getStringFormat(int precision)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("#,###");
+        String toAppend = "#" + THOUSAND_SEPARATOR + "###";
+        sb.append(toAppend);
         if (precision > 0)
         {
-            sb.append('.');
+            sb.append(DECIMAL_SEPARATOR);
             for (int i = 0; i < precision; ++i)
             {
                 sb.append('#');

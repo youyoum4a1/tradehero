@@ -8,11 +8,9 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
@@ -56,7 +54,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
         {
             for (int index = 0; index < getCount(); index++)
             {
-                securityCompactDTO = (SecurityCompactDTO)getItem(index);
+                securityCompactDTO = (SecurityCompactDTO) getItem(index);
                 quote = quotes.get(securityCompactDTO.getSecurityIntegerId());
                 if (quote != null)
                 {

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class GenericArrayAdapter<T> extends BaseAdapter
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.layoutResourceId = layoutResourceId;
+        this.items = new ArrayList<>();
     }
 
     public void setItems(@NonNull List<T> items)

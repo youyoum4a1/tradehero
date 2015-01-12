@@ -328,24 +328,25 @@ public class PositionPartialTopView extends LinearLayout
         {
             if (securityCompactDTO instanceof FxSecurityCompactDTO)
             {
-                if (positionDTO != null && positionDTO.positionStatus == PositionStatus.CLOSED
-                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
+                if (positionDTO != null && (positionDTO.positionStatus == PositionStatus.CLOSED
+                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED))
                 {
                     shareCount.setVisibility(GONE);
                     return;
                 }
                 shareCount.setVisibility(VISIBLE);
-                String count;
                 if (positionDTO == null || positionDTO.shares == null)
                 {
-                    count = getResources().getString(R.string.na);
+                    shareCount.setText(R.string.na);
                 }
                 else
                 {
-                    count = THSignedNumber.builder(Math.abs(positionDTO.shares))
-                            .build().toString();
+                    String unitFormat = getResources().getQuantityString(R.plurals.position_unit_count, positionDTO.shares);
+                    THSignedNumber.builder(Math.abs(positionDTO.shares))
+                            .format(unitFormat)
+                            .build()
+                            .into(shareCount);
                 }
-                shareCount.setText(getResources().getString(R.string.position_unit_count, count));
             }
             else
             {
