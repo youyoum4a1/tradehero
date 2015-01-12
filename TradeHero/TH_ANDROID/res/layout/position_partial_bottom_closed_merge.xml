@@ -47,6 +47,7 @@
           style="@style/TH.InfoValue"
           tools:text="8.39%"
           />
+
     </RelativeLayout>
 
   </TableRow>

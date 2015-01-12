@@ -236,7 +236,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
-        if(providerDTO != null && providerDTO.associatedPortfolio. assetClass != null)
+        if(providerDTO != null
+                && providerDTO.associatedPortfolio != null
+                && providerDTO.associatedPortfolio.assetClass != null)
         {
             SecuritySearchProviderFragment.putAssetClass(args, providerDTO.associatedPortfolio.assetClass);
         }
