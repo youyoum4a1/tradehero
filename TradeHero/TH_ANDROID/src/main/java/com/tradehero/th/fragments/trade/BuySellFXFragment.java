@@ -34,12 +34,10 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.THColorUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
-import dagger.Lazy;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
@@ -58,7 +56,6 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
