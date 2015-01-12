@@ -99,12 +99,15 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     @Override public void onPrepareOptionsMenu(Menu menu)
     {
         super.onPrepareOptionsMenu(menu);
-        getActivity().getMenuInflater().inflate(R.menu.provider_security_list_menu, menu);
-
-        wizardButton = menu.findItem(R.id.btn_wizard);
-        if (wizardButton != null)
+        if(providerDTO != null)
         {
-            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
+            getActivity().getMenuInflater().inflate(R.menu.provider_security_list_menu, menu);
+
+            wizardButton = menu.findItem(R.id.btn_wizard);
+            if (wizardButton != null)
+            {
+                wizardButton.setVisible(providerDTO.hasWizard());
+            }
         }
     }
 
