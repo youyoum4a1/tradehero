@@ -158,11 +158,6 @@ public class NotificationsView extends BetterViewAnimator
 
     private void fetchNextPageIfNecessary()
     {
-        fetchNextPageIfNecessary(false);
-    }
-
-    public void fetchNextPageIfNecessary(boolean force)
-    {
         if (paginatedNotificationListKey == null)
         {
             paginatedNotificationListKey = new PaginatedNotificationListKey(notificationListKey, 1);
@@ -171,19 +166,24 @@ public class NotificationsView extends BetterViewAnimator
         if (nextPageDelta >= 0)
         {
             paginatedNotificationListKey = paginatedNotificationListKey.next(nextPageDelta);
+            nextPageDelta = -1;
             subscriptionList.add(notificationListCache.get()
                     .get(paginatedNotificationListKey)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .take(1)
                     .subscribe(createNotificationFetchObserver()));
         }
     }
 
     private void refresh()
     {
+        notificationListAdapter.clear();
+        notificationListAdapter.notifyDataSetChanged();
         PaginatedNotificationListKey firstPage = new PaginatedNotificationListKey(notificationListKey, 1);
         subscriptionList.add(notificationListCache.get()
                 .get(firstPage)
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(createNotificationFetchObserver()));
         requestUpdateTabCounter();
     }
@@ -240,8 +240,6 @@ public class NotificationsView extends BetterViewAnimator
     {
         @Override public void onNext(Pair<NotificationListKey, PaginatedNotificationDTO> pair)
         {
-            onFinish();
-
             if (pair.second != null)
             {
                 //TODO right?
@@ -251,6 +249,7 @@ public class NotificationsView extends BetterViewAnimator
                 notificationListAdapter.notifyDataSetChanged();
                 setReadAllLayoutVisible();
             }
+            onFinish();
         }
 
         @Override public void onCompleted()
@@ -272,7 +271,7 @@ public class NotificationsView extends BetterViewAnimator
 
             // a bit hacky here to identify whether the list is forced to be refreshed
             Integer currentPage = paginatedNotificationListKey.getPage();
-            if (currentPage == null || currentPage != 1)
+            if (currentPage == null || currentPage != 1 || notificationListAdapter.getCount() > 0)
             {
                 setNotificationListShow();
             }
