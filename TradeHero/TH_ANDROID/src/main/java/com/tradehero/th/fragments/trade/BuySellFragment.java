@@ -223,12 +223,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         super.onDestroy();
     }
 
-    private void detachPortfolioMenuSubscription()
-    {
-        unsubscribe(portfolioMenuSubscription);
-        portfolioMenuSubscription = null;
-    }
-
     private void stopListeningToBuySellDialog()
     {
         AbstractTransactionDialogFragment dialogCopy = abstractTransactionDialogFragment;
@@ -361,7 +355,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                     .map(pair -> pair.second)
                     .publish()
                     .refCount();
-            fetchPortfolio(purchaseApplicablePortfolioId);
+            fetchPortfolio();
             conditionalDisplayPortfolioChanged(purchaseApplicablePortfolioId);
         }
         else
@@ -374,7 +368,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected void fetchPortfolio(OwnedPortfolioId purchaseApplicablePortfolioId)
+    protected void fetchPortfolio()
     {
         unsubscribe(portfolioCacheSubscription);
         portfolioCacheSubscription = AndroidObservable.bindFragment(
@@ -758,12 +752,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         @Override public void onNext(PortfolioCompactDTOList list)
         {
             super.onNext(list);
-            PortfolioCompactDTO defaultPortfolio = list.getDefaultPortfolio();
-            if (defaultPortfolio != null)
-            {
-                mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
-            }
-            setInitialSellQuantityIfCan();
+            linkWith(list);
         }
     }
+
+    protected abstract void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs);
 }

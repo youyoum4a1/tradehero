@@ -26,6 +26,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
@@ -39,6 +41,7 @@ import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.models.graphics.ForSecurityItemBackground;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -177,6 +180,16 @@ public class BuySellStockFragment extends BuySellFragment
     @NonNull protected Observer<Pair<UserBaseKey, WatchlistPositionDTOList>> createUserWatchlistCacheObserver()
     {
         return new BuySellUserWatchlistCacheObserver();
+    }
+
+    protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        PortfolioCompactDTO defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
+        if (defaultPortfolio != null)
+        {
+            mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
+        }
+        setInitialSellQuantityIfCan();
     }
 
     protected class BuySellUserWatchlistCacheObserver

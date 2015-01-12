@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,16 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.fx.FXChartDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.PositionStatus;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
@@ -46,7 +45,6 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 
 @Routable("securityFx/:securityRawInfo")
 public class BuySellFXFragment extends BuySellFragment
@@ -74,7 +72,6 @@ public class BuySellFXFragment extends BuySellFragment
 
     @NonNull private SubscriptionList subscriptionList;
     private int closeUnits;
-    private boolean portfolioToBeClosed = false;
     private QuoteDTO oldQuoteDTO;
 
     public static void putCloseAttribute(@NonNull Bundle args, int units)
@@ -104,42 +101,17 @@ public class BuySellFXFragment extends BuySellFragment
         super.onViewCreated(view, savedInstanceState);
         fetchKChart(YahooTimeSpan.min1.code);
         initTimeSpanButton();
-        addDefaultFXPortfolio();
         closeUnits = getCloseAttribute(getArguments());
-    }
-
-    private void addDefaultFXPortfolio()
-    {
-        subscriptionList.add(AndroidObservable.bindFragment(this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
-                                new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(),
-                                        args.second.fxPortfolio));
-                        linkWith(args.second.fxPortfolio, true);
-                        if (args.second.fxPortfolio.id == mSelectedPortfolioContainer.getDefaultPortfolioId().portfolioId)
-                        {
-                            portfolioToBeClosed = true;
-                            showCloseDialog();
-                        }
-                    }
-                }));
     }
 
     private void showCloseDialog()
     {
         if (closeUnits != 0
                 && quoteDTO != null
-                && portfolioToBeClosed
                 && securityCompactDTO != null)
         {
             isTransactionTypeBuy = closeUnits < 0;
             showBuySellDialog(Math.abs(closeUnits));
-            portfolioToBeClosed = false;
             closeUnits = 0;
         }
     }
@@ -169,20 +141,19 @@ public class BuySellFXFragment extends BuySellFragment
         this.oldQuoteDTO = null;
     }
 
+    @Override public void linkWith(@NonNull SecurityPositionDetailDTO securityPositionDetailDTO)
+    {
+        super.linkWith(securityPositionDetailDTO);
+        displayPositionStatus();
+    }
+
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
     {
         if (portfolioCompactDTO.id == mSelectedPortfolioContainer.getCurrentMenu().portfolioId)
         {
             this.portfolioCompactDTO = portfolioCompactDTO;
         }
-        clampBuyQuantity(andDisplay);
-        clampSellQuantity(andDisplay);
-        if (andDisplay)
-        {
-            // TODO max purchasable shares
-            displayBuySellPrice();
-            displayBuySellSwitch();
-        }
+        super.linkWith(portfolioCompactDTO, andDisplay);
         marginCloseOutStatus.linkWith(portfolioCompactDTO);
         displayPositionStatus();
     }
@@ -376,6 +347,17 @@ public class BuySellFXFragment extends BuySellFragment
         return new TrendingFXHistoryFetchObserver();
     }
 
+    protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        PortfolioCompactDTO defaultFxPortfolio = portfolioCompactDTOs.getDefaultFxPortfolio();
+        if (defaultFxPortfolio != null)
+        {
+            mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultFxPortfolio));
+        }
+        setInitialSellQuantityIfCan();
+        showCloseDialog();
+    }
+
     protected class TrendingFXHistoryFetchObserver implements Observer<FXChartDTO>
     {
         @Override public void onNext(FXChartDTO fxChartDTO)
@@ -396,22 +378,8 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override protected void processPortfolioForProvider(ProviderDTO providerDTO)
     {
-        mSelectedPortfolioContainer.addMenuOwnedPortfolioIdforFX(
-                new MenuOwnedPortfolioId(
-                        currentUserId.toUserBaseKey(),
-                        providerDTO.associatedPortfolio));
-        linkWith(providerDTO.associatedPortfolio, true);
-        if (providerDTO.associatedPortfolio.id == mSelectedPortfolioContainer.getDefaultPortfolioId().portfolioId)
-        {
-            portfolioToBeClosed = true;
-            showCloseDialog();
-        }
-    }
-
-    @Override protected void softFetchPortfolioCompactList()
-    {
-        // Force a proper fetch
-        //        fetchPortfolioCompactList();
+        super.processPortfolioForProvider(providerDTO);
+        showCloseDialog();
     }
 
     @Override
