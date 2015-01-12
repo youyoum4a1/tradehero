@@ -74,7 +74,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         discoveryDiscussionAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.timeline_item_view);
-        timelineSubscriptions = new CompositeSubscription();
+//        timelineSubscriptions = new CompositeSubscription();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -146,7 +146,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         timelineSubscriptions = new CompositeSubscription();
 
         PublishSubject<List<TimelineItemDTO>> timelineSubject = PublishSubject.create();
-        timelineSubscriptions.add(timelineSubject.subscribe(creatRefreshCompleteObserver()));
+        timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
         timelineSubscriptions.add(timelineSubject.subscribe(discoveryDiscussionAdapter::setItems));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
@@ -174,6 +174,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         timelineSubscriptions.unsubscribe();
         rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
+        timelineSubscriptions = null;
         super.onDestroyView();
     }
 
@@ -181,13 +182,6 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         super.onAttach(activity);
         HierarchyInjector.inject(this);
-    }
-
-    private RefreshCompleteObserver refreshCompleteObserver;
-    private RefreshCompleteObserver creatRefreshCompleteObserver()
-    {
-        if(refreshCompleteObserver!=null)return refreshCompleteObserver;
-        return refreshCompleteObserver = new RefreshCompleteObserver();
     }
 
     private class RefreshCompleteObserver implements Observer<List<TimelineItemDTO>>
