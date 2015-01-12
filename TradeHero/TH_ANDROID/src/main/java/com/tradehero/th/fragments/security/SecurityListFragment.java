@@ -331,7 +331,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     protected void handleSecurityItemReceived(@Nullable SecurityCompactDTOList securityCompactDTOs)
     {
-        if (securityItemViewAdapter != null)
+        if (securityItemViewAdapter != null && securityCompactDTOs != null)
         {
             // It may have been nullified if coming out
             securityItemViewAdapter.setItems(securityCompactDTOs);
