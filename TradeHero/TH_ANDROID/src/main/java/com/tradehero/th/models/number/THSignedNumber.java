@@ -38,6 +38,7 @@ public class THSignedNumber
     private final int signType;
     private final Double value;
     private final int relevantDigitCount;
+    @ColorRes private final int fallbackColorResId;
     private String formattedNumber;
     @Nullable @ColorRes private Integer colorResId;
 
@@ -59,6 +60,7 @@ public class THSignedNumber
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
         public boolean useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
+        @ColorRes private Integer fallbackColorResId = R.color.text_primary;
         @Nullable @ColorRes private Integer signColorResId;
         @Nullable @ColorRes private Integer valueColorResId;
         private boolean boldSign;
@@ -114,6 +116,12 @@ public class THSignedNumber
         {
             this.useDefaultColor = USE_DEFAULT_COLOR;
             return self();
+        }
+
+        public BuilderType withFallbackColor(@ColorRes int fallbackColorResId)
+        {
+            this.fallbackColorResId = fallbackColorResId;
+            return self().withDefaultColor();
         }
 
         public BuilderType boldSign()
@@ -200,6 +208,7 @@ public class THSignedNumber
         this.useDefaultColor = builder.useDefaultColor;
         this.boldSign = builder.boldSign;
         this.boldValue = builder.boldValue;
+        this.fallbackColorResId = builder.fallbackColorResId;
         if (builder.signColorResId != null)
         {
             this.signColorResId = builder.signColorResId;
@@ -220,7 +229,7 @@ public class THSignedNumber
     {
         if (colorResId == null)
         {
-            colorResId = THColorUtils.getColorResourceIdForNumber(value);
+            colorResId = THColorUtils.getColorResourceIdForNumber(value, fallbackColorResId);
         }
         return colorResId;
     }
@@ -246,11 +255,6 @@ public class THSignedNumber
 
     public void into(@NonNull TextView textView)
     {
-        if (useDefaultColor)
-        {
-            textView.setTextColor(getColor());
-        }
-
         Spanned result = (Spanned) getCombinedSpan();
 
         if (format != null)
@@ -267,7 +271,7 @@ public class THSignedNumber
         {
             if (signValue != null && signColorResId == null && useDefaultColor)
             {
-                signColorResId = THColorUtils.getColorResourceIdForNumber(signValue);
+                signColorResId = THColorUtils.getColorResourceIdForNumber(signValue, fallbackColorResId);
             }
             signSpanBuilder = initSpanned(getConditionalSignPrefix(), boldSign, signColorResId);
         }
