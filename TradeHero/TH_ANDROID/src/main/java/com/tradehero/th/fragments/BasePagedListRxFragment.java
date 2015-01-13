@@ -277,7 +277,7 @@ abstract public class BasePagedListRxFragment<
 
     protected void updateVisibilities()
     {
-        if(mProgress != null && emptyContainer != null)
+        if (mProgress != null && emptyContainer != null)
         {
             mProgress.setVisibility(isRequesting() ? View.VISIBLE : View.INVISIBLE);
 
@@ -335,7 +335,7 @@ abstract public class BasePagedListRxFragment<
 
         @Override public void onCompleted()
         {
-            if(pagedSubscriptions!=null)
+            if (pagedSubscriptions != null)
             {
                 pagedSubscriptions.remove(key.getPage());
             }
@@ -343,7 +343,7 @@ abstract public class BasePagedListRxFragment<
 
         @Override public void onError(Throwable error)
         {
-            if(pagedSubscriptions!=null && nearEndScrollListener!=null)
+            if (pagedSubscriptions != null && nearEndScrollListener != null)
             {
                 pagedSubscriptions.remove(key.getPage());
                 nearEndScrollListener.lowerEndFlag();
@@ -353,7 +353,7 @@ abstract public class BasePagedListRxFragment<
 
     protected void onNext(PagedDTOKeyType key, ContainerDTOType value)
     {
-        if(pagedSubscriptions!=null && nearEndScrollListener!=null)
+        if (pagedSubscriptions != null && nearEndScrollListener != null)
         {
             pagedDtos.put(key.getPage(), value.getList());
             pagedSubscriptions.remove(key.getPage());
