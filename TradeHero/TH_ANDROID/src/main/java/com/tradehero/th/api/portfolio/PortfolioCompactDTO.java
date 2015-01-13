@@ -25,7 +25,8 @@ public class PortfolioCompactDTO implements DTO
     @JsonProperty("portfolioType")
     @Nullable public AssetClass assetClass;
 
-    public double cashBalance;
+    @JsonProperty("cashBalance")
+    public double cashBalanceRefCcy;
     public double totalValue;
     public double totalExtraCashPurchased;
     public double totalExtraCashGiven;
@@ -89,9 +90,24 @@ public class PortfolioCompactDTO implements DTO
         return assetClass != null && assetClass.equals(AssetClass.FX);
     }
 
+    @JsonIgnore public boolean usesMargin()
+    {
+        return leverage != null && marginAvailableRefCcy != null && marginUsedRefCcy != null;
+    }
+
+    @JsonIgnore public double getUsableForTransactionRefCcy()
+    {
+        if (usesMargin())
+        {
+            return marginAvailableRefCcy * leverage;
+        }
+        return cashBalanceRefCcy;
+    }
+
     @JsonIgnore public boolean isAllowedAddCash()
     {
-        return isDefault();
+        // TODO remove the usesMargin when the server is fixed to allow that
+        return isDefault() && !usesMargin();
     }
 
     @JsonIgnore public double getTotalExtraCash()
@@ -118,9 +134,9 @@ public class PortfolioCompactDTO implements DTO
         return Integer.valueOf(id).equals(other.id);
     }
 
-    @JsonIgnore public double getCashBalanceUsd()
+    @JsonIgnore public double getUsableForTransactionUsd()
     {
-        return cashBalance * getProperRefCcyToUsdRate();
+        return getUsableForTransactionRefCcy() * getProperRefCcyToUsdRate();
     }
 
     @JsonIgnore @NonNull public String getNiceCurrency()
@@ -145,7 +161,7 @@ public class PortfolioCompactDTO implements DTO
     @Override @NonNull public String toString()
     {
         return "[PortfolioCompactDTO " +
-                "cashBalance=" + cashBalance +
+                "cashBalanceRefCcy=" + cashBalanceRefCcy +
                 ", id=" + id +
                 ", providerId=" + providerId +
                 ", assetClass=" + assetClass +

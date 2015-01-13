@@ -2,11 +2,9 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -16,8 +14,6 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
     protected static final String KEY_QUANTITY = AbstractFXTransactionDialogFragment.class.getName() + ".quantity";
-
-    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
     public static AbstractFXTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
@@ -47,22 +43,24 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         mTransactionQuantity = getArguments().getInt(KEY_QUANTITY, 0);
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        // TODO FX
-        return inflater.inflate(R.layout.fx_buy_sell_dialog, container, false);
-    }
-
-    protected void initViews()
-    {
-        super.initViews();
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+        super.onViewCreated(view, savedInstanceState);
         if (getArguments().getInt(KEY_QUANTITY, 0) > 0)
         {
             mSeekBar.setMax(getArguments().getInt(KEY_QUANTITY, 0));
             mSeekBar.setEnabled(getArguments().getInt(KEY_QUANTITY, 0) > 0);
             mSeekBar.setProgress(getArguments().getInt(KEY_QUANTITY, 0));
         }
+        mQuickPriceButtonSet.setPercent(true);
+    }
+
+    @Override protected int getCashLeftLabelResId()
+    {
+        Boolean isClosing = isClosingPosition();
+        return isClosing != null && isClosing
+                ? R.string.buy_sell_fx_quantity_left
+                : R.string.buy_sell_fx_cash_left;
     }
 
     public void displayQuickPriceButtonSet()
@@ -70,48 +68,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
         QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
         if (buttonSetCopy != null)
         {
-            buttonSetCopy.setFX(true);
             buttonSetCopy.setEnabled(isQuickButtonEnabled());
-            buttonSetCopy.setMaxPrice(getQuickButtonMaxValue());
         }
-    }
-
-    @Nullable
-    public Integer getMaxSellableShares()
-    {
-        return positionDTOCompactList == null ? null :
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
-    }
-
-    @Override
-    protected QuickPriceButtonSet.OnQuickPriceButtonSelectedListener createQuickButtonSetListener()
-    {
-        return priceSelected -> {
-            float i = 1f;
-            switch ((int) priceSelected)
-            {
-                // TODO rework this seriously
-                case 5000:
-                    i = 0.25f;
-                    break;
-                case 10000:
-                    i = 0.5f;
-                    break;
-                case 25000:
-                    i = 0.75f;
-                    break;
-            }
-            Integer maxValue = getMaxValue();
-            if (quoteDTO != null && maxValue != null)
-            {
-                linkWithQuantity((int) Math.floor(i * maxValue), true);
-            }
-
-            Integer selectedQuantity = mTransactionQuantity;
-            mTransactionQuantity = selectedQuantity != null ? selectedQuantity : 0;
-            updateTransactionDialog();
-        };
     }
 }

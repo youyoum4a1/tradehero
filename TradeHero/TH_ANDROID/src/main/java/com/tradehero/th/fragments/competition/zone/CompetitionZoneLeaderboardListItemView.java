@@ -109,6 +109,7 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
                 {
                     THSignedPercentage
                             .builder(leaderboardUserDTO.roiInPeriod * 100)
+                            .withDefaultColor()
                             .build()
                             .into(roiView);
                 }

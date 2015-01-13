@@ -11,7 +11,7 @@ import com.tradehero.th.api.security.SecurityIntegerId;
 import java.util.Date;
 import timber.log.Timber;
 
-public class QuoteDTO implements RawResponseKeeper
+public class QuoteDTO implements RawResponseKeeper, Cloneable
 {
     public static final int QUOTE_TYPE_YAHOO_CSV = 1;
     public static final int QUOTE_TYPE_ACTIV_FINANCIAL = 2;
@@ -38,7 +38,7 @@ public class QuoteDTO implements RawResponseKeeper
     @Nullable public Date asOfUtc;
     @JsonProperty("asOfEST")
     public Date asOfEst;
-    @Nullable public Double bid;
+    @Nullable public Double bid; // TODO Rename to bidRefCcy
     @Nullable public Double ask;
 
     public String currencyISO;
@@ -62,6 +62,7 @@ public class QuoteDTO implements RawResponseKeeper
     // This part is used for the signature container that came back
     private String rawResponse;
 
+    //<editor-fold desc="Constructors">
     public QuoteDTO()
     {
         super();
@@ -109,6 +110,7 @@ public class QuoteDTO implements RawResponseKeeper
         timeStamp = bundle.getString(BUNDLE_KEY_TIMESTAMP);
         rawResponse = bundle.getString(BUNDLE_KEY_RAW_RESPONSE);
     }
+    //</editor-fold>
 
     @JsonIgnore
     public SecurityIntegerId getSecurityIntegerId()
@@ -280,6 +282,29 @@ public class QuoteDTO implements RawResponseKeeper
         Bundle args = new Bundle();
         putParameters(args);
         return args;
+    }
+
+    @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
+    @Override public QuoteDTO clone()
+    {
+        QuoteDTO cloned = new QuoteDTO();
+        cloned.securityId = securityId;
+        cloned.asOfUtc = asOfUtc;
+        cloned.asOfEst = asOfEst;
+        cloned.bid = bid;
+        cloned.ask = ask;
+        cloned.currencyISO = currencyISO;
+        cloned.currencyDisplay = currencyDisplay;
+        cloned.fromCache = fromCache;
+        cloned.quoteType = quoteType;
+        cloned.toUSDRate = toUSDRate;
+        cloned.toUSDRateDate = toUSDRateDate;
+        cloned.timeStamp = timeStamp;
+        cloned.isInverted = isInverted;
+        cloned.isOneSided = isOneSided;
+        cloned.isValid = isValid;
+        cloned.rawResponse = rawResponse;
+        return cloned;
     }
 
     @Override

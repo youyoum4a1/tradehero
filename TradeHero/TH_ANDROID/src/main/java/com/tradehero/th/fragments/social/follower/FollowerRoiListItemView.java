@@ -47,6 +47,7 @@ public class FollowerRoiListItemView extends FollowerListItemView
             {
                 THSignedPercentage
                         .builder(userFollowerDTO.roiSinceInception * 100)
+                        .withDefaultColor()
                         .build()
                         .into(roiInfo);
             }

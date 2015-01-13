@@ -20,7 +20,6 @@ import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
 import com.tradehero.th.api.news.key.NewsItemListFeaturedKey;
 import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
 import com.tradehero.th.api.news.key.NewsItemListKey;
@@ -30,10 +29,9 @@ import com.tradehero.th.api.pagination.PaginationDTO;
 import com.tradehero.th.api.pagination.PaginationInfoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsHeadlineViewLinear;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -48,6 +46,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
@@ -67,6 +66,7 @@ public class NewsHeadlineFragment extends Fragment
     private AbsListView.OnScrollListener scrollListener;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
+    protected NewsType newsType;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -75,8 +75,9 @@ public class NewsHeadlineFragment extends Fragment
         if (newsItemDTO != null && newsItemDTO.url != null)
         {
             Bundle bundle = new Bundle();
-            WebViewFragment.putUrl(bundle, newsItemDTO.url);
-            navigator.get().pushFragment(WebViewFragment.class, bundle);
+            NewsWebFragment.putPreviousScreen(bundle, newsType.analyticsName);
+            NewsWebFragment.putUrl(bundle, newsItemDTO.url);
+            navigator.get().pushFragment(NewsWebFragment.class, bundle);
         }
     }
 
@@ -129,7 +130,8 @@ public class NewsHeadlineFragment extends Fragment
             int newsTypeOrdinal = args.getInt(NEWS_TYPE_KEY);
             if (newsTypeOrdinal >= 0 && newsTypeOrdinal < NewsType.values().length)
             {
-                newsItemListKey = newsItemListKeyFromNewsType(NewsType.values()[newsTypeOrdinal]);
+                newsType = NewsType.values()[newsTypeOrdinal];
+                newsItemListKey = newsItemListKeyFromNewsType(newsType);
             }
         }
     }
@@ -148,7 +150,8 @@ public class NewsHeadlineFragment extends Fragment
         scrollListener = new QuickReturnListViewOnScrollListener(
                 QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
+        ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter =
+                new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
@@ -162,17 +165,18 @@ public class NewsHeadlineFragment extends Fragment
         paginationObservable = createPaginationObservable()
                 // convert to hot observable coz replaceNewsItemListView can be call more than once
                 .share()
-                // pulling down from top always refresh the list
+                        // pulling down from top always refresh the list
                 .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
 
         newsSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
-        subscriptions.add(newsSubject.subscribe(mNewsAdapter::setItems));
+        subscriptions.add(newsSubject.subscribe(
+                mNewsAdapter::setItems,
+                e -> Timber.e(e, "Gotcha")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
     }
-
 
     private Observable<PaginationDTO> createPaginationObservable()
     {
@@ -199,12 +203,12 @@ public class NewsHeadlineFragment extends Fragment
     private Observable<List<NewsItemCompactDTO>> createNewsListKeyPaginationObservable()
     {
         return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>)
-                key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                        .flatMapIterable(PaginatedDTO::getData)
-                        .toList()
+                        key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
+                                .flatMapIterable(PaginatedDTO::getData)
+                                .toList()
         );
     }
 

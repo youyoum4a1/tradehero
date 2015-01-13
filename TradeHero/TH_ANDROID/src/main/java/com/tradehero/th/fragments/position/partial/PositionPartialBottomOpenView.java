@@ -176,7 +176,10 @@ public class PositionPartialBottomOpenView
         {
             if (positionDTO != null && positionDTO.shares != null)
             {
-                quantityValue.setText(String.format("%,d", Math.abs(positionDTO.shares)));
+                THSignedNumber.builder(positionDTO.shares)
+                        .withOutSign()
+                        .build()
+                        .into(quantityValue);
             }
             else
             {
@@ -191,11 +194,11 @@ public class PositionPartialBottomOpenView
         {
             if (positionDTO != null && positionDTO.averagePriceRefCcy != null)
             {
-                THSignedNumber ThAveragePriceRefCcy = THSignedMoney.builder(positionDTO.averagePriceRefCcy)
+                THSignedMoney.builder(positionDTO.averagePriceRefCcy)
                         .withOutSign()
                         .currency(positionDTO.getNiceCurrency())
-                        .build();
-                averagePriceValue.setText(ThAveragePriceRefCcy.toString());
+                        .build()
+                        .into(averagePriceValue);
             }
             else
             {

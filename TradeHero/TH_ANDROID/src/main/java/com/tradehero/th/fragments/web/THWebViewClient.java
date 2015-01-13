@@ -9,7 +9,9 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntent;
@@ -17,6 +19,8 @@ import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -26,6 +30,7 @@ public class THWebViewClient extends WebViewClient
     @Inject THIntentFactory thIntentFactory;
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     @Inject DashboardNavigator navigator;
+    @Inject Analytics analytics;
     private final Context context;
     private THIntentPassedListener thIntentPassedListener;
 
@@ -54,8 +59,7 @@ public class THWebViewClient extends WebViewClient
             try
             {
                 thIntent = thIntentFactory.create(getPassedIntent(url));
-            }
-            catch (IndexOutOfBoundsException e)
+            } catch (IndexOutOfBoundsException e)
             {
                 Timber.e(e, "Failed to create intent with string %s", url);
             }
@@ -66,6 +70,17 @@ public class THWebViewClient extends WebViewClient
                 providerListCache.get().invalidateAll();
                 url = ((ProviderPageIntent) thIntent).getCompleteForwardUriPath();
                 Timber.d("shouldOverrideUrlLoading Changed page url to %s", url);
+                if (view.getUrl().contains(ProviderUtil.LANDING) && url.contains(ProviderUtil.RULES))
+                {
+                    /**
+                     * HACK
+                     * Assuming that the user comes from competition's landing page and ends up in the rules page.
+                     * This is a good enough approximation that user had successfully joined the competition.
+                     * Refer to Sai Heng.
+                     */
+                    analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.CompetitionJoined, AnalyticsConstants.ProviderId,
+                            String.valueOf(((ProviderPageIntent) thIntent).getProviderId().key)));
+                }
             }
             else if (thIntent != null)
             {
@@ -107,8 +122,7 @@ public class THWebViewClient extends WebViewClient
             {
                 context.startActivity(
                         new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            }
-            catch (android.content.ActivityNotFoundException anfe)
+            } catch (android.content.ActivityNotFoundException anfe)
             {
                 THToast.show("Unable to open url: " + url);
             }

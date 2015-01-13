@@ -30,7 +30,7 @@ abstract public class SecurityItemViewAdapter<SecurityDTOType extends SecurityCo
         setItemsToShow(getPredicateFilter().filter(items));
     }
 
-    protected void setItemsToShow(List<SecurityDTOType> showItems)
+    protected void setItemsToShow(@NonNull List<SecurityDTOType> showItems)
     {
         super.setItems(showItems);
     }
@@ -70,8 +70,11 @@ abstract public class SecurityItemViewAdapter<SecurityDTOType extends SecurityCo
 
         @Override protected void publishResults(CharSequence charSequence, SecurityFilterResults<SecurityDTOType> filterResults)
         {
-            setItemsToShow(filterResults.castedValues);
-            notifyDataSetChanged();
+            if(filterResults.castedValues != null)
+            {
+                setItemsToShow(filterResults.castedValues);
+                notifyDataSetChanged();
+            }
         }
     }
 }

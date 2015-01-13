@@ -62,18 +62,27 @@
       />
 
     <LinearLayout
-        android:id="@+id/llPositionStatus"
+        android:id="@+id/ll_position_status"
         android:layout_margin="10dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        tools:visibility="visible"
         android:gravity="center_horizontal">
-        <TextView android:id="@+id/tvPositionUnits" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text=""/>
 
-        <TextView android:id="@+id/tvPositionMoney" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text=""
+        <TextView
+            android:id="@+id/tv_position_units"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Long position: 45 units"/>
+
+        <TextView
+            android:id="@+id/tv_position_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="US$ 200"
             android:layout_marginLeft="20dp"/>
+
     </LinearLayout>
 
   <RelativeLayout

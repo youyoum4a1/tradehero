@@ -70,6 +70,6 @@
       android:layout_height="wrap_content"
       android:layout_centerInParent="true"
       android:background="@drawable/round_square"
-      android:visibility="gone"/>
+      android:visibility="visible"/>
 
 </RelativeLayout>

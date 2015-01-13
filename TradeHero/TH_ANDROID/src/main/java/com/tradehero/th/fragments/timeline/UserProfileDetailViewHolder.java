@@ -18,7 +18,6 @@ import com.tradehero.th.api.level.key.LevelDefListId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.graphics.ForUserPhotoBackground;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.UserLevelProgressBar;
@@ -133,10 +132,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thTotalWealth = THSignedMoney.builder(userProfileDTO.portfolio.totalValue)
+                THSignedMoney.builder(userProfileDTO.portfolio.totalValue)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                totalWealth.setText(thTotalWealth.toString());
+                        .build()
+                        .into(totalWealth);
             }
             else
             {
@@ -151,10 +150,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thAdditionalCash = THSignedMoney.builder(userProfileDTO.portfolio.getTotalExtraCash())
+                THSignedMoney.builder(userProfileDTO.portfolio.getTotalExtraCash())
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                additionalCash.setText(thAdditionalCash.toString());
+                        .build()
+                        .into(additionalCash);
             }
             else
             {
@@ -169,10 +168,10 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO != null && userProfileDTO.portfolio != null)
             {
-                THSignedNumber thCashOnHand = THSignedMoney.builder(userProfileDTO.portfolio.cashBalance)
+                THSignedMoney.builder(userProfileDTO.portfolio.cashBalanceRefCcy)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build();
-                cashOnHand.setText(thCashOnHand.toString());
+                        .build()
+                        .into(cashOnHand);
             }
             else
             {

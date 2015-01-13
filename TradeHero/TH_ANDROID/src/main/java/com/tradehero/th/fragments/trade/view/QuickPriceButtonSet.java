@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,23 +12,51 @@ import android.widget.LinearLayout;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class QuickPriceButtonSet extends LinearLayout
-    implements View.OnClickListener
+        implements View.OnClickListener
 {
-    @Nullable private OnQuickPriceButtonSelectedListener listener;
     private double maxPrice = Double.MAX_VALUE;
+    private boolean isPercent;
     @Nullable private QuickPriceButton currentSelected;
-    public boolean isFX;
+    @NonNull protected final BehaviorSubject<Double> priceSelectedSubject;
 
     //<editor-fold desc="Constructors">
     public QuickPriceButtonSet(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        init(context, attrs);
+        this.priceSelectedSubject = BehaviorSubject.create();
     }
     //</editor-fold>
 
+    protected void init(@NonNull Context context, @NonNull AttributeSet attrs)
+    {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.QuickPriceButtonSet);
+        setPercent(a.getBoolean(R.styleable.QuickPriceButtonSet_isPercent, false));
+        a.recycle();
+    }
+
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        propagatePercent();
+    }
+
     //<editor-fold desc="Accessors">
+    public boolean isPercent()
+    {
+        return isPercent;
+    }
+
+    public void setPercent(boolean isPercent)
+    {
+        this.isPercent = isPercent;
+        propagatePercent();
+    }
+
     @Override public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
@@ -38,11 +67,6 @@ public class QuickPriceButtonSet extends LinearLayout
     {
         this.maxPrice = maxPrice;
         display();
-    }
-
-    public void setListener(@Nullable OnQuickPriceButtonSelectedListener listener)
-    {
-        this.listener = listener;
     }
     //</editor-fold>
 
@@ -64,7 +88,12 @@ public class QuickPriceButtonSet extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    @NonNull public List<QuickPriceButton> findButtons()
+    @NonNull public Observable<Double> getPriceSelectedObservable()
+    {
+        return priceSelectedSubject.asObservable();
+    }
+
+    @NonNull protected List<QuickPriceButton> findButtons()
     {
         return findButtons(this);
     }
@@ -87,11 +116,28 @@ public class QuickPriceButtonSet extends LinearLayout
         return found;
     }
 
+    protected void propagatePercent()
+    {
+        for (QuickPriceButton button : findButtons())
+        {
+            button.setPercent(isPercent);
+        }
+    }
+
     @Override public void onClick(@NonNull View view)
     {
         currentSelected = (QuickPriceButton) view;
         display();
-        notifyListener(((QuickPriceButton) view).getPrice());
+        double value;
+        if (isPercent)
+        {
+            value = ((QuickPriceButton) view).getPercentValue();
+        }
+        else
+        {
+            value = ((QuickPriceButton) view).getPrice();
+        }
+        priceSelectedSubject.onNext(value);
     }
 
     protected void display()
@@ -99,27 +145,9 @@ public class QuickPriceButtonSet extends LinearLayout
         List<QuickPriceButton> buttons = findButtons();
         for (QuickPriceButton button : buttons)
         {
-            button.setEnabled(isEnabled() && (isFX || (button.getPrice() <= maxPrice)));
+            button.setEnabled(isEnabled() && button.getPrice() <= maxPrice);
             button.setSelected(button == currentSelected && button.isEnabled());
             button.setTextColor(button == currentSelected ? Color.BLACK : getResources().getColor(R.color.text_secondary));
         }
-    }
-
-    private void notifyListener(double price)
-    {
-        OnQuickPriceButtonSelectedListener listenerCopy = listener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onQuickPriceButtonSelected(price);
-        }
-    }
-
-    public interface OnQuickPriceButtonSelectedListener
-    {
-        public void onQuickPriceButtonSelected(double priceSelected);
-    }
-
-    public void setFX(boolean isFX) {
-        this.isFX = isFX;
     }
 }

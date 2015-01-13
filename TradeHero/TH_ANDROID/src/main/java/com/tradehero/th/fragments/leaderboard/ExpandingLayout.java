@@ -129,7 +129,7 @@ public class ExpandingLayout extends LinearLayout
         int heightMeasureSpec = MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, MeasureSpec.UNSPECIFIED);
         int widthMeasureSpec = MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, MeasureSpec.AT_MOST);
         measure(widthMeasureSpec, heightMeasureSpec);
-        return getMeasuredHeight();
+        return getMeasuredHeight() + getPaddingBottom() + getPaddingTop();
     }
 
     @Override protected void onDetachedFromWindow()

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -88,67 +87,76 @@ public class CompetitionLeaderboardMarkUserItemView extends LeaderboardMarkUserI
         lbmuPeriod.setText(period);
 
         // benchmark roi
-        THSignedNumber benchmarkRoiInPeriodVal = THSignedPercentage
+        String benchmarkRoiInPeriodFormat =
+                getContext().getString(R.string.leaderboard_benchmark_roi_format);
+        THSignedPercentage
                 .builder(leaderboardItem.getBenchmarkRoiInPeriod() * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
-                .build();
-        String benchmarkRoiInPeriodFormat =
-                getContext().getString(R.string.leaderboard_benchmark_roi_format);
-        String benchmarkRoiInPeriod =
-                String.format(benchmarkRoiInPeriodFormat, benchmarkRoiInPeriodVal.toString());
-        lbmuBenchmarkRoi.setText(Html.fromHtml(benchmarkRoiInPeriod));
+                .format(benchmarkRoiInPeriodFormat)
+                .boldValue()
+                .build()
+                .into(lbmuBenchmarkRoi);
 
         // number of positions holding
         lbmuPositionsCount.setText("" + leaderboardItem.numberOfPositionsInPeriod);
 
         // number of trades
-        String numberOfTradeFormat = getContext().getString(
-                leaderboardItem.getNumberOfTrades() > 1
-                        ? R.string.leaderboard_number_of_trades_plural
-                        : R.string.leaderboard_number_of_trade);
-        String numberOfTrades =
-                String.format(numberOfTradeFormat, leaderboardItem.getNumberOfTrades());
-        lbmuNumberOfTrades.setText(Html.fromHtml(numberOfTrades));
+        String numberOfTradeFormat =
+                getContext().getResources().getQuantityString(R.plurals.leaderboard_number_of_trade, leaderboardItem.getNumberOfTrades());
+        THSignedNumber.builder(leaderboardItem.getNumberOfTrades())
+                .relevantDigitCount(1)
+                .withOutSign()
+                .format(numberOfTradeFormat)
+                .boldValue()
+                .build()
+                .into(lbmuNumberOfTrades);
 
         // Number of trades in Period
         if (lbmuNumberTradesInPeriod != null)
         {
-            lbmuNumberTradesInPeriod.setText(THSignedNumber
+            THSignedNumber
                     .builder(leaderboardItem.numberOfTradesInPeriod)
-                    .build().toString());
+                    .build()
+                    .into(lbmuNumberTradesInPeriod);
         }
 
         // average days held
-        lbmuAvgDaysHeld.setText(THSignedNumber
+        THSignedNumber
                 .builder(leaderboardItem.avgHoldingPeriodMins / (60 * 24))
                 .relevantDigitCount(3)
-                .build().toString());
-        lbmuWinRatio.setText(THSignedPercentage
+                .build()
+                .into(lbmuAvgDaysHeld);
+
+        THSignedPercentage
                 .builder(leaderboardItem.getWinRatio() * 100)
                 .relevantDigitCount(3)
-                .build().toString());
+                .build()
+                .into(lbmuWinRatio);
 
         // followers & comments count
-        lbmuFollowersCount.setText(THSignedNumber
+        THSignedNumber
                 .builder(leaderboardItem.getTotalFollowersCount())
-                .build().toString());
-        lbmuCommentsCount.setText(THSignedNumber
+                .build()
+                .into(lbmuFollowersCount);
+
+        THSignedNumber
                 .builder(leaderboardItem.getCommentsCount())
-                .build().toString());
+                .build()
+                .into(lbmuCommentsCount);
     }
 
     protected void displayLbmuPl()
     {
         if (lbmuPl != null && leaderboardItem != null)
         {
-            THSignedNumber formattedNumber = THSignedMoney
+            THSignedMoney
                     .builder(leaderboardItem.PLinPeriodRefCcy)
                     .withOutSign()
                     .currency(getLbmuPlCurrencyDisplay())
-                    .build();
-            lbmuPl.setText(formattedNumber.toString());
+                    .build()
+                    .into(lbmuPl);
         }
     }
 

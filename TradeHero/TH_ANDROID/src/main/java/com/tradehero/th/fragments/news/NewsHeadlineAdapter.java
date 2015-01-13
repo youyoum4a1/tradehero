@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.List;

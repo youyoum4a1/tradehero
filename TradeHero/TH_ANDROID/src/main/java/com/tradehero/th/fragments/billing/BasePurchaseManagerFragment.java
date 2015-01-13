@@ -3,16 +3,28 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.billing.exception.BillingException;
+import com.tradehero.common.billing.request.BaseUIBillingRequest;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.tradehero.th.billing.THBasePurchaseActionInteractor;
+import com.tradehero.th.billing.THBillingInteractor;
 import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.billing.THPurchaseActionInteractor;
+import com.tradehero.th.billing.THPurchaseReporter;
+import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
+import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -91,7 +103,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else
         {
-            prepareApplicableOwnedPortolioId(list.getDefaultPortfolio());
+            handleReceivedPortfolioCompactList(list);
         }
     }
 
@@ -101,7 +113,22 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 currentUserPortfolioCompactListObservable)
-                .subscribe(createCurrentUserPortfolioCompactListObserver());
+                .subscribe(
+                        this::handleReceivedPortfolioCompactList,
+                        e -> {
+                            Timber.e(e, "Failed fetching portfolios list");
+                            THToast.show(R.string.error_fetch_portfolio_list_info);
+                        });
+    }
+
+    protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        prepareApplicableOwnedPortolioId(getPreferredApplicablePortfolio(portfolioCompactDTOs));
+    }
+
+    @Nullable protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        return portfolioCompactDTOs.getDefaultPortfolio();
     }
 
     protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
@@ -135,33 +162,5 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Nullable public OwnedPortfolioId getApplicablePortfolioId()
     {
         return purchaseApplicableOwnedPortfolioId;
-    }
-
-    protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
-    {
-        return new BasePurchaseManagementPortfolioCompactListObserver();
-    }
-
-    protected class BasePurchaseManagementPortfolioCompactListObserver implements Observer<PortfolioCompactDTOList>
-    {
-        protected BasePurchaseManagementPortfolioCompactListObserver()
-        {
-            // no unexpected creation
-        }
-
-        @Override public void onNext(PortfolioCompactDTOList list)
-        {
-            prepareApplicableOwnedPortolioId(list.getDefaultPortfolio());
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed fetching portfolios list");
-            THToast.show(R.string.error_fetch_portfolio_list_info);
-        }
     }
 }

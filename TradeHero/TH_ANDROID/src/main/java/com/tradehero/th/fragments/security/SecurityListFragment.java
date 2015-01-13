@@ -60,8 +60,6 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        showProgressSpinner(false);
-
         listViewScrollListener = new SecurityListFlagNearEdgeScrollListener(DEFAULT_VISIBLE_THRESHOLD);
 
         // TODO this part is tricky, we have multiple screens using the same kind of data, list of security item data,
@@ -224,7 +222,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         if (mProgressSpinner != null)
         {
-            mProgressSpinner.setVisibility(flag ? View.VISIBLE : View.INVISIBLE);
+            mProgressSpinner.setVisibility(flag ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -264,17 +262,13 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
     {
         @Override public void onQueryingChanged(boolean querying)
         {
-            postIfCan(new Runnable()
-            {
-                @Override public void run()
+            postIfCan(() -> {
+                FragmentActivity activity = getActivity();
+                if (activity != null)
                 {
-                    FragmentActivity activity = getActivity();
-                    if (activity != null)
-                    {
-                        SecurityListPagedLoader securityListPagedLoader =
-                                (SecurityListPagedLoader) (Loader) activity.getSupportLoaderManager().getLoader(getSecurityIdListLoaderId());
-                        showProgressSpinner(securityListPagedLoader.isQuerying());
-                    }
+                    SecurityListPagedLoader securityListPagedLoader =
+                            (SecurityListPagedLoader) (Loader) activity.getSupportLoaderManager().getLoader(getSecurityIdListLoaderId());
+                    showProgressSpinner(securityListPagedLoader.isQuerying());
                 }
             });
         }
@@ -316,7 +310,7 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
         {
             //Timber.d("onLoadFinished");
             handleSecurityItemReceived(securityCompactDTOs);
-
+            showProgressSpinner(false);
             if (listViewScrollListener != null)
             {
                 listViewScrollListener.lowerEndFlag();
@@ -331,11 +325,10 @@ abstract public class SecurityListFragment extends BasePurchaseManagerFragment
 
     protected void handleSecurityItemReceived(@Nullable SecurityCompactDTOList securityCompactDTOs)
     {
-        if (securityItemViewAdapter != null)
+        if (securityItemViewAdapter != null && securityCompactDTOs != null)
         {
             // It may have been nullified if coming out
             securityItemViewAdapter.setItems(securityCompactDTOs);
-            securityItemViewAdapter.notifyDataSetChanged();
         }
     }
     //</editor-fold>

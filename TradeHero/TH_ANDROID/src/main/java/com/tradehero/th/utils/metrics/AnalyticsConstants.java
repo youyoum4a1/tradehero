@@ -71,7 +71,7 @@ public class AnalyticsConstants
     public static final String Security_TapChartPeriod_Landscape = "Security/TapChartPeriod/Landscape";//
     public static final String Security_TapChartPeriod_Portrait = "Security/TapChartPeriod/Portrait";//
     public static final String Security_TapPrice = "Security/TapPrice";// symbol self.security.q
-    public static final String Security_RotateToLandscapeChart ="Security/RotateToLandscapeChart";//
+    public static final String Security_RotateToLandscapeChart = "Security/RotateToLandscapeChart";//
     public static final String Security_NewDiscussion = "Security/NewDiscussion";// symbol self.security.q
     public static final String Security_Tab_Discussion = "Security/Tab/Discussion";// symbol self.security.q
     public static final String Security_Tab_News = "Security/Tab/News";// symbol self.security.q
@@ -137,6 +137,14 @@ public class AnalyticsConstants
     public static final String DiscoverDiscussionsViewed = "DiscoverDiscussionsViewed";//
     public static final String AchievementNotificationScreen = "AchievementNotificationScreen";//
     public static final String GamePlaySummary = "GamePlaySummary";
+    public static final String NewsMotleyFool = "NewsMotleyFool";
+    public static final String NewsSecurityScreen = "SecurityScreen";
+    public static final String NewsRegional = "NewsRegional";
+    public static final String NewsGlobal = "NewsGlobal";
+    public static final String NewsItem_Show = "NewsItem/Show";
+    public static final String ProviderId = "ProviderId";
+    public static final String Competition_Home = "Competition/Home";
+    public static final String CompetitionJoined = "CompetitionJoined";//
 
     //Attribute
     public static final String ClickedFrom = "ClickedFrom";//
@@ -158,8 +166,8 @@ public class AnalyticsConstants
     public static final String Clicked = "Clicked";//
     public static final String Level = "Level";//
     public static final String Type = "Type";//
-    public static final String CompetitionJoined = "CompetitionJoined";//
     public static final String InterestedExchange = "InterestedExchange";//
     public static final String GamePlayed = "GamePlayed";//
     public static final String TimeInGame = "TimeInGame";//
+    public static final String PreviousScreen = "PreviousScreen";//
 }

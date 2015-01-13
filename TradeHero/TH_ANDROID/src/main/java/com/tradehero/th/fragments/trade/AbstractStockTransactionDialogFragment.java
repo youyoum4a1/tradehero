@@ -2,10 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -14,8 +10,6 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 
 public abstract class AbstractStockTransactionDialogFragment extends AbstractTransactionDialogFragment
 {
-    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
-
     public static AbstractStockTransactionDialogFragment newInstance(
             @NonNull SecurityId securityId,
             @NonNull PortfolioId portfolioId,
@@ -36,15 +30,12 @@ public abstract class AbstractStockTransactionDialogFragment extends AbstractTra
         super();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override protected int getCashLeftLabelResId()
     {
-        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
-    }
-
-    protected void initViews()
-    {
-        super.initViews();
-        mQuickPriceButtonSet.setListener(createQuickButtonSetListener());
+        Boolean isClosing = isClosingPosition();
+        return isClosing != null && isClosing
+                ? R.string.buy_sell_share_left
+                : R.string.buy_sell_cash_left;
     }
 
     public void displayQuickPriceButtonSet()

@@ -409,26 +409,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                         {
                             onLoadFinished();
                             displayPortfolios(displayablePortfolioDTOs);
-                            reportAnalytics(displayablePortfolioDTOs);
                         }
                     });
-        }
-    }
-
-    private void reportAnalytics(DisplayablePortfolioDTOList displayablePortfolioDTOs)
-    {
-        Collection<String> collection = new ArrayList<>();
-        for (int i = 0; i < displayablePortfolioDTOs.size(); i++)
-        {
-            if (displayablePortfolioDTOs.get(i).portfolioDTO.providerId != null)
-            {
-                collection.add(String.valueOf(displayablePortfolioDTOs.get(i).portfolioDTO.providerId));
-            }
-        }
-        if (collection.size() > 0 && Constants.RELEASE)
-        {
-//            analytics.fireProfileEvent(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
-            analytics.localytics().setProfileAttribute(new ProfileEvent(AnalyticsConstants.CompetitionJoined, collection));
         }
     }
 

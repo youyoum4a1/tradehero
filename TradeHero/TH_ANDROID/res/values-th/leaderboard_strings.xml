@@ -21,7 +21,7 @@
   <string name="leaderboard_avg_days_held">เฉลี่ย วันที่ถือครอง</string>
   <string name="leaderboard_followers_count"># ผู้ติดตาม</string>
   <string name="leaderboard_comments_count"># ความเห็น</string>
-  <string name="leaderboard_roi_annualized"><![CDATA[(รายปี: <b>%s</b>)]]></string>
+  <string name="leaderboard_roi_annualized">(รายปี: %1$s)</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">ช่วยเหลือ</string>
@@ -35,10 +35,11 @@
   <string name="leaderboard_monthly_trade_count">เทรดรายเดือน</string>
   <string name="leaderboard_monthly_avg_days_held">เฉลี่ย วันที่ถือครอง</string>
   <string name="leaderboard_win_ratio">(โอกาสชนะ: <b>%s</b>%%)</string>
-  <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
+  <string name="leaderboard_benchmark_roi_format">%1$s (S&amp;P 500)</string>
   <string name="leaderboard_volatility"><![CDATA[(ความผันผวน: <b>%.4f</b>)]]></string>
-  <string name="leaderboard_number_of_trade">(%s เทรด)</string>
-  <string name="leaderboard_number_of_trades_plural">(%s เทรด)</string>
+  <plurals name="leaderboard_number_of_trade">
+    <item quantity="other">(%1$s เทรด)</item>
+  </plurals>
   <string name="leaderboard_period">ระยะเวลา</string>
   <string name="leaderboard_not_ranked">ไม่ได้จัดอันดับ</string>
   <string name="leaderboard_show_friends_only">แสดงข้อมูลเพื่อนเท่านั้น</string>

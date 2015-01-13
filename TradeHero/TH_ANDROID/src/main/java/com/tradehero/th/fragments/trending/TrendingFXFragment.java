@@ -16,6 +16,8 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -40,7 +42,7 @@ import timber.log.Timber;
 public class TrendingFXFragment extends TrendingBaseFragment
         implements WithTutorial
 {
-    private static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
+    public static final int MS_DELAY_FOR_QUOTE_FETCH = 5000;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
@@ -90,6 +92,11 @@ public class TrendingFXFragment extends TrendingBaseFragment
         super.onStop();
     }
 
+    @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        return portfolioCompactDTOs.getDefaultFxPortfolio();
+    }
+
     @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
     {
         return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_fx_item);
@@ -108,7 +115,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
         waitForEnrolledSubscription = AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
+                .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
+//                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
                 .filter(pair -> pair.second.fxPortfolio != null)
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
@@ -117,7 +125,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
                     {
                         // In effect, we are waiting for the enrolled profile
                         unsubscribe(waitForEnrolledSubscription);
-                        btnEnroll.setVisibility(View.GONE);
+                        mProgress.setVisibility(View.GONE);
+//                        btnEnroll.setVisibility(View.GONE);
                         scheduleRequestData();
                         fetchFXPrice();
                     }

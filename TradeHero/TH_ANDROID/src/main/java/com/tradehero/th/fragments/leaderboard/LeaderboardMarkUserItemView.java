@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
@@ -40,7 +39,6 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
@@ -311,19 +309,21 @@ public class LeaderboardMarkUserItemView
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
+                .withDefaultColor()
                 .build()
                 .into(lbmuRoi);
 
         // display Roi annualized
-        THSignedNumber roiAnnualizedVal = THSignedPercentage
+        String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
+        THSignedPercentage
                 .builder(leaderboardItem.roiAnnualizedInPeriod * 100)
                 .withSign()
                 .signTypeArrow()
                 .relevantDigitCount(3)
-                .build();
-        String roiAnnualizedFormat = getContext().getString(R.string.leaderboard_roi_annualized);
-        String roiAnnualized = String.format(roiAnnualizedFormat, roiAnnualizedVal.toString());
-        lbmuRoiAnnualized.setText(Html.fromHtml(roiAnnualized));
+                .boldValue()
+                .format(roiAnnualizedFormat)
+                .build()
+                .into(lbmuRoiAnnualized);
     }
 
     protected String getLbmuPlCurrencyDisplay()

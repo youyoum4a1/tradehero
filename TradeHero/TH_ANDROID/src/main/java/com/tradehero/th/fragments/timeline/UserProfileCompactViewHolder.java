@@ -15,7 +15,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import javax.inject.Inject;
 
@@ -122,6 +121,7 @@ public class UserProfileCompactViewHolder
                 THSignedPercentage
                         .builder(roi * 100)
                         .withSign()
+                        .withDefaultColor()
                         .signTypeArrow()
                         .build()
                         .into(roiSinceInception);

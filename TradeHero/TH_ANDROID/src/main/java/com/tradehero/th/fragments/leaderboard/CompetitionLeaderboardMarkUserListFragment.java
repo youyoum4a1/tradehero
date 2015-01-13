@@ -125,7 +125,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     @Override @NonNull protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
-        return new LeaderboardMarkUserListAdapter(getActivity(), leaderboardDefKey.key);
+        return new LeaderboardMarkUserListAdapter(getActivity(), leaderboardDefKey.key, R.layout.lbmu_item_competition_mode);
     }
 
     protected void setupCompetitionAdapter()

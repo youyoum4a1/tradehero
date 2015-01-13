@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -58,30 +59,21 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         return netProceedsUsd - totalSpentUsd;
     }
 
-    @Override protected int getCashLeftLabelResId()
+    @Override @Nullable protected Boolean isClosingPosition()
     {
-        return R.string.buy_sell_share_left;
+        if (securityPositionDetailDTO == null)
+        {
+            // This means we have incomplete information
+            return null;
+        }
+        return positionDTOCompact != null
+                && positionDTOCompact.positionStatus != null
+                && positionDTOCompact.positionStatus.equals(PositionStatus.LONG);
     }
 
     @Override @NonNull public String getCashShareLeft()
     {
-        String shareLeftText = getResources().getString(R.string.na);
-        if (quoteDTO != null)
-        {
-            Double priceRefCcy = getPriceCcy();
-            if (priceRefCcy != null && portfolioCompactDTO != null)
-            {
-                Integer maxSellableShares = getMaxSellableShares();
-                if (maxSellableShares != null && maxSellableShares != 0)
-                {
-                    shareLeftText = THSignedNumber.builder(maxSellableShares - mTransactionQuantity)
-                            .relevantDigitCount(1)
-                            .withOutSign()
-                            .build().toString();
-                }
-            }
-        }
-        return shareLeftText;
+        return getRemainingWhenSell();
     }
 
     @Override @Nullable protected Integer getMaxValue()
@@ -130,14 +122,6 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
         }
 
         return quoteDTO.getPriceRefCcy(portfolioCompactDTO, IS_BUY);
-    }
-
-    @Nullable public Integer getMaxSellableShares()
-    {
-        return positionDTOCompactList == null ? null :
-                positionDTOCompactList.getMaxSellableShares(
-                        this.quoteDTO,
-                        this.portfolioCompactDTO);
     }
 
     protected boolean hasValidInfoForSell()

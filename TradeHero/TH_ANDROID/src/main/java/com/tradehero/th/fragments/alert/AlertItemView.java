@@ -85,47 +85,29 @@ public class AlertItemView extends RelativeLayout
     {
         if (alertCompactDTO.priceMovement != null)
         {
-            alertDescription.setText(getPriceMovementDescription(alertCompactDTO.priceMovement * 100));
-        }
-        else if (alertCompactDTO.upOrDown) // up
-        {
-            alertDescription.setText(getPriceRaiseDescription(alertCompactDTO.targetPrice));
+            THSignedPercentage.builder(alertCompactDTO.priceMovement * 100)
+                    .boldValue()
+                    .format(getContext().getString(R.string.stock_alert_when_price_move))
+                    .build()
+                    .into(alertDescription);
         }
         else
         {
-            alertDescription.setText(getPriceFallDescription(alertCompactDTO.targetPrice));
+            THSignedNumber.Builder builder = THSignedMoney.builder(alertCompactDTO.targetPrice)
+                    .withOutSign()
+                    .boldCurrency()
+                    .boldValue();
+            if (alertCompactDTO.upOrDown) // up
+            {
+                builder.format(getContext().getString(R.string.stock_alert_when_price_raises));
+            }
+            else
+            {
+                builder.format(getContext().getString(R.string.stock_alert_when_price_falls));
+            }
+            builder.build()
+                    .into(alertDescription);
         }
-    }
-
-    private Spanned getPriceFallDescription(double targetPrice)
-    {
-        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
-                .withOutSign()
-                .build();
-        return Html.fromHtml(String.format(
-                getContext().getString(R.string.stock_alert_when_price_falls),
-                thPriceRaise.toString()
-        ));
-    }
-
-    private Spanned getPriceRaiseDescription(double targetPrice)
-    {
-        THSignedNumber thPriceRaise = THSignedMoney.builder(targetPrice)
-                .withOutSign()
-                .build();
-        return Html.fromHtml(String.format(
-                getContext().getString(R.string.stock_alert_when_price_raises),
-                thPriceRaise.toString()
-        ));
-    }
-
-    private Spanned getPriceMovementDescription(double percentage)
-    {
-        THSignedNumber thPercentageChange = THSignedPercentage.builder(percentage).build();
-        return Html.fromHtml(String.format(
-                getContext().getString(R.string.stock_alert_when_price_move),
-                thPercentageChange.toString()
-        ));
     }
 
     private void displayTrigger()
@@ -160,7 +142,8 @@ public class AlertItemView extends RelativeLayout
 
     private Spanned getFormattedActiveUntilString(@NonNull Date activeUntilDate)
     {
-        return Html.fromHtml(getContext().getString(R.string.stock_alert_active_until_date, DateUtils.getFormattedDate(getResources(), activeUntilDate)));
+        return Html.fromHtml(
+                getContext().getString(R.string.stock_alert_active_until_date, DateUtils.getFormattedDate(getResources(), activeUntilDate)));
     }
 
     private void displayStockSymbol()

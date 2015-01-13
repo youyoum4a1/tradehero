@@ -15,7 +15,6 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import java.util.Set;
 import java.util.TreeSet;
 import rx.Observable;
-import rx.functions.Action1;
 
 public class PortfolioSelectorView extends RelativeLayout
 {
@@ -38,10 +37,6 @@ public class PortfolioSelectorView extends RelativeLayout
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
-    }
-
-    @Nullable public OwnedPortfolioId getDefaultPortfolioId() {
-        return defaultPortfolioId;
     }
 
     public void setDefaultPortfolioId(@Nullable OwnedPortfolioId defaultPortfolioId)
@@ -80,32 +75,10 @@ public class PortfolioSelectorView extends RelativeLayout
         display();
     }
 
-    public void addMenuOwnedPortfolioIdforFX(@NonNull MenuOwnedPortfolioId menuOwnedPortfolioId)
-    {
-        if (defaultPortfolioId == null)
-        {
-            defaultPortfolioId = new OwnedPortfolioId(menuOwnedPortfolioId);
-            defaultMenuPortfolioId = menuOwnedPortfolioId;
-            currentMenu = menuOwnedPortfolioId;
-        }
-        if (currentMenu == null)
-        {
-            currentMenu = defaultMenuPortfolioId == null ? menuOwnedPortfolioId : defaultMenuPortfolioId;
-        }
-        addMenuOwnedPortfolioId(menuOwnedPortfolioId);
-        displayForFX();
-    }
-
     public void display()
     {
         selectedPortfolio.setText(currentMenu);
         setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
-    }
-
-    public void displayForFX()
-    {
-        selectedPortfolio.setText(currentMenu);
-        setVisibility(usedMenuOwnedPortfolioIds.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     @NonNull public Observable<MenuOwnedPortfolioId> createMenuObservable()
@@ -115,20 +88,9 @@ public class PortfolioSelectorView extends RelativeLayout
                         getContext(),
                         selectedPortfolio,
                         usedMenuOwnedPortfolioIds))
-                .doOnNext(new Action1<MenuOwnedPortfolioId>()
-                {
-                    @Override public void call(MenuOwnedPortfolioId menuOwnedPortfolioId)
-                    {
-                        currentMenu = menuOwnedPortfolioId;
-                        display();
-                    }
+                .doOnNext(menuOwnedPortfolioId -> {
+                    currentMenu = menuOwnedPortfolioId;
+                    display();
                 });
-    }
-
-    public boolean defaultMenuIsNotDefaultPortfolio()
-    {
-        return defaultPortfolioId != null
-                && defaultMenuPortfolioId != null
-                && !defaultPortfolioId.equals(new OwnedPortfolioId(defaultMenuPortfolioId));
     }
 }

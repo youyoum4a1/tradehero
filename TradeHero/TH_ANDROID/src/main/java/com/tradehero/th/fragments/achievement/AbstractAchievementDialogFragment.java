@@ -435,8 +435,10 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void displayXpEarned(int xp)
     {
-        xpEarned.setText(
-                getString(R.string.achievement_xp_earned_format, THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign().build().toString()));
+        THSignedNumber.builder(xp).relevantDigitCount(1).withOutSign()
+                .format(getString(R.string.achievement_xp_earned_format))
+                .build()
+                .into(xpEarned);
     }
 
     private void setShareButtonColor()

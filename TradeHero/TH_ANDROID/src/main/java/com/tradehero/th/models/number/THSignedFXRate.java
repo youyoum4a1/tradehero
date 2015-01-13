@@ -126,11 +126,11 @@ public class THSignedFXRate extends THSignedNumber
         String original = super.createPlainNumber();
         if (minPrecision != null)
         {
-            int decimalPlace = original.indexOf('.');
+            int decimalPlace = original.indexOf(DECIMAL_SEPARATOR);
             int decimalCount = original.length() - decimalPlace - 1;
             if (decimalPlace < 0)
             {
-                original += ".";
+                original += DECIMAL_SEPARATOR;
             }
             while (decimalCount < minPrecision)
             {

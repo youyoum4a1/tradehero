@@ -24,7 +24,7 @@
   <string name="user_profile_first_name">ชื่อจริง</string>
   <string name="user_profile_last_name">นามสกุล</string>
 
-  <string name="user_profile_roi">&quot;ผลตอบแทนจากเงินลงทุน (ROI):  &quot;</string>
+  <string name="user_profile_roi">ผลตอบแทนจากเงินลงทุน (ROI): %1$s</string>
   <string name="user_profile_member_since">เป็นสมาชิกตั้งแต่ </string>
   <string name="user_profile_trade_profit">กำไรจากการเทรด</string>
   <string name="user_profile_total_wealth">ความมั่งคั่งรวม</string>

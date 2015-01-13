@@ -75,7 +75,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         {
             if (portfolioCompactDTO != null)
             {
-                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalance);
+                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalanceRefCcy);
                 cashValueTextView.setText(cashString);
             }
         }

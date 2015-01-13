@@ -29,6 +29,7 @@ import rx.android.observables.AndroidObservable;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+import timber.log.Timber;
 
 public class DiscoveryGameFragment extends DashboardFragment
 {
@@ -87,7 +88,9 @@ public class DiscoveryGameFragment extends DashboardFragment
 
         subscriptions = new CompositeSubscription();
         PublishSubject<List<MiniGameDefDTO>> miniGamesSubject = PublishSubject.create();
-        subscriptions.add(miniGamesSubject.subscribe(adapter::setItems));
+        subscriptions.add(miniGamesSubject.subscribe(
+                adapter::setItems,
+                e -> Timber.e(e, "Gotcha")));
         subscriptions.add(miniGamesSubject.subscribe(new UpdateUIObserver()));
 
         subscriptions.add(

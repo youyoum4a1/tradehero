@@ -40,6 +40,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 
@@ -108,7 +109,9 @@ public class DiscoveryArticleFragment extends Fragment
 
         articlesSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
-        subscriptions.add(articlesSubject.subscribe(mArticleAdapter::setItems));
+        subscriptions.add(articlesSubject.subscribe(
+                mArticleAdapter::setItems,
+                e -> Timber.e(e, "Gotcha")));
         subscriptions.add(articlesSubject.subscribe(new UpdateUIObserver()));
 
         activateArticleItemListView();

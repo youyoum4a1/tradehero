@@ -44,6 +44,7 @@ import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
 import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
@@ -74,7 +75,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         discoveryDiscussionAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.timeline_item_view);
-        timelineSubscriptions = new CompositeSubscription();
+//        timelineSubscriptions = new CompositeSubscription();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -143,11 +144,13 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private void subscribes()
     {
-        timelineSubscriptions.clear();
+        timelineSubscriptions = new CompositeSubscription();
 
         PublishSubject<List<TimelineItemDTO>> timelineSubject = PublishSubject.create();
         timelineSubscriptions.add(timelineSubject.subscribe(new RefreshCompleteObserver()));
-        timelineSubscriptions.add(timelineSubject.subscribe(discoveryDiscussionAdapter::setItems));
+        timelineSubscriptions.add(timelineSubject.subscribe(
+                discoveryDiscussionAdapter::setItems,
+                e -> Timber.e(e, "Gotcha")));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
@@ -174,6 +177,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     {
         timelineSubscriptions.unsubscribe();
         rxLoaderManager.remove(DISCOVERY_LIST_LOADER_ID);
+        timelineSubscriptions = null;
         super.onDestroyView();
     }
 

@@ -313,6 +313,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         }
         return THSignedMoney.builder(currentValueRefCcy - amountInvestedRefCcy)
                 .currency(watchlistPositionDTO.getNiceCurrency())
+                .withDefaultColor()
                 .build();
     }
 

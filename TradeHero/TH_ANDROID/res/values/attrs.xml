@@ -33,6 +33,13 @@
 
   <declare-styleable name="QuickPriceButton">
     <attr name="price" format="integer"/>
+    <attr name="percent" format="integer"/>
+    <attr name="priceText" format="string"/>
+    <attr name="percentText" format="string"/>
+  </declare-styleable>
+
+  <declare-styleable name="QuickPriceButtonSet">
+    <attr name="isPercent" format="boolean"/>
   </declare-styleable>
 
   <declare-styleable name="TimeSpanButton">

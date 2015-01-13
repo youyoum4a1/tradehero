@@ -37,7 +37,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
@@ -165,23 +164,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                         error -> {});
     }
 
-    @Override protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
+    @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        return new StoreScreenFragmentPortfolioCompactListObserver();
-    }
-
-    protected class StoreScreenFragmentPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
-    {
-        protected StoreScreenFragmentPortfolioCompactListObserver()
-        {
-            super();
-        }
-
-        @Override public void onNext(PortfolioCompactDTOList list)
-        {
-            super.onNext(list);
-            launchRoutedAction();
-        }
+        super.handleReceivedPortfolioCompactList(portfolioCompactDTOs);
+        launchRoutedAction();
     }
 
     protected void launchRoutedAction()

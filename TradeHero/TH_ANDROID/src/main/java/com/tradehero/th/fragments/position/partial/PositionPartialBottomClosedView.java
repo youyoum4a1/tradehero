@@ -160,15 +160,7 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
             if (positionDTO != null && positionDTO.earliestTradeUtc != null && positionDTO.latestTradeUtc != null)
             {
                 int nDays = DateUtils.getNumberOfDaysBetweenDates(positionDTO.earliestTradeUtc, positionDTO.latestTradeUtc);
-                String s;
-                if (nDays > 1 )
-                {
-                    s = String.format(getContext().getString(R.string.position_period_held_day_plural), nDays);
-                }
-                else
-                {
-                    s = String.format(getContext().getString(R.string.position_period_held_day_singular), nDays);
-                }
+                String s = getResources().getQuantityString(R.plurals.position_period_held_day, nDays, nDays);
                 periodHeld.setText(s);
             }
         }

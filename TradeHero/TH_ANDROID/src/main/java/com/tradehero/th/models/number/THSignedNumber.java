@@ -14,6 +14,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.THColorUtils;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class THSignedNumber
@@ -29,12 +30,14 @@ public class THSignedNumber
     public static final boolean WITHOUT_SIGN = false;
     public static final boolean USE_DEFAULT_COLOR = true;
     public static final boolean DO_NOT_USE_DEFAULT_COLOR = false;
+    public static String DECIMAL_SEPARATOR = String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator());
     //</editor-fold>
 
     private final boolean withSign;
     private final int signType;
     private final Double value;
     private final int relevantDigitCount;
+    @ColorRes private final int fallbackColorResId;
     private String formattedNumber;
     @Nullable @ColorRes private Integer colorResId;
 
@@ -55,7 +58,8 @@ public class THSignedNumber
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
-        public boolean useDefaultColor = USE_DEFAULT_COLOR;
+        public boolean useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
+        @ColorRes private Integer fallbackColorResId = R.color.text_primary;
         @Nullable @ColorRes private Integer signColorResId;
         @Nullable @ColorRes private Integer valueColorResId;
         private boolean boldSign;
@@ -107,10 +111,16 @@ public class THSignedNumber
             return self();
         }
 
-        public BuilderType skipDefaultColor()
+        public BuilderType withDefaultColor()
         {
-            this.useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
+            this.useDefaultColor = USE_DEFAULT_COLOR;
             return self();
+        }
+
+        public BuilderType withFallbackColor(@ColorRes int fallbackColorResId)
+        {
+            this.fallbackColorResId = fallbackColorResId;
+            return self().withDefaultColor();
         }
 
         public BuilderType boldSign()
@@ -127,7 +137,7 @@ public class THSignedNumber
 
         public BuilderType withSignColor(@ColorRes int colorResId)
         {
-            if(colorResId > 0)
+            if (colorResId > 0)
             {
                 this.signColorResId = colorResId;
             }
@@ -136,7 +146,7 @@ public class THSignedNumber
 
         public BuilderType withValueColor(@ColorRes int colorResId)
         {
-            if(colorResId > 0)
+            if (colorResId > 0)
             {
                 valueColorResId = colorResId;
             }
@@ -197,6 +207,7 @@ public class THSignedNumber
         this.useDefaultColor = builder.useDefaultColor;
         this.boldSign = builder.boldSign;
         this.boldValue = builder.boldValue;
+        this.fallbackColorResId = builder.fallbackColorResId;
         if (builder.signColorResId != null)
         {
             this.signColorResId = builder.signColorResId;
@@ -217,7 +228,7 @@ public class THSignedNumber
     {
         if (colorResId == null)
         {
-            colorResId = THColorUtils.getColorResourceIdForNumber(value);
+            colorResId = THColorUtils.getColorResourceIdForNumber(value, fallbackColorResId);
         }
         return colorResId;
     }
@@ -241,16 +252,11 @@ public class THSignedNumber
         return formattedNumber;
     }
 
-    public void into(TextView textView)
+    public void into(@NonNull TextView textView)
     {
-        if (useDefaultColor)
-        {
-            textView.setTextColor(getColor());
-        }
-
         Spanned result = (Spanned) getCombinedSpan();
 
-        if(format != null)
+        if (format != null)
         {
             result = SpanFormatter.format(format, result);
         }
@@ -264,7 +270,7 @@ public class THSignedNumber
         {
             if (signValue != null && signColorResId == null && useDefaultColor)
             {
-                signColorResId = THColorUtils.getColorResourceIdForNumber(signValue);
+                signColorResId = THColorUtils.getColorResourceIdForNumber(signValue, fallbackColorResId);
             }
             signSpanBuilder = initSpanned(getConditionalSignPrefix(), boldSign, signColorResId);
         }
@@ -319,7 +325,7 @@ public class THSignedNumber
 
     public static String removeTrailingZeros(@NonNull String formattedNumber)
     {
-        if (formattedNumber.contains("."))
+        if (formattedNumber.contains(DECIMAL_SEPARATOR))
         {
             int length = formattedNumber.length();
             do
@@ -330,7 +336,7 @@ public class THSignedNumber
 
             formattedNumber = formattedNumber.substring(0, length + 1);
 
-            if (formattedNumber.endsWith("."))
+            if (formattedNumber.endsWith(DECIMAL_SEPARATOR))
             {
                 formattedNumber = formattedNumber.substring(0, length);
             }
@@ -341,10 +347,11 @@ public class THSignedNumber
     public static StringBuilder getStringFormat(int precision)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("#,###");
+        String toAppend = "#,###";
+        sb.append(toAppend);
         if (precision > 0)
         {
-            sb.append('.');
+            sb.append(".");
             for (int i = 0; i < precision; ++i)
             {
                 sb.append('#');

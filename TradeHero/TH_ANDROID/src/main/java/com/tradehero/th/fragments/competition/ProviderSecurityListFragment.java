@@ -19,13 +19,16 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecurityListFragment;
 import com.tradehero.th.fragments.security.SecuritySearchProviderFragment;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
+import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
 import com.tradehero.th.loaders.security.SecurityListPagedLoader;
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.SubscriptionList;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -47,11 +51,13 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     protected ProviderDTO providerDTO;
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
 
     private MenuItem wizardButton;
+    @NonNull protected SubscriptionList subscriptions;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -75,6 +81,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
             this.providerId = getProviderId(getArguments());
         }
         this.webViewTHIntentPassedListener = new ProviderSecurityListWebViewTHIntentPassedListener();
+        this.subscriptions = new SubscriptionList();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -87,12 +94,20 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         //THLog.i(TAG, "onCreateOptionsMenu");
         super.onCreateOptionsMenu(menu, inflater);
         displayTitle();
-        inflater.inflate(R.menu.provider_security_list_menu, menu);
+    }
 
-        wizardButton = menu.findItem(R.id.btn_wizard);
-        if (wizardButton != null)
+    @Override public void onPrepareOptionsMenu(Menu menu)
+    {
+        super.onPrepareOptionsMenu(menu);
+        if(providerDTO != null)
         {
-            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
+            getActivity().getMenuInflater().inflate(R.menu.provider_security_list_menu, menu);
+
+            wizardButton = menu.findItem(R.id.btn_wizard);
+            if (wizardButton != null)
+            {
+                wizardButton.setVisible(providerDTO.hasWizard());
+            }
         }
     }
 
@@ -129,6 +144,12 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.webViewFragment = null;
     }
 
+    @Override public void onStop()
+    {
+        subscriptions.unsubscribe();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         DeviceUtil.dismissKeyboard(getActivity());
@@ -143,9 +164,9 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     protected void fetchProviderDTO()
     {
-        AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(createProviderCacheObserver());
+        subscriptions.add(AndroidObservable.bindFragment(this, providerCache.get(this.providerId))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(createProviderCacheObserver()));
     }
 
     protected void prepareSecurityLoader()
@@ -158,6 +179,7 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         this.providerDTO = providerDTO;
 
         getActivity().invalidateOptionsMenu();
+        getActivity().supportInvalidateOptionsMenu();
 
         if (andDisplay)
         {
@@ -214,6 +236,16 @@ public class ProviderSecurityListFragment extends SecurityListFragment
     {
         Bundle args = new Bundle();
         SecuritySearchProviderFragment.putProviderId(args, providerId);
+        if(providerDTO != null
+                && providerDTO.associatedPortfolio != null
+                && providerDTO.associatedPortfolio.assetClass != null)
+        {
+            SecuritySearchProviderFragment.putAssetClass(args, providerDTO.associatedPortfolio.assetClass);
+        }
+        else
+        {
+            SecuritySearchProviderFragment.putAssetClass(args, AssetClass.STOCKS);
+        }
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
@@ -266,11 +298,10 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         {
             SecurityCompactDTO securityCompactDTO = (SecurityCompactDTO) parent.getItemAtPosition(position);
             Bundle args = new Bundle();
-            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            BuySellStockFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
+            BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+            BuySellFragment.putApplicablePortfolioId(args, getApplicablePortfolioId());
             args.putBundle(BuySellStockFragment.BUNDLE_KEY_PROVIDER_ID_BUNDLE, providerId.getArgs());
-            // TODO use other positions
-            navigator.get().pushFragment(BuySellStockFragment.class, args);
+            navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }
 

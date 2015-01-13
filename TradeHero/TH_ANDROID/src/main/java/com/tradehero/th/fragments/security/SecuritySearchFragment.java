@@ -11,17 +11,16 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.key.SearchSecurityListType;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.BaseSearchRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -37,13 +36,51 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         SecurityItemView>
         implements HasSelectedItem
 {
+    private static final String BUNDLE_KEY_ASSET_CLASS = SecuritySearchProviderFragment.class.getName() + ".assetClass";
+
     @Inject SecurityCompactListCacheRx securityCompactListCache;
     @Inject Analytics analytics;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
+
+    @NonNull protected AssetClass assetClass;
+
+    public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
+    {
+        args.putInt(BUNDLE_KEY_ASSET_CLASS, assetClass.getValue());
+    }
+
+    @NonNull protected static AssetClass getAssetClass(@NonNull Bundle args)
+    {
+        AssetClass retrieved = AssetClass.create(args.getInt(BUNDLE_KEY_ASSET_CLASS, AssetClass.STOCKS.getValue()));
+        if (retrieved == null)
+        {
+            retrieved = AssetClass.STOCKS;
+        }
+        return retrieved;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        assetClass = getAssetClass(getArguments());
+    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+
+        switch (assetClass)
+        {
+            case STOCKS:
+                searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
+                break;
+            case WARRANT:
+                searchEmptyTextView.setText(R.string.trending_search_no_warrant_found);
+                break;
+            case FX:
+                searchEmptyTextView.setText(R.string.trending_search_no_forex_found);
+                break;
+        }
 
         //We set this to true so that the item will show selected state when pressed.
         listView.setDrawSelectorOnTop(true);
@@ -56,7 +93,18 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 
         if (mSearchTextField != null)
         {
-            mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
+            switch (assetClass)
+            {
+                case STOCKS:
+                    mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
+                    break;
+                case WARRANT:
+                    mSearchTextField.setHint(R.string.trending_search_empty_result_for_warrant);
+                    break;
+                case FX:
+                    mSearchTextField.setHint(R.string.trending_search_empty_result_for_forex);
+                    break;
+            }
         }
     }
     //</editor-fold>
@@ -111,16 +159,8 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         {
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        if (securityCompactDTO instanceof FxSecurityCompactDTO)
-        {
-            BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            navigator.get().pushFragment(BuySellFXFragment.class, args);
-        }
-        else
-        {
-            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            navigator.get().pushFragment(BuySellStockFragment.class, args);
-        }
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+        navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 
     @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)

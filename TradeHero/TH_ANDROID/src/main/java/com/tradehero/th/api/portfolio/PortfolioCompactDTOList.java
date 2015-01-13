@@ -18,7 +18,7 @@ public class PortfolioCompactDTOList extends BaseArrayList<PortfolioCompactDTO>
     {
         for (PortfolioCompactDTO portfolioCompactDTO : this)
         {
-            if (portfolioCompactDTO.isDefault())
+            if (portfolioCompactDTO.isDefault() && !portfolioCompactDTO.isFx())
             {
                 return portfolioCompactDTO;
             }
@@ -26,4 +26,15 @@ public class PortfolioCompactDTOList extends BaseArrayList<PortfolioCompactDTO>
         return null;
     }
 
+    @Nullable public PortfolioCompactDTO getDefaultFxPortfolio()
+    {
+        for (PortfolioCompactDTO portfolioCompactDTO : this)
+        {
+            if (portfolioCompactDTO.isDefault() && portfolioCompactDTO.isFx())
+            {
+                return portfolioCompactDTO;
+            }
+        }
+        return null;
+    }
 }

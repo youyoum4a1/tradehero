@@ -22,7 +22,7 @@
   <string name="leaderboard_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_followers_count"># Followers</string>
   <string name="leaderboard_comments_count"># Comments</string>
-  <string name="leaderboard_roi_annualized"><![CDATA[(annualized: <b>%s</b>)]]></string>
+  <string name="leaderboard_roi_annualized">(annualized: %1$s)</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_ranking_period" formatted="false">%s - %s</string>
   <string name="leaderboard_action_bar_help">Help</string>
@@ -36,10 +36,12 @@
   <string name="leaderboard_monthly_trade_count">Monthly Trade</string>
   <string name="leaderboard_monthly_avg_days_held">Avg. Days Held</string>
   <string name="leaderboard_win_ratio">(win ratio: <b>%s</b>%%)</string>
-  <string name="leaderboard_benchmark_roi_format"><![CDATA[<b>%s</b> (S&P 500)]]></string>
+  <string name="leaderboard_benchmark_roi_format">%1$s (S&amp;P 500)</string>
   <string name="leaderboard_volatility"><![CDATA[(volatility: <b>%.4f</b>)]]></string>
-  <string name="leaderboard_number_of_trade">(%s trade)</string>
-  <string name="leaderboard_number_of_trades_plural">(%s trades)</string>
+  <plurals name="leaderboard_number_of_trade">
+    <item quantity="one">(%1$s trade)</item>
+    <item quantity="other">(%1$s trades)</item>
+  </plurals>
   <string name="leaderboard_period">Period</string>
   <string name="leaderboard_not_ranked">Not ranked</string>
   <string name="leaderboard_show_friends_only">Show friends only</string>

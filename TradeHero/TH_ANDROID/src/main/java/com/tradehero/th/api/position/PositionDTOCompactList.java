@@ -6,7 +6,6 @@ import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.utils.SecurityUtils;
 import timber.log.Timber;
 
 public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
@@ -55,53 +54,6 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     //<editor-fold desc="Net Sell Proceeds USD">
-
-    /**
-     * If it returns a negative number it means it will eat into the cash available.
-     */
-    public Double getMaxNetSellProceedsUsd(
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioId portfolioId,
-            boolean includeTransactionCostUsd)
-    {
-        return getMaxNetSellProceedsUsd(
-                quoteDTO,
-                portfolioId,
-                includeTransactionCostUsd,
-                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
-    }
-
-    /**
-     * If it returns a negative number it means it will eat into the cash available.
-     */
-    public Double getMaxNetSellProceedsUsd(
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioId portfolioId,
-            boolean includeTransactionCostUsd,
-            double txnCostUsd)
-    {
-        return getNetSellProceedsUsd(
-                getShareCountIn(portfolioId),
-                quoteDTO,
-                portfolioId,
-                includeTransactionCostUsd,
-                txnCostUsd);
-    }
-
-    public Double getNetSellProceedsUsd(
-            @Nullable Integer shareCount, // This Nullable is ok with Proguard
-            @Nullable QuoteDTO quoteDTO, // This Nullable is ok with Proguard
-            PortfolioId portfolioId,
-            boolean includeTransactionCostUsd)
-    {
-        return getNetSellProceedsUsd(
-                shareCount,
-                quoteDTO,
-                portfolioId,
-                includeTransactionCostUsd,
-                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
-    }
-
     public Double getNetSellProceedsUsd(
             Integer shareCount,
             QuoteDTO quoteDTO, // Do not add Nullable here as it is not ok with Proguard
@@ -120,55 +72,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
         return shareCount * bidUsd - (includeTransactionCostUsd ? txnCostUsd : 0);
     }
-
-    public Double getNetSellProceedsRefCcy(
-            @Nullable Integer shareCount,
-            @Nullable QuoteDTO quoteDTO, // This Nullable is ok with Proguard
-            PortfolioId portfolioId,
-            boolean includeTransactionCostUsd)
-    {
-        return getNetSellProceedsRefCcy(
-                shareCount,
-                quoteDTO,
-                portfolioId,
-                includeTransactionCostUsd,
-                SecurityUtils.DEFAULT_TRANSACTION_COST_USD);
-    }
-
-    public Double getNetSellProceedsRefCcy(
-            Integer shareCount,
-            @Nullable QuoteDTO quoteDTO, // This Nullable is ok with Proguard
-            PortfolioId portfolioId,
-            boolean includeTransactionCostUsd,
-            double txnCostUsd)
-    {
-        Double netProceedsUsd = getNetSellProceedsUsd(shareCount, quoteDTO, portfolioId, includeTransactionCostUsd, txnCostUsd);
-        if (netProceedsUsd == null || quoteDTO == null || quoteDTO.toUSDRate == null || quoteDTO.toUSDRate == 0)
-        {
-            return null;
-        }
-        return netProceedsUsd / quoteDTO.toUSDRate;
-    }
     //</editor-fold>
-
-    public Double getTotalSpentUsd(@Nullable PortfolioId portfolioId)
-    {
-        if (portfolioId == null)
-        {
-            return null;
-        }
-        Double total = null;
-        for (PositionDTOCompact positionDTO : this)
-        {
-            if (portfolioId.key.equals(positionDTO.portfolioId)
-                    && positionDTO.averagePriceRefCcy != null
-                    && positionDTO.shares != null)
-            {
-                total = (total == null ? 0 : total) + positionDTO.averagePriceRefCcy * positionDTO.shares;
-            }
-        }
-        return total;
-    }
 
     @Nullable public Double getSpentOnQuantityUsd(
             @NonNull Integer shareCount,
@@ -193,41 +97,6 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         }
         return total;
     }
-
-    //<editor-fold desc="Max Sellable Shares">
-    public Integer getMaxSellableShares(
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioCompactDTO portfolioCompactDTO)
-    {
-        return getMaxSellableShares(quoteDTO, portfolioCompactDTO, true);
-    }
-
-    public Integer getMaxSellableShares(
-            @Nullable QuoteDTO quoteDTO,
-            @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            boolean includeTransactionCost)
-    {
-        if (quoteDTO == null || portfolioCompactDTO == null)
-        {
-            return null;
-        }
-        double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
-        Integer shareCount = getShareCountIn(portfolioCompactDTO.getPortfolioId());
-        if(shareCount <0)
-        {
-            return shareCount;
-        }
-        Double netSellProceedsUsd = getMaxNetSellProceedsUsd(quoteDTO, portfolioCompactDTO.getPortfolioId(), includeTransactionCost, txnCostUsd);
-        if (netSellProceedsUsd == null)
-        {
-            return null;
-        }
-        netSellProceedsUsd += portfolioCompactDTO.getCashBalanceUsd();
-
-        // If we are underwater after a sell, we cannot sell
-        return netSellProceedsUsd < 0 ? 0 : shareCount;
-    }
-    //</editor-fold>
 
     public Double getUnRealizedPLRefCcy(
             @NonNull QuoteDTO quoteDTO,

@@ -2,25 +2,20 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
 import butterknife.InjectView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.models.security.WarrantDTOFormatter;
+import com.tradehero.th.models.number.THSignedMoney;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import javax.inject.Inject;
-import timber.log.Timber;
 
 public class WarrantSecurityItemView extends SecurityItemView
 {
     @InjectView(R.id.combined_strike_price_type) TextView combinedStrikePriceType;
     @InjectView(R.id.warrant_type) TextView warrantType;
     @InjectView(R.id.expiry_date) TextView expiryDate;
-
-    @Inject protected WarrantDTOFormatter warrantDTOFormatter;
 
     //<editor-fold desc="Constructors">
     public WarrantSecurityItemView(Context context)
@@ -90,7 +85,18 @@ public class WarrantSecurityItemView extends SecurityItemView
         {
             if (securityCompactDTO instanceof WarrantDTO)
             {
-                combinedStrikePriceType.setText(warrantDTOFormatter.getCombinedStrikePriceType(getContext(), (WarrantDTO) securityCompactDTO));
+                WarrantDTO warrantDTO = (WarrantDTO) securityCompactDTO;
+                if (warrantDTO.strikePrice != null)
+                {
+                    THSignedMoney.builder(warrantDTO.strikePrice)
+                            .currency(warrantDTO.strikePriceCcy)
+                            .build()
+                            .into(combinedStrikePriceType);
+                }
+                else
+                {
+                    combinedStrikePriceType.setText(R.string.na);
+                }
             }
             else
             {

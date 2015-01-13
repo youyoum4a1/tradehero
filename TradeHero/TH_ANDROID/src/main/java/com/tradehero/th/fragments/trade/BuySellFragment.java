@@ -59,7 +59,6 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -188,7 +187,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         alertCompactListCacheSubscription = null;
         unsubscribe(portfolioChangedSubscription);
         portfolioChangedSubscription = null;
-        detachPortfolioMenuSubscription();
+        unsubscribe(portfolioMenuSubscription);
+        portfolioMenuSubscription = null;
         stopListeningToBuySellDialog();
 
         super.onStop();
@@ -210,7 +210,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioCacheSubscription = null;
         unsubscribe(alertCompactListCacheSubscription);
         alertCompactListCacheSubscription = null;
-        detachPortfolioMenuSubscription();
+        unsubscribe(portfolioMenuSubscription);
+        portfolioMenuSubscription = null;
     }
 
     @Override public void onDestroy()
@@ -219,12 +220,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         abstractTransactionDialogFragment = null;
         portfolioObservable = null;
         super.onDestroy();
-    }
-
-    private void detachPortfolioMenuSubscription()
-    {
-        unsubscribe(portfolioMenuSubscription);
-        portfolioMenuSubscription = null;
     }
 
     private void stopListeningToBuySellDialog()
@@ -359,7 +354,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                     .map(pair -> pair.second)
                     .publish()
                     .refCount();
-            fetchPortfolio(purchaseApplicablePortfolioId);
+            fetchPortfolio();
             conditionalDisplayPortfolioChanged(purchaseApplicablePortfolioId);
         }
         else
@@ -372,9 +367,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
     }
 
-    protected void fetchPortfolio(OwnedPortfolioId purchaseApplicablePortfolioId)
+    protected void fetchPortfolio()
     {
-        unsubscribe(portfolioMenuSubscription);
+        unsubscribe(portfolioCacheSubscription);
         portfolioCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 portfolioObservable)
@@ -553,7 +548,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @OnClick(R.id.portfolio_selector_container)
     protected void showPortfolioSelector()
     {
-        detachPortfolioMenuSubscription();
+        unsubscribe(portfolioMenuSubscription);
         portfolioMenuSubscription = AndroidObservable.bindFragment(
                 this,
                 mSelectedPortfolioContainer.createMenuObservable())
@@ -746,22 +741,11 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         fetchPortfolioCompactList();
     }
 
-    @Override @NonNull protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
+    @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        return new BuySellPortfolioCompactListObserver();
+        super.handleReceivedPortfolioCompactList(portfolioCompactDTOs);
+        linkWith(portfolioCompactDTOs);
     }
 
-    protected class BuySellPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
-    {
-        @Override public void onNext(PortfolioCompactDTOList list)
-        {
-            super.onNext(list);
-            PortfolioCompactDTO defaultPortfolio = list.getDefaultPortfolio();
-            if (defaultPortfolio != null)
-            {
-                mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
-            }
-            setInitialSellQuantityIfCan();
-        }
-    }
+    protected abstract void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs);
 }

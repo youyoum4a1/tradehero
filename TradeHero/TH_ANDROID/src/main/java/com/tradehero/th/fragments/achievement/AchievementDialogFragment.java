@@ -18,9 +18,10 @@ import com.tradehero.th.api.achievement.key.AchievementCategoryId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -48,6 +49,12 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.achievement_dialog_fragment, container, false);
+    }
+
+    @Override protected void init()
+    {
+        super.init();
+        reportAnalytics(userAchievementDTO);
     }
 
     @Override protected void initView()
@@ -102,8 +109,13 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     private void displayDollarsEarned(float dollars)
     {
-        dollarEarned.setText(
-                THSignedMoney.builder(dollars).currency("TH$").signTypePlusMinusAlways().withSign().relevantDigitCount(1).build().toString());
+        THSignedMoney.builder(dollars)
+                .currency(SecurityUtils.DEFAULT_VIRTUAL_CASH_BONUS_CURRENCY_DISPLAY)
+                .signTypePlusMinusAlways()
+                .withSign()
+                .relevantDigitCount(1)
+                .build()
+                .into(dollarEarned);
     }
 
     private class CategoryCacheObserver implements Observer<Pair<AchievementCategoryId, AchievementCategoryDTO>>
@@ -116,8 +128,6 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
                 achievementProgressIndicator.setAchievementDef(pair.second.achievementDefs, userAchievementDTO.achievementDef.achievementLevel);
                 achievementProgressIndicator.animateCurrentLevel();
             }
-
-            reportAnalytics(userAchievementDTOCopy);
         }
 
         @Override public void onCompleted()
@@ -129,8 +139,9 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         }
     }
 
-    private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy) {
-        Map<String,String> collections = Collections.emptyMap();
+    private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy)
+    {
+        Map<String, String> collections = new HashMap<>();
         collections.put(AnalyticsConstants.Trigger, AnalyticsConstants.Clicked);
         collections.put(AnalyticsConstants.Type, userAchievementDTOCopy.achievementDef.thName);
         collections.put(AnalyticsConstants.Level, String.valueOf(userAchievementDTOCopy.achievementDef.achievementLevel));

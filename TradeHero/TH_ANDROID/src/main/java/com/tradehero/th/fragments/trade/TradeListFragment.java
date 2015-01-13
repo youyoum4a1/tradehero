@@ -26,6 +26,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.position.PositionDTOKeyFactory;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
@@ -75,6 +76,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
     @Inject SecurityActionDialogFactory securityActionDialogFactory;
+    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -300,7 +302,8 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                         .map(pair -> pair.second)
                         .subscribe(
                                 this::linkWith,
-                                error -> {});
+                                error -> {
+                                });
             }
         }
     }
@@ -463,28 +466,21 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     protected void handleBuySellRequested(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         Bundle args = new Bundle();
-        if (this.securityCompactDTO instanceof FxSecurityCompactDTO)
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
         {
-            BuySellFXFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
-            BuySellFXFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            // TODO add command to go direct to pop-up
-            if (navigator != null)
-            {
-                navigator.get().pushFragment(BuySellFXFragment.class, args);
-            }
+            BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
-        else
+        if (positionDTO != null && positionDTO.getOwnedPortfolioId() != null)
         {
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
-            {
-                BuySellStockFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-            }
-            BuySellStockFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-            if (navigator != null)
-            {
-                navigator.get().pushFragment(BuySellStockFragment.class, args);
-            }
+            BuySellFragment.putApplicablePortfolioId(args, positionDTO.getOwnedPortfolioId());
+        }
+        BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
+
+        if (navigator != null)
+        {
+            // TODO add command to go direct to pop-up
+            navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }
 
