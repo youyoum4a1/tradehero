@@ -369,8 +369,7 @@ public class PositionListFragment
     {
         if (getPositionsDTOKey instanceof OwnedPortfolioId)
         {
-            if (currentUserId.toUserBaseKey().equals(((OwnedPortfolioId) getPositionsDTOKey).getUserBaseKey())
-                    && portfolioSubscription == null)
+            if (portfolioSubscription == null)
             {
                 portfolioSubscription = AndroidObservable.bindFragment(
                         this,
@@ -380,7 +379,6 @@ public class PositionListFragment
                                 error -> THToast.show(R.string.error_fetch_portfolio_info)
                         );
             }
-            // We do not need to fetch for other players
         }
         // We do not care for now about those that are loaded with LeaderboardMarkUserId
     }
