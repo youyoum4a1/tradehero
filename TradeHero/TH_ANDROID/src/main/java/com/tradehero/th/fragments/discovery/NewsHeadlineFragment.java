@@ -46,6 +46,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static butterknife.ButterKnife.findById;
 import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
@@ -169,7 +170,9 @@ public class NewsHeadlineFragment extends Fragment
 
         newsSubject = PublishSubject.create();
         subscriptions = new CompositeSubscription();
-        subscriptions.add(newsSubject.subscribe(mNewsAdapter::setItems));
+        subscriptions.add(newsSubject.subscribe(
+                mNewsAdapter::setItems,
+                e -> Timber.e(e, "Gotcha")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
