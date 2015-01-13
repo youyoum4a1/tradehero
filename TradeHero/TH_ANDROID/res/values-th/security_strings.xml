@@ -17,9 +17,9 @@
   <string name="security_news">ข่าว</string>
 
   <!-- Warrant info -->
-  <string name="warrant_type_call">สิทธิในการซื้อ (Call)</string>
-  <string name="warrant_type_put">สิทธิในการขาย (Put)</string>
-  <string name="warrant_price_header">ราคา</string>
+  <!--<string name="warrant_type_call">สิทธิในการซื้อ (Call)</string>-->
+  <!--<string name="warrant_type_put">สิทธิในการขาย (Put)</string>-->
+  <!--<string name="warrant_price_header">ราคา</string>-->
   <string name="warrant_code_header">รหัส</string>
   <string name="warrant_strike_header">ราคาใช้สิทธิ</string>
   <string name="warrant_expiry_header">วันซื้อขายสุดท้าย</string>
