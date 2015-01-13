@@ -1,10 +1,11 @@
 package com.tradehero.th.models.alert;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.MakePairFunc2;
 import javax.inject.Inject;
 import rx.Observable;
 
@@ -12,23 +13,26 @@ public class SecurityAlertCountingHelper
 {
     @NonNull private final UserProfileCacheRx userProfileCache;
     @NonNull private final AlertCompactListCacheRx alertCompactListCache;
+    @NonNull private final SystemStatusCache systemStatusCache;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityAlertCountingHelper(
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull AlertCompactListCacheRx alertCompactListCache)
+            @NonNull AlertCompactListCacheRx alertCompactListCache,
+            @NonNull SystemStatusCache systemStatusCache)
     {
         this.userProfileCache = userProfileCache;
         this.alertCompactListCache = alertCompactListCache;
+        this.systemStatusCache = systemStatusCache;
     }
     //</editor-fold>
 
-    public Observable<AlertSlotDTO> getAlertSlots(UserBaseKey userBaseKey)
+    @NonNull public Observable<AlertSlotDTO> getAlertSlots(@NonNull UserBaseKey userBaseKey)
     {
         return Observable.zip(
                 userProfileCache.get(userBaseKey),
                 alertCompactListCache.get(userBaseKey),
-                new MakePairFunc2<>())
-            .map(pair -> new AlertSlotDTO(pair.first.second, pair.second.second));
+                systemStatusCache.get(new SystemStatusKey()),
+                (u, a, s) -> new AlertSlotDTO(u.second, a.second, s.second));
     }
 }
