@@ -30,8 +30,7 @@ public class THSignedNumber
     public static final boolean WITHOUT_SIGN = false;
     public static final boolean USE_DEFAULT_COLOR = true;
     public static final boolean DO_NOT_USE_DEFAULT_COLOR = false;
-    private static String DECIMAL_SEPARATOR = String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator());
-    private static String THOUSAND_SEPARATOR = String.valueOf(DecimalFormatSymbols.getInstance().getGroupingSeparator());
+    public static String DECIMAL_SEPARATOR = String.valueOf(DecimalFormatSymbols.getInstance().getDecimalSeparator());
     //</editor-fold>
 
     private final boolean withSign;
@@ -348,11 +347,11 @@ public class THSignedNumber
     public static StringBuilder getStringFormat(int precision)
     {
         StringBuilder sb = new StringBuilder();
-        String toAppend = "#" + THOUSAND_SEPARATOR + "###";
+        String toAppend = "#,###";
         sb.append(toAppend);
         if (precision > 0)
         {
-            sb.append(DECIMAL_SEPARATOR);
+            sb.append(".");
             for (int i = 0; i < precision; ++i)
             {
                 sb.append('#');
