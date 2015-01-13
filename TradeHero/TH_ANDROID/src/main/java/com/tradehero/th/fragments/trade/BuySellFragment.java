@@ -59,7 +59,6 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -742,18 +741,10 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         fetchPortfolioCompactList();
     }
 
-    @Override @NonNull protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
+    @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        return new BuySellPortfolioCompactListObserver();
-    }
-
-    protected class BuySellPortfolioCompactListObserver extends BasePurchaseManagementPortfolioCompactListObserver
-    {
-        @Override public void onNext(PortfolioCompactDTOList list)
-        {
-            super.onNext(list);
-            linkWith(list);
-        }
+        super.handleReceivedPortfolioCompactList(portfolioCompactDTOs);
+        linkWith(portfolioCompactDTOs);
     }
 
     protected abstract void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs);

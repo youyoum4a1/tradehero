@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -124,7 +123,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         }
         else
         {
-            prepareApplicableOwnedPortolioId(list.getDefaultPortfolio());
+            handleReceivedPortfolioCompactList(list);
         }
     }
 
@@ -134,7 +133,22 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         portfolioCompactListCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 currentUserPortfolioCompactListObservable)
-                .subscribe(createCurrentUserPortfolioCompactListObserver());
+                .subscribe(
+                        this::handleReceivedPortfolioCompactList,
+                        e -> {
+                            Timber.e(e, "Failed fetching portfolios list");
+                            THToast.show(R.string.error_fetch_portfolio_list_info);
+                        });
+    }
+
+    protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        prepareApplicableOwnedPortolioId(getPreferredApplicablePortfolio(portfolioCompactDTOs));
+    }
+
+    @Nullable protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        return portfolioCompactDTOs.getDefaultPortfolio();
     }
 
     protected void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs)
@@ -210,34 +224,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         requestCode = userInteractor.run(uiRequest);
     }
     //endregion
-
-    protected Observer<PortfolioCompactDTOList> createCurrentUserPortfolioCompactListObserver()
-    {
-        return new BasePurchaseManagementPortfolioCompactListObserver();
-    }
-
-    protected class BasePurchaseManagementPortfolioCompactListObserver implements Observer<PortfolioCompactDTOList>
-    {
-        protected BasePurchaseManagementPortfolioCompactListObserver()
-        {
-            // no unexpected creation
-        }
-
-        @Override public void onNext(PortfolioCompactDTOList list)
-        {
-            prepareApplicableOwnedPortolioId(list.getDefaultPortfolio());
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed fetching portfolios list");
-            THToast.show(R.string.error_fetch_portfolio_list_info);
-        }
-    }
 
     //region Creation and Listener
     protected THPurchaseReporter.OnPurchaseReportedListener createPurchaseReportedListener()

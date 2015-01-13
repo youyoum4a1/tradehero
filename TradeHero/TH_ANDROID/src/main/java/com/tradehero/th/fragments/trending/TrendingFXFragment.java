@@ -16,6 +16,8 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -88,6 +90,11 @@ public class TrendingFXFragment extends TrendingBaseFragment
         unsubscribe(waitForEnrolledSubscription);
         unsubscribe(fetchFxPriceSubscription);
         super.onStop();
+    }
+
+    @Nullable @Override protected PortfolioCompactDTO getPreferredApplicablePortfolio(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        return portfolioCompactDTOs.getDefaultFxPortfolio();
     }
 
     @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
