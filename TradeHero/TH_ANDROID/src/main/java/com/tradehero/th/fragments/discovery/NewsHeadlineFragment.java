@@ -65,7 +65,7 @@ public class NewsHeadlineFragment extends Fragment
     private AbsListView.OnScrollListener scrollListener;
     private Observable<PaginationDTO> paginationObservable;
     protected CompositeSubscription subscriptions;
-    private NewsType newsType;
+    protected NewsType newsType;
 
     @OnItemClick(R.id.discovery_news_list) void handleNewsItemClick(AdapterView<?> parent, View view, int position, long id)
     {
@@ -149,7 +149,8 @@ public class NewsHeadlineFragment extends Fragment
         scrollListener = new QuickReturnListViewOnScrollListener(
                 QuickReturnType.HEADER, findById(getActivity(), R.id.news_carousel_wrapper), -headerHeight, null, 0);
 
-        ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter = new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
+        ArrayDTOAdapter<NewsItemCompactDTO, NewsHeadlineViewLinear> mNewsAdapter =
+                new ArrayDTOAdapter<>(getActivity(), R.layout.news_headline_item_view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.GONE);
@@ -163,7 +164,7 @@ public class NewsHeadlineFragment extends Fragment
         paginationObservable = createPaginationObservable()
                 // convert to hot observable coz replaceNewsItemListView can be call more than once
                 .share()
-                // pulling down from top always refresh the list
+                        // pulling down from top always refresh the list
                 .distinctUntilChanged(key -> key.hashCode() + (key.page != 1 ? 0 : random.nextInt()));
 
         newsSubject = PublishSubject.create();
@@ -173,7 +174,6 @@ public class NewsHeadlineFragment extends Fragment
 
         activateNewsItemListView();
     }
-
 
     private Observable<PaginationDTO> createPaginationObservable()
     {
@@ -200,12 +200,12 @@ public class NewsHeadlineFragment extends Fragment
     private Observable<List<NewsItemCompactDTO>> createNewsListKeyPaginationObservable()
     {
         return PaginationObservable.createFromRange(paginationObservable, (Func1<PaginationDTO, Observable<List<NewsItemCompactDTO>>>)
-                key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
-                        .flatMapIterable(PaginatedDTO::getData)
-                        .toList()
+                        key -> newsServiceWrapper.getNewsRx(NewsItemListKeyHelper.copy(newsItemListKey, key))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(newsItemCompactDTOPaginatedDTO -> lastPaginationInfoDTO = newsItemCompactDTOPaginatedDTO.getPagination())
+                                .flatMapIterable(PaginatedDTO::getData)
+                                .toList()
         );
     }
 

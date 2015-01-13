@@ -48,6 +48,8 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
     {
         super.onCreate(savedInstanceState);
 
+        newsType = NewsType.Region;
+
         if (countryLanguagePreference.isSet())
         {
             newsItemListKey = newsItemListKeyFromPref();
