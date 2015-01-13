@@ -61,4 +61,7 @@ public class Constants
 
     //Notification Id
     public final static int NOTIFICATION_ID = 999;
+
+    //Manager Account
+    public final static boolean isManager = true;
 }

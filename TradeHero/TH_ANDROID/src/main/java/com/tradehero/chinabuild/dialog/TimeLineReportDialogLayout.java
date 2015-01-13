@@ -8,7 +8,13 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.user.UserProfileCache;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
+
+import javax.inject.Inject;
 
 /**
  * Created by palmer on 14/12/12.
@@ -17,10 +23,15 @@ public class TimeLineReportDialogLayout extends LinearLayout{
 
     private TimeLineReportMenuClickListener menuClickListener;
 
+    @Inject UserProfileCache userProfileCache;
+    @Inject CurrentUserId currentUserId;
+
     @InjectView(R.id.textview_discovery_discuss_send_report_a)TextView reportATV;
     @InjectView(R.id.textview_discovery_discuss_send_report_b)TextView reportBTV;
     @InjectView(R.id.textview_discovery_discuss_send_report_c)TextView reportCTV;
     @InjectView(R.id.textview_discovery_discuss_send_report_d)TextView reportDTV;
+    @InjectView(R.id.textview_discovery_discuss_send_report_e)TextView reportETV;
+    @InjectView(R.id.view_divider_discuss_report_content_e)View reportEDividerV;
 
     public TimeLineReportDialogLayout(Context context) {
         super(context);
@@ -77,6 +88,28 @@ public class TimeLineReportDialogLayout extends LinearLayout{
                 }
             }
         });
+        reportETV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(menuClickListener!=null){
+                    menuClickListener.onItemClickListener(5);
+                }
+            }
+        });
+
+        if(userProfileCache!=null && currentUserId!=null && Constants.isManager) {
+            UserProfileDTO meProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if (meProfileDTO != null && meProfileDTO.isAdmin) {
+                reportETV.setVisibility(View.VISIBLE);
+                reportEDividerV.setVisibility(View.VISIBLE);
+            }else{
+                reportETV.setVisibility(View.GONE);
+                reportEDividerV.setVisibility(View.GONE);
+            }
+        }else{
+            reportETV.setVisibility(View.GONE);
+            reportEDividerV.setVisibility(View.GONE);
+        }
     }
 
     @Override

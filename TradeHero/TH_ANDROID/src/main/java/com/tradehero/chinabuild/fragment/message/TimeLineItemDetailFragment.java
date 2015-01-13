@@ -109,9 +109,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @InjectView(R.id.rlAllView) RelativeLayout rlAllView;
 
     @Inject UserProfileCache userProfileCache;
+    @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject CurrentUserId currentUserId;
 
     private LinearLayout llDisscurssOrNews;
     private ImageView imgSecurityTLUserHeader;

@@ -477,6 +477,7 @@
   <string name="discovery_discuss_send_report_b">灌水刷屏</string>
   <string name="discovery_discuss_send_report_c">诽谤造谣</string>
   <string name="discovery_discuss_send_report_d">暴力色情</string>
+  <string name="discovery_discuss_send_report_e">管理员封号</string>
   <string name="discovery_discuss_report_successfully">举报成功，我们会及时处理</string>
   <string name="discovery_discuss_apply_successfully">采纳成功</string>
   <string name="discovery_discuss_dlg_btn_ok">确认</string>

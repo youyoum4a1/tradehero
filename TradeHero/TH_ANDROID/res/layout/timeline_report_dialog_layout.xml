@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                             android:orientation="vertical"
-                                                             android:layout_width="match_parent"
-                                                             android:layout_height="wrap_content"
-                                                             android:background="@color/white">
+                                                            android:orientation="vertical"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="wrap_content"
+                                                            android:background="@color/white">
     <TextView android:id="@+id/textview_discovery_discuss_send_report_a"
               android:layout_width="match_parent"
               android:layout_height="?android:attr/listPreferredItemHeight"
@@ -45,5 +45,18 @@
               android:gravity="center_vertical|center_horizontal"
               android:textSize="17sp"
               android:text="@string/discovery_discuss_send_report_d"
+              android:textColor="@color/black"/>
+
+    <View android:layout_width="match_parent" android:layout_height="1px"
+          android:background="@color/discovery_discuss_reward_gray"
+          android:id="@+id/view_divider_discuss_report_content_e"
+            />
+    <TextView android:id="@+id/textview_discovery_discuss_send_report_e"
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/listPreferredItemHeight"
+              android:textAppearance="?android:attr/textAppearanceListItem"
+              android:gravity="center_vertical|center_horizontal"
+              android:textSize="17sp"
+              android:text="@string/discovery_discuss_send_report_e"
               android:textColor="@color/black"/>
 </com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout>
