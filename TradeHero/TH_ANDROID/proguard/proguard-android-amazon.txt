@@ -4,3 +4,6 @@
 -dontwarn com.amazon.**
 -keep class com.amazon.device.iap.model.** { *; }
 -keepattributes *Annotation*
+
+# Missing Google Play Services
+-dontwarn com.google.android.gms.**
