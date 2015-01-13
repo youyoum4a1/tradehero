@@ -21,7 +21,7 @@ import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -141,7 +141,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     private void reportAnalytics(UserAchievementDTO userAchievementDTOCopy)
     {
-        Map<String, String> collections = Collections.emptyMap();
+        Map<String, String> collections = new HashMap<>();
         collections.put(AnalyticsConstants.Trigger, AnalyticsConstants.Clicked);
         collections.put(AnalyticsConstants.Type, userAchievementDTOCopy.achievementDef.thName);
         collections.put(AnalyticsConstants.Level, String.valueOf(userAchievementDTOCopy.achievementDef.achievementLevel));

@@ -122,7 +122,6 @@ import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
