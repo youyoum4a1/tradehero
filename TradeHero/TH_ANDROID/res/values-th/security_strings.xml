@@ -2,16 +2,16 @@
 <resources>
 
   <!-- Security Info -->
-  <string name="security_previous_close">ก่อนหน้า ปิด</string>
+  <string name="security_previous_close">กอนหนา</string>
   <string name="security_open">เปิด</string>
-  <string name="security_days_high">สูง</string>
-  <string name="security_days_low">ต่ำ</string>
+  <string name="security_days_high">สงสด</string>
+  <string name="security_days_low">ตสด</string>
   <string name="security_market_cap">มูลค่าตลาด</string>
-  <string name="security_pe_ratio">พีอีเรโช (P/E Ratio)</string>
+  <string name="security_pe_ratio">P/E</string>
   <string name="security_eps">กำไรต่อหุ้น (EPS)</string>
-  <string name="security_volume">ปริมาณการซื้อขาย</string>
+  <string name="security_volume">ปรมาณการซอขาย</string>
   <string name="security_avg_volume">เฉลี่ย ปริมาณการซื้อขาย</string>
-  <string name="security_market_status">สภาวะตลาด</string>
+  <string name="security_market_status">ปรมาณการซอขายเฉลย</string>
   <string name="security_info">ข้อมูล</string>
   <string name="security_discussions">การสนทนา</string>
   <string name="security_news">ข่าว</string>
@@ -20,16 +20,16 @@
   <!--<string name="warrant_type_call">สิทธิในการซื้อ (Call)</string>-->
   <!--<string name="warrant_type_put">สิทธิในการขาย (Put)</string>-->
   <!--<string name="warrant_price_header">ราคา</string>-->
-  <string name="warrant_code_header">รหัส</string>
+  <string name="warrant_code_header">ชอยอ</string>
   <string name="warrant_strike_header">ราคาใช้สิทธิ</string>
-  <string name="warrant_expiry_header">วันซื้อขายสุดท้าย</string>
+  <string name="warrant_expiry_header">วนซอขายสดทาย</string>
   <string name="warrant_info_header_warrant_data">ข้อมูลวอร์แรนท์</string>
   <string name="warrant_info_type">ประเภท</string>
   <string name="warrant_info_code">รหัส</string>
   <string name="warrant_info_expiry">หมดอายุ</string>
-  <string name="warrant_info_strike_price">ราคาใช้สิทธิ</string>
-  <string name="warrant_info_underlying">หลักทรัพย์อ้างอิง</string>
-  <string name="warrant_info_issuer">ผู้ออกหลักทรัพย์</string>
+  <string name="warrant_info_strike_price">ราคาใชสทธ</string>
+  <string name="warrant_info_underlying">หนอางอง</string>
+  <string name="warrant_info_issuer">ผออก</string>
 
   <string name="error_find_security_id_to_int">ไม่พบหลักทรัพย์นี้</string>
   <string name="error_fetch_security_list_info">เกิดข้อผิดพลาด เมื่อได้รับรายการหลักทรัพย์</string>
