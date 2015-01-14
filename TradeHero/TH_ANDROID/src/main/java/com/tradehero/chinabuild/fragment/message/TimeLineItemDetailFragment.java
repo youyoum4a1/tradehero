@@ -150,6 +150,18 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private final int DIALOG_TYPE_DELETE_COMMENT = 2;
     private final int DIALOG_TYPE_APPLY_COMMENT = 3;
 
+
+    //Timeline Operater
+    private LinearLayout timelineOperaterLL;
+    private LinearLayout timeline_detail_llTLPraise;
+    private TextView timeline_detail_btnTLPraise;
+    private TextView timeline_detail_tvTLPraise;
+    private LinearLayout timeline_detail_llTLPraiseDown;
+    private TextView timeline_detail_btnTLPraiseDown;
+    private TextView timeline_detail_tvTLPraiseDown;
+    private LinearLayout timeline_detail_llTLComment;
+    private TextView timeline_detail_tvTLComment;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -202,6 +214,26 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.rlAllView);
         }
         initRefreshView();
+
+        initTimelineOperaterView(view);
+        listTimeLine.getRefreshableView().setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i2, int i3) {
+                if(timelineOperaterLL==null){
+                    return;
+                }
+                int currentPosition = absListView.getFirstVisiblePosition();
+                if(currentPosition > 1){
+                    timelineOperaterLL.setVisibility(View.VISIBLE);
+                }else{
+                    timelineOperaterLL.setVisibility(View.GONE);
+                }
+            }
+        });
         return view;
     }
 
@@ -236,7 +268,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         });
     }
 
-    public void initView()
+    private void initView()
     {
         tvUserTLContent.setMaxLines(1000);
         listTimeLine.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
@@ -266,36 +298,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             {
                 onCommentClick(position);
             }
-
             @Override
-            public void OnTimeLinePraiseClicked(int position)
-            {
-
-            }
-
+            public void OnTimeLinePraiseClicked(int position){}
             @Override
-            public void OnTimeLinePraiseDownClicked(int position)
-            {
-
-            }
-
+            public void OnTimeLinePraiseDownClicked(int position){}
             @Override
-            public void OnTimeLineCommentsClicked(int position)
-            {
-
-            }
-
+            public void OnTimeLineCommentsClicked(int position){}
             @Override
-            public void OnTimeLineShareClicked(int position)
-            {
-
-            }
-
+            public void OnTimeLineShareClicked(int position){}
             @Override
-            public void OnTimeLineBuyClicked(int position)
-            {
-
-            }
+            public void OnTimeLineBuyClicked(int position){}
         });
     }
 
@@ -339,6 +351,22 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 tvIsReward.setText(getRewardCount());
             }
         }
+    }
+
+    private void initTimelineOperaterView(View parentView){
+        timelineOperaterLL = (LinearLayout)parentView.findViewById(R.id.linearlayout_timeline_detail_operater);
+        timeline_detail_llTLPraise = (LinearLayout)parentView.findViewById(R.id.timeline_detail_llTLPraise);
+        timeline_detail_btnTLPraise = (TextView)parentView.findViewById(R.id.timeline_detail_btnTLPraise);
+        timeline_detail_tvTLPraise = (TextView)parentView.findViewById(R.id.timeline_detail_tvTLPraise);
+        timeline_detail_llTLPraiseDown = (LinearLayout)parentView.findViewById(R.id.timeline_detail_llTLPraiseDown);
+        timeline_detail_btnTLPraiseDown = (TextView)parentView.findViewById(R.id.timeline_detail_btnTLPraiseDown);
+        timeline_detail_tvTLPraiseDown = (TextView)parentView.findViewById(R.id.timeline_detail_tvTLPraiseDown);
+        timeline_detail_llTLComment = (LinearLayout)parentView.findViewById(R.id.timeline_detail_llTLComment);
+        timeline_detail_tvTLComment = (TextView)parentView.findViewById(R.id.timeline_detail_tvTLComment);
+
+        timeline_detail_llTLPraise.setOnClickListener(this);
+        timeline_detail_llTLPraiseDown.setOnClickListener(this);
+        timeline_detail_llTLComment.setOnClickListener(this);
     }
 
     public void setDefaultReply()
@@ -539,10 +567,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
             btnTLPraise.setBackgroundResource(dto.voteDirection == 1 ? R.drawable.icon_praise_active : R.drawable.icon_praise_normal);
             btnTLPraiseDown.setBackgroundResource(dto.voteDirection == -1 ? R.drawable.icon_praise_down_active : R.drawable.icon_praise_down_normal);
-
             tvTLComment.setText("" + dto.commentCount);
             tvTLPraise.setText(Html.fromHtml(dto.getVoteUpString()));
             tvTLPraiseDown.setText(Html.fromHtml(dto.getVoteDownString()));
+
+
+            timeline_detail_btnTLPraise.setBackgroundResource(dto.voteDirection == 1 ? R.drawable.icon_praise_active : R.drawable.icon_praise_normal);
+            timeline_detail_btnTLPraiseDown.setBackgroundResource(dto.voteDirection == -1 ? R.drawable.icon_praise_down_active : R.drawable.icon_praise_down_normal);
+            timeline_detail_tvTLComment.setText("" + dto.commentCount);
+            timeline_detail_tvTLPraise.setText(Html.fromHtml(dto.getVoteUpString()));
+            timeline_detail_tvTLPraiseDown.setText(Html.fromHtml(dto.getVoteDownString()));
         }
     }
 
@@ -695,15 +729,15 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 openUserProfile(((TimelineItemDTO) getAbstractDiscussionCompactDTO()).user.id);
             }
         }
-        else if (view.getId() == R.id.llTLPraise)
+        else if (view.getId() == R.id.llTLPraise || view.getId() == R.id.timeline_detail_llTLPraise)
         {
             clickedPraise();
         }
-        else if (view.getId() == R.id.llTLPraiseDown)
+        else if (view.getId() == R.id.llTLPraiseDown || view.getId() == R.id.timeline_detail_llTLPraiseDown)
         {
             clickedPraiseDown();
         }
-        else if (view.getId() == R.id.llTLComment)
+        else if (view.getId() == R.id.llTLComment || view.getId() == R.id.timeline_detail_llTLComment)
         {
             AbstractDiscussionCompactDTO dto = getAbstractDiscussionCompactDTO();
             comments(dto);
@@ -745,7 +779,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
         displayDiscussOrNewsDTO();
         if(item.voteDirection != 0) {
-            btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
+            if(timelineOperaterLL!=null && timelineOperaterLL.getVisibility()==View.VISIBLE) {
+                timeline_detail_btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
+            }else{
+                btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
+            }
         }
     }
 
@@ -775,7 +813,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
         displayDiscussOrNewsDTO();
         if (item.voteDirection != 0) {
-            btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
+            if(timelineOperaterLL!=null && timelineOperaterLL.getVisibility()==View.VISIBLE) {
+                timeline_detail_btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
+            }else {
+                btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
+            }
         }
     }
 

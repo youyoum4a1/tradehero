@@ -1,76 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_fragment"
-    android:orientation="vertical"
-    >
-
-  <com.tradehero.common.widget.BetterViewAnimator
-      android:id="@+id/bvaViewAll"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
-
-      <com.tradehero.th.widget.TradeHeroProgressBar
-              android:id="@+id/tradeheroprogressbar_timeline_detail"
-              android:layout_width="@dimen/loading_logo_width"
-              android:layout_height="@dimen/loading_logo_height"
-              android:layout_gravity="center"
-              android:background="@drawable/logo"
-              />
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/rlAllView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_fragment"
+        android:orientation="vertical"
         >
 
-      <RelativeLayout
-          android:id="@+id/rlSend"
-          android:background="@drawable/tab_menu_bg"
-          android:layout_alignParentBottom="true"
-          android:layout_width="fill_parent"
-          android:layout_height="60dp">
-
-        <Button
-            android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:text="发送"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:background="@color/transparent"
-            android:textSize="16sp"
-            android:textColor="@color/tradehero_blue"/>
-
-        <EditText
-            android:id="@+id/edtSend"
+    <com.tradehero.common.widget.BetterViewAnimator
+            android:id="@+id/bvaViewAll"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:hint="@string/please_to_reply"
-            android:singleLine="true"
-            android:textSize="16sp"
-            android:maxLength="140"
-            android:layout_toLeftOf="@id/btnSend"/>
-      </RelativeLayout>
+            android:layout_height="fill_parent">
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
+                android:id="@+id/tradeheroprogressbar_timeline_detail"
+                android:layout_width="@dimen/loading_logo_width"
+                android:layout_height="@dimen/loading_logo_height"
+                android:layout_gravity="center"
+                android:background="@drawable/logo"
+                />
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/rlAllView"
+                >
+
+            <RelativeLayout
+                    android:id="@+id/rlSend"
+                    android:background="@drawable/tab_menu_bg"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp">
+
+                <Button
+                        android:id="@+id/btnSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="发送"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/transparent"
+                        android:textSize="16sp"
+                        android:textColor="@color/tradehero_blue"/>
+
+                <EditText
+                        android:id="@+id/edtSend"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:hint="@string/please_to_reply"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        android:maxLength="140"
+                        android:layout_toLeftOf="@id/btnSend"/>
+            </RelativeLayout>
 
 
-      <com.tradehero.chinabuild.listview.SecurityListView
-          xmlns:ptr="http://schemas.android.com/apk/res-auto"
-          ptr:ptrHeaderTextColor="@color/black"
-          android:id="@+id/listTimeLine"
-          android:scrollingCache="false"
-          android:layout_above="@id/rlSend"
-          android:fadingEdge="none"
-          android:background="@color/bg_fragment"
-          android:divider="@null"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent">
-      </com.tradehero.chinabuild.listview.SecurityListView>
+            <com.tradehero.chinabuild.listview.SecurityListView
+                    xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                    ptr:ptrHeaderTextColor="@color/black"
+                    android:id="@+id/listTimeLine"
+                    android:scrollingCache="false"
+                    android:layout_above="@id/rlSend"
+                    android:fadingEdge="none"
+                    android:background="@color/bg_fragment"
+                    android:divider="@null"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </com.tradehero.chinabuild.listview.SecurityListView>
 
-    </RelativeLayout>
-  </com.tradehero.common.widget.BetterViewAnimator>
+        </RelativeLayout>
+    </com.tradehero.common.widget.BetterViewAnimator>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="36dp" android:layout_weight="3"
+                  android:id="@+id/linearlayout_timeline_detail_operater" android:visibility="gone"
+                  android:background="#ffffff"
+                  android:orientation="horizontal">
+        <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/timeline_detail_llTLPraise"
+                android:gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <TextView android:id="@+id/timeline_detail_btnTLPraise"
+                      android:layout_width="15dp"
+                      android:layout_height="15dp"
+                      android:duplicateParentState="true"
+                      android:background="@drawable/icon_praise_normal"/>
+            <TextView
+                    android:id="@+id/timeline_detail_tvTLPraise"
+                    android:layout_marginLeft="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_xsmall"
+                    android:duplicateParentState="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#929292"
+                    android:text="赞"/>
+        </LinearLayout>
+
+        <View
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:background="@color/gray_normal"/>
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/timeline_detail_llTLPraiseDown"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <TextView android:id="@+id/timeline_detail_btnTLPraiseDown"
+                      android:layout_width="15dp"
+                      android:layout_height="15dp"
+                      android:duplicateParentState="true"
+                      android:background="@drawable/icon_praise_down_normal"/>
+            <TextView
+                    android:id="@+id/timeline_detail_tvTLPraiseDown"
+                    android:layout_marginLeft="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_xsmall"
+                    android:duplicateParentState="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#929292"
+                    android:text="踩"/>
+        </LinearLayout>
+
+
+        <View
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:background="@color/gray_normal"/>
+
+        <LinearLayout
+                android:id="@+id/timeline_detail_llTLComment"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent">
+
+            <TextView android:id="@+id/timeline_detail_btnTLComment"
+                      android:layout_width="15dp"
+                      android:layout_height="15dp"
+                      android:duplicateParentState="true"
+                      android:background="@drawable/icon_comment_xml"/>
+            <TextView
+                    android:id="@+id/timeline_detail_tvTLComment"
+                    android:layout_marginLeft="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_xsmall"
+                    android:duplicateParentState="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#929292"
+                    android:text="0"/>
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
 
