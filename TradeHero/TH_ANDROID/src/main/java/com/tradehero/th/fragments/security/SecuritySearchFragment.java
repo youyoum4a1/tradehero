@@ -42,14 +42,14 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     @Inject Analytics analytics;
     @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
-    @NonNull protected AssetClass assetClass;
+    @Nullable protected AssetClass assetClass;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
         args.putInt(BUNDLE_KEY_ASSET_CLASS, assetClass.getValue());
     }
 
-    @NonNull protected static AssetClass getAssetClass(@NonNull Bundle args)
+    @NonNull protected static AssetClass getAssetClassFromBundle(@NonNull Bundle args)
     {
         AssetClass retrieved = AssetClass.create(args.getInt(BUNDLE_KEY_ASSET_CLASS, AssetClass.STOCKS.getValue()));
         if (retrieved == null)
@@ -59,17 +59,26 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return retrieved;
     }
 
+    private AssetClass getAssetClass()
+    {
+        if(assetClass == null)
+        {
+            assetClass = getAssetClassFromBundle(getArguments());
+        }
+        return assetClass;
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        assetClass = getAssetClass(getArguments());
+        assetClass = getAssetClassFromBundle(getArguments());
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
-        switch (assetClass)
+        switch (getAssetClass())
         {
             case STOCKS:
                 searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
@@ -93,7 +102,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 
         if (mSearchTextField != null)
         {
-            switch (assetClass)
+            switch (getAssetClass())
             {
                 case STOCKS:
                     mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
