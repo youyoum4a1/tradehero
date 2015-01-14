@@ -168,5 +168,5 @@
   <string name="retry">ลองใหม่</string>
   <string name="stocks">หุ้น</string>
   <string name="fx">เงินตราต่างประเทศ (FX)</string>
-  <!--<string name="warrants_all">วอร์แรนท์ทั้งหมด</string>-->
+  <string name="warrants_all">All DW</string>
 </resources>
