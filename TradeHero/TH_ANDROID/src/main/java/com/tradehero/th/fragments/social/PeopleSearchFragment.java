@@ -116,29 +116,16 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
         }
     }
 
-    @Override @NonNull protected Observer<Pair<UserListType, UserSearchResultDTOList>> createListCacheObserver(@NonNull UserListType key)
+    @Override protected void onNext(UserListType key, UserSearchResultDTOList value)
     {
-        return new UserBaseKeyListCacheObserver(key);
+        super.onNext(key, value);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
     }
 
-    protected class UserBaseKeyListCacheObserver extends ListCacheObserver
+    @Override protected void onError(UserListType key, Throwable error)
     {
-        protected UserBaseKeyListCacheObserver(@NonNull UserListType key)
-        {
-            super(key);
-        }
-
-        @Override public void onNext(Pair<UserListType, UserSearchResultDTOList> pair)
-        {
-            super.onNext(pair);
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
-        }
-
-        @Override public void onError(Throwable error)
-        {
-            super.onError(error);
-            THToast.show(getString(R.string.error_fetch_people_list_info));
-            Timber.e("Error fetching the list of securities " + key, error);
-        }
+        super.onError(key, error);
+        THToast.show(getString(R.string.error_fetch_people_list_info));
+        Timber.e("Error fetching the list of securities " + key, error);
     }
 }

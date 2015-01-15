@@ -284,11 +284,38 @@ abstract public class BasePagedListRxFragment<
                                 pageToLoad,
                                 removed);
                     })
-                    .subscribe(createListCacheObserver(pagedKey));
+                    .subscribe(
+                            pair -> onNext(pair.first, pair.second),
+                            error -> onError(pagedKey, error));
             pagedSubscriptions.put(
                     pageToLoad,
                     subscription);
         }
+    }
+
+    protected void onNext(PagedDTOKeyType key, ContainerDTOType value)
+    {
+        Timber.d("Page loaded: %d", key.getPage());
+        pagedDtos.put(key.getPage(), value.getList());
+
+        loadAdapterWithAvailableData();
+
+        nearEndScrollListener.lowerEndFlag();
+        if (value.size() == 0)
+        {
+            nearEndScrollListener.deactivateEnd();
+            if (key.getPage() == FIRST_PAGE)
+            {
+                itemViewAdapter.setNotifyOnChange(false);
+                itemViewAdapter.clear();
+                itemViewAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    protected void onError(PagedDTOKeyType key, Throwable error)
+    {
+        nearEndScrollListener.lowerEndFlag();
     }
 
     abstract public boolean canMakePagedDtoKey();
@@ -329,55 +356,5 @@ abstract public class BasePagedListRxFragment<
     protected void handleDtoClicked(DTOType clicked)
     {
         this.selectedItem = clicked;
-    }
-
-    @NonNull protected Observer<Pair<PagedDTOKeyType, ContainerDTOType>> createListCacheObserver(@NonNull PagedDTOKeyType key)
-    {
-        return new ListCacheObserver(key);
-    }
-
-    protected class ListCacheObserver
-            implements Observer<Pair<PagedDTOKeyType, ContainerDTOType>>
-    {
-        @NonNull protected final PagedDTOKeyType key;
-
-        protected ListCacheObserver(@NonNull PagedDTOKeyType key)
-        {
-            this.key = key;
-        }
-
-        @Override public void onNext(Pair<PagedDTOKeyType, ContainerDTOType> pair)
-        {
-            Timber.d("Page loaded: %d", key.getPage());
-            BasePagedListRxFragment.this.onNext(pair.first, pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable error)
-        {
-            nearEndScrollListener.lowerEndFlag();
-        }
-    }
-
-    protected void onNext(PagedDTOKeyType key, ContainerDTOType value)
-    {
-        pagedDtos.put(key.getPage(), value.getList());
-
-        loadAdapterWithAvailableData();
-
-        nearEndScrollListener.lowerEndFlag();
-        if (value.size() == 0)
-        {
-            nearEndScrollListener.deactivateEnd();
-            if (key.getPage() == FIRST_PAGE)
-            {
-                itemViewAdapter.setNotifyOnChange(false);
-                itemViewAdapter.clear();
-                itemViewAdapter.notifyDataSetChanged();
-            }
-        }
     }
 }

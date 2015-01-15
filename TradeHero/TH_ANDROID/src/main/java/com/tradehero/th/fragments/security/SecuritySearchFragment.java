@@ -172,29 +172,16 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 
-    @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)
+    @Override protected void onNext(SecurityListType key, SecurityCompactDTOList value)
     {
-        return new SecurityIdListCacheObserver(key);
+        super.onNext(key, value);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
     }
 
-    protected class SecurityIdListCacheObserver extends ListCacheObserver
+    @Override protected void onError(SecurityListType key, Throwable error)
     {
-        protected SecurityIdListCacheObserver(@NonNull SecurityListType key)
-        {
-            super(key);
-        }
-
-        @Override public void onNext(Pair<SecurityListType, SecurityCompactDTOList> pair)
-        {
-            super.onNext(pair);
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
-        }
-
-        @Override public void onError(Throwable error)
-        {
-            super.onError(error);
-            THToast.show(getString(R.string.error_fetch_security_list_info));
-            Timber.e("Error fetching the list of securities " + key, error);
-        }
+        super.onError(key, error);
+        THToast.show(getString(R.string.error_fetch_security_list_info));
+        Timber.e("Error fetching the list of securities " + key, error);
     }
 }
