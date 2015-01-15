@@ -210,21 +210,21 @@ abstract public class BasePagedListRxFragment<
         {
             Subscription subscription = AndroidObservable.bindFragment(
                     this,
-                    getCache().get(pagedKey)
-                            .doOnNext(pair -> {
-                                Subscription removed = pagedSubscriptions.remove(pageToLoad);
-                                if (removed == null)
-                                {
-                                    Timber.e(new NullPointerException(), "Did not expect null subscription");
-                                }
-                                pagedPastSubscriptions.put(
-                                        pageToLoad,
-                                        removed);
-                            })
-                            .finallyDo(() -> {
-                                pagedSubscriptions.remove(pageToLoad);
-                                pagedPastSubscriptions.remove(pageToLoad);
-                            }))
+                    getCache().get(pagedKey))
+                    .doOnNext(pair -> {
+                        Subscription removed = pagedSubscriptions.remove(pageToLoad);
+                        if (removed == null)
+                        {
+                            Timber.e(new NullPointerException(), "Did not expect null subscription");
+                        }
+                        pagedPastSubscriptions.put(
+                                pageToLoad,
+                                removed);
+                    })
+                    .finallyDo(() -> {
+                        pagedSubscriptions.remove(pageToLoad);
+                        pagedPastSubscriptions.remove(pageToLoad);
+                    })
                     .subscribe(
                             pair -> onNext(pair.first, pair.second),
                             error -> onError(pagedKey, error));
