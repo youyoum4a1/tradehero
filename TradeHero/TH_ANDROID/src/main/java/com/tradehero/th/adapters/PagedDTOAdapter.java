@@ -12,6 +12,7 @@ import com.tradehero.th.api.DTOView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,12 +97,32 @@ public class PagedDTOAdapter<DTOType> extends ArrayAdapter<DTOType>
         setNotifyOnChange(true);
     }
 
-    @NonNull public List<Integer> getPages()
+    public boolean hasPage(int page)
+    {
+        List<Integer> pages = getPages();
+        return pages.contains(page);
+    }
+
+    @Nullable public List<DTOType> getPage(int page)
+    {
+        if (!getPages().contains(page))
+        {
+            return null;
+        }
+        List<DTOType> pageContent = pagedObjects.get(page);
+        if (pageContent == null)
+        {
+            return null;
+        }
+        return new ArrayList<>(pageContent);
+    }
+
+    @NonNull protected List<Integer> getPages()
     {
         // Get the pages ordered
         Set<Integer> pages = new TreeSet<Integer>((lhs, rhs) -> lhs.compareTo(rhs));
         pages.addAll(pagedObjects.keySet());
-        List<Integer> contiguousPages = new ArrayList<>();
+        List<Integer> contiguousPages = new LinkedList<>();
         Integer currentPage = null;
         for (Integer page : pages)
         {
@@ -117,7 +138,7 @@ public class PagedDTOAdapter<DTOType> extends ArrayAdapter<DTOType>
 
     }
 
-    @Nullable public Integer getLastPage()
+    @Nullable public Integer getLatestPage()
     {
         List<Integer> pages = getPages();
         int size = pages.size();

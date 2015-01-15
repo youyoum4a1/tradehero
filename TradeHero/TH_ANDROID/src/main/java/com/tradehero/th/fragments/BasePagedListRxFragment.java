@@ -40,7 +40,6 @@ abstract public class BasePagedListRxFragment<
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
-    public final static long DELAY_REQUEST_DATA_MILLI_SEC = 400;
 
     @InjectView(R.id.search_empty_container) protected View emptyContainer;
     @InjectView(R.id.listview) protected AbsListView listView;
@@ -50,12 +49,9 @@ abstract public class BasePagedListRxFragment<
     protected FlagNearEdgeScrollListener nearEndScrollListener;
 
     protected PagedViewDTOAdapter<DTOType, ViewType> itemViewAdapter;
-    @NonNull protected Map<Integer, DTOListType> pagedDtos;
     @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected Map<Integer, Subscription> pagedPastSubscriptions;
     protected DTOType selectedItem;
-
-    protected Runnable requestDataTask;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
     {
@@ -74,7 +70,6 @@ abstract public class BasePagedListRxFragment<
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        pagedDtos = new HashMap<>();
         pagedSubscriptions = new HashMap<>();
         pagedPastSubscriptions = new HashMap<>();
         perPage = getPerPage(getArguments());
@@ -106,16 +101,8 @@ abstract public class BasePagedListRxFragment<
     @Override public void onDestroyView()
     {
         unsubscribeListCache();
-
         listView.setOnScrollListener(null);
         nearEndScrollListener = null;
-
-        View rootView = getView();
-        if (rootView != null && requestDataTask != null)
-        {
-            rootView.removeCallbacks(requestDataTask);
-        }
-
         ButterKnife.reset(this);
         super.onDestroyView();
     }
@@ -129,25 +116,21 @@ abstract public class BasePagedListRxFragment<
     protected void startAnew()
     {
         unsubscribeListCache();
-        this.pagedDtos.clear();
         if (nearEndScrollListener != null)
         {
             nearEndScrollListener.lowerEndFlag();
             nearEndScrollListener.activateEnd();
         }
-        if (itemViewAdapter != null)
-        {
-            itemViewAdapter.clear();
-        }
+        itemViewAdapter.clear();
         updateVisibilities();
     }
 
     @NonNull abstract protected PagedViewDTOAdapter<DTOType, ViewType> createItemViewAdapter();
 
-    protected Integer getNextPageToRequest()
+    @Nullable protected Integer getNextPageToRequest()
     {
         Integer potential = FIRST_PAGE;
-        while (isBeingHandled(potential) && !isLast(potential))
+        while (isRequesting(potential))
         {
             potential++;
         }
@@ -160,37 +143,28 @@ abstract public class BasePagedListRxFragment<
 
     protected boolean hasEmptyResult()
     {
-        if (!pagedDtos.containsKey(FIRST_PAGE))
-        {
-            return false;
-        }
-        List<DTOType> firstPage = pagedDtos.get(FIRST_PAGE);
-        return firstPage == null || firstPage.size() == 0;
-    }
-
-    protected boolean isBeingHandled(int page)
-    {
-        return hasData(page) || isRequesting(page);
-    }
-
-    protected boolean hasData(int page)
-    {
-        return pagedDtos.containsKey(page);
+        return itemViewAdapter.getCount() == 0;
     }
 
     protected boolean isLast(int page)
     {
-        return hasData(page) && pagedDtos.get(page) == null;
+        Integer latestPage = itemViewAdapter.getLatestPage();
+        if (latestPage == null || !latestPage.equals(page))
+        {
+            return false;
+        }
+        List<DTOType> latestPageContent = itemViewAdapter.getPage(latestPage);
+        return latestPageContent != null && latestPageContent.size() == 0;
     }
 
-    protected boolean isRequesting()
+    protected boolean isAwaiting()
     {
         return pagedSubscriptions.size() > 0;
     }
 
     protected boolean isRequesting(int page)
     {
-        return pagedSubscriptions.containsKey(page);
+        return pagedSubscriptions.containsKey(page) || pagedPastSubscriptions.containsKey(page);
     }
 
     @NonNull abstract protected DTOCacheRx<PagedDTOKeyType, ContainerDTOType> getCache();
@@ -214,16 +188,8 @@ abstract public class BasePagedListRxFragment<
         View view = getView();
         if (view != null)
         {
-            if (requestDataTask != null)
-            {
-                view.removeCallbacks(requestDataTask);
-            }
-
-            requestDataTask = () -> {
-                startAnew();
-                requestDtos();
-            };
-            view.postDelayed(requestDataTask, DELAY_REQUEST_DATA_MILLI_SEC);
+            startAnew();
+            requestDtos();
         }
     }
 
@@ -239,26 +205,26 @@ abstract public class BasePagedListRxFragment<
 
     protected void requestPage(int pageToLoad)
     {
-        PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
-        if (!isRequesting(pageToLoad) && !pagedPastSubscriptions.containsKey(pageToLoad))
+        final PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
+        if (!isRequesting(pageToLoad))
         {
             Subscription subscription = AndroidObservable.bindFragment(
                     this,
-                    getCache().get(pagedKey))
-                    .doOnNext(pair -> {
-                        Subscription removed = pagedSubscriptions.remove(pageToLoad);
-                        if (removed == null)
-                        {
-                            Timber.e(new NullPointerException(), "Did not expect null subscription");
-                        }
-                        pagedPastSubscriptions.put(
-                                pageToLoad,
-                                removed);
-                    })
-                    .finallyDo(() -> {
-                        pagedSubscriptions.remove(pageToLoad);
-                        pagedPastSubscriptions.remove(pageToLoad);
-                    })
+                    getCache().get(pagedKey)
+                            .doOnNext(pair -> {
+                                Subscription removed = pagedSubscriptions.remove(pageToLoad);
+                                if (removed == null)
+                                {
+                                    Timber.e(new NullPointerException(), "Did not expect null subscription");
+                                }
+                                pagedPastSubscriptions.put(
+                                        pageToLoad,
+                                        removed);
+                            })
+                            .finallyDo(() -> {
+                                pagedSubscriptions.remove(pageToLoad);
+                                pagedPastSubscriptions.remove(pageToLoad);
+                            }))
                     .subscribe(
                             pair -> onNext(pair.first, pair.second),
                             error -> onError(pagedKey, error));
@@ -268,10 +234,9 @@ abstract public class BasePagedListRxFragment<
         }
     }
 
-    protected void onNext(PagedDTOKeyType key, ContainerDTOType value)
+    protected void onNext(@NonNull PagedDTOKeyType key, @NonNull ContainerDTOType value)
     {
         Timber.d("Page loaded: %d", key.getPage());
-        pagedDtos.put(key.getPage(), value.getList());
         itemViewAdapter.addPage(key.getPage(), value.getList());
         updateVisibilities();
 
@@ -282,19 +247,20 @@ abstract public class BasePagedListRxFragment<
         }
     }
 
-    protected void onError(PagedDTOKeyType key, Throwable error)
+    protected void onError(@NonNull PagedDTOKeyType key, @NonNull Throwable error)
     {
         nearEndScrollListener.lowerEndFlag();
     }
 
     abstract public boolean canMakePagedDtoKey();
+
     @NonNull abstract public PagedDTOKeyType makePagedDtoKey(int page);
 
     protected void updateVisibilities()
     {
         if (mProgress != null && emptyContainer != null)
         {
-            mProgress.setVisibility(isRequesting() ? View.VISIBLE : View.INVISIBLE);
+            mProgress.setVisibility(isAwaiting() ? View.VISIBLE : View.INVISIBLE);
 
             boolean hasItems = (itemViewAdapter != null) && (itemViewAdapter.getCount() > 0);
             emptyContainer.setVisibility(hasItems ? View.GONE : View.VISIBLE);

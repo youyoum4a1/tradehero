@@ -198,6 +198,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             scheduleRequestData();
         }
+        else
+        {
+            if (nearEndScrollListener != null)
+            {
+                nearEndScrollListener.lowerEndFlag();
+                nearEndScrollListener.activateEnd();
+            }
+            requestDtos();
+        }
     }
 
     protected void onErrorFilter(@NonNull Throwable e)

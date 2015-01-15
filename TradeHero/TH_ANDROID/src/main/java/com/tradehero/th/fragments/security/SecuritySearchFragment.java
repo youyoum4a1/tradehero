@@ -172,13 +172,13 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 
-    @Override protected void onNext(SecurityListType key, SecurityCompactDTOList value)
+    @Override protected void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)
     {
         super.onNext(key, value);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
     }
 
-    @Override protected void onError(SecurityListType key, Throwable error)
+    @Override protected void onError(@NonNull SecurityListType key, @NonNull Throwable error)
     {
         super.onError(key, error);
         THToast.show(getString(R.string.error_fetch_security_list_info));

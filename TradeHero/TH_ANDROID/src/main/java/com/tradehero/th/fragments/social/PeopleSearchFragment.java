@@ -116,13 +116,13 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
         }
     }
 
-    @Override protected void onNext(UserListType key, UserSearchResultDTOList value)
+    @Override protected void onNext(@NonNull UserListType key, @NonNull UserSearchResultDTOList value)
     {
         super.onNext(key, value);
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
     }
 
-    @Override protected void onError(UserListType key, Throwable error)
+    @Override protected void onError(@NonNull UserListType key, @NonNull Throwable error)
     {
         super.onError(key, error);
         THToast.show(getString(R.string.error_fetch_people_list_info));
