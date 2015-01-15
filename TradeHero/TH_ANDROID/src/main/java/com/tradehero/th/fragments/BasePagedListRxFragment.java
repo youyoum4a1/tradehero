@@ -3,7 +3,6 @@ package com.tradehero.th.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -17,7 +16,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
+import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -51,7 +49,7 @@ abstract public class BasePagedListRxFragment<
     protected int perPage = DEFAULT_PER_PAGE;
     protected FlagNearEdgeScrollListener nearEndScrollListener;
 
-    protected PagedArrayDTOAdapterNew<DTOType, ViewType> itemViewAdapter;
+    protected PagedViewDTOAdapter<DTOType, ViewType> itemViewAdapter;
     @NonNull protected Map<Integer, DTOListType> pagedDtos;
     @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected Map<Integer, Subscription> pagedPastSubscriptions;
@@ -139,35 +137,12 @@ abstract public class BasePagedListRxFragment<
         }
         if (itemViewAdapter != null)
         {
-            itemViewAdapter.setNotifyOnChange(false);
             itemViewAdapter.clear();
-            itemViewAdapter.notifyDataSetChanged();
         }
         updateVisibilities();
     }
 
-    @NonNull abstract protected PagedArrayDTOAdapterNew<DTOType, ViewType> createItemViewAdapter();
-
-    protected void loadAdapterWithAvailableData()
-    {
-        Integer lastPageInAdapter = itemViewAdapter.getLastPageLoaded();
-        if ((lastPageInAdapter == null && pagedDtos.containsKey(FIRST_PAGE)) ||
-                lastPageInAdapter != null)
-        {
-            if (lastPageInAdapter == null)
-            {
-                lastPageInAdapter = FIRST_PAGE - 1;
-            }
-
-            itemViewAdapter.setNotifyOnChange(false);
-            while (pagedDtos.containsKey(++lastPageInAdapter))
-            {
-                itemViewAdapter.addPage(lastPageInAdapter, pagedDtos.get(lastPageInAdapter));
-            }
-            itemViewAdapter.notifyDataSetChanged();
-        }
-        updateVisibilities();
-    }
+    @NonNull abstract protected PagedViewDTOAdapter<DTOType, ViewType> createItemViewAdapter();
 
     protected Integer getNextPageToRequest()
     {
@@ -270,10 +245,6 @@ abstract public class BasePagedListRxFragment<
             Subscription subscription = AndroidObservable.bindFragment(
                     this,
                     getCache().get(pagedKey))
-                    .finallyDo(() -> {
-                        pagedSubscriptions.remove(pageToLoad);
-                        pagedPastSubscriptions.remove(pageToLoad);
-                    })
                     .doOnNext(pair -> {
                         Subscription removed = pagedSubscriptions.remove(pageToLoad);
                         if (removed == null)
@@ -283,6 +254,10 @@ abstract public class BasePagedListRxFragment<
                         pagedPastSubscriptions.put(
                                 pageToLoad,
                                 removed);
+                    })
+                    .finallyDo(() -> {
+                        pagedSubscriptions.remove(pageToLoad);
+                        pagedPastSubscriptions.remove(pageToLoad);
                     })
                     .subscribe(
                             pair -> onNext(pair.first, pair.second),
@@ -297,19 +272,13 @@ abstract public class BasePagedListRxFragment<
     {
         Timber.d("Page loaded: %d", key.getPage());
         pagedDtos.put(key.getPage(), value.getList());
-
-        loadAdapterWithAvailableData();
+        itemViewAdapter.addPage(key.getPage(), value.getList());
+        updateVisibilities();
 
         nearEndScrollListener.lowerEndFlag();
         if (value.size() == 0)
         {
             nearEndScrollListener.deactivateEnd();
-            if (key.getPage() == FIRST_PAGE)
-            {
-                itemViewAdapter.setNotifyOnChange(false);
-                itemViewAdapter.clear();
-                itemViewAdapter.notifyDataSetChanged();
-            }
         }
     }
 

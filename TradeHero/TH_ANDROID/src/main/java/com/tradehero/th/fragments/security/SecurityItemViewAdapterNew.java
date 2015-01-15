@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
+import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SecurityItemViewAdapterNew
-        extends PagedArrayDTOAdapterNew<SecurityCompactDTO, SecurityItemView>
+        extends PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView>
 {
     //<editor-fold desc="Constructors">
     public SecurityItemViewAdapterNew(@NonNull Context context, int layoutResourceId)

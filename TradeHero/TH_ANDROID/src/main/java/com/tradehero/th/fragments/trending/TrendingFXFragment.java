@@ -51,7 +51,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     @Nullable private Subscription checkEnrollmentSubscription;
     @Nullable private Subscription waitForEnrolledSubscription;
     @Nullable private Subscription fetchFxPriceSubscription;
-            // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
+    // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
     @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,7 +116,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
-//                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
+                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
                 .filter(pair -> pair.second.fxPortfolio != null)
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
@@ -126,7 +126,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                         // In effect, we are waiting for the enrolled profile
                         unsubscribe(waitForEnrolledSubscription);
                         mProgress.setVisibility(View.GONE);
-//                        btnEnroll.setVisibility(View.GONE);
+                        btnEnroll.setVisibility(View.GONE);
                         scheduleRequestData();
                         fetchFXPrice();
                     }
