@@ -21,6 +21,7 @@ import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.widget.MultiScrollListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ abstract public class BasePagedListRxFragment<
     protected PagedArrayDTOAdapterNew<DTOType, ViewType> itemViewAdapter;
     @NonNull protected Map<Integer, DTOListType> pagedDtos;
     @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
+    @NonNull protected Map<Integer, Subscription> pagedPastSubscriptions;
     protected DTOType selectedItem;
 
     protected Runnable requestDataTask;
@@ -76,6 +78,7 @@ abstract public class BasePagedListRxFragment<
         super.onCreate(savedInstanceState);
         pagedDtos = new HashMap<>();
         pagedSubscriptions = new HashMap<>();
+        pagedPastSubscriptions = new HashMap<>();
         perPage = getPerPage(getArguments());
         perPage = getPerPage(savedInstanceState);
         itemViewAdapter = createItemViewAdapter();
@@ -219,17 +222,16 @@ abstract public class BasePagedListRxFragment<
 
     protected void unsubscribeListCache()
     {
-        for (Integer page : pagedSubscriptions.keySet())
+        for (Integer page : new ArrayList<>(pagedSubscriptions.keySet()))
         {
-            unsubscribeListCache(page);
+            unsubscribe(pagedSubscriptions.get(page));
+            pagedSubscriptions.remove(page);
         }
-        pagedSubscriptions.clear();
-    }
-
-    protected void unsubscribeListCache(int page)
-    {
-        Subscription subscription = pagedSubscriptions.get(page);
-        unsubscribe(subscription);
+        for (Integer page : new ArrayList<>(pagedPastSubscriptions.keySet()))
+        {
+            unsubscribe(pagedPastSubscriptions.get(page));
+            pagedPastSubscriptions.remove(page);
+        }
     }
 
     protected void scheduleRequestData()
@@ -263,13 +265,30 @@ abstract public class BasePagedListRxFragment<
     protected void requestPage(int pageToLoad)
     {
         PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
-        unsubscribeListCache(pageToLoad);
-        pagedSubscriptions.put(
-                pageToLoad,
-                AndroidObservable.bindFragment(
-                        this,
-                        getCache().get(pagedKey))
-                        .subscribe(createListCacheObserver(pagedKey)));
+        if (!isRequesting(pageToLoad) && !pagedPastSubscriptions.containsKey(pageToLoad))
+        {
+            Subscription subscription = AndroidObservable.bindFragment(
+                    this,
+                    getCache().get(pagedKey))
+                    .finallyDo(() -> {
+                        pagedSubscriptions.remove(pageToLoad);
+                        pagedPastSubscriptions.remove(pageToLoad);
+                    })
+                    .doOnNext(pair -> {
+                        Subscription removed = pagedSubscriptions.remove(pageToLoad);
+                        if (removed == null)
+                        {
+                            Timber.e(new NullPointerException(), "Did not expect null subscription");
+                        }
+                        pagedPastSubscriptions.put(
+                                pageToLoad,
+                                removed);
+                    })
+                    .subscribe(createListCacheObserver(pagedKey));
+            pagedSubscriptions.put(
+                    pageToLoad,
+                    subscription);
+        }
     }
 
     abstract public boolean canMakePagedDtoKey();
@@ -335,40 +354,29 @@ abstract public class BasePagedListRxFragment<
 
         @Override public void onCompleted()
         {
-            if (pagedSubscriptions != null)
-            {
-                pagedSubscriptions.remove(key.getPage());
-            }
         }
 
         @Override public void onError(Throwable error)
         {
-            if (pagedSubscriptions != null && nearEndScrollListener != null)
-            {
-                pagedSubscriptions.remove(key.getPage());
-                nearEndScrollListener.lowerEndFlag();
-            }
+            nearEndScrollListener.lowerEndFlag();
         }
     }
 
     protected void onNext(PagedDTOKeyType key, ContainerDTOType value)
     {
-        if (pagedSubscriptions != null && nearEndScrollListener != null)
-        {
-            pagedDtos.put(key.getPage(), value.getList());
-            pagedSubscriptions.remove(key.getPage());
+        pagedDtos.put(key.getPage(), value.getList());
 
-            loadAdapterWithAvailableData();
-            nearEndScrollListener.lowerEndFlag();
-            if (value.size() == 0)
+        loadAdapterWithAvailableData();
+
+        nearEndScrollListener.lowerEndFlag();
+        if (value.size() == 0)
+        {
+            nearEndScrollListener.deactivateEnd();
+            if (key.getPage() == FIRST_PAGE)
             {
-                nearEndScrollListener.deactivateEnd();
-                if (key.getPage() == FIRST_PAGE)
-                {
-                    itemViewAdapter.setNotifyOnChange(false);
-                    itemViewAdapter.clear();
-                    itemViewAdapter.notifyDataSetChanged();
-                }
+                itemViewAdapter.setNotifyOnChange(false);
+                itemViewAdapter.clear();
+                itemViewAdapter.notifyDataSetChanged();
             }
         }
     }
