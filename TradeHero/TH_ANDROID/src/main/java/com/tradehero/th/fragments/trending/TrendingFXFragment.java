@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +21,6 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
@@ -35,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 //@Routable("trending-securities")
@@ -118,19 +115,16 @@ public class TrendingFXFragment extends TrendingBaseFragment
                 .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
                 .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
                 .filter(pair -> pair.second.fxPortfolio != null)
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        // In effect, we are waiting for the enrolled profile
-                        unsubscribe(waitForEnrolledSubscription);
-                        mProgress.setVisibility(View.GONE);
-                        btnEnroll.setVisibility(View.GONE);
-                        scheduleRequestData();
-                        fetchFXPrice();
-                    }
-                });
+                .subscribe(
+                        pair -> {
+                            // In effect, we are waiting for the enrolled profile
+                            unsubscribe(waitForEnrolledSubscription);
+                            mProgress.setVisibility(View.GONE);
+                            btnEnroll.setVisibility(View.GONE);
+                            scheduleRequestData();
+                            fetchFXPrice();
+                        },
+                        e -> {});
     }
 
     private void checkFXPortfolio()
