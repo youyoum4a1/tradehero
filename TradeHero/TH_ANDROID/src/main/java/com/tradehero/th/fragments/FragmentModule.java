@@ -64,7 +64,6 @@ import dagger.Module;
         },
         injects = {
                 DashboardFragment.class,
-                BasePagedListFragment.class
         },
         library = true,
         complete = false

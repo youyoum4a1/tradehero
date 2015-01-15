@@ -36,7 +36,7 @@ abstract public class BasePagedListRxFragment<
         ViewType extends View & DTOView<DTOType>>
         extends BasePurchaseManagerFragment
 {
-    private final static String BUNDLE_KEY_PER_PAGE = BasePagedListFragment.class.getName() + ".perPage";
+    private final static String BUNDLE_KEY_PER_PAGE = BasePagedListRxFragment.class.getName() + ".perPage";
 
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 15;
