@@ -1,5 +1,6 @@
 package com.tradehero.th.api.games;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.KeyGenerator;
 
@@ -13,6 +14,7 @@ public class MiniGameDefDTO implements DTO, KeyGenerator
     public String url;
     public boolean comingSoon;
     public String howToPlayUrl;
+    @Nullable public Integer viralMiniGameId;
 
     //<editor-fold desc="Constructors">
     public MiniGameDefDTO()
