@@ -114,6 +114,7 @@ public class PositionPartialTopView extends LinearLayout
         securityCompactCacheFetchSubscription = null;
         if (stockLogo != null)
         {
+            picasso.cancelRequest(stockLogo);
             stockLogo.setImageDrawable(null);
         }
         ButterKnife.reset(this);
