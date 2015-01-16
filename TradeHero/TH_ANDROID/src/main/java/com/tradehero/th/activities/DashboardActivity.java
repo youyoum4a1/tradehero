@@ -712,7 +712,9 @@ public class DashboardActivity extends BaseActivity
                     ProviderVideoListFragment.class,
                     WebViewFragment.class,
                     GameWebViewFragment.class,
-                    DiscoveryMainFragment.class
+                    DiscoveryMainFragment.class,
+                    FacebookShareActivity.class
+
             );
             router.registerAlias("messages", "updatecenter/0");
             router.registerAlias("notifications", "updatecenter/1");
