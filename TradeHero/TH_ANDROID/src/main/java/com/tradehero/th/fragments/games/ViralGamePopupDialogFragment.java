@@ -157,7 +157,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 
                         @Override public void onError()
                         {
-                            handleError(new Exception("Failed to load image for this game"));
+                            handleError(new Exception(getString(R.string.image_load_failed)));
                         }
                     });
         }
