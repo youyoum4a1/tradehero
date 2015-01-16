@@ -273,7 +273,7 @@ dependencies {
   compile(fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
-  compile('com.android.support:support-v13:21.0.0')
+  compile('com.android.support:support-v4:21.0.3')
   provided 'proguard:annotations:4.6'
   compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
     exclude group: 'com.google.android', module: 'support-v4'
@@ -283,7 +283,7 @@ dependencies {
     // exclude group: 'com.android.support', module: 'appcompat-v7'
   }
   compile('com.etiennelawlor.quickreturn:library:1.0-aar@aar') {
-    exclude group: 'com.android.support', module: 'support-v13'
+    exclude group: 'com.android.support', module: 'support-v4'
     exclude group: 'com.jakewharton', module: 'butterknife'
     exclude group: 'com.squareup.picasso', module: 'picasso'
     exclude group: 'com.nineoldandroids', module: 'library'
