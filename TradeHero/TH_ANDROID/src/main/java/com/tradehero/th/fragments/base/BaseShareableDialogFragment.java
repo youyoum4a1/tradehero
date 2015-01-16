@@ -13,7 +13,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.Optional;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.SocialLinkToggleButton;
 import com.tradehero.th.R;
@@ -55,7 +54,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> userProfileCacheListener;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
@@ -98,17 +96,10 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        userProfileCacheListener = null;
-        super.onDestroy();
-    }
-
     //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
         AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());
     }
 

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
@@ -11,6 +10,7 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import rx.Observer;
 import timber.log.Timber;
 
 public class SecuritySearchFragment extends BaseSearchRxFragment<
@@ -123,9 +122,9 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return selectedItem;
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(
+        return new SecurityPagedViewDTOAdapter(
                 getActivity(),
                 R.layout.search_security_item);
     }

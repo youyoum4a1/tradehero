@@ -1,5 +1,7 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import java.util.HashMap;
@@ -12,18 +14,20 @@ public enum WarrantType
 
     private static Map<String, WarrantType> shortCodeMap;
 
-    public final String shortCode;
+    @NonNull public final String shortCode;
     @StringRes public final int stringResId;
     @StringRes public final int titleResId;
 
-    WarrantType(String shortCode, int stringResId, int titleResId)
+    //<editor-fold desc="Constructors">
+    WarrantType(@NonNull String shortCode, int stringResId, int titleResId)
     {
         this.shortCode = shortCode;
         this.stringResId = stringResId;
         this.titleResId = titleResId;
     }
+    //</editor-fold>
 
-    private static Map<String, WarrantType> getShortCodeMap()
+    @NonNull private static Map<String, WarrantType> getShortCodeMap()
     {
         if (shortCodeMap == null)
         {
@@ -36,7 +40,7 @@ public enum WarrantType
         return shortCodeMap;
     }
 
-    public static WarrantType getByShortCode(String shortCode)
+    @Nullable public static WarrantType getByShortCode(@NonNull String shortCode)
     {
         return getShortCodeMap().get(shortCode);
     }

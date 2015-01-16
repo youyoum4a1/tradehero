@@ -18,7 +18,6 @@
   <string name="portfolio_item_title_loading">กำลังโหลด...</string>
   <string name="portfolio_header_total_value">มูลค่ารวม</string>
   <string name="portfolio_header_cash_value">มูลค่าเงินสด</string>
-  <string name="portfolio_header_net_asset_value">มูลค่าสินทรัพย์สุทธิ</string>
   <string name="portfolio_header_margin_title">หลักประกัน</string>
   <string name="portfolio_header_margin_available_title">หลักประกันที่ใช้ได้</string>
   <string name="portfolio_header_margin_used_title">หลักประกันที่ใช้ไปแล้ว</string>

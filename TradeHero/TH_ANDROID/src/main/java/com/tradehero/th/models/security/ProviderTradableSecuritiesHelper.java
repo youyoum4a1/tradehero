@@ -7,8 +7,9 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.competition.ProviderFxListFragment;
-import com.tradehero.th.fragments.competition.ProviderSecurityListFragment;
+import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
 import com.tradehero.th.fragments.security.WarrantCompetitionPagerFragment;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,16 +32,16 @@ public class ProviderTradableSecuritiesHelper
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
             @NonNull ProviderId providerId)
     {
-        ProviderSecurityListFragment.putProviderId(args, providerId);
         if (ownedPortfolioId != null)
         {
-            ProviderSecurityListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            BasePurchaseManagerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
         if (portfolioCompactDTO.assetClass != null)
         {
             switch (portfolioCompactDTO.assetClass)
             {
                 case FX:
+                    ProviderFxListFragment.putProviderId(args, providerId);
                     navigator.pushFragment(ProviderFxListFragment.class, args);
                     break;
                 case WARRANT:
@@ -49,13 +50,15 @@ public class ProviderTradableSecuritiesHelper
                     break;
                 case STOCKS:
                 default:
-                    navigator.pushFragment(ProviderSecurityListFragment.class, args);
+                    ProviderSecurityListRxFragment.putProviderId(args, providerId);
+                    navigator.pushFragment(ProviderSecurityListRxFragment.class, args);
                     break;
             }
         }
         else
         {
-            navigator.pushFragment(ProviderSecurityListFragment.class, args);
+            ProviderSecurityListRxFragment.putProviderId(args, providerId);
+            navigator.pushFragment(ProviderSecurityListRxFragment.class, args);
         }
     }
 }

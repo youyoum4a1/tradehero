@@ -11,13 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SecurityItemViewAdapterNew
-        extends PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView>
+public class SecurityPagedViewDTOAdapter extends PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView>
 {
     //<editor-fold desc="Constructors">
-    public SecurityItemViewAdapterNew(@NonNull Context context, int layoutResourceId)
+    public SecurityPagedViewDTOAdapter(Context context, int resource)
     {
-        super(context, layoutResourceId);
+        super(context, resource);
     }
     //</editor-fold>
 
@@ -31,7 +30,7 @@ public class SecurityItemViewAdapterNew
         return getItem(position).id;
     }
 
-    public void updatePrices(@NonNull Context context, @NonNull List<? extends QuoteDTO> quotes)
+    public void updatePrices(@NonNull List<? extends QuoteDTO> quotes)
     {
         Map<SecurityIntegerId, QuoteDTO> map = new HashMap<>();
         for (QuoteDTO quote : quotes)

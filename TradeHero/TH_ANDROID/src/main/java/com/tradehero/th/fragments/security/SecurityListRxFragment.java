@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.security;
 
+import android.support.annotation.NonNull;
 import android.view.View;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -18,4 +20,9 @@ abstract public class SecurityListRxFragment<ViewType extends View & DTOView<Sec
         ViewType>
 {
     @Inject protected SecurityCompactListCacheRx securityCompactListCache;
+
+    @NonNull @Override protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
+    {
+        return securityCompactListCache;
+    }
 }

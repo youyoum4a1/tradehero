@@ -21,7 +21,6 @@
   <string name="buy_sell_confirm_share_on">공유:</string>
   <string name="buy_sell_switch_buy">매수</string>
   <string name="buy_sell_switch_sell">매도</string>
-  <string name="buy_sell_usd_price_unit_left">= US$</string>
   <string name="buy_sell_market_status">증시 지표</string>
   <string name="buy_sell_toggle">매수/매도 화면으로</string>
 
