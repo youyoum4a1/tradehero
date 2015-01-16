@@ -1,7 +1,11 @@
 package com.tradehero.th.fragments.games;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,10 +25,10 @@ import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.games.ViralMiniGameDefCache;
 import com.tradehero.th.utils.StringUtils;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -33,6 +37,10 @@ import rx.android.observables.AndroidObservable;
 public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 {
     private static final String BUNDLE_KEY_VIRAL_MINI_GAME = ViralGamePopupDialogFragment.class + ".viralMiniGameId";
+
+    private static final String LINE_SCHEME_URI = "line://msg/";
+    private static final String SRC_KEY = "src";
+    private static final String SRC_FB = "fb";
 
     @InjectView(R.id.viral_game_banner) ImageView viralGameBanner;
     @InjectView(R.id.viral_game_selector) View viralGameSelector;
@@ -97,7 +105,18 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
         if (viralMiniGameDefDTO != null && viralMiniGameDefDTO.gameUrl != null)
         {
             Bundle b = new Bundle();
-            ViralGameWebFragment.putUrl(b, viralMiniGameDefDTO.gameUrl);
+
+            Uri url = Uri.parse(LINE_SCHEME_URI);
+            Intent intent = new Intent(Intent.ACTION_VIEW, url);
+            PackageManager packageManager = getActivity().getPackageManager();
+            List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(intent, 0);
+            String gameUrl = viralMiniGameDefDTO.gameUrl;
+            if (handlerActivities.isEmpty())
+            {
+                Uri parsedGameUrl = Uri.parse(gameUrl);
+                gameUrl = parsedGameUrl.buildUpon().appendQueryParameter(SRC_KEY, SRC_FB).build().toString();
+            }
+            ViralGameWebFragment.putUrl(b, gameUrl);
             navigator.pushFragment(ViralGameWebFragment.class, b);
         }
     }
@@ -146,7 +165,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 
     private void handleError(@Nullable Throwable e)
     {
-        if(e != null)
+        if (e != null)
         {
             THToast.show(new THException(e));
         }
