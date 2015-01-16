@@ -20,6 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
 import com.tradehero.th.persistence.competition.CompetitionListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
@@ -100,7 +101,7 @@ public class MainCompetitionFragmentTest
         MainCompetitionFragment mainCompetitionFragment = dashboardNavigator.pushFragment(MainCompetitionFragment.class, args);
 
         mainCompetitionFragment.btnTradeNow.performClick();
-        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderSecurityListFragment.class);
+        assertThat(dashboardNavigator.getCurrentFragment()).isInstanceOf(ProviderSecurityListRxFragment.class);
     }
 
     @Test public void shouldGoToWebFragmentAfterClickOnAds() throws InterruptedException

@@ -23,7 +23,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
+import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -94,9 +94,9 @@ public class TrendingFXFragment extends TrendingBaseFragment
         return portfolioCompactDTOs.getDefaultFxPortfolio();
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_fx_item);
+        return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_fx_item);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
@@ -179,7 +179,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     private void handlePricesReceived(List<QuoteDTO> list)
     {
-        ((SecurityItemViewAdapterNew) itemViewAdapter).updatePrices(getActivity(), list);
+        ((SecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
         itemViewAdapter.notifyDataSetChanged();
     }
 

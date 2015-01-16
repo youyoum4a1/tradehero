@@ -2,9 +2,6 @@ package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
@@ -34,11 +31,6 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment<Securi
     {
         trendingTabTypeBehaviorSubject.onCompleted();
         super.onDestroy();
-    }
-
-    @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
-    {
-        return securityCompactListCache;
     }
 
     @NonNull Observable<TrendingTabType> getRequestedTrendingTabTypeObservable()

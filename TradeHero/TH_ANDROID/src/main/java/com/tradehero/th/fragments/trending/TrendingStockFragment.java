@@ -38,7 +38,7 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
+import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -159,9 +159,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
         super.onDestroy();
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_security_item);
+        return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_security_item);
     }
 
     @NonNull protected ExtraTileAdapterNew createSecurityItemViewAdapter()
