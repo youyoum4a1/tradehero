@@ -17,7 +17,6 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherHolderRx;
 import com.tradehero.common.billing.restore.PurchaseRestoreResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
 import java.util.Collections;
@@ -146,6 +145,7 @@ abstract public class THBaseBillingLogicHolderRx<
             @NonNull THProductPurchaseType purchase)
     {
         return getInventory(requestCode, Collections.singletonList(purchase.getProductIdentifier()))
+                .filter(result -> result.id.equals(purchase.getProductIdentifier()))
                 .flatMap(result -> report(requestCode, purchase, result.detail));
     }
 
@@ -165,9 +165,7 @@ abstract public class THBaseBillingLogicHolderRx<
             THProductPurchaseType>> report(int requestCode,
             @NonNull THProductPurchaseType purchase, @NonNull THProductDetailType productDetail)
     {
-        THToast.show("Reporting " + purchase.getProductIdentifier());
-        return purchaseReporterHolder.get(requestCode, purchase, productDetail)
-                .doOnNext(result -> THToast.show("Reported " + result.reportedPurchase.getProductIdentifier()));
+        return purchaseReporterHolder.get(requestCode, purchase, productDetail);
     }
     //</editor-fold>
 

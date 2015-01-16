@@ -7,7 +7,6 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.consume.PurchaseConsumeResult;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THBaseBillingLogicHolderRx;
 import com.tradehero.th.billing.googleplay.consumer.THIABPurchaseConsumerHolderRx;
@@ -98,7 +97,7 @@ public class THBaseIABLogicHolderRx
     {
         return super.report(requestCode, purchase, productDetail)
                 .flatMap(reportResult -> consume(requestCode, reportResult.reportedPurchase)
-                        .map(consumeResult -> reportResult));
+                    .map(consumeResult -> reportResult));
     }
     //</editor-fold>
 
@@ -121,9 +120,7 @@ public class THBaseIABLogicHolderRx
             int requestCode,
             @NonNull THIABPurchase purchase)
     {
-        THToast.show("Consuming " + purchase.getProductIdentifier());
-        return purchaseConsumerHolder.get(requestCode, purchase)
-                .doOnNext(result -> THToast.show("Consumed " + purchase.getProductIdentifier()));
+        return purchaseConsumerHolder.get(requestCode, purchase);
     }
     //</editor-fold>
 

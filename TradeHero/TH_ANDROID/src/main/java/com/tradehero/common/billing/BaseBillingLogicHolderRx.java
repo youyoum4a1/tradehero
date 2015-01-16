@@ -236,8 +236,7 @@ abstract public class BaseBillingLogicHolderRx<
     {
         return test(requestCode)
                 .flatMap(result -> purchaseFetcherHolder.get(requestCode))
-                .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase))
-                .doOnNext(result -> THToast.show("Saved purchase in cache " + result.purchase.getProductIdentifier()));
+                .doOnNext(result -> purchaseCache.onNext(result.purchase.getOrderId(), result.purchase));
     }
     //</editor-fold>
 

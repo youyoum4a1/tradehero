@@ -13,7 +13,6 @@ import com.tradehero.common.billing.RequestCodeHolder;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
@@ -218,9 +217,7 @@ abstract public class THBillingAlertDialogRxUtil<
                         .setSingleChoiceItems(detailAdapter, 0)
                         .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
                         .build())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(obj -> THToast.show("" + obj))
-                .doOnCompleted(() -> THToast.show("dialog completed"));
+                .subscribeOn(AndroidSchedulers.mainThread());
     }
     //</editor-fold>
 

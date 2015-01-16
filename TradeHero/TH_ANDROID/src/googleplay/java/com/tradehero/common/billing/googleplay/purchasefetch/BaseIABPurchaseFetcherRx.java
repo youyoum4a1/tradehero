@@ -54,12 +54,8 @@ abstract public class BaseIABPurchaseFetcherRx<
     @NonNull @Override public Observable<PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType>> get()
     {
         return getBillingServiceResult()
-                .doOnNext(service -> THToast.show("got billing service"))
-                .doOnCompleted(() -> THToast.show("billing service completed"))
                 .flatMap(this::fetchPurchases)
-                .doOnNext(result -> THToast.show("fetch result 1 " + result.getProductIdentifier()))
-                .map(this::createPurchaseResult)
-                .doOnNext(result -> THToast.show("fetch result 2 " + result.purchase.getProductIdentifier()));
+                .map(this::createPurchaseResult);
     }
 
     protected Observable<IABPurchaseType> fetchPurchases(@NonNull IABServiceResult serviceResult)
@@ -168,7 +164,6 @@ abstract public class BaseIABPurchaseFetcherRx<
     @NonNull protected PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType> createPurchaseResult(
             @NonNull IABPurchaseType purchase)
     {
-        THToast.show("Creating purchase fetch result " + purchase.getProductIdentifier());
         return new PurchaseFetchResult<>(getRequestCode(), purchase);
     }
 

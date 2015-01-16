@@ -71,20 +71,17 @@ abstract public class BaseIABPurchaserRx<
             IABOrderIdType,
             IABPurchaseType>> get()
     {
-        getBillingServiceResult()
-                .flatMap(this::startPurchaseActivity)
-                .subscribe(subject);
+        getBillingServiceResult().subscribe(
+                this::startPurchaseActivity,
+                subject::onError);
         return subject.asObservable();
     }
 
-    private Observable<PurchaseResult<IABSKUType,
-            IABPurchaseOrderType,
-            IABOrderIdType,
-            IABPurchaseType>> startPurchaseActivity(@NonNull IABServiceResult serviceResult)
+    private void startPurchaseActivity(@NonNull IABServiceResult serviceResult)
     {
         if (!serviceResult.subscriptionSupported && purchaseOrder.getType().equals(IABConstants.ITEM_TYPE_SUBS))
         {
-            return Observable.error(new IABSubscriptionUnavailableException("Subscriptions are not available."));
+            subject.onError(new IABSubscriptionUnavailableException("Subscriptions are not available."));
         }
         else
         {
@@ -95,16 +92,16 @@ abstract public class BaseIABPurchaserRx<
                 ((Activity) context).startIntentSenderForResult(
                         pendingIntent.getIntentSender(),
                         getRequestCode(), new Intent(), 0, 0, 0);
-                return Observable.empty(); // We need to wait for the return from the activity.
+                // We need to wait for the return from the activity.
             } catch (Throwable e)
             {
                 Timber.e(e, "Failed sending purchase intent for %s", purchaseOrder);
-                return Observable.error(e);
+                subject.onError(e);
             }
         }
     }
 
-    private Bundle createBuyIntentBundle(@NonNull IABServiceResult serviceResult) throws RemoteException, IABException
+    @NonNull private Bundle createBuyIntentBundle(@NonNull IABServiceResult serviceResult) throws RemoteException, IABException
     {
         Bundle buyIntentBundle = serviceResult.billingService.getBuyIntent(
                 TARGET_BILLING_API_VERSION3,
@@ -189,6 +186,7 @@ abstract public class BaseIABPurchaserRx<
                             {
                                 Timber.d("Purchase signature successfully verified.");
                                 subject.onNext(new PurchaseResult<>(requestCode, purchaseOrder, purchase));
+                                subject.onCompleted();
                             }
                         } catch (JSONException e)
                         {
