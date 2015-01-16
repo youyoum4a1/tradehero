@@ -120,6 +120,7 @@ public class PagedDTOAdapter<DTOType> extends ArrayAdapter<DTOType>
     @NonNull protected List<Integer> getPages()
     {
         // Get the pages ordered
+        //noinspection Convert2Diamond
         Set<Integer> pages = new TreeSet<Integer>((lhs, rhs) -> lhs.compareTo(rhs));
         pages.addAll(pagedObjects.keySet());
         List<Integer> contiguousPages = new LinkedList<>();
