@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
+import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
@@ -23,6 +24,18 @@ public class FacebookShareActivity extends Activity
     private static final String BUNDLE_KEY_PICTURE = "pictureUrl";
 
     private UiLifecycleHelper uiLifecycleHelper;
+    private boolean isFbShare;
+    private Session.StatusCallback callback = new Session.StatusCallback()
+    {
+        @Override public void call(Session session, SessionState state, Exception exception)
+        {
+            if(state.isOpened() && isFbShare)
+            {
+                isFbShare = false;
+                shareWithFallbackMethod(getIntent().getExtras());
+            }
+        }
+    };
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -45,7 +58,15 @@ public class FacebookShareActivity extends Activity
         }
         else
         {
-            shareWithFallbackMethod(extras);
+            if(Session.getActiveSession() == null || !Session.getActiveSession().isOpened())
+            {
+                isFbShare = true;
+                Session.openActiveSession(this, true, callback);
+            }
+            else
+            {
+                shareWithFallbackMethod(extras);
+            }
         }
     }
 
