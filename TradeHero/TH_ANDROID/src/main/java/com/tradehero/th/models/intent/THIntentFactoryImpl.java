@@ -2,9 +2,11 @@ package com.tradehero.th.models.intent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import timber.log.Timber;
@@ -53,8 +55,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
             try
             {
                 thIntent = factoryMap.get(host).create(intent);
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 handleUrlByRouter(intent, host);
                 Timber.d("Something wrong with old THIntent" + ex.getMessage());
@@ -79,16 +80,22 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 
         // ignore query for now, TODO handle deeplink query
         int queryMark = url.indexOf('?');
+        Bundle b = new Bundle();
         if (queryMark > 0)
         {
             url = url.substring(0, queryMark);
+            //Quick fix to pass deeplink query
+            Set<String> keys = intent.getData().getQueryParameterNames();
+            for (String k : keys)
+            {
+                b.putString(k, intent.getData().getQueryParameter(k));
+            }
         }
 
         try
         {
-            thRouter.open(url, activityProvider.get());
-        }
-        catch (Exception ex)
+            thRouter.open(url, b, activityProvider.get());
+        } catch (Exception ex)
         {
             Timber.e(ex, "%s host is unhandled %s", host, intent.getDataString());
         }

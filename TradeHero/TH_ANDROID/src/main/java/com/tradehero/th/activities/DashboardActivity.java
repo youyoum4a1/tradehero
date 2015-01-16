@@ -69,6 +69,7 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
+import com.tradehero.th.fragments.games.ViralGameShareFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
@@ -712,7 +713,8 @@ public class DashboardActivity extends BaseActivity
                     ProviderVideoListFragment.class,
                     WebViewFragment.class,
                     GameWebViewFragment.class,
-                    DiscoveryMainFragment.class
+                    DiscoveryMainFragment.class,
+                    ViralGameShareFragment.class
             );
             router.registerAlias("messages", "updatecenter/0");
             router.registerAlias("notifications", "updatecenter/1");
