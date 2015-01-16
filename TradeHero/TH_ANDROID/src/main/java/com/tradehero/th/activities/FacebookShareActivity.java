@@ -4,15 +4,13 @@ package com.tradehero.th.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.util.Log;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.WebDialog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
+import com.tradehero.th.R;
+import com.tradehero.th.misc.exception.THException;
 
 @Routable("facebookshare/")
 public class FacebookShareActivity extends Activity
@@ -23,17 +21,10 @@ public class FacebookShareActivity extends Activity
     private static final String BUNDLE_KEY_LINK = "linkUrl";
     private static final String BUNDLE_KEY_PICTURE = "pictureUrl";
 
-    private UiLifecycleHelper uiLifecycleHelper;
-    private boolean isFbShare;
-    private Session.StatusCallback callback = new Session.StatusCallback()
-    {
-        @Override public void call(Session session, SessionState state, Exception exception)
+    private Session.StatusCallback callback = (session, state, exception) -> {
+        if (state.isOpened())
         {
-            if(state.isOpened() && isFbShare)
-            {
-                isFbShare = false;
-                shareWithFallbackMethod(getIntent().getExtras());
-            }
+            share(getIntent().getExtras());
         }
     };
 
@@ -41,32 +32,14 @@ public class FacebookShareActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
-
-        uiLifecycleHelper = new UiLifecycleHelper(this, null);
-        uiLifecycleHelper.onCreate(savedInstanceState);
-
-        if (FacebookDialog.canPresentShareDialog(getApplicationContext(), FacebookDialog.ShareDialogFeature.SHARE_DIALOG))
+        Session session = Session.getActiveSession();
+        if (session == null || !session.isOpened())
         {
-            FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-                    .setName(getName(extras))
-                    .setDescription(getDescription(extras))
-                    .setCaption(getCaption(extras))
-                    .setLink(getLinkUrl(extras))
-                    .setPicture(getPictureUrl(extras))
-                    .build();
-            uiLifecycleHelper.trackPendingDialogCall(shareDialog.present());
+            Session.openActiveSession(this, true, callback);
         }
         else
         {
-            if(Session.getActiveSession() == null || !Session.getActiveSession().isOpened())
-            {
-                isFbShare = true;
-                Session.openActiveSession(this, true, callback);
-            }
-            else
-            {
-                shareWithFallbackMethod(extras);
-            }
+            share(extras);
         }
     }
 
@@ -95,7 +68,7 @@ public class FacebookShareActivity extends Activity
         return b.getString(BUNDLE_KEY_PICTURE);
     }
 
-    private void shareWithFallbackMethod(Bundle b)
+    private void share(Bundle b)
     {
         Bundle params = new Bundle();
         params.putString("name", getName(b));
@@ -116,68 +89,36 @@ public class FacebookShareActivity extends Activity
                         final String postId = values.getString("post_id");
                         if (postId != null)
                         {
-
+                            THToast.show(R.string.share_success);
                         }
                         else
                         {
                             // User clicked the Cancel button
+                            THToast.show(R.string.share_cancel);
                         }
                     }
                     else if (error instanceof FacebookOperationCanceledException)
                     {
                         // User clicked the "x" button
+                        THToast.show(R.string.share_cancel);
                     }
                     else
                     {
                         // Generic, ex: network error
+                        THToast.show(new THException(error));
                     }
+                    FacebookShareActivity.this.finish();
                 })
                 .build();
         feedDialog.show();
     }
 
-    @Override protected void onResume()
-    {
-        super.onResume();
-        uiLifecycleHelper.onResume();
-    }
-
-    @Override protected void onSaveInstanceState(@NonNull Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        uiLifecycleHelper.onSaveInstanceState(outState);
-    }
-
-    @Override protected void onPause()
-    {
-        super.onPause();
-        uiLifecycleHelper.onPause();
-    }
-
-    @Override protected void onDestroy()
-    {
-        super.onDestroy();
-        uiLifecycleHelper.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-
-        uiLifecycleHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback()
+        if(Session.getActiveSession() != null)
         {
-            @Override
-            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data)
-            {
-                Log.e("Activity", String.format("Error: %s", error.toString()));
-            }
-
-            @Override
-            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data)
-            {
-                Log.i("Activity", "Success!");
-            }
-        });
+            Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        }
     }
 }

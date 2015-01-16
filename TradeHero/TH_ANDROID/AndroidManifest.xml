@@ -112,8 +112,7 @@
     <activity
         android:name=".activities.FacebookShareActivity"
         android:label="@string/app_name"
-        android:launchMode="singleInstance"
-        android:exported="true"/>
+        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
 
     <!--QQ login -->
     <activity
