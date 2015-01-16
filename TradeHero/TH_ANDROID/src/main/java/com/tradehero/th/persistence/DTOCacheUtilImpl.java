@@ -6,15 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.tradehero.common.annotation.ForUser;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.SystemCache;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.api.achievement.key.QuestBonusListId;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
@@ -63,7 +60,7 @@ import rx.Observable;
 import rx.observers.EmptyObserver;
 
 @Singleton public class DTOCacheUtilImpl
-    implements DTOCacheUtilNew, DTOCacheUtilRx
+    implements DTOCacheUtilRx
 {
     protected final CurrentUserId currentUserId;
 
@@ -96,8 +93,6 @@ import rx.observers.EmptyObserver;
     @NonNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NonNull protected final Context context;
 
-    @NonNull private List<DTOCacheNew> userCacheNews;
-    @NonNull private List<DTOCacheNew> systemCacheNews;
     @NonNull private List<DTOCacheRx> userCacheRxs;
     @NonNull private List<DTOCacheRx> systemCacheRxs;
 
@@ -130,8 +125,6 @@ import rx.observers.EmptyObserver;
             @NonNull UserBaseDTOUtil userBaseDTOUtil,
             @NonNull Context context)
     {
-        this.userCacheNews = new ArrayList<>();
-        this.systemCacheNews = new ArrayList<>();
         this.userCacheRxs = new ArrayList<>();
         this.systemCacheRxs = new ArrayList<>();
 
@@ -166,22 +159,6 @@ import rx.observers.EmptyObserver;
     }
     //</editor-fold>
 
-    @Override public void addCache(@NonNull DTOCacheNew dtoCacheNew)
-    {
-        if (dtoCacheNew.getClass().isAnnotationPresent(UserCache.class))
-        {
-            userCacheNews.add(dtoCacheNew);
-        }
-        else if (dtoCacheNew.getClass().isAnnotationPresent(SystemCache.class))
-        {
-            systemCacheNews.add(dtoCacheNew);
-        }
-        else
-        {
-            throw new IllegalStateException(dtoCacheNew.getClass() + " needs to be either UserCache or SystemCache");
-        }
-    }
-
     @Override public void addCache(@NonNull DTOCacheRx dtoCacheRx)
     {
         if (dtoCacheRx.getClass().isAnnotationPresent(UserCache.class))
@@ -209,11 +186,6 @@ import rx.observers.EmptyObserver;
 //        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
 
-        for(int i = 0, length = systemCacheNews.size(); i < length; i++)
-        {
-            systemCacheNews.get(i).invalidateAll();
-        }
-
         for(int i = 0, length = systemCacheRxs.size(); i < length; i++)
         {
             systemCacheRxs.get(i).invalidateAll();
@@ -228,11 +200,6 @@ import rx.observers.EmptyObserver;
         for(int i = 0, length = userCacheRxs.size(); i < length; i++)
         {
             userCacheRxs.get(i).invalidateAll();
-        }
-
-        for(int i = 0, length = userCacheNews.size(); i < length; i++)
-        {
-            userCacheNews.get(i).invalidateAll();
         }
 
         warrantSpecificKnowledgeFactoryLazy.get().clear();

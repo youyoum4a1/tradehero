@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Pair;
-import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionType;

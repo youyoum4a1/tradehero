@@ -3,7 +3,6 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
-import com.tradehero.common.persistence.DTOCacheUtilNew;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.metrics.Analytics;
@@ -27,7 +26,6 @@ public class AuthenticationActivity extends BaseActivity
         implements Injector
 {
     @Inject Analytics analytics;
-    @Inject DTOCacheUtilNew dtoCacheUtilNew;
     @Inject DTOCacheUtilRx dtoCacheUtilRx;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
 
@@ -40,7 +38,6 @@ public class AuthenticationActivity extends BaseActivity
         setContentView(R.layout.authentication_layout);
 
         setupNavigator();
-        dtoCacheUtilNew.clearUserCaches();
         dtoCacheUtilRx.clearUserCaches();
     }
 

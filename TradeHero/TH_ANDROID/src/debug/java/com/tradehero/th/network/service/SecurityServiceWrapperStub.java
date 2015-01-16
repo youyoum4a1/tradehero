@@ -11,30 +11,30 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import rx.Observable;
 
 @Singleton public class SecurityServiceWrapperStub extends SecurityServiceWrapper
 {
     //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapperStub(
-            @NonNull SecurityService securityService,
             @NonNull SecurityServiceRx securityServiceRx,
             @NonNull ProviderServiceWrapper providerServiceWrapper,
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull CurrentUserId currentUserId)
     {
-        super(securityService, securityServiceRx, providerServiceWrapper,
+        super(securityServiceRx, providerServiceWrapper,
                 securityCompactCache, portfolioCache,
                 currentUserId);
     }
     //</editor-fold>
 
-    @Override public SecurityCompactDTOList getSecurities(@NonNull SecurityListType key)
+    @NonNull @Override public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
     {
         if (key instanceof ExchangeSectorSecurityListType)
         {
             key = new TrendingBasicSecurityListType();
         }
-        return super.getSecurities(key);
+        return super.getSecuritiesRx(key);
     }
 }
