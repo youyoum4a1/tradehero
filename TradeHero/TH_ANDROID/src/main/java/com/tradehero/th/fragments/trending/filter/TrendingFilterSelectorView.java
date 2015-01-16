@@ -98,12 +98,16 @@ public class TrendingFilterSelectorView extends RelativeLayout
 
     public void apply(@NonNull TrendingFilterTypeDTO typeDTO)
     {
+        boolean hasChanged = !typeDTO.equals(this.trendingFilterTypeDTO);
         this.trendingFilterTypeDTO = typeDTO;
         mTitle.setText(typeDTO.titleResId);
         mTitleIcon.setImageResource(typeDTO.titleIconResId);
         mDescription.setText(typeDTO.descriptionResId);
         mExchangeSelection.setSelection(trendingFilterTypeDTO.exchange);
-        notifyObserver();
+        if (hasChanged)
+        {
+            notifyObserver();
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

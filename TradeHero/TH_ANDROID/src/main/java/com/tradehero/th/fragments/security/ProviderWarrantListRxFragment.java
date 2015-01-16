@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
+import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -83,7 +83,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
         navigator.get().pushFragment(SecuritySearchProviderFragment.class, args);
     }
 
-    @NonNull @Override protected PagedArrayDTOAdapterNew<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
+    @NonNull @Override protected PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
     {
         return new SecurityItemViewAdapterNew(getActivity(), R.layout.warrant_security_item);
     }

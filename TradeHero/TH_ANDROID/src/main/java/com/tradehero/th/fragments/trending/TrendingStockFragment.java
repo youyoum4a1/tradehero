@@ -56,7 +56,6 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
@@ -198,6 +197,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             scheduleRequestData();
         }
+        else
+        {
+            if (nearEndScrollListener != null)
+            {
+                nearEndScrollListener.lowerEndFlag();
+                nearEndScrollListener.activateEnd();
+            }
+            requestDtos();
+        }
     }
 
     protected void onErrorFilter(@NonNull Throwable e)
@@ -210,32 +218,14 @@ public class TrendingStockFragment extends TrendingBaseFragment
         ExchangeListType key = new ExchangeListType();
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                exchangeCompactListCache.get(key))
-                .subscribe(createExchangeListTypeFetchObserver()));
-    }
-
-    @NonNull protected Observer<Pair<ExchangeListType, ExchangeCompactDTOList>> createExchangeListTypeFetchObserver()
-    {
-        return new TrendingExchangeListTypeFetchObserver();
-    }
-
-    protected class TrendingExchangeListTypeFetchObserver implements Observer<Pair<ExchangeListType, ExchangeCompactDTOList>>
-    {
-        @Override public void onNext(Pair<ExchangeListType, ExchangeCompactDTOList> pair)
-        {
-            Timber.d("Filter exchangeListTypeCacheListener onDTOReceived");
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(getString(R.string.error_fetch_exchange_list_info));
-            Timber.e("Error fetching the list of exchanges", e);
-        }
+                exchangeCompactListCache.get(key)
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        e -> {
+                            THToast.show(getString(R.string.error_fetch_exchange_list_info));
+                            Timber.e("Error fetching the list of exchanges", e);
+                        }));
     }
 
     private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)
@@ -260,31 +250,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserProfileFetchObserver()));
-    }
-
-    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileFetchObserver()
-    {
-        return new TrendingUserProfileFetchObserver();
-    }
-
-    protected class TrendingUserProfileFetchObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            Timber.d("Retrieve user with surveyUrl=%s", pair.second.activeSurveyImageURL);
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_user_profile);
-        }
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_user_profile)));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -298,31 +268,17 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                providerListCache.get(new ProviderListKey()))
-                .subscribe(createProviderListFetchObserver()));
+                providerListCache.get(new ProviderListKey())
+        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_provider_competition_list)));
     }
 
-    @NonNull protected Observer<Pair<ProviderListKey, ProviderDTOList>> createProviderListFetchObserver()
+    protected void linkWith(@NonNull ProviderDTOList providers)
     {
-        return new TrendingProviderListFetchObserver();
-    }
-
-    protected class TrendingProviderListFetchObserver implements Observer<Pair<ProviderListKey, ProviderDTOList>>
-    {
-        @Override public void onNext(Pair<ProviderListKey, ProviderDTOList> pair)
-        {
-            providerDTOs = pair.second;
-            wrapperAdapter.setProviderEnabled(providerDTOs != null && !providerDTOs.isEmpty());
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_provider_competition_list);
-        }
+        providerDTOs = providers;
+        wrapperAdapter.setProviderEnabled(!providerDTOs.isEmpty());
     }
 
     @Override public boolean canMakePagedDtoKey()

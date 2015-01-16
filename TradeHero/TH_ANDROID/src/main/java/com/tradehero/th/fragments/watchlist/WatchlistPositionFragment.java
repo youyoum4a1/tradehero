@@ -254,6 +254,7 @@ public class WatchlistPositionFragment extends DashboardFragment
                 int firstVisibleItem = view.getFirstVisiblePosition();
                 if (firstVisibleItem == 0)
                 {
+                    // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/54b6827165f8dfea15989512
                     int offsetY = view.getChildAt(firstVisibleItem).getTop();
                     if (offsetY > maxOffsetY)
                     {
