@@ -310,4 +310,6 @@
   <string name="position_short_info">position short info</string>
   <string name="position_long_info">position long info</string>
   <string name="position_close_info">position close info</string>
+
+  <string name="facebook_app_id">431745923529834</string>
 </resources>

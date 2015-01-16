@@ -17,7 +17,8 @@ import javax.inject.Singleton;
                 SplashActivity.class,
                 DashboardActivity.class,
                 AuthenticationActivity.class,
-                WXEntryActivity.class
+                WXEntryActivity.class,
+                FacebookShareActivity.class,
         },
         staticInjections = {
         },

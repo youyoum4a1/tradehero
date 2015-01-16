@@ -14,9 +14,11 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
 import com.tradehero.th.api.games.MiniGameDefListKey;
+import com.tradehero.th.api.games.ViralMiniGameDefKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.games.GameWebViewFragment;
+import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.games.MiniGameDefListCache;
 import com.tradehero.th.rx.RxLoaderManager;
@@ -52,7 +54,12 @@ public class DiscoveryGameFragment extends DashboardFragment
             Bundle args = new Bundle();
             GameWebViewFragment.putGameId(args, miniGameDefDTO.getDTOKey());
             GameWebViewFragment.putUrl(args, miniGameDefDTO, currentUserId.toUserBaseKey());
-            if (navigator != null)
+            if(miniGameDefDTO.viralMiniGameId != null && miniGameDefDTO.url == null)
+            {
+                ViralGamePopupDialogFragment dialogFragment = ViralGamePopupDialogFragment.newInstance(new ViralMiniGameDefKey(miniGameDefDTO.viralMiniGameId));
+                dialogFragment.show(getChildFragmentManager(), ViralGamePopupDialogFragment.class.getName());
+            }
+            else if (navigator != null)
             {
                 navigator.get().pushFragment(GameWebViewFragment.class, args);
             }
