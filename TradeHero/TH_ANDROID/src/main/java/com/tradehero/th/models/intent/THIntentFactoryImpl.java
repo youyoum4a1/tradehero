@@ -80,7 +80,7 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
 
         // ignore query for now, TODO handle deeplink query
         int queryMark = url.indexOf('?');
-        Bundle b = new Bundle();
+        Bundle extras = new Bundle();
         if (queryMark > 0)
         {
             url = url.substring(0, queryMark);
@@ -88,13 +88,13 @@ public class THIntentFactoryImpl extends THIntentFactory<THIntent>
             Set<String> keys = intent.getData().getQueryParameterNames();
             for (String k : keys)
             {
-                b.putString(k, intent.getData().getQueryParameter(k));
+                extras.putString(k, intent.getData().getQueryParameter(k));
             }
         }
 
         try
         {
-            thRouter.open(url, b, activityProvider.get());
+            thRouter.open(url, extras, activityProvider.get());
         } catch (Exception ex)
         {
             Timber.e(ex, "%s host is unhandled %s", host, intent.getDataString());
