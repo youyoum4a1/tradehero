@@ -29,7 +29,7 @@ public class TrendingMainFragment extends DashboardFragment
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    public int lastType = 0;
+    private static int lastType = 0;
 
     private TradingPagerAdapter tradingPagerAdapter;
 
