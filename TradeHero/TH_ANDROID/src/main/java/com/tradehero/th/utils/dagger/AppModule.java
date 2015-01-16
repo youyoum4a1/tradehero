@@ -6,10 +6,7 @@ import com.tradehero.chinabuild.*;
 import com.tradehero.chinabuild.dialog.*;
 import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.competition.*;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryRewardFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
+import com.tradehero.chinabuild.fragment.discovery.*;
 import com.tradehero.chinabuild.fragment.message.*;
 import com.tradehero.chinabuild.fragment.moreLeaderboard.*;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
@@ -352,6 +349,8 @@ import java.util.Locale;
                         DiscoveryStockGodNewsFragment.class,
                         DiscoveryRewardFragment.class,
                         DiscoveryRecentNewsFragment.class,
+                        DiscoveryNewsFragment.class,
+                        NewsDetailFragment.class,
 
                         SearchFragment.class,
                         SettingFragment.class,

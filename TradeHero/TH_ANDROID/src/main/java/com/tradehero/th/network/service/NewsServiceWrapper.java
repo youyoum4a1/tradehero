@@ -1,22 +1,19 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemListGlobalKey;
-import com.tradehero.th.api.news.key.NewsItemListInterestKey;
-import com.tradehero.th.api.news.key.NewsItemListKey;
-import com.tradehero.th.api.news.key.NewsItemListRegionalKey;
-import com.tradehero.th.api.news.key.NewsItemListSecurityKey;
-import com.tradehero.th.api.news.key.NewsItemListSocialKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.tradehero.chinabuild.data.NewsDTOSet;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
+import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
+import com.tradehero.th.api.news.key.*;
+import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 @Singleton public class NewsServiceWrapper
 {
@@ -199,5 +196,9 @@ import retrofit.Callback;
         MiddleCallback<NewsItemDTO> middleCallback = new BaseMiddleCallback<>(callback);
         newsServiceAsync.getNewsDetails(newsId, middleCallback);
         return middleCallback;
+    }
+
+    public void retrieveNews(int pageNumber, int numberPerPage, Callback<NewsDTOSet> callback){
+        newsServiceAsync.retrieveNews(pageNumber,numberPerPage, callback);
     }
 }

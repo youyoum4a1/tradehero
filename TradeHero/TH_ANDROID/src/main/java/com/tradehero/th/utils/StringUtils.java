@@ -73,11 +73,35 @@ public class StringUtils
 
     public static String getCharacterPinYin(char c)
     {
-        String[] pinyin = null;
-        pinyin = PinyinHelper.toHanyuPinyinStringArray(c);
+        String[] pinyin = PinyinHelper.toHanyuPinyinStringArray(c);
         if(pinyin == null) {
             return null;
         }
         return pinyin[0];
+    }
+
+    public static String convertToHtmlFormat(String content, int image_max_width) {
+        String contentResult = removeTAG(content, "height=\"", "\"");
+        contentResult = removeTAG(contentResult, "width=\"", "\"");
+        //contentResult = removeTAG(contentResult, "<a href=", "</a>");
+        contentResult = contentResult.replace("<img", "<br/><img");
+        contentResult = contentResult.replace("/>", "/><br/>");
+        contentResult = contentResult.replace("<img", "<img width=\"" + image_max_width + "\" ");
+        contentResult = contentResult.replace("<body>", "<body><br/>");
+        contentResult = contentResult.replace("<link>","");
+        contentResult = contentResult.replace("</link>","");
+        contentResult = contentResult.replace("点击下载雪球手机客户端","");
+        return contentResult;
+    }
+
+    private static String removeTAG(String content, String START_TAG, String END_TAG) {
+        if (content.contains(START_TAG)) {
+            int start = content.indexOf(START_TAG);
+            int end = content.indexOf(END_TAG, start + START_TAG.length());
+            content = content.substring(0, start) + content.substring(end + END_TAG.length());
+            return removeTAG(content, START_TAG, END_TAG);
+        } else {
+            return content;
+        }
     }
 }

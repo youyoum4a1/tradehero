@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryHotTopicFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryNewsFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryRewardFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
@@ -24,6 +24,7 @@ import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
+
 import javax.inject.Inject;
 
 
@@ -61,7 +62,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     }
 
     private static final String[] CONTENT = new String[] {"最新动态"
-              , "热门话题","悬赏帖", "股神动态"
+              , "资讯","悬赏帖", "股神动态"
     };
 
     @Override
@@ -110,7 +111,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
                     return new DiscoveryRecentNewsFragment();
 
                 case 1:
-                    return new DiscoveryHotTopicFragment();
+                    return new DiscoveryNewsFragment();
 
                 case 2:
                     return new DiscoveryRewardFragment();

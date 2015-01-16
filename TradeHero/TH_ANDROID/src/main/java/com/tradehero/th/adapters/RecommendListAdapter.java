@@ -101,7 +101,7 @@ public class RecommendListAdapter extends BaseAdapter
         if (i > (heroes.size() - 1))
         {
             convertView = inflater.inflate(R.layout.recommend_list_stock_item, null);
-            View downStockDividerView = (View) convertView.findViewById(R.id.view_recommend_list_stock_down_divider);
+            View downStockDividerView = convertView.findViewById(R.id.view_recommend_list_stock_down_divider);
             ImageView stockSelectIV = (ImageView) convertView.findViewById(R.id.imageview_recommend_list_stock_select);
             TextView stockNameTV = (TextView) convertView.findViewById(R.id.textview_recommend_list_stock_name);
             TextView numberHoldTV = (TextView) convertView.findViewById(R.id.textview_recommend_list_stock_number_owner);
@@ -215,7 +215,6 @@ public class RecommendListAdapter extends BaseAdapter
             {
                 heroSelectIV.setBackgroundResource(R.drawable.checkbox_gray);
             }
-            int color = activity.getResources().getColor(ColorUtils.getColorResourceIdForNumber(hero.roi));
             String percent = "";
             if (hero.roi > 0)
             {
