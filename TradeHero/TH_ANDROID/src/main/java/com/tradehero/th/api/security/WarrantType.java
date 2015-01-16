@@ -9,21 +9,19 @@ import java.util.Map;
 
 public enum WarrantType
 {
-    CALL("C", R.string.warrant_type_call, R.string.warrant_type_call_only),
-    PUT("P", R.string.warrant_type_put, R.string.warrant_type_put_only);
+    CALL("C", R.string.warrant_type_call),
+    PUT("P", R.string.warrant_type_put);
 
     private static Map<String, WarrantType> shortCodeMap;
 
     @NonNull public final String shortCode;
     @StringRes public final int stringResId;
-    @StringRes public final int titleResId;
 
     //<editor-fold desc="Constructors">
-    WarrantType(@NonNull String shortCode, int stringResId, int titleResId)
+    WarrantType(@NonNull String shortCode, int stringResId)
     {
         this.shortCode = shortCode;
         this.stringResId = stringResId;
-        this.titleResId = titleResId;
     }
     //</editor-fold>
 

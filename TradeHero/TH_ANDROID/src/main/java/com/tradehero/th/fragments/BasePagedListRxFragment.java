@@ -208,29 +208,39 @@ abstract public class BasePagedListRxFragment<
         final PagedDTOKeyType pagedKey = makePagedDtoKey(pageToLoad);
         if (!isRequesting(pageToLoad))
         {
+            final boolean[] alreadyGotNext = new boolean[] {false};
             Subscription subscription = AndroidObservable.bindFragment(
                     this,
-                    getCache().get(pagedKey))
+                    getCache().get(pagedKey)
                     .doOnNext(pair -> {
                         Subscription removed = pagedSubscriptions.remove(pageToLoad);
-                        if (removed == null)
+                        if (removed != null)
                         {
-                            Timber.e(new NullPointerException(), "Did not expect null subscription");
+                            pagedPastSubscriptions.put(
+                                    pageToLoad,
+                                    removed);
                         }
-                        pagedPastSubscriptions.put(
-                                pageToLoad,
-                                removed);
+                        alreadyGotNext[0] = true;
                     })
                     .finallyDo(() -> {
                         pagedSubscriptions.remove(pageToLoad);
                         pagedPastSubscriptions.remove(pageToLoad);
-                    })
+                    }))
                     .subscribe(
                             pair -> onNext(pair.first, pair.second),
                             error -> onError(pagedKey, error));
-            pagedSubscriptions.put(
-                    pageToLoad,
-                    subscription);
+            if (alreadyGotNext[0])
+            {
+                pagedPastSubscriptions.put(
+                        pageToLoad,
+                        subscription);
+            }
+            else
+            {
+                pagedSubscriptions.put(
+                        pageToLoad,
+                        subscription);
+            }
         }
     }
 

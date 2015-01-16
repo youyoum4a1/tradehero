@@ -248,18 +248,14 @@ import rx.Observable;
     //<editor-fold desc="Get FX KChart">
     @NonNull public Observable<FXChartDTO> getFXHistory(@NonNull SecurityId securityId, String duration)
     {
-        Observable<FXChartDTO> received;
-        received = securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
-        return received;
+        return securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get FX All Price">
     @NonNull public Observable<List<QuoteDTO>> getFXSecuritiesAllPriceRx()
     {
-        Observable<List<QuoteDTO>> received;
-        received = securityServiceRx.getFXSecuritiesAllPrice();
-        return received;
+        return securityServiceRx.getFXSecuritiesAllPrice();
     }
     //</editor-fold>
 }
