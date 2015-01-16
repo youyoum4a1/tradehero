@@ -54,7 +54,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
-    @Inject UserProfileCacheRx userProfileCache;
+    @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 

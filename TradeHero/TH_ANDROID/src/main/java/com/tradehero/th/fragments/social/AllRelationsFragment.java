@@ -35,7 +35,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -180,7 +179,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected void handleFollowRequested(UserBaseKey userBaseKey)
     {
-        //noinspection unchecked
+        //noinspection unchecked,RedundantCast
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
