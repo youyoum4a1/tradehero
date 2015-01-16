@@ -35,11 +35,6 @@ abstract public class ProviderSecurityListType extends SecurityListType
     }
     //</editor-fold>
 
-    public ProviderId getProviderId()
-    {
-        return providerId;
-    }
-
     @Override public int hashCode()
     {
         return super.hashCode() ^ providerId.hashCode();
@@ -84,5 +79,4 @@ abstract public class ProviderSecurityListType extends SecurityListType
         return super.compareTo(another);
     }
     //</editor-fold>
-
 }
