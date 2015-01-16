@@ -97,8 +97,8 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
         if (viralMiniGameDefDTO != null && viralMiniGameDefDTO.gameUrl != null)
         {
             Bundle b = new Bundle();
-            WebViewFragment.putUrl(b, viralMiniGameDefDTO.gameUrl);
-            navigator.pushFragment(WebViewFragment.class, b);
+            ViralGameWebFragment.putUrl(b, viralMiniGameDefDTO.gameUrl);
+            navigator.pushFragment(ViralGameWebFragment.class, b);
         }
     }
 

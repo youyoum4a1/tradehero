@@ -8,6 +8,7 @@ import dagger.Module;
                 HowToPlayDialogFragment.class,
                 MiniGameScoreDialogFragment.class,
                 ViralGamePopupDialogFragment.class,
+                ViralGameWebFragment.class,
         },
         library = true,
         complete = false
