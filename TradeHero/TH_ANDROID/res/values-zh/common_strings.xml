@@ -35,7 +35,6 @@
 
   <!-- To get rid of? -->
   <string name="image_url">image_url</string>
-  <string name="key_price">价格</string>
 
   <!-- Number presentation -->
   <string name="number_presentation_unit_suffix"/>

@@ -32,15 +32,8 @@
   <string name="store_billing_sku_already_owned_window_description">尝试恢复吗？</string>
   <string name="store_billing_sku_already_owned_ok">好的</string>
   <string name="store_billing_sku_already_owned_cancel">取消</string>
-  <string name="store_billing_bad_response_window_title">啊?</string>
-  <string name="store_billing_bad_response_window_description">我们从应用商店收到一条错误的响应</string>
   <!--string name="store_billing_bad_response_ok">Sure</string-->
-  <string name="store_billing_bad_response_cancel">好的</string>
-  <string name="store_billing_result_error_window_title">啊?</string>
-  <string name="store_billing_result_error_window_description">我们从应用商店收到一条错误信息。你可能需要清理应用商店的缓存
-  </string>
   <!--string name="store_billing_result_error_ok">Sure</string-->
-  <string name="store_billing_result_error_cancel">好的</string>
   <string name="store_billing_loading_info_window_title">登录信息</string>
   <string name="store_billing_loading_info_window_message">请等待&#8230;</string>
   <string name="store_billing_report_api_launching_window_title">交易进行中</string>
