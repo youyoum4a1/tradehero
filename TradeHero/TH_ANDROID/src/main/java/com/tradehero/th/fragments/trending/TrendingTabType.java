@@ -15,7 +15,9 @@ enum TrendingTabType
     @NonNull public final Class<? extends TrendingBaseFragment> fragmentClass;
     @NonNull public final AssetClass assetClass;
 
-    TrendingTabType(@StringRes int titleStringResId,
+    //<editor-fold desc="Constructors">
+    private TrendingTabType(
+            @StringRes int titleStringResId,
             @NonNull Class<? extends TrendingBaseFragment> fragmentClass,
             @NonNull AssetClass assetClass)
     {
@@ -23,8 +25,9 @@ enum TrendingTabType
         this.fragmentClass = fragmentClass;
         this.assetClass = assetClass;
     }
+    //</editor-fold>
 
-    static TrendingTabType getForAssetClass(@NonNull AssetClass assetClass)
+    @NonNull static TrendingTabType getForAssetClass(@NonNull AssetClass assetClass)
     {
         for (TrendingTabType tabType : values())
         {

@@ -14,6 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -24,6 +25,7 @@ import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -233,5 +235,11 @@ public class TrendingFXFragment extends TrendingBaseFragment
         {
             checkFXPortfolio();
         }
+    }
+
+    @Override protected void populateArgumentForSearch(@NonNull Bundle args)
+    {
+        super.populateArgumentForSearch(args);
+        SecuritySearchFragment.putAssetClass(args, AssetClass.FX);
     }
 }

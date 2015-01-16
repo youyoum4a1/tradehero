@@ -29,6 +29,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -39,6 +40,7 @@ import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -444,7 +446,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
-    private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
+    private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
@@ -459,5 +461,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);
+    }
+
+    @Override protected void populateArgumentForSearch(@NonNull Bundle args)
+    {
+        super.populateArgumentForSearch(args);
+        SecuritySearchFragment.putAssetClass(args, AssetClass.STOCKS);
     }
 }
