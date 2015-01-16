@@ -38,7 +38,6 @@ import rx.Observable;
 
 @Singleton public class SecurityServiceWrapper
 {
-    @NonNull private final SecurityService securityService;
     @NonNull private final SecurityServiceRx securityServiceRx;
     @NonNull private final ProviderServiceWrapper providerServiceWrapper;
     @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
@@ -47,7 +46,6 @@ import rx.Observable;
 
     //<editor-fold desc="Constructors">
     @Inject public SecurityServiceWrapper(
-            @NonNull SecurityService securityService,
             @NonNull SecurityServiceRx securityServiceRx,
             @NonNull ProviderServiceWrapper providerServiceWrapper,
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
@@ -55,7 +53,6 @@ import rx.Observable;
             @NonNull CurrentUserId currentUserId)
     {
         super();
-        this.securityService = securityService;
         this.securityServiceRx = securityServiceRx;
         this.providerServiceWrapper = providerServiceWrapper;
         this.securityCompactCache = securityCompactCache;
@@ -78,74 +75,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Securities">
-    @Deprecated
-    public SecurityCompactDTOList getSecurities(@NonNull SecurityListType key)
-    {
-        SecurityCompactDTOList received;
-        if (key instanceof TrendingSecurityListType)
-        {
-            TrendingSecurityListType trendingKey = (TrendingSecurityListType) key;
-            if (trendingKey instanceof TrendingBasicSecurityListType)
-            {
-                received = this.securityService.getTrendingSecurities(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage);
-            }
-            else if (trendingKey instanceof TrendingPriceSecurityListType)
-            {
-                received =  this.securityService.getTrendingSecuritiesByPrice(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage);
-            }
-            else if (trendingKey instanceof TrendingVolumeSecurityListType)
-            {
-                received =  this.securityService.getTrendingSecuritiesByVolume(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage);
-            }
-            else if (trendingKey instanceof TrendingAllSecurityListType)
-            {
-                received =  this.securityService.getTrendingSecuritiesAllInExchange(
-                        trendingKey.exchange,
-                        trendingKey.getPage(),
-                        trendingKey.perPage);
-            }
-            else
-            {
-                throw new IllegalArgumentException("Unhandled type " + ((Object) trendingKey).getClass().getName());
-            }
-        }
-        else if (key instanceof SearchSecurityListType)
-        {
-            SearchSecurityListType searchKey = (SearchSecurityListType) key;
-            received =  this.securityService.searchSecurities(
-                    searchKey.searchString,
-                    searchKey.getPage(),
-                    searchKey.perPage);
-        }
-        else if (key instanceof ProviderSecurityListType)
-        {
-            received =  providerServiceWrapper.getProviderSecurities((ProviderSecurityListType) key);
-        }
-        else if (key instanceof ExchangeSectorSecurityListType)
-        {
-            ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
-            received = this.securityService.getBySectorAndExchange(
-                    exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
-                    exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
-                    key.page,
-                    key.perPage);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-        }
-        return received;
-    }
-
     @NonNull public Observable<SecurityCompactDTOList> getSecuritiesRx(@NonNull SecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
@@ -319,18 +248,14 @@ import rx.Observable;
     //<editor-fold desc="Get FX KChart">
     @NonNull public Observable<FXChartDTO> getFXHistory(@NonNull SecurityId securityId, String duration)
     {
-        Observable<FXChartDTO> received;
-        received = securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
-        return received;
+        return securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
     }
     //</editor-fold>
 
     //<editor-fold desc="Get FX All Price">
     @NonNull public Observable<List<QuoteDTO>> getFXSecuritiesAllPriceRx()
     {
-        Observable<List<QuoteDTO>> received;
-        received = securityServiceRx.getFXSecuritiesAllPrice();
-        return received;
+        return securityServiceRx.getFXSecuritiesAllPrice();
     }
     //</editor-fold>
 }

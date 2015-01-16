@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeListType;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -39,7 +41,8 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
+import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSelectorView;
@@ -59,7 +62,9 @@ import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.android.observables.AndroidObservable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -159,9 +164,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
         super.onDestroy();
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_security_item);
+        return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_security_item);
     }
 
     @NonNull protected ExtraTileAdapterNew createSecurityItemViewAdapter()
@@ -197,6 +202,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             scheduleRequestData();
         }
+        else
+        {
+            if (nearEndScrollListener != null)
+            {
+                nearEndScrollListener.lowerEndFlag();
+                nearEndScrollListener.activateEnd();
+            }
+            requestDtos();
+        }
     }
 
     protected void onErrorFilter(@NonNull Throwable e)
@@ -209,14 +223,14 @@ public class TrendingStockFragment extends TrendingBaseFragment
         ExchangeListType key = new ExchangeListType();
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                exchangeCompactListCache.get(key))
+                exchangeCompactListCache.get(key)
+                        .map(pair -> pair.second))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        error -> {
-                            Timber.e(error, "Fetching exchanges");
+                        this::linkWith,
+                        e -> {
                             THToast.show(getString(R.string.error_fetch_exchange_list_info));
-                        }
-                ));
+                            Timber.e("Error fetching the list of exchanges", e);
+                        }));
     }
 
     private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)
@@ -241,11 +255,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        error -> THToast.show(R.string.error_fetch_user_profile)
-                ));
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_user_profile)));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -259,22 +273,17 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                providerListCache.get(new ProviderListKey()))
+                providerListCache.get(new ProviderListKey())
+                        .map(pair -> pair.second))
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        error -> THToast.show(R.string.error_fetch_provider_competition_list)
-                ));
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_provider_competition_list)));
     }
 
-    protected void linkWith(ProviderDTOList providerDTOs)
+    protected void linkWith(@NonNull ProviderDTOList providers)
     {
-        this.providerDTOs = providerDTOs;
-        wrapperAdapter.setProviderEnabled(providerDTOs != null && !providerDTOs.isEmpty());
-    }
-
-    @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
-    {
-        return securityCompactListCache;
+        providerDTOs = providers;
+        wrapperAdapter.setProviderEnabled(!providerDTOs.isEmpty());
     }
 
     @Override public boolean canMakePagedDtoKey()
@@ -396,16 +405,18 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .first()
-                .subscribe(
-                        args -> {
-                            if (args.second.activeSurveyURL != null)
-                            {
-                                Bundle bundle = new Bundle();
-                                WebViewFragment.putUrl(bundle, args.second.activeSurveyURL);
-                                navigator.get().pushFragment(WebViewFragment.class, bundle, null);
-                            }
-                        },
-                        error -> THToast.show(new THException(error)));
+                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
+                {
+                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
+                    {
+                        if (args.second.activeSurveyURL != null)
+                        {
+                            Bundle bundle = new Bundle();
+                            WebViewFragment.putUrl(bundle, args.second.activeSurveyURL);
+                            navigator.get().pushFragment(WebViewFragment.class, bundle, null);
+                        }
+                    }
+                });
     }
 
     private void handleResetPortfolioItemOnClick()
@@ -415,7 +426,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
                 .subscribe(
-                        result -> {},
+                        result -> {
+                        },
                         error -> THToast.show(new THException((Throwable) error))
                 ));
     }
@@ -437,7 +449,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
-    private void handleSecurityItemOnClick(SecurityCompactDTO securityCompactDTO)
+    private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
@@ -452,5 +464,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);
+    }
+
+    @Override protected void populateArgumentForSearch(@NonNull Bundle args)
+    {
+        super.populateArgumentForSearch(args);
+        SecuritySearchFragment.putAssetClass(args, AssetClass.STOCKS);
     }
 }

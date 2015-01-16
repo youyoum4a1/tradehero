@@ -29,12 +29,9 @@ import com.tradehero.th.network.CompetitionUrl;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.network.NullHostNameVerifier;
 import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.ProviderService;
 import com.tradehero.th.network.service.RetrofitProtectedModule;
-import com.tradehero.th.network.service.SecurityService;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.service.SocialServiceWrapper;
-import com.tradehero.th.network.service.UserService;
 import com.tradehero.th.network.service.UserTimelineService;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.RetrofitConstants;
@@ -67,21 +64,6 @@ import timber.log.Timber;
 public class RetrofitModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton ProviderService provideProviderService(RestAdapter adapter)
-    {
-        return adapter.create(ProviderService.class);
-    }
-
-    @Provides @Singleton SecurityService provideSecurityService(RestAdapter adapter)
-    {
-        return adapter.create(SecurityService.class);
-    }
-
-    @Provides @Singleton UserService provideUserService(RestAdapter adapter)
-    {
-        return adapter.create(UserService.class);
-    }
-
     @Provides @Singleton UserTimelineService provideUserTimelineService(RestAdapter adapter)
     {
         return adapter.create(UserTimelineService.class);

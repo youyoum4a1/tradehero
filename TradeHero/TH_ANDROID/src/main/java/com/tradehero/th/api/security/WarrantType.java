@@ -1,5 +1,7 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import java.util.HashMap;
@@ -7,23 +9,23 @@ import java.util.Map;
 
 public enum WarrantType
 {
-    CALL("C", R.string.warrant_type_call, R.string.warrant_type_call_only),
-    PUT("P", R.string.warrant_type_put, R.string.warrant_type_put_only);
+    CALL("C", R.string.warrant_type_call),
+    PUT("P", R.string.warrant_type_put);
 
     private static Map<String, WarrantType> shortCodeMap;
 
-    public final String shortCode;
+    @NonNull public final String shortCode;
     @StringRes public final int stringResId;
-    @StringRes public final int titleResId;
 
-    WarrantType(String shortCode, int stringResId, int titleResId)
+    //<editor-fold desc="Constructors">
+    WarrantType(@NonNull String shortCode, int stringResId)
     {
         this.shortCode = shortCode;
         this.stringResId = stringResId;
-        this.titleResId = titleResId;
     }
+    //</editor-fold>
 
-    private static Map<String, WarrantType> getShortCodeMap()
+    @NonNull private static Map<String, WarrantType> getShortCodeMap()
     {
         if (shortCodeMap == null)
         {
@@ -36,7 +38,7 @@ public enum WarrantType
         return shortCodeMap;
     }
 
-    public static WarrantType getByShortCode(String shortCode)
+    @Nullable public static WarrantType getByShortCode(@NonNull String shortCode)
     {
         return getShortCodeMap().get(shortCode);
     }

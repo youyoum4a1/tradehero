@@ -130,7 +130,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
         if (applicablePortfolioId == null)
         {
-            Timber.e(new NullPointerException(), "Null applicablePortfolio");
+            Timber.e(new NullPointerException(), "Null applicablePortfolio for %s", getClass());
         }
         else
         {

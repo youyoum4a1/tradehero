@@ -273,7 +273,7 @@ dependencies {
   compile(fbproj) {
     exclude group: 'com.android.support', module: 'support-v4'
   }
-  compile('com.android.support:support-v13:21.0.0')
+  compile('com.android.support:support-v13:21.0.3')
   provided 'proguard:annotations:4.6'
   compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
     exclude group: 'com.google.android', module: 'support-v4'

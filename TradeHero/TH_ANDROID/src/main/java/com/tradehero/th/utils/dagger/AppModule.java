@@ -14,9 +14,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.billing.BillingModule;
 import com.tradehero.th.filter.FilterModule;
-import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.loaders.TimelineListLoader;
-import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -56,13 +54,11 @@ import javax.inject.Singleton;
                 {
                         THApp.class,
                         ChoiceFollowUserAssistantWithDialog.class,
-                        SecurityListPagedLoader.class,
 
                         DisplayablePortfolioFetchAssistant.class,
 
                         TimelineListLoader.class,
 
-                        FriendListLoader.class,
                         MessageHeaderDTO.class,
                         GuideActivity.class,
 

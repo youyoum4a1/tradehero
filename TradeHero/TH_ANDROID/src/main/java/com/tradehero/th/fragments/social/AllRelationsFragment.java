@@ -91,9 +91,9 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public void onResume()
+    @Override public void onStart()
     {
-        super.onResume();
+        super.onStart();
         downloadRelations();
     }
 
@@ -137,11 +137,26 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         alertDialogUtilLazy.get()
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
-        AndroidObservable.bindFragment(
+        subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createAllowableRecipientObserver());
+                .subscribe(
+                        this::onNextRecipients,
+                        this::onErrorRecipients));
+    }
+
+    protected void onNextRecipients(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
+    {
+        mRelationsList = pair.second.getData();
+        alertDialogUtilLazy.get().dismissProgressDialog();
+        mRelationsListItemAdapter.addAll(mRelationsList);
+        mRelationsListItemAdapter.notifyDataSetChanged();
+    }
+
+    protected void onErrorRecipients(Throwable e)
+    {
+        THToast.show(new THException(e));
+        alertDialogUtilLazy.get().dismissProgressDialog();
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -173,36 +188,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                         result -> forceUpdateLook(userBaseKey),
                         error -> THToast.show(new THException((Throwable) error))
                 ));
-    }
-
-    protected Observer<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>
-    createAllowableRecipientObserver()
-    {
-        return new AllRelationAllowableRecipientCacheObserver();
-    }
-
-    protected class AllRelationAllowableRecipientCacheObserver
-            implements Observer<Pair<
-            SearchAllowableRecipientListType,
-            PaginatedAllowableRecipientDTO>>
-    {
-        @Override public void onNext(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
-        {
-            mRelationsList = pair.second.getData();
-            alertDialogUtilLazy.get().dismissProgressDialog();
-            mRelationsListItemAdapter.addAll(mRelationsList);
-            mRelationsListItemAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            alertDialogUtilLazy.get().dismissProgressDialog();
-        }
     }
 
     protected OnPremiumFollowRequestedListener createFollowRequestedListener()

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.security;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
 import com.tradehero.common.fragment.HasSelectedItem;
@@ -11,6 +10,7 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -25,7 +25,6 @@ import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
-import rx.Observer;
 import timber.log.Timber;
 
 public class SecuritySearchFragment extends BaseSearchRxFragment<
@@ -42,14 +41,14 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     @Inject Analytics analytics;
     @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
-    @NonNull protected AssetClass assetClass;
+    @Nullable protected AssetClass assetClass;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
         args.putInt(BUNDLE_KEY_ASSET_CLASS, assetClass.getValue());
     }
 
-    @NonNull protected static AssetClass getAssetClass(@NonNull Bundle args)
+    @NonNull protected static AssetClass getAssetClassFromBundle(@NonNull Bundle args)
     {
         AssetClass retrieved = AssetClass.create(args.getInt(BUNDLE_KEY_ASSET_CLASS, AssetClass.STOCKS.getValue()));
         if (retrieved == null)
@@ -59,17 +58,26 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return retrieved;
     }
 
+    private AssetClass getAssetClass()
+    {
+        if(assetClass == null)
+        {
+            assetClass = getAssetClassFromBundle(getArguments());
+        }
+        return assetClass;
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        assetClass = getAssetClass(getArguments());
+        assetClass = getAssetClassFromBundle(getArguments());
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
 
-        switch (assetClass)
+        switch (getAssetClass())
         {
             case STOCKS:
                 searchEmptyTextView.setText(R.string.trending_search_no_stock_found);
@@ -93,7 +101,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 
         if (mSearchTextField != null)
         {
-            switch (assetClass)
+            switch (getAssetClass())
             {
                 case STOCKS:
                     mSearchTextField.setHint(R.string.trending_search_empty_result_for_stock);
@@ -114,9 +122,9 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return selectedItem;
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(
+        return new SecurityPagedViewDTOAdapter(
                 getActivity(),
                 R.layout.search_security_item);
     }
@@ -163,29 +171,16 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 
-    @Override @NonNull protected Observer<Pair<SecurityListType, SecurityCompactDTOList>> createListCacheObserver(@NonNull SecurityListType key)
+    @Override protected void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)
     {
-        return new SecurityIdListCacheObserver(key);
+        super.onNext(key, value);
+        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
     }
 
-    protected class SecurityIdListCacheObserver extends ListCacheObserver
+    @Override protected void onError(@NonNull SecurityListType key, @NonNull Throwable error)
     {
-        protected SecurityIdListCacheObserver(@NonNull SecurityListType key)
-        {
-            super(key);
-        }
-
-        @Override public void onNext(Pair<SecurityListType, SecurityCompactDTOList> pair)
-        {
-            super.onNext(pair);
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
-        }
-
-        @Override public void onError(Throwable error)
-        {
-            super.onError(error);
-            THToast.show(getString(R.string.error_fetch_security_list_info));
-            Timber.e("Error fetching the list of securities " + key, error);
-        }
+        super.onError(key, error);
+        THToast.show(getString(R.string.error_fetch_security_list_info));
+        Timber.e("Error fetching the list of securities " + key, error);
     }
 }

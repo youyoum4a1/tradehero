@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -22,10 +22,10 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingFxSecurityListType;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.security.SecurityItemViewAdapterNew;
+import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
+import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 //@Routable("trending-securities")
@@ -51,7 +50,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     @Nullable private Subscription checkEnrollmentSubscription;
     @Nullable private Subscription waitForEnrolledSubscription;
     @Nullable private Subscription fetchFxPriceSubscription;
-            // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
+    // For some reason, if we use the SubscriptionList for fetchFxPrice, it unsubscribes when we come back from buy sell
     @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,9 +96,9 @@ public class TrendingFXFragment extends TrendingBaseFragment
         return portfolioCompactDTOs.getDefaultFxPortfolio();
     }
 
-    @Override @NonNull protected SecurityItemViewAdapterNew createItemViewAdapter()
+    @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
-        return new SecurityItemViewAdapterNew(getActivity(), R.layout.trending_fx_item);
+        return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_fx_item);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
@@ -116,21 +115,18 @@ public class TrendingFXFragment extends TrendingBaseFragment
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
-//                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
+                .doOnNext(pair -> btnEnroll.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
                 .filter(pair -> pair.second.fxPortfolio != null)
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        // In effect, we are waiting for the enrolled profile
-                        unsubscribe(waitForEnrolledSubscription);
-                        mProgress.setVisibility(View.GONE);
-//                        btnEnroll.setVisibility(View.GONE);
-                        scheduleRequestData();
-                        fetchFXPrice();
-                    }
-                });
+                .subscribe(
+                        pair -> {
+                            // In effect, we are waiting for the enrolled profile
+                            unsubscribe(waitForEnrolledSubscription);
+                            mProgress.setVisibility(View.GONE);
+                            btnEnroll.setVisibility(View.GONE);
+                            scheduleRequestData();
+                            fetchFXPrice();
+                        },
+                        e -> {});
     }
 
     private void checkFXPortfolio()
@@ -185,7 +181,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     private void handlePricesReceived(List<QuoteDTO> list)
     {
-        ((SecurityItemViewAdapterNew) itemViewAdapter).updatePrices(getActivity(), list);
+        ((SecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
         itemViewAdapter.notifyDataSetChanged();
     }
 
@@ -239,5 +235,11 @@ public class TrendingFXFragment extends TrendingBaseFragment
         {
             checkFXPortfolio();
         }
+    }
+
+    @Override protected void populateArgumentForSearch(@NonNull Bundle args)
+    {
+        super.populateArgumentForSearch(args);
+        SecuritySearchFragment.putAssetClass(args, AssetClass.FX);
     }
 }

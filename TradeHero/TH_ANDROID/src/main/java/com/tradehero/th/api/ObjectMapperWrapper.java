@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import javax.inject.Inject;
+import timber.log.Timber;
 
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_ACHIEVEMENT_NODE;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_NODE;
@@ -129,11 +130,21 @@ public class ObjectMapperWrapper extends ObjectMapper
     protected void handleXP(@NonNull JsonNode jsonNode)
             throws IOException
     {
-        UserXPAchievementDTOList userXPAchievementDTOs = readValue(
-                jsonNode.traverse(),
-                new TypeReference<UserXPAchievementDTOList>()
-                {
-                });
+        JsonNode copy = jsonNode.deepCopy();
+        UserXPAchievementDTOList userXPAchievementDTOs = null;
+        JsonParser parser = jsonNode.traverse();
+        try
+        {
+            userXPAchievementDTOs = readValue(
+                    parser,
+                    new TypeReference<UserXPAchievementDTOList>()
+                    {
+                    });
+        } catch (JsonMappingException e)
+        {
+            Timber.e(e, "Failed to read UserXPAchievementDTOList. %s", copy.asText());
+            throw e;
+        }
         if(userXPAchievementDTOs != null)
         {
             UserBaseKey userBaseKey = currentUserIdLazy.get().toUserBaseKey();

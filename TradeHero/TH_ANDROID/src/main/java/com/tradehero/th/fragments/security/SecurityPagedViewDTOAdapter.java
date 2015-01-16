@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.adapters.PagedArrayDTOAdapterNew;
+import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityIntegerId;
@@ -11,13 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SecurityItemViewAdapterNew
-        extends PagedArrayDTOAdapterNew<SecurityCompactDTO, SecurityItemView>
+public class SecurityPagedViewDTOAdapter extends PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView>
 {
     //<editor-fold desc="Constructors">
-    public SecurityItemViewAdapterNew(@NonNull Context context, int layoutResourceId)
+    public SecurityPagedViewDTOAdapter(Context context, int resource)
     {
-        super(context, layoutResourceId);
+        super(context, resource);
     }
     //</editor-fold>
 
@@ -31,7 +30,7 @@ public class SecurityItemViewAdapterNew
         return getItem(position).id;
     }
 
-    public void updatePrices(@NonNull Context context, @NonNull List<? extends QuoteDTO> quotes)
+    public void updatePrices(@NonNull List<? extends QuoteDTO> quotes)
     {
         Map<SecurityIntegerId, QuoteDTO> map = new HashMap<>();
         for (QuoteDTO quote : quotes)

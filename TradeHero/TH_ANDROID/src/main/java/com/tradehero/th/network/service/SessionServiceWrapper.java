@@ -109,7 +109,7 @@ import timber.log.Timber;
     @NonNull protected DTOProcessorLogout createLogoutProcessor()
     {
         return new DTOProcessorLogout(
-                dtoCacheUtil, dtoCacheUtil,
+                dtoCacheUtil,
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
     }
 

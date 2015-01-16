@@ -8,7 +8,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 
 public class WarrantProviderSecurityListType extends ProviderSecurityListType
 {
-    @Nullable private WarrantType warrantType;
+    @Nullable public final WarrantType warrantType;
 
     //<editor-fold desc="Constructors">
     public WarrantProviderSecurityListType(
@@ -37,19 +37,19 @@ public class WarrantProviderSecurityListType extends ProviderSecurityListType
     }
     //</editor-fold>
 
+    @Override public int hashCode()
+    {
+        return super.hashCode()
+                ^ (warrantType == null ? 0 : warrantType.hashCode());
+    }
+
     @Override public boolean equals(@NonNull SecurityListType other)
     {
         return super.equals(other)
                 && other instanceof WarrantProviderSecurityListType;
     }
 
-    @Nullable public WarrantType getWarrantType()
-    {
-        return warrantType;
-    }
-
-    @Override
-    public boolean equals(@NonNull ProviderSecurityListType other)
+    @Override protected boolean equals(@NonNull ProviderSecurityListType other)
     {
         return super.equals(other)
                 && other instanceof WarrantProviderSecurityListType
@@ -58,8 +58,7 @@ public class WarrantProviderSecurityListType extends ProviderSecurityListType
 
     protected boolean equals(@NonNull WarrantProviderSecurityListType other)
     {
-        return !((other.warrantType != null && this.warrantType == null) || other.warrantType == null && this.warrantType != null)
-                && this.warrantType != null
-                && this.warrantType.equals(other.warrantType);
+        return super.equals(other)
+                && (this.warrantType == null ? other.warrantType == null : this.warrantType.equals(other.warrantType));
     }
 }

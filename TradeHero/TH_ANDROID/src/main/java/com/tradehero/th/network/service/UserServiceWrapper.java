@@ -61,7 +61,6 @@ import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
-    @NonNull private final UserService userService;
     @NonNull private final UserServiceRx userServiceRx;
     @NonNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NonNull private final CurrentUserId currentUserId;
@@ -74,7 +73,6 @@ import rx.functions.Func1;
 
     //<editor-fold desc="Constructors">
     @Inject public UserServiceWrapper(
-            @NonNull UserService userService,
             @NonNull UserServiceRx userServiceRx,
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilImpl dtoCacheUtil,
@@ -85,7 +83,6 @@ import rx.functions.Func1;
             @NonNull Provider<UserFormDTO.Builder2> userFormBuilderProvider,
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
-        this.userService = userService;
         this.currentUserId = currentUserId;
         this.dtoCacheUtil = dtoCacheUtil;
         this.userProfileCache = userProfileCache;
@@ -297,14 +294,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get User">
-    public UserProfileDTO getUser(@NonNull UserBaseKey userKey)
-    {
-        return userService.getUser(userKey.key);
-    }
-
     @NonNull public Observable<UserProfileDTO> getUserRx(@NonNull UserBaseKey userKey)
     {
-        return userService.getUserRx(userKey.key);
+        return userServiceRx.getUser(userKey.key);
     }
     //</editor-fold>
 
@@ -358,37 +350,6 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Get Social Friends">
-    public UserFriendsDTOList getFriends(@NonNull FriendsListKey friendsListKey)
-    {
-        UserFriendsDTOList received;
-        if (friendsListKey.searchQuery != null)
-        {
-            received = userService.searchSocialFriends(
-                    friendsListKey.userBaseKey.key,
-                    friendsListKey.socialNetworkEnum,
-                    friendsListKey.searchQuery);
-        }
-        else if (friendsListKey.socialNetworkEnum != null)
-        {
-            if (friendsListKey.socialNetworkEnum == SocialNetworkEnum.WB)
-            {
-                received = userService.getSocialWeiboFriends(friendsListKey.userBaseKey.key);
-            }
-            else
-            {
-                received = userService.getSocialFriends(
-                        friendsListKey.userBaseKey.key,
-                        friendsListKey.socialNetworkEnum);
-            }
-        }
-        else
-        {
-            received = userService.getFriends(
-                    friendsListKey.userBaseKey.key);
-        }
-        return received;
-    }
-
     @NonNull public Observable<UserFriendsDTOList> getFriendsRx(@NonNull FriendsListKey friendsListKey)
     {
         Observable<UserFriendsDTOList> received;

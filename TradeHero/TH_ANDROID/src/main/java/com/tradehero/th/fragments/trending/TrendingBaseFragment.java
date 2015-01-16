@@ -2,9 +2,7 @@ package com.tradehero.th.fragments.trending;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
@@ -20,7 +18,7 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment<Securi
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
-    @NonNull BehaviorSubject<TrendingTabType> trendingTabTypeBehaviorSubject;
+    @NonNull protected BehaviorSubject<TrendingTabType> trendingTabTypeBehaviorSubject;
 
     //<editor-fold desc="Constructors">
     protected TrendingBaseFragment()
@@ -36,12 +34,7 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment<Securi
         super.onDestroy();
     }
 
-    @Override @NonNull protected DTOCacheRx<SecurityListType, SecurityCompactDTOList> getCache()
-    {
-        return securityCompactListCache;
-    }
-
-    @NonNull Observable<TrendingTabType> getRequestedTrendingTabTypeObservable()
+    @NonNull protected Observable<TrendingTabType> getRequestedTrendingTabTypeObservable()
     {
         return trendingTabTypeBehaviorSubject.asObservable();
     }
@@ -49,6 +42,16 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment<Securi
     public void pushSearchIn()
     {
         Bundle args = new Bundle();
+        populateArgumentForSearch(args);
         navigator.get().pushFragment(SecuritySearchFragment.class, args);
+    }
+
+    protected void populateArgumentForSearch(@NonNull Bundle args)
+    {
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
+        {
+            SecuritySearchFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.tradehero.th.network.service;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
-import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -31,18 +31,15 @@ import rx.Observable;
 
 @Singleton public class ProviderServiceWrapper
 {
-    @NonNull private final ProviderService providerService;
     @NonNull private final ProviderServiceRx providerServiceRx;
     @NonNull private final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
     @Inject public ProviderServiceWrapper(
-            @NonNull ProviderService providerService,
             @NonNull ProviderServiceRx providerServiceRx,
             @NonNull CurrentUserId currentUserId)
     {
         super();
-        this.providerService = providerService;
         this.providerServiceRx = providerServiceRx;
         this.currentUserId = currentUserId;
     }
@@ -109,39 +106,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    public SecurityCompactDTOList getProviderSecurities(@NonNull ProviderSecurityListType key)
-    {
-        SecurityCompactDTOList received;
-        if (key instanceof SearchProviderSecurityListType)
-        {
-            SearchProviderSecurityListType searchKey = (SearchProviderSecurityListType) key;
-            received = this.providerService.searchSecurities(
-                    searchKey.providerId.key,
-                    searchKey.searchString,
-                    searchKey.getPage(),
-                    searchKey.perPage);
-        }
-        else if (key instanceof BasicProviderSecurityListType)
-        {
-            received = this.providerService.getSecurities(
-                    key.getProviderId().key,
-                    key.getPage(),
-                    key.perPage);
-        }
-        else if (key instanceof WarrantUnderlyersProviderSecurityListType)
-        {
-            received = this.providerService.getWarrantUnderlyers(
-                    key.getProviderId().key,
-                    key.getPage(),
-                    key.perPage);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-        }
-        return received;
-    }
-
     public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NonNull ProviderSecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
@@ -157,22 +121,22 @@ import rx.Observable;
         else if (key instanceof BasicProviderSecurityListType)
         {
             received = this.providerServiceRx.getSecurities(
-                    key.getProviderId().key,
+                    key.providerId.key,
                     key.getPage(),
                     key.perPage);
         }
         else if (key instanceof WarrantUnderlyersProviderSecurityListType)
         {
             received = this.providerServiceRx.getWarrantUnderlyers(
-                    key.getProviderId().key,
+                    key.providerId.key,
                     key.getPage(),
                     key.perPage);
         }
         else if (key instanceof WarrantProviderSecurityListType)
         {
-            WarrantType warrantType = ((WarrantProviderSecurityListType) key).getWarrantType();
+            WarrantType warrantType = ((WarrantProviderSecurityListType) key).warrantType;
             received = this.providerServiceRx.getProviderWarrants(
-                    key.getProviderId().key,
+                    key.providerId.key,
                     key.getPage(),
                     key.perPage,
                     warrantType != null ? warrantType.shortCode : null);
