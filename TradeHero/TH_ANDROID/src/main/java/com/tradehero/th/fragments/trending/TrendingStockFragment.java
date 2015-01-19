@@ -24,10 +24,10 @@ import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
+import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -53,6 +53,8 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
+import com.tradehero.th.persistence.market.ExchangeMarketPreference;
+import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
@@ -72,6 +74,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Inject ProviderListCacheRx providerListCache;
     @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject Analytics analytics;
+    @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
 
     @InjectView(R.id.trending_filter_selector_view) protected TrendingFilterSelectorView filterSelectorView;
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
@@ -80,20 +83,14 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private UserProfileDTO userProfileDTO;
     private ProviderDTOList providerDTOs;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
-    private boolean defaultFilterSelected;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    private static Country mUserSelectedCountry;
 
     private ExtraTileAdapterNew wrapperAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (trendingFilterTypeDTO == null)
-        {
-            trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
-        }
-        defaultFilterSelected = false;
+        trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
         wrapperAdapter = createSecurityItemViewAdapter();
 
         exchangeAdapter = new TrendingFilterSpinnerIconAdapterNew(
@@ -187,29 +184,20 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void fetchFilter()
     {
         subscriptions.add(AndroidObservable.bindFragment(
-                        this,
-                        this.filterSelectorView.getObservableFilter())
-                        .subscribe(
-                                this::onUserSelected,
-                                this::onErrorFilter));
+                this,
+                this.filterSelectorView.getObservableFilter())
+                .subscribe(
+                        this::onNext,
+                        this::onErrorFilter));
     }
 
-    protected void onUserSelected(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
-    {
-        // For the first value is "ALL" from default list, not user selected,
-        // So save user selected country after get user country from server
-        if (defaultFilterSelected)
-        {
-            mUserSelectedCountry = trendingFilterTypeDTO.exchange.getCountry();
-        }
-        onNext(trendingFilterTypeDTO);
-    }
     protected void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
         boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
         this.trendingFilterTypeDTO = trendingFilterTypeDTO;
         if (hasChanged)
         {
+            preferredExchangeMarket.set(trendingFilterTypeDTO.exchange.getExchangeIntegerId());
             scheduleRequestData();
         }
         else
@@ -235,8 +223,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 exchangeCompactListCache.get(key)
                         .map(pair -> pair.second))
-                //TODO why it was called twice
-                .take(1)
                 .subscribe(
                         this::linkWith,
                         e -> {
@@ -286,7 +272,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
-        .map(pair -> pair.second))
+                        .map(pair -> pair.second))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_provider_competition_list)));
@@ -333,24 +319,18 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void setDefaultExchange()
     {
-        if (!defaultFilterSelected)
+        if (exchangeCompactSpinnerDTOs != null)
         {
-            if (userProfileDTO != null && exchangeCompactSpinnerDTOs != null)
+            if (userProfileDTO != null)
             {
-                Country country = userProfileDTO.getCountry();
-                if (country != null)
-                {
-                    ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(userProfileDTO.getCountry());
-                    if (mUserSelectedCountry != null)
-                    {
-                        initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(mUserSelectedCountry);
-                    }
-                    if (initial != null)
-                    {
-                        defaultFilterSelected = true;
-                        onNext(trendingFilterTypeDTO.getByExchange(initial));
-                    }
-                }
+                preferredExchangeMarket.setDefaultIfUnset(exchangeCompactSpinnerDTOs, userProfileDTO);
+            }
+            ExchangeIntegerId preferredExchangeId = preferredExchangeMarket.getExchangeIntegerId();
+            ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstWhere(
+                    exchange -> exchange.getExchangeIntegerId().equals(preferredExchangeId));
+            if (initial != null)
+            {
+                onNext(trendingFilterTypeDTO.getByExchange(initial));
             }
         }
     }
@@ -486,10 +466,5 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         super.populateArgumentForSearch(args);
         SecuritySearchFragment.putAssetClass(args, AssetClass.STOCKS);
-    }
-
-    public static void setUserSelectedCountry(Country userSelectedCountry)
-    {
-        TrendingStockFragment.mUserSelectedCountry = userSelectedCountry;
     }
 }

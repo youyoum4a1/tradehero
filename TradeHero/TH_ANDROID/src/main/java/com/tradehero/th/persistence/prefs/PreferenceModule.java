@@ -13,6 +13,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceDTOFactory;
 import com.tradehero.th.models.share.preference.SocialShareSetPreference;
+import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.urbanairship.push.PushManager;
@@ -45,6 +46,7 @@ public class PreferenceModule
     private static final String PREF_SHOW_MARKET_CLOSED = "PREF_SHOW_MARKET_CLOSED";
     private static final String PREF_SHOW_VIRAL_GAME = "PREF_SHOW_VIRAL_GAME";
     private static final String PREF_SHOW_VIRAL_GAME_TIMES = "PREF_SHOW_VIRAL_GAME_TIMES";
+    private static final String PREF_PREFERRED_EXCHANGE_MARKET = "PREF_PREFERRED_EXCHANGE_MARKET";
     private static final String PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG = "PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG";
     private static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
@@ -136,6 +138,11 @@ public class PreferenceModule
     @Provides @Singleton @ShowViralGameDialog TimingIntervalPreference provideShowViralGameDialogTimingPreference(@ForUser SharedPreferences sharedPreferences)
     {
         return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_VIRAL_GAME, 5 * TimingIntervalPreference.MINUTE);
+    }
+
+    @Provides @Singleton @PreferredExchangeMarket ExchangeMarketPreference providePreferredExchangeMarketPreference(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new ExchangeMarketPreference(sharedPreferences, PREF_PREFERRED_EXCHANGE_MARKET);
     }
 
     @Provides @Singleton @AutoShowViralGameDialogTimes IntPreference provideAutoShowViralGameDialogTimes(@ForUser SharedPreferences sharedPreferences)
