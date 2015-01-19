@@ -256,7 +256,7 @@ public class KChartsView extends KChartBase {
             yTitleFormat += "#";
         }
 
-		// Y轴Titles
+		// Titles in y-axis
         double pricePreLatitude = (mMaxPrice - mMinPrice) / DEFAULT_UPER_LATITUDE_NUM;
         for (int i=1;i<DEFAULT_UPER_LATITUDE_NUM;i++)
         {
@@ -277,38 +277,38 @@ public class KChartsView extends KChartBase {
             }
         }
 
-		// X轴Titles
-//		textPaint.setColor(DEFAULT_AXIS_X_TITLE_COLOR);
-//        for (int i=1;i<DEFAULT_LOGITUDE_NUM;i++)
-//        {
-//            float offset;
-//            int position = mDataStartIndext + mShowDataNum * (DEFAULT_LOGITUDE_NUM-i) / DEFAULT_LOGITUDE_NUM;
-//            if (i == 0)
-//            {
-//                offset = 0;
-//                position -= 1;
-//            }
-//            else if (i == DEFAULT_LOGITUDE_NUM)
-//            {
-//                offset = - 2 - 2.5f * DEFAULT_AXIS_TITLE_SIZE;
-//            }
-//            else
-//            {
-//                offset = - 2 - 1.2f * DEFAULT_AXIS_TITLE_SIZE;
-//            }
-//            String date = mOHLCData.get(position).getDate();
-//            if (date.contains("T") && date.contains("."))
-//            {
-//                canvas.drawText(date.substring(date.indexOf("T")+1, date.indexOf(":00.")),
-//                        DEFAULT_CANDLE_LEFT_MARGIN + (getCandleWidth()-DEFAULT_CANDLE_LEFT_MARGIN)*i/DEFAULT_LOGITUDE_NUM + offset,
-//                        UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
-//            }
-//            else
-//            {
-//                canvas.drawText(date, DEFAULT_CANDLE_LEFT_MARGIN + (getCandleWidth()-DEFAULT_CANDLE_LEFT_MARGIN)*i/DEFAULT_LOGITUDE_NUM + offset,
-//                        UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
-//            }
-//        }
+		// Titles in x-axis
+		textPaint.setColor(DEFAULT_AXIS_X_TITLE_COLOR);
+        for (int i=1;i<DEFAULT_LOGITUDE_NUM;i++)
+        {
+            float offset;
+            int position = mDataStartIndext + mShowDataNum * (DEFAULT_LOGITUDE_NUM-i) / DEFAULT_LOGITUDE_NUM;
+            if (i == 0)
+            {
+                offset = 0;
+                position -= 1;
+            }
+            else if (i == DEFAULT_LOGITUDE_NUM)
+            {
+                offset = - 2 - 2.5f * DEFAULT_AXIS_TITLE_SIZE;
+            }
+            else
+            {
+                offset = - 2 - 1.2f * DEFAULT_AXIS_TITLE_SIZE;
+            }
+            String date = mOHLCData.get(position).getDate();
+            if (date.contains("T") && date.contains("."))
+            {
+                canvas.drawText(date.substring(date.indexOf("T")+1, date.indexOf(":00.")),
+                        DEFAULT_CANDLE_LEFT_MARGIN + (getCandleWidth()-DEFAULT_CANDLE_LEFT_MARGIN)*i/DEFAULT_LOGITUDE_NUM + offset,
+                        UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+            }
+            else
+            {
+                canvas.drawText(date, DEFAULT_CANDLE_LEFT_MARGIN + (getCandleWidth()-DEFAULT_CANDLE_LEFT_MARGIN)*i/DEFAULT_LOGITUDE_NUM + offset,
+                        UPER_CHART_BOTTOM + DEFAULT_AXIS_TITLE_SIZE, textPaint);
+            }
+        }
 	}
 
 	private void drawUpperRegion(Canvas canvas) {
