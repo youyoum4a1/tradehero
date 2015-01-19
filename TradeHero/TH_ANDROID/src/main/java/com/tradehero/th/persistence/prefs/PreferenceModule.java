@@ -43,6 +43,7 @@ public class PreferenceModule
     private static final String PREF_SHOW_ASK_FOR_INVITE_FLAG = "PREF_SHOW_ASK_FOR_INVITE_FLAG";
     private static final String PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG = "PREF_SHOW_ASK_FOR_INVITE_TIMES_FLAG";
     private static final String PREF_SHOW_MARKET_CLOSED = "PREF_SHOW_MARKET_CLOSED";
+    private static final String PREF_SHOW_VIRAL_GAME = "PREF_SHOW_VIRAL_GAME";
     private static final String PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG = "PREF_IS_VISITED_REFERRAL_CODE_SETTINGS_FLAG";
     private static final String PREF_SOCIAL_SHARE_FLAG = "PREF_SAVED_SOCIAL_SHARE_FLAG";
     private static final String PREF_SAVED_SOCIAL_SHARE_KEY = "PREF_SAVED_SOCIAL_SHARE_KEY";
@@ -129,6 +130,11 @@ public class PreferenceModule
             @ForUser SharedPreferences sharedPreferences)
     {
         return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_MARKET_CLOSED, 30 * TimingIntervalPreference.MINUTE);
+    }
+
+    @Provides @Singleton @ShowViralGameDialog TimingIntervalPreference provideShowViralGameDialogTimingPreference(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_VIRAL_GAME, 5 * TimingIntervalPreference.MINUTE);
     }
 
     @Provides @Singleton @IsVisitedReferralCodeSettings BooleanPreference provideIsVisitedReferralCodeSettingsPreference(
