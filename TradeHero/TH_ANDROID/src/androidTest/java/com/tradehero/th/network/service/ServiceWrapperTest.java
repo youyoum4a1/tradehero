@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 import static org.fest.assertions.api.Assertions.assertThat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import timber.log.Timber;
@@ -29,7 +30,7 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
 
     @Test public void canGetAllServices()
     {
-        int serviceCount = 31;
+        int serviceCount = 4;
         int wrappersWithOutService = 1;
         //for (Class<?> service : getAllServices())
         //{
@@ -74,7 +75,8 @@ public class ServiceWrapperTest extends AbstractServiceTestBase
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    @Test public void callingAllServiceWrappersWithCallbackPassesMiddleCallback()
+    @Test @Ignore // No longer a test
+    public void callingAllServiceWrappersWithCallbackPassesMiddleCallback()
             throws InvocationTargetException, IllegalAccessException, InstantiationException, InterruptedException
     {
         List<Class<?>> serviceWrappers = getAllServiceWrappers();

@@ -93,7 +93,7 @@ public class QuickPriceButtonSet extends LinearLayout
         return priceSelectedSubject.asObservable();
     }
 
-    @NonNull protected List<QuickPriceButton> findButtons()
+    @NonNull public List<QuickPriceButton> findButtons()
     {
         return findButtons(this);
     }

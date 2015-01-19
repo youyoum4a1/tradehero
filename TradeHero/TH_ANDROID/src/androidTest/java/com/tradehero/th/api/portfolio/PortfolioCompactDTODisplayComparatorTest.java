@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(THRobolectricTestRunner.class)
@@ -190,11 +189,10 @@ public class PortfolioCompactDTODisplayComparatorTest
         set.add(getSecondDefaultPortfolio());
         set.add(getSecondMongrel1Portfolio());
         set.add(getFirstMongrel1Portfolio());
-        set.add(null);
         set.add(getFirstCompetition1Portfolio());
         set.add(getSecondCompetition1Portfolio());
 
-        assertEquals(11, set.size());
+        assertEquals(10, set.size());
         Iterator<PortfolioCompactDTO> iterator = set.iterator();
 
         assertTrue(isFirstDefaultPortfolio(iterator.next()));
@@ -207,7 +205,6 @@ public class PortfolioCompactDTODisplayComparatorTest
         assertTrue(isSecondWatchlistPortfolio(iterator.next()));
         assertTrue(isFirstMongrel1Portfolio(iterator.next()));
         assertTrue(isSecondMongrel1Portfolio(iterator.next()));
-        assertNull(iterator.next());
 
         //PortfolioCompactDTO element = iterator.next();
         //System.out.print(element.toString());
@@ -223,5 +220,11 @@ public class PortfolioCompactDTODisplayComparatorTest
         //
         //element = iterator.next();
         //assertNull(element);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testDoesNotAcceptNull()
+    {
+        new TreeSet<>(new PortfolioCompactDTODisplayComparator()).add(null);
     }
 }

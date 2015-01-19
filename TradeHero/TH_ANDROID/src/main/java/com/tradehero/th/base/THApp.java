@@ -10,6 +10,7 @@ import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
 import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.push.PushNotificationManager;
@@ -49,7 +50,11 @@ public class THApp extends PApplication
 
     private Timber.Tree createCrashlyticsTree()
     {
-        Crashlytics.start(this);
+        //noinspection PointlessBooleanExpression,ConstantConditions
+        if (!BuildConfig.IS_INTELLIJ)
+        {
+            Crashlytics.start(this);
+        }
         return new CrashReportingTree();
     }
 

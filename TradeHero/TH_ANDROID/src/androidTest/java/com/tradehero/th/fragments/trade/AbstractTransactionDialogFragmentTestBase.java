@@ -17,6 +17,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -53,6 +54,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
 
     public void setUp() throws InterruptedException
     {
+        TestTHApp.staticInject(this);
         int sId = 92;
 
         currentUserId.set(20);

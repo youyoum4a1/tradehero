@@ -122,7 +122,7 @@ public class LeaderboardKey implements DTOKey
     protected boolean equalFields(@NonNull LeaderboardKey other)
     {
         return id.equals(other.id)
-                && (assetClass != null && assetClass.equals(other.assetClass));
+                && (assetClass == null ? other.assetClass == null : assetClass.equals(other.assetClass));
     }
 
     @Override public String toString()
