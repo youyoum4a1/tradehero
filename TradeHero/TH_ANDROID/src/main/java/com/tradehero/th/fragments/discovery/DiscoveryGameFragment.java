@@ -54,9 +54,10 @@ public class DiscoveryGameFragment extends DashboardFragment
             Bundle args = new Bundle();
             GameWebViewFragment.putGameId(args, miniGameDefDTO.getDTOKey());
             GameWebViewFragment.putUrl(args, miniGameDefDTO, currentUserId.toUserBaseKey());
-            if(miniGameDefDTO.viralMiniGameId != null && miniGameDefDTO.url == null)
+            ViralMiniGameDefKey viralMiniGameDefKey = miniGameDefDTO.getViralGameDefKey();
+            if(viralMiniGameDefKey != null && miniGameDefDTO.url == null)
             {
-                ViralGamePopupDialogFragment dialogFragment = ViralGamePopupDialogFragment.newInstance(new ViralMiniGameDefKey(miniGameDefDTO.viralMiniGameId));
+                ViralGamePopupDialogFragment dialogFragment = ViralGamePopupDialogFragment.newInstance(viralMiniGameDefKey, false);
                 dialogFragment.show(getChildFragmentManager(), ViralGamePopupDialogFragment.class.getName());
             }
             else if (navigator != null)
