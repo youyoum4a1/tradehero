@@ -61,7 +61,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
     private ViralMiniGameDefDTO viralMiniGameDefDTO;
     private ViralMiniGameDefKey viralMiniGameDefKey;
     private Subscription subscription;
-    private boolean isFromBroadcast;
+    private boolean isAutoPopup;
 
     public static ViralGamePopupDialogFragment newInstance(@NonNull ViralMiniGameDefKey viralMiniGameDefKey, boolean isFromBroadcast)
     {
@@ -106,10 +106,10 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
                             linkWith(viralMiniGameDefKeyViralMiniGameDefDTOPair.second);
                         }
                     });
-            isFromBroadcast = b.getBoolean(BUNDLE_KEY_FROM_BROADCAST);
+            isAutoPopup = b.getBoolean(BUNDLE_KEY_FROM_BROADCAST);
         }
 
-        if (isFromBroadcast)
+        if (isAutoPopup)
         {
             showViralGameTimes.set(showViralGameTimes.get() + 1);
         }
@@ -191,7 +191,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 
     @Override public void onDismiss(DialogInterface dialog)
     {
-        if (isFromBroadcast)
+        if (isAutoPopup)
         {
             //Update the next popup timing.
             long interval;
