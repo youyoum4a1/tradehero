@@ -3,6 +3,7 @@ package com.tradehero.th.models.user.follow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -11,6 +12,7 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class FollowUserAssistant extends SimpleFollowUserAssistant
 {
@@ -45,8 +47,10 @@ public class FollowUserAssistant extends SimpleFollowUserAssistant
                     {
                         //noinspection unchecked
                         return billingInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
-                                .materialize()
-                                .dematerialize();
+                                .flatMap((Func1<PurchaseResult, Observable<UserProfileDTO>>)
+                                        result -> userProfileCache.get(currentUserId.toUserBaseKey())
+                                                .take(1)
+                                                .map(pair2 -> pair2.second));
                     }
                 });
     }

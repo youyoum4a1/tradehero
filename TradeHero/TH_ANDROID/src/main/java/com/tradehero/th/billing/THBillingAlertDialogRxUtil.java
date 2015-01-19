@@ -186,8 +186,17 @@ abstract public class THBillingAlertDialogRxUtil<
                 CollectionUtils.map(
                         productDetails,
                         result -> result.detail))
-                .filter(pair -> pair.second >= 0)
-                .map(pair -> productDetails.get(pair.second));
+                .map(pair -> pair.second)
+                .flatMap(detail -> {
+                    for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> candidate : productDetails)
+                    {
+                        if (candidate.id.equals(detail.getProductIdentifier()))
+                        {
+                            return Observable.just(candidate);
+                        }
+                    }
+                    return Observable.error(new IllegalStateException("Should have found result for " + detail.getProductIdentifier()));
+                });
     }
 
     @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
@@ -196,11 +205,10 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull List<THProductDetailType> productDetails)
     {
         return popBuyDialog(activityContext, domain, productDetails)
-                .filter(pair -> pair.second >= 0)
-                .map(pair -> productDetails.get(pair.second));
+                .map(pair -> pair.second);
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popBuyDialog(
+    @NonNull public Observable<Pair<DialogInterface, THProductDetailType>> popBuyDialog(
             @NonNull Activity activityContext,
             @NonNull ProductIdentifierDomain domain,
             @NonNull List<THProductDetailType> productDetails)
@@ -209,6 +217,7 @@ abstract public class THBillingAlertDialogRxUtil<
         //detailAdapter.setEnabledItems(enabledItems); // FIXME
         detailAdapter.setProductDetailComparator(createProductDetailComparator());
         detailAdapter.setItems(productDetails);
+        //noinspection unchecked
         return Observable.create(
                 AlertDialogOnSubscribe.builder(
                         createDefaultDialogBuilder(activityContext)
@@ -217,6 +226,8 @@ abstract public class THBillingAlertDialogRxUtil<
                         .setSingleChoiceItems(detailAdapter, 0)
                         .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
                         .build())
+                .filter(pair -> pair.second >= 0)
+                .map(pair -> Pair.create(pair.first, (THProductDetailType) detailAdapter.getItem(pair.second)))
                 .subscribeOn(AndroidSchedulers.mainThread());
     }
     //</editor-fold>

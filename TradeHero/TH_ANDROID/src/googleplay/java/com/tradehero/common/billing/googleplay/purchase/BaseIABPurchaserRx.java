@@ -172,8 +172,7 @@ abstract public class BaseIABPurchaserRx<
                     {
                         try
                         {
-                            IABPurchaseType purchase =
-                                    createPurchase(purchaseOrder.getType(), purchaseData, dataSignature);
+                            IABPurchaseType purchase = createPurchase(purchaseData, dataSignature);
                             String sku = purchase.getProductIdentifier().identifier;
 
                             // Verify signature
@@ -220,5 +219,15 @@ abstract public class BaseIABPurchaserRx<
         }
     }
 
-    @NonNull abstract protected IABPurchaseType createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException;
+    @NonNull protected IABPurchaseType createPurchase(
+            @NonNull String purchaseData,
+            @NonNull String dataSignature) throws JSONException
+    {
+        return createPurchase(purchaseOrder.getType(), purchaseData, dataSignature);
+    }
+
+    @NonNull abstract protected IABPurchaseType createPurchase(
+            @NonNull String itemType,
+            @NonNull String purchaseData,
+            @NonNull String dataSignature) throws JSONException;
 }

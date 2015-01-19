@@ -45,10 +45,10 @@ public class ChoiceFollowUserAssistantWithDialog
                 activity,
                 userProfileCache.get(currentUserId.toUserBaseKey()).take(1))
                 .map(pair -> pair.second)
-                .flatMap(currentAndHeroPair -> heroAlertDialogRxUtil.showFollowDialog(
+                .flatMap(currentUserProfile -> heroAlertDialogRxUtil.showFollowDialog(
                         activity,
                         heroBaseInfo,
-                        currentAndHeroPair.getFollowType(heroBaseInfo)))
+                        currentUserProfile.getFollowType(heroBaseInfo)))
                 .flatMap(request -> {
                     Observable<UserProfileDTO> observable;
                     if (request.isPremium)

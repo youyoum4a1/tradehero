@@ -35,7 +35,23 @@ public class THBaseIABPurchaserRx
     }
     //</editor-fold>
 
-    @Override @NonNull protected THIABPurchase createPurchase(String itemType, String purchaseData, String dataSignature) throws JSONException
+    @NonNull @Override protected THIABPurchase createPurchase(
+            @NonNull String purchaseData,
+            @NonNull String dataSignature)
+            throws JSONException
+    {
+        THIABPurchase purchase = super.createPurchase(purchaseData, dataSignature);
+        if (purchaseOrder.getUserToFollow() != null)
+        {
+            purchase.setUserToFollow(purchaseOrder.getUserToFollow());
+        }
+        return purchase;
+    }
+
+    @Override @NonNull protected THIABPurchase createPurchase(
+            @NonNull String itemType,
+            @NonNull String purchaseData,
+            @NonNull String dataSignature) throws JSONException
     {
         return new THIABPurchase(itemType, purchaseData, dataSignature);
     }

@@ -42,6 +42,10 @@ public class THBaseSamsungPurchaserRx
     {
         THSamsungPurchase created =
                 new THSamsungPurchase(purchaseOrder.getProductIdentifier().groupId, purchaseVo, purchaseOrder.getApplicablePortfolioId());
+        if (getPurchaseOrder().getUserToFollow() != null)
+        {
+            created.setUserToFollow(getPurchaseOrder().getUserToFollow());
+        }
         savePurchaseInPref(created);
         return created;
     }

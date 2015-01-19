@@ -41,6 +41,10 @@ public class THBaseAmazonPurchaserRx
     @NonNull @Override protected THBaseAmazonPurchase createPurchase(@NonNull PurchaseResponse purchaseResponse)
     {
         THBaseAmazonPurchase purchase = new THBaseAmazonPurchase(purchaseResponse, getPurchaseOrder().getApplicablePortfolioId());
+        if (getPurchaseOrder().getUserToFollow() != null)
+        {
+            purchase.setUserToFollow(getPurchaseOrder().getUserToFollow());
+        }
         savePurchaseInPref(purchase);
         return purchase;
     }
