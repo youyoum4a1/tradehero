@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,10 +17,22 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.api.games.ViralMiniGameDefDTO;
+import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
+import com.tradehero.th.api.games.ViralMiniGameDefListKey;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
+import com.tradehero.th.persistence.games.ViralMiniGameDefListCache;
+import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.utils.Constants;
+import dagger.Lazy;
+import javax.inject.Inject;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
 public class TrendingMainFragment extends DashboardFragment
@@ -28,10 +41,13 @@ public class TrendingMainFragment extends DashboardFragment
 
     @InjectView(R.id.pager) ViewPager tabViewPager;
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Inject @ShowViralGameDialog TimingIntervalPreference showViralGameTimingIntervalPreference;
+    @Inject Lazy<ViralMiniGameDefListCache> viralMiniGameDefListCache;
 
     private static int lastType = 0;
 
     private TradingPagerAdapter tradingPagerAdapter;
+    private Subscription viralSubscription;
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
     {
@@ -79,6 +95,46 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
         tabViewPager.setCurrentItem(lastType, true);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (showViralGameTimingIntervalPreference.isItTime())
+        {
+            viralSubscription = AndroidObservable.bindFragment(this, viralMiniGameDefListCache.get().get(new ViralMiniGameDefListKey()))
+                    .take(1)
+                    .subscribe(new Observer<Pair<ViralMiniGameDefListKey, ViralMiniGameDefDTOList>>()
+                    {
+                        @Override public void onCompleted()
+                        {
+                            // Do nothing.
+                        }
+
+                        @Override public void onError(Throwable e)
+                        {
+                            // Do nothing.
+                        }
+
+                        @Override public void onNext(
+                                Pair<ViralMiniGameDefListKey, ViralMiniGameDefDTOList> viralMiniGameDefListKeyViralMiniGameDefDTOListPair)
+                        {
+                            ViralMiniGameDefDTO viralMiniGameDefDTO =
+                                    viralMiniGameDefListKeyViralMiniGameDefDTOListPair.second.getRandomViralMiniGameDefDTO();
+                            if (viralMiniGameDefDTO != null)
+                            {
+                                ViralGamePopupDialogFragment f = ViralGamePopupDialogFragment.newInstance(viralMiniGameDefDTO.getDTOKey(), true);
+                                f.show(getChildFragmentManager(), ViralGamePopupDialogFragment.class.getName());
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override public void onPause()
+    {
+        unsubscribe(viralSubscription);
+        super.onPause();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

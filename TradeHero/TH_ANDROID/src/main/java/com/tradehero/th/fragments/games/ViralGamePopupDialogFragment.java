@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.games;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -19,6 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
@@ -27,6 +29,9 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.games.ViralMiniGameDefCache;
+import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
+import com.tradehero.th.persistence.prefs.ShowViralGameDialogTimes;
+import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.utils.StringUtils;
 import java.util.List;
 import javax.inject.Inject;
@@ -37,6 +42,7 @@ import rx.android.observables.AndroidObservable;
 public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 {
     private static final String BUNDLE_KEY_VIRAL_MINI_GAME = ViralGamePopupDialogFragment.class + ".viralMiniGameId";
+    private static final String BUNDLE_KEY_FROM_BROADCAST = ViralGamePopupDialogFragment.class + ".fromBroadcast";
 
     private static final String LINE_SCHEME_URI = "line://msg/";
     private static final String SRC_KEY = "src";
@@ -49,15 +55,19 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
     @Inject ViralMiniGameDefCache viralMiniGameDefCache;
     @Inject Picasso picasso;
     @Inject DashboardNavigator navigator;
+    @Inject @ShowViralGameDialog TimingIntervalPreference showViralGameTimingIntervalPreference;
+    @Inject @ShowViralGameDialogTimes IntPreference showViralGameTimes;
 
     private ViralMiniGameDefDTO viralMiniGameDefDTO;
     private ViralMiniGameDefKey viralMiniGameDefKey;
     private Subscription subscription;
+    private boolean isFromBroadcast;
 
-    public static ViralGamePopupDialogFragment newInstance(@NonNull ViralMiniGameDefKey viralMiniGameDefKey)
+    public static ViralGamePopupDialogFragment newInstance(@NonNull ViralMiniGameDefKey viralMiniGameDefKey, boolean isFromBroadcast)
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(BUNDLE_KEY_VIRAL_MINI_GAME, viralMiniGameDefKey.getArgs());
+        bundle.putBoolean(BUNDLE_KEY_FROM_BROADCAST, isFromBroadcast);
         ViralGamePopupDialogFragment dialogFragment = new ViralGamePopupDialogFragment();
         dialogFragment.setArguments(bundle);
         return dialogFragment;
@@ -96,6 +106,12 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
                             linkWith(viralMiniGameDefKeyViralMiniGameDefDTOPair.second);
                         }
                     });
+            isFromBroadcast = b.getBoolean(BUNDLE_KEY_FROM_BROADCAST);
+        }
+
+        if (isFromBroadcast)
+        {
+            showViralGameTimes.set(showViralGameTimes.get() + 1);
         }
     }
 
@@ -117,6 +133,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
                 gameUrl = parsedGameUrl.buildUpon().appendQueryParameter(SRC_KEY, SRC_FB).build().toString();
             }
             ViralGameWebFragment.putUrl(b, gameUrl);
+            dismiss();
             navigator.pushFragment(ViralGameWebFragment.class, b);
         }
     }
@@ -124,7 +141,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
     @OnClick(R.id.close)
     public void onClose()
     {
-        getDialog().dismiss();
+        getDialog().cancel();
     }
 
     @Override public void onDestroyView()
@@ -169,6 +186,31 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
         {
             THToast.show(new THException(e));
         }
-        getDialog().dismiss();
+        dismiss();
+    }
+
+    @Override public void onDismiss(DialogInterface dialog)
+    {
+        if (isFromBroadcast)
+        {
+            //Update the next popup timing.
+            long interval;
+            switch (showViralGameTimes.get())
+            {
+                case 1:
+                    interval = TimingIntervalPreference.HOUR;
+                    break;
+                case 2:
+                    interval = TimingIntervalPreference.DAY;
+                    break;
+                case 3:
+                    interval = 2 * TimingIntervalPreference.DAY;
+                    break;
+                default:
+                    interval = TimingIntervalPreference.WEEK;
+            }
+            showViralGameTimingIntervalPreference.pushInFuture(interval);
+        }
+        super.onDismiss(dialog);
     }
 }
