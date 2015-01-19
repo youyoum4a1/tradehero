@@ -19,6 +19,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
+import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -267,6 +268,8 @@ public class PortfolioListItemView extends RelativeLayout
         {
             title.setText(displayablePortfolioUtil.getLongTitle(getContext(),
                     displayablePortfolioDTO));
+            title.setTextColor(displayablePortfolioUtil.getLongTitleTextColor(getContext(),
+                    displayablePortfolioDTO));
         }
     }
 
@@ -299,6 +302,10 @@ public class PortfolioListItemView extends RelativeLayout
                         .build()
                         .into(roiValue);
                 roiValue.setVisibility(VISIBLE);
+            }
+            else if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
+            {
+                roiValue.setVisibility(GONE);
             }
             else if (displayablePortfolioDTO != null &&
                     displayablePortfolioDTO.portfolioDTO != null &&
