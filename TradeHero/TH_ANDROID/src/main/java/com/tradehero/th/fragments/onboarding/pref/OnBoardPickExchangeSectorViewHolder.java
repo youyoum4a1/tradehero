@@ -17,6 +17,7 @@ import com.tradehero.th.api.market.SectorCompactDTO;
 import com.tradehero.th.api.market.SectorCompactDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
+import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
@@ -136,6 +137,8 @@ public class OnBoardPickExchangeSectorViewHolder
 
     public OnBoardPrefDTO getOnBoardPrefs()
     {
+        //save exchange for user selected
+        TrendingStockFragment.setUserSelectedCountry(((ExchangeCompactDTO) exchangeSpinner.getSelectedItem()).getCountry());
         return new OnBoardPrefDTO(
                 (ExchangeCompactDTO) exchangeSpinner.getSelectedItem(),
                 (SectorCompactDTO) sectorSpinner.getSelectedItem());

@@ -82,13 +82,17 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
     private boolean defaultFilterSelected;
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
+    private static Country mUserSelectedCountry;
 
     private ExtraTileAdapterNew wrapperAdapter;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
+        if (trendingFilterTypeDTO == null)
+        {
+            trendingFilterTypeDTO = new TrendingFilterTypeBasicDTO(getResources());
+        }
         defaultFilterSelected = false;
         wrapperAdapter = createSecurityItemViewAdapter();
 
@@ -182,15 +186,24 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchFilter()
     {
-        subscriptions.add(
-                AndroidObservable.bindFragment(
+        subscriptions.add(AndroidObservable.bindFragment(
                         this,
                         this.filterSelectorView.getObservableFilter())
                         .subscribe(
-                                this::onNext,
+                                this::onUserSelected,
                                 this::onErrorFilter));
     }
 
+    protected void onUserSelected(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
+    {
+        // For the first value is "ALL" from default list, not user selected,
+        // So save user selected country after get user country from server
+        if (defaultFilterSelected)
+        {
+            mUserSelectedCountry = trendingFilterTypeDTO.exchange.getCountry();
+        }
+        onNext(trendingFilterTypeDTO);
+    }
     protected void onNext(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
         boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
@@ -222,6 +235,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 exchangeCompactListCache.get(key)
                         .map(pair -> pair.second))
+                //TODO why it was called twice
+                .take(1)
                 .subscribe(
                         this::linkWith,
                         e -> {
@@ -326,6 +341,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 if (country != null)
                 {
                     ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(userProfileDTO.getCountry());
+                    if (mUserSelectedCountry != null)
+                    {
+                        initial = exchangeCompactSpinnerDTOs.findFirstDefaultFor(mUserSelectedCountry);
+                    }
                     if (initial != null)
                     {
                         defaultFilterSelected = true;
@@ -467,5 +486,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         super.populateArgumentForSearch(args);
         SecuritySearchFragment.putAssetClass(args, AssetClass.STOCKS);
+    }
+
+    public static void setUserSelectedCountry(Country userSelectedCountry)
+    {
+        TrendingStockFragment.mUserSelectedCountry = userSelectedCountry;
     }
 }
