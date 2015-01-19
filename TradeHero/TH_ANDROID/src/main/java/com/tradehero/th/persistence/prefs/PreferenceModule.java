@@ -138,7 +138,7 @@ public class PreferenceModule
         return new TimingIntervalPreference(sharedPreferences, PREF_SHOW_VIRAL_GAME, 5 * TimingIntervalPreference.MINUTE);
     }
 
-    @Provides @Singleton @ShowViralGameDialogTimes IntPreference provideShowViralGameDialogTimes(@ForUser SharedPreferences sharedPreferences)
+    @Provides @Singleton @AutoShowViralGameDialogTimes IntPreference provideAutoShowViralGameDialogTimes(@ForUser SharedPreferences sharedPreferences)
     {
         return new IntPreference(sharedPreferences, PREF_SHOW_VIRAL_GAME_TIMES, 0);
     }

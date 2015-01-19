@@ -29,8 +29,8 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.games.ViralMiniGameDefCache;
+import com.tradehero.th.persistence.prefs.AutoShowViralGameDialogTimes;
 import com.tradehero.th.persistence.prefs.ShowViralGameDialog;
-import com.tradehero.th.persistence.prefs.ShowViralGameDialogTimes;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.utils.StringUtils;
 import java.util.List;
@@ -56,7 +56,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
     @Inject Picasso picasso;
     @Inject DashboardNavigator navigator;
     @Inject @ShowViralGameDialog TimingIntervalPreference showViralGameTimingIntervalPreference;
-    @Inject @ShowViralGameDialogTimes IntPreference showViralGameTimes;
+    @Inject @AutoShowViralGameDialogTimes IntPreference autoShowViralGameTimes;
 
     private ViralMiniGameDefDTO viralMiniGameDefDTO;
     private ViralMiniGameDefKey viralMiniGameDefKey;
@@ -111,7 +111,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 
         if (isAutoPopup)
         {
-            showViralGameTimes.set(showViralGameTimes.get() + 1);
+            autoShowViralGameTimes.set(autoShowViralGameTimes.get() + 1);
         }
     }
 
@@ -195,7 +195,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
         {
             //Update the next popup timing.
             long interval;
-            switch (showViralGameTimes.get())
+            switch (autoShowViralGameTimes.get())
             {
                 case 1:
                     interval = TimingIntervalPreference.HOUR;
