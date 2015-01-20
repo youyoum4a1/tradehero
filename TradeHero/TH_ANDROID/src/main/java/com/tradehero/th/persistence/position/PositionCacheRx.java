@@ -26,7 +26,6 @@ import rx.Observable;
 public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, PositionDTO>
 {
     private static final int DEFAULT_MAX_VALUE_SIZE = 5000;
-    private static final int DEFAULT_MAX_SUBJECT_SIZE = 50;
 
     @NonNull protected final Lazy<PositionCompactIdCacheRx> positionCompactIdCache;
     @NonNull protected final Lazy<LeaderboardPositionIdCacheRx> positionIdCache;
@@ -41,7 +40,7 @@ public class PositionCacheRx extends BaseFetchDTOCacheRx<PositionDTOKey, Positio
             @NonNull Lazy<TradeListCacheRx> tradeListCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.positionCompactIdCache = positionCompactIdCache;
         this.positionIdCache = positionIdCache;
         this.getPositionsCache = getPositionsCache;

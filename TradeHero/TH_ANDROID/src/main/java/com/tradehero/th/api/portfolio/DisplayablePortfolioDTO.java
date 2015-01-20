@@ -48,7 +48,7 @@ public class DisplayablePortfolioDTO implements Comparable
 
     public void populate(UserProfileCacheRx userProfileCache)
     {
-        this.userBaseDTO = userProfileCache.getValue(this.ownedPortfolioId.getUserBaseKey());
+        this.userBaseDTO = userProfileCache.getCachedValue(this.ownedPortfolioId.getUserBaseKey());
     }
 
     public boolean isPopulated()

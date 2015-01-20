@@ -21,7 +21,6 @@ import timber.log.Timber;
 public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, AlertCompactDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECt_SIZE = 5;
 
     @NonNull private final AlertServiceWrapper alertServiceWrapper;
     @NonNull private final AlertCompactCacheRx alertCompactCache;
@@ -32,7 +31,7 @@ public class AlertCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Al
             @NonNull AlertCompactCacheRx alertCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECt_SIZE, DEFAULT_MAX_SUBJECt_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.alertServiceWrapper = alertServiceWrapper;
         this.alertCompactCache = alertCompactCache;
     }

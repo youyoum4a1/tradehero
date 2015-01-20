@@ -20,7 +20,6 @@ import rx.Observable;
 public class NewsItemCompactListCacheRx extends BaseFetchDTOCacheRx<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>
 {
     private static final int DEFAULT_VALUE_SIZE = 100;
-    private static final int DEFAULT_SUBJECT_SIZE = 10;
 
     @NonNull private final NewsServiceWrapper newsServiceWrapper;
     @NonNull private final Lazy<DiscussionCacheRx> discussionCacheLazy;
@@ -31,7 +30,7 @@ public class NewsItemCompactListCacheRx extends BaseFetchDTOCacheRx<NewsItemList
             @NonNull Lazy<DiscussionCacheRx> discussionCacheLazy,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_VALUE_SIZE, dtoCacheUtil);
         this.newsServiceWrapper = newsServiceWrapper;
         this.discussionCacheLazy = discussionCacheLazy;
     }

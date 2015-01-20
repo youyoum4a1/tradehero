@@ -35,7 +35,6 @@ import timber.log.Timber;
 public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, NewsHeadlineList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 15;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
     @NonNull private final Lazy<SecurityCompactCacheRx> securityCache;
     @NonNull private final YahooNewsServiceWrapper yahooServiceWrapper;
@@ -46,7 +45,7 @@ public class YahooNewsHeadlineCacheRx extends BaseFetchDTOCacheRx<SecurityId, Ne
             @NonNull YahooNewsServiceWrapper yahooNewsServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.securityCache = securityCache;
         this.yahooServiceWrapper = yahooNewsServiceWrapper;
     }

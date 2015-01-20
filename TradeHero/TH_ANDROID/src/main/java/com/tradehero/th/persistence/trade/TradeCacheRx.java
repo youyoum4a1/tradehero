@@ -16,7 +16,6 @@ import rx.Observable;
 public class TradeCacheRx extends BaseFetchDTOCacheRx<OwnedTradeId, TradeDTO>
 {
     private static final int DEFAULT_MAX_VALUE_SIZE = 500;
-    private static final int DEFAULT_MAX_SUBJECT_SIZE = 50;
 
     @NonNull private  TradeServiceWrapper tradeServiceWrapper;
 
@@ -24,7 +23,7 @@ public class TradeCacheRx extends BaseFetchDTOCacheRx<OwnedTradeId, TradeDTO>
     @Inject public TradeCacheRx(@NonNull TradeServiceWrapper tradeServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.tradeServiceWrapper = tradeServiceWrapper;
     }
     //</editor-fold>

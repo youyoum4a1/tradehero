@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 public class AllowableRecipientCacheRx extends BaseDTOCacheRx<UserBaseKey, AllowableRecipientDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 300;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 3;
 
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
 
@@ -24,7 +23,7 @@ public class AllowableRecipientCacheRx extends BaseDTOCacheRx<UserBaseKey, Allow
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;
     }
     //</editor-fold>

@@ -14,7 +14,6 @@ import rx.Observable;
 public class TranslationCacheRx extends BaseFetchDTOCacheRx<TranslationKey, TranslationResult>
 {
     private static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    private static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final TranslationServiceWrapper translationServiceWrapper;
 
@@ -22,7 +21,7 @@ public class TranslationCacheRx extends BaseFetchDTOCacheRx<TranslationKey, Tran
             @NonNull TranslationServiceWrapper translationServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.translationServiceWrapper = translationServiceWrapper;
     }
 

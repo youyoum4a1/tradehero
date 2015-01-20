@@ -302,7 +302,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     {
         // TODO synchronization problem
         UserBaseKey userBaseKey = currentUserId.toUserBaseKey();
-        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             userProfileDTO.paidFollowerCount = value.getPaidFollowerCount();

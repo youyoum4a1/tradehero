@@ -174,7 +174,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     @Test
     public void testTitleShouldMatchSecurityName()
     {
-        String title = abstractTransactionDialogFragment.getTitle();
+        String title = abstractTransactionDialogFragment.mStockNameTextView.getText().toString();
         assertThat(title).isEqualTo("Security Name");
     }
 
@@ -329,7 +329,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         assertThat(btnLinkedIn.isChecked()).isEqualTo(false);
         assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(false);
 
-        UserProfileDTO newUserProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO newUserProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
         newUserProfileDTO.liLinked = true;
 
         // Now we use Observable

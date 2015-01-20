@@ -14,12 +14,11 @@ import javax.inject.Singleton;
 public class UserSearchResultCacheRx extends BaseDTOCacheRx<UserBaseKey, UserSearchResultDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
     //<editor-fold desc="Constructors">
     @Inject public UserSearchResultCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

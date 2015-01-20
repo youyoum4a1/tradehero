@@ -20,7 +20,6 @@ import rx.Observable;
 public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, AbstractDiscussionCompactDTO>
 {
     private static final int DEFAULT_VALUE_SIZE = 100;
-    private static final int DEFAULT_SUBJECT_SIZE = 10;
 
     @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
     @NonNull private final NewsServiceWrapper newsServiceWrapper;
@@ -33,7 +32,7 @@ public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, Abstra
             @NonNull DiscussionServiceWrapper discussionServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_VALUE_SIZE, dtoCacheUtil);
 
         this.discussionServiceWrapper = discussionServiceWrapper;
         this.newsServiceWrapper = newsServiceWrapper;

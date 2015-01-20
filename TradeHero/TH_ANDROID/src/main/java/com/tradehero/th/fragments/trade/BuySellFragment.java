@@ -37,7 +37,6 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.security.StockInfoFragment;
@@ -122,12 +121,12 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             @Override protected void applyTransformation(float interpolatedTime, android.view.animation.Transformation t)
             {
                 super.applyTransformation(interpolatedTime, t);
-                mQuoteRefreshProgressBar.setProgress((int) (getMillisecQuoteRefresh() * (1 - interpolatedTime)));
+                mQuoteRefreshProgressBar.setProgress((int) (getMillisecondQuoteRefresh() * (1 - interpolatedTime)));
             }
         };
-        progressAnimation.setDuration(getMillisecQuoteRefresh());
-        mQuoteRefreshProgressBar.setMax((int) getMillisecQuoteRefresh());
-        mQuoteRefreshProgressBar.setProgress((int) getMillisecQuoteRefresh());
+        progressAnimation.setDuration(getMillisecondQuoteRefresh());
+        mQuoteRefreshProgressBar.setMax((int) getMillisecondQuoteRefresh());
+        mQuoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         mQuoteRefreshProgressBar.setAnimation(progressAnimation);
 
         listenToBuySellDialog();
@@ -294,24 +293,14 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                         providerDTO.associatedPortfolio));
     }
 
-    @Override public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    @Override protected void linkWith(QuoteDTO quoteDTO)
     {
-        super.linkWith(userProfileDTO, andDisplay);
+        super.linkWith(quoteDTO);
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-    }
-
-    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
-    {
-        super.linkWith(quoteDTO, andDisplay);
-        setInitialBuyQuantityIfCan();
-        setInitialSellQuantityIfCan();
-        if (andDisplay)
-        {
-            displayBuySellPrice();
-            displayBuySellContainer();
-            displayBuySellSwitch();
-        }
+        displayBuySellPrice();
+        displayBuySellContainer();
+        displayBuySellSwitch();
 
         mQuoteRefreshProgressBar.startAnimation(progressAnimation);
     }
@@ -323,7 +312,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             Integer maxPurchasableShares = getMaxPurchasableShares();
             if (maxPurchasableShares != null)
             {
-                linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2), true);
+                linkWithBuyQuantity((int) Math.ceil(((double) maxPurchasableShares) / 2));
             }
         }
     }
@@ -335,7 +324,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             Integer maxSellableShares = getMaxSellableShares();
             if (maxSellableShares != null)
             {
-                linkWithSellQuantity(maxSellableShares, true);
+                linkWithSellQuantity(maxSellableShares);
                 if (maxSellableShares == 0)
                 {
                     setTransactionTypeBuy(true);
@@ -359,7 +348,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
         else
         {
-            linkWith((PortfolioCompactDTO) null, andDisplay);
+            linkWith((PortfolioCompactDTO) null);
         }
         if (andDisplay)
         {
@@ -377,34 +366,19 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 {
                     @Override public void onNext(PortfolioDTO portfolioDTO)
                     {
-                        linkWith(portfolioDTO, true);
+                        linkWith(portfolioDTO);
                     }
                 });
     }
 
-    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
-        super.linkWith(portfolioCompactDTO, andDisplay);
-        clampBuyQuantity(andDisplay);
-        clampSellQuantity(andDisplay);
-        if (andDisplay)
-        {
-            // TODO max purchasable shares
-            displayBuySellPrice();
-            displayBuySellSwitch();
-        }
-    }
-
-    @Override public void display()
-    {
-        displayActionBarElements();
-        displayPageElements();
-    }
-
-    public void displayPageElements()
-    {
+        super.linkWith(portfolioCompactDTO);
+        clampBuyQuantity();
+        clampSellQuantity();
+        // TODO max purchasable shares
         displayBuySellPrice();
-        displayStockName();
+        displayBuySellSwitch();
     }
 
     public void displayStockName()

@@ -16,7 +16,6 @@ import rx.Observable;
 public class ViralMiniGameDefListCache extends BaseFetchDTOCacheRx<ViralMiniGameDefListKey, ViralMiniGameDefDTOList>
 {
     private static final int DEFAULT_MAX_VALUE = 1;
-    private static final int DEFAULT_MAX_SUBJECT = 1;
 
     @NonNull protected final MiniGameServiceWrapper miniGameServiceWrapper;
     @NonNull protected final Lazy<ViralMiniGameDefCache> miniGameDefCache;
@@ -27,7 +26,7 @@ public class ViralMiniGameDefListCache extends BaseFetchDTOCacheRx<ViralMiniGame
             @NonNull MiniGameServiceWrapper miniGameServiceWrapper,
             @NonNull Lazy<ViralMiniGameDefCache> miniGameDefCache)
     {
-        super(DEFAULT_MAX_VALUE, DEFAULT_MAX_SUBJECT, DEFAULT_MAX_SUBJECT, dtoCacheUtilRx);
+        super(DEFAULT_MAX_VALUE, dtoCacheUtilRx);
         this.miniGameServiceWrapper = miniGameServiceWrapper;
         this.miniGameDefCache = miniGameDefCache;
     }

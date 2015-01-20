@@ -194,6 +194,7 @@ public class MedianCutQuantizer {
         }
 
         public String toString() {
+            //noinspection StringBufferReplaceableByString
             return new StringBuilder(getClass().getSimpleName())
                     .append(" #").append(Integer.toHexString(getRgb()))
                     .append(". count: ").append(cnt).toString();

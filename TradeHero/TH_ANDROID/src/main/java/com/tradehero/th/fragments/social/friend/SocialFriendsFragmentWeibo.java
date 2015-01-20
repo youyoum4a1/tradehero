@@ -130,7 +130,7 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
             }
         });
 
-        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             edtMessageInvite.setText(getString(R.string.weibo_friends_invite, userProfileDTO.referralCode) + getStrMessageOfAtList(usersToInvite));
@@ -184,10 +184,10 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         }
         else
         {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < usersToInvite.size(); i++)
             {
-                sb.append(" @" + usersToInvite.get(i).name);
+                sb.append(" @").append(usersToInvite.get(i).name);
             }
             return sb.toString();
         }

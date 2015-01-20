@@ -17,7 +17,6 @@ public class UserTransactionHistoryListCacheRx extends BaseFetchDTOCacheRx<
         UserTransactionHistoryDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
     @NonNull private final UserServiceWrapper userServiceWrapper;
     @NonNull private final UserTransactionHistoryCacheRx userTransactionHistoryCache;
@@ -28,7 +27,7 @@ public class UserTransactionHistoryListCacheRx extends BaseFetchDTOCacheRx<
             @NonNull UserTransactionHistoryCacheRx userTransactionHistoryCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.userTransactionHistoryCache = userTransactionHistoryCache;
     }

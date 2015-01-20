@@ -13,12 +13,11 @@ import javax.inject.Singleton;
 public class PositionCompactIdCacheRx extends BaseDTOCacheRx<PositionCompactId, OwnedPositionId>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 2000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 20;
 
     //<editor-fold desc="Constructors">
     @Inject public PositionCompactIdCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 }

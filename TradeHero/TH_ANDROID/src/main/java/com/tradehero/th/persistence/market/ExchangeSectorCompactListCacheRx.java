@@ -23,7 +23,7 @@ public class ExchangeSectorCompactListCacheRx extends BaseFetchDTOCacheRx<Exchan
             @NonNull MarketServiceWrapper marketServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(MAX_SIZE, MAX_SIZE, MAX_SIZE, dtoCacheUtil);
+        super(MAX_SIZE, dtoCacheUtil);
         this.marketServiceWrapper = marketServiceWrapper;
     }
     //</editor-fold>

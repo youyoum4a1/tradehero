@@ -38,7 +38,7 @@ class CommunityPageDTOFactory
             Timber.d("Type %s, key %s", type, key);
             if (key != null)
             {
-                cached = leaderboardDefListCache.getValue(key);
+                cached = leaderboardDefListCache.getCachedValue(key);
                 if (cached != null)
                 {
                     collected.addAll(cached);
@@ -54,7 +54,7 @@ class CommunityPageDTOFactory
 
     @NonNull public LeaderboardDefDTOList collectForCountryCodeFromCaches(@NonNull String countryCode)
     {
-        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getValue(new LeaderboardDefListKey());
+        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getCachedValue(new LeaderboardDefListKey());
         if (allKeys != null)
         {
             return allKeys.keepForCountryCode(countryCode);

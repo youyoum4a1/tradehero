@@ -31,6 +31,10 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected String getLabel()
     {
+        if (quoteDTO.ask == null)
+        {
+            return getString(R.string.na);
+        }
         THSignedNumber bThSignedNumber = THSignedMoney
                 .builder(quoteDTO.ask)
                 .withOutSign()
@@ -46,15 +50,18 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         {
             return null;
         }
-        if (positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId()).intValue() >= 0)
+        Integer shareCount = positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId());
+        if (shareCount != null && shareCount >= 0)
         {
             return null;
         }
 
-        double total = positionDTOCompactList.getUnRealizedPLRefCcy(quoteDTO, portfolioCompactDTO, positionDTOCompactList);
-        double result = (total * (double) mTransactionQuantity / Math.abs(
-                (double) positionDTOCompactList.getShareCountIn(portfolioCompactDTO.getPortfolioId()).intValue()));
-        return result;
+        Double total = positionDTOCompactList.getUnRealizedPLRefCcy(quoteDTO, portfolioCompactDTO);
+        if (total == null || shareCount == null)
+        {
+            return null;
+        }
+        return (total * (double) mTransactionQuantity / Math.abs((double) shareCount));
     }
 
     @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
@@ -87,11 +94,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected boolean isQuickButtonEnabled()
     {
-        if (quoteDTO == null || quoteDTO.ask == null)
-        {
-            return false;
-        }
-        return true;
+        return quoteDTO != null && quoteDTO.ask != null;
     }
 
     @Override protected double getQuickButtonMaxValue()

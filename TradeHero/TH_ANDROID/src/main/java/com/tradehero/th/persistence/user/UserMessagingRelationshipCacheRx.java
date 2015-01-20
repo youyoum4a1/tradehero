@@ -16,7 +16,6 @@ import rx.Observable;
 public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserMessagingRelationshipDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final MessageServiceWrapper messageServiceWrapper;
 
@@ -25,7 +24,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
             @NonNull MessageServiceWrapper messageServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>
@@ -37,7 +36,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
 
     private void markIsHero(@NonNull UserBaseKey heroId)
     {
-        UserMessagingRelationshipDTO cached = getValue(heroId);
+        UserMessagingRelationshipDTO cached = getCachedValue(heroId);
         if (cached != null)
         {
             cached.isHero = true;
@@ -51,7 +50,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
     public void markIsFreeHero(@NonNull UserBaseKey heroId)
     {
         markIsHero(heroId);
-        UserMessagingRelationshipDTO cached = getValue(heroId);
+        UserMessagingRelationshipDTO cached = getCachedValue(heroId);
         if (cached != null)
         {
             cached.freeFollow = true;
@@ -61,7 +60,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
     public void markIsPremiumHero(@NonNull UserBaseKey heroId)
     {
         markIsHero(heroId);
-        UserMessagingRelationshipDTO cached = getValue(heroId);
+        UserMessagingRelationshipDTO cached = getCachedValue(heroId);
         if (cached != null)
         {
             cached.freeFollow = false;
@@ -70,7 +69,7 @@ public class UserMessagingRelationshipCacheRx extends BaseFetchDTOCacheRx<UserBa
 
     public void markNotHero(@NonNull UserBaseKey formerHeroId)
     {
-        UserMessagingRelationshipDTO cached = getValue(formerHeroId);
+        UserMessagingRelationshipDTO cached = getCachedValue(formerHeroId);
         if (cached != null)
         {
             cached.isHero = false;

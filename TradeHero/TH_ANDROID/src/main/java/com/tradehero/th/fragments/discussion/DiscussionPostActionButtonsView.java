@@ -88,7 +88,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private boolean isSocialLinked(SocialNetworkEnum socialNetworkEnum)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
 
         if (userProfileDTO != null)
         {

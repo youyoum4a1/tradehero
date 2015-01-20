@@ -15,7 +15,6 @@ import rx.Observable;
 public class FollowerSummaryCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, FollowerSummaryDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull protected final FollowerServiceWrapper followerServiceWrapper;
 
@@ -24,7 +23,7 @@ public class FollowerSummaryCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, Fol
             @NonNull FollowerServiceWrapper followerServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.followerServiceWrapper = followerServiceWrapper;
     }
     //</editor-fold>

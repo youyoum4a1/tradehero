@@ -34,7 +34,7 @@ public class MessageHeaderListCacheRx extends BaseFetchDTOCacheRx<MessageListKey
             @NonNull MessageServiceWrapper messageServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize.get(), 5, 5, dtoCacheUtil);
+        super(maxSize.get(), dtoCacheUtil);
         this.messageHeaderCache = messageHeaderCache;
         this.messageServiceWrapper = messageServiceWrapper;
     }

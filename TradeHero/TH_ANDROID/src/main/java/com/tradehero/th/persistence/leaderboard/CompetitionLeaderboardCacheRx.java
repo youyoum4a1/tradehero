@@ -15,7 +15,6 @@ import rx.Observable;
 public class CompetitionLeaderboardCacheRx extends BaseFetchDTOCacheRx<CompetitionLeaderboardId, CompetitionLeaderboardDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final CompetitionServiceWrapper competitionServiceWrapper;
 
@@ -24,7 +23,7 @@ public class CompetitionLeaderboardCacheRx extends BaseFetchDTOCacheRx<Competiti
             @NonNull CompetitionServiceWrapper competitionServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.competitionServiceWrapper = competitionServiceWrapper;
     }
     //</editor-fold>

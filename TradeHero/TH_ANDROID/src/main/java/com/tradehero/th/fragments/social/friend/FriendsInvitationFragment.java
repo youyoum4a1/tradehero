@@ -267,7 +267,7 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void inviteWeChatFriends()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.get().getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             WeChatDTO weChatDTO = new WeChatDTO();
@@ -396,7 +396,7 @@ public class FriendsInvitationFragment extends DashboardFragment
     private boolean checkLinkedStatus(SocialNetworkEnum socialNetwork)
     {
         UserProfileDTO updatedUserProfileDTO =
-                userProfileCache.get().getValue(currentUserId.toUserBaseKey());
+                userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         return updatedUserProfileDTO != null &&
                 userProfileDTOUtil.get().checkLinkedStatus(updatedUserProfileDTO, socialNetwork);
     }

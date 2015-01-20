@@ -19,7 +19,6 @@ import rx.Observable;
 @Singleton @UserCache public class GetPositionsCacheRx extends BaseFetchDTOCacheRx<GetPositionsDTOKey, GetPositionsDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<PositionServiceWrapper> positionServiceWrapper;
     @NonNull private final Lazy<LeaderboardServiceWrapper> leaderboardServiceWrapper;
@@ -34,7 +33,7 @@ import rx.Observable;
             @NonNull Lazy<PositionCacheRx> positionCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.positionServiceWrapper = positionServiceWrapper;
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
         this.securityCompactCache = securityCompactCache;

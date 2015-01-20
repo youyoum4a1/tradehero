@@ -373,7 +373,7 @@
 
   <!-- Achievement Styles -->
   <style name="TH.Achievement"
-      parent="TH.TextPrimary"></style>
+      parent="TH.TextPrimary"/>
 
   <style name="TH.Achievement.Header"
       parent="TH.Title">
@@ -476,7 +476,7 @@
   </style>
 
   <style name="TH.Level.Current"
-      parent="TH.Level"></style>
+      parent="TH.Level"/>
 
   <style name="TH.Level.Next"
       parent="TH.Level">

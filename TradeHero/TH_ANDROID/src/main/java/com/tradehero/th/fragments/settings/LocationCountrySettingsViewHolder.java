@@ -71,7 +71,7 @@ public class LocationCountrySettingsViewHolder extends OneSettingViewHolder
 
     public void updateLocation()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null && userProfileDTO.countryCode != null)
         {
             Country currentCountry = null;

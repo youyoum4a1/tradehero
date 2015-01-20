@@ -27,7 +27,7 @@ public class NotificationListCacheRx extends BaseFetchDTOCacheRx<NotificationLis
             @NonNull Lazy<NotificationCacheRx> notificationCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize.get(), 5, 5, dtoCacheUtil);
+        super(maxSize.get(), dtoCacheUtil);
         this.notificationService = notificationService;
         this.notificationCache = notificationCache;
     }

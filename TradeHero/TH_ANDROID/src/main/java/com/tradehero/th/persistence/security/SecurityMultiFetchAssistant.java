@@ -1,7 +1,9 @@
 package com.tradehero.th.persistence.security;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -51,12 +53,29 @@ public class SecurityMultiFetchAssistant
                 });
     }
 
-    public Observable<SecurityCompactDTO> getCachedSecurities(List<SecurityIntegerId> keysToFetch)
+    @NonNull public Observable<SecurityCompactDTO> getCachedSecurities(@NonNull List<SecurityIntegerId> keysToFetch)
     {
+        // Otherwise it cannot infer
+        //noinspection Convert2MethodRef
         return Observable.from(keysToFetch)
-                .flatMap(securityIntegerId -> securityIdCache.getFirstOrEmpty(securityIntegerId))
+                .flatMap(securityIntegerId -> {
+                    SecurityId cached = securityIdCache.getCachedValue(securityIntegerId);
+                    if (cached != null)
+                    {
+                        return Observable.just(Pair.create(securityIntegerId, cached));
+                    }
+                    return securityIdCache.get(securityIntegerId).take(1);
+                })
+                //.flatMap(securityIntegerId -> securityIdCache.getFirstOrEmpty(securityIntegerId))
                 .map(pair -> pair.second)
-                .flatMap(securityId -> securityCompactCache.getFirstOrEmpty(securityId))
+                .flatMap(securityId -> {
+                    SecurityCompactDTO cached = securityCompactCache.getCachedValue(securityId);
+                    if (cached != null)
+                    {
+                        return Observable.just(Pair.create(securityId, cached));
+                    }
+                    return securityCompactCache.get(securityId).take(1);
+                })
                 .map(pair -> pair.second);
     }
 }

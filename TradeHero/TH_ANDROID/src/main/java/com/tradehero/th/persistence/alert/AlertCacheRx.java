@@ -16,7 +16,6 @@ import rx.Observable;
 public class AlertCacheRx extends BaseFetchDTOCacheRx<AlertId, AlertDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<AlertServiceWrapper> alertServiceWrapper;
     @NonNull private final Lazy<AlertCompactCacheRx> alertCompactCache;
@@ -27,7 +26,7 @@ public class AlertCacheRx extends BaseFetchDTOCacheRx<AlertId, AlertDTO>
             @NonNull Lazy<AlertCompactCacheRx> alertCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.alertServiceWrapper = alertServiceWrapper;
         this.alertCompactCache = alertCompactCache;
     }

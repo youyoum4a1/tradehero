@@ -17,7 +17,6 @@ import rx.Observable;
 public class ProviderCacheRx extends BaseFetchDTOCacheRx<ProviderId, ProviderDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 4;
 
     @NonNull private final ProviderServiceWrapper providerServiceWrapper;
     @NonNull private final WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory;
@@ -28,7 +27,7 @@ public class ProviderCacheRx extends BaseFetchDTOCacheRx<ProviderId, ProviderDTO
             @NonNull WarrantSpecificKnowledgeFactory warrantSpecificKnowledgeFactory,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
         this.warrantSpecificKnowledgeFactory = warrantSpecificKnowledgeFactory;
     }

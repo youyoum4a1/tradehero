@@ -232,7 +232,6 @@ public class PositionListFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
     {
-        inflater.inflate(R.menu.position_list_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
         displayActionBarTitle();
     }

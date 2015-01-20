@@ -50,25 +50,31 @@
 
   <string name="buy_sell_portfolio_selected_title">Portfolio:</string>
   <string name="buy_sell_portfolio_changed_title">Check the portfolio</string>
-  <string name="buy_sell_portfolio_changed_message">This stock may have been removed from a competition.\nMake sure that your correct portfolio is selected, at the top, before any transaction</string>
+  <string name="buy_sell_portfolio_changed_message">This stock may have been removed from a competition.\nMake sure that your correct portfolio is
+    selected, at the top, before any transaction
+  </string>
 
   <string name="alert_dialog_buy_sell_order_null_title">This is embarrassing</string>
   <string name="alert_dialog_buy_sell_order_null_message">We failed to prepare the buy or sell order.</string>
   <string name="alert_dialog_buy_sell_order_null_cancel">Okay</string>
 
   <string name="alert_dialog_buy_sell_retrofit_failed_title">Failed</string>
-  <string name="alert_dialog_buy_sell_retrofit_failed_message">We failed to execute your order.\nYou may confirm the trade did not go through and try again.</string>
+  <string name="alert_dialog_buy_sell_retrofit_failed_message">We failed to execute your order.\nYou may confirm the trade did not go through and try
+    again.
+  </string>
   <string name="alert_dialog_buy_sell_retrofit_failed_cancel">Okay</string>
 
   <string name="alert_dialog_buy_sell_returned_null_title">We are sorry</string>
-  <string name="alert_dialog_buy_sell_returned_null_message">The server returned invalid information.\nYou may confirm the trade did not go through and try again.</string>
+  <string name="alert_dialog_buy_sell_returned_null_message">The server returned invalid information.\nYou may confirm the trade did not go through
+    and try again.
+  </string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
-  <string name="buy_sell_share_count"></string>
-    <string name="date">Date : %1$s</string>
-    <string name="open">Open :</string>
-    <string name="high">High :</string>
-    <string name="low">Low :</string>
-    <string name="close">Close :</string>
-    <string name="change">Chg :</string>
+  <string name="buy_sell_share_count"/>
+  <string name="date">Date : %1$s</string>
+  <string name="open">Open :</string>
+  <string name="high">High :</string>
+  <string name="low">Low :</string>
+  <string name="close">Close :</string>
+  <string name="change">Chg :</string>
 
 </resources>

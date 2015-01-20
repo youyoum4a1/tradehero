@@ -315,7 +315,7 @@ public class DashboardActivity extends BaseActivity
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         UserProfileDTO currentUserProfile =
-                userProfileCache.get().getValue(currentUserId.toUserBaseKey());
+                userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         MenuInflater menuInflater = getMenuInflater();
 
         menuInflater.inflate(R.menu.network_menu, menu);

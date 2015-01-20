@@ -16,7 +16,6 @@ import rx.Observable;
 public class UserBaseKeyListCacheRx extends BaseFetchDTOCacheRx<UserListType, UserSearchResultDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
     @NonNull private final Lazy<UserServiceWrapper> userServiceWrapper;
     @NonNull private final Lazy<UserSearchResultCacheRx> userSearchResultCache;
@@ -27,7 +26,7 @@ public class UserBaseKeyListCacheRx extends BaseFetchDTOCacheRx<UserListType, Us
             @NonNull Lazy<UserSearchResultCacheRx> userSearchResultCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.userSearchResultCache = userSearchResultCache;
     }

@@ -15,10 +15,9 @@ abstract public class BaseFetchDTOCacheRx<DTOKeyType extends DTOKey, DTOType ext
     @NonNull final private Map<DTOKeyType, Subscription> cachedFetcherSubscriptions;
 
     //<editor-fold desc="Constructors">
-    protected BaseFetchDTOCacheRx(int valueSize, int subjectSize, int fetcherSize,
-            @NonNull DTOCacheUtilRx dtoCacheUtilRx)
+    protected BaseFetchDTOCacheRx(int valueSize, @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
-        super(valueSize, subjectSize, dtoCacheUtilRx);
+        super(valueSize, dtoCacheUtilRx);
         this.cachedFetcherSubscriptions = new HashMap<>();
     }
     //</editor-fold>

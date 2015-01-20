@@ -15,7 +15,7 @@ abstract public class ProductIdentifierListCacheRx<
     public ProductIdentifierListCacheRx(int maxSize,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize, 5, dtoCacheUtil);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 

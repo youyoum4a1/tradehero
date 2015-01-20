@@ -24,7 +24,7 @@ import javax.inject.Singleton;
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, 5, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>
@@ -54,7 +54,7 @@ import javax.inject.Singleton;
         WatchlistPositionDTO cached;
         for (SecurityId key : snapshot().keySet())
         {
-            cached = getValue(key);
+            cached = getCachedValue(key);
             if (cached != null
                     && concernedUser.key.equals(cached.userId))
             {

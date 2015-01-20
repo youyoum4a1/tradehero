@@ -14,12 +14,11 @@ import javax.inject.Singleton;
 public class VideoCacheRx extends BaseDTOCacheRx<VideoId, VideoDTO>
 {
     private static final int DEFAULT_MAX_VALUE_SIZE = 300;
-    private static final int DEFAULT_MAX_SUBJECT_SIZE = 3;
 
     //<editor-fold desc="Constructors">
     @Inject public VideoCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

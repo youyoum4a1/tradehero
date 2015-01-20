@@ -35,7 +35,7 @@ public class QuickPriceButton extends Button
         a.recycle();
     }
 
-    //<editor-fold desc="Accessors">
+    //<editor-fold desc="Accessor>
     public boolean isPercent()
     {
         return isPercent;

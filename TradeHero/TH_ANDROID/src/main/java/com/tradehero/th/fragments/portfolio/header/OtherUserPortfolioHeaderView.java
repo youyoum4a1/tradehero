@@ -257,7 +257,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public void configureFollowItemsVisibility()
     {
-        UserProfileDTO currentUser = this.userCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO currentUser = this.userCache.getCachedValue(currentUserId.toUserBaseKey());
         if (this.userProfileDTO == null || isCurrentUserID(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(GONE);
@@ -278,7 +278,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public boolean isCurrentUserID(int userId)
     {
-        UserProfileDTO currentUser = this.userCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO currentUser = this.userCache.getCachedValue(currentUserId.toUserBaseKey());
         if(currentUser!=null)
         {
             return currentUser.id == userId;

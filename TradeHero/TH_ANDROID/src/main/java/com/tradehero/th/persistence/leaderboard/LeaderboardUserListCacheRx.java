@@ -27,7 +27,7 @@ public class LeaderboardUserListCacheRx
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(MAX_SIZE, 5, 5, dtoCacheUtil);
+        super(MAX_SIZE, dtoCacheUtil);
         this.leaderboardUserCache = leaderboardUserCache;
         this.userServiceWrapper = userServiceWrapper;
     }

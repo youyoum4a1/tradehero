@@ -16,7 +16,6 @@ import rx.Observable;
 public class ExchangeCacheRx extends BaseFetchDTOCacheRx<ExchangeIntegerId, ExchangeDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<MarketServiceWrapper> marketServiceWrapper;
     @NonNull private final Lazy<ExchangeIdCacheRx> exchangeIdCache;
@@ -27,7 +26,7 @@ public class ExchangeCacheRx extends BaseFetchDTOCacheRx<ExchangeIntegerId, Exch
             @NonNull Lazy<ExchangeIdCacheRx> exchangeIdCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.marketServiceWrapper = marketServiceWrapper;
         this.exchangeIdCache = exchangeIdCache;
     }

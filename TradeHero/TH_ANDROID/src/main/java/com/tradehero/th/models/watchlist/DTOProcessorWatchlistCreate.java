@@ -29,7 +29,7 @@ public class DTOProcessorWatchlistCreate extends DTOProcessorWatchlistUpdate
     @Override public WatchlistPositionDTO process(@Nullable WatchlistPositionDTO watchlistPositionDTO)
     {
         WatchlistPositionDTO processed = super.process(watchlistPositionDTO);
-        WatchlistPositionDTOList cached = userWatchlistPositionCache.getValue(concernedUser);
+        WatchlistPositionDTOList cached = userWatchlistPositionCache.getCachedValue(concernedUser);
         if (cached != null)
         {
             // Remove this test when #70827276 is fixed

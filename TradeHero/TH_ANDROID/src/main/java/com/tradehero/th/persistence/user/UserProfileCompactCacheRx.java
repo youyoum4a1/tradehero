@@ -14,7 +14,6 @@ import rx.Observable;
 public class UserProfileCompactCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserProfileCompactDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final UserProfileCacheRx userProfileCache;
 
@@ -23,7 +22,7 @@ public class UserProfileCompactCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, 
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userProfileCache = userProfileCache;
     }
     //</editor-fold>

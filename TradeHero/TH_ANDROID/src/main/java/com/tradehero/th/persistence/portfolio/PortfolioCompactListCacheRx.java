@@ -17,7 +17,6 @@ import rx.Observable;
 public class PortfolioCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, PortfolioCompactDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
     @NonNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @NonNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
@@ -30,7 +29,7 @@ public class PortfolioCompactListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey
             @NonNull CurrentUserId currentUserId,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.portfolioServiceWrapper = portfolioServiceWrapper;
         this.portfolioCompactCache = portfolioCompactCache;
         this.currentUserId = currentUserId;

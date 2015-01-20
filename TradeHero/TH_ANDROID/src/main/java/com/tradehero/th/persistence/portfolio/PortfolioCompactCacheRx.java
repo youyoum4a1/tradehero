@@ -16,7 +16,6 @@ import javax.inject.Singleton;
 public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, PortfolioCompactDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 200;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 20;
 
     // Giant HACK to survive invalidation #77003578
     private final Map<PortfolioId, Double> txnCostUsds;
@@ -24,14 +23,14 @@ public class PortfolioCompactCacheRx extends BaseDTOCacheRx<PortfolioId, Portfol
     //<editor-fold desc="Constructors">
     @Inject public PortfolioCompactCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.txnCostUsds = new HashMap<>();
     }
     //</editor-fold>
 
     @Override public void onNext(@NonNull PortfolioId key, @NonNull PortfolioCompactDTO value)
     {
-        PortfolioCompactDTO previous = getValue(key);
+        PortfolioCompactDTO previous = getCachedValue(key);
         //noinspection ConstantConditions
         if (previous != null && previous.userId != null)
         {

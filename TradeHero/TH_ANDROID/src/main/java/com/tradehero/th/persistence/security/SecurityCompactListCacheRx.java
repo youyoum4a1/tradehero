@@ -18,8 +18,6 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
         SecurityCompactDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
-    public static final int DEFAULT_MAX_FETCHER_SIZE = 5;
 
     @NonNull private final Lazy<SecurityServiceWrapper> securityServiceWrapper;
     @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
@@ -30,7 +28,7 @@ public class SecurityCompactListCacheRx extends BaseFetchDTOCacheRx<
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
         this.securityCompactCache = securityCompactCache;
     }

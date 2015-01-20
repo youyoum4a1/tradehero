@@ -30,7 +30,7 @@ public class LeaderboardCacheRx extends BaseFetchDTOCacheRx<LeaderboardKey, Lead
             @NonNull LeaderboardServiceWrapper leaderboardServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, 5, 5, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardUserCache = leaderboardUserCache;
         this.leaderboardUserDTOUtil = leaderboardUserDTOUtil;
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;

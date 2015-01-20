@@ -36,7 +36,7 @@ import javax.inject.Singleton;
 
     public void onNext(SamsungSKUListKey key, SamsungSKU sku)
     {
-        SamsungSKUList currentList = getValue(key);
+        SamsungSKUList currentList = getCachedValue(key);
         if (currentList == null)
         {
             currentList = new SamsungSKUList();

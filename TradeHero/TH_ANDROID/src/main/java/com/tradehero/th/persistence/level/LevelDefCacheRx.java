@@ -14,12 +14,11 @@ import javax.inject.Singleton;
 public class LevelDefCacheRx extends BaseDTOCacheRx<LevelDefId, LevelDefDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 101;
 
     //<editor-fold desc="Constructors">
     @Inject public LevelDefCacheRx(@NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
 

@@ -23,7 +23,7 @@ public class UserAvailabilityCacheRx extends BaseFetchDTOCacheRx<DisplayNameDTO,
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, 5, 5, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
     }
     //</editor-fold>

@@ -26,7 +26,7 @@ public class DTOProcessorUpdatePayPalEmail extends ThroughDTOProcessor<UpdatePay
 
     @Override public UpdatePayPalEmailDTO process(UpdatePayPalEmailDTO value)
     {
-        UserProfileDTO cachedProfile = userProfileCache.getValue(userBaseKey);
+        UserProfileDTO cachedProfile = userProfileCache.getCachedValue(userBaseKey);
         if (cachedProfile != null)
         {
             cachedProfile.paypalEmailAddress = updatePayPalEmailFormDTO.newPayPalEmailAddress;

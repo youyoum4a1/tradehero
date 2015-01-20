@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -30,15 +31,15 @@ public class TradeListItemAdapter
     public static final int ITEM_TYPE_TRADE = 4;
     public static final int ITEM_TYPE_TRADE_LOADING = 5;
 
-    public static final int LAYOUT_RES_ID_ITEM_HEADER = R.layout.trade_list_item_header;
-    public static final int LAYOUT_RES_ID_ITEM_TRADE_LOADING = R.layout.loading_item;
-    public static final int LAYOUT_RES_ID_ITEM_TRADE = R.layout.trade_list_item;
+    @LayoutRes public static final int LAYOUT_RES_ID_ITEM_HEADER = R.layout.trade_list_item_header;
+    @LayoutRes public static final int LAYOUT_RES_ID_ITEM_TRADE_LOADING = R.layout.loading_item;
+    @LayoutRes public static final int LAYOUT_RES_ID_ITEM_TRADE = R.layout.trade_list_item;
 
-    public static final int LAYOUT_RES_ID_POSITION_LOADING = R.layout.loading_item;
-    public static final int LAYOUT_RES_ID_POSITION_OPEN = R.layout.position_open_no_period;
-    public static final int LAYOUT_RES_ID_POSITION_CLOSED = R.layout.position_closed_no_period;
-    public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_OPEN = R.layout.position_open_in_period;
-    public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_CLOSED = R.layout.position_closed_in_period;
+    @LayoutRes public static final int LAYOUT_RES_ID_POSITION_LOADING = R.layout.loading_item;
+    @LayoutRes public static final int LAYOUT_RES_ID_POSITION_OPEN = R.layout.position_open_no_period;
+    @LayoutRes public static final int LAYOUT_RES_ID_POSITION_CLOSED = R.layout.position_closed_no_period;
+    @LayoutRes public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_OPEN = R.layout.position_open_in_period;
+    @LayoutRes public static final int LAYOUT_RES_ID_POSITION_IN_PERIOD_CLOSED = R.layout.position_closed_in_period;
 
     private List<Integer> itemTypes;
     private List<Object> objects;
@@ -46,11 +47,13 @@ public class TradeListItemAdapter
     @Nullable protected PositionDTO shownPositionDTO;
     @Nullable protected List<PositionTradeDTOKey> underlyingItems;
 
+    //<editor-fold desc="Constructors">
     public TradeListItemAdapter(final Context context)
     {
         super(context, LAYOUT_RES_ID_ITEM_TRADE);
         recreateObjects();
     }
+    //</editor-fold>
 
     @Override public void setUnderlyingItems(final List<PositionTradeDTOKey> underlyingItems)
     {
@@ -74,7 +77,8 @@ public class TradeListItemAdapter
         itemTypesTemp.add(ITEM_TYPE_HEADER_POSITION_SUMMARY);
         if (this.shownPositionDTO != null)
         {
-            if (this.shownPositionDTO.isClosed())
+            Boolean isClosed = this.shownPositionDTO.isClosed();
+            if (isClosed != null && isClosed)
             {
                 objectsTemp.add(R.string.trade_list_header_closed_summary);
             }
@@ -161,12 +165,12 @@ public class TradeListItemAdapter
 
     public int getPositionLayoutResId(@NonNull PositionDTO position)
     {
-        boolean isClosed = position.isClosed();
-        if (isClosed && position instanceof PositionInPeriodDTO)
+        Boolean isClosed = position.isClosed();
+        if (isClosed != null && isClosed && position instanceof PositionInPeriodDTO)
         {
             return LAYOUT_RES_ID_POSITION_IN_PERIOD_CLOSED;
         }
-        else if (isClosed)
+        else if (isClosed != null && isClosed)
         {
             return LAYOUT_RES_ID_POSITION_CLOSED;
         }

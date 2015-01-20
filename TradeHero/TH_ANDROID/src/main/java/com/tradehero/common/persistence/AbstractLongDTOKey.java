@@ -8,11 +8,13 @@ import android.os.Bundle;
 abstract public class AbstractLongDTOKey extends AbstractPrimitiveDTOKey<Long>
 {
     //<editor-fold desc="Constructors">
+    @SuppressWarnings("UnusedDeclaration")
     public AbstractLongDTOKey(Long key)
     {
         super(key);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public AbstractLongDTOKey(Bundle args)
     {
         super(args);
@@ -23,7 +25,6 @@ abstract public class AbstractLongDTOKey extends AbstractPrimitiveDTOKey<Long>
 
     /**
      * If the key is null, it removes it from the bundle
-     * @param args
      */
     public void putParameters(Bundle args)
     {

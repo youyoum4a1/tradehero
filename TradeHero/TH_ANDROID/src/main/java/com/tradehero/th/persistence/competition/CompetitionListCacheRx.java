@@ -15,7 +15,6 @@ import rx.Observable;
 public class CompetitionListCacheRx extends BaseFetchDTOCacheRx<ProviderId, CompetitionDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
     @NonNull private final CompetitionServiceWrapper competitionServiceWrapper;
     @NonNull private final CompetitionCacheRx competitionCache;
@@ -26,7 +25,7 @@ public class CompetitionListCacheRx extends BaseFetchDTOCacheRx<ProviderId, Comp
             @NonNull CompetitionCacheRx competitionCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.competitionServiceWrapper = competitionServiceWrapper;
         this.competitionCache = competitionCache;
     }

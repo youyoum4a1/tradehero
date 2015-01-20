@@ -24,7 +24,7 @@ public class FriendsListCacheRx extends BaseFetchDTOCacheRx<FriendsListKey, User
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize.get(), 5, 5, dtoCacheUtil);
+        super(maxSize.get(), dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
     }
     //</editor-fold>

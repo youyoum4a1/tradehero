@@ -54,7 +54,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
      */
     @Override public Notification buildNotification(int notificationId)
     {
-        NotificationDTO notificationDTO = notificationCache.getValue(new NotificationKey(notificationId));
+        NotificationDTO notificationDTO = notificationCache.getCachedValue(new NotificationKey(notificationId));
         if (notificationDTO == null)
         {
             NotificationKey key = new NotificationKey(notificationId);
@@ -149,7 +149,7 @@ public class CommonNotificationBuilder implements THNotificationBuilder
 
     @Override public int getNotifyId(int notificationId)
     {
-        NotificationDTO notificationDTO = notificationCache.getValue(new NotificationKey(notificationId));
+        NotificationDTO notificationDTO = notificationCache.getCachedValue(new NotificationKey(notificationId));
 
         if (notificationDTO != null)
         {

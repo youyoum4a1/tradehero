@@ -16,7 +16,6 @@ public class ProviderDisplayCellListCacheRx
         extends BaseFetchDTOCacheRx<ProviderDisplayCellListKey, ProviderDisplayCellDTOList>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 50;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 5;
 
     @NonNull private final ProviderServiceWrapper providerServiceWrapper;
     @NonNull private final ProviderDisplayCellCacheRx providerDisplayCellCache;
@@ -27,7 +26,7 @@ public class ProviderDisplayCellListCacheRx
             @NonNull ProviderDisplayCellCacheRx providerDisplayCellCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.providerServiceWrapper = providerServiceWrapper;
         this.providerDisplayCellCache = providerDisplayCellCache;
     }

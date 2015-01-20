@@ -202,7 +202,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                 TranslationResult result;
                 for (TranslationKey key : new TranslationKeyList(remainingKeys))
                 {
-                    result = translationCache.getValue(key);
+                    result = translationCache.getCachedValue(key);
                     if (result != null)
                     {
                         handleTranslation(key, result);
@@ -279,7 +279,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     protected void softFetchTranslationToken()
     {
         TranslationTokenKey key = new TranslationTokenKey();
-        TranslationToken token = translationTokenCache.getValue(key);
+        TranslationToken token = translationTokenCache.getCachedValue(key);
         if (token != null)
         {
             translationToken = token;

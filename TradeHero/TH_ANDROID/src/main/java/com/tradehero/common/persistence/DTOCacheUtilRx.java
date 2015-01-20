@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 public interface DTOCacheUtilRx
 {
     void addCache(@NonNull DTOCacheRx dtoCacheRx);
-    void clearAllCaches();
-    void clearSystemCaches();
+    @SuppressWarnings("UnusedDeclaration") void clearAllCaches();
+    @SuppressWarnings("UnusedDeclaration") void clearSystemCaches();
     void clearUserCaches();
 }

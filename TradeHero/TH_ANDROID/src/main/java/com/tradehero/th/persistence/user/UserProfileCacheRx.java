@@ -18,7 +18,6 @@ import rx.Observable;
 public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserProfileDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<UserServiceWrapper> userServiceWrapper;
     @NonNull private final Lazy<UserProfileCompactCacheRx> userProfileCompactCache;
@@ -31,7 +30,7 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
             @NonNull Lazy<LeaderboardCacheRx> leaderboardCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.userProfileCompactCache = userProfileCompactCache;
         this.leaderboardCache = leaderboardCache;
@@ -56,7 +55,7 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
 
     public void updateXPIfNecessary(@NonNull UserBaseKey userBaseKey, int newXpTotal)
     {
-        UserProfileDTO userProfileDTO = getValue(userBaseKey);
+        UserProfileDTO userProfileDTO = getCachedValue(userBaseKey);
         if(userProfileDTO != null && userProfileDTO.currentXP < newXpTotal)
         {
             userProfileDTO.currentXP = newXpTotal;
@@ -70,7 +69,7 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
         {
             throw new IllegalArgumentException("Cannot handle count=" + count);
         }
-        UserProfileDTO userProfileDTO = getValue(userBaseKey);
+        UserProfileDTO userProfileDTO = getCachedValue(userBaseKey);
         if(userProfileDTO != null)
         {
             userProfileDTO.achievementCount += count;
