@@ -44,6 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class SignInOrUpFragment extends Fragment
 {
@@ -164,7 +165,10 @@ public class SignInOrUpFragment extends Fragment
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread());
                 })
-                .doOnError(toastOnErrorActionProvider.get())
+                .doOnError(error -> {
+                    Timber.e(error, "Error on logging in");
+                    THToast.show(new THException(error));
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(() -> {
                     if (progressDialog != null)
@@ -222,8 +226,7 @@ public class SignInOrUpFragment extends Fragment
         try
         {
             startActivity(it);
-        }
-        catch (android.content.ActivityNotFoundException e)
+        } catch (android.content.ActivityNotFoundException e)
         {
             THToast.show("Unable to open url: " + uri);
         }
