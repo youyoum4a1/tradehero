@@ -2,11 +2,11 @@ package com.tradehero.th.models.share;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.THRobolectricTestRunner;
+import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.translation.bing.BingTranslationToken;
 import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
-import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
@@ -17,6 +17,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -30,7 +31,7 @@ public class SocialShareTranslationHelperTest
 
     @Before public void setUp()
     {
-        TestTHApp.staticInject(this);
+        Robolectric.setupActivity(DashboardActivityExtended.class).inject(this);
     }
 
     @After public void tearDown()

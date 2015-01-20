@@ -107,7 +107,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         {
             @Override public int compare(ProviderDTO lhs, ProviderDTO rhs)
             {
-                if (lhs.vip == rhs.vip)
+                if (lhs.vip == null ? rhs.vip == null : lhs.vip.equals(rhs.vip))
                 {
                     return 0;
                 }

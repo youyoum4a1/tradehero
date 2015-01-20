@@ -191,7 +191,15 @@ public class PortfolioCompactDTOUtil
             return null;
         }
 
-        QuoteDTO converted = quoteDTO.clone();
+        QuoteDTO converted = null;
+        try
+        {
+            converted = quoteDTO.clone();
+        } catch (CloneNotSupportedException e)
+        {
+            Timber.e(e, "Could not clone");
+            converted = new QuoteDTO();
+        }
         if (quoteDTO.bid != null)
         {
             converted.bid = quoteDTO.bid * quoteDTO.toUSDRate / portfolioCompactDTO.refCcyToUsdRate;

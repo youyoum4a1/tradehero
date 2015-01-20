@@ -1,10 +1,11 @@
 package com.tradehero.common.billing.googleplay;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 public class BaseIABProductDetailsDecreasingPriceComparator<
             BaseIABProductDetailType extends BaseIABProductDetail>
-        implements Comparator<BaseIABProductDetailType>
+        implements Comparator<BaseIABProductDetailType>, Serializable
 {
     @Override public int compare(BaseIABProductDetailType BaseIABProductDetail, BaseIABProductDetailType baseIABProductDetail2)
     {

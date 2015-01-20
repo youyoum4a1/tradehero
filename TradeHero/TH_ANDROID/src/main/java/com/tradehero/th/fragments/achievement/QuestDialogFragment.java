@@ -95,6 +95,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
         {
         }
 
+        @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
         @Nullable private Boolean firstIsCurrentLevel(List<QuestBonusDTO> questBonusDTOList)
         {
             UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;

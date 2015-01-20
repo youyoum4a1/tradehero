@@ -38,8 +38,10 @@ import com.tradehero.th.models.market.ExchangeSectorCompactKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
+import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.market.ExchangeSectorCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
+import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -61,6 +63,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject BroadcastUtils broadcastUtils;
+    @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredMarketCountry;
 
     @InjectView(R.id.next_button) Button nextButton;
     @InjectView(R.id.done_button) Button doneButton;
@@ -96,7 +99,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onCreate(savedInstanceState);
         //exchange
-        exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity());
+        exchangeSectorViewHolder = new OnBoardPickExchangeSectorViewHolder(getActivity(), preferredMarketCountry);
         //hero
         heroViewHolder = new OnBoardPickHeroViewHolder(getActivity());
         //stock

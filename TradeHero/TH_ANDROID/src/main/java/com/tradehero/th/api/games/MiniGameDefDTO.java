@@ -26,4 +26,13 @@ public class MiniGameDefDTO implements DTO, KeyGenerator
     {
         return new MiniGameDefKey(id);
     }
+
+    @Nullable public ViralMiniGameDefKey getViralGameDefKey()
+    {
+        if(viralMiniGameId != null)
+        {
+            return new ViralMiniGameDefKey(viralMiniGameId);
+        }
+        return null;
+    }
 }

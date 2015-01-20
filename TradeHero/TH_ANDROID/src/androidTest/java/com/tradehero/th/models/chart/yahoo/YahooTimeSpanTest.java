@@ -24,6 +24,6 @@ public class YahooTimeSpanTest
 
     @Test public void returnsPeriodAbove1()
     {
-        assertEquals(YahooTimeSpan.day1, YahooTimeSpan.getBestApproximation(new ChartTimeSpan(1)));
+        assertEquals(YahooTimeSpan.min1, YahooTimeSpan.getBestApproximation(new ChartTimeSpan(1)));
     }
 }

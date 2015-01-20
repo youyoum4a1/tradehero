@@ -2,10 +2,11 @@ package com.tradehero.th.api.market;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import java.io.Serializable;
 import java.util.Comparator;
 
 public class ExchangeCompactDTODescriptionNameComparator<ExchangeCompactDTOType extends ExchangeCompactDTO>
-        implements Comparator<ExchangeCompactDTOType>
+        implements Comparator<ExchangeCompactDTOType>, Serializable
 {
     @Override public int compare(@Nullable ExchangeCompactDTOType lhs, @Nullable ExchangeCompactDTOType rhs)
     {

@@ -1,12 +1,18 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
+import android.support.annotation.Nullable;
+
 public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
 {
-    private final String iconUrl;
-    private final String webUrl;
+    @Nullable private final String iconUrl;
+    @Nullable private final String webUrl;
 
     //<editor-fold desc="Constructors">
-    public CompetitionZoneWizardDTO(String title, String description, String iconUrl, String webUrl)
+    public CompetitionZoneWizardDTO(
+            @Nullable String title,
+            @Nullable String description,
+            @Nullable String iconUrl,
+            @Nullable String webUrl)
     {
         super(title, description);
         this.iconUrl = iconUrl;
@@ -22,12 +28,12 @@ public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
                 '}';
     }
 
-    public String getIconUrl()
+    @Nullable public String getIconUrl()
     {
         return iconUrl;
     }
 
-    public String getWebUrl()
+    @Nullable public String getWebUrl()
     {
         return webUrl;
     }

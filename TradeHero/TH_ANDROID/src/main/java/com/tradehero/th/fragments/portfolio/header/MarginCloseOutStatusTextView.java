@@ -14,7 +14,7 @@ import com.tradehero.th.api.portfolio.MarginCloseOutState;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import javax.inject.Inject;
 
 public class MarginCloseOutStatusTextView extends TextView
@@ -84,7 +84,7 @@ public class MarginCloseOutStatusTextView extends TextView
             double margin = portfolioCompactDTO.marginCloseOutPercent;
             setText(getResources().getString(
                     closeOutState.labelResId,
-                    THSignedNumber.builder(margin)
+                    THSignedPercentage.builder(margin * 100)
                             .relevantDigitCount(RELEVANT_DIGIT_MARGIN)
                             .build().toString()));
 

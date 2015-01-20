@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -36,6 +37,13 @@ public class BaseArrayListHasExpiration<T> extends BaseArrayList<T>
         this.expirationDate = expirationDate;
     }
     //</editor-fold>
+
+    @Override public boolean equals(@Nullable Object o)
+    {
+        return super.equals(o)
+                && o instanceof BaseArrayListHasExpiration
+                && expirationDate.equals(((BaseArrayListHasExpiration<?>) o).expirationDate);
+    }
 
     protected void setExpirationDateSecondsInFuture(int seconds)
     {

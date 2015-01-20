@@ -6,11 +6,9 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.ActionBar;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -48,7 +46,10 @@ public class AboutFragment extends DashboardFragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         ButterKnife.inject(this, view);
-        mainContentWrapper.setPadding(mainContentWrapper.getPaddingLeft(), mainContentWrapper.getPaddingTop(), mainContentWrapper.getPaddingRight(), container.getMeasuredHeight());
+        mainContentWrapper.setPadding(mainContentWrapper.getPaddingLeft(),
+                mainContentWrapper.getPaddingTop(),
+                mainContentWrapper.getPaddingRight(),
+                container.getMeasuredHeight());
         initStaffList();
         return view;
     }
@@ -57,13 +58,7 @@ public class AboutFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
-        scrollView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override public boolean onTouch(View v, MotionEvent event)
-            {
-                return true;
-            }
-        });
+        scrollView.setOnTouchListener((v, event) -> true);
 
         PropertyValuesHolder pvRtX = PropertyValuesHolder.ofFloat(View.ROTATION_X, 0f, 30f);
         rotateAnimator = ObjectAnimator.ofPropertyValuesHolder(scrollView, pvRtX);
@@ -83,7 +78,6 @@ public class AboutFragment extends DashboardFragment
         });
         rotateAnimator.setStartDelay(getResources().getInteger(R.integer.about_screen_rotation_delay));
         rotateAnimator.start();
-
     }
 
     private void initStaffList()
@@ -101,20 +95,20 @@ public class AboutFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getActionBar().setTitle(getResources().getString(R.string.settings_about_title));
-        getActivity().getActionBar().hide();
+        setActionBarTitle(getResources().getString(R.string.settings_about_title));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
+        {
+            actionBar.hide();
+        }
     }
 
     @Override public void onDestroyOptionsMenu()
     {
-        FragmentActivity activity = getActivity();
-        if (activity != null)
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null)
         {
-            ActionBar actionBar = activity.getActionBar();
-            if (actionBar != null)
-            {
-                actionBar.show();
-            }
+            actionBar.show();
         }
         super.onDestroyOptionsMenu();
     }
@@ -136,7 +130,7 @@ public class AboutFragment extends DashboardFragment
 
     private void scrollToBottom()
     {
-        if(scrollView != null)
+        if (scrollView != null)
         {
             scrollAnimator = ObjectAnimator.ofInt(scrollView, "scrollY", 0, staffList.getBottom());
             scrollAnimator.setInterpolator(new LinearInterpolator());
@@ -155,12 +149,13 @@ public class AboutFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        if(rotateAnimator != null)
+        scrollView.setOnTouchListener(null);
+        if (rotateAnimator != null)
         {
             rotateAnimator.removeAllListeners();
             rotateAnimator = null;
         }
-        if(scrollAnimator != null)
+        if (scrollAnimator != null)
         {
             scrollAnimator.removeAllListeners();
             scrollAnimator = null;
@@ -171,12 +166,16 @@ public class AboutFragment extends DashboardFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        if(rotateAnimator != null)
+        if (scrollView != null)
+        {
+            scrollView.setOnTouchListener(null);
+        }
+        if (rotateAnimator != null)
         {
             rotateAnimator.removeAllListeners();
             rotateAnimator = null;
         }
-        if(scrollAnimator != null)
+        if (scrollAnimator != null)
         {
             scrollAnimator.removeAllListeners();
             scrollAnimator = null;

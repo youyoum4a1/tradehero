@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -20,6 +19,7 @@ import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapterNew;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
+import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 
 public class OnBoardPickExchangeSectorViewHolder
 {
@@ -29,6 +29,7 @@ public class OnBoardPickExchangeSectorViewHolder
     @InjectView(R.id.spinner_sector) Spinner sectorSpinner;
 
     @NonNull Context context;
+    @NonNull ExchangeMarketPreference preferredMarketCountry;
     @NonNull TrendingFilterSpinnerIconAdapterNew exchangeAdapter;
     @NonNull SectorSpinnerAdapterNew sectorAdapter;
 
@@ -37,10 +38,13 @@ public class OnBoardPickExchangeSectorViewHolder
     @Nullable UserProfileDTO userProfile;
 
     //<editor-fold desc="Constructors">
-    public OnBoardPickExchangeSectorViewHolder(@NonNull Context context)
+    public OnBoardPickExchangeSectorViewHolder(
+            @NonNull Context context,
+            @NonNull ExchangeMarketPreference preferredMarketCountry)
     {
         super();
         this.context = context;
+        this.preferredMarketCountry = preferredMarketCountry;
         exchangeAdapter = new TrendingFilterSpinnerIconAdapterNew(context, R.layout.trending_filter_spinner_item);
         exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
         sectorAdapter = new SectorSpinnerAdapterNew(context, R.layout.sector_spinner_item);
@@ -119,13 +123,7 @@ public class OnBoardPickExchangeSectorViewHolder
             SectorCompactDTOList sectors = exchangeSectorCompactsCopy.sectors;
             if (sectors != null)
             {
-                SectorCompactDTO sectorCompactDTO = sectors.findFirstWhere(new Predicate<SectorCompactDTO>()
-                {
-                    @Override public boolean apply(SectorCompactDTO sectorCompactDTO)
-                    {
-                        return sectorCompactDTO.id == DEFAULT_SECTOR_ID;
-                    }
-                });
+                SectorCompactDTO sectorCompactDTO = sectors.findFirstWhere(sectorCompactDTO1 -> sectorCompactDTO1.id == DEFAULT_SECTOR_ID);
                 if (sectorCompactDTO != null)
                 {
                     sectorSpinnerCopy.setSelection(sectors.indexOf(sectorCompactDTO));
@@ -136,6 +134,9 @@ public class OnBoardPickExchangeSectorViewHolder
 
     public OnBoardPrefDTO getOnBoardPrefs()
     {
+        //save exchange for user selected
+        preferredMarketCountry.set(((ExchangeCompactDTO) exchangeSpinner.getSelectedItem())
+                .getExchangeIntegerId());
         return new OnBoardPrefDTO(
                 (ExchangeCompactDTO) exchangeSpinner.getSelectedItem(),
                 (SectorCompactDTO) sectorSpinner.getSelectedItem());

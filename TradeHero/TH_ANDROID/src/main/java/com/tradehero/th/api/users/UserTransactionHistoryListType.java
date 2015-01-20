@@ -1,6 +1,7 @@
 package com.tradehero.th.api.users;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 public class UserTransactionHistoryListType extends UserBaseKey
 {
@@ -21,7 +22,7 @@ public class UserTransactionHistoryListType extends UserBaseKey
     }
     //</editor-fold>
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         return other != null &&
                 other instanceof UserTransactionHistoryListType &&

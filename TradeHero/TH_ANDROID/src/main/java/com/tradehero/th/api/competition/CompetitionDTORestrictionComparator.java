@@ -1,8 +1,9 @@
 package com.tradehero.th.api.competition;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class CompetitionDTORestrictionComparator implements Comparator<CompetitionDTO>
+public class CompetitionDTORestrictionComparator implements Comparator<CompetitionDTO>, Serializable
 {
     @Override public int compare(CompetitionDTO lhs, CompetitionDTO rhs)
     {

@@ -1,6 +1,9 @@
 package com.tradehero.th.api.users.password;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ForgotPasswordDTO
 {
-    public boolean FoundUserEmail;
+    @JsonProperty("FoundUserEmail")
+    public boolean foundUserEmail;
 }

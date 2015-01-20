@@ -1,10 +1,11 @@
 package com.tradehero.th.billing;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 public class THProductDetailDecreasingPriceComparator<
             THProductDetailType extends THProductDetail>
-        implements Comparator<THProductDetailType>
+        implements Comparator<THProductDetailType>, Serializable
 {
     @Override public int compare(
             THProductDetailType BaseIABProductDetail, THProductDetailType baseIABProductDetail2)

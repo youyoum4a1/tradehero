@@ -35,10 +35,28 @@ public class DisplayablePortfolioUtil
         return context.getString(R.string.portfolio_title_unnamed);
     }
 
+    public int getLongTitleTextColor(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
+    {
+        int colorRes;
+        if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
+        {
+            colorRes = R.color.gray_1;
+        }
+        else
+        {
+            colorRes = R.color.black;
+        }
+        return context.getResources().getColor(colorRes);
+    }
+
     public String getLongSubTitle(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         String subTitle = null;
-        if (displayablePortfolioDTO != null)
+        if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
+        {
+            subTitle = context.getString(R.string.portfolio_tap_to_enroll_fx);
+        }
+        else if (displayablePortfolioDTO != null)
         {
             boolean isCurrentUser = displayablePortfolioDTO.userBaseDTO != null && currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey());
             if (!isCurrentUser)

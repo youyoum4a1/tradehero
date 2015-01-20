@@ -17,6 +17,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClickSticky;
+import com.tradehero.common.billing.ProductPurchase;
+import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
@@ -28,6 +30,7 @@ import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
+import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
@@ -39,6 +42,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.DashboardTabHost;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
@@ -58,15 +62,11 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import retrofit.RetrofitError;
@@ -139,6 +139,8 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable private Subscription freeFollowSubscription;
     private UserProfileView userProfileView;
     private View loadingView;
+    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
+    @Nullable FxOnBoardDialogFragment onBoardDialogFragment;
 
     public TabType currentTab = TabType.PORTFOLIO_LIST;
     protected boolean mIsOtherProfile = false;
@@ -484,7 +486,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         if (item instanceof DisplayablePortfolioDTO)
         {
             DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) item;
-            if (displayablePortfolioDTO.portfolioDTO != null)
+            if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
+            {
+                popEnrollFx();
+            }
+            else if (displayablePortfolioDTO.portfolioDTO != null)
             {
                 if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
                 {
@@ -499,6 +505,31 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         else
         {
             Timber.d("TimelineFragment, unhandled view %s", view);
+        }
+    }
+
+    private void popEnrollFx()
+    {
+        if (onBoardDialogFragment == null)
+        {
+            onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+            onBoardDialogFragment.getDismissedObservable()
+                    .subscribe(
+                            dialog -> {
+                                onBoardDialogFragment = null;
+                            },
+                            error -> THToast.show(new THException(error))
+                    );
+            onBoardDialogFragment.getUserActionTypeObservable()
+                    .subscribe(
+                            action -> {
+                                if (action.equals(FxOnBoardDialogFragment.UserActionType.ENROLLED))
+                                {
+                                    portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                                }
+                            },
+                            error -> Timber.e(error, "")
+                    );
         }
     }
 

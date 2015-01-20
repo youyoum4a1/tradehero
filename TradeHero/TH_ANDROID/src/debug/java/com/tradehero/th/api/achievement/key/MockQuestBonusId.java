@@ -1,6 +1,7 @@
 package com.tradehero.th.api.achievement.key;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class MockQuestBonusId extends QuestBonusId
 {
@@ -24,7 +25,7 @@ public class MockQuestBonusId extends QuestBonusId
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(@Nullable Object o)
     {
         if (this == o) return true;
         if (!(o instanceof MockQuestBonusId)) return false;

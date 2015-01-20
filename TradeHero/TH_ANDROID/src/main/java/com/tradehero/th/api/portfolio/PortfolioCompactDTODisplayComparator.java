@@ -1,14 +1,11 @@
 package com.tradehero.th.api.portfolio;
 
 import android.support.annotation.NonNull;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class PortfolioCompactDTODisplayComparator implements Comparator<PortfolioCompactDTO>
+public class PortfolioCompactDTODisplayComparator implements Comparator<PortfolioCompactDTO>, Serializable
 {
-    public PortfolioCompactDTODisplayComparator()
-    {
-    }
-
     @Override public int compare(@NonNull PortfolioCompactDTO lhs, @NonNull PortfolioCompactDTO rhs)
     {
         if (lhs.isDefault() && rhs.isDefault())

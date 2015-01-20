@@ -6,7 +6,7 @@ buildscript {
   dependencies {
     classpath 'com.android.tools.build:gradle:1.0.0'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-    classpath 'org.robolectric:robolectric-gradle-plugin:0.12.+'
+    classpath 'org.robolectric:robolectric-gradle-plugin:0.14.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
     classpath 'me.tatarka:gradle-retrolambda:2.4.1'
   }
@@ -240,6 +240,16 @@ robolectric {
   // configure max heap size of the test JVM
   maxHeapSize = '2048m'
 
+  // configure the test JVM arguments
+  jvmArgs '-XX:MaxPermSize=512m', '-XX:-UseSplitVerifier'
+
+  // Specify max number of processes (default is 1)
+  //maxParallelForks = 4
+
+  // Specify max number of test classes to execute in a test process
+  // before restarting the process (default is unlimited)
+  //forkEvery = 150
+
   // configure whether failing tests should fail the build
   //ignoreFailures true
 
@@ -251,6 +261,7 @@ robolectric {
 
 dependencies {
   // Helper here http://gradleplease.appspot.com
+  androidTestCompile 'junit:junit:4.10'
   compile fileTree(dir: 'libs', include: ['*.jar'])
   chinaCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
@@ -332,13 +343,13 @@ dependencies {
     exclude group: 'com.google.android', module: 'support-v4'
   }
   compile 'org.ocpsoft.prettytime:prettytime:3.2.1.Final'
-  compile ('com.jakewharton:butterknife:6.0.1.TH-SNAPSHOT') {
+  compile('com.jakewharton:butterknife:6.0.1.TH-SNAPSHOT') {
     exclude group: 'se.emilsjolander', module: 'stickylistheaders'
   }
   releaseCompile 'com.appsflyer:library:2.3.1.12'
+  provided 'com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900'
 
   // For Test
-  androidTestCompile 'junit:junit:4.10'
   androidTestCompile('org.robolectric:robolectric:2.3') {
     exclude module: 'classworlds'
     exclude module: 'commons-logging'

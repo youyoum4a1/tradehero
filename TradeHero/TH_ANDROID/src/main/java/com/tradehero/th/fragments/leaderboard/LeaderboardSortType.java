@@ -9,7 +9,7 @@ public enum LeaderboardSortType
 
     public static final String SORT_TYPE_KEY = "LEADERBOARD_SORT_TYPE";
 
-    public static LeaderboardSortType DefaultSortType = Roi;
+    public static LeaderboardSortType defaultSortType = Roi;
 
     private static final int SORT_ROI = 0x1;
 

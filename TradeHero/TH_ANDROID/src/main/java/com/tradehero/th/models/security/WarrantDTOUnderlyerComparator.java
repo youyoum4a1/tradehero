@@ -1,6 +1,7 @@
 package com.tradehero.th.models.security;
 
 import com.tradehero.th.api.security.compact.WarrantDTO;
+import java.io.Serializable;
 import java.util.Comparator;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -12,12 +13,8 @@ import javax.inject.Singleton;
  * underlyingName null
  * null
  */
-@Singleton public class WarrantDTOUnderlyerComparator implements Comparator<WarrantDTO>
+@Singleton public class WarrantDTOUnderlyerComparator implements Comparator<WarrantDTO>, Serializable
 {
-    @Inject public WarrantDTOUnderlyerComparator()
-    {
-    }
-
     @Override public int compare(WarrantDTO lhs, WarrantDTO rhs)
     {
         if (lhs == null)

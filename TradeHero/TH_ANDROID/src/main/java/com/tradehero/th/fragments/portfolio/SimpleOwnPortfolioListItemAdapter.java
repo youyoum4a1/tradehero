@@ -2,11 +2,13 @@ package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
+import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
 import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
@@ -50,6 +52,12 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
                 {
                     ownPortfolios.add(displayablePortfolioDTO);
                 }
+            }
+
+            Boolean containsFx = containsFx(items);
+            if (containsFx != null && !containsFx)
+            {
+                ownPortfolios.add(new DummyFxDisplayablePortfolioDTO());
             }
 
             for (DisplayablePortfolioDTO displayablePortfolioDTO : ownPortfolios)
@@ -134,5 +142,24 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
     @Override protected void fineTune(int position, DisplayablePortfolioDTO dto, PortfolioListItemView dtoView)
     {
         // Nothing to do
+    }
+
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
+    @Nullable protected Boolean containsFx(@NonNull List<DisplayablePortfolioDTO> items)
+    {
+        boolean value = false;
+        for (DisplayablePortfolioDTO displayablePortfolio : items)
+        {
+            if (displayablePortfolio == null
+                    || displayablePortfolio.portfolioDTO == null)
+            {
+                return null;
+            }
+            if (displayablePortfolio.portfolioDTO.isFx())
+            {
+                value = true;
+            }
+        }
+        return value;
     }
 }

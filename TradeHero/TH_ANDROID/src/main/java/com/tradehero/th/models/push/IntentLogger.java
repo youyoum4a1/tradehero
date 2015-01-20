@@ -29,6 +29,6 @@ public class IntentLogger
             }
             return sb.toString();
         }
-        return null;
+        return "";
     }
 }

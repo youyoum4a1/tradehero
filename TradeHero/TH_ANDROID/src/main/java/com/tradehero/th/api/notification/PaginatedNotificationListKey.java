@@ -2,6 +2,7 @@ package com.tradehero.th.api.notification;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.pagination.PaginatedKey;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class PaginatedNotificationListKey extends NotificationListKey
         args.putInt(BUNDLE_PERPAGE, perPage);
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         return super.equals(other) && equalsField(other);
     }

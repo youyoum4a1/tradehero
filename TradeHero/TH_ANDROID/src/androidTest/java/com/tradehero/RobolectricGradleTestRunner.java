@@ -27,7 +27,7 @@ public class RobolectricGradleTestRunner extends RobolectricTestRunner
         {
             if (BuildConfig.IS_INTELLIJ)
             {
-                String manifestProperty = getConfigPath("manifests") + "AndroidManifest.xml";
+                String manifestProperty = getConfigPath("manifests/full") + "AndroidManifest.xml";
                 String resProperty = getConfigPath("res");
                 String assetsProperty = getConfigPath("assets");
                 return new GradleAndroidManifest(

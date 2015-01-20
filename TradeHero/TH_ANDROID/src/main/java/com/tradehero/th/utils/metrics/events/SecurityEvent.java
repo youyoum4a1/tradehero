@@ -4,7 +4,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Map;
 
-class SecurityEvent extends AnalyticsEvent
+class SecurityEvent extends THAnalyticsEvent
 {
     static final String SECURITY_SYMBOL_MAP_KEY = "symbol";
 

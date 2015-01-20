@@ -1,14 +1,10 @@
 package com.tradehero.th.api.discussion.key;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class DiscussionKeyComparatorIdAsc implements Comparator<DiscussionKey>
+public class DiscussionKeyComparatorIdAsc implements Comparator<DiscussionKey>, Serializable
 {
-    public DiscussionKeyComparatorIdAsc()
-    {
-        super();
-    }
-
     @Override public int compare(DiscussionKey o1, DiscussionKey o2)
     {
         if (o1 == o2)

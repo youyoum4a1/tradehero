@@ -67,7 +67,7 @@ public enum MessageType
             case BROADCAST_ALL_FOLLOWERS:
                 return "All";
         }
-        return null;
+        return "";
     }
 
     @SuppressWarnings("UnusedDeclaration")

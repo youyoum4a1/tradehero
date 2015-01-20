@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.web;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -126,6 +129,16 @@ public class THWebViewClient extends WebViewClient
             {
                 THToast.show("Unable to open url: " + url);
             }
+            return true;
+        }
+
+        //Check if there's an external app to handle the protocol.
+        Intent extIntent = new Intent(Intent.ACTION_VIEW, uri);
+        PackageManager packageManager = context.getPackageManager();
+        List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(extIntent, 0);
+        if(!handlerActivities.isEmpty())
+        {
+            context.startActivity(extIntent);
             return true;
         }
 

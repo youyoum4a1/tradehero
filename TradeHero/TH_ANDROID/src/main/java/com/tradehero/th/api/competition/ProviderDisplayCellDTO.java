@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition;
 
+import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
@@ -8,10 +9,10 @@ public class ProviderDisplayCellDTO implements DTO
 {
     public int id;
     public int providerId;
-    public String title;
-    public String subtitle;
-    public String imageUrl;
-    public String redirectUrl;
+    @Nullable public String title;
+    @Nullable public String subtitle;
+    @Nullable public String imageUrl;
+    @Nullable public String redirectUrl;
 
     @JsonIgnore
     public ProviderDisplayCellId getProviderDisplayCellId()
@@ -31,7 +32,7 @@ public class ProviderDisplayCellDTO implements DTO
         return hash;
     }
 
-    @Override public boolean equals(Object o)
+    @Override public boolean equals(@Nullable Object o)
     {
         if (o == null)
         {

@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.competition.zone;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.ColorRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -83,13 +85,14 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
         }
     }
 
-    public int getTitleColorResId()
+    @ColorRes public int getTitleColorResId()
     {
         Boolean isActive = isActive();
         return isActive == null || isActive ? COLOR_ACTIVE : COLOR_INACTIVE;
     }
 
-    public Boolean isActive()
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
+    @Nullable public Boolean isActive()
     {
         if (competitionZoneDTO == null)
         {

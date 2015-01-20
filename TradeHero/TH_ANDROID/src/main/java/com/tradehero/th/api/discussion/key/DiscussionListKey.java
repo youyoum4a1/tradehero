@@ -45,6 +45,7 @@ public class DiscussionListKey
                 Integer.valueOf(inReplyToId).hashCode();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(Object other)
     {
         return equalClass(other) && equalFields((DiscussionListKey) other);
