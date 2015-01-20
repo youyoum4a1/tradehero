@@ -30,6 +30,8 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.SelfValidatedText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
@@ -58,6 +60,7 @@ public class EmailSignInFragment extends Fragment
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
     @Inject Provider<AuthDataAction> authDataActionProvider;
+    @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;
     @InjectView(R.id.et_pwd_login) ValidatedPasswordText password;
@@ -179,6 +182,7 @@ public class EmailSignInFragment extends Fragment
                             .observeOn(AndroidSchedulers.mainThread());
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataActionProvider.get())
                 .doOnNext(new OpenDashboardAction(getActivity()))

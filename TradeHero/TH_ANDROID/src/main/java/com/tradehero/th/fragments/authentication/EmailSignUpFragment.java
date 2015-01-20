@@ -25,6 +25,8 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
@@ -45,6 +47,7 @@ public class EmailSignUpFragment extends Fragment
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject AuthDataAction authDataAction;
     @Inject ToastOnErrorAction toastOnErrorAction;
+    @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.profile_info) ProfileInfoView profileView;
     @InjectView(R.id.authentication_sign_up_email) EditText emailEditText;
@@ -55,7 +58,9 @@ public class EmailSignUpFragment extends Fragment
     private ProgressDialog progressDialog;
     @Nullable private ActivityResultDTO receivedActivityResult;
 
-    @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.authentication_back_button)
+    void handleBackButtonClicked()
     {
         navigator.get().popFragment();
     }
@@ -92,6 +97,7 @@ public class EmailSignUpFragment extends Fragment
                     return Observable.zip(Observable.just(authData), profileDTOObservable, Pair::create);
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authDataAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))

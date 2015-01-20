@@ -13,7 +13,7 @@ import dagger.Provides;
 )
 public class MetricsFlavorModule
 {
-    @Provides public THAppsFlyer provideTHAppsFlyer(Context context)
+    @Provides public THAppsFlyer provideTHAppsFlyer(@NonNull final Context applicationContext)
     {
         return new THAppsFlyer()
         {
@@ -22,9 +22,19 @@ public class MetricsFlavorModule
                 AppsFlyerLib.setAppsFlyerKey(key);
             }
 
-            @Override public void sendTracking(@NonNull Context applicationContext)
+            @Override public void sendTracking()
             {
                 AppsFlyerLib.sendTracking(applicationContext);
+            }
+
+            @Override public void sendTrackingWithEvent(@NonNull String eventName)
+            {
+                AppsFlyerLib.sendTrackingWithEvent(applicationContext, eventName, "");
+            }
+
+            @Override public void sendTrackingWithEvent(@NonNull String eventName, @NonNull String eventRevenueValue)
+            {
+                AppsFlyerLib.sendTrackingWithEvent(applicationContext, eventName, eventRevenueValue);
             }
         };
     }

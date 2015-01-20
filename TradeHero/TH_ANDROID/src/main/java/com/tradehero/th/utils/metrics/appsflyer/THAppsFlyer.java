@@ -1,10 +1,11 @@
 package com.tradehero.th.utils.metrics.appsflyer;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 public interface THAppsFlyer
 {
     void setAppsFlyerKey(@NonNull String key);
-    void sendTracking(@NonNull Context applicationContext);
+    void sendTracking();
+    void sendTrackingWithEvent(@NonNull String eventName);
+    void sendTrackingWithEvent(@NonNull String eventName, @NonNull String eventRevenueValue);
 }

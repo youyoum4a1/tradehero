@@ -2,9 +2,12 @@ package com.tradehero.th.utils.metrics;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import dagger.Module;
 import dagger.Provides;
+import java.lang.Override;
+import java.lang.String;
 
 @Module(
         library = true,
@@ -12,18 +15,28 @@ import dagger.Provides;
 )
 public class MetricsFlavorModule
 {
-    @Provides public THAppsFlyer provideTHAppsFlyer(Context context)
+    @Provides public THAppsFlyer provideTHAppsFlyer(@NonNull Context applicationContext)
     {
         return new THAppsFlyer()
         {
             @Override public void setAppsFlyerKey(@NonNull String key)
             {
-                // Nothing to do in debug mode
+                THToast.show("setAppsFlyerKey " + key);
             }
 
-            @Override public void sendTracking(@NonNull Context applicationContext)
+            @Override public void sendTracking()
             {
-                // Nothing to do in debug mode
+                THToast.show("AppsFlyerKey sendTracking");
+            }
+
+            @Override public void sendTrackingWithEvent(@NonNull String eventName)
+            {
+                THToast.show("AppsFlyerKey sendTrackingWithEvent " + eventName);
+            }
+
+            @Override public void sendTrackingWithEvent(@NonNull String eventName, @NonNull String eventRevenueValue)
+            {
+                THToast.show("AppsFlyerKey sendTrackingWithEvent " + eventName + ", " + eventRevenueValue);
             }
         };
     }
