@@ -1,5 +1,6 @@
 package com.tradehero.common.text;
 
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
@@ -32,7 +33,7 @@ public abstract class ClickableTagProcessor extends RichSpanTextProcessor
             }
         }
 
-        @Override public void updateDrawState(TextPaint ds)
+        @Override public void updateDrawState(@NonNull TextPaint ds)
         {
             super.updateDrawState(ds);
             ds.setUnderlineText(false);

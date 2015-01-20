@@ -39,7 +39,6 @@ public class FileUtils
      *
      * @param context The context.
      * @param uri The Uri to query.
-     * @author paulburke
      */
     public static String getPath(@NonNull final Context context, @NonNull final Uri uri)
     {
@@ -79,17 +78,17 @@ public class FileUtils
                 final String type = split[0];
 
                 Uri contentUri = null;
-                if ("image".equals(type))
+                switch (type)
                 {
-                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                }
-                else if ("video".equals(type))
-                {
-                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                }
-                else if ("audio".equals(type))
-                {
-                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                    case "image":
+                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                        break;
+                    case "video":
+                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                        break;
+                    case "audio":
+                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                        break;
                 }
 
                 final String selection = "_id=?";

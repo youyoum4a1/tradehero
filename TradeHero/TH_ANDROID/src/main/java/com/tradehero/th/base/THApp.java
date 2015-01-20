@@ -8,7 +8,6 @@ import com.crashlytics.android.Crashlytics;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.log.CrashReportingTree;
 import com.tradehero.common.log.EasyDebugTree;
-import com.tradehero.common.thread.KnownExecutorServices;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.inject.BaseInjector;
@@ -34,10 +33,6 @@ public class THApp extends PApplication
 
         Timber.plant(createTimberTree());
         Timber.plant(createCrashlyticsTree());
-
-        // Supposedly get the count of cores
-        KnownExecutorServices.setCpuThreadCount(Runtime.getRuntime().availableProcessors());
-        Timber.d("Available Processors Count: %d", KnownExecutorServices.getCpuThreadCount());
 
         buildObjectGraphAndInject();
 
