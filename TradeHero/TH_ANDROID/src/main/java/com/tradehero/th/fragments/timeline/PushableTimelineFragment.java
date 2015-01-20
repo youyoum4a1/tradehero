@@ -53,7 +53,7 @@ public class PushableTimelineFragment extends TimelineFragment
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
-            UserProfileDTO purchaserProfile = userProfileCache.get().getValue(applicablePortfolioId.getUserBaseKey());
+            UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(applicablePortfolioId.getUserBaseKey());
             if (purchaserProfile != null)
             {
                 return purchaserProfile.isFollowingUser(shownUserBaseKey);
