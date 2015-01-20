@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:padding="10dp"
               android:background="#ffffff"
               android:layout_height="fill_parent"
         >
 
-    <WebView android:layout_width="match_parent" android:id="@+id/webview_news_html_content"
-             android:layout_height="match_parent"
-             android:padding="10dp"
-            />
-</LinearLayout>
+    <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            ptr:ptrHeaderTextColor="@color/black"
+            android:id="@+id/pulltorefreshlistview_discovery_news_comments"
+            android:scrollingCache="false"
+            android:fadingEdge="none"
+            android:layout_marginBottom="60dp"
+            android:divider="@color/transparent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+
+    <RelativeLayout
+            android:id="@+id/rlSend"
+            android:background="@drawable/tab_menu_bg"
+            android:layout_alignParentBottom="true"
+            android:layout_width="fill_parent"
+            android:visibility="gone"
+            android:layout_height="60dp">
+
+        <Button
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="发送"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@color/transparent"
+                android:textSize="16sp"
+                android:textColor="@color/tradehero_blue"/>
+
+        <EditText
+                android:id="@+id/edtSend"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:hint="@string/please_to_reply"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:maxLength="140"
+                android:layout_toLeftOf="@id/btnSend"/>
+    </RelativeLayout>
+</RelativeLayout>
 

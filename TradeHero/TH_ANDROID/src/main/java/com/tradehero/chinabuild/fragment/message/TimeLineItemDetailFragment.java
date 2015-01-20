@@ -133,7 +133,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private String strReply = "";
 
-    private final int ITEMS_PER_PAGE = 50;
+    public static final int ITEMS_PER_PAGE = 50;
 
     private Dialog timeLineDetailMenuDialog;
     private Dialog timeLineCommentMenuDialog;
@@ -146,9 +146,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView deleteOrApplyTLConfirmDlgTitle2TV;
     private TextView deleteOrApplyTLConfirmDlgOKTV;
     private TextView deleteOrApplyTLConfirmDlgCancelTV;
-    private final int DIALOG_TYPE_DELETE_TIMELINE = 1;
-    private final int DIALOG_TYPE_DELETE_COMMENT = 2;
-    private final int DIALOG_TYPE_APPLY_COMMENT = 3;
+    public static final int DIALOG_TYPE_DELETE_TIMELINE = 1;
+    public static final int DIALOG_TYPE_DELETE_COMMENT = 2;
+    public static final int DIALOG_TYPE_APPLY_COMMENT = 3;
 
 
     //Timeline Operater
