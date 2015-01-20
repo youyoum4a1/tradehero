@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.webkit.SslErrorHandler;
+import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tradehero.common.utils.THToast;
@@ -132,14 +133,17 @@ public class THWebViewClient extends WebViewClient
             return true;
         }
 
-        //Check if there's an external app to handle the protocol.
-        Intent extIntent = new Intent(Intent.ACTION_VIEW, uri);
-        PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(extIntent, 0);
-        if(!handlerActivities.isEmpty())
+        //Check if there's an external app to handle the protocol other than http/https.
+        if(!URLUtil.isNetworkUrl(url))
         {
-            context.startActivity(extIntent);
-            return true;
+            Intent extIntent = new Intent(Intent.ACTION_VIEW, uri);
+            PackageManager packageManager = context.getPackageManager();
+            List<ResolveInfo> handlerActivities = packageManager.queryIntentActivities(extIntent, 0);
+            if(!handlerActivities.isEmpty())
+            {
+                context.startActivity(extIntent);
+                return true;
+            }
         }
 
         view.loadUrl(url);

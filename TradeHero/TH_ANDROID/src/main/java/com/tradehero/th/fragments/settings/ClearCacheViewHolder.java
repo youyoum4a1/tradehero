@@ -63,7 +63,7 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
 
         new SlowedAsyncTask<Void, Void, Void>(500)
         {
-            @Override protected Void doBackgroundAction(Void... voids)
+            @Override protected Void doBackgroundAction(Void... params)
             {
                 flushCache();
                 return null;

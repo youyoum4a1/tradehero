@@ -109,21 +109,7 @@ abstract public class FlagNearEdgeScrollListener implements AbsListView.OnScroll
     @Override public void onScroll(final AbsListView view, final int firstVisibleItem,
             final int visibleItemCount, final int totalItemCount)
     {
-        if (totalItemCount > 0 && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1))
-        {
-            mLastItemVisible = true;
-        }
-        else
-        {
-            mLastItemVisible = false;
-        }
-        if (firstVisibleItem == 0)
-        {
-            mFirstItemVisible = true;
-        }
-        else
-        {
-            mFirstItemVisible = false;
-        }
+        mLastItemVisible = totalItemCount > 0 && (totalItemCount - visibleItemCount) <= (firstVisibleItem + 1);
+        mFirstItemVisible = firstVisibleItem == 0;
     }
 }

@@ -45,14 +45,7 @@ public class THDialog
                 context.getString(R.string.translation_result),
                 text, null,
                 context.getResources().getString(android.R.string.ok),
-                new android.content.DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(android.content.DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
+                (dialog, which) -> dialog.dismiss());
     }
 
     public static Dialog showCenterDialog(final Context context,
@@ -102,14 +95,7 @@ public class THDialog
         setDialogAttribute(dlg, null);
         if (callback != null)
         {
-            callback.setOnDismissCallback(new DialogInterface()
-            {
-                @Override
-                public void onDialogDismiss()
-                {
-                    dlg.dismiss();
-                }
-            });
+            callback.setOnDismissCallback(dlg::dismiss);
         }
         dlg.show();
         return dlg;
@@ -121,14 +107,7 @@ public class THDialog
         setDialogAttribute(dlg, null);
         if (callback != null)
         {
-            callback.setOnDismissCallback(new DialogInterface()
-            {
-                @Override
-                public void onDialogDismiss()
-                {
-                    dlg.dismiss();
-                }
-            });
+            callback.setOnDismissCallback(dlg::dismiss);
         }
         dlg.show();
         return dlg;
@@ -148,24 +127,18 @@ public class THDialog
         list.setAdapter(adapter);
         list.setDividerHeight(0);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+        list.setOnItemClickListener((parent, view, position, id) -> {
+            if (!(title == null || title.equals("")) && position - 1 >= 0)
             {
-                if (!(title == null || title.equals("")) && position - 1 >= 0)
-                {
-                    callback.onClick(position - 1);
-                    dlg.dismiss();
-                    list.requestFocus();
-                }
-                else
-                {
-                    callback.onClick(position);
-                    dlg.dismiss();
-                    list.requestFocus();
-                }
+                callback.onClick(position - 1);
+                dlg.dismiss();
+                list.requestFocus();
+            }
+            else
+            {
+                callback.onClick(position);
+                dlg.dismiss();
+                list.requestFocus();
             }
         });
         setDialogAttribute(dlg, cancelListener);
@@ -228,11 +201,11 @@ public class THDialog
         {
             if (items == null || items.length == 0)
             {
-                this.items = new ArrayList<String>();
+                this.items = new ArrayList<>();
             }
             else
             {
-                ArrayList<String> c = new ArrayList<String>(items.length);
+                ArrayList<String> c = new ArrayList<>(items.length);
                 c.addAll(Arrays.asList(items));
                 this.items = c;
             }
@@ -281,14 +254,7 @@ public class THDialog
         @Override
         public boolean isEnabled(int position)
         {
-            if (position == 0 && isTitle)
-            {
-                return false;
-            }
-            else
-            {
-                return super.isEnabled(position);
-            }
+            return !(position == 0 && isTitle) && super.isEnabled(position);
         }
 
         @Override

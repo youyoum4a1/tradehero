@@ -1,5 +1,6 @@
 package com.tradehero.common.utils;
 
+import android.annotation.SuppressLint;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -126,6 +127,7 @@ public class THJsonAdapter implements Converter
             return null;
         }
 
+        @SuppressLint("SimpleDateFormat")
         private static Converter getJacksonConverter()
         {
             ObjectMapper objectMapper = new ObjectMapper();

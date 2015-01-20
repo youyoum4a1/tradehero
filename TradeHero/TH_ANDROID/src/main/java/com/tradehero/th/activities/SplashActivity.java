@@ -62,7 +62,7 @@ public class SplashActivity extends BaseActivity
         mobileAppTracker.measureSession();
 
         thAppsFlyer.setAppsFlyerKey(MetricsModule.APP_FLYER_KEY);
-        thAppsFlyer.sendTracking(getApplicationContext());
+        thAppsFlyer.sendTracking();
 
         if (!Constants.RELEASE)
         {

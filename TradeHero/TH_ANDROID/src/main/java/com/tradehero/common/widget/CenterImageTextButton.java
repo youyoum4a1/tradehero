@@ -8,6 +8,7 @@ import android.graphics.Paint.Style;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.Button;
 
@@ -35,7 +36,7 @@ public class CenterImageTextButton extends Button
     private float mTextSize = 0;
 
     @Override
-    protected void onDraw(Canvas canvas)
+    protected void onDraw(@NonNull Canvas canvas)
     {
 
         mText = getText().toString();
@@ -50,11 +51,11 @@ public class CenterImageTextButton extends Button
         Drawable curDrawable;
         if (drawable instanceof StateListDrawable)
         {
-            curDrawable = ((StateListDrawable) drawable).getCurrent();
+            curDrawable = drawable.getCurrent();
         }
         else
         {
-            curDrawable = ((BitmapDrawable) drawable).getCurrent();
+            curDrawable = drawable.getCurrent();
         }
         Bitmap image = ((BitmapDrawable) curDrawable).getBitmap();
 

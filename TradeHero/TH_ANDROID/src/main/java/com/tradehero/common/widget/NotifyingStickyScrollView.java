@@ -2,6 +2,7 @@ package com.tradehero.common.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -155,42 +156,42 @@ public class NotifyingStickyScrollView extends ScrollView
     }
 
     @Override
-    public void addView(View child)
+    public void addView(@NonNull View child)
     {
         super.addView(child);
         findStickyViews(child);
     }
 
     @Override
-    public void addView(View child, int index)
+    public void addView(@NonNull View child, int index)
     {
         super.addView(child, index);
         findStickyViews(child);
     }
 
     @Override
-    public void addView(View child, int index, android.view.ViewGroup.LayoutParams params)
+    public void addView(@NonNull View child, int index, android.view.ViewGroup.LayoutParams params)
     {
         super.addView(child, index, params);
         findStickyViews(child);
     }
 
     @Override
-    public void addView(View child, int width, int height)
+    public void addView(@NonNull View child, int width, int height)
     {
         super.addView(child, width, height);
         findStickyViews(child);
     }
 
     @Override
-    public void addView(View child, android.view.ViewGroup.LayoutParams params)
+    public void addView(@NonNull View child, android.view.ViewGroup.LayoutParams params)
     {
         super.addView(child, params);
         findStickyViews(child);
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas)
+    protected void dispatchDraw(@NonNull Canvas canvas)
     {
         super.dispatchDraw(canvas);
         if (currentlyStickingView != null)
@@ -214,7 +215,7 @@ public class NotifyingStickyScrollView extends ScrollView
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev)
+    public boolean dispatchTouchEvent(@NonNull MotionEvent ev)
     {
         if (ev.getAction() == MotionEvent.ACTION_DOWN)
         {
@@ -246,7 +247,7 @@ public class NotifyingStickyScrollView extends ScrollView
     private boolean hasNotDoneActionDown = true;
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev)
+    public boolean onTouchEvent(@NonNull MotionEvent ev)
     {
         if (redirectTouchesToStickyView)
         {

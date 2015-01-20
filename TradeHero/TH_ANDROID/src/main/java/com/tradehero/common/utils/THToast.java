@@ -69,8 +69,6 @@ public class THToast
 
     /**
      * Helps work around the fact that we may want to toast from other threads.
-     * @param view
-     * @param message
      */
     public static void post(View view, final String message)
     {

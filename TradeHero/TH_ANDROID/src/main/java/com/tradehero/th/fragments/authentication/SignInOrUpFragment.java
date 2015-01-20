@@ -31,6 +31,8 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.util.Map;
@@ -44,6 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class SignInOrUpFragment extends Fragment
 {
@@ -53,13 +56,16 @@ public class SignInOrUpFragment extends Fragment
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject Provider<AuthDataAction> authDataActionProvider;
+    @Inject THAppsFlyer thAppsFlyer;
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
     {
         navigator.get().pushFragment(EmailSignUpFragment.class);
         subscription.unsubscribe();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_email_sign_in_link) void handleEmailSignInButtonClick()
     {
         navigator.get().pushFragment(EmailSignInFragment.class);
@@ -123,48 +129,54 @@ public class SignInOrUpFragment extends Fragment
                 .doOnNext(socialNetworkEnum -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
                         getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
                         true))
-                .map(enumToAuthProviderMap::get)
-                .flatMap(authenticationProvider -> authenticationProvider.logIn(getActivity()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(authData -> {
-                    if (progressDialog != null)
-                    {
-                        progressDialog.setMessage(getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
-                    }
-                })
-                .map(authData -> authenticationFormBuilderProvider.get()
-                        .authData(authData)
-                        .build())
-                .flatMap(loginSignUpFormDTO -> {
-                    AuthData authData = loginSignUpFormDTO.authData;
-                    Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                            authData.getTHToken(), loginSignUpFormDTO)
-                            .retry((integer, throwable) -> {
-                                THException thException = new THException(throwable);
-                                if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
-                                {
-                                    try
-                                    {
-                                        sessionServiceWrapper.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
-                                        return true;
-                                    }
-                                    catch (Exception ignored)
-                                    {
+                .flatMap(socialNetworkEnum -> Observable.just(socialNetworkEnum)
+                        .map(enumToAuthProviderMap::get)
+                        .flatMap(authenticationProvider -> authenticationProvider.logIn(getActivity()))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(authData -> {
+                            if (progressDialog != null)
+                            {
+                                progressDialog.setMessage(
+                                        getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
+                            }
+                        })
+                        .map(authData -> authenticationFormBuilderProvider.get()
+                                .authData(authData)
+                                .build())
+                        .flatMap(loginSignUpFormDTO -> {
+                            AuthData authData = loginSignUpFormDTO.authData;
+                            Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
+                                    authData.getTHToken(), loginSignUpFormDTO)
+                                    .retry((integer, throwable) -> {
+                                        THException thException = new THException(throwable);
+                                        if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
+                                        {
+                                            try
+                                            {
+                                                sessionServiceWrapper.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
+                                                return true;
+                                            } catch (Exception ignored)
+                                            {
+                                                return false;
+                                            }
+                                        }
                                         return false;
-                                    }
-                                }
-                                return false;
-                            })
-                            .subscribeOn(AndroidSchedulers.mainThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
-                            .map(userLoginDTO -> userLoginDTO.profileDTO);
+                                    })
+                                    .subscribeOn(AndroidSchedulers.mainThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
+                                    .map(userLoginDTO -> userLoginDTO.profileDTO);
 
-                    return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread());
-                })
-                .doOnError(toastOnErrorActionProvider.get())
+                            return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread());
+                        })
+                        .doOnError(error -> {
+                            Timber.e(error, "Error on logging in");
+                            THToast.show(new THException(error));
+                        })
+                        .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(
+                                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL, socialNetworkEnum.name()))))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(() -> {
                     if (progressDialog != null)
@@ -222,8 +234,7 @@ public class SignInOrUpFragment extends Fragment
         try
         {
             startActivity(it);
-        }
-        catch (android.content.ActivityNotFoundException e)
+        } catch (android.content.ActivityNotFoundException e)
         {
             THToast.show("Unable to open url: " + uri);
         }

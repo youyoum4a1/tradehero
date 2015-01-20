@@ -104,6 +104,8 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
+import com.tradehero.th.utils.metrics.MetricsModule;
+import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
 import dagger.Lazy;
@@ -166,6 +168,7 @@ public class DashboardActivity extends BaseActivity
     @Inject @IsFxShown BooleanPreference isFxShown;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
     @Inject @ForAnalytics Lazy<DashboardNavigator.DashboardFragmentWatcher> analyticsReporter;
+    @Inject THAppsFlyer thAppsFlyer;
 
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
@@ -369,6 +372,7 @@ public class DashboardActivity extends BaseActivity
     {
         super.onStart();
         systemStatusCache.get(new SystemStatusKey());
+        thAppsFlyer.sendTracking();
     }
 
     @Override protected void onResume()

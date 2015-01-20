@@ -16,19 +16,19 @@ abstract public class SlowedAsyncTask<Params, Progress, Result> extends AsyncTas
         this.minimumMilliSeconds = minimumMilliSeconds;
     }
 
-    abstract protected Result doBackgroundAction(Params... paramses);
+    abstract protected Result doBackgroundAction(Params... params);
 
-    @Override protected final Result doInBackground(Params... paramses)
+    @Override protected final Result doInBackground(Params... params)
     {
         final long startTime = System.nanoTime();
-        final Result result = doBackgroundAction(paramses);
+        final Result result = doBackgroundAction(params);
         final long endTime = System.nanoTime();
         final long milliseconds = minimumMilliSeconds - Math.min (minimumMilliSeconds, (long) ((endTime - startTime) / 1000000f)); //for milliseconds
         try
         {
             Thread.sleep(milliseconds);
         }
-        catch (InterruptedException e)
+        catch (InterruptedException ignored)
         {
         }
         return result;

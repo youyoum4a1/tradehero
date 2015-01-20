@@ -28,10 +28,6 @@ public class SDKUtils
 
     public static boolean isDeviceSDKGreaterOrEqualThan(int sdkInt)
     {
-        if (Build.VERSION.SDK_INT >= sdkInt)
-        {
-            return true;
-        }
-        return false;
+        return Build.VERSION.SDK_INT >= sdkInt;
     }
 }
