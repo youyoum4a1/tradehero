@@ -26,7 +26,7 @@ public class ExchangeCompactListCacheRx extends BaseFetchDTOCacheRx<ExchangeList
             @NonNull Lazy<ExchangeIdCacheRx> exchangeIdCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.marketServiceWrapper = marketServiceWrapper;
         this.exchangeIdCache = exchangeIdCache;
     }

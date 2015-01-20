@@ -4,8 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.games.MiniGameDefDTO;
-import com.tradehero.th.api.games.MiniGameDefKey;
 import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefKey;
 import com.tradehero.th.network.service.MiniGameServiceWrapper;
@@ -18,7 +16,6 @@ import rx.Observable;
 public class ViralMiniGameDefCache extends BaseFetchDTOCacheRx<ViralMiniGameDefKey, ViralMiniGameDefDTO>
 {
     private static final int DEFAULT_MAX_VALUE = 200;
-    private static final int DEFAULT_MAX_SUBJECT = 10;
 
     @NonNull protected final MiniGameServiceWrapper miniGameServiceWrapper;
 
@@ -27,7 +24,7 @@ public class ViralMiniGameDefCache extends BaseFetchDTOCacheRx<ViralMiniGameDefK
             @NonNull DTOCacheUtilRx dtoCacheUtilRx,
             @NonNull MiniGameServiceWrapper miniGameServiceWrapper)
     {
-        super(DEFAULT_MAX_VALUE, DEFAULT_MAX_SUBJECT, DEFAULT_MAX_SUBJECT, dtoCacheUtilRx);
+        super(DEFAULT_MAX_VALUE, dtoCacheUtilRx);
         this.miniGameServiceWrapper = miniGameServiceWrapper;
     }
     //</editor-fold>

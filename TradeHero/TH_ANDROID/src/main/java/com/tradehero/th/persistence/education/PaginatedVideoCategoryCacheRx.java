@@ -17,7 +17,6 @@ import rx.Observable;
 public class PaginatedVideoCategoryCacheRx extends BaseFetchDTOCacheRx<PagedVideoCategories, PaginatedVideoCategoryDTO>
 {
     private static final int DEFAULT_MAX_VALUE_SIZE = 20;
-    private static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
     @NonNull private final VideoCategoryCacheRx videoCategoryCache;
     @NonNull private final VideoServiceWrapper videoServiceWrapper;
@@ -28,7 +27,7 @@ public class PaginatedVideoCategoryCacheRx extends BaseFetchDTOCacheRx<PagedVide
             @NonNull VideoServiceWrapper videoServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.videoCategoryCache = videoCategoryCache;
         this.videoServiceWrapper = videoServiceWrapper;
     }

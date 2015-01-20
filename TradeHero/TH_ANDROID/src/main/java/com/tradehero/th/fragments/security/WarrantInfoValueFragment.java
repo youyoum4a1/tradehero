@@ -111,7 +111,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         this.providerId = providerId;
         if (this.providerId != null)
         {
-            linkWith(providerCache.getValue(providerId), andDisplay);
+            linkWith(providerCache.getCachedValue(providerId), andDisplay);
         }
         else
         {

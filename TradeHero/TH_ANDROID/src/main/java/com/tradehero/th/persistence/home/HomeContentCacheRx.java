@@ -31,7 +31,7 @@ public class HomeContentCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HomeCon
             @NonNull RetrofitHelper retrofitHelper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_CACHE, DEFAULT_MAX_CACHE, DEFAULT_MAX_CACHE, dtoCacheUtil);
+        super(DEFAULT_MAX_CACHE, dtoCacheUtil);
         this.homeServiceWrapper = homeServiceWrapper;
         this.retrofitHelper = retrofitHelper;
     }

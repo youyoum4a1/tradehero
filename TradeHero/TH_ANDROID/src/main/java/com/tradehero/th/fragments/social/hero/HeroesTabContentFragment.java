@@ -329,7 +329,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
         LeaderboardDefKey key =
                 new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
-        LeaderboardDefDTO dto = leaderboardDefCache.get().getValue(key);
+        LeaderboardDefDTO dto = leaderboardDefCache.get().getCachedValue(key);
         Bundle bundle = new Bundle(getArguments());
         if (dto != null)
         {

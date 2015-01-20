@@ -24,7 +24,7 @@ public class AchievementCategoryListCacheRx extends BaseFetchDTOCacheRx<UserBase
             @NonNull AchievementCategoryCacheRx achievementCategoryCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_SIZE, DEFAULT_SIZE, DEFAULT_SIZE, dtoCacheUtil);
+        super(DEFAULT_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
         this.achievementCategoryCache = achievementCategoryCache;
     }

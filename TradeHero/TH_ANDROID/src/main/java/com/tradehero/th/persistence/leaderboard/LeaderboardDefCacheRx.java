@@ -24,7 +24,7 @@ public class LeaderboardDefCacheRx extends BaseFetchDTOCacheRx<LeaderboardDefKey
             @NonNull LeaderboardServiceWrapper leaderboardServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, 5, 5, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
     }
     //</editor-fold>

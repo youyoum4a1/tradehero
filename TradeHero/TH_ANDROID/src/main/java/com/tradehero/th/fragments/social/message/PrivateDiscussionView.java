@@ -141,7 +141,7 @@ public class PrivateDiscussionView extends DiscussionView
     @Override protected void linkWith(DiscussionKey discussionKey, boolean andDisplay)
     {
         MessageHeaderId messageHeaderId = new MessageHeaderUserId(discussionKey.id, recipient);
-        this.messageHeaderDTO = messageHeaderCache.getValue(messageHeaderId);
+        this.messageHeaderDTO = messageHeaderCache.getCachedValue(messageHeaderId);
         super.linkWith(discussionKey, andDisplay);
 
         if (messageHeaderDTO != null)

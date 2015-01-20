@@ -29,7 +29,6 @@ public class StringSetPreference extends AbstractPreference<Set<String>>
 
     /**
      * Adds all and saves
-     * @param values
      */
     public void add(Collection<String> values)
     {

@@ -54,7 +54,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
         {
             this.perPagedFilteredLeaderboardKey = getPerPagedFilteredLeaderboardKey(getArguments());
         }
-        leaderboardDTO = leaderboardCache.getValue(perPagedFilteredLeaderboardKey);
+        leaderboardDTO = leaderboardCache.getCachedValue(perPagedFilteredLeaderboardKey);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -16,7 +16,6 @@ import rx.Observable;
 public class AllowableRecipientPaginatedCacheRx extends BaseFetchDTOCacheRx<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 20;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
     @NonNull private final UserServiceWrapper userServiceWrapper;
     @NonNull private final Lazy<AllowableRecipientCacheRx> allowableRecipientCache;
@@ -27,7 +26,7 @@ public class AllowableRecipientPaginatedCacheRx extends BaseFetchDTOCacheRx<Sear
             @NonNull Lazy<AllowableRecipientCacheRx> allowableRecipientCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.allowableRecipientCache = allowableRecipientCache;
     }

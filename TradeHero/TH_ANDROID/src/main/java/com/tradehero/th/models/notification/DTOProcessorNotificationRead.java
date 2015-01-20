@@ -33,7 +33,7 @@ public class DTOProcessorNotificationRead extends ThroughDTOProcessor<BaseRespon
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        NotificationDTO notificationDTO = notificationCache.getValue(key);
+        NotificationDTO notificationDTO = notificationCache.getCachedValue(key);
         boolean previousUnread = false;
         if (notificationDTO != null)
         {
@@ -41,7 +41,7 @@ public class DTOProcessorNotificationRead extends ThroughDTOProcessor<BaseRespon
             notificationDTO.unread = false;
             notificationCache.onNext(key, notificationDTO);
         }
-        UserProfileDTO userProfileDTO = userProfileCache.getValue(readerId);
+        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(readerId);
         if (previousUnread && userProfileDTO != null && userProfileDTO.unreadNotificationsCount > 0)
         {
             userProfileDTO.unreadNotificationsCount--;

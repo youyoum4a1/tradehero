@@ -271,7 +271,7 @@ public class UserStatisticView extends LinearLayout
 
     private Double getAvgConsistency()
     {
-        UserProfileDTO userProfileDTO = userProfileCache.getValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             return userProfileDTO.mostSkilledLbmu.getAvgConsistency();

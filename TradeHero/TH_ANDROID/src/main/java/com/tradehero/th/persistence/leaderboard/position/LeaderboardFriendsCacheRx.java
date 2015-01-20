@@ -22,7 +22,7 @@ public class LeaderboardFriendsCacheRx extends BaseFetchDTOCacheRx<LeaderboardFr
             @NonNull LeaderboardServiceWrapper leaderboardServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
     }
 

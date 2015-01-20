@@ -54,7 +54,7 @@ public class ProviderTileView extends ImageView
     {
         super.onAttachedToWindow();
 
-        ProviderDTOList providerList = providerListCache.get().getValue(new ProviderListKey());
+        ProviderDTOList providerList = providerListCache.get().getCachedValue(new ProviderListKey());
 
         if (providerList != null && providerList.size() > 0)
         {

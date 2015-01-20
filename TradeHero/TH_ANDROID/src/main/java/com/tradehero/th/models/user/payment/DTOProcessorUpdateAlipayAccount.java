@@ -26,7 +26,7 @@ public class DTOProcessorUpdateAlipayAccount extends ThroughDTOProcessor<UpdateA
 
     @Override public UpdateAlipayAccountDTO process(UpdateAlipayAccountDTO value)
     {
-        UserProfileDTO cachedProfile = userProfileCache.getValue(playerId);
+        UserProfileDTO cachedProfile = userProfileCache.getCachedValue(playerId);
         if (cachedProfile != null)
         {
             cachedProfile.alipayAccount = updateAlipayAccountFormDTO.newAlipayAccount;

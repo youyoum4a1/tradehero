@@ -34,7 +34,7 @@ abstract public class ProductDetailCacheRx<
             @NonNull ProductTunerType detailsTuner,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(defaultMaxSize, 5, dtoCacheUtil);
+        super(defaultMaxSize, dtoCacheUtil);
         this.detailsTuner = detailsTuner;
     }
     //</editor-fold>
@@ -88,7 +88,7 @@ abstract public class ProductDetailCacheRx<
 
         for (ProductIdentifierType key: keys)
         {
-            skuDetails.add(getValue(key));
+            skuDetails.add(getCachedValue(key));
         }
 
         return skuDetails;
@@ -104,7 +104,7 @@ abstract public class ProductDetailCacheRx<
         HashMap<ProductIdentifierType, ProductDetailsType> map = new HashMap<>();
         for (ProductIdentifierType id : ids)
         {
-            map.put(id, getValue(id));
+            map.put(id, getCachedValue(id));
         }
         return map;
     }

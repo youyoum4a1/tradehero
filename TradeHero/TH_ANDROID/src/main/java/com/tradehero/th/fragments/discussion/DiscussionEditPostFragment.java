@@ -282,7 +282,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private void linkWith(@NonNull DiscussionKey discussionKey, boolean andDisplay)
     {
         this.discussionKey = discussionKey;
-        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.getValue(discussionKey);
+        AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.getCachedValue(discussionKey);
         linkWith(abstractDiscussionDTO, andDisplay);
     }
 

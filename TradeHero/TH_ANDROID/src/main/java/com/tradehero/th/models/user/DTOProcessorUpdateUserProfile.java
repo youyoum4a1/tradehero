@@ -24,7 +24,7 @@ public class DTOProcessorUpdateUserProfile extends ThroughDTOProcessor<UserProfi
 
     @Override public UserProfileDTO process(@NonNull UserProfileDTO userProfileDTO)
     {
-        UserProfileDTO cached = userProfileCache.getValue(userProfileDTO.getBaseKey());
+        UserProfileDTO cached = userProfileCache.getCachedValue(userProfileDTO.getBaseKey());
         if (cached != null
                 && (cached.unreadMessageThreadsCount != userProfileDTO.unreadMessageThreadsCount
                     || cached.unreadNotificationsCount != userProfileDTO.unreadNotificationsCount))

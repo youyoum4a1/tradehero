@@ -141,7 +141,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
             if (discussionDTO != null)
             {
                 SecurityId securityIdForDisplay = discussionDTO.createFlavorSecurityIdForDisplay();
-                if (securityIdForDisplay != null && watchlistPositionCache.getValue(securityIdForDisplay) != null)
+                if (securityIdForDisplay != null && watchlistPositionCache.getCachedValue(securityIdForDisplay) != null)
                 {
                     watchlistIndicator.setVisibility(View.VISIBLE);
                 }

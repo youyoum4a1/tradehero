@@ -16,7 +16,6 @@ import rx.Observable;
 public class MiniGameDefCache extends BaseFetchDTOCacheRx<MiniGameDefKey, MiniGameDefDTO>
 {
     private static final int DEFAULT_MAX_VALUE = 200;
-    private static final int DEFAULT_MAX_SUBJECT = 10;
 
     @NonNull protected final MiniGameServiceWrapper miniGameServiceWrapper;
 
@@ -25,7 +24,7 @@ public class MiniGameDefCache extends BaseFetchDTOCacheRx<MiniGameDefKey, MiniGa
             @NonNull DTOCacheUtilRx dtoCacheUtilRx,
             @NonNull MiniGameServiceWrapper miniGameServiceWrapper)
     {
-        super(DEFAULT_MAX_VALUE, DEFAULT_MAX_SUBJECT, DEFAULT_MAX_SUBJECT, dtoCacheUtilRx);
+        super(DEFAULT_MAX_VALUE, dtoCacheUtilRx);
         this.miniGameServiceWrapper = miniGameServiceWrapper;
     }
     //</editor-fold>

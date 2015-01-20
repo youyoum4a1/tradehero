@@ -48,7 +48,7 @@ public class DTOProcessorWatchlistDelete extends ThroughDTOProcessor<WatchlistPo
                     null);
         }
 
-        WatchlistPositionDTOList cachedPositions = userWatchlistPositionCache.getValue(concernedUser);
+        WatchlistPositionDTOList cachedPositions = userWatchlistPositionCache.getCachedValue(concernedUser);
         if (cachedPositions != null && deletedSecurityId != null)
         {
             cachedPositions.remove(deletedSecurityId);

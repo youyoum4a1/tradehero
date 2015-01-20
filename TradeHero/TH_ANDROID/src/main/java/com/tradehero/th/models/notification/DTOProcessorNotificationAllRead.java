@@ -28,7 +28,7 @@ public class DTOProcessorNotificationAllRead extends ThroughDTOProcessor<BaseRes
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        UserProfileDTO userProfileDTO = userProfileCache.getValue(readerId);
+        UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(readerId);
         if (userProfileDTO != null)
         {
             userProfileDTO.unreadNotificationsCount = 0;

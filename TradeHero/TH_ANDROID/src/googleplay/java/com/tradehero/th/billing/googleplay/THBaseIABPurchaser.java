@@ -43,6 +43,6 @@ public class THBaseIABPurchaser
 
     @Override @Nullable protected THIABProductDetail getProductDetails(IABSKU iabsku)
     {
-        return skuDetailCache.get().getValue(iabsku);
+        return skuDetailCache.get().getCachedValue(iabsku);
     }
 }

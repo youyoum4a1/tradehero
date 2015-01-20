@@ -29,7 +29,6 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
 
     /**
      * If the key is null, it removes it from the bundle
-     * @param args
      */
     public void putParameters(@NonNull Bundle args)
     {

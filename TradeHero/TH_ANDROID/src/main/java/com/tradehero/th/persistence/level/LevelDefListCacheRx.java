@@ -25,7 +25,7 @@ public class LevelDefListCacheRx extends BaseFetchDTOCacheRx<LevelDefListId, Lev
             @NonNull LevelDefCacheRx levelDefCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.levelDefCache = levelDefCache;
         get(new LevelDefListId());

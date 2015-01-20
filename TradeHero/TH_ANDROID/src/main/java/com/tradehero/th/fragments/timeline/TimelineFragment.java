@@ -687,7 +687,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected int getFollowType()
     {
         UserProfileDTO userProfileDTO =
-                userProfileCache.get().getValue(currentUserId.toUserBaseKey());
+                userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
         if (userProfileDTO != null)
         {
             OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
@@ -696,7 +696,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
                 if (purchaserKey != null)
                 {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().getValue(purchaserKey);
+                    UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
                     if (purchaserProfile != null)
                     {
                         return purchaserProfile.getFollowType(shownUserBaseKey);

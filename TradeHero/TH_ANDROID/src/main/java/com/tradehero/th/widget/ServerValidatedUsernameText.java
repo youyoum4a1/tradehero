@@ -76,7 +76,7 @@ public class ServerValidatedUsernameText extends ServerValidatedText
         if (displayName != null)
         {
             UserAvailabilityDTO cachedAvailability =
-                    userAvailabilityCache.getValue(new DisplayNameDTO(displayName));
+                    userAvailabilityCache.getCachedValue(new DisplayNameDTO(displayName));
             if (cachedAvailability != null)
             {
                 isValidInServer = cachedAvailability.available;

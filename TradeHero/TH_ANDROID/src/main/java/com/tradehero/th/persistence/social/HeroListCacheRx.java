@@ -15,7 +15,6 @@ import rx.Observable;
 public class HeroListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HeroDTOExtWrapper>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull protected final UserServiceWrapper userServiceWrapper;
     @NonNull protected final HeroCacheRx heroCache;
@@ -26,7 +25,7 @@ public class HeroListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HeroDTOExt
             @NonNull HeroCacheRx heroCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.userServiceWrapper = userServiceWrapper;
         this.heroCache = heroCache;
     }

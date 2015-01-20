@@ -200,7 +200,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
 
             if (messageHeaderId != null)
             {
-                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.getValue(messageHeaderId);
+                MessageHeaderDTO messageHeaderDTO = messageHeaderCache.getCachedValue(messageHeaderId);
                 if (messageHeaderDTO != null)
                 {
                     reportMessageRead(messageHeaderDTO);

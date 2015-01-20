@@ -97,7 +97,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
     {
         if (discussionKey instanceof DTOKey)
         {
-            AbstractDiscussionCompactDTO value = discussionCache.getValue(((DiscussionKey) discussionKey));
+            AbstractDiscussionCompactDTO value = discussionCache.getCachedValue(((DiscussionKey) discussionKey));
             if (value != null)
             {
                 linkWith(value, true);

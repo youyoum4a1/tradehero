@@ -28,7 +28,7 @@ public class DTOProcessorUpdateReferralCode extends ThroughDTOProcessor<BaseResp
 
     @Override public BaseResponseDTO process(BaseResponseDTO value)
     {
-        UserProfileDTO cachedProfile = userProfileCache.getValue(invitedUserId);
+        UserProfileDTO cachedProfile = userProfileCache.getCachedValue(invitedUserId);
         if (cachedProfile != null)
         {
             cachedProfile.inviteCode = updateReferralCodeDTO.inviteCode;

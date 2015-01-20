@@ -22,7 +22,6 @@ import rx.Observable;
 public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, PortfolioDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 200;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 20;
 
     @NonNull protected final Lazy<PortfolioServiceWrapper> portfolioServiceWrapper;
     @NonNull protected final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
@@ -33,7 +32,7 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
             @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.portfolioServiceWrapper = portfolioServiceWrapper;
         this.portfolioCompactCache = portfolioCompactCache;
     }
@@ -46,7 +45,7 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
 
     @Override public void onNext(@NonNull OwnedPortfolioId key, @NonNull PortfolioDTO value)
     {
-        PortfolioDTO previous = getValue(key);
+        PortfolioDTO previous = getCachedValue(key);
         //noinspection ConstantConditions
         if (previous != null && previous.userId != null)
         {
@@ -89,7 +88,7 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
         PortfolioDTO cached;
         for (OwnedPortfolioId key : snapshot().keySet())
         {
-            cached = getValue(key);
+            cached = getCachedValue(key);
             if (cached != null
                     && key.userId.equals(concernedUser.key)
                     && (cached.isWatchlist || !onlyWatchlist))

@@ -35,7 +35,7 @@ public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
     @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
     {
         DiscussionDTO processed = super.process(discussionDTO);
-        AbstractDiscussionCompactDTO cachedInitiating = discussionCache.getValue(initiatingKey);
+        AbstractDiscussionCompactDTO cachedInitiating = discussionCache.getCachedValue(initiatingKey);
         if (cachedInitiating != null)
         {
             if (stubKey == null || processed == null || !stubKey.id.equals(processed.id))

@@ -415,7 +415,7 @@ public class LeaderboardMarkUserItemView
         if (leaderboardId != null)
         {
             leaderboardDef = leaderboardDefCache.get()
-                    .getValue(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
+                    .getCachedValue(new LeaderboardDefKey(leaderboardItem.getLeaderboardId()));
         }
 
         if (leaderboardItem.lbmuId != -1)

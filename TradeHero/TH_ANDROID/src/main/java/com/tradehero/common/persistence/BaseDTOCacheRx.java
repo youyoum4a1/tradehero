@@ -21,8 +21,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
     @NonNull final private Map<DTOKeyType, Observable<Pair<DTOKeyType, DTOType>>> cachedObservables;
 
     //<editor-fold desc="Constructors">
-    protected BaseDTOCacheRx(int valueSize, int subjectSize,
-            @NonNull DTOCacheUtilRx dtoCacheUtilRx)
+    protected BaseDTOCacheRx(int valueSize, @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
         this.cachedValuesLock = new ReentrantLock();
         this.cachedValues = new THLruCache<>(valueSize);
@@ -44,7 +43,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         if (cachedObservable == null)
         {
             BehaviorSubject<Pair<DTOKeyType, DTOType>> cachedSubject;
-            DTOType cachedValue = getValue(key);
+            DTOType cachedValue = getCachedValue(key);
             if (cachedValue != null)
             {
                 cachedSubject = BehaviorSubject.create(Pair.create(key, cachedValue));
@@ -77,16 +76,6 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return cachedObservables.get(key);
     }
 
-    @NonNull public Observable<Pair<DTOKeyType, DTOType>> getFirstOrEmpty(@NonNull final DTOKeyType key)
-    {
-        DTOType value = getValue(key);
-        if (value == null)
-        {
-            return Observable.empty();
-        }
-        return Observable.just(Pair.create(key, value));
-    }
-
     @Override public void onNext(@NonNull DTOKeyType key, @NonNull DTOType value)
     {
         putValue(key, value);
@@ -111,9 +100,7 @@ public class BaseDTOCacheRx<DTOKeyType extends DTOKey, DTOType extends DTO>
         return previous;
     }
 
-    // TODO make it protected when all is cleaned up
-    @Deprecated
-    @Nullable public DTOType getValue(@NonNull DTOKeyType key)
+    @Nullable public DTOType getCachedValue(@NonNull DTOKeyType key)
     {
         DTOType cachedValue;
         try

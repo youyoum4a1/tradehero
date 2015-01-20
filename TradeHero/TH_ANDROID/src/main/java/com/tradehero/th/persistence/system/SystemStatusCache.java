@@ -23,7 +23,7 @@ public class SystemStatusCache extends BaseFetchDTOCacheRx<SystemStatusKey, Syst
             @NonNull Lazy<SessionServiceWrapper> sessionService,
             @NonNull DTOCacheUtilRx dtoCacheUtilRx)
     {
-        super(DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, DEFAULT_MAX_SIZE, dtoCacheUtilRx);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtilRx);
         this.sessionService = sessionService;
     }
 

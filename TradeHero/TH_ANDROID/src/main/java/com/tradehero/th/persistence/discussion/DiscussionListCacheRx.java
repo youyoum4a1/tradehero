@@ -23,7 +23,6 @@ import rx.Observable;
 public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey, PaginatedDTO<DiscussionDTO>>
 {
     private static final int DEFAULT_VALUE_SIZE = 30;
-    private static final int DEFAULT_SUBJECT_SIZE = 3;
 
     @NonNull private final DiscussionCacheRx discussionCache;
     @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -33,7 +32,7 @@ public class DiscussionListCacheRx extends BaseFetchDTOCacheRx<DiscussionListKey
             @NonNull DiscussionCacheRx discussionCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_VALUE_SIZE, dtoCacheUtil);
         this.discussionServiceWrapper = discussionServiceWrapper;
         this.discussionCache = discussionCache;
     }

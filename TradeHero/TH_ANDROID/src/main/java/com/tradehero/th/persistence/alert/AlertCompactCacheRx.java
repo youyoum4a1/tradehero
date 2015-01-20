@@ -17,7 +17,6 @@ import javax.inject.Singleton;
 public class AlertCompactCacheRx extends BaseDTOCacheRx<AlertId, AlertCompactDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
 
@@ -26,7 +25,7 @@ public class AlertCompactCacheRx extends BaseDTOCacheRx<AlertId, AlertCompactDTO
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.securityCompactCache = securityCompactCache;
     }
     //</editor-fold>

@@ -339,7 +339,7 @@ import timber.log.Timber;
                 {
                     dialog = billingAlertDialogUtil.popSKUAlreadyOwned(
                             currentContext,
-                            thiabProductDetailCache.getValue(purchaseOrder.getProductIdentifier()),
+                            thiabProductDetailCache.getCachedValue(purchaseOrder.getProductIdentifier()),
                             restoreClickListener);
                 }
                 else if (exception instanceof IABSendIntentException)

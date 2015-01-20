@@ -18,7 +18,6 @@ import rx.Observable;
 public class AchievementCategoryCacheRx extends BaseFetchDTOCacheRx<AchievementCategoryId, AchievementCategoryDTO>
 {
     private static final int DEFAULT_VALUE_SIZE = 50;
-    private static final int DEFAULT_SUBJECT_SIZE = 5;
     private final AchievementServiceWrapper achievementServiceWrapper;
 
     //<editor-fold desc="Constructors">
@@ -26,7 +25,7 @@ public class AchievementCategoryCacheRx extends BaseFetchDTOCacheRx<AchievementC
             @NonNull AchievementServiceWrapper achievementServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_VALUE_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
     }
     //</editor-fold>

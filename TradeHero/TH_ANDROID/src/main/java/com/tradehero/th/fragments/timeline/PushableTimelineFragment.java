@@ -59,7 +59,7 @@ public class PushableTimelineFragment extends TimelineFragment
                 UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
                 if (purchaserKey != null)
                 {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().getValue(purchaserKey);
+                    UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
                     if (purchaserProfile != null)
                     {
                         return purchaserProfile.isFollowingUser(shownUserBaseKey);

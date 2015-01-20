@@ -33,7 +33,7 @@ public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCou
     {
         if (value.updated)
         {
-            UserProfileDTO cachedUserProfile = userProfileCache.getValue(playerId);
+            UserProfileDTO cachedUserProfile = userProfileCache.getCachedValue(playerId);
             if (cachedUserProfile != null
                     && updateCountryCodeFormDTO.countryCode != null)
             {

@@ -20,7 +20,7 @@ public class TranslationTokenCacheRx extends BaseFetchDTOCacheRx<TranslationToke
             @NonNull TranslationTokenServiceWrapper translationTokenServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(1, 1, 1, dtoCacheUtil);
+        super(1, dtoCacheUtil);
         this.translationTokenServiceWrapper = translationTokenServiceWrapper;
     }
     //</editor-fold>

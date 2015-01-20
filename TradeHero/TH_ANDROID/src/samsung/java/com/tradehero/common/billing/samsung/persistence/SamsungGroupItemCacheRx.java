@@ -25,7 +25,7 @@ abstract public class SamsungGroupItemCacheRx<
     public void onNext(SamsungSKUType id)
     {
         Timber.d("Add %s", id);
-        SamsungSKUListType currentValue = getValue(id.getGroupId());
+        SamsungSKUListType currentValue = getCachedValue(id.getGroupId());
         if (currentValue == null)
         {
             Timber.d("Creating Empty");

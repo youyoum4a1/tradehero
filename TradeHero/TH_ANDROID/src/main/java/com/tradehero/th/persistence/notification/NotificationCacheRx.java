@@ -26,7 +26,7 @@ public class NotificationCacheRx extends BaseFetchDTOCacheRx<NotificationKey, No
             @NonNull Lazy<NotificationServiceWrapper> notificationServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize.get(), 5, 5, dtoCacheUtil);
+        super(maxSize.get(), dtoCacheUtil);
         this.notificationServiceWrapper = notificationServiceWrapper;
     }
     //</editor-fold>
@@ -46,7 +46,7 @@ public class NotificationCacheRx extends BaseFetchDTOCacheRx<NotificationKey, No
 
     public void setUnread(@NonNull NotificationKey key, boolean unread)
     {
-        NotificationDTO notificationDTO = getValue(key);
+        NotificationDTO notificationDTO = getCachedValue(key);
         if (notificationDTO != null && notificationDTO.unread != unread)
         {
             notificationDTO.unread = unread;

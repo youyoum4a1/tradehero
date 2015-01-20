@@ -116,7 +116,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void softFetchPortfolioCompactList()
     {
-        PortfolioCompactDTOList list = portfolioCompactListCache.getValue(currentUserId.toUserBaseKey());
+        PortfolioCompactDTOList list = portfolioCompactListCache.getCachedValue(currentUserId.toUserBaseKey());
         if (list == null)
         {
             fetchPortfolioCompactList();

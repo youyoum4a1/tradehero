@@ -183,7 +183,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         if (securityId != null)
         {
             WatchlistEditFragment.putSecurityId(args, securityId);
-            if (watchlistPositionCache.get().getValue(securityId) != null)
+            if (watchlistPositionCache.get().getCachedValue(securityId) != null)
             {
                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getContext().getString(R.string.watchlist_edit_title));

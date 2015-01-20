@@ -27,7 +27,7 @@ import rx.Observable;
             @NonNull Lazy<WatchlistPositionCacheRx> watchlistPositionCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_SIZE, 5, 5, dtoCacheUtil);
+        super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.watchlistServiceWrapper = watchlistServiceWrapper;
         this.watchlistPositionCache = watchlistPositionCache;
     }

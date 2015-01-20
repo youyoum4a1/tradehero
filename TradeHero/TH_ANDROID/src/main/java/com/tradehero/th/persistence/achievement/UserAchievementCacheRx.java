@@ -25,7 +25,6 @@ import timber.log.Timber;
 public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementId, UserAchievementDTO>
 {
     public static final int DEFAULT_VALUE_SIZE = 20;
-    public static final int DEFAULT_SUBJECT_SIZE = 2;
 
     @NonNull private final AchievementServiceWrapper achievementServiceWrapper;
     @NonNull private final BroadcastUtils broadcastUtils;
@@ -40,7 +39,7 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_VALUE_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
         this.broadcastUtils = broadcastUtils;
         this.currentUserId = currentUserId;
@@ -55,7 +54,7 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
 
     @Nullable public UserAchievementDTO pop(@NonNull UserAchievementId userAchievementId)
     {
-        UserAchievementDTO userAchievementDTO = getValue(userAchievementId);
+        UserAchievementDTO userAchievementDTO = getCachedValue(userAchievementId);
         if (userAchievementDTO != null)
         {
             invalidate(userAchievementId);
@@ -65,7 +64,7 @@ public class UserAchievementCacheRx extends BaseFetchDTOCacheRx<UserAchievementI
 
     public boolean shouldShow(@NonNull UserAchievementId userAchievementId)
     {
-        UserAchievementDTO userAchievementDTO = getValue(userAchievementId);
+        UserAchievementDTO userAchievementDTO = getCachedValue(userAchievementId);
         return userAchievementDTO != null &&
                 !userAchievementDTO.shouldShow();
     }

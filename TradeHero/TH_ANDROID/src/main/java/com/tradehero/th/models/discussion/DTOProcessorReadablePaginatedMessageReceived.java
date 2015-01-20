@@ -31,7 +31,7 @@ public class DTOProcessorReadablePaginatedMessageReceived<
     {
         if (readerUserId != null)
         {
-            UserProfileDTO cachedProfile = userProfileCache.getValue(readerUserId);
+            UserProfileDTO cachedProfile = userProfileCache.getCachedValue(readerUserId);
             if (cachedProfile != null)
             {
                 cachedProfile.unreadMessageThreadsCount = value.unread;

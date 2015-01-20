@@ -87,7 +87,7 @@ public class THSamsungLogicHolderFull
 
     protected BaseSamsungSKUList<SamsungSKU> getAllSkus()
     {
-        return productIdentifierCache.getValue(SamsungSKUListKey.getAllKey());
+        return productIdentifierCache.getCachedValue(SamsungSKUListKey.getAllKey());
     }
 
     //<editor-fold desc="Run Logic">

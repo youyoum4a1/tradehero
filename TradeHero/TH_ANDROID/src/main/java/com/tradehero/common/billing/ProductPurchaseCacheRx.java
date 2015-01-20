@@ -16,7 +16,7 @@ abstract public class ProductPurchaseCacheRx<
     public ProductPurchaseCacheRx(int maxSize,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize, 5, dtoCacheUtil);
+        super(maxSize, dtoCacheUtil);
     }
     //</editor-fold>
 
@@ -40,7 +40,7 @@ abstract public class ProductPurchaseCacheRx<
         ProductPurchaseType value;
         for (OrderIdType key : new ArrayList<>(snapshot().keySet()))
         {
-            value = getValue(key);
+            value = getCachedValue(key);
             if (value != null)
             {
                 values.add(value);

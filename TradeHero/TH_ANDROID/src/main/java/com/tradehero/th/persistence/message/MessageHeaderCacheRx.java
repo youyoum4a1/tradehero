@@ -25,7 +25,7 @@ public class MessageHeaderCacheRx extends BaseFetchDTOCacheRx<MessageHeaderId, M
             @NonNull MessageServiceWrapper messageServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(maxSize.get(), 5, 5, dtoCacheUtil);
+        super(maxSize.get(), dtoCacheUtil);
         this.messageServiceWrapper = messageServiceWrapper;
     }
     //</editor-fold>
@@ -45,7 +45,7 @@ public class MessageHeaderCacheRx extends BaseFetchDTOCacheRx<MessageHeaderId, M
 
     public void setUnread(@NonNull MessageHeaderId messageHeaderId, boolean unread)
     {
-        MessageHeaderDTO messageHeaderDTO = getValue(messageHeaderId);
+        MessageHeaderDTO messageHeaderDTO = getCachedValue(messageHeaderId);
         if (messageHeaderDTO != null && messageHeaderDTO.unread != unread)
         {
             messageHeaderDTO.unread = unread;

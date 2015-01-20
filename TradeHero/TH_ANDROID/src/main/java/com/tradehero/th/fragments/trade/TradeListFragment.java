@@ -289,7 +289,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionDTO != null)
         {
-            SecurityId cachedSecurityId = securityIdCache.getValue(new SecurityIntegerId(positionDTO.securityId));
+            SecurityId cachedSecurityId = securityIdCache.getCachedValue(new SecurityIntegerId(positionDTO.securityId));
             if (cachedSecurityId != null)
             {
                 linkWith(cachedSecurityId);
@@ -417,7 +417,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         Bundle args = new Bundle();
         WatchlistEditFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        if (watchlistPositionCache.getValue(securityCompactDTO.getSecurityId()) != null)
+        if (watchlistPositionCache.getCachedValue(securityCompactDTO.getSecurityId()) != null)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));

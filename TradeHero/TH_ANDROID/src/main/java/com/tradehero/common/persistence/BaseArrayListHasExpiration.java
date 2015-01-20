@@ -31,6 +31,7 @@ public class BaseArrayListHasExpiration<T> extends BaseArrayList<T>
         this.expirationDate = expirationDate;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public BaseArrayListHasExpiration(Collection<? extends T> c, @NonNull Date expirationDate)
     {
         super(c);

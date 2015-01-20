@@ -110,8 +110,8 @@ public class THIABLogicHolderFull
 
     protected BaseIABSKUList<IABSKU> getAllSkus()
     {
-        BaseIABSKUList<IABSKU> mixed = productIdentifierCache.getValue(IABSKUListKey.getInApp());
-        BaseIABSKUList<IABSKU> subs = productIdentifierCache.getValue(IABSKUListKey.getSubs());
+        BaseIABSKUList<IABSKU> mixed = productIdentifierCache.getCachedValue(IABSKUListKey.getInApp());
+        BaseIABSKUList<IABSKU> subs = productIdentifierCache.getCachedValue(IABSKUListKey.getSubs());
         if (subs != null)
         {
             mixed.addAll(subs);

@@ -37,7 +37,7 @@ public class DTOProcessorAllMessagesRead extends ThroughDTOProcessor<BaseRespons
         Timber.d("DTOProcessAllMessageRead: process");
         if (readerId != null)
         {
-            UserProfileDTO cachedProfile = userProfileCache.getValue(readerId);
+            UserProfileDTO cachedProfile = userProfileCache.getCachedValue(readerId);
             if (cachedProfile != null)
             {
                 cachedProfile.unreadMessageThreadsCount = 0;

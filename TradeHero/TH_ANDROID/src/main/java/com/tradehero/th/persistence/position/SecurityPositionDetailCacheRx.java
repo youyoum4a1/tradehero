@@ -15,8 +15,6 @@ import rx.Observable;
 public class SecurityPositionDetailCacheRx extends BaseFetchDTOCacheRx<SecurityId, SecurityPositionDetailDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
-    public static final int DEFAULT_MAX_FETCHER_SIZE = 10;
 
     @NonNull protected final SecurityServiceWrapper securityServiceWrapper;
 
@@ -25,7 +23,7 @@ public class SecurityPositionDetailCacheRx extends BaseFetchDTOCacheRx<SecurityI
             @NonNull SecurityServiceWrapper securityServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_FETCHER_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>

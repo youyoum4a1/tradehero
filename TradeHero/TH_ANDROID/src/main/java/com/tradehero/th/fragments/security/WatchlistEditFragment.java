@@ -109,7 +109,7 @@ public class WatchlistEditFragment extends DashboardFragment
     {
         if (securityKeyId != null)
         {
-            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getValue(securityKeyId);
+            WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getCachedValue(securityKeyId);
             deleteButton.setEnabled(watchlistPositionDTO != null);
         }
     }
@@ -140,7 +140,7 @@ public class WatchlistEditFragment extends DashboardFragment
             // add new watchlist
             WatchlistPositionFormDTO watchPositionItemForm = new WatchlistPositionFormDTO(securityCompactDTO.id, price, quantity);
 
-            WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().getValue(securityCompactDTO.getSecurityId());
+            WatchlistPositionDTO existingWatchlistPosition = watchlistPositionCache.get().getCachedValue(securityCompactDTO.getSecurityId());
             unsubscribe(updateSubscription);
             if (existingWatchlistPosition != null)
             {
@@ -199,7 +199,7 @@ public class WatchlistEditFragment extends DashboardFragment
 
     private void handleButtonDeleteClicked()
     {
-        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getValue(securityKeyId);
+        WatchlistPositionDTO watchlistPositionDTO = watchlistPositionCache.get().getCachedValue(securityKeyId);
         if (watchlistPositionDTO != null)
         {
             showProgressBar();
@@ -335,7 +335,7 @@ public class WatchlistEditFragment extends DashboardFragment
                 }
             }
 
-            WatchlistPositionDTO watchListItem = watchlistPositionCache.get().getValue(securityCompactDTO.getSecurityId());
+            WatchlistPositionDTO watchListItem = watchlistPositionCache.get().getCachedValue(securityCompactDTO.getSecurityId());
             if (watchPrice != null)
             {
                 watchPrice.setText(

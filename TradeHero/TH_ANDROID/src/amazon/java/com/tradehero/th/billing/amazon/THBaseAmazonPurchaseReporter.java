@@ -58,7 +58,7 @@ public class THBaseAmazonPurchaseReporter
         this.purchase = purchase;
 
         // TODO do something when info is not available
-        productDetail = productDetailCache.get().getValue(purchase.getProductIdentifier());
+        productDetail = productDetailCache.get().getCachedValue(purchase.getProductIdentifier());
         if (productDetail == null)
         {
             notifyListenerReportFailed(new AmazonMissingCachedProductDetailException(purchase.getProductIdentifier() + " is missing from the cache"));

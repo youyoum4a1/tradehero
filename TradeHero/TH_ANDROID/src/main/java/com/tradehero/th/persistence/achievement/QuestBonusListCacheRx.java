@@ -15,7 +15,6 @@ import rx.Observable;
 public class QuestBonusListCacheRx extends BaseFetchDTOCacheRx<QuestBonusListId, QuestBonusDTOList>
 {
     private static final int DEFAULT_VALUE_SIZE = 1;
-    private static final int DEFAULT_SUBJECT_SIZE = 1;
     private final AchievementServiceWrapper achievementServiceWrapper;
     private final QuestBonusCacheRx questBonusCache;
 
@@ -25,7 +24,7 @@ public class QuestBonusListCacheRx extends BaseFetchDTOCacheRx<QuestBonusListId,
             @NonNull QuestBonusCacheRx questBonusCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_VALUE_SIZE, DEFAULT_SUBJECT_SIZE, DEFAULT_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_VALUE_SIZE, dtoCacheUtil);
         this.achievementServiceWrapper = achievementServiceWrapper;
         this.questBonusCache = questBonusCache;
     }

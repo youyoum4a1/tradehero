@@ -17,7 +17,6 @@ import rx.Observable;
 public class SecurityIdCache extends BaseFetchDTOCacheRx<SecurityIntegerId, SecurityId>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 2000;
-    public static final int DEFAULT_MAX_SUBJECT_SIZE = 2;
 
     @NonNull private final SecurityServiceWrapper securityServiceWrapper;
     @NonNull private final Lazy<SecurityCompactCacheRx> securityCompactCache;
@@ -28,7 +27,7 @@ public class SecurityIdCache extends BaseFetchDTOCacheRx<SecurityIntegerId, Secu
             @NonNull Lazy<SecurityCompactCacheRx> securityCompactCache,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, dtoCacheUtil);
         this.securityServiceWrapper = securityServiceWrapper;
         this.securityCompactCache = securityCompactCache;
     }
