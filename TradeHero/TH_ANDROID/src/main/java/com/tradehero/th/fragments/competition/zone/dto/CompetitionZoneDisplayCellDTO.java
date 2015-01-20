@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 
 public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
@@ -36,7 +37,7 @@ public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
                 providerDisplayCellDTO.getProviderDisplayCellId().hashCode();
     }
 
-    @Override public boolean equals(Object o)
+    @Override public boolean equals(@Nullable Object o)
     {
         if (o == null)
         {

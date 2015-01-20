@@ -2,9 +2,10 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.UserFriendsDTO;
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class FriendLeaderboardUserComparator implements Comparator<FriendLeaderboardUserDTO>
+public class FriendLeaderboardUserComparator implements Comparator<FriendLeaderboardUserDTO>, Serializable
 {
     @Override public int compare(@NonNull FriendLeaderboardUserDTO lhs, @NonNull FriendLeaderboardUserDTO rhs)
     {

@@ -6,6 +6,7 @@ abstract public class UserListType implements Comparable<UserListType>, PagedDTO
 {
     @Override abstract public int hashCode();
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(Object other)
     {
         return equalClass(other) && equalFields((UserListType) other);

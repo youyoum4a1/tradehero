@@ -2,6 +2,7 @@ package com.tradehero.common.persistence;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements Comparable, DTOKey
 {
@@ -44,7 +45,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     //    return equals((AbstractPrimitiveDTOKey) other);
     //}
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         return other != null &&
         getClass().isInstance(other) &&

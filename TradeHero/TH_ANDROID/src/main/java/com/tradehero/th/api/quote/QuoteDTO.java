@@ -285,9 +285,9 @@ public class QuoteDTO implements RawResponseKeeper, Cloneable
     }
 
     @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
-    @Override public QuoteDTO clone()
+    @Override public QuoteDTO clone() throws CloneNotSupportedException
     {
-        QuoteDTO cloned = new QuoteDTO();
+        QuoteDTO cloned = (QuoteDTO) super.clone();
         cloned.securityId = securityId;
         cloned.asOfUtc = asOfUtc;
         cloned.asOfEst = asOfEst;

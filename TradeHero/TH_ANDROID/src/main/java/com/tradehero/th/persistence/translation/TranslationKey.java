@@ -35,6 +35,7 @@ public class TranslationKey implements DTOKey
                 textHashCode;
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(@Nullable Object obj)
     {
         if (obj == this)

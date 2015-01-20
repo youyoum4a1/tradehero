@@ -1,13 +1,10 @@
 package com.tradehero.th.api.portfolio;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class OwnedPortfolioIdDisplayComparator implements Comparator<OwnedPortfolioId>
+public class OwnedPortfolioIdDisplayComparator implements Comparator<OwnedPortfolioId>, Serializable
 {
-    public OwnedPortfolioIdDisplayComparator()
-    {
-    }
-
     @Override public int compare(OwnedPortfolioId lhs, OwnedPortfolioId rhs)
     {
         if (lhs == null)

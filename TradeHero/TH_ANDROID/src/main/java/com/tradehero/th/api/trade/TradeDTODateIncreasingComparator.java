@@ -1,18 +1,12 @@
 package com.tradehero.th.api.trade;
 
 import android.support.annotation.Nullable;
+import java.io.Serializable;
 import java.util.Comparator;
 import javax.inject.Inject;
 
-public class TradeDTODateIncreasingComparator implements Comparator<TradeDTO>
+public class TradeDTODateIncreasingComparator implements Comparator<TradeDTO>, Serializable
 {
-    //<editor-fold desc="Constructors">
-    @Inject public TradeDTODateIncreasingComparator()
-    {
-        super();
-    }
-    //</editor-fold>
-
     @Override public int compare(@Nullable TradeDTO left, @Nullable TradeDTO right)
     {
         if (left == right)

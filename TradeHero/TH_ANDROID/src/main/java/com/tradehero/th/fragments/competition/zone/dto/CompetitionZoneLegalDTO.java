@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
+import android.support.annotation.Nullable;
+
 public class CompetitionZoneLegalDTO extends CompetitionZoneDTO
 {
-    public LinkType requestedLink = null;
+    @Nullable public LinkType requestedLink = null;
 
     //<editor-fold desc="Constructors">
-    public CompetitionZoneLegalDTO(String title, String description)
+    public CompetitionZoneLegalDTO(@Nullable String title, @Nullable String description)
     {
         super(title, description);
     }

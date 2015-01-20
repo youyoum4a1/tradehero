@@ -36,6 +36,7 @@ public class MessageHeaderId implements DTOKey
         return Integer.valueOf(commentId).hashCode();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(Object other)
     {
         return equalClass(other) && equalFields((MessageHeaderId) other);

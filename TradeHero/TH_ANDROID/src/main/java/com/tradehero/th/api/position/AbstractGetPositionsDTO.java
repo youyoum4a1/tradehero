@@ -49,8 +49,7 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
         return getOpenPositions(null);
     }
 
-    @Nullable
-    public List<PositionDTOType> getOpenPositions(Boolean open)
+    @Nullable public List<PositionDTOType> getOpenPositions(@Nullable Boolean open)
     {
         if (positions == null)
         {
@@ -59,7 +58,8 @@ abstract public class AbstractGetPositionsDTO<PositionDTOType extends PositionDT
         List<PositionDTOType> openPositions = new ArrayList<>();
         for (PositionDTOType positionDTO: positions)
         {
-            if (positionDTO.isOpen() == open)
+            Boolean isOpen = positionDTO.isOpen();
+            if (isOpen == null ? open == null : isOpen.equals(open))
             {
                 openPositions.add(positionDTO);
             }

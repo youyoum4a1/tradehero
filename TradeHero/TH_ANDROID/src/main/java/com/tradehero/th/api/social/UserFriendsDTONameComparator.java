@@ -1,8 +1,9 @@
 package com.tradehero.th.api.social;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class UserFriendsDTONameComparator implements Comparator<UserFriendsDTO>
+public class UserFriendsDTONameComparator implements Comparator<UserFriendsDTO>, Serializable
 {
     @Override public int compare(UserFriendsDTO lhs, UserFriendsDTO rhs)
     {

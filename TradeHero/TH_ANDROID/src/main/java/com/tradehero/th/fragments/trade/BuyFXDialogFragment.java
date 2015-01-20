@@ -57,6 +57,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         return result;
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Override @Nullable protected Boolean isClosingPosition()
     {
         if (securityPositionDetailDTO == null)

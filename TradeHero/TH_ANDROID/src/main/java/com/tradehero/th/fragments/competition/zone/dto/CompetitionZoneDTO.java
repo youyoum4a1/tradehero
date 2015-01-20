@@ -1,14 +1,15 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 
 public class CompetitionZoneDTO implements DTO
 {
-    public final String title;
-    public final String description;
+    @Nullable public final String title;
+    @Nullable public final String description;
 
     //<editor-fold desc="Constructors">
-    public CompetitionZoneDTO(String title, String description)
+    public CompetitionZoneDTO(@Nullable String title, @Nullable String description)
     {
         this.title = title;
         this.description = description;

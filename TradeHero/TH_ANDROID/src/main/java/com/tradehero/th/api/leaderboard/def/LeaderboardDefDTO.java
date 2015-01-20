@@ -118,7 +118,7 @@ public class LeaderboardDefDTO implements DTO
 
     public LeaderboardSortType getDefaultSortType()
     {
-        return defaultSortTypeId != null ? LeaderboardSortType.byServerFlag(defaultSortTypeId) : LeaderboardSortType.DefaultSortType;
+        return defaultSortTypeId != null ? LeaderboardSortType.byServerFlag(defaultSortTypeId) : LeaderboardSortType.defaultSortType;
     }
 
     public boolean isSectorRestricted()

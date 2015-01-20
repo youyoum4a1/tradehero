@@ -1,8 +1,9 @@
 package com.tradehero.th.api.discussion;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class DirtyNewFirstMessageHeaderDTOComparator implements Comparator<MessageHeaderDTO>
+public class DirtyNewFirstMessageHeaderDTOComparator implements Comparator<MessageHeaderDTO>, Serializable
 {
     @Override public int compare(MessageHeaderDTO o1, MessageHeaderDTO o2)
     {

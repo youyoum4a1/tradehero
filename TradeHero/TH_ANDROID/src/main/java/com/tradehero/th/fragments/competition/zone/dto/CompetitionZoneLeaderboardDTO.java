@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.CompetitionDTO;
 
 public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
@@ -14,7 +15,8 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
     }
     //</editor-fold>
 
-    public Boolean isActive()
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
+    @Nullable public Boolean isActive()
     {
         if (competitionDTO == null || competitionDTO.leaderboard == null)
         {

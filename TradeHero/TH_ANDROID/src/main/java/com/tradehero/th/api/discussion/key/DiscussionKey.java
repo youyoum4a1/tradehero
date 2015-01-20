@@ -52,6 +52,7 @@ abstract public class DiscussionKey<T extends DiscussionKey>
                 id.hashCode();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(Object other)
     {
         return equalClass(other) && equalFields((DiscussionKey) other);

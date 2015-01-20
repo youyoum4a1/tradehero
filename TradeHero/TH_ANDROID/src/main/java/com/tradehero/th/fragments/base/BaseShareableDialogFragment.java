@@ -310,6 +310,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         return socialLinked != null ? socialLinked : orElse;
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable public Boolean isSocialLinked(SocialNetworkEnum socialNetwork)
     {
         UserProfileDTO userProfileCopy = userProfileDTO;

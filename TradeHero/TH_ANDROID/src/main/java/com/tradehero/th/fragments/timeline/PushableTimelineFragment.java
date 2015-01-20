@@ -56,7 +56,8 @@ public class PushableTimelineFragment extends TimelineFragment
     /**
      * Null means unsure.
      */
-    protected Boolean isPurchaserFollowingUserShown()
+    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
+    @Nullable protected Boolean isPurchaserFollowingUserShown()
     {
         if (userInteractor != null)
         {

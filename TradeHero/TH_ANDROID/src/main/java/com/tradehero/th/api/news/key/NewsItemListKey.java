@@ -20,6 +20,7 @@ public class NewsItemListKey implements DTOKey
         return ((page == null ? 0 : page) * 31 + (perPage == null ? 0 : perPage)) * 31;
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override public boolean equals(Object other)
     {
         return equalClass(other) && equalFields((NewsItemListKey) other);

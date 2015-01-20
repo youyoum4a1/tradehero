@@ -4,7 +4,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import java.util.Map;
 
-public class TrendingFilterEvent extends AnalyticsEvent
+public class TrendingFilterEvent extends THAnalyticsEvent
 {
     static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
 

@@ -1,12 +1,14 @@
 package com.tradehero.common.log;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.crashlytics.android.Crashlytics;
 import timber.log.Timber;
 
 public class CrashReportingTree extends Timber.HollowTree
 {
-    @Override public void e(Throwable cause, String message, Object... args)
+    @Override public void e(@NonNull Throwable cause, @Nullable String message, Object... args)
     {
         if (message == null || TextUtils.isEmpty(message))
         {
@@ -20,10 +22,10 @@ public class CrashReportingTree extends Timber.HollowTree
         }
     }
 
-    public String getConcatMessage(Throwable cause, String message, Object... args)
+    @NonNull public String getConcatMessage(@NonNull Throwable cause, @NonNull String message, Object... args)
     {
         return String.format(
-                "Message: %s\nCause: %s",
+                "Message: %s%nCause: %s",
                 String.format(message, args),
                 cause.getMessage());
     }
