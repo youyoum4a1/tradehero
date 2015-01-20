@@ -31,6 +31,10 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
 
     @Override protected String getLabel()
     {
+        if (quoteDTO.ask == null)
+        {
+            return getString(R.string.na);
+        }
         THSignedNumber bThSignedNumber = THSignedMoney
                 .builder(quoteDTO.ask)
                 .withOutSign()
@@ -74,11 +78,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
 
     @Override protected boolean isQuickButtonEnabled()
     {
-        if (quoteDTO == null || quoteDTO.ask == null)
-        {
-            return false;
-        }
-        return true;
+        return quoteDTO != null && quoteDTO.ask != null;
     }
 
     @Override protected double getQuickButtonMaxValue()

@@ -28,7 +28,7 @@ import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import dagger.Lazy;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.TimeZone;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -122,10 +122,10 @@ public class TradeListItemView extends LinearLayout
 
     @Override public void display(TradeListItemAdapter.ExpandableTradeItem expandableItem)
     {
-        linkWith(expandableItem, true);
+        linkWith(expandableItem);
     }
 
-    public void linkWith(TradeListItemAdapter.ExpandableTradeItem item, boolean andDisplay)
+    public void linkWith(TradeListItemAdapter.ExpandableTradeItem item)
     {
         this.tradeItem = item;
         if (this.tradeItem != null)
@@ -136,10 +136,7 @@ public class TradeListItemView extends LinearLayout
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(pair1 -> {
                         position = pair1.second;
-                        if (andDisplay)
-                        {
-                            display();
-                        }
+                        display();
                     })
                     .flatMap(pair1 -> securityIdCache.get().get(pair1.second.getSecurityIntegerId()))
                     .flatMap(pair2 -> securityCache.get().get(pair2.second))
@@ -156,10 +153,7 @@ public class TradeListItemView extends LinearLayout
 
                         @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> securityIdSecurityCompactDTOPair)
                         {
-                            if (andDisplay)
-                            {
-                                display();
-                            }
+                            display();
                         }
                     });
         }
@@ -169,10 +163,7 @@ public class TradeListItemView extends LinearLayout
             this.trade = null;
         }
 
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     public void display()
@@ -274,7 +265,7 @@ public class TradeListItemView extends LinearLayout
             }
             else
             {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM d HH:mm");
+                DateFormat sdf = DateFormat.getDateTimeInstance();
                 sdf.setTimeZone(TimeZone.getDefault());
                 return sdf.format(trade.dateTime);
             }
@@ -317,9 +308,12 @@ public class TradeListItemView extends LinearLayout
 
     private void displayUnrealisedPLContainer()
     {
-        if (this.unrealisedPLContainer != null && tradeItem != null && position != null)
+        if (this.unrealisedPLContainer != null
+                && tradeItem != null
+                && position != null)
         {
-            this.unrealisedPLContainer.setVisibility((tradeItem.isLastTrade() && position.isOpen()) ? VISIBLE : GONE);
+            Boolean isOpen = position.isOpen();
+            this.unrealisedPLContainer.setVisibility((tradeItem.isLastTrade() && isOpen != null && isOpen) ? VISIBLE : GONE);
         }
     }
 
@@ -342,7 +336,8 @@ public class TradeListItemView extends LinearLayout
     {
         if (this.unrealizedPLValue != null && tradeItem != null && position != null)
         {
-            if (tradeItem.isLastTrade() && position.isOpen())
+            Boolean isOpen = position.isOpen();
+            if (tradeItem.isLastTrade() && isOpen != null && isOpen)
             {
                 positionDTOUtils.get().setUnrealizedPLLook(unrealizedPLValue, position);
             }
@@ -437,7 +432,8 @@ public class TradeListItemView extends LinearLayout
         {
             return null;
         }
-        else if (tradeItem.isLastTrade() && !position.isClosed())
+        Boolean isClosed = position.isClosed();
+        if (tradeItem.isLastTrade() && isClosed != null && !isClosed)
         {
             return position.unrealizedPLRefCcy;
         }

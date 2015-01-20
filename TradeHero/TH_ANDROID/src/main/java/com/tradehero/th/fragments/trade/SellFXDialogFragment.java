@@ -31,6 +31,10 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected String getLabel()
     {
+        if (quoteDTO.bid == null)
+        {
+            return getString(R.string.na);
+        }
         THSignedNumber sthSignedNumber = THSignedMoney
                 .builder(quoteDTO.bid)
                 .withOutSign()
@@ -95,11 +99,7 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected boolean isQuickButtonEnabled()
     {
-        if ((quoteDTO == null || quoteDTO.bid == null || quoteDTO.toUSDRate == null))
-        {
-            return false;
-        }
-        return true;
+        return quoteDTO != null && quoteDTO.bid != null && quoteDTO.toUSDRate != null;
     }
 
     @Override protected double getQuickButtonMaxValue()

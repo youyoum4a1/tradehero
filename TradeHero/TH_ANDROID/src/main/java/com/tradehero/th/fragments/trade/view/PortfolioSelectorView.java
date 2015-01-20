@@ -22,7 +22,7 @@ public class PortfolioSelectorView extends RelativeLayout
     @Nullable private OwnedPortfolioId defaultPortfolioId;
     @Nullable private MenuOwnedPortfolioId defaultMenuPortfolioId;
     @Nullable private MenuOwnedPortfolioId currentMenu;
-    @NonNull private Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
+    @NonNull private final Set<MenuOwnedPortfolioId> usedMenuOwnedPortfolioIds;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

@@ -44,7 +44,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
@@ -64,7 +63,7 @@ public class BuySellStockFragment extends BuySellFragment
 
     @InjectView(R.id.buy_price) protected TextView mBuyPrice;
     @InjectView(R.id.sell_price) protected TextView mSellPrice;
-    @InjectView(R.id.vprice_as_of) protected TextView mVpriceAsOf;
+    @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
     @InjectView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
 
     @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
@@ -80,8 +79,6 @@ public class BuySellStockFragment extends BuySellFragment
     @Inject Picasso picasso;
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
     @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
-
-    @Inject AlertDialogUtil alertDialogUtil;
 
     @Nullable protected Subscription userWatchlistPositionCacheSubscription;
     @Nullable protected WatchlistPositionDTOList watchedList;
@@ -197,7 +194,7 @@ public class BuySellStockFragment extends BuySellFragment
     {
         @Override public void onNext(Pair<UserBaseKey, WatchlistPositionDTOList> pair)
         {
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()
@@ -211,13 +208,10 @@ public class BuySellStockFragment extends BuySellFragment
         }
     }
 
-    protected void linkWith(WatchlistPositionDTOList watchedList, boolean andDisplay)
+    protected void linkWith(WatchlistPositionDTOList watchedList)
     {
         this.watchedList = watchedList;
-        if (andDisplay)
-        {
-            displayWatchlistButton();
-        }
+        displayWatchlistButton();
     }
 
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -231,20 +225,10 @@ public class BuySellStockFragment extends BuySellFragment
         }
     }
 
-    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    @Override protected void linkWith(QuoteDTO quoteDTO)
     {
-        super.linkWith(quoteDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayAsOf();
-        }
-    }
-
-    //<editor-fold desc="Display Methods"> //hide switch portfolios for temp
-    @Override public void displayPageElements()
-    {
-        displayTriggerButton();
-        loadStockLogo();
+        super.linkWith(quoteDTO);
+        displayAsOf();
     }
 
     @Override public void displayBuySellPrice()
@@ -295,7 +279,7 @@ public class BuySellStockFragment extends BuySellFragment
 
     public void displayAsOf()
     {
-        if (mVpriceAsOf != null)
+        if (mVPriceAsOf != null)
         {
             String text;
             if (quoteDTO != null && quoteDTO.asOfUtc != null)
@@ -311,7 +295,7 @@ public class BuySellStockFragment extends BuySellFragment
             {
                 text = "";
             }
-            mVpriceAsOf.setText(
+            mVPriceAsOf.setText(
                     getResources().getString(R.string.buy_sell_price_as_of) + " " + text);
         }
     }
@@ -375,7 +359,7 @@ public class BuySellStockFragment extends BuySellFragment
         else
         {
             Integer maxSellableShares = getMaxSellableShares();
-            supportSell = maxSellableShares != null && maxSellableShares.intValue() > 0;
+            supportSell = maxSellableShares != null && maxSellableShares > 0;
         }
         return supportSell;
     }
@@ -388,7 +372,7 @@ public class BuySellStockFragment extends BuySellFragment
             {
                 mStockBgLogo.setVisibility(View.INVISIBLE);
             }
-            if (isMyUrlOk())
+            if (isMyUrlOk() && securityCompactDTO != null)
             {
                 picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(foregroundTransformation)
@@ -462,7 +446,7 @@ public class BuySellStockFragment extends BuySellFragment
         View rootView = getView();
         if (rootView != null)
         {
-            rootView.postDelayed(() -> loadStockBgLogo(), MS_DELAY_FOR_BG_IMAGE);
+            rootView.postDelayed(this::loadStockBgLogo, MS_DELAY_FOR_BG_IMAGE);
         }
     }
 
@@ -470,7 +454,7 @@ public class BuySellStockFragment extends BuySellFragment
     {
         if (mStockBgLogo != null)
         {
-            if (isMyUrlOk())
+            if (isMyUrlOk() && securityCompactDTO != null)
             {
                 RequestCreator requestCreator = picasso.load(securityCompactDTO.imageBlobUrl)
                         .transform(backgroundTransformation);

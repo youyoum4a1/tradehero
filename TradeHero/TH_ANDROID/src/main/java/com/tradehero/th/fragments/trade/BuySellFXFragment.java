@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -49,11 +50,11 @@ import rx.internal.util.SubscriptionList;
 public class BuySellFXFragment extends BuySellFragment
         implements TimeSpanButtonSet.OnTimeSpanButtonSelectedListener
 {
-    public final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
-    public final static long MILLISEC_FX_QUOTE_REFRESH = 5000;
-    public final static long MILLISEC_FX_CANDLE_CHART_REFRESH = 60000;
+    private final static String BUNDLE_KEY_CLOSE_UNITS_BUNDLE = BuySellFXFragment.class.getName() + ".units";
+    private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
+    private final static long MILLISECOND_FX_CANDLE_CHART_REFRESH = 60000;
 
-    private static int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
+    @ColorRes private static final int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
@@ -150,20 +151,21 @@ public class BuySellFXFragment extends BuySellFragment
         displayPositionStatus();
     }
 
-    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
-        if (portfolioCompactDTO.id == mSelectedPortfolioContainer.getCurrentMenu().portfolioId)
+        MenuOwnedPortfolioId currentMenu = mSelectedPortfolioContainer.getCurrentMenu();
+        if (currentMenu != null && portfolioCompactDTO.id == currentMenu.portfolioId)
         {
             this.portfolioCompactDTO = portfolioCompactDTO;
         }
-        super.linkWith(portfolioCompactDTO, andDisplay);
+        super.linkWith(portfolioCompactDTO);
         marginCloseOutStatus.linkWith(portfolioCompactDTO);
         displayPositionStatus();
     }
 
-    @Override protected long getMillisecQuoteRefresh()
+    @Override protected long getMillisecondQuoteRefresh()
     {
-        return MILLISEC_FX_QUOTE_REFRESH;
+        return MILLISECOND_FX_QUOTE_REFRESH;
     }
 
     private void fetchKChart(String code)
@@ -171,7 +173,7 @@ public class BuySellFXFragment extends BuySellFragment
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, code)
-                        .repeatWhen(observable -> observable.delay(MILLISEC_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS)))
+                        .repeatWhen(observable -> observable.delay(MILLISECOND_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXHistoryFetchObserver()));
     }
 
@@ -187,9 +189,9 @@ public class BuySellFXFragment extends BuySellFragment
         }
     }
 
-    @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
+    @Override public void linkWith(final PositionDTOCompactList positionDTOCompacts)
     {
-        super.linkWith(positionDTOCompacts, andDisplay);
+        super.linkWith(positionDTOCompacts);
         displayPositionStatus();
     }
 
@@ -252,39 +254,32 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Override public void displayBuySellPrice()
     {
-        if (mBuyBtn != null && mSellBtn != null)
+        if (mBuyBtn != null && mSellBtn != null && quoteDTO != null)
         {
-            if (quoteDTO == null)
+            int precision = 0;
+            if (quoteDTO.ask != null && quoteDTO.bid != null)
             {
-                return;
+                precision = securityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
+            }
+
+            if (quoteDTO.ask == null)
+            {
+                mBuyBtn.setText(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
-                int precision = 0;
-                if (quoteDTO.ask != null && quoteDTO.bid != null)
-                {
-                    precision = securityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
-                }
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
+                formatButtonText(quoteDTO.ask, diff, precision, mBuyBtn, getString(R.string.fx_buy));
+            }
 
-                if (quoteDTO.ask == null)
-                {
-                    mBuyBtn.setText(R.string.buy_sell_ask_price_not_available);
-                }
-                else
-                {
-                    double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
-                    formatButtonText(quoteDTO.ask, diff, precision, mBuyBtn, getString(R.string.fx_buy));
-                }
-
-                if (quoteDTO.bid == null)
-                {
-                    mSellBtn.setText(R.string.buy_sell_bid_price_not_available);
-                }
-                else
-                {
-                    double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
-                    formatButtonText(quoteDTO.bid, diff, precision, mSellBtn, getString(R.string.fx_sell));
-                }
+            if (quoteDTO.bid == null)
+            {
+                mSellBtn.setText(R.string.buy_sell_bid_price_not_available);
+            }
+            else
+            {
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
+                formatButtonText(quoteDTO.bid, diff, precision, mSellBtn, getString(R.string.fx_sell));
             }
         }
     }
@@ -397,10 +392,10 @@ public class BuySellFXFragment extends BuySellFragment
         showCloseDialog();
     }
 
-    @Override protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    @Override protected void linkWith(QuoteDTO quoteDTO)
     {
         this.oldQuoteDTO = this.quoteDTO;
-        super.linkWith(quoteDTO, andDisplay);
+        super.linkWith(quoteDTO);
         showCloseDialog();
         displayPositionStatus();
     }

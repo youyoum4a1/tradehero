@@ -23,8 +23,6 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
@@ -38,7 +36,6 @@ import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.observers.EmptyObserver;
@@ -47,12 +44,12 @@ import timber.log.Timber;
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".securityId";
-    public final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
-    public final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
-    public final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
+    private final static String BUNDLE_KEY_IS_BUY = AbstractBuySellFragment.class.getName() + ".isBuy";
+    private final static String BUNDLE_KEY_QUANTITY_BUY = AbstractBuySellFragment.class.getName() + ".quantityBuy";
+    private final static String BUNDLE_KEY_QUANTITY_SELL = AbstractBuySellFragment.class.getName() + ".quantitySell";
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = AbstractBuySellFragment.class.getName() + ".providerId";
 
-    public final static long MILLISEC_QUOTE_REFRESH = 30000;
+    private final static long MILLISECOND_QUOTE_REFRESH = 30000;
 
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
@@ -61,9 +58,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-    @Inject THRouter thRouter;
+    @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
-    @Inject ToastOnErrorAction toastOnErrorAction;
+    @Inject protected ToastOnErrorAction toastOnErrorAction;
 
     protected ProviderId providerId;
     @InjectRoute protected SecurityId securityId;
@@ -79,9 +76,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
-    @Nullable private Subscription userProfileSubscription;
-    @Nullable protected UserProfileDTO userProfileDTO;
-    protected boolean querying = false;
 
     protected boolean isTransactionTypeBuy = true;
     protected Integer mBuyQuantity;
@@ -140,7 +134,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         fetchQuote();
         fetchSecurityCompact();
         fetchSecurityPositionDetail();
-        fetchUserProfile();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -153,8 +146,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         securityPositionDetailSubscription = null;
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = null;
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = null;
 
@@ -178,17 +169,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         securityPositionDetailSubscription = null;
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = null;
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = null;
         super.onStop();
-    }
-
-    @Override public void onDestroyView()
-    {
-        querying = false;
-        super.onDestroyView();
     }
 
     @Override public void onDestroy()
@@ -204,11 +187,11 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             isTransactionTypeBuy = args.getBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
             if (args.containsKey(BUNDLE_KEY_QUANTITY_BUY))
             {
-                linkWithBuyQuantity(args.getInt(BUNDLE_KEY_QUANTITY_BUY), true);
+                linkWithBuyQuantity(args.getInt(BUNDLE_KEY_QUANTITY_BUY));
             }
             if (args.containsKey(BUNDLE_KEY_QUANTITY_SELL))
             {
-                linkWithSellQuantity(args.getInt(BUNDLE_KEY_QUANTITY_SELL), true);
+                linkWithSellQuantity(args.getInt(BUNDLE_KEY_QUANTITY_SELL));
             }
 
             Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
@@ -219,9 +202,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected long getMillisecQuoteRefresh()
+    protected long getMillisecondQuoteRefresh()
     {
-        return MILLISEC_QUOTE_REFRESH;
+        return MILLISECOND_QUOTE_REFRESH;
     }
 
     protected void fetchQuote()
@@ -230,19 +213,15 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         quoteSubscription = AndroidObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
-                        .repeatWhen(observable -> observable.delay(getMillisecQuoteRefresh(), TimeUnit.MILLISECONDS)))
+                        .repeatWhen(observable -> observable.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS)))
                 .subscribe(
-                        quoteDTO -> linkWith(quoteDTO, true),
+                        this::linkWith,
                         toastOnErrorAction);
     }
 
-    protected void linkWith(QuoteDTO quoteDTO, boolean andDisplay)
+    protected void linkWith(QuoteDTO quoteDTO)
     {
         this.quoteDTO = quoteDTO;
-        if (andDisplay)
-        {
-            // Nothing to do in this class
-        }
     }
 
     public void setTransactionTypeBuy(boolean transactionTypeBuy)
@@ -292,7 +271,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         this.securityPositionDetailDTO = securityPositionDetailDTO;
         linkWith(securityPositionDetailDTO.security, true);
-        linkWith(securityPositionDetailDTO.positions, true);
+        linkWith(securityPositionDetailDTO.positions);
     }
 
     protected void handleFailedFetchSecurityPositionDetail(@NonNull Throwable e)
@@ -301,50 +280,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         Timber.e(e, "getting %s", securityId);
     }
 
-    protected void fetchUserProfile()
-    {
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = AndroidObservable.bindFragment(
-                this,
-                userProfileCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserProfileCacheObserver());
-    }
-
-    @NonNull protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new AbstractBuySellUserProfileCacheObserver();
-    }
-
-    protected class AbstractBuySellUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-            Timber.e("Error fetching the user profile", e);
-        }
-    }
-
-    public void linkWith(final PositionDTOCompactList positionDTOCompacts, boolean andDisplay)
+    public void linkWith(final PositionDTOCompactList positionDTOCompacts)
     {
         this.positionDTOCompactList = positionDTOCompacts;
         selectPositionDTO();
     }
 
-    public void linkWith(final UserProfileDTO userProfileDTO, boolean andDisplay)
-    {
-        this.userProfileDTO = userProfileDTO;
-    }
-
-    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO, boolean andDisplay)
+    protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
         this.portfolioCompactDTO = portfolioCompactDTO;
         selectPositionDTO();
@@ -358,12 +300,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void clampBuyQuantity(boolean andDisplay)
+    protected void clampBuyQuantity()
     {
-        linkWithBuyQuantity(mBuyQuantity, andDisplay);
+        linkWithBuyQuantity(mBuyQuantity);
     }
 
-    protected void linkWithBuyQuantity(Integer buyQuantity, boolean andDisplay)
+    protected void linkWithBuyQuantity(Integer buyQuantity)
     {
         this.mBuyQuantity = getClampedBuyQuantity(buyQuantity);
     }
@@ -386,12 +328,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                 this.positionDTOCompact);
     }
 
-    protected void clampSellQuantity(boolean andDisplay)
+    protected void clampSellQuantity()
     {
-        linkWithSellQuantity(mSellQuantity, andDisplay);
+        linkWithSellQuantity(mSellQuantity);
     }
 
-    protected void linkWithSellQuantity(Integer sellQuantity, boolean andDisplay)
+    protected void linkWithSellQuantity(Integer sellQuantity)
     {
         this.mSellQuantity = getClampedSellQuantity(sellQuantity);
     }
@@ -417,17 +359,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     public Double getUnRealizedPLRefCcy()
     {
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null && positionDTOCompactList != null && this.quoteDTO!=null )
+        if (ownedPortfolioId != null && positionDTOCompactList != null
+                && this.quoteDTO != null && portfolioCompactDTO != null)
         {
             return positionDTOCompactList.getUnRealizedPLRefCcy(
                     this.quoteDTO,
-                    this.portfolioCompactDTO,
-                    positionDTOCompactList);
+                    this.portfolioCompactDTO
+            );
         }
         return null;
     }
-
-    abstract public void display();
 
     protected void displayMarketClose()
     {

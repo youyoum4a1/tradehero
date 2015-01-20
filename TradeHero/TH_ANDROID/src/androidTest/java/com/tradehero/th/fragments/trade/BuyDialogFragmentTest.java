@@ -174,7 +174,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
     @Test
     public void testTitleShouldMatchSecurityName()
     {
-        String title = abstractTransactionDialogFragment.getTitle();
+        String title = abstractTransactionDialogFragment.mStockNameTextView.getText().toString();
         assertThat(title).isEqualTo("Security Name");
     }
 

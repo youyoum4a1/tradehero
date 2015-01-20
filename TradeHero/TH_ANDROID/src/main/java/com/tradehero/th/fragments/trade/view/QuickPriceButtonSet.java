@@ -45,7 +45,7 @@ public class QuickPriceButtonSet extends LinearLayout
         propagatePercent();
     }
 
-    //<editor-fold desc="Accessors">
+    //<editor-fold desc="Accessor">
     public boolean isPercent()
     {
         return isPercent;

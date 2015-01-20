@@ -17,7 +17,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
     //</editor-fold>
 
-    public Integer getShareCountIn(@Nullable PortfolioId portfolioId)
+    @Nullable public Integer getShareCountIn(@Nullable PortfolioId portfolioId)
     {
         if (portfolioId == null)
         {
@@ -54,7 +54,7 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
     }
 
     //<editor-fold desc="Net Sell Proceeds USD">
-    public Double getNetSellProceedsUsd(
+    @Nullable public Double getNetSellProceedsUsd(
             Integer shareCount,
             QuoteDTO quoteDTO, // Do not add Nullable here as it is not ok with Proguard
             PortfolioId portfolioId,
@@ -98,14 +98,17 @@ public class PositionDTOCompactList extends BaseArrayList<PositionDTOCompact>
         return total;
     }
 
-    public Double getUnRealizedPLRefCcy(
+    @Nullable public Double getUnRealizedPLRefCcy(
             @NonNull QuoteDTO quoteDTO,
-            @NonNull PortfolioCompactDTO portfolioCompactDTO, PositionDTOCompactList positionDTOCompacts)
+            @NonNull PortfolioCompactDTO portfolioCompactDTO)
     {
         double shareAverageUsAmont = getShareAverageUsAmont(portfolioCompactDTO.getPortfolioId());
         Integer shareCount = getShareCountIn(portfolioCompactDTO.getPortfolioId());
+        if (shareCount == null || quoteDTO.bid == null)
+        {
+            return null;
+        }
         double shareQuoteUsAmont = quoteDTO.bid * shareCount * quoteDTO.toUSDRate;
-        double result = shareQuoteUsAmont - shareAverageUsAmont;
-        return result;
+        return shareQuoteUsAmont - shareAverageUsAmont;
     }
 }

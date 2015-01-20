@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -79,9 +78,9 @@ import timber.log.Timber;
 
 abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
 {
-    protected static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
-    protected static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
-    protected static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
+    private static final String KEY_SECURITY_ID = AbstractTransactionDialogFragment.class.getName() + ".security_id";
+    private static final String KEY_PORTFOLIO_ID = AbstractTransactionDialogFragment.class.getName() + ".portfolio_id";
+    private static final String KEY_QUOTE_DTO = AbstractTransactionDialogFragment.class.getName() + ".quote_dto";
 
     @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
@@ -99,7 +98,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @InjectView(R.id.dialog_btn_add_cash) protected ImageButton mBtnAddCash;
     @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
-    @InjectView(R.id.dialog_btn_cancel) protected Button mCancel;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -119,7 +117,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected ProgressDialog mTransactionDialog;
 
-    @NonNull protected SubscriptionList subscriptions;
+    @NonNull protected final SubscriptionList subscriptions;
     protected Subscription buySellSubscription;
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
@@ -165,13 +163,23 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         subscriptions = new SubscriptionList();
     }
 
-    protected SecurityId getSecurityId()
+    public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
+    {
+        args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
+    }
+
+    @NonNull protected SecurityId getSecurityId()
     {
         if (this.securityId == null)
         {
             this.securityId = new SecurityId(getArguments().getBundle(KEY_SECURITY_ID));
         }
         return securityId;
+    }
+
+    public static void putPortfolioId(@NonNull Bundle args, @NonNull PortfolioId portfolioId)
+    {
+        args.putBundle(KEY_PORTFOLIO_ID, portfolioId.getArgs());
     }
 
     @NonNull protected PortfolioId getPortfolioId()
@@ -183,7 +191,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         return portfolioId;
     }
 
-    private QuoteDTO getBundledQuoteDTO()
+    public static void putQuoteDTO(@NonNull Bundle args, @NonNull QuoteDTO quoteDTO)
+    {
+        args.putBundle(KEY_QUOTE_DTO, quoteDTO.getArgs());
+    }
+
+    @NonNull private QuoteDTO getBundledQuoteDTO()
     {
         return new QuoteDTO(getArguments().getBundle(KEY_QUOTE_DTO));
     }
@@ -193,12 +206,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
-    }
-
-    @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
-    {
-        Dialog d = super.onCreateDialog(savedInstanceState);
-        return d;
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -365,7 +372,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         this.positionDTOCompactList = securityPositionDetailDTO.positions;
         setPositionDTO();
         initPortfolioRelatedInfo();
-        clampQuantity(true);
+        clampQuantity();
         displayCashShareLabel();
     }
 
@@ -459,16 +466,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     protected abstract String getLabel();
 
     protected abstract int getCashLeftLabelResId();
-
-    public String getTitle()
-    {
-        return mStockNameTextView.getText().toString();
-    }
-
-    public String getSubtitle()
-    {
-        return mStockPriceTextView.getText().toString();
-    }
 
     @Nullable abstract protected Boolean isClosingPosition();
 
@@ -701,7 +698,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     public void updateTransactionDialog()
     {
-        updateSeekbar();
+        updateSeekBar();
         updateQuantityView();
         updateProfitLoss();
         updateTradeValueAndCashShareLeft();
@@ -714,7 +711,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         mQuantityEditText.setSelection(mQuantityEditText.getText().length());
     }
 
-    private void updateSeekbar()
+    private void updateSeekBar()
     {
         mSeekBar.setProgress(mTransactionQuantity);
     }
@@ -770,18 +767,15 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    protected void clampQuantity(boolean andDisplay)
+    protected void clampQuantity()
     {
-        linkWithQuantity(mTransactionQuantity, andDisplay);
+        linkWithQuantity(mTransactionQuantity);
     }
 
-    protected void linkWithQuantity(Integer quantity, boolean andDisplay)
+    protected void linkWithQuantity(Integer quantity)
     {
         this.mTransactionQuantity = clampedQuantity(quantity);
-        if (andDisplay)
-        {
-            updateTransactionDialog();
-        }
+        updateTransactionDialog();
     }
 
     protected Integer clampedQuantity(Integer candidate)
@@ -1021,7 +1015,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             Integer maxValue = getMaxValue();
             if (maxValue != null)
             {
-                linkWithQuantity((int) Math.floor(priceSelected * maxValue), true);
+                linkWithQuantity((int) Math.floor(priceSelected * maxValue));
             }
         }
         else
@@ -1033,7 +1027,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             }
             else
             {
-                linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy), true);
+                linkWithQuantity((int) Math.floor(priceSelected / priceRefCcy));
             }
         }
 
