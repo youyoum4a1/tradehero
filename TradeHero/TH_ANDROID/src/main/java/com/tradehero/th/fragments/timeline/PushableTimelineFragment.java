@@ -1,18 +1,16 @@
 package com.tradehero.th.fragments.timeline;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import javax.inject.Inject;
 
 /**
@@ -23,18 +21,12 @@ import javax.inject.Inject;
 })
 public class PushableTimelineFragment extends TimelineFragment
 {
-    @Inject HeroAlertDialogUtil heroAlertDialogUtil;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         mIsOtherProfile = true;
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)

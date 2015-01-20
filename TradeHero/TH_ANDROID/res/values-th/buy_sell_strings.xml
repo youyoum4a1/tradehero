@@ -51,6 +51,6 @@
   <string name="alert_dialog_buy_sell_returned_null_title">ขอโทษค่ะ</string>
   <string name="alert_dialog_buy_sell_returned_null_message">เซิร์ฟเวอร์แสดงข้อมูลที่ไม่ถูกต้อง\nคุณอาจยืนยันว่า เทรดไม่ผ่านการอนุมัติ แล้วลองใหม่อีกครั้ง </string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">โอเค</string>
-  <string name="buy_sell_share_count"></string>
+  <string name="buy_sell_share_count"/>
 
 </resources>

@@ -184,10 +184,10 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
         }
         else
         {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < usersToInvite.size(); i++)
             {
-                sb.append(" @" + usersToInvite.get(i).name);
+                sb.append(" @").append(usersToInvite.get(i).name);
             }
             return sb.toString();
         }

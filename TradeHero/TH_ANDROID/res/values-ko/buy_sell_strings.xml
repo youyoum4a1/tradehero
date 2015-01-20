@@ -37,6 +37,6 @@
   <string name="alert_dialog_buy_sell_returned_null_title">죄송합니다.</string>
   <string name="alert_dialog_buy_sell_returned_null_message">서버오류로 정보를 불러올 수 없습니다.\ 거래정보 확인후 다시 시도하세요.</string>
   <string name="alert_dialog_buy_sell_returned_null_cancel">Okay</string>
-  <string name="buy_sell_share_count"></string>
+  <string name="buy_sell_share_count"/>
 
 </resources>

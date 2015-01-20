@@ -111,7 +111,7 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
 
     protected int getMenuResource()
     {
-        return R.menu.leaderboard_menu;
+        return R.menu.empty_menu;
     }
 
     protected void pushLeaderboardListViewFragment(@NonNull LeaderboardDefDTO dto)

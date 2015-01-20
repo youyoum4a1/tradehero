@@ -7,6 +7,7 @@
     android:layout_height="fill_parent"
     android:background="@android:color/white"
     >
+
   <ListView
       android:layout_gravity="center"
       android:id="@+id/content_list"

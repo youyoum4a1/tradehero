@@ -115,10 +115,7 @@ public class ConvolutionMatrix
     {
         for (int x = 0; x < SIZE; ++x)
         {
-            for (int y = 0; y < SIZE; ++y)
-            {
-                matrix[x][y] = config[x][y];
-            }
+            System.arraycopy(config[x], 0, matrix[x], 0, SIZE);
         }
     }
 
