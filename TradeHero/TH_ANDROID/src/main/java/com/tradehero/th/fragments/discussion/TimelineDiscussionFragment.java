@@ -17,8 +17,7 @@ public class TimelineDiscussionFragment extends AbstractDiscussionFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.timeline_discussion, container, false);
-        return view;
+        return inflater.inflate(R.layout.timeline_discussion, container, false);
     }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)

@@ -1,10 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.InjectView;
@@ -25,21 +22,11 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     @InjectView(R.id.news_item_placeholder) @Optional ImageView newsItemPlaceholder;
 
     //<editor-fold desc="Constructors">
-
     public NewsItemCompactViewHolder(Context context)
     {
         super(context);
     }
-
     //</editor-fold>
-
-    @Override public void linkWith(DiscussionType discussionDTO, boolean andDisplay)
-    {
-        super.linkWith(discussionDTO, andDisplay);
-        if (andDisplay)
-        {
-        }
-    }
 
     //<editor-fold desc="Display Methods">
     @Override public void display()
@@ -65,13 +52,13 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         }
     }
 
-    public String parseHost(String url)
+    @Nullable public String parseHost(String url)
     {
         try
         {
             return new URL(url).getHost();
         }
-        catch (MalformedURLException e)
+        catch (MalformedURLException ignored)
         {
             return null;
         }
@@ -92,7 +79,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
         }
     }
 
-    public String getTitleText()
+    @Nullable public String getTitleText()
     {
         switch (currentTranslationStatus)
         {

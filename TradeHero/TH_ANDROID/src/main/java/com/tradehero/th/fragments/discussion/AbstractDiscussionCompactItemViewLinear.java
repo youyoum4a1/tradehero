@@ -66,7 +66,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         if (!isInEditMode())
         {
             viewHolder.onAttachedToWindow(this);
-            viewHolder.linkWith(abstractDiscussionCompactDTO, true);
+            viewHolder.linkWith(abstractDiscussionCompactDTO);
             viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
             socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
         }
@@ -134,7 +134,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
-        viewHolder.linkWith(abstractDiscussionDTO, andDisplay);
+        viewHolder.linkWith(abstractDiscussionDTO);
         if (andDisplay)
         {
         }

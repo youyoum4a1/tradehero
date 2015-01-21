@@ -145,8 +145,8 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         detachFreeFollowMiddleCallback();
         freeFollowMiddleSubscription =
                 userServiceWrapperLazy.get().freeFollowRx(heroId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new FreeFollowObserver());
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new FreeFollowObserver());
     }
 
     protected void follow(@NonNull UserBaseKey heroId)
@@ -258,7 +258,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     public void configureFollowItemsVisibility()
     {
         UserProfileDTO currentUser = this.userCache.getCachedValue(currentUserId.toUserBaseKey());
-        if (this.userProfileDTO == null || isCurrentUserID(this.userProfileDTO.id))
+        if (this.userProfileDTO == null || isCurrentUser(this.userProfileDTO.id))
         {
             this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(GONE);
@@ -276,10 +276,10 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         }
     }
 
-    public boolean isCurrentUserID(int userId)
+    public boolean isCurrentUser(int userId)
     {
         UserProfileDTO currentUser = this.userCache.getCachedValue(currentUserId.toUserBaseKey());
-        if(currentUser!=null)
+        if (currentUser != null)
         {
             return currentUser.id == userId;
         }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -33,14 +34,17 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         ORIGINAL(R.string.discussion_translate_button),
         TRANSLATING(R.string.discussion_translating_button),
         TRANSLATED(R.string.discussion_show_original_button),
-        FAILED(R.string.discussion_translation_failed_button);
+        FAILED(R.string.discussion_translation_failed_button),
+        ;
 
-        public final int actionTextResId;
+        @StringRes public final int actionTextResId;
 
-        TranslationStatus(int actionTextResId)
+        //<editor-fold desc="Constructors">
+        TranslationStatus(@StringRes int actionTextResId)
         {
             this.actionTextResId = actionTextResId;
         }
+        //</editor-fold>
     }
 
     @InjectView(R.id.discussion_action_buttons) @Optional public DiscussionActionButtonsView discussionActionButtonsView;
@@ -109,7 +113,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         this.menuClickedListener = menuClickedListener;
     }
 
-    public void linkWith(DiscussionDTOType discussionDTO, boolean andDisplay)
+    public void linkWith(DiscussionDTOType discussionDTO)
     {
         this.discussionDTO = discussionDTO;
         this.translatedDiscussionDTO = null;
@@ -117,13 +121,10 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
         if (discussionActionButtonsView != null)
         {
-            discussionActionButtonsView.linkWith(discussionDTO, andDisplay);
+            discussionActionButtonsView.linkWith(discussionDTO, true);
         }
 
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
 
         if (isAutoTranslate() && socialShareHelper.canTranslate(discussionDTO))
         {
@@ -145,17 +146,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         return socialShareHelper.isAutoTranslate();
     }
 
-    public void linkWithTranslated(DiscussionDTOType translatedDiscussionDTO, boolean andDisplay)
+    public void linkWithTranslated(DiscussionDTOType translatedDiscussionDTO)
     {
         this.translatedDiscussionDTO = translatedDiscussionDTO;
         if (currentTranslationStatus == TranslationStatus.TRANSLATING)
         {
             currentTranslationStatus = TranslationStatus.TRANSLATED;
         }
-        if (andDisplay)
-        {
-            displayTranslatableTexts();
-        }
+        displayTranslatableTexts();
     }
 
     public void setLatestTranslationResult(TranslationResult latestTranslationResult)
@@ -224,14 +222,14 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    public Spanned getTranslateNoticeText()
+    @NonNull public Spanned getTranslateNoticeText()
     {
         return Html.fromHtml(context.getString(
                 R.string.discussion_translate_button_with_powered,
                 getTranslateNoticeActionText()));
     }
 
-    public String getTranslateNoticeActionText()
+    @NonNull public String getTranslateNoticeActionText()
     {
         return context.getString(currentTranslationStatus.actionTextResId);
     }
@@ -259,7 +257,9 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         }
     }
 
-    @OnClick({R.id.discussion_translate_notice_wrapper}) @Optional
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick({R.id.discussion_translate_notice_wrapper})
+    @Optional
     protected void toggleTranslate()
     {
         switch (currentTranslationStatus)
@@ -385,7 +385,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
         @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
                 AbstractDiscussionCompactDTO translated)
         {
-            linkWithTranslated((DiscussionDTOType) translated, true);
+            linkWithTranslated((DiscussionDTOType) translated);
         }
     }
 

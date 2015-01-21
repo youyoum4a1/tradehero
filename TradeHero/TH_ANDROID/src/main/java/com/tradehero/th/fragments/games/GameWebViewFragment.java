@@ -100,7 +100,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
         menu.findItem(R.id.how_to_menu).setVisible(hasHowTo);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item)
+    @Override public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         switch (item.getItemId())
         {

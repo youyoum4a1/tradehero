@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -20,14 +21,10 @@ public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>
 
     //</editor-fold>
 
-    @Override public void linkWith(DiscussionDTOType discussionDTO, boolean andDisplay)
+    @Override public void linkWith(DiscussionDTOType discussionDTO)
     {
-        super.linkWith(discussionDTO, andDisplay);
-
-        if (andDisplay)
-        {
-            displayUser();
-        }
+        super.linkWith(discussionDTO);
+        displayUser();
     }
 
     //<editor-fold desc="Display Methods">
@@ -46,7 +43,7 @@ public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>
         return null;
     }
 
-    @Override protected RequestCreator createUserPicassoRequest()
+    @NonNull @Override protected RequestCreator createUserPicassoRequest()
     {
         if (discussionDTO != null && discussionDTO.user != null && discussionDTO.user.picture != null)
         {

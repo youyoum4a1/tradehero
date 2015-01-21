@@ -49,7 +49,7 @@ public class VideoCategoryView extends RelativeLayout
     @InjectView(R.id.video_gallery) Gallery gallery;
     @InjectView(android.R.id.empty) View emptyView;
     @InjectView(android.R.id.progress) View progress;
-    private final VideoAdapter galleryAdapter;
+    @NonNull private final VideoAdapter galleryAdapter;
 
     @Inject PaginatedVideoCacheRx paginatedVideoCache;
     @Inject DashboardNavigator navigator;
@@ -68,13 +68,7 @@ public class VideoCategoryView extends RelativeLayout
         HierarchyInjector.inject(this);
         galleryAdapter = new VideoAdapter(
                 getContext(),
-                new Comparator<VideoDTO>()
-                {
-                    @Override public int compare(@NonNull VideoDTO lhs, @NonNull VideoDTO rhs)
-                    {
-                        return lhs.getVideoId().compareTo(rhs.getVideoId());
-                    }
-                },
+                (lhs, rhs) -> lhs.getVideoId().compareTo(rhs.getVideoId()),
                 R.layout.video_view);
     }
     //</editor-fold>

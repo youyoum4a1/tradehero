@@ -77,7 +77,7 @@ public class StockInfoFragment extends DashboardFragment
         topPager = (ViewPager) view.findViewById(R.id.top_pager);
         if (topViewPagerAdapter == null)
         {
-            topViewPagerAdapter = new InfoTopStockPagerAdapter(getActivity(), ((Fragment) this).getChildFragmentManager());
+            topViewPagerAdapter = new InfoTopStockPagerAdapter(((Fragment) this).getChildFragmentManager());
         }
         if (topPager != null)
         {
@@ -95,7 +95,7 @@ public class StockInfoFragment extends DashboardFragment
             Bundle providerIdBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID_BUNDLE);
             if (providerIdBundle != null)
             {
-                linkWith(new ProviderId(providerIdBundle), false);
+                linkWith(new ProviderId(providerIdBundle));
             }
             Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID_BUNDLE);
             if (securityIdBundle != null)
@@ -135,14 +135,9 @@ public class StockInfoFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    private void linkWith(final ProviderId providerId, final boolean andDisplay)
+    private void linkWith(final ProviderId providerId)
     {
         this.providerId = providerId;
-
-        if (andDisplay)
-        {
-            // TODO
-        }
     }
 
     private void linkWith(final SecurityId securityId, final boolean andDisplay)

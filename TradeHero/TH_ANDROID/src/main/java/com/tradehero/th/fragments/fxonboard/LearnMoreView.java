@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.fxonboard;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.th.R;
@@ -12,10 +13,10 @@ import rx.subjects.PublishSubject;
 public class LearnMoreView extends LinearLayout
     implements FxOnBoardView<Boolean>
 {
-    private PublishSubject<Boolean> resultSubject = PublishSubject.create();
+    @NonNull private PublishSubject<Boolean> resultSubject = PublishSubject.create();
     private Subscription enrollmentSubscription;
 
-    @Override public Observable<Boolean> result()
+    @NonNull @Override public Observable<Boolean> result()
     {
         return resultSubject.asObservable();
     }

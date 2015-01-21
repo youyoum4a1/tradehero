@@ -81,13 +81,10 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> exten
         multiFetchSubscription = null;
     }
 
-    @Override public void linkWith(DiscussionType discussionDTO, boolean andDisplay)
+    @Override public void linkWith(DiscussionType discussionDTO)
     {
-        super.linkWith(discussionDTO, andDisplay);
+        super.linkWith(discussionDTO);
         fetchMultipleSecurities();
-        if (andDisplay)
-        {
-        }
     }
 
     protected void fetchMultipleSecurities()

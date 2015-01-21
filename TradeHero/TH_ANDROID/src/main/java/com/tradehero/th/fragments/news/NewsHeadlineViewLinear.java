@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -21,7 +22,7 @@ import rx.observers.EmptyObserver;
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear<NewsItemCompactDTO>
 {
     @Nullable private SecurityId securityId;
-    private int backgroundResourceId = -1;
+    @DrawableRes private int backgroundResourceId = -1;
 
     //<editor-fold desc="Constructors">
     public NewsHeadlineViewLinear(Context context, AttributeSet attrs)
@@ -41,7 +42,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
         viewHolder.discussionActionButtonsView.setCommentCountVisible(View.GONE);
     }
 
-    public void setNewsBackgroundResource(int resId)
+    public void setNewsBackgroundResource(@DrawableRes int resId)
     {
         this.backgroundResourceId = resId;
 

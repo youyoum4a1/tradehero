@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.contestcenter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.competition.ProviderDTO;
 
 class ProviderContestPageDTO implements ContestPageDTO
@@ -19,7 +20,7 @@ class ProviderContestPageDTO implements ContestPageDTO
         return providerDTO.getProviderId().hashCode();
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         if (this == other)
         {
