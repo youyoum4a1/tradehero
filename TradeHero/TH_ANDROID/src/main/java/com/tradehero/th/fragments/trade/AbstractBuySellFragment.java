@@ -57,7 +57,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
-    @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;

@@ -293,10 +293,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
-                securityCompactCache.get(getSecurityId())
-                        .map(pair -> pair.second))
-                .subscribe(
-                        this::linkWith,
+                securityCompactCache.get(getSecurityId()))
+                .subscribe(pair -> this.linkWith(pair.second),
                         error -> {
                         }));
     }
