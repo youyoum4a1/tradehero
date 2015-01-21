@@ -65,6 +65,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
@@ -401,7 +402,21 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void initSecurityRelatedInfo()
     {
-        mStockNameTextView.setText(securityCompactDTO == null ? "-" : securityCompactDTO.name);
+        if (securityCompactDTO != null )
+        {
+            if(!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            {
+                mStockNameTextView.setText(securityCompactDTO.name);
+            }
+            else
+            {
+                mStockNameTextView.setText(securityCompactDTO.getExchangeSymbol());
+            }
+        }
+        else
+        {
+            mStockNameTextView.setText("-");
+        }
         mStockPriceTextView.setText(String.valueOf(getLabel()));
     }
 
