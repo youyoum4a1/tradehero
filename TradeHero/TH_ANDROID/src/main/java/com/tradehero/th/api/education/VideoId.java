@@ -20,7 +20,7 @@ public class VideoId extends AbstractIntegerDTOKey
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_LEY;
     }

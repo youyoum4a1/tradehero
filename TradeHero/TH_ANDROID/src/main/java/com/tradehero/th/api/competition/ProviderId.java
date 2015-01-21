@@ -32,7 +32,7 @@ public class ProviderId extends AbstractIntegerDTOKey
         this.key = key;
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

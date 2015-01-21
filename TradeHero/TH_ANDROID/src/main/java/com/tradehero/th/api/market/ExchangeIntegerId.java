@@ -1,6 +1,7 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.common.persistence.DTO;
 
@@ -20,7 +21,7 @@ public class ExchangeIntegerId extends AbstractIntegerDTOKey implements DTO
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.news;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,6 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -135,34 +133,29 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         return securityCompactCache;
     }
 
-    @Override public void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
+    @Override public void linkWith(@Nullable SecurityId securityId)
     {
-        super.linkWith(securityId, andDisplay);
-        fetchSecurity(securityId);
+        super.linkWith(securityId);
+        if (securityId != null)
+        {
+            fetchSecurity(securityId);
+        }
     }
 
     protected void fetchSecurity(@NonNull SecurityId securityId)
     {
         unsubscribe(securitySubscription);
-        securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                    }
-
-                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                    {
-                        linkWith(pair.second, !isDetached());
-                    }
-                });
+        securitySubscription = AndroidObservable.bindFragment(
+                this,
+                securityCompactCache.get(securityId))
+                .map(pair -> pair.second)
+                .subscribe(
+                        this::linkWith,
+                        e -> {
+                        });
     }
 
-    public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
+    public void linkWith(SecurityCompactDTO securityCompactDTO)
     {
         value = securityCompactDTO;
 
@@ -178,21 +171,20 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
         unsubscribe(securityNewsSubscription);
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
-        securityNewsSubscription = AndroidObservable.bindFragment(this, newsTitleCache.get(listKey))
+        securityNewsSubscription = AndroidObservable.bindFragment(
+                this,
+                newsTitleCache.get(listKey))
+                .map(pair -> pair.second)
                 .subscribe(
-                        pair -> linkWith(pair.second, true),
+                        this::linkWith,
                         e -> THToast.show(R.string.error_fetch_security_info));
     }
 
-    public void linkWith(PaginatedDTO<NewsItemCompactDTO> news, boolean andDisplay)
+    public void linkWith(PaginatedDTO<NewsItemCompactDTO> news)
     {
         paginatedNews = news;
-
-        if (andDisplay)
-        {
-            displayNewsListView();
-            showNewsList();
-        }
+        displayNewsListView();
+        showNewsList();
     }
 
     @Override public void display()

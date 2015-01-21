@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
@@ -27,7 +28,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
 
     protected FxSecurityCompactDTO fxSecurityCompactDTO;
     private int mBlinkDuration;
-    private int mDefaultTextColor;
+    @ColorRes private int mDefaultTextColor;
 
     //<editor-fold desc="Constructors">
     public FXItemView(Context context)
@@ -84,7 +85,7 @@ public class FXItemView extends RelativeLayout implements DTOView<FxSecurityComp
         }
     }
 
-    private void coloredText(TextView textView, double value, int colorResId, int precision)
+    private void coloredText(TextView textView, double value, @ColorRes int colorResId, int precision)
     {
         THSignedFXRate.builder(value)
                 .enhanceTo((int) (textView.getTextSize() + 15))

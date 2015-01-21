@@ -18,7 +18,7 @@ public class LevelDefId extends AbstractIntegerDTOKey
         super(args);
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

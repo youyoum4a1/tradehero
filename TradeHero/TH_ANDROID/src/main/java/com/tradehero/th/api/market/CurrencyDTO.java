@@ -8,8 +8,10 @@ public class CurrencyDTO
     public double toUsdRate;
     public String toUsdAsOf;
 
+    //<editor-fold desc="Constructors">
     public CurrencyDTO()
     {
         super();
     }
+    //</editor-fold>
 }

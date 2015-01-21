@@ -29,7 +29,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
     }
     //</editor-fold>
 
-    abstract public String getBundleKey();
+    @NonNull abstract public String getBundleKey();
 
     @Override public int hashCode()
     {
@@ -53,10 +53,9 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
         equals(getClass().cast(other));
     }
 
-    public boolean equals(AbstractPrimitiveDTOKey other)
+    protected boolean equals(@NonNull AbstractPrimitiveDTOKey other)
     {
-        return (other != null) &&
-                getClass().isInstance(other) &&
+        return getClass().isInstance(other) &&
                 other.getClass().isInstance(this) &&
                 key.equals(other.key);
     }
@@ -85,7 +84,7 @@ public abstract class AbstractPrimitiveDTOKey<T extends Comparable> implements C
         return key.compareTo(other.key);
     }
 
-    public abstract void putParameters(Bundle args);
+    public abstract void putParameters(@NonNull Bundle args);
 
     @NonNull public Bundle getArgs()
     {

@@ -1,5 +1,6 @@
 package com.tradehero.th.api.competition.key;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 public class HelpVideoId extends AbstractIntegerDTOKey
@@ -13,7 +14,7 @@ public class HelpVideoId extends AbstractIntegerDTOKey
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

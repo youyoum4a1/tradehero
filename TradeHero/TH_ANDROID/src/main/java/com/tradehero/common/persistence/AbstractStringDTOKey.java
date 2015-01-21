@@ -1,22 +1,25 @@
 package com.tradehero.common.persistence;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 public abstract class AbstractStringDTOKey extends AbstractPrimitiveDTOKey<String>
 {
-    public AbstractStringDTOKey(String key)
+    //<editor-fold desc="Constructors">
+    public AbstractStringDTOKey(@NonNull String key)
     {
         super(key);
     }
 
-    public AbstractStringDTOKey(Bundle args)
+    public AbstractStringDTOKey(@NonNull Bundle args)
     {
         super(args);
     }
+    //</editor-fold>
 
-    abstract public String getBundleKey();
+    @NonNull abstract public String getBundleKey();
 
-    public void putParameters(Bundle args)
+    public void putParameters(@NonNull Bundle args)
     {
         args.putString(getBundleKey(), key);
     }

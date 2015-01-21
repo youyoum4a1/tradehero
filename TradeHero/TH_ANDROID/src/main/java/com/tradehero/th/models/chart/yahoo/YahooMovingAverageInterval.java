@@ -1,5 +1,7 @@
 package com.tradehero.th.models.chart.yahoo;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.util.List;
 
 public enum YahooMovingAverageInterval
@@ -13,16 +15,18 @@ public enum YahooMovingAverageInterval
 
     public static final String CONCAT_SEPARATOR = ",";
 
-    public final String code;
+    @NonNull public final String code;
     public final int days;
 
-    private YahooMovingAverageInterval(String code, int days)
+    //<editor-fold desc="Constructors">
+    private YahooMovingAverageInterval(@NonNull String code, int days)
     {
         this.code = code;
         this.days = days;
     }
+    //</editor-fold>
 
-    public static String concat(List<YahooMovingAverageInterval> movingAverageIntervals)
+    @NonNull public static String concat(@Nullable List<YahooMovingAverageInterval> movingAverageIntervals)
     {
         if (movingAverageIntervals == null)
         {

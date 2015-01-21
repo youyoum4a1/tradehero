@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,8 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.android.observables.AndroidObservable;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -74,30 +72,19 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
         return securityCompactCache;
     }
 
-    @Override public void linkWith(SecurityId securityId, final boolean andDisplay)
+    @Override public void linkWith(@Nullable SecurityId securityId)
     {
-        super.linkWith(securityId, andDisplay);
+        super.linkWith(securityId);
         if (this.securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = securityCompactCache.get(securityId)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            THToast.show(R.string.error_fetch_security_info);
-                        }
-
-                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                        {
-                            linkWith(pair.second, andDisplay);
-                        }
-                    });
+            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    securityCompactCache.get(securityId))
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            e -> THToast.show(R.string.error_fetch_security_info));
         }
     }
 

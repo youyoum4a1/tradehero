@@ -1,6 +1,7 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
 public class ExchangeStringId extends AbstractStringDTOKey
@@ -13,13 +14,13 @@ public class ExchangeStringId extends AbstractStringDTOKey
         super(args);
     }
 
-    public ExchangeStringId(String key)
+    public ExchangeStringId(@NonNull String key)
     {
         super(key);
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

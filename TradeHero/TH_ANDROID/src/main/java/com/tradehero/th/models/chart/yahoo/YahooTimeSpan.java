@@ -1,5 +1,6 @@
 package com.tradehero.th.models.chart.yahoo;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 
@@ -20,23 +21,25 @@ public enum YahooTimeSpan
     year5("5y", R.string.yahoo_chart_5y, ChartTimeSpan.YEAR_5),
     yearMax("my", R.string.yahoo_chart_max, ChartTimeSpan.MAX);
 
-    public final String code;
+    @NonNull public final String code;
     public final int stringResId;
     public final long chartTimeSpanDuration;
 
-    private YahooTimeSpan(String c, int stringResId, long chartTimeSpanDuration)
+    //<editor-fold desc="Constructors">
+    private YahooTimeSpan(@NonNull String c, int stringResId, long chartTimeSpanDuration)
     {
         code = c;
         this.stringResId = stringResId;
         this.chartTimeSpanDuration = chartTimeSpanDuration;
     }
+    //</editor-fold>
 
     public boolean equalsCode(String otherCode)
     {
         return (otherCode != null) && otherCode.equals(code);
     }
 
-    public ChartTimeSpan getChartTimeSpan()
+    @NonNull public ChartTimeSpan getChartTimeSpan()
     {
         return new ChartTimeSpan(chartTimeSpanDuration);
     }
@@ -46,7 +49,7 @@ public enum YahooTimeSpan
         return code;
     }
 
-    public static YahooTimeSpan getBestApproximation(ChartTimeSpan timeSpan)
+    @NonNull public static YahooTimeSpan getBestApproximation(@NonNull ChartTimeSpan timeSpan)
     {
         YahooTimeSpan previousBest = YahooTimeSpan.day1;
 

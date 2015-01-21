@@ -1,16 +1,18 @@
 package com.tradehero.th.models.chart;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
 public interface ChartDTO extends DTO
 {
-    void setSecurityCompactDTO(SecurityCompactDTO securityCompactDTO);
-    ChartSize getChartSize();
-    void setChartSize(ChartSize chartSize);
-    ChartTimeSpan getChartTimeSpan();
+    void setSecurityCompactDTO(@Nullable SecurityCompactDTO securityCompactDTO);
+    @NonNull ChartSize getChartSize();
+    void setChartSize(@NonNull ChartSize chartSize);
+    @NonNull ChartTimeSpan getChartTimeSpan();
     void setIncludeVolume(boolean includeVolume);
     boolean isIncludeVolume();
-    void setChartTimeSpan(ChartTimeSpan chartTimeSpan);
-    String getChartUrl();
+    void setChartTimeSpan(@NonNull ChartTimeSpan chartTimeSpan);
+    @NonNull String getChartUrl();
 }

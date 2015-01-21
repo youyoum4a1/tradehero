@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.security;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.WarrantType;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
@@ -27,7 +27,6 @@ import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
@@ -129,38 +128,26 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         }
     }
 
-    @Override public void linkWith(SecurityId securityId, final boolean andDisplay)
+    @Override public void linkWith(@Nullable SecurityId securityId)
     {
-        super.linkWith(securityId, andDisplay);
-        if (this.securityId != null)
+        super.linkWith(securityId);
+        if (securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
             securityCompactCacheSubscription = AndroidObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
-                    .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            THToast.show(R.string.error_fetch_security_info);
-                        }
-
-                        @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                        {
-                            linkWith(pair.second, andDisplay);
-                        }
-                    });
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            e -> THToast.show(R.string.error_fetch_security_info));
         }
     }
 
-    @Override public void linkWith(SecurityCompactDTO value, boolean andDisplay)
+    @Override public void linkWith(SecurityCompactDTO value)
     {
         warrantDTO = (WarrantDTO) value;
-        super.linkWith(value, andDisplay);
+        super.linkWith(value);
     }
 
     //<editor-fold desc="Display Methods">
@@ -212,18 +199,26 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             else
             {
                 int warrantTypeStringResId;
-                switch(warrantDTO.getWarrantType())
+                WarrantType warrantType = warrantDTO.getWarrantType();
+                if (warrantType != null)
                 {
-                    case CALL:
-                        warrantTypeStringResId = R.string.warrant_type_call;
-                        break;
-                    case PUT:
-                        warrantTypeStringResId = R.string.warrant_type_put;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unhandled warrant type " + warrantDTO.getWarrantType());
+                    switch(warrantType)
+                    {
+                        case CALL:
+                            warrantTypeStringResId = R.string.warrant_type_call;
+                            break;
+                        case PUT:
+                            warrantTypeStringResId = R.string.warrant_type_put;
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Unhandled warrant type " + warrantDTO.getWarrantType());
+                    }
+                    mWarrantType.setText(warrantTypeStringResId);
                 }
-                mWarrantType.setText(warrantTypeStringResId);
+                else
+                {
+                    mWarrantType.setText(R.string.na);
+                }
             }
         }
     }

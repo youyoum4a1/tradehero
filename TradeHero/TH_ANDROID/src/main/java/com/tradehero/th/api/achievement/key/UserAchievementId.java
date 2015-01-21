@@ -24,7 +24,7 @@ public class UserAchievementId extends AbstractIntegerDTOKey implements Broadcas
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY;
     }

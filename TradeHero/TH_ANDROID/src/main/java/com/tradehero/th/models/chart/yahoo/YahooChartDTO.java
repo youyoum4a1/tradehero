@@ -1,5 +1,7 @@
 package com.tradehero.th.models.chart.yahoo;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartSize;
@@ -12,11 +14,11 @@ public class YahooChartDTO implements ChartDTO
     public static final ChartSize DEFAULT_CHART_SIZE = new ChartSize(YahooChartSize.small.yahooPixelWidth, YahooChartSize.small.yahooPixelHeight);
     public static final ChartTimeSpan DEFAULT_TIME_SPAN = new ChartTimeSpan(YahooTimeSpan.month3.chartTimeSpanDuration);
 
-    public String yahooSymbol;
-    public YahooChartSize size;
-    public YahooTimeSpan timeSpan;
+    @NonNull public String yahooSymbol;
+    @NonNull public YahooChartSize size;
+    @NonNull public YahooTimeSpan timeSpan;
     public boolean includeVolume;
-    public final List<YahooMovingAverageInterval> movingAverageIntervals;
+    @Nullable public final List<YahooMovingAverageInterval> movingAverageIntervals;
 
     //<editor-fold desc="Constructors">
     public YahooChartDTO()
@@ -24,14 +26,16 @@ public class YahooChartDTO implements ChartDTO
         this(null);
     }
 
-    public YahooChartDTO(SecurityCompactDTO securityCompactDTO)
+    public YahooChartDTO(@Nullable SecurityCompactDTO securityCompactDTO)
     {
         this(
                 securityCompactDTO,
                 DEFAULT_CHART_SIZE);
     }
 
-    public YahooChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize)
+    public YahooChartDTO(
+            @Nullable SecurityCompactDTO securityCompactDTO,
+            @NonNull ChartSize chartSize)
     {
         this(
                 securityCompactDTO,
@@ -39,7 +43,10 @@ public class YahooChartDTO implements ChartDTO
                 DEFAULT_TIME_SPAN);
     }
 
-    public YahooChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize, ChartTimeSpan chartTimeSpan)
+    public YahooChartDTO(
+            @Nullable SecurityCompactDTO securityCompactDTO,
+            @NonNull ChartSize chartSize,
+            @NonNull ChartTimeSpan chartTimeSpan)
     {
         this(
                 securityCompactDTO,
@@ -48,7 +55,11 @@ public class YahooChartDTO implements ChartDTO
                 defaultMovingAverageIntervals());
     }
 
-    public YahooChartDTO(SecurityCompactDTO securityCompactDTO, ChartSize chartSize, ChartTimeSpan chartTimeSpan, List<YahooMovingAverageInterval> movingAverageIntervals)
+    public YahooChartDTO(
+            @Nullable SecurityCompactDTO securityCompactDTO,
+            @NonNull ChartSize chartSize,
+            @NonNull ChartTimeSpan chartTimeSpan,
+            @Nullable List<YahooMovingAverageInterval> movingAverageIntervals)
     {
         setSecurityCompactDTO(securityCompactDTO);
         setChartSize(chartSize);
@@ -56,7 +67,10 @@ public class YahooChartDTO implements ChartDTO
         this.movingAverageIntervals = movingAverageIntervals;
     }
 
-    public YahooChartDTO(String yahooSymbol, YahooChartSize size, YahooTimeSpan timeSpan)
+    public YahooChartDTO(
+            @NonNull String yahooSymbol,
+            @NonNull YahooChartSize size,
+            @NonNull YahooTimeSpan timeSpan)
     {
         this.yahooSymbol = yahooSymbol;
         this.size = size;
@@ -64,8 +78,11 @@ public class YahooChartDTO implements ChartDTO
         this.movingAverageIntervals = defaultMovingAverageIntervals();
     }
 
-    public YahooChartDTO(String yahooSymbol, YahooChartSize size, YahooTimeSpan timeSpan,
-            List<YahooMovingAverageInterval> movingAverageIntervals)
+    public YahooChartDTO(
+            @NonNull String yahooSymbol,
+            @NonNull YahooChartSize size,
+            @NonNull YahooTimeSpan timeSpan,
+            @Nullable List<YahooMovingAverageInterval> movingAverageIntervals)
     {
         this.yahooSymbol = yahooSymbol;
         this.size = size;
@@ -74,27 +91,27 @@ public class YahooChartDTO implements ChartDTO
     }
     //</editor-fold>
 
-    @Override public void setSecurityCompactDTO(SecurityCompactDTO securityCompactDTO)
+    @Override public void setSecurityCompactDTO(@Nullable SecurityCompactDTO securityCompactDTO)
     {
         this.yahooSymbol = securityCompactDTO == null ? "" : securityCompactDTO.yahooSymbol;
     }
 
-    @Override public ChartSize getChartSize()
+    @NonNull @Override public ChartSize getChartSize()
     {
         return size.getChartSize();
     }
 
-    @Override public void setChartSize(ChartSize chartSize)
+    @Override public void setChartSize(@NonNull ChartSize chartSize)
     {
         this.size = YahooChartSize.getPreferredSize(chartSize.width, chartSize.height);
     }
 
-    @Override public ChartTimeSpan getChartTimeSpan()
+    @NonNull @Override public ChartTimeSpan getChartTimeSpan()
     {
         return timeSpan.getChartTimeSpan();
     }
 
-    @Override public void setChartTimeSpan(ChartTimeSpan chartTimeSpan)
+    @Override public void setChartTimeSpan(@NonNull ChartTimeSpan chartTimeSpan)
     {
         this.timeSpan = YahooTimeSpan.getBestApproximation(chartTimeSpan);
     }
@@ -109,7 +126,7 @@ public class YahooChartDTO implements ChartDTO
         return includeVolume;
     }
 
-    public static List<YahooMovingAverageInterval> defaultMovingAverageIntervals()
+    @NonNull public static List<YahooMovingAverageInterval> defaultMovingAverageIntervals()
     {
         ArrayList<YahooMovingAverageInterval> created = new ArrayList<>();
         created.add(YahooMovingAverageInterval.m50);
@@ -117,7 +134,7 @@ public class YahooChartDTO implements ChartDTO
         return created;
     }
 
-    public String getChartUrl()
+    @NonNull public String getChartUrl()
     {
         return String.format(
                 "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&z=%s&p=%s%s",

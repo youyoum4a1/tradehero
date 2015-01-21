@@ -40,7 +40,7 @@ public class UserBaseKey extends AbstractIntegerDTOKey
         this.key = userId;
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

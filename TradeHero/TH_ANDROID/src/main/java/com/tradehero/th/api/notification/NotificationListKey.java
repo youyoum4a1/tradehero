@@ -1,6 +1,7 @@
 package com.tradehero.th.api.notification;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.th.api.Querylizable;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class NotificationListKey extends AbstractIntegerDTOKey
         super(args);
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

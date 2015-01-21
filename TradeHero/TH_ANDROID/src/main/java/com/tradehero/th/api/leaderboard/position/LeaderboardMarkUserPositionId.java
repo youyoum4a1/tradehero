@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.position;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 
 public class LeaderboardMarkUserPositionId extends AbstractIntegerDTOKey
@@ -17,7 +18,7 @@ public class LeaderboardMarkUserPositionId extends AbstractIntegerDTOKey
         super(args);
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY;
     }

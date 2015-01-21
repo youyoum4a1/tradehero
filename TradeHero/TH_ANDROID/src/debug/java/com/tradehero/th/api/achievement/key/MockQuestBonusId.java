@@ -19,7 +19,7 @@ public class MockQuestBonusId extends QuestBonusId
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY;
     }
