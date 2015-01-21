@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="#ffffff">
+              android:paddingLeft="5dp"
+              android:paddingRight="5dp"
+              android:layout_height="wrap_content">
 
-    <TextView
-            android:padding="10dp"
-            android:id="@+id/textview_discovery_news_item_title" android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="13sp" android:textColor="#000000"/>
+    <RelativeLayout android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="2dp"
+                    android:background="#ffffff">
+        <TextView android:id="@+id/textview_news_creation_time" android:layout_width="wrap_content"
+                  android:singleLine="true"
+                  android:textSize="11sp"
+                  android:text="moment ago" android:layout_height="wrap_content"
+                  android:layout_marginRight="10dp"
+                  android:textColor="@color/text_gray_normal"
+                  android:layout_centerVertical="true"
+                  android:layout_alignParentRight="true"
+                />
+        <TextView
+                android:id="@+id/textview_discovery_news_item_title" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/textview_news_creation_time"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="14sp" android:textColor="#000000"/>
 
+    </RelativeLayout>
 </LinearLayout>

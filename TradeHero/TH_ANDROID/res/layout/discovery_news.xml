@@ -23,6 +23,7 @@
             android:scrollingCache="false"
             android:fadingEdge="none"
             android:divider="@color/transparent"
+            android:listSelector="@android:color/transparent"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
     </com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView>

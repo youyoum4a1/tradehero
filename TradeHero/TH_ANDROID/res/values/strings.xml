@@ -494,5 +494,7 @@
   <string name="discovery_discuss_send_reward_right_answer">最佳答案</string>
   <string name="discovery_discuss_already_deleted">该贴已删除</string>
 
+  <string name="discovery_news_detail">资讯详情</string>
+
   <!-- Discovery Discuss Reward -->
 </resources>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.*;
@@ -20,19 +21,18 @@ import com.tradehero.chinabuild.data.DiscussReportDTO;
 import com.tradehero.chinabuild.dialog.DialogFactory;
 import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineReportDialogLayout;
+import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.*;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTOFactory;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionListKey;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -70,7 +70,7 @@ import java.util.List;
  *
  * Created by palmer on 15/1/16.
  */
-public class NewsDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener{
+public class NewsDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener{
 
     @Inject Lazy<NewsServiceWrapper> newsServiceWrapper;
     @Inject UserProfileCache userProfileCache;
@@ -88,6 +88,17 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     private View headerView;
     private RelativeLayout sendDiscussionRL;
     private TimeLineDetailDiscussSecItem adapter;
+    private TextView textview_news_detail_title;
+
+    //News Operater
+    private LinearLayout timeline_detail_llTLPraise;
+    private TextView timeline_detail_btnTLPraise;
+    private TextView timeline_detail_tvTLPraise;
+    private LinearLayout timeline_detail_llTLPraiseDown;
+    private TextView timeline_detail_btnTLPraiseDown;
+    private TextView timeline_detail_tvTLPraiseDown;
+    private LinearLayout timeline_detail_llTLComment;
+    private TextView timeline_detail_tvTLComment;
 
     private Button sendCommentBtn;
     private EditText editCommentET;
@@ -120,6 +131,10 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
 
 
+    private NewsItemDTO newsItemDTO;
+    private MiddleCallback<DiscussionDTO> voteCallback;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +147,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         View view = inflater.inflate(R.layout.news_detail, container, false);
 
         ButterKnife.inject(this, view);
-
+        setNeedToMonitorBackPressed(true);
         dm = new DisplayMetrics();
         dm = getActivity().getResources().getDisplayMetrics();
 
@@ -169,22 +184,12 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
             public void OnTimeLineBuyClicked(int position){}
         });
 
-        headerView = getActivity().getLayoutInflater().inflate(
-                R.layout.discovery_news_detail_header, null);
-        newsWebView =  (WebView)headerView.findViewById(R.id.webview_news_html_content);
-        newsWebView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
-        newsWebView.getSettings().setBuiltInZoomControls(false);
-        newsWebView.getSettings().setJavaScriptEnabled(true);
-        newsWebView.setWebViewClient(new WebViewClient(){
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return true;
-            }
-        });
-
+        initHeaderViews();
 
         Bundle bundle = getArguments();
         newsId = bundle.getLong(KEY_BUNDLE_NEWS_ID);
-        retrieveNewsDetail();
+        newsTitle = bundle.getString(KEY_BUNDLE_NEWS_TITLE);
+        textview_news_detail_title.setText(newsTitle);
 
 
         pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
@@ -200,8 +205,24 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
                 fetchComments();
             }
         });
-
+        retrieveNewsDetail();
         return view;
+    }
+
+    private void initHeaderViews(){
+        headerView = getActivity().getLayoutInflater().inflate(
+                R.layout.discovery_news_detail_header, null);
+        newsWebView =  (WebView)headerView.findViewById(R.id.webview_news_html_content);
+        newsWebView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
+        newsWebView.getSettings().setBuiltInZoomControls(false);
+        newsWebView.getSettings().setJavaScriptEnabled(true);
+        newsWebView.setWebViewClient(new WebViewClient(){
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return true;
+            }
+        });
+        textview_news_detail_title = (TextView)headerView.findViewById(R.id.textview_news_detail_title);
+        initNewsOperaterView(headerView);
     }
 
     public void setDefaultReply()
@@ -359,17 +380,19 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
 
 
     private void retrieveNewsDetail(){
-        newsServiceWrapper.get().getSecurityNewsDetail(newsId, new Callback<NewsItemDTO>() {
+        newsServiceWrapper.get().getNewsDetail(newsId, new Callback<NewsItemDTO>() {
             @Override
             public void success(NewsItemDTO newsItemDTO, Response response) {
-                if(newsItemDTO!=null && newsItemDTO.text!=null && newsWebView!=null && sendDiscussionRL!=null){
-                    htmlContent = StringUtils.convertToHtmlFormat(newsItemDTO.text, (int)(dm.widthPixels/dm.density-36));
+                NewsDetailFragment.this.newsItemDTO = newsItemDTO;
+                if (newsItemDTO != null && newsItemDTO.text != null && newsWebView != null && sendDiscussionRL != null) {
+                    htmlContent = StringUtils.convertToHtmlFormat(newsItemDTO.text, (int) (dm.widthPixels / dm.density - 36));
                     fetchComments();
-                    THLog.d(htmlContent);
                     newsWebView.loadData(htmlContent, "text/html; charset=UTF-8", null);
+                    displayNewsVoteViews();
+                    displayNewsCommentViews();
                     pullToRefreshListView.getRefreshableView().addHeaderView(headerView);
                     sendDiscussionRL.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     sendDiscussionRL.setVisibility(View.GONE);
                 }
             }
@@ -377,7 +400,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
             @Override
             public void failure(RetrofitError retrofitError) {
                 THToast.show(new THException(retrofitError).getMessage());
-                if(sendDiscussionRL!=null){
+                if (sendDiscussionRL != null) {
                     sendDiscussionRL.setVisibility(View.GONE);
                 }
             }
@@ -388,9 +411,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        Bundle bundle = getArguments();
-        newsTitle = bundle.getString(KEY_BUNDLE_NEWS_TITLE);
-        setHeadViewMiddleMain(newsTitle);
+        setHeadViewMiddleMain(R.string.discovery_news_detail);
         setHeadViewRight0(getActivity().getResources().getString(R.string.discovery_discuss_send_share));
     }
 
@@ -475,7 +496,6 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     public void onErrorThrown(@NotNull DiscussionListKey key, @NotNull Throwable error) {
         discussionListKey.setPage(1);
     }
-
 
     private boolean isDeleteAllowed(AbstractDiscussionCompactDTO dto)
     {
@@ -667,6 +687,36 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         return null;
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.timeline_detail_llTLPraise)
+        {
+            clickPraiseUp();
+            return;
+        }
+        if (view.getId() == R.id.timeline_detail_llTLPraiseDown)
+        {
+            clickPraiseDown();
+            return;
+        }
+        if (view.getId() == R.id.timeline_detail_llTLComment)
+        {
+            if(newsItemDTO!=null) {
+                comments(newsItemDTO);
+            }
+            return;
+        }
+    }
+
+    private void comments(AbstractDiscussionCompactDTO dto)
+    {
+        DiscussionKey discussionKey = dto.getDiscussionKey();
+        Bundle bundle = new Bundle();
+        bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
+                discussionKey.getArgs());
+        pushFragment(DiscussSendFragment.class, bundle);
+    }
+
     private class SecurityDiscussionEditCallback implements Callback<DiscussionDTO>
     {
         @Override
@@ -676,6 +726,10 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
             DeviceUtil.dismissKeyboard(getActivity());
             discussionListKey.setPage(1);
             fetchComments();
+            if(newsItemDTO!=null){
+                newsItemDTO.commentCount++;
+                displayNewsCommentViews();
+            }
             strReply = "";
             editCommentET.setText("");
         }
@@ -707,5 +761,129 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     private boolean validateNotEmptyText()
     {
         return !editCommentET.getText().toString().trim().isEmpty();
+    }
+
+    private void initNewsOperaterView(View parentView){
+        timeline_detail_llTLPraise = (LinearLayout)parentView.findViewById(R.id.timeline_detail_llTLPraise);
+        timeline_detail_btnTLPraise = (TextView)parentView.findViewById(R.id.timeline_detail_btnTLPraise);
+        timeline_detail_tvTLPraise = (TextView)parentView.findViewById(R.id.timeline_detail_tvTLPraise);
+        timeline_detail_llTLPraiseDown = (LinearLayout)parentView.findViewById(R.id.timeline_detail_llTLPraiseDown);
+        timeline_detail_btnTLPraiseDown = (TextView)parentView.findViewById(R.id.timeline_detail_btnTLPraiseDown);
+        timeline_detail_tvTLPraiseDown = (TextView)parentView.findViewById(R.id.timeline_detail_tvTLPraiseDown);
+        timeline_detail_llTLComment = (LinearLayout)parentView.findViewById(R.id.timeline_detail_llTLComment);
+        timeline_detail_tvTLComment = (TextView)parentView.findViewById(R.id.timeline_detail_tvTLComment);
+
+        timeline_detail_llTLPraise.setOnClickListener(this);
+        timeline_detail_llTLPraiseDown.setOnClickListener(this);
+        timeline_detail_llTLComment.setOnClickListener(this);
+    }
+
+    private void displayNewsVoteViews(){
+        if(newsItemDTO==null){
+            return;
+        }
+        timeline_detail_btnTLPraise.setBackgroundResource(newsItemDTO.voteDirection == 1 ? R.drawable.icon_praise_active : R.drawable.icon_praise_normal);
+        timeline_detail_btnTLPraiseDown.setBackgroundResource(newsItemDTO.voteDirection == -1 ? R.drawable.icon_praise_down_active : R.drawable.icon_praise_down_normal);
+        timeline_detail_tvTLPraise.setText(String.valueOf(newsItemDTO.upvoteCount));
+        timeline_detail_tvTLPraiseDown.setText(String.valueOf(newsItemDTO.downvoteCount));
+    }
+
+    private void displayNewsCommentViews(){
+        if(newsItemDTO==null){
+            return;
+        }
+        timeline_detail_tvTLComment.setText(String.valueOf(newsItemDTO.commentCount));
+    }
+
+
+    private void clickPraiseUp(){
+        if(newsItemDTO.voteDirection == 0){
+            newsItemDTO.voteDirection = 1;
+            newsItemDTO.upvoteCount++;
+            updateVoting(VoteDirection.UpVote, newsItemDTO);
+        } else if(newsItemDTO.voteDirection == -1){
+            newsItemDTO.voteDirection = 1;
+            newsItemDTO.upvoteCount++;
+            newsItemDTO.downvoteCount--;
+            if(newsItemDTO.downvoteCount<0){
+                newsItemDTO.downvoteCount = 0;
+            }
+            updateVoting(VoteDirection.UpVote, newsItemDTO);
+        } else if(newsItemDTO.voteDirection==1){
+            newsItemDTO.voteDirection = 0;
+            newsItemDTO.upvoteCount--;
+            if(newsItemDTO.upvoteCount < 0){
+                newsItemDTO.upvoteCount = 0;
+            }
+            updateVoting(VoteDirection.UnVote, newsItemDTO);
+        }
+        displayNewsVoteViews();
+        timeline_detail_btnTLPraise.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_praise));
+    }
+
+    private void clickPraiseDown(){
+        if(newsItemDTO.voteDirection ==0){
+            newsItemDTO.voteDirection = -1;
+            newsItemDTO.downvoteCount++;
+            updateVoting(VoteDirection.DownVote, newsItemDTO);
+        }else if(newsItemDTO.voteDirection ==1){
+            newsItemDTO.voteDirection = -1;
+            newsItemDTO.downvoteCount++;
+            newsItemDTO.upvoteCount--;
+            if(newsItemDTO.upvoteCount < 0){
+                newsItemDTO.upvoteCount = 0;
+            }
+            updateVoting(VoteDirection.DownVote, newsItemDTO);
+        }else if(newsItemDTO.voteDirection == -1){
+            newsItemDTO.voteDirection = 0;
+            newsItemDTO.downvoteCount--;
+            if(newsItemDTO.downvoteCount <0){
+                newsItemDTO.downvoteCount = 0 ;
+            }
+            updateVoting(VoteDirection.UnVote, newsItemDTO);
+        }
+        displayNewsVoteViews();
+        timeline_detail_btnTLPraiseDown.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.vote_ani));
+    }
+
+    private void updateVoting(VoteDirection voteDirection, AbstractDiscussionCompactDTO discussionDTO)
+    {
+        if (discussionDTO == null)
+        {
+            return;
+        }
+
+        DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
+                DiscussionType.NEWS,
+                discussionDTO.id,
+                voteDirection);
+        detachVoteMiddleCallback();
+        voteCallback = discussionServiceWrapper.get().vote(discussionVoteKey, new VoteCallback(voteDirection));
+    }
+
+    protected void detachVoteMiddleCallback()
+    {
+        if (voteCallback != null)
+        {
+            voteCallback.setPrimaryCallback(null);
+        }
+        voteCallback = null;
+    }
+
+    protected class VoteCallback implements retrofit.Callback<DiscussionDTO>
+    {
+        public VoteCallback(VoteDirection voteDirection)
+        {
+        }
+
+        @Override
+        public void success(DiscussionDTO discussionDTO, Response response)
+        {
+        }
+
+        @Override
+        public void failure(RetrofitError error)
+        {
+        }
     }
 }

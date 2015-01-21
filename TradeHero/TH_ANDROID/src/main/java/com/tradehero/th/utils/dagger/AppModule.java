@@ -425,6 +425,7 @@ import java.util.Locale;
                         TimeLineItemDetailFragment.class,
                         TimeLineDetailDiscussSecItem.class,
                         CompetitionCollegeFragment.class,
+                        NewsItemAdapter.class,
 
                         LoginSuggestDialogFragment.class,
                         //China Build End

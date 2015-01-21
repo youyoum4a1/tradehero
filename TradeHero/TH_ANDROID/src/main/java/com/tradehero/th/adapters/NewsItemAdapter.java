@@ -9,7 +9,11 @@ import android.widget.TextView;
 import com.tradehero.chinabuild.data.NewsDTO;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +24,10 @@ public class NewsItemAdapter extends BaseAdapter{
 
     private LayoutInflater inflater;
     private List<NewsDTO> newsDTOList = new ArrayList<>();
+    @Inject public Lazy<PrettyTime> prettyTime;
 
     public NewsItemAdapter(Context context, List<NewsDTO> newsDTOList){
+        DaggerUtils.inject(this);
         inflater = LayoutInflater.from(context);
         this.newsDTOList.addAll(newsDTOList);
     }
@@ -48,6 +54,7 @@ public class NewsItemAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.discovery_news_item, null);
             viewHolder = new ViewHolder();
             viewHolder.titleTextView = (TextView)convertView.findViewById(R.id.textview_discovery_news_item_title);
+            viewHolder.createTimeTextView = (TextView)convertView.findViewById(R.id.textview_news_creation_time);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder)convertView.getTag();
@@ -55,6 +62,10 @@ public class NewsItemAdapter extends BaseAdapter{
         NewsDTO newsDTO = newsDTOList.get(i);
         THLog.d(newsDTO.toString());
         viewHolder.titleTextView.setText(newsDTO.title);
+        if(newsDTO.createdAtUtc!=null){
+            viewHolder.createTimeTextView.setText(prettyTime.get().formatUnrounded(newsDTO.createdAtUtc));
+        }
+
         return convertView;
     }
 
@@ -66,5 +77,6 @@ public class NewsItemAdapter extends BaseAdapter{
 
     public final class ViewHolder{
         public TextView titleTextView;
+        public TextView createTimeTextView;
     }
 }

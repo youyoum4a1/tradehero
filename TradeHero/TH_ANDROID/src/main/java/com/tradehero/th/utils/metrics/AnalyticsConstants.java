@@ -93,6 +93,7 @@ public class AnalyticsConstants
     //股神动态，热门话题,悬赏帖，最新动态
     public final static String BUTTON_DISCOVERY_LATEST = "BUTTON_DISCOVERY_LATEST";
     public final static String BUTTON_DISCOVERY_HOT = "BUTTON_DISCOVERY_HOT";
+    public final static String BUTTON_DISCOVERY_NEWS = "BUTTON_DISCOVERY_NEWS";
     public final static String BUTTON_DISCOVERY_REWARD = "BUTTON_DISCOVERY_REWARD";
     public final static String BUTTON_DISCOVERY_GOD = "BUTTON_DISCOVERY_GOD";
 

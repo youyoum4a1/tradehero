@@ -2,13 +2,115 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:padding="10dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
               android:background="#ffffff"
               android:layout_height="fill_parent"
         >
 
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:textSize="16sp" android:textColor="#000000" android:paddingTop="10dp"
+              android:paddingBottom="10dp"
+              android:id="@+id/textview_news_detail_title"/>
+
     <WebView android:layout_width="match_parent" android:id="@+id/webview_news_html_content"
              android:layout_height="match_parent"
-             android:padding="10dp"
+             android:paddingBottom="10dp"
             />
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/gray_normal"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="36dp" android:layout_weight="3" android:visibility="visible"
+                  android:background="#ffffff"
+                  android:orientation="horizontal">
+        <LinearLayout
+                android:layout_weight="1"
+                android:id="@+id/timeline_detail_llTLPraise"
+                android:gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <TextView android:id="@+id/timeline_detail_btnTLPraise"
+                      android:layout_width="15dp"
+                      android:layout_height="15dp"
+                      android:duplicateParentState="true"
+                      android:background="@drawable/icon_praise_normal"/>
+            <TextView
+                    android:id="@+id/timeline_detail_tvTLPraise"
+                    android:layout_marginLeft="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_xsmall"
+                    android:duplicateParentState="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#929292"
+                    android:text="赞"/>
+        </LinearLayout>
+
+        <View
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:background="@color/gray_normal"/>
+
+        <LinearLayout
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/timeline_detail_llTLPraiseDown"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <TextView android:id="@+id/timeline_detail_btnTLPraiseDown"
+                      android:layout_width="15dp"
+                      android:layout_height="15dp"
+                      android:duplicateParentState="true"
+                      android:background="@drawable/icon_praise_down_normal"/>
+            <TextView
+                    android:id="@+id/timeline_detail_tvTLPraiseDown"
+                    android:layout_marginLeft="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_xsmall"
+                    android:duplicateParentState="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#929292"
+                    android:text="踩"/>
+        </LinearLayout>
+
+
+        <View
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="7dp"
+                android:background="@color/gray_normal"/>
+
+        <LinearLayout
+                android:id="@+id/timeline_detail_llTLComment"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent">
+
+            <TextView android:id="@+id/timeline_detail_btnTLComment"
+                      android:layout_width="15dp"
+                      android:layout_height="15dp"
+                      android:duplicateParentState="true"
+                      android:background="@drawable/icon_comment_xml"/>
+            <TextView
+                    android:id="@+id/timeline_detail_tvTLComment"
+                    android:layout_marginLeft="3dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:textSize="@dimen/text_xsmall"
+                    android:duplicateParentState="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#929292"
+                    android:text="0"/>
+        </LinearLayout>
+    </LinearLayout>
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/gray_normal"/>
 </LinearLayout>

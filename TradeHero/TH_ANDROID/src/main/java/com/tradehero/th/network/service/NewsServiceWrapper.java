@@ -191,11 +191,8 @@ import javax.inject.Singleton;
         return newsServiceSync.getNewsDetails(newsId);
     }
 
-    public MiddleCallback<NewsItemDTO> getSecurityNewsDetail(long newsId, Callback<NewsItemDTO> callback)
-    {
-        MiddleCallback<NewsItemDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        newsServiceAsync.getNewsDetails(newsId, middleCallback);
-        return middleCallback;
+    public void getNewsDetail(long newsId, Callback<NewsItemDTO> callback){
+        newsServiceAsync.getNewsDetails(newsId,callback);
     }
 
     public void retrieveNews(int pageNumber, int numberPerPage, Callback<NewsDTOSet> callback){

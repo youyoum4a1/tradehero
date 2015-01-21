@@ -62,7 +62,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
     }
 
     private static final String[] CONTENT = new String[] {"最新动态"
-              , "资讯","悬赏帖", "股神动态"
+              , "股市资讯","悬赏帖", "股神动态"
     };
 
     @Override
@@ -72,7 +72,7 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
             return;
         }
         else if(i == 1){
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_HOT));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_NEWS));
             return;
         }
         else if(i == 2){
