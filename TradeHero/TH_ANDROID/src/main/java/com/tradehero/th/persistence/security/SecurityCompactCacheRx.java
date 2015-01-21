@@ -2,31 +2,36 @@ package com.tradehero.th.persistence.security;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.common.persistence.BaseDTOCacheRx;
+import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import rx.Observable;
 
 @Singleton @UserCache
-public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityCompactDTO>
+public class SecurityCompactCacheRx extends BaseFetchDTOCacheRx<SecurityId, SecurityCompactDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 1000;
     public static final int DEFAULT_MAX_SUBJECT_SIZE = 10;
 
     @NonNull private final Lazy<SecurityIdCache> securityIdCache;
+    private Lazy<SecurityServiceWrapper> securityServiceWrapper;
 
     //<editor-fold desc="Constructors">
     @Inject protected SecurityCompactCacheRx(
             @NonNull Lazy<SecurityIdCache> securityIdCache,
+            @NonNull Lazy<SecurityServiceWrapper> securityServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
-        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
+        super(DEFAULT_MAX_VALUE_SIZE, DEFAULT_MAX_SUBJECT_SIZE, DEFAULT_MAX_SUBJECT_SIZE, dtoCacheUtil);
         this.securityIdCache = securityIdCache;
+        this.securityServiceWrapper = securityServiceWrapper;
     }
     //</editor-fold>
 
@@ -44,5 +49,10 @@ public class SecurityCompactCacheRx extends BaseDTOCacheRx<SecurityId, SecurityC
         {
             onNext(securityCompact.getSecurityId(), securityCompact);
         }
+    }
+
+    @NonNull @Override protected Observable<SecurityCompactDTO> fetch(@NonNull SecurityId key)
+    {
+        return securityServiceWrapper.get().getSecurityCompactRx(key);
     }
 }
