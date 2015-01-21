@@ -16,8 +16,7 @@ public class SecurityDiscussionCommentFragment extends AbstractDiscussionFragmen
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.security_discussion_comment, container, false);
-        return view;
+        return inflater.inflate(R.layout.security_discussion_comment, container, false);
     }
 
     @Override protected void handleCommentPosted(DiscussionDTO discussionDTO)

@@ -217,13 +217,12 @@ public class SocialFriendsFragmentWeibo extends SocialFriendsFragment
 
     protected void inviteFriends(String msg, List<UserFriendsDTO> usersToInvite)
     {
-        List<UserFriendsDTO> usersUnInvited = usersToInvite;
-        if (usersUnInvited == null || usersUnInvited.size() == 0)
+        if (usersToInvite == null || usersToInvite.size() == 0)
         {
             THToast.show(R.string.social_no_friend_to_invite);
             return;
         }
-        handleInviteUsers(msg, usersUnInvited);
+        handleInviteUsers(msg, usersToInvite);
     }
 
     protected void handleInviteUsers(String msg, List<UserFriendsDTO> usersToInvite)

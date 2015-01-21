@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.watchlist;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,12 @@ public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, W
 {
     private boolean showGainLossPercentage = true;
 
-    public WatchlistAdapter(Context context, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public WatchlistAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
+    //</editor-fold>
 
     @Override public WatchlistItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
