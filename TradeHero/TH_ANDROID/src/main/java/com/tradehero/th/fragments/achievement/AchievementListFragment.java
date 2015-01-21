@@ -81,7 +81,7 @@ public class AchievementListFragment extends DashboardFragment
 
     private void initAdapter()
     {
-        achievementListAdapter = new DTOAdapterNew<AchievementCategoryDTO>(getActivity(), R.layout.achievement_cell_view);
+        achievementListAdapter = new DTOAdapterNew<>(getActivity(), R.layout.achievement_cell_view);
         listView.setAdapter(achievementListAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {

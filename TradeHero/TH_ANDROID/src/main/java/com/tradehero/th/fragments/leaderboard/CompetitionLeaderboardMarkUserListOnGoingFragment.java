@@ -26,7 +26,7 @@ public class CompetitionLeaderboardMarkUserListOnGoingFragment extends Competiti
         {
             headerView.setCompetitionDTO(competitionDTO);
         }
-        headerView.linkWith(providerDTO, true);
+        headerView.linkWith(providerDTO);
     }
 
     @Override public void onDestroyView()

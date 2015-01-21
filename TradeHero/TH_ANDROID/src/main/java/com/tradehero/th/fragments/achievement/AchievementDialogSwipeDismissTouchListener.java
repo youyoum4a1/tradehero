@@ -22,7 +22,6 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
-import timber.log.Timber;
 
 /**
  * A {@link View.OnTouchListener} that makes any {@link com.tradehero.th.fragments.achievement.AchievementDialogFragment} dismissable when the user

@@ -4,9 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
-import android.text.Spanned;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +40,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.AlertServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -51,7 +47,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -205,7 +200,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         super.onDestroyView();
     }
 
-    protected void linkWith(@NonNull SecurityId securityId, boolean andDisplay)
+    protected void linkWith(@NonNull SecurityId securityId)
     {
         if (!securityId.equals(this.securityId))
         {
@@ -222,24 +217,16 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         unsubscribe(securitySubscription);
         securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .subscribe(new Observer<Pair<SecurityId, SecurityCompactDTO>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        hideDialog();
-                        THToast.show(new THException(e));
-                    }
-
-                    @Override public void onNext(Pair<SecurityId, SecurityCompactDTO> pair)
-                    {
-                        hideDialog();
-                        linkWith(pair.second, true);
-                    }
-                });
+                .map(pair -> pair.second)
+                .subscribe(
+                        value -> {
+                            hideDialog();
+                            linkWith(value);
+                        },
+                        e -> {
+                            hideDialog();
+                            THToast.show(new THException(e));
+                        });
     }
 
     protected AlertFormDTO getFormDTO()
@@ -280,29 +267,21 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
                     this,
                     securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()))
                     .take(1)
-                    .subscribe(new Observer<AlertSlotDTO>()
-                    {
-                        @Override public void onCompleted()
-                        {
-                        }
+                    .subscribe(
+                            this::handleAlertSlotForSave,
+                            e -> THToast.show(new THException(e)));
+        }
+    }
 
-                        @Override public void onError(Throwable e)
-                        {
-                            THToast.show(new THException(e));
-                        }
-
-                        @Override public void onNext(AlertSlotDTO alertSlotDTO)
-                        {
-                            if (alertSlotDTO.freeAlertSlots <= 0)
-                            {
-                                popPurchase();
-                            }
-                            else
-                            {
-                                saveAlert();
-                            }
-                        }
-                    });
+    protected void handleAlertSlotForSave(@NonNull AlertSlotDTO alertSlotDTO)
+    {
+        if (alertSlotDTO.freeAlertSlots <= 0)
+        {
+            popPurchase();
+        }
+        else
+        {
+            saveAlert();
         }
     }
 
@@ -344,22 +323,19 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 
     abstract protected void saveAlertProper(AlertFormDTO alertFormDTO);
 
-    protected void linkWith(AlertDTO alertDTO, boolean andDisplay)
+    protected void linkWith(AlertDTO alertDTO)
     {
         this.alertDTO = alertDTO;
 
         if (alertDTO != null && alertDTO.security != null)
         {
-            linkWith(alertDTO.security, andDisplay);
+            linkWith(alertDTO.security);
         }
 
-        if (andDisplay)
-        {
-            updateSwitchVisibility();
-            displayTargetPrice();
-            displayActiveUntil();
-            displayPriceChangeSeekBar();
-        }
+        updateSwitchVisibility();
+        displayTargetPrice();
+        displayActiveUntil();
+        displayPriceChangeSeekBar();
     }
 
     protected void updateSwitchVisibility()
@@ -424,18 +400,15 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         updateTargetPriceChangeValues(targetPriceToggle.isChecked());
     }
 
-    protected void linkWith(SecurityCompactDTO security, boolean andDisplay)
+    protected void linkWith(SecurityCompactDTO security)
     {
         this.securityCompactDTO = security;
 
-        if (andDisplay)
-        {
-            displayStockLogo();
-            displayCurrentPrice();
-            displayAsOfDate();
-            displayStockSymbol();
-            displayCompanyName();
-        }
+        displayStockLogo();
+        displayCurrentPrice();
+        displayAsOfDate();
+        displayStockSymbol();
+        displayCompanyName();
     }
 
     protected void displayActiveUntil()
@@ -702,28 +675,16 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     }
     //endregion
 
-    protected Observer<AlertCompactDTO> createAlertUpdateObserver()
+    protected void handleAlertUpdated(@NonNull AlertCompactDTO alertCompactDTO)
     {
-        return new AlertCreateObserver();
+        navigator.get().popFragment();
+        hideDialog();
     }
 
-    protected class AlertCreateObserver implements Observer<AlertCompactDTO>
+    protected void handleAlertUpdateFailed(@NonNull Throwable e)
     {
-        @Override public void onNext(AlertCompactDTO alertCompactDTO)
-        {
-            navigator.get().popFragment();
-            hideDialog();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            hideDialog();
-        }
+        THToast.show(new THException(e));
+        hideDialog();
     }
 
     private void hideDialog()

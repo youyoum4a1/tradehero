@@ -73,14 +73,11 @@ public class CompetitionLeaderboardTimedHeader extends LinearLayout
         postDelayed(viewUpdater, DEFAULT_UPDATE_MILLISEC_INTERVAL);
     }
 
-    public void linkWith(ProviderDTO providerDTO, boolean andDisplay)
+    public void linkWith(ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        if (andDisplay)
-        {
-            displayProviderTitle();
-            displayRuleDescription();
-        }
+        displayProviderTitle();
+        displayRuleDescription();
     }
 
     public void setCompetitionDTO(CompetitionDTO competitionDTO)

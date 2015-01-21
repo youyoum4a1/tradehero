@@ -243,7 +243,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
     {
         @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()
@@ -256,14 +256,11 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
         }
     }
 
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    public void linkWith(UserProfileDTO userProfileDTO)
     {
         this.currentUserProfile = userProfileDTO;
-        if (andDisplay)
-        {
-            displayAlertCount();
-            displayAlertCountIcon();
-        }
+        displayAlertCount();
+        displayAlertCountIcon();
     }
 
     protected Observer<Pair<UserBaseKey, AlertCompactDTOList>> createAlertCompactDTOListObserver()

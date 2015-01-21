@@ -8,6 +8,7 @@ import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
@@ -15,6 +16,8 @@ public class AlertCreateFragment extends BaseAlertEditFragment
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
+    protected Subscription saveAlertSubscription;
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
@@ -29,8 +32,15 @@ public class AlertCreateFragment extends BaseAlertEditFragment
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(getSecurityId(getArguments()), true);
-        linkWith(getDummyInitialAlertDTO(), true);
+        linkWith(getSecurityId(getArguments()));
+        linkWith(getDummyInitialAlertDTO());
+    }
+
+    @Override public void onStop()
+    {
+        unsubscribe(saveAlertSubscription);
+        saveAlertSubscription = null;
+        super.onStop();
     }
 
     protected AlertDTO getDummyInitialAlertDTO()
@@ -49,9 +59,12 @@ public class AlertCreateFragment extends BaseAlertEditFragment
 
     protected void saveAlertProper(AlertFormDTO alertFormDTO)
     {
-        AndroidObservable.bindFragment(this, alertServiceWrapper.get().createAlertRx(
+        unsubscribe(saveAlertSubscription);
+        saveAlertSubscription = AndroidObservable.bindFragment(this, alertServiceWrapper.get().createAlertRx(
                 currentUserId.toUserBaseKey(),
                 alertFormDTO))
-                .subscribe(createAlertUpdateObserver());
+                .subscribe(
+                        this::handleAlertUpdated,
+                        this::handleAlertUpdateFailed);
     }
 }
