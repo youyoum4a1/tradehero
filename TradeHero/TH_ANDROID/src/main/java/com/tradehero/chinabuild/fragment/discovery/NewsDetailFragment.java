@@ -134,6 +134,8 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     private NewsItemDTO newsItemDTO;
     private MiddleCallback<DiscussionDTO> voteCallback;
 
+    private int marginWebView = 0;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -150,7 +152,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         setNeedToMonitorBackPressed(true);
         dm = new DisplayMetrics();
         dm = getActivity().getResources().getDisplayMetrics();
-
+        marginWebView = (int)getActivity().getResources().getDimension(R.dimen.margin_small);
         sendDiscussionRL = (RelativeLayout)view.findViewById(R.id.rlSend);
         sendCommentBtn = (Button)view.findViewById(R.id.btnSend);
         sendCommentBtn.setOnClickListener(new View.OnClickListener() {
@@ -195,12 +197,18 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         pullToRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                if(discussionListKey==null){
+                    return;
+                }
                 discussionListKey.setPage(1);
                 fetchComments();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                if(discussionListKey==null){
+                    return;
+                }
                 discussionListKey = discussionListKey.next();
                 fetchComments();
             }
@@ -385,7 +393,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
             public void success(NewsItemDTO newsItemDTO, Response response) {
                 NewsDetailFragment.this.newsItemDTO = newsItemDTO;
                 if (newsItemDTO != null && newsItemDTO.text != null && newsWebView != null && sendDiscussionRL != null) {
-                    htmlContent = StringUtils.convertToHtmlFormat(newsItemDTO.text, (int) (dm.widthPixels / dm.density - 36));
+                    htmlContent = StringUtils.convertToHtmlFormat(newsItemDTO.text, (int) (dm.widthPixels / dm.density - marginWebView));
                     fetchComments();
                     newsWebView.loadData(htmlContent, "text/html; charset=UTF-8", null);
                     displayNewsVoteViews();

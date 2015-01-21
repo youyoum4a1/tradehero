@@ -83,14 +83,15 @@ public class StringUtils
     public static String convertToHtmlFormat(String content, int image_max_width) {
         String contentResult = removeTAG(content, "height=\"", "\"");
         contentResult = removeTAG(contentResult, "width=\"", "\"");
-        //contentResult = removeTAG(contentResult, "<a href=", "</a>");
-        contentResult = contentResult.replace("<img", "<br/><img");
-        contentResult = contentResult.replace("/>", "/><br/>");
-        contentResult = contentResult.replace("<img", "<img width=\"" + image_max_width + "\" ");
-        contentResult = contentResult.replace("<body>", "<body><br/>");
-        contentResult = contentResult.replace("<link>","");
-        contentResult = contentResult.replace("</link>","");
-        contentResult = contentResult.replace("点击下载雪球手机客户端","");
+        contentResult = contentResult.replaceAll("<img", "<br/><img");
+        contentResult = contentResult.replaceAll("/>", "/><br/>");
+        contentResult = contentResult.replaceAll("<img", "<img width=\"" + image_max_width + "\" ");
+        contentResult = contentResult.replaceAll("<body>", "<body><br/>");
+        contentResult = contentResult.replaceAll("<link>","");
+        contentResult = contentResult.replaceAll("</link>","");
+        contentResult = contentResult.replaceAll("点击下载雪球手机客户端","");
+        contentResult = contentResult.replaceAll("http://xueqiu.com/xz","");
+        contentResult = contentResult.replaceAll("<br/><br/>","<br/>");
         return contentResult;
     }
 
