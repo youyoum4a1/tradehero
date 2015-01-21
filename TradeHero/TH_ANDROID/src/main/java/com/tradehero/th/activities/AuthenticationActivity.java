@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
@@ -552,7 +551,6 @@ public class AuthenticationActivity extends DashboardActivity
                         return;
                     }
                     boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
-                    THLog.d(appInfoDTO.toString());
                     boolean forceUpdate = appInfoDTO.isForceUpgrade();
                     String url = appInfoDTO.getLatestVersionDownloadUrl();
                     THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(AuthenticationActivity.this, url, suggestUpdate,forceUpdate);

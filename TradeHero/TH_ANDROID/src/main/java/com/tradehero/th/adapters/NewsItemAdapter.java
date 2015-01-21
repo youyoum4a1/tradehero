@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.tradehero.chinabuild.data.NewsDTO;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
@@ -60,7 +59,6 @@ public class NewsItemAdapter extends BaseAdapter{
             viewHolder = (ViewHolder)convertView.getTag();
         }
         NewsDTO newsDTO = newsDTOList.get(i);
-        THLog.d(newsDTO.toString());
         viewHolder.titleTextView.setText(newsDTO.title);
         if(newsDTO.createdAtUtc!=null){
             viewHolder.createTimeTextView.setText(prettyTime.get().formatUnrounded(newsDTO.createdAtUtc));

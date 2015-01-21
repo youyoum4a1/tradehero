@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
+
 import java.util.List;
 
 public abstract class ExpandableDTOAdapter<
@@ -24,7 +25,6 @@ public abstract class ExpandableDTOAdapter<
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        //THLog.d(TAG, "getView " + position);
         if (convertView == null)
         {
             convertView = inflater.inflate(layoutResourceId, viewGroup, false);

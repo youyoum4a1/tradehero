@@ -51,8 +51,6 @@ public class AnalyticsConstants
     public static final String DISCOVERY_ITEM_PERSON = "DISCOVERY_ITEM_PERSON";
     public static final String DISCOVERY_ITEM_PRAISE = "DISCOVERY_ITEM_PRAISE";
     public static final String DISCOVERY_ITEM_PRAISE_DOWN = "DISCOVERY_ITEM_PRAISE_DOWN";
-    public static final String DISCOVERY_ITEM_COMMENT = "DISCOVERY_ITEM_COMMENT";
-    public static final String DISCOVERY_ITEM_SHARE = "DISCOVERY_ITEM_SHARE";
 
     //交易，股神，发现，竞赛，我的这五块的点击量及默认点击量
     public static final String MAIN_PAGE_TRADE = "MAIN_PAGE_TRADE";

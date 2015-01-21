@@ -91,6 +91,7 @@ public class StringUtils
         contentResult = contentResult.replaceAll("</link>","");
         contentResult = contentResult.replaceAll("点击下载雪球手机客户端","");
         contentResult = contentResult.replaceAll("http://xueqiu.com/xz","");
+        contentResult = contentResult.replaceAll("<br/><br/><br/>","<br/>");
         contentResult = contentResult.replaceAll("<br/><br/>","<br/>");
         return contentResult;
     }
