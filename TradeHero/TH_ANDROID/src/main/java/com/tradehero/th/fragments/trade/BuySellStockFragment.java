@@ -31,6 +31,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateFragment;
@@ -44,7 +45,6 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
@@ -81,7 +81,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Inject @ForSecurityItemForeground protected Transformation foregroundTransformation;
     @Inject @ForSecurityItemBackground protected Transformation backgroundTransformation;
 
-    @Inject AlertDialogUtil alertDialogUtil;
+    private PortfolioCompactDTO defaultPortfolio;
 
     @Nullable protected Subscription userWatchlistPositionCacheSubscription;
     @Nullable protected WatchlistPositionDTOList watchedList;
@@ -131,6 +131,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onDestroyView()
     {
         bottomViewPagerAdapter = null;
+        defaultPortfolio = null;
         super.onDestroyView();
     }
 
@@ -184,12 +185,17 @@ public class BuySellStockFragment extends BuySellFragment
 
     protected void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
-        PortfolioCompactDTO defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
-        if (defaultPortfolio != null)
+        defaultPortfolio = portfolioCompactDTOs.getDefaultPortfolio();
+        addDefaultMainPortfolioIfShould();
+        setInitialSellQuantityIfCan();
+    }
+
+    protected void addDefaultMainPortfolioIfShould()
+    {
+        if (defaultPortfolio != null && securityCompactDTO != null && !(securityCompactDTO instanceof WarrantDTO))
         {
             mSelectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(currentUserId.toUserBaseKey(), defaultPortfolio));
         }
-        setInitialSellQuantityIfCan();
     }
 
     protected class BuySellUserWatchlistCacheObserver
@@ -223,7 +229,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void linkWith(SecurityCompactDTO securityCompactDTO, boolean andDisplay)
     {
         super.linkWith(securityCompactDTO, andDisplay);
-
+        addDefaultMainPortfolioIfShould();
         if (andDisplay)
         {
             loadStockLogo();
