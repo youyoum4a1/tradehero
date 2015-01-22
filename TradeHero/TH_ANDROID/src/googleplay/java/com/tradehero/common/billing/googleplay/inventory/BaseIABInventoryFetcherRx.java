@@ -52,7 +52,7 @@ abstract public class BaseIABInventoryFetcherRx<
         return iabSKUs;
     }
 
-    abstract protected IABProductDetailsType createSKUDetails(IABSKUListKey itemType, String json) throws JSONException;
+    @NonNull abstract protected IABProductDetailsType createSKUDetails(IABSKUListKey itemType, String json) throws JSONException;
 
     @NonNull @Override public Observable<ProductInventoryResult<IABSKUType, IABProductDetailsType>> get()
     {
@@ -81,8 +81,8 @@ abstract public class BaseIABInventoryFetcherRx<
         });
     }
 
-    private List<ProductInventoryResult<IABSKUType, IABProductDetailsType>>
-    fetchOne(@NonNull IABServiceResult iabServiceResult, IABSKUListKey itemType)
+    @NonNull private List<ProductInventoryResult<IABSKUType, IABProductDetailsType>>
+    fetchOne(@NonNull IABServiceResult iabServiceResult, @NonNull IABSKUListKey itemType)
             throws RemoteException, JSONException
     {
         Bundle querySkus = getQuerySKUBundle();
@@ -96,13 +96,10 @@ abstract public class BaseIABInventoryFetcherRx<
             int statusCode = IABConstants.getResponseCodeFromBundle(productDetails);
             if (statusCode != IABConstants.BILLING_RESPONSE_RESULT_OK)
             {
-                Timber.d("getSkuDetails() failed: %s", IABConstants.getStatusCodeDescription(
-                        statusCode));
                 throw iabExceptionFactory.create(statusCode, String.format("While getting itemType=%s", itemType));
             }
             else
             {
-                Timber.d("getSkuDetails() returned a bundle with neither an error nor a detail list.");
                 throw new IABBadResponseException(IABConstants.getStatusCodeDescription(statusCode));
             }
         }
@@ -121,7 +118,7 @@ abstract public class BaseIABInventoryFetcherRx<
         return detailList;
     }
 
-    private Bundle getQuerySKUBundle()
+    @NonNull private Bundle getQuerySKUBundle()
     {
         ArrayList<String> identifiers = new ArrayList<>(this.iabSKUs.size());
         List<IABSKUType> iabSKUClone = new ArrayList<>(this.iabSKUs);

@@ -8,21 +8,15 @@ import com.tradehero.common.persistence.AbstractStringDTOKey;
 public class IABSKUListKey extends AbstractStringDTOKey implements ProductIdentifierListKey
 {
     public static final String BUNDLE_KEY_KEY = IABSKUListKey.class.getName() + ".key";
-    public static final String KEY_ALL = "ALL";
 
-    public static IABSKUListKey getInApp()
+    @NonNull public static IABSKUListKey getInApp()
     {
         return new IABSKUListKey(IABConstants.ITEM_TYPE_INAPP);
     }
 
-    public static IABSKUListKey getSubs()
+    @NonNull public static IABSKUListKey getSubs()
     {
         return new IABSKUListKey(IABConstants.ITEM_TYPE_SUBS);
-    }
-
-    public static IABSKUListKey getAll()
-    {
-        return new IABSKUListKey(KEY_ALL);
     }
 
     //<editor-fold desc="Constructors">
@@ -31,7 +25,7 @@ public class IABSKUListKey extends AbstractStringDTOKey implements ProductIdenti
         super(args);
     }
 
-    public IABSKUListKey(String key)
+    public IABSKUListKey(@SkuTypeValue @NonNull String key)
     {
         super(key);
     }
