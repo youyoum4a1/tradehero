@@ -14,6 +14,7 @@ import com.tradehero.common.billing.googleplay.IABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABServiceResult;
 import com.tradehero.common.billing.googleplay.Security;
+import com.tradehero.common.billing.googleplay.SkuTypeValue;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
@@ -77,7 +78,7 @@ abstract public class BaseIABPurchaseFetcherRx<
 
     @NonNull protected List<IABPurchaseType> fetchPurchases(
             @NonNull IABServiceResult serviceResult,
-            @NonNull String itemType) throws RemoteException, JSONException
+            @NonNull @SkuTypeValue String itemType) throws RemoteException, JSONException
     {
         // Query purchase
         //THToast.show("Querying owned items, item type: " + itemType);
@@ -105,7 +106,9 @@ abstract public class BaseIABPurchaseFetcherRx<
         return purchases;
     }
 
-    private List<IABPurchaseType> fetchPurchases(@NonNull Bundle ownedItems, @NonNull String itemType) throws JSONException
+    private List<IABPurchaseType> fetchPurchases(
+            @NonNull Bundle ownedItems,
+            @NonNull @SkuTypeValue String itemType) throws JSONException
     {
         if (!ownedItems.containsKey(IABConstants.RESPONSE_INAPP_ITEM_LIST)
                 || !ownedItems.containsKey(IABConstants.RESPONSE_INAPP_PURCHASE_DATA_LIST)
@@ -150,7 +153,10 @@ abstract public class BaseIABPurchaseFetcherRx<
         return purchases;
     }
 
-    protected Bundle getPurchasesBundle(@NonNull IABServiceResult serviceResult, @NonNull String itemType, @Nullable String continueToken)
+    protected Bundle getPurchasesBundle(
+            @NonNull IABServiceResult serviceResult,
+            @NonNull @SkuTypeValue String itemType,
+            @Nullable String continueToken)
             throws RemoteException
     {
         Timber.d("Calling getPurchases with continuation token: %s", continueToken);
@@ -168,7 +174,7 @@ abstract public class BaseIABPurchaseFetcherRx<
     }
 
     @NonNull protected PurchaseFetchResult<IABSKUType, IABOrderIdType, IABPurchaseType> createPurchaseResult(
-            @NonNull String itemType,
+            @NonNull @SkuTypeValue String itemType,
             @NonNull String purchaseData,
             @NonNull String signature)
             throws JSONException
@@ -177,7 +183,7 @@ abstract public class BaseIABPurchaseFetcherRx<
     }
 
     @NonNull abstract protected IABPurchaseType createPurchase(
-            @NonNull String itemType,
+            @NonNull @SkuTypeValue String itemType,
             @NonNull String purchaseData,
             @NonNull String signature)
             throws JSONException;

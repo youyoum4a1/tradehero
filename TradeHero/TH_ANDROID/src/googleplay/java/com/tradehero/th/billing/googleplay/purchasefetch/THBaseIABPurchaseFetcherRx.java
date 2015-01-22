@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.BillingServiceBinderObservable;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.SkuTypeValue;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.purchasefetch.BaseIABPurchaseFetcherRx;
 import com.tradehero.th.billing.googleplay.THIABOrderId;
@@ -30,7 +31,7 @@ public class THBaseIABPurchaseFetcherRx
     //</editor-fold>
 
     @Override @NonNull protected THIABPurchase createPurchase(
-            @NonNull String itemType,
+            @NonNull @SkuTypeValue String itemType,
             @NonNull String purchaseData,
             @NonNull String signature) throws JSONException
     {

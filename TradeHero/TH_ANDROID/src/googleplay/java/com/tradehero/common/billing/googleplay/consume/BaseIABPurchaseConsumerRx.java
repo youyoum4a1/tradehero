@@ -30,7 +30,6 @@ abstract public class BaseIABPurchaseConsumerRx<
     @NonNull protected final IABPurchaseType purchase;
 
     //<editor-fold desc="Constructors">
-
     protected BaseIABPurchaseConsumerRx(
             int requestCode,
             @NonNull IABPurchaseType purchase,

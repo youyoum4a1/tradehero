@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
+import com.tradehero.common.billing.googleplay.SkuTypeValue;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -35,7 +36,10 @@ public class THIABPurchase
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
-    public THIABPurchase(@NonNull String itemType, @NonNull String jsonPurchaseInfo, @NonNull String signature) throws JSONException
+    public THIABPurchase(
+            @NonNull @SkuTypeValue String itemType,
+            @NonNull String jsonPurchaseInfo,
+            @NonNull String signature) throws JSONException
     {
         super(itemType, jsonPurchaseInfo, signature);
     }

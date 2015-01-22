@@ -100,7 +100,9 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
      * @param itemType is IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
      * @throws android.os.RemoteException
      */
-    protected int purchaseTypeSupportStatus(@NonNull IInAppBillingService billingService, @NonNull String itemType) throws RemoteException
+    protected int purchaseTypeSupportStatus(
+            @NonNull IInAppBillingService billingService,
+            @NonNull @SkuTypeValue String itemType) throws RemoteException
     {
         return billingService.isBillingSupported(
                 TARGET_BILLING_API_VERSION3,

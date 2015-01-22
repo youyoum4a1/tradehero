@@ -30,7 +30,7 @@ public class BaseIABProductDetail implements IABProductDetail<IABSKU>
         this(IABConstants.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
 
-    public BaseIABProductDetail(@NonNull String itemType, @NonNull String jsonSkuDetails) throws JSONException
+    public BaseIABProductDetail(@NonNull @SkuTypeValue String itemType, @NonNull String jsonSkuDetails) throws JSONException
     {
         this.itemType = itemType;
         this.json = jsonSkuDetails;
