@@ -10,7 +10,6 @@ import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
 import rx.Subscription;
@@ -19,8 +18,6 @@ import timber.log.Timber;
 
 public class BaseIABServiceCaller extends BaseRequestCodeActor
 {
-    public final static String INTENT_VENDING_PACKAGE = "com.android.vending";
-    public final static String INTENT_VENDING_SERVICE_BIND = "com.android.vending.billing.InAppBillingService.BIND";
     public final static int TARGET_BILLING_API_VERSION3 = 3;
 
     @NonNull protected final Context context;
@@ -40,7 +37,7 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
         super(requestCode);
         this.context = context;
         this.iabExceptionFactory = iabExceptionFactory;
-        this.serviceIntent = getBillingBindIntent();
+        this.serviceIntent = BillingServiceBinderObservable.getBillingBindIntent();
         this.bindType = Context.BIND_AUTO_CREATE;
         serviceSubject = BehaviorSubject.create();
         this.billingServiceBinderSubscription = billingServiceBinderObservable.getBinder()
@@ -52,13 +49,6 @@ public class BaseIABServiceCaller extends BaseRequestCodeActor
     public void onDestroy()
     {
         billingServiceBinderSubscription.unsubscribe();
-    }
-
-    @NonNull private static Intent getBillingBindIntent()
-    {
-        Intent serviceIntent = new Intent(INTENT_VENDING_SERVICE_BIND);
-        serviceIntent.setPackage(INTENT_VENDING_PACKAGE);
-        return serviceIntent;
     }
 
     @NonNull protected Observable<IABServiceResult> getBillingServiceResult()

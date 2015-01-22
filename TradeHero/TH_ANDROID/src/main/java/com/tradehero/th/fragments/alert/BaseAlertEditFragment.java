@@ -4,9 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
-import android.text.Spanned;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,8 +43,8 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
@@ -258,23 +255,13 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
             unsubscribe(alertSlotSubscription);
             alertSlotSubscription = AndroidObservable.bindFragment(
                     this,
-                    securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey()))
+                    securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey())
                     .take(1)
+                    .flatMap(this::conditionalPopPurchaseRx)
+                    .flatMap(alertSlot -> this.saveAlertRx(alertFormDTO)))
                     .subscribe(
-                            this::handleAlertSlotForSave,
-                            e -> THToast.show(new THException(e)));
-        }
-    }
-
-    protected void handleAlertSlotForSave(@NonNull AlertSlotDTO alertSlotDTO)
-    {
-        if (alertSlotDTO.freeAlertSlots <= 0)
-        {
-            popPurchase();
-        }
-        else
-        {
-            saveAlert();
+                            this::handleAlertUpdated,
+                            this::handleAlertUpdateFailed);
         }
     }
 

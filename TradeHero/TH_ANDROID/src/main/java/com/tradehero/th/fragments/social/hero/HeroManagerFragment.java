@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;

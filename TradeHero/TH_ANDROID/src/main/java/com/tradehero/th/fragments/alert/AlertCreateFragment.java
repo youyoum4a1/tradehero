@@ -4,12 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
@@ -57,14 +58,10 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         setActionBarTitle(R.string.stock_alert_add_alert);
     }
 
-    protected void saveAlertProper(AlertFormDTO alertFormDTO)
+    @NonNull protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
     {
-        unsubscribe(saveAlertSubscription);
-        saveAlertSubscription = AndroidObservable.bindFragment(this, alertServiceWrapper.get().createAlertRx(
+        return alertServiceWrapper.get().createAlertRx(
                 currentUserId.toUserBaseKey(),
-                alertFormDTO))
-                .subscribe(
-                        this::handleAlertUpdated,
-                        this::handleAlertUpdateFailed);
+                alertFormDTO);
     }
 }

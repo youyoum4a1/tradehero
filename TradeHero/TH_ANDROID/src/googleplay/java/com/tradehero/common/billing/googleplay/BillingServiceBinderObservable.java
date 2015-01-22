@@ -64,7 +64,7 @@ public class BillingServiceBinderObservable
         serviceConnectionOperator.onDestroy();
     }
 
-    @NonNull private static Intent getBillingBindIntent()
+    @NonNull public static Intent getBillingBindIntent()
     {
         Intent serviceIntent = new Intent(INTENT_VENDING_SERVICE_BIND);
         serviceIntent.setPackage(INTENT_VENDING_PACKAGE);

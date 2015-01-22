@@ -10,9 +10,10 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
-import rx.Subscription;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import timber.log.Timber;
 
 public class AlertEditFragment extends BaseAlertEditFragment
 {
@@ -48,15 +49,11 @@ public class AlertEditFragment extends BaseAlertEditFragment
         super.onStop();
     }
 
-    @Override protected void saveAlertProper(AlertFormDTO alertFormDTO)
+    @NonNull @Override protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
     {
-        unsubscribe(saveAlertSubscription);
-        saveAlertSubscription = AndroidObservable.bindFragment(this, alertServiceWrapper.get().updateAlertRx(
+        return alertServiceWrapper.get().updateAlertRx(
                 alertId,
-                alertFormDTO))
-                .subscribe(
-                        this::handleAlertUpdated,
-                        this::handleAlertUpdateFailed);
+                alertFormDTO);
     }
 
     protected void linkWith(@NonNull AlertId alertId)
