@@ -1,6 +1,7 @@
 package com.tradehero.common.persistence;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 /**
  * Use single long as an identity
@@ -21,12 +22,12 @@ abstract public class AbstractLongDTOKey extends AbstractPrimitiveDTOKey<Long>
     }
     //</editor-fold>
 
-    abstract public String getBundleKey();
+    @NonNull abstract public String getBundleKey();
 
     /**
      * If the key is null, it removes it from the bundle
      */
-    public void putParameters(Bundle args)
+    public void putParameters(@NonNull Bundle args)
     {
         if (key == null)
         {

@@ -28,7 +28,7 @@ public class MiniGameDefKey extends AbstractIntegerDTOKey
         this.key = gameId;
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY;
     }

@@ -2,6 +2,7 @@ package com.tradehero.common.billing.googleplay;
 
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
@@ -37,7 +38,7 @@ public class IABSKUListKey extends AbstractStringDTOKey implements ProductIdenti
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

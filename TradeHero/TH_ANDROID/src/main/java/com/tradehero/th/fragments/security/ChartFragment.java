@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.security;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +18,7 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
+import com.tradehero.common.annotation.ViewVisibilityValueDef;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -25,7 +26,6 @@ import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -36,13 +36,11 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
@@ -154,7 +152,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
 
         this.timeSpanButtonSetListener = selected -> {
             analytics.fireEvent(new ChartTimeEvent(securityId, selected));
-            linkWith(selected, true);
+            linkWith(selected);
         };
 
         TimeSpanButtonSet timeSpanButtonSetTemp = (TimeSpanButtonSet) view.findViewById(R.id.chart_time_span_button_set);
@@ -258,39 +256,26 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         displayTimeSpanButtonSet();
     }
 
-    @Override public void linkWith(final SecurityId securityId, final boolean andDisplay)
+    @Override public void linkWith(@Nullable final SecurityId securityId)
     {
-        super.linkWith(securityId, andDisplay);
+        super.linkWith(securityId);
         if (securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AndroidObservable.bindFragment(this, securityPositionDetailCache.get(securityId))
-                    .subscribe(new Observer<Pair<SecurityId, SecurityPositionDetailDTO>>()
-                    {
-                        @Override
-                        public void onCompleted() {
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            THToast.show(R.string.error_fetch_security_info);
-                        }
-
-                        @Override
-                        public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
-                        {
-                            linkWith(pair.second, andDisplay);
-                        }
-                    });
-        }
-        if (andDisplay)
-        {
+            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+                    this,
+                    securityPositionDetailCache.get(securityId))
+                    .map(pair -> pair.second)
+                    .subscribe(
+                            this::linkWith,
+                            e -> THToast.show(R.string.error_fetch_security_info)
+                    );
         }
     }
 
-    @Override public void linkWith(SecurityPositionDetailDTO value, boolean andDisplay)
+    @Override public void linkWith(SecurityPositionDetailDTO value)
     {
-        super.linkWith(value, andDisplay);
+        super.linkWith(value);
         if (value != null)
         {
             ChartDTO chartDTOCopy = chartDTO;
@@ -298,44 +283,35 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
             {
                 chartDTOCopy.setSecurityCompactDTO(value.security);
             }
-            linkWith((value.security instanceof WarrantDTO) ? (WarrantDTO) value.security : null, andDisplay);
+            linkWith((value.security instanceof WarrantDTO) ? (WarrantDTO) value.security : null);
         }
-        if (andDisplay)
-        {
-            displayChartImage();
-            displayPreviousClose();
-            displayOpen();
-            displayDaysHigh();
-            displayDaysLow();
-            displayPERatio();
-            displayEps();
-            displayVolume();
-            displayAvgVolume();
-        }
+        displayChartImage();
+        displayPreviousClose();
+        displayOpen();
+        displayDaysHigh();
+        displayDaysLow();
+        displayPERatio();
+        displayEps();
+        displayVolume();
+        displayAvgVolume();
     }
 
-    public void linkWith(ChartTimeSpan timeSpan, boolean andDisplay)
+    public void linkWith(ChartTimeSpan timeSpan)
     {
         chartDTO.setChartTimeSpan(timeSpan);
-        if (andDisplay)
-        {
-            displayChartImage();
-        }
+        displayChartImage();
     }
 
-    public void linkWith(@Nullable WarrantDTO warrantDTO, boolean andDisplay)
+    public void linkWith(@Nullable WarrantDTO warrantDTO)
     {
         this.warrantDTO = warrantDTO;
-        if (andDisplay)
-        {
-            displayWarrantRows();
-            displayWarrantType();
-            displayWarrantCode();
-            displayExpiry();
-            displayStrikePrice();
-            displayUnderlying();
-            displayIssuer();
-        }
+        displayWarrantRows();
+        displayWarrantType();
+        displayWarrantCode();
+        displayExpiry();
+        displayStrikePrice();
+        displayUnderlying();
+        displayIssuer();
     }
 
     @Override public void display()
@@ -374,13 +350,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
 
     public void postChooseOtherSize()
     {
-        chooseChartImageSizeTask = getChooseOtherSizeRunnable();
+        chooseChartImageSizeTask = this::chooseOtherSize;
         postDelayed(chooseChartImageSizeTask, 500);
-    }
-
-    protected Runnable getChooseOtherSizeRunnable()
-    {
-        return () -> chooseOtherSize();
     }
 
     protected void chooseOtherSize()
@@ -406,7 +377,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         }
     }
 
-    private View.OnClickListener createChartImageClickListener()
+    @NonNull private View.OnClickListener createChartImageClickListener()
     {
         return v -> {
             //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
@@ -447,7 +418,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         }
     }
 
-    private int getWarrantVisibility()
+    @ViewVisibilityValueDef private int getWarrantVisibility()
     {
         return (warrantDTO == null) ? View.GONE : View.VISIBLE;
     }

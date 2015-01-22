@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Pair;
@@ -56,12 +57,12 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     @Inject THRouter thRouter;
     private Subscription followerSubscription;
 
-    public static void putHeroId(Bundle args, UserBaseKey followerId)
+    public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
         args.putBundle(HERO_ID_BUNDLE_KEY, followerId.getArgs());
     }
 
-    public static UserBaseKey getHeroId(Bundle args)
+    @NonNull public static UserBaseKey getHeroId(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(HERO_ID_BUNDLE_KEY));
     }
@@ -132,7 +133,9 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     protected void fetchFollowers()
     {
         unSubscribe();
-        followerSubscription = AndroidObservable.bindFragment(this, followerSummaryCache.get(heroId))
+        followerSubscription = AndroidObservable.bindFragment(
+                this,
+                followerSummaryCache.get(heroId))
                 .subscribe(createFollowerSummaryCacheObserver());
     }
 
@@ -144,9 +147,9 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     private boolean isCurrentUser()
     {
         UserBaseKey heroId = getHeroId(getArguments());
-        if (heroId != null && currentUserId != null)
+        if (currentUserId != null)
         {
-            return (heroId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+            return heroId.equals(currentUserId.toUserBaseKey());
         }
         return false;
     }

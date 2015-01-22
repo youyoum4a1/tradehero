@@ -1,6 +1,7 @@
 package com.tradehero.th.api.market;
 
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -72,17 +73,17 @@ public class ExchangeCompactDTO implements DTO
     }
     //</editor-fold>
 
-    @JsonIgnore public ExchangeIntegerId getExchangeIntegerId()
+    @JsonIgnore @NonNull public ExchangeIntegerId getExchangeIntegerId()
     {
         return new ExchangeIntegerId(id);
     }
 
-    @JsonIgnore public ExchangeStringId getExchangeStringId()
+    @JsonIgnore @NonNull public ExchangeStringId getExchangeStringId()
     {
         return new ExchangeStringId(name);
     }
 
-    @Nullable @JsonIgnore public Integer getFlagResId()
+    @Nullable @JsonIgnore @DrawableRes public Integer getFlagResId()
     {
         Integer fromName = getNameFlagResId();
         if (fromName != null)
@@ -92,7 +93,7 @@ public class ExchangeCompactDTO implements DTO
         return getCountryCodeFlagResId();
     }
 
-    @Nullable @JsonIgnore public Integer getNameFlagResId()
+    @Nullable @JsonIgnore @DrawableRes public Integer getNameFlagResId()
     {
         Exchange exchange = getExchangeByName();
         if (exchange != null)
@@ -115,7 +116,7 @@ public class ExchangeCompactDTO implements DTO
         return null;
     }
 
-    @Nullable @JsonIgnore public Integer getCountryCodeFlagResId()
+    @Nullable @JsonIgnore @DrawableRes public Integer getCountryCodeFlagResId()
     {
         Country country = getCountry();
         if (country != null)
@@ -153,7 +154,7 @@ public class ExchangeCompactDTO implements DTO
         return args;
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         if (other == null || !(other instanceof ExchangeDTO))
         {

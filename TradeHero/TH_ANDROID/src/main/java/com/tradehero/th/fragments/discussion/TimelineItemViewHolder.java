@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import butterknife.InjectView;
@@ -26,21 +28,16 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
 
     //<editor-fold desc="Constructors">
-
     public TimelineItemViewHolder(Context context)
     {
         super(context);
     }
-
     // </editor-fold>
 
-    @Override public void linkWith(TimelineItemDTOType discussionDTO, boolean andDisplay)
+    @Override public void linkWith(TimelineItemDTOType discussionDTO)
     {
-        super.linkWith(discussionDTO, andDisplay);
-        if (andDisplay)
-        {
-            displayMoreButton();
-        }
+        super.linkWith(discussionDTO);
+        displayMoreButton();
     }
 
     //<editor-fold desc="Display Methods">
@@ -72,7 +69,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
         super.onDetachedFromWindow();
     }
 
-    @Override protected String getUserDisplayName()
+    @Override @Nullable protected String getUserDisplayName()
     {
         if (discussionDTO != null)
         {
@@ -85,7 +82,7 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
         return null;
     }
 
-    @Override protected RequestCreator createUserPicassoRequest()
+    @NonNull @Override protected RequestCreator createUserPicassoRequest()
     {
         if (discussionDTO != null)
         {
@@ -156,7 +153,6 @@ public class TimelineItemViewHolder<TimelineItemDTOType extends TimelineItemDTO>
             }
         }
     }
-
     //</editor-fold>
 
     @SuppressWarnings("UnusedDeclaration")

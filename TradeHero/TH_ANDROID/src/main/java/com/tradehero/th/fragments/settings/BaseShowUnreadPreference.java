@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.settings;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.Preference;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
@@ -12,9 +13,9 @@ import com.tradehero.th.R;
 public abstract class BaseShowUnreadPreference extends Preference
     implements ShowUnreadPreference
 {
-    private static final int NO_ICON_RES_ID = R.drawable.default_image;
+    @DrawableRes private static final int NO_ICON_RES_ID = R.drawable.default_image;
 
-    int iconResId;
+    @DrawableRes int iconResId;
 
     //<editor-fold desc="Constructors">
     public BaseShowUnreadPreference(@NonNull Context context, @NonNull AttributeSet attrs)

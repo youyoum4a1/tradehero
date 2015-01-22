@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,7 +18,7 @@ public class FxFlagContainer extends LinearLayout
     @InjectView(R.id.flag_left) protected ImageView flagLeft;
     @InjectView(R.id.flag_right) protected ImageView flagRight;
 
-    private FxPairSecurityId fxPairSecurityId;
+    @Nullable private FxPairSecurityId fxPairSecurityId;
 
     //<editor-fold desc="Constructors">
     public FxFlagContainer(Context context)
@@ -43,7 +44,7 @@ public class FxFlagContainer extends LinearLayout
         display();
     }
 
-    @Override public void display(FxPairSecurityId fxPairSecurityId)
+    @Override public void display(@Nullable FxPairSecurityId fxPairSecurityId)
     {
         this.fxPairSecurityId = fxPairSecurityId;
         display();

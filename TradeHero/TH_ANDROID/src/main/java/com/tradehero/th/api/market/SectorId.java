@@ -19,7 +19,7 @@ public class SectorId extends AbstractIntegerDTOKey
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

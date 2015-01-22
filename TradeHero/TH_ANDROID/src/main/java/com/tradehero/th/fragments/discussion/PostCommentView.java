@@ -189,19 +189,19 @@ public class PostCommentView extends RelativeLayout
                         .subscribe(createCommentSubmitObserver()));
     }
 
-    protected DiscussionFormDTO buildCommentFormDTO()
+    @NonNull protected DiscussionFormDTO buildCommentFormDTO()
     {
         DiscussionFormDTO discussionFormDTO = createEmptyCommentFormDTO();
         populateFormDTO(discussionFormDTO);
         return discussionFormDTO;
     }
 
-    protected DiscussionFormDTO createEmptyCommentFormDTO()
+    @NonNull protected DiscussionFormDTO createEmptyCommentFormDTO()
     {
         return discussionFormDTOFactory.createEmpty(discussionKey.getType());
     }
 
-    protected void populateFormDTO(DiscussionFormDTO discussionFormDTO)
+    protected void populateFormDTO(@NonNull DiscussionFormDTO discussionFormDTO)
     {
         if (discussionFormDTO instanceof ReplyDiscussionFormDTO)
         {

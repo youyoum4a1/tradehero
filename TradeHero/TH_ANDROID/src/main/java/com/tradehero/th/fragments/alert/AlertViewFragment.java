@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,7 +39,6 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -117,7 +115,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        linkWith(getAlertId(getArguments()), true);
+        linkWith(getAlertId(getArguments()));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -168,7 +166,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         super.onDestroy();
     }
 
-    private void linkWith(AlertId alertId, boolean andDisplay)
+    private void linkWith(AlertId alertId)
     {
         this.alertId = alertId;
         if (alertId != null)
@@ -178,11 +176,18 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             unsubscribe(alertCacheSubscription);
             alertCacheSubscription = AndroidObservable.bindFragment(this,
                     alertCache.get().get(alertId))
-                    .subscribe(createAlertCacheObserver());
+                    .map(pair -> pair.second)
+                    .finallyDo(this::hideProgressDialog)
+                    .subscribe(
+                            this::linkWith,
+                            e -> {
+                                THToast.show(R.string.error_fetch_alert);
+                                Timber.e(e, "Failed fetching alert");
+                            });
         }
     }
 
-    private void linkWith(AlertDTO alertDTO, boolean andDisplay)
+    private void linkWith(AlertDTO alertDTO)
     {
         this.alertDTO = alertDTO;
 
@@ -195,55 +200,40 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
         if (alertDTO.security != null)
         {
-            linkWith(alertDTO.security, andDisplay);
+            linkWith(alertDTO.security);
         }
 
-        if (andDisplay)
-        {
-            displayCurrentPrice();
-
-            displayTargetPrice();
-
-            displayToggle();
-
-            displayActiveUntil();
-        }
+        displayCurrentPrice();
+        displayTargetPrice();
+        displayToggle();
+        displayActiveUntil();
     }
 
     private void displayToggle()
     {
         alertToggle.setChecked(alertDTO.active);
         alertToggle.setOnCheckedChangeListener(alertToggleCheckedChangeListener);
-        alertToggle.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+        alertToggle.setOnClickListener(v -> {
+            UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
 
-                if (alertToggle.isChecked()
-                        && userProfileDTO != null
-                        && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
-                {
-                    // TODO
-                    //userInteractor.conditionalPopBuyStockAlerts();
-                    alertToggle.setChecked(false);
-                }
+            if (alertToggle.isChecked()
+                    && userProfileDTO != null
+                    && userProfileDTO.alertCount >= userProfileDTO.getUserAlertPlansAlertCount())
+            {
+                // TODO
+                //userInteractor.conditionalPopBuyStockAlerts();
+                alertToggle.setChecked(false);
             }
         });
     }
 
-    private void linkWith(SecurityCompactDTO security, boolean andDisplay)
+    private void linkWith(SecurityCompactDTO security)
     {
         this.securityCompactDTO = security;
 
-        if (andDisplay)
-        {
-            displayStockLogo();
-
-            displayStockSymbol();
-
-            displayCompanyName();
-        }
+        displayStockLogo();
+        displayStockSymbol();
+        displayCompanyName();
     }
 
     private void displayActiveUntil()
@@ -285,11 +275,14 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void displayCurrentPrice()
     {
-        THSignedMoney
-                .builder(alertDTO.security.lastPrice)
-                .withOutSign()
-                .build()
-                .into(currentPrice);
+        if (alertDTO.security != null)
+        {
+            THSignedMoney
+                    .builder(alertDTO.security.lastPrice)
+                    .withOutSign()
+                    .build()
+                    .into(currentPrice);
+        }
     }
 
     private void displayCompanyName()
@@ -341,30 +334,16 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             updateAlertSubscription = AndroidObservable.bindFragment(
                     this,
                     alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
-                    .subscribe(createAlertUpdateObserver());
+                    .finallyDo(this::hideProgressDialog)
+                    .subscribe(
+                            this::handleAlertUpdated,
+                            e -> THToast.show(new THException(e)));
         }
     }
 
-    protected Observer<AlertCompactDTO> createAlertUpdateObserver()
+    public void handleAlertUpdated(@NonNull AlertCompactDTO alertCompactDTO)
     {
-        return new Observer<AlertCompactDTO>()
-        {
-            @Override public void onCompleted()
-            {
-                hideProgressDialog();
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                hideProgressDialog();
-                THToast.show(new THException(e));
-            }
-
-            @Override public void onNext(AlertCompactDTO alertCompactDTO)
-            {
-                displayActiveUntil();
-            }
-        };
+        displayActiveUntil();
     }
 
     protected void hideProgressDialog()
@@ -372,31 +351,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         if (progressDialog != null)
         {
             progressDialog.dismiss();
-        }
-    }
-
-    protected Observer<Pair<AlertId, AlertDTO>> createAlertCacheObserver()
-    {
-        return new AlertViewFragmentAlertCacheObserver();
-    }
-
-    protected class AlertViewFragmentAlertCacheObserver implements Observer<Pair<AlertId, AlertDTO>>
-    {
-        @Override public void onNext(Pair<AlertId, AlertDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-            hideProgressDialog();
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_alert);
-            Timber.e(e, "Failed fetching alert");
-            hideProgressDialog();
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.education;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +36,7 @@ public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
         ButterKnife.inject(this);
     }
 
-    @Override public void display(VideoDTO dto)
+    @Override public void display(@NonNull VideoDTO dto)
     {
         title.setText(dto.name);
         picasso.load(dto.thumbnail).into(thumbnail);

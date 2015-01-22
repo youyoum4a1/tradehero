@@ -27,7 +27,7 @@ public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
         return args.containsKey(BUNDLE_KEY);
     }
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY;
     }

@@ -230,9 +230,7 @@ public class UserStatisticView extends LinearLayout
             consistency = (consistency < minConsistency) ? minConsistency : consistency;
             consistency = (consistency > maxConsistency) ? maxConsistency : consistency;
 
-            double result =
-                    100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
-            return result;
+            return 100 * (consistency - minConsistency) / (maxConsistency - minConsistency);
         }
         catch (Exception e)
         {

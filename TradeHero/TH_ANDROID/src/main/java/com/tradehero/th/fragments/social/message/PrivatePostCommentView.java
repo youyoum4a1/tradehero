@@ -64,7 +64,7 @@ public class PrivatePostCommentView extends PostCommentView
         return message;
     }
 
-    @Override protected DiscussionFormDTO buildCommentFormDTO()
+    @NonNull @Override protected DiscussionFormDTO buildCommentFormDTO()
     {
         DiscussionFormDTO discussionFormDTO = super.buildCommentFormDTO();
         if (recipient != null)

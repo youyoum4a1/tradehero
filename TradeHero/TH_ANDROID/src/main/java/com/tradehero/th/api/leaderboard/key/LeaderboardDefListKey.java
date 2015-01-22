@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
 public class LeaderboardDefListKey extends AbstractStringDTOKey
@@ -26,7 +27,7 @@ public class LeaderboardDefListKey extends AbstractStringDTOKey
     }
     //</editor-fold>
 
-    @Override public String getBundleKey()
+    @NonNull @Override public String getBundleKey()
     {
         return BUNDLE_KEY_KEY;
     }

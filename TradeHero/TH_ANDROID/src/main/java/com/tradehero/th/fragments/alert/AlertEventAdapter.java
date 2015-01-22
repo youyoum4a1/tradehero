@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.alert;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +15,12 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class AlertEventAdapter extends ArrayDTOAdapterNew<AlertEventDTO, AlertEventItemView>
         implements StickyListHeadersAdapter
 {
-    public AlertEventAdapter(Context context, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public AlertEventAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
+    //</editor-fold>
 
     @Override public View getHeaderView(int position, View convertView, ViewGroup parent)
     {

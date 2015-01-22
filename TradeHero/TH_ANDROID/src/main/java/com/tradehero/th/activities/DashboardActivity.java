@@ -529,7 +529,7 @@ public class DashboardActivity extends BaseActivity
                             return;
                         }
 
-                        if (!isFxShown.get())
+                        if (!isFxShown.get() && userProfileDTO.fxPortfolio == null)
                         {
                             isFxShown.set(true);
                             FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());

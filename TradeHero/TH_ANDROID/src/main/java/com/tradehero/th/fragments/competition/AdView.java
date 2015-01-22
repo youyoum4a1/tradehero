@@ -84,7 +84,7 @@ public class AdView extends RelativeLayout
     {
         if (competitionZoneAdvertisementDTO != null)
         {
-            linkWith(competitionZoneAdvertisementDTO.getAdDTO(), true);
+            linkWith(competitionZoneAdvertisementDTO.getAdDTO());
         }
     }
 
@@ -94,7 +94,7 @@ public class AdView extends RelativeLayout
         super.onDetachedFromWindow();
     }
 
-    private void linkWith(AdDTO adDTO, boolean andDisplay)
+    private void linkWith(AdDTO adDTO)
     {
         if (adDTO != null)
         {
@@ -105,39 +105,36 @@ public class AdView extends RelativeLayout
             this.adDTO = null;
         }
 
-        if (andDisplay)
+        if (adDTO != null)
         {
-            if (adDTO != null)
+            // Ok, this is the only way I found to workaround this problem, converting url to a filename, and manually put 9-patch image
+            // with that name to android resource folder.
+            String bannerResourceFileName = null;
+            try
             {
-                // Ok, this is the only way I found to workaround this problem, converting url to a filename, and manually put 9-patch image
-                // with that name to android resource folder.
-                String bannerResourceFileName = null;
-                try
-                {
-                    bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
-                } catch (StringIndexOutOfBoundsException e)
-                {
-                    Timber.e(e, "When getting %s", adDTO.bannerImageUrl);
-                }
-                int bannerResourceId;
-                if (bannerResourceFileName != null &&
-                        (bannerResourceId = getResources().getIdentifier(bannerResourceFileName, "drawable", getContext().getPackageName())) != 0)
-                {
-                    banner.setBackgroundResource(bannerResourceId);
-                }
-                else
-                {
-                    picasso.get().cancelRequest(banner);
-                    picasso.get().load(adDTO.bannerImageUrl)
-                            .into(banner);
-                }
-
-                sendAnalytics(adDTO, "served");
+                bannerResourceFileName = getResourceFileName(adDTO.bannerImageUrl);
+            } catch (StringIndexOutOfBoundsException e)
+            {
+                Timber.e(e, "When getting %s", adDTO.bannerImageUrl);
+            }
+            int bannerResourceId;
+            if (bannerResourceFileName != null &&
+                    (bannerResourceId = getResources().getIdentifier(bannerResourceFileName, "drawable", getContext().getPackageName())) != 0)
+            {
+                banner.setBackgroundResource(bannerResourceId);
             }
             else
             {
-                banner.setImageDrawable(null);
+                picasso.get().cancelRequest(banner);
+                picasso.get().load(adDTO.bannerImageUrl)
+                        .into(banner);
             }
+
+            sendAnalytics(adDTO, "served");
+        }
+        else
+        {
+            banner.setImageDrawable(null);
         }
     }
 

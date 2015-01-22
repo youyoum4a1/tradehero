@@ -42,12 +42,12 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
-    public static void putFollowerId(Bundle args, UserBaseKey followerId)
+    public static void putFollowerId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
     {
         args.putBundle(BUNDLE_KEY_FOLLOWER_ID, followerId.getArgs());
     }
 
-    public static UserBaseKey getFollowerId(Bundle args)
+    @NonNull public static UserBaseKey getFollowerId(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
     }
@@ -99,9 +99,9 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     private boolean isCurrentUser()
     {
         UserBaseKey followerId = getFollowerId(getArguments());
-        if (followerId != null && followerId.key != null && currentUserId != null)
+        if (currentUserId != null)
         {
-            return (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+            return followerId.equals(currentUserId.toUserBaseKey());
         }
         return false;
     }

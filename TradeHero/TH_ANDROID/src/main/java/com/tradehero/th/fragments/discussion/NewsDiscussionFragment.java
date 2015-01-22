@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,7 +35,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
     private NewsItemDTOKey newsItemDTOKey;
 
-    public static void putBackgroundResId(@NonNull Bundle args, int resId)
+    public static void putBackgroundResId(@NonNull Bundle args, @DrawableRes int resId)
     {
         args.putInt(NewsDiscussionFragment.BUNDLE_KEY_TITLE_BACKGROUND_RES, resId);
     }
@@ -93,11 +94,11 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
 
         if (discussionKey instanceof NewsItemDTOKey)
         {
-            linkWith((NewsItemDTOKey) discussionKey, true);
+            linkWith((NewsItemDTOKey) discussionKey);
         }
     }
 
-    private void linkWith(NewsItemDTOKey newsItemDTOKey, boolean andDisplay)
+    private void linkWith(NewsItemDTOKey newsItemDTOKey)
     {
         this.newsItemDTOKey = newsItemDTOKey;
 

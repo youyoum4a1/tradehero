@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipi
     private OnPremiumFollowRequestedListener premiumFollowRequestedListener;
 
     //<editor-fold desc="Constructors">
-    public RelationsListItemAdapter(Context context, int layoutResId)
+    public RelationsListItemAdapter(@NonNull Context context, @LayoutRes int layoutResId)
     {
         super(context, layoutResId);
     }

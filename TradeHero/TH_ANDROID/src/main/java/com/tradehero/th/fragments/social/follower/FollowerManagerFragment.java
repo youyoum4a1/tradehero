@@ -58,12 +58,12 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     private FollowerSummaryDTO followerSummaryDTO;
 
-    public static void putHeroId(Bundle args, UserBaseKey heroId)
+    public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey heroId)
     {
         args.putBundle(BUNDLE_KEY_HERO_ID, heroId.getArgs());
     }
 
-    public static UserBaseKey getHeroId(Bundle args)
+    @NonNull public static UserBaseKey getHeroId(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_HERO_ID));
     }
@@ -173,9 +173,9 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
     private boolean isCurrentUser()
     {
         UserBaseKey heroId = getHeroId(getArguments());
-        if (heroId != null && heroId.key != null && currentUserId != null)
+        if (currentUserId != null)
         {
-            return (heroId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
+            return heroId.equals(currentUserId.toUserBaseKey());
         }
         return false;
     }

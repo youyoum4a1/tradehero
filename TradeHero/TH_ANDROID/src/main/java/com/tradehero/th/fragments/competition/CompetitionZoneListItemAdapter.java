@@ -49,13 +49,13 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public CompetitionZoneListItemAdapter(
             @NonNull Context context,
             @NonNull CompetitionZoneDTOUtil competitionZoneDTOUtil,
-            int zoneItemLayoutResId,
-            int adsResId,
-            int headerResId,
-            int prizeResId,
-            int portfolioResId,
-            int leaderboardResId,
-            int legalResId)
+            @LayoutRes int zoneItemLayoutResId,
+            @LayoutRes int adsResId,
+            @LayoutRes int headerResId,
+            @LayoutRes int prizeResId,
+            @LayoutRes int portfolioResId,
+            @LayoutRes int leaderboardResId,
+            @LayoutRes int legalResId)
     {
         super(context, zoneItemLayoutResId);
         this.competitionZoneDTOUtil = competitionZoneDTOUtil;

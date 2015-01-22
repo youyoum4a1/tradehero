@@ -163,7 +163,7 @@ public class PagedDTOAdapter<DTOType> extends ArrayAdapter<DTOType>
         return convertView;
     }
 
-    public void setLayoutResourceId(int layoutResourceId)
+    public void setLayoutResourceId(@LayoutRes int layoutResourceId)
     {
         this.layoutResourceId = layoutResourceId;
     }

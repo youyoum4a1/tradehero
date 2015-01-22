@@ -15,6 +15,8 @@ import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.DTOAdapterNew;
+import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -34,7 +36,7 @@ public class AchievementListFragment extends DashboardFragment
     @InjectView(android.R.id.progress) protected ProgressBar progressBar;
     @InjectView(android.R.id.empty) protected View emptyView;
 
-    protected AchievementListAdapter achievementListAdapter;
+    protected DTOAdapterNew<AchievementCategoryDTO> achievementListAdapter;
 
     @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
     private Subscription achievementListSubscription;
@@ -79,7 +81,7 @@ public class AchievementListFragment extends DashboardFragment
 
     private void initAdapter()
     {
-        achievementListAdapter = new AchievementListAdapter(getActivity(), R.layout.achievement_cell_view);
+        achievementListAdapter = new DTOAdapterNew<>(getActivity(), R.layout.achievement_cell_view);
         listView.setAdapter(achievementListAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {

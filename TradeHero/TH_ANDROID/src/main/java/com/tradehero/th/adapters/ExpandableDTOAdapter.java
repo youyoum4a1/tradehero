@@ -1,6 +1,7 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
@@ -14,7 +15,7 @@ public abstract class ExpandableDTOAdapter<
             DTOViewType extends DTOView<WrappedDTOType>>
         extends ArrayDTOAdapter<WrappedDTOType, DTOViewType>
 {
-    public static final int RES_ID_EXPANDED_LAYOUT = R.id.expanding_layout;
+    @IdRes public static final int RES_ID_EXPANDED_LAYOUT = R.id.expanding_layout;
     private List<DTOType> underlyingItems;
 
     public ExpandableDTOAdapter(Context context, int layoutResourceId)

@@ -1,5 +1,6 @@
 package com.tradehero.th.models.chart.yahoo;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.models.chart.ChartSize;
 
 public enum YahooChartSize
@@ -8,33 +9,35 @@ public enum YahooChartSize
     medium("m", 512, 288),
     large("l", 800, 355);
 
-    public final String code;
+    @NonNull public final String code;
     public final int yahooPixelWidth;
     public final int yahooPixelHeight;
 
-    private YahooChartSize(String c, int yahooPixelWidth, int yahooPixelHeight)
+    //<editor-fold desc="Constructors">
+    private YahooChartSize(@NonNull String c, int yahooPixelWidth, int yahooPixelHeight)
     {
         code = c;
         this.yahooPixelWidth = yahooPixelWidth;
         this.yahooPixelHeight = yahooPixelHeight;
     }
+    //</editor-fold>
 
     public boolean equalsCode(String otherCode)
     {
         return (otherCode != null) && otherCode.equals(code);
     }
 
-    public ChartSize getChartSize()
+    @NonNull public ChartSize getChartSize()
     {
         return new ChartSize(yahooPixelWidth, yahooPixelHeight);
     }
 
-    public String toString()
+    @NonNull public String toString()
     {
         return code;
     }
 
-    public static YahooChartSize getPreferredSize(int pixelWidth, int pixelHeight)
+    @NonNull public static YahooChartSize getPreferredSize(int pixelWidth, int pixelHeight)
     {
         // TODO refine
         if (pixelWidth >= large.yahooPixelWidth && pixelHeight >= large.yahooPixelHeight)

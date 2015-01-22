@@ -1,5 +1,8 @@
 package com.tradehero.th.models.chart;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public class ChartSize
 {
     public final int width;
@@ -13,14 +16,14 @@ public class ChartSize
         this.height = height;
     }
 
-    public ChartSize(ChartSize other)
+    public ChartSize(@NonNull ChartSize other)
     {
         super();
         this.width = other.width;
         this.height = other.height;
     }
 
-    public ChartSize(int[] wAndH)
+    public ChartSize(@NonNull int[] wAndH)
     {
         super();
         this.width = wAndH[0];
@@ -28,7 +31,7 @@ public class ChartSize
     }
     //</editor-fold>
 
-    public int[] getSizeArray()
+    @NonNull public int[] getSizeArray()
     {
         return new int[]{this.width, this.height};
     }
@@ -38,14 +41,14 @@ public class ChartSize
         return Integer.valueOf(width).hashCode() ^ Integer.valueOf(height).hashCode();
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return (other instanceof ChartSize) && equals((ChartSize) other);
+        return (other instanceof ChartSize) && equalFields((ChartSize) other);
     }
 
-    public boolean equals(ChartSize other)
+    protected boolean equalFields(@NonNull ChartSize other)
     {
-        return other != null && width == other.width && height == other.height;
+        return width == other.width && height == other.height;
     }
 
     @Override protected Object clone()

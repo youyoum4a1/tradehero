@@ -1,6 +1,8 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.api.DTOView;
@@ -11,7 +13,7 @@ public class PagedViewDTOAdapter<
         extends PagedDTOAdapter<DTOType>
 {
     //<editor-fold desc="Constructors">
-    public PagedViewDTOAdapter(Context context, int resource)
+    public PagedViewDTOAdapter(@NonNull Context context, @LayoutRes int resource)
     {
         super(context, resource);
     }

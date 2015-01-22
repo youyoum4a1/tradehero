@@ -25,7 +25,7 @@ abstract public class AbstractIntegerDTOKey extends AbstractPrimitiveDTOKey<Inte
     }
     //</editor-fold>
 
-    abstract public String getBundleKey();
+    @NonNull abstract public String getBundleKey();
 
     /**
      * If the key is null, it removes it from the bundle

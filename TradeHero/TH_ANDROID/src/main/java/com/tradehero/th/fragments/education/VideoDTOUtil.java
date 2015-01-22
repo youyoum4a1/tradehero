@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.web.WebViewFragment;
@@ -15,7 +16,10 @@ import java.util.List;
 
 public class VideoDTOUtil
 {
-    public static void openVideoDTO(Context context, DashboardNavigator navigator, @NonNull VideoDTO videoDTO)
+    public static void openVideoDTO(
+            @NonNull Context context,
+            @Nullable DashboardNavigator navigator,
+            @NonNull VideoDTO videoDTO)
     {
         if (!videoDTO.locked && !StringUtils.isNullOrEmpty(videoDTO.url))
         {

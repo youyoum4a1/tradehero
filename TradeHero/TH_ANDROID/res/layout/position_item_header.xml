@@ -30,7 +30,7 @@
       android:layout_toEndOf="@id/header_text"
       android:layout_centerVertical="true"
       style="@style/TH.Subhead"
-      android:visibility="gone"
+      android:visibility="visible"
       tools:visibility="visible"
       android:background="@drawable/ic_action_action_about"
       />
@@ -39,7 +39,7 @@
       android:id="@+id/header_time_base"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/header_text"
+      android:layout_toRightOf="@id/header_get_info"
       android:layout_toEndOf="@id/header_text"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"

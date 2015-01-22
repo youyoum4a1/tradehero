@@ -10,6 +10,7 @@ import com.tradehero.th.api.alert.AlertId;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
+import rx.Subscription;
 import rx.Observable;
 import rx.android.observables.AndroidObservable;
 
@@ -18,6 +19,8 @@ public class AlertEditFragment extends BaseAlertEditFragment
     private static final String BUNDLE_KEY_ALERT_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".alertId";
 
     protected AlertId alertId;
+    protected Subscription getAlertSubscription;
+    protected Subscription saveAlertSubscription;
     @Inject protected AlertCacheRx alertCache;
 
     public static void putAlertId(@NonNull Bundle args, @NonNull AlertId alertId)
@@ -36,20 +39,38 @@ public class AlertEditFragment extends BaseAlertEditFragment
         linkWith(getAlertId(getArguments()));
     }
 
-    @Override @NonNull protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
+    @Override public void onStop()
     {
-        return alertServiceWrapper.get().updateAlertRx(
-                alertId,
-                alertFormDTO);
+        unsubscribe(getAlertSubscription);
+        getAlertSubscription = null;
+        unsubscribe(saveAlertSubscription);
+        saveAlertSubscription = null;
+        super.onStop();
     }
 
-    protected void linkWith(AlertId alertId)
+    @Override protected void saveAlertProper(AlertFormDTO alertFormDTO)
+    {
+        unsubscribe(saveAlertSubscription);
+        saveAlertSubscription = AndroidObservable.bindFragment(this, alertServiceWrapper.get().updateAlertRx(
+                alertId,
+                alertFormDTO))
+                .subscribe(
+                        this::handleAlertUpdated,
+                        this::handleAlertUpdateFailed);
+    }
+
+    protected void linkWith(@NonNull AlertId alertId)
     {
         this.alertId = alertId;
-        subscriptions.add(AndroidObservable.bindFragment(this, alertCache.get(alertId))
+        unsubscribe(getAlertSubscription);
+        getAlertSubscription = AndroidObservable.bindFragment(this, alertCache.get(alertId))
+                .map(pair -> pair.second)
                 .subscribe(
-                        pair -> linkWith(pair.second),
-                        error -> THToast.show(new THException(error))));
+                        this::linkWith,
+                        e -> {
+                            THToast.show(new THException(e));
+                            Timber.e("Failed to get alertDTO", e);
+                        });
     }
 
     protected void displayActionBarTitle()

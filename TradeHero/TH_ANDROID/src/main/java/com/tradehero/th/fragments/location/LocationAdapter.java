@@ -1,6 +1,8 @@
 package com.tradehero.th.fragments.location;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.adapters.ArrayDTOAdapterNew;
@@ -11,7 +13,7 @@ class LocationAdapter extends ArrayDTOAdapterNew<ListedLocationDTO, LocationRela
     protected Country currentCountry;
 
     //<editor-fold desc="Constructors">
-    public LocationAdapter(Context context, int layoutResourceId)
+    public LocationAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }

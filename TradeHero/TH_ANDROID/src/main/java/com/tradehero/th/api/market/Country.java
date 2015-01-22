@@ -1,6 +1,8 @@
 package com.tradehero.th.api.market;
 
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 
 public enum Country
@@ -240,18 +242,21 @@ public enum Country
     YT(R.drawable.square_yt, R.string.location_name_yt),
     ZA(R.drawable.square_za, R.string.location_name_za),
     ZM(R.drawable.square_zm, R.string.location_name_zm),
-    ZW(R.drawable.square_zw, R.string.location_name_zw);
+    ZW(R.drawable.square_zw, R.string.location_name_zw),
+    ;
 
-    public final int logoId;
-    public final int locationName;
+    @DrawableRes public final int logoId;
+    @StringRes public final int locationName;
 
-    private Country(int logoId, int locationName)
+    //<editor-fold desc="Constructors">
+    private Country(@DrawableRes int logoId, @StringRes int locationName)
     {
         this.logoId = logoId;
         this.locationName = locationName;
     }
+    //</editor-fold>
 
-    public static int getCountryLogo(int defaultResId, @Nullable String countryCode)
+    @DrawableRes public static int getCountryLogo(@DrawableRes int defaultResId, @Nullable String countryCode)
     {
         if (countryCode == null)
         {
@@ -260,7 +265,7 @@ public enum Country
         try
         {
             return Country.valueOf(countryCode).logoId;
-        } catch (IllegalArgumentException ex)
+        } catch (IllegalArgumentException ignored)
         {
             return defaultResId;
         }

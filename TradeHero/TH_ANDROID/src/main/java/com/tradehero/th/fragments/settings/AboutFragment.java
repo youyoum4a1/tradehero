@@ -153,11 +153,19 @@ public class AboutFragment extends DashboardFragment
         if (rotateAnimator != null)
         {
             rotateAnimator.removeAllListeners();
+            if (rotateAnimator.isRunning())
+            {
+                rotateAnimator.cancel();
+            }
             rotateAnimator = null;
         }
         if (scrollAnimator != null)
         {
             scrollAnimator.removeAllListeners();
+            if (scrollAnimator.isRunning())
+            {
+                scrollAnimator.cancel();
+            }
             scrollAnimator = null;
         }
         super.onDestroyView();

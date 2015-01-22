@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,14 +35,6 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
     }
 
     //</editor-fold>
-
-    @Override public void linkWith(DiscussionDTOType discussionDTO, boolean andDisplay)
-    {
-        super.linkWith(discussionDTO, andDisplay);
-        if (andDisplay)
-        {
-        }
-    }
 
     //<editor-fold desc="Display Methods">
     @Override public void display()
@@ -148,7 +141,7 @@ public class AbstractDiscussionItemViewHolder<DiscussionDTOType extends Abstract
         }
     }
 
-    protected RequestCreator createUserPicassoRequest()
+    @NonNull protected RequestCreator createUserPicassoRequest()
     {
         return picasso.load(R.drawable.superman_facebook);
     }

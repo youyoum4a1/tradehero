@@ -179,10 +179,10 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         super.linkWith(discussionKey, andDisplay);
 
-        linkWith(new MessageHeaderUserId(discussionKey.id, correspondentId), true);
+        linkWith(new MessageHeaderUserId(discussionKey.id, correspondentId));
     }
 
-    private void linkWith(MessageHeaderId messageHeaderId, boolean andDisplay)
+    private void linkWith(MessageHeaderId messageHeaderId)
     {
         this.messageHeaderId = messageHeaderId;
         unsubscribe(messageHeaderFetchSubscription);
@@ -217,14 +217,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
                 .subscribe(createUserProfileCacheObserver());
     }
 
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    public void linkWith(UserProfileDTO userProfileDTO)
     {
         Timber.d("userProfile %s", userProfileDTO);
         correspondentProfile = userProfileDTO;
-        if (andDisplay)
-        {
-            getActivity().invalidateOptionsMenu();
-        }
+        getActivity().invalidateOptionsMenu();
     }
 
     //TODO set actionBar with MessageHeaderDTO by alex
@@ -240,7 +237,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
         {
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()

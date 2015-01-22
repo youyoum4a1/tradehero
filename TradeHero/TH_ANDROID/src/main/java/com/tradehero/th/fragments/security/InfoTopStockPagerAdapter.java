@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.security;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,16 +13,13 @@ import timber.log.Timber;
 
 public class InfoTopStockPagerAdapter extends FragmentStatePagerAdapter
 {
-    private final Context context;
-
     private SecurityCompactDTO securityCompactDTO;
     private ProviderId providerId;
 
     //<editor-fold desc="Constructors">
-    public InfoTopStockPagerAdapter(Context context, FragmentManager fragmentManager)
+    public InfoTopStockPagerAdapter(FragmentManager fragmentManager)
     {
         super(fragmentManager);
-        this.context = context;
     }
     //</editor-fold>
 

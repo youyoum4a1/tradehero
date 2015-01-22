@@ -21,10 +21,13 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertCompactDTO, Ale
     private static final long HEADER_ID_ACTIVE = 1;
 
     @NonNull CurrentUserId currentUserId;
-    protected final int alertResId;
+    @LayoutRes protected final int alertResId;
 
     //<editor-fold desc="Constructors">
-    public AlertListItemAdapter(@NonNull Context context, @NonNull CurrentUserId currentUserId, int alertResId)
+    public AlertListItemAdapter(
+            @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
+            @LayoutRes int alertResId)
     {
         super(context,
                 (lhs, rhs) -> {

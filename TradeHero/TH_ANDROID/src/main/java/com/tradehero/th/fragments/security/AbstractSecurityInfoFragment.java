@@ -35,7 +35,7 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        linkWith(getSecurityId(getArguments()), true);
+        linkWith(getSecurityId(getArguments()));
     }
 
     abstract protected DTOCacheRx<SecurityId, InfoType> getInfoCache();
@@ -48,23 +48,15 @@ abstract public class AbstractSecurityInfoFragment<InfoType extends DTO>
         }
     }
 
-    /**
-     * Called in onResume.
-     * @param securityId
-     * @param andDisplay
-     */
-    public void linkWith(SecurityId securityId, boolean andDisplay)
+    public void linkWith(@Nullable SecurityId securityId)
     {
         this.securityId = securityId;
     }
 
-    public void linkWith(InfoType value, boolean andDisplay)
+    public void linkWith(InfoType value)
     {
         this.value = value;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     abstract public void display();

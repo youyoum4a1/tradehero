@@ -4,18 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.security.SecurityId;
 import javax.inject.Inject;
-import rx.Observable;
+import rx.Subscription;
+import rx.android.observables.AndroidObservable;
 
 public class AlertCreateFragment extends BaseAlertEditFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = BaseAlertEditFragment.class.getName() + ".securityId";
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+
+    protected Subscription saveAlertSubscription;
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
@@ -34,6 +36,13 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         linkWith(getDummyInitialAlertDTO());
     }
 
+    @Override public void onStop()
+    {
+        unsubscribe(saveAlertSubscription);
+        saveAlertSubscription = null;
+        super.onStop();
+    }
+
     protected AlertDTO getDummyInitialAlertDTO()
     {
         AlertDTO dummy = new AlertDTO();
@@ -48,10 +57,14 @@ public class AlertCreateFragment extends BaseAlertEditFragment
         setActionBarTitle(R.string.stock_alert_add_alert);
     }
 
-    @Override @NonNull protected Observable<AlertCompactDTO> saveAlertProperRx(AlertFormDTO alertFormDTO)
+    protected void saveAlertProper(AlertFormDTO alertFormDTO)
     {
-        return alertServiceWrapper.get().createAlertRx(
+        unsubscribe(saveAlertSubscription);
+        saveAlertSubscription = AndroidObservable.bindFragment(this, alertServiceWrapper.get().createAlertRx(
                 currentUserId.toUserBaseKey(),
-                alertFormDTO);
+                alertFormDTO))
+                .subscribe(
+                        this::handleAlertUpdated,
+                        this::handleAlertUpdateFailed);
     }
 }
