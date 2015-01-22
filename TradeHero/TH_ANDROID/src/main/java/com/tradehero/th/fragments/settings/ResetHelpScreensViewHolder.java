@@ -34,7 +34,7 @@ public class ResetHelpScreensViewHolder extends OneSettingViewHolder
     @Override protected void handlePrefClicked()
     {
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
-        resetHelpScreen.delete();
+        resetHelpScreen.set(true);
         if (progressDialog == null)
         {
             if (preferenceFragmentCopy != null)
