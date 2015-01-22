@@ -2,6 +2,7 @@ package com.tradehero.chinabuild.fragment.discovery;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.*;
+import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
@@ -83,12 +85,13 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     @Inject DiscussionListCacheNew discussionListCache;
     @Inject protected DiscussionCache discussionCache;
 
-    private WebView newsWebView;
+
     private PullToRefreshListView pullToRefreshListView;
-    private View headerView;
+
     private RelativeLayout sendDiscussionRL;
     private TimeLineDetailDiscussSecItem adapter;
     private TextView textview_news_detail_title;
+    private TradeHeroProgressBar mTradeHeroProgressBar;
 
     //News Operater
     private LinearLayout timeline_detail_llTLPraise;
@@ -100,6 +103,9 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
     private LinearLayout timeline_detail_llTLComment;
     private TextView timeline_detail_tvTLComment;
 
+    //Header view for the list
+    private WebView newsWebView;
+    private View headerView;
     private Button sendCommentBtn;
     private EditText editCommentET;
 
@@ -163,6 +169,8 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         });
         editCommentET = (EditText)view.findViewById(R.id.edtSend);
 
+        mTradeHeroProgressBar = (TradeHeroProgressBar)view.findViewById(R.id.tradeheroprogressbar_discovery_news_detail_loading);
+
         pullToRefreshListView = (PullToRefreshListView)view.findViewById(R.id.pulltorefreshlistview_discovery_news_comments);
         pullToRefreshListView.setMode(PullToRefreshBase.Mode.BOTH);
         pullToRefreshListView.setAdapter(adapter);
@@ -213,6 +221,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
                 fetchComments();
             }
         });
+        showLoadingProgressBar();
         retrieveNewsDetail();
         return view;
     }
@@ -403,6 +412,7 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
                 } else {
                     sendDiscussionRL.setVisibility(View.GONE);
                 }
+                onFinish();
             }
 
             @Override
@@ -411,6 +421,11 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
                 if (sendDiscussionRL != null) {
                     sendDiscussionRL.setVisibility(View.GONE);
                 }
+                onFinish();
+            }
+
+            private void onFinish(){
+                finishLoadingProgressBar();
             }
         });
     }
@@ -588,7 +603,15 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         discussionServiceWrapper.get().deleteDiscussionItem(discussionItemId, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
+                if(adapter==null || newsItemDTO == null){
+                    return;
+                }
                 adapter.removeDeletedItem(discussionItemId);
+                newsItemDTO.commentCount--;
+                if(newsItemDTO.commentCount < 0){
+                    newsItemDTO.commentCount = 0;
+                }
+                displayNewsCommentViews();
                 onFinish();
             }
 
@@ -893,5 +916,31 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         public void failure(RetrofitError error)
         {
         }
+    }
+
+    private void showLoadingProgressBar(){
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(mTradeHeroProgressBar!=null) {
+                    mTradeHeroProgressBar.setVisibility(View.VISIBLE);
+                    mTradeHeroProgressBar.startLoading();
+                }
+            }
+        });
+    }
+
+    private void finishLoadingProgressBar(){
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(mTradeHeroProgressBar!=null) {
+                    mTradeHeroProgressBar.stopLoading();
+                    mTradeHeroProgressBar.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }
