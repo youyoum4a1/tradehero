@@ -754,6 +754,9 @@ public class NewsDetailFragment extends DashboardFragment implements DiscussionL
         public void success(DiscussionDTO discussionDTO, Response response)
         {
             onFinish();
+            if(editCommentET==null || getActivity()==null){
+                return;
+            }
             DeviceUtil.dismissKeyboard(getActivity());
             discussionListKey.setPage(1);
             fetchComments();
