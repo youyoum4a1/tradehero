@@ -15,6 +15,7 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import javax.inject.Inject;
 
 public class PositionSectionHeaderItemView extends RelativeLayout
@@ -53,7 +54,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        sdf = new SimpleDateFormat(getContext().getString(R.string.data_format_dd_mmm_yyyy));
+        sdf = new SimpleDateFormat(getContext().getString(R.string.data_format_dd_mmm_yyyy), Locale.ENGLISH);
         HierarchyInjector.inject(this);
         ButterKnife.inject(this);
     }

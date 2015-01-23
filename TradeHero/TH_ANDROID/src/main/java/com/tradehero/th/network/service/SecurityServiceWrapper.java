@@ -161,6 +161,11 @@ import rx.Observable;
         return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
     }
 
+    @NonNull public Observable<SecurityCompactDTO> getSecurityCompactRx(@NonNull SecurityId securityId)
+    {
+        return securityServiceRx.getCompactSecurity(securityId.getExchange(), securityId.getPathSafeSymbol());
+    }
+
     @NonNull public Observable<SecurityPositionDetailDTO> getSecurityPositionDetailRx(
             @NonNull SecurityId securityId)
     {

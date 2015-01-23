@@ -21,7 +21,7 @@
   <string name="buy_sell_sell_loss">ขาดทุน: %s</string>
   <string name="buy_sell_confirm_share_public">ส่วนรวม</string>
   <string name="buy_sell_confirm_share_private">ส่วนตัว</string>
-  <string name="buy_sell_confirm_buy_comment">เพิ่มความเห็น…</string>
+  <string name="buy_sell_confirm_buy_comment">แชร์ความเห็น…</string>
   <string name="buy_sell_confirm_share_on">หุ้น:</string>
   <string name="buy_sell_switch_buy">ซื้อ</string>
   <string name="buy_sell_switch_sell">ขาย</string>
@@ -36,7 +36,7 @@
   <string name="buy_sell_no_portfolio_message">ไม่มีพอร์ทการลงทุน</string>
   <string name="buy_sell_no_portfolio_cancel">โอเค</string>
 
-  <string name="buy_sell_portfolio_selected_title">พอร์ทการลงทุน:</string>
+  <string name="buy_sell_portfolio_selected_title">พอร์ตลงทุน:</string>
   <string name="buy_sell_portfolio_changed_title">ตรวจสอบพอร์ทการลงทุน </string>
   <string name="buy_sell_portfolio_changed_message">หุ้นตัวนี้อาจถูกตัดออกจากการแข่งขันแล้ว\nตรวจสอบว่าคุณเลือกพอร์ทการลงทุนที่ถูกต้อง ในด้านบน ก่อนการทำธุรกรรมต่างๆ</string>
 

@@ -79,6 +79,11 @@ public interface SecurityServiceRx
     Observable<SecurityPositionDetailDTO> getSecurity(
             @Path("exchange") String exchange,
             @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
+
+    @GET("/securities/compact")
+    Observable<SecurityCompactDTO> getCompactSecurity(
+            @Query("exch") String exchange,
+            @Query("symbol") String pathSafeSecuritySymbol);
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
@@ -125,5 +130,7 @@ public interface SecurityServiceRx
     @GET("/FX/batchFxQuote")
     Observable<List<QuoteDTO>> getFXSecuritiesAllPrice();
     //</editor-fold>
+
+
 }
 
