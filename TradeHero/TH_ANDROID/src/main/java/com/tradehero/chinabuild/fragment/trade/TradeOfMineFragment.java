@@ -457,6 +457,8 @@ public class TradeOfMineFragment extends DashboardFragment
                     list.add(new WatchPositionItem(watchList.get(i)));
                 }
                 adapter.setWatchPositionList(list);
+            }else{
+                adapter.setWatchPositionList(null);
             }
         }
     }
