@@ -51,6 +51,9 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
+import com.tradehero.th.utils.metrics.Analytics;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -143,6 +146,8 @@ public class BuySaleSecurityFragment extends DashboardFragment
     @Nullable protected QuoteDTO quoteDTO;
     protected boolean refreshingQuote = false;
     public ShareDialogFragment shareDialogFragment;
+
+    @Inject Analytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -754,7 +759,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     public void onBuySaleClicked()
     {
         if (isSending) return;
-        Timber.d("onBuySaleClicked!!!");
+        analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_BUY_SALE_CONFIRM));
         launchBuySell();
     }
 
@@ -810,10 +815,12 @@ public class BuySaleSecurityFragment extends DashboardFragment
             if (isBuy)
             {
                 THToast.show("购买成功!");
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_BUY_SUCCESSFULLY));
             }
             else
             {
                 THToast.show("出售成功!");
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_STOCK_SALE_SUCCESSFULLY));
             }
             if(isBuyDirectly){
                 onFinishBuyDirectlyLoading();

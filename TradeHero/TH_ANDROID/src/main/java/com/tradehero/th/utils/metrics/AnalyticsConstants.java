@@ -95,6 +95,10 @@ public class AnalyticsConstants
     public final static String BUTTON_DISCOVERY_REWARD = "BUTTON_DISCOVERY_REWARD";
     public final static String BUTTON_DISCOVERY_GOD = "BUTTON_DISCOVERY_GOD";
 
+    //确定购买或售出股票
+    public final static String BUTTON_STOCK_BUY_SALE_CONFIRM = "BUTTON_STOCK_BUY_SALE_CONFIRM";
+    public final static String BUTTON_STOCK_BUY_SUCCESSFULLY = "BUTTON_STOCK_BUY_SUCCESSFULLY";
+    public final static String BUTTON_STOCK_SALE_SUCCESSFULLY = "BUTTON_STOCK_SALE_SUCCESSFULLY";
     //Palmer
 
 
