@@ -287,7 +287,7 @@ dependencies {
 
   debugCompile 'com.facebook.android:library:3.18.1@aar' // 3.19.1 gives 65k error
   releaseCompile 'com.facebook.android:library:3.22.0@aar'
-  //compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
+  compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
 
   compile('com.android.support:support-v13:21.0.3')
   provided 'proguard:annotations:4.6'
