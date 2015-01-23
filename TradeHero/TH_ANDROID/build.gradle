@@ -278,12 +278,17 @@ dependencies {
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   // This does not work as we would hope. Second "setProperty" wins
-  def fbproj = project(':facebook-android-sdk:facebook')
-  fbproj.ext.TEST_GOOGLE_PLAY = "true" // Swap to this one for others
-  //fbproj.ext.TEST_GOOGLE_PLAY = "false" // Swap to this one for Amazon
-  compile(fbproj) {
-    exclude group: 'com.android.support', module: 'support-v4'
-  }
+  //def fbproj = project(':facebook-android-sdk:facebook')
+  //fbproj.ext.TEST_GOOGLE_PLAY = "true" // Swap to this one for others
+  ////fbproj.ext.TEST_GOOGLE_PLAY = "false" // Swap to this one for Amazon
+  //compile(fbproj) {
+  //  exclude group: 'com.android.support', module: 'support-v4'
+  //}
+
+  debugCompile 'com.facebook.android:library:3.18.1@aar' // 3.19.1 gives 65k error
+  releaseCompile 'com.facebook.android:library:3.22.0@aar'
+  compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
+
   compile('com.android.support:support-v13:21.0.3')
   provided 'proguard:annotations:4.6'
   compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {

@@ -4,7 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.facebook.HttpMethod;
 import com.facebook.Response;
+import com.tradehero.common.social.facebook.FacebookRequestException;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
@@ -54,7 +56,7 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         super.linkWith(value);
         if (this.invitableFriends.isEmpty())
         {
-            //fetchInvitableFriends();
+            fetchInvitableFriends();
         }
     }
 
@@ -66,10 +68,9 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
                 facebookSocialFriendHandlerProvider.get().createProfileSessionObservable()
                         .take(1)
                         .flatMap(pair -> Observable.create(
-                                FacebookRequestOperator.builder(pair.second)
-                                        .setGraphPath(API_INVITABLE_FRIENDS)
+                                FacebookRequestOperator
+                                        .builder(pair.second, API_INVITABLE_FRIENDS)
                                         .setHttpMethod(HttpMethod.GET)
-                                        .setVersion("v2.2")
                                         .build())))
                 .subscribe(
                         this::onInvitableFriendsReceived,
@@ -79,11 +80,18 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
     protected void onInvitableFriendsReceived(Response response)
     {
         Timber.d("InvitableFriends response %s", response);
-        THToast.show("Parse invitable friends");
+        if (BuildConfig.DEBUG)
+        {
+            THToast.show("Parse invitable friends");
+        }
     }
 
     protected void onInvitableFriendsFailed(Throwable e)
     {
         Timber.e(e, "InvitableFriends error");
+        if (e instanceof FacebookRequestException)
+        {
+            Timber.e(new Exception(), ((FacebookRequestException) e).facebookCause.getErrorMessage());
+        }
     }
 }

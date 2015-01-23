@@ -6,7 +6,7 @@
   <string name="portfolio_own_header">พอร์ทการลงทุน </string>
   <string name="portfolio_recently_viewed_heroes">ฮีโร่ที่เรียกดูล่าสุด</string>
   <string name="portfolio_recently_viewed_others">ผู้ใช้ที่เรียกดูล่าสุด</string>
-  <string name="portfolio_loading_count">กำลังโหลด %1$,d/%2$,d พอร์ทการลงทุน...</string>
+  <string name="portfolio_loading_count">กำลังโหลด %1$,d/%2$,d พอร์ทการลงทุน…</string>
   <string name="portfolio_description_count_open_positions_you">คุณมี %1$d สถานะเปิด</string>
   <string name="portfolio_description_count_closed_positions_you">คุณมี %1$d สถานะปิด</string>
   <string name="portfolio_description_count_watch_positions_you">คุณกำลังดู %1$d รายการ</string>
@@ -15,7 +15,7 @@
   <string name="portfolio_description_count_watch_positions_other">%2$s กำลังดู %1$d รายการ</string>
   <string name="portfolio_description_count_watchlist">คุณมี %1$d รายการ</string>
   <string name="portfolio_default_title">พอร์ทการลงทุนหลัก</string>
-  <string name="portfolio_item_title_loading">กำลังโหลด...</string>
+  <string name="portfolio_item_title_loading">กำลังโหลด…</string>
   <string name="portfolio_header_total_value">มูลค่ารวม</string>
   <string name="portfolio_header_cash_value">มูลค่าเงินสด</string>
   <string name="portfolio_header_margin_title">หลักประกัน</string>

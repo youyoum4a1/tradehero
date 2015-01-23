@@ -1,4 +1,4 @@
-include ':app', ':ResideMenu', ':samsung_iap', ':facebook-android-sdk:facebook'
+include ':app', ':ResideMenu', ':samsung_iap'
 project(':app').projectDir = new File('TradeHero/TH_ANDROID')
 project(':ResideMenu').projectDir = new File('AndroidResideMenu/ResideMenu')
 project(':samsung_iap').projectDir = new File('samsung_iap/library')

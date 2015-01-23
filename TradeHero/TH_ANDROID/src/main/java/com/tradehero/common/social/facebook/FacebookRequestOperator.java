@@ -9,6 +9,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import rx.Observable;
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * It should be noted that only one Facebook Request can run at a time
@@ -16,11 +17,12 @@ import rx.Subscriber;
 public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
 {
     @NonNull private final Session session;
-    @Nullable private final String graphPath;
+    @NonNull private final String graphPath;
     @Nullable private final Bundle parameters;
     @Nullable private final HttpMethod httpMethod;
     @Nullable private final String version;
 
+    //<editor-fold desc="Constructors">
     private FacebookRequestOperator(@NonNull Builder builder)
     {
         this.session = builder.session;
@@ -29,10 +31,11 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
         this.httpMethod = builder.httpMethod;
         this.version = builder.version;
     }
+    //</editor-fold>
 
     @Override public void call(Subscriber<? super Response> subscriber)
     {
-        new Request(
+        Request request = new Request(
                 session,
                 graphPath,
                 parameters,
@@ -40,42 +43,40 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
                 response -> Observable
                         .create(new FacebookResponseOperator(response))
                         .subscribe(subscriber),
-                version)
-                .executeAsync();
+                version);
+        Timber.d("Facebook request version %s", request.getVersion());
+        Request.executeBatchAsync(request);
     }
 
     public static class Builder
     {
         @NonNull private final Session session;
-        @Nullable private String graphPath;
+        @NonNull private String graphPath;
         @Nullable private Bundle parameters;
         @Nullable private HttpMethod httpMethod;
         @Nullable private String version;
 
-        private Builder(@NonNull Session session)
+        //<editor-fold desc="Constructors">
+        private Builder(@NonNull Session session, @NonNull String graphPath)
         {
             this.session = session;
-        }
-
-        public Builder setGraphPath(@Nullable String graphPath)
-        {
             this.graphPath = graphPath;
-            return this;
         }
+        //</editor-fold>
 
-        public Builder setParameters(@Nullable Bundle parameters)
+        @NonNull public Builder setParameters(@NonNull Bundle parameters)
         {
             this.parameters = parameters;
             return this;
         }
 
-        public Builder setHttpMethod(@Nullable HttpMethod httpMethod)
+        @NonNull public Builder setHttpMethod(@NonNull HttpMethod httpMethod)
         {
             this.httpMethod = httpMethod;
             return this;
         }
 
-        public Builder setVersion(@Nullable String version)
+        @NonNull public Builder setVersion(@NonNull String version)
         {
             this.version = version;
             return this;
@@ -87,8 +88,8 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<Response>
         }
     }
 
-    @NonNull public static Builder builder(@NonNull Session session)
+    @NonNull public static Builder builder(@NonNull Session session, @NonNull String graphPath)
     {
-        return new Builder(session);
+        return new Builder(session, graphPath);
     }
 }

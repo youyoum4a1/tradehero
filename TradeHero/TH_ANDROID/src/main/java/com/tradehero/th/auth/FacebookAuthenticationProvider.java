@@ -3,17 +3,17 @@ package com.tradehero.th.auth;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.facebook.Request;
-import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionDefaultAudience;
 import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
+import com.tradehero.common.social.facebook.FacebookRequestOperator;
+import com.tradehero.common.social.facebook.SubscriberCallback;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.common.social.facebook.SubscriberCallback;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.network.service.SocialLinker;
@@ -32,14 +32,14 @@ import rx.Subscription;
 import rx.android.observables.Assertions;
 import rx.android.subscriptions.AndroidSubscriptions;
 import rx.functions.Action0;
-import rx.functions.Func1;
+import timber.log.Timber;
 
 @Singleton
 public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
-    implements ActivityResultRequester
+        implements ActivityResultRequester
 {
     public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-    public static final String ACCESS_TOKEN_KEY =  "access_token";
+    public static final String ACCESS_TOKEN_KEY = "access_token";
     public static final String EXPIRATION_DATE_KEY = "expiration_date";
 
     private Facebook facebook;
@@ -61,7 +61,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         super(socialLinker);
         this.tokenCachingStrategy = tokenCachingStrategy;
         PRECISE_DATE_FORMAT.setTimeZone(new SimpleTimeZone(0, "GMT"));
-        
+
         this.baseActivity = new WeakReference<>(null);
         this.activityCode = 32665;
         this.permissions = permissions;
@@ -113,13 +113,19 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
     @Override public Observable<AuthData> createAuthDataObservable(Activity activity)
     {
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id");
         return createSessionObservable(activity)
-                .flatMap(new Func1<Session, Observable<AuthData>>()
-                {
-                    @Override public Observable<AuthData> call(Session session)
-                    {
-                        return Observable.create(new MeRequestSubscribe(session));
-                    }
+                .flatMap(session -> {
+                    FacebookRequestOperator operator = FacebookRequestOperator.builder(session, "me")
+                            .setParameters(parameters)
+                            .build();
+                    return Observable.create(operator)
+                            .doOnNext(response -> Timber.d("Response %s", response.getRawResponse()))
+                            .map(response -> new AuthData(
+                                    SocialNetworkEnum.FB,
+                                    session.getExpirationDate(),
+                                    session.getAccessToken()));
                 });
     }
 
@@ -211,7 +217,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         }
 
         List<String> temp = new ArrayList<>(permissions);
-        for (String permission: newPermissions)
+        for (String permission : newPermissions)
         {
             if (!temp.remove(permission))
             {
@@ -219,38 +225,5 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             }
         }
         return true;
-    }
-
-    private class MeRequestSubscribe implements Observable.OnSubscribe<AuthData>
-    {
-        private final Session session;
-
-        public MeRequestSubscribe(Session session)
-        {
-            this.session = session;
-        }
-
-        @Override public void call(final Subscriber<? super AuthData> subscriber)
-        {
-            // TODO never create a new request twice
-            Request meRequest = Request.newGraphPathRequest(session, "me", new Request.Callback()
-            {
-                @Override public void onCompleted(Response response)
-                {
-                    if (response.getError() != null)
-                    {
-                        subscriber.onError(response.getError().getException());
-                    }
-                    else
-                    {
-                        AuthData authData = new AuthData(SocialNetworkEnum.FB, session.getExpirationDate(), session.getAccessToken());
-                        subscriber.onNext(authData);
-                        subscriber.onCompleted();
-                    }
-                }
-            });
-            meRequest.getParameters().putString("fields", "id");
-            meRequest.executeAsync();
-        }
     }
 }

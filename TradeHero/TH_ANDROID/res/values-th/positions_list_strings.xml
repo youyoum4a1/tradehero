@@ -5,8 +5,8 @@
   <string name="position_nothing_description">ไม่มีสถานะเปิด แตะเพื่อเทรด!</string>
   <string name="position_list_action_bar_header">%d สถานะ</string>
   <string name="position_list_action_bar_header_unknown">สถานะ</string>
-  <string name="position_list_header_open">เปิด (%d)</string>
-  <string name="position_list_header_open_unsure">เปิด</string>
+  <string name="position_list_header_open">สถานะเปิด (%d)</string>
+  <string name="position_list_header_open_unsure">สถานะเปิด</string>
   <string name="position_list_header_closed">ปิด (%d)</string>
   <string name="position_list_header_closed_unsure">ปิด</string>
   <string name="position_unrealised_loss_header">จะขาดทุน</string>

@@ -13,6 +13,7 @@ import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
+import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -27,6 +28,7 @@ public class SplashActivity extends BaseActivity
 {
     @Inject @FacebookAppId String facebookAppId;
     @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
+    @Inject @ResetHelpScreens BooleanPreference resetHelpScreens;
 
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
@@ -89,10 +91,11 @@ public class SplashActivity extends BaseActivity
         analytics.addEvent(new AppLaunchEvent())
                 .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
-        if (firstLaunchPreference.get())
+        if (firstLaunchPreference.get() || resetHelpScreens.get())
         {
             ActivityHelper.launchGuide(this);
             firstLaunchPreference.set(false);
+            resetHelpScreens.set(false);
             finish();
         }
         else if (authToken == null)
