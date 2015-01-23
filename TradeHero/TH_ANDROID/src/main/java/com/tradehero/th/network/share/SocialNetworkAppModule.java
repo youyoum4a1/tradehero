@@ -90,7 +90,7 @@ public class SocialNetworkAppModule
     @Provides @Singleton @FacebookPermissions List<String> provideFacebookPermissions()
     {
         // TODO separate read permission and publish/write permission
-        return Arrays.asList(PUBLIC_PROFILE, EMAIL, PUBLISH_WALL_FRIEND);
+        return Arrays.asList(PUBLIC_PROFILE);
     }
 
     @Provides @Singleton IWXAPI createWXAPI(Context context)
