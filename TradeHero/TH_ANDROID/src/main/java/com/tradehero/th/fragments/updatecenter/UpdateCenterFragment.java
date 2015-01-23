@@ -13,10 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -29,9 +25,7 @@ import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
 import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
@@ -42,10 +36,11 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.route.PreRoutable;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.List;
 
 @PreRoutable(preOpenRunnables = {
         RunnableInvalidateMessageList.class,
@@ -134,54 +129,6 @@ public class UpdateCenterFragment extends DashboardFragment
     private void detachUserProfileCache()
     {
         userProfileCache.unregister(userProfileCacheListener);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        Fragment f = getCurrentFragment();
-        if (f != null)
-        {
-            ((SherlockFragment) getCurrentFragment()).onCreateOptionsMenu(menu, inflater);
-        }
-
-        setActionBarTitle(R.string.message_center_title);
-        inflater.inflate(R.menu.notification_center_menu, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menu_private:
-                ((DashboardNavigatorActivity) getActivity()).getDashboardNavigator()
-                        .pushFragment(AllRelationsFragment.class);
-                return true;
-            case R.id.menu_broadcast:
-                jumpToSendBroadcastMessage();
-                return true;
-        }
-        Fragment f = getCurrentFragment();
-        if (f != null)
-        {
-            boolean handled = ((SherlockFragment) getCurrentFragment()).onOptionsItemSelected(item);
-            if (handled)
-            {
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        Fragment f = getCurrentFragment();
-        if (f != null)
-        {
-            ((SherlockFragment) getCurrentFragment()).onPrepareOptionsMenu(menu);
-        }
-        super.onPrepareOptionsMenu(menu);
     }
 
     @Override public void onOptionsMenuClosed(android.view.Menu menu)

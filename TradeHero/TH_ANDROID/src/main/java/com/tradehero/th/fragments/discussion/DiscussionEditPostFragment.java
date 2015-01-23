@@ -13,9 +13,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.text.Span;
@@ -48,12 +45,13 @@ import com.tradehero.th.persistence.user.UserSearchResultCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class DiscussionEditPostFragment extends DashboardFragment
 {
@@ -77,7 +75,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
     private DiscussionDTO discussionDTO;
     private MiddleCallback<DiscussionDTO> discussionEditMiddleCallback;
     private ProgressDialog progressDialog;
-    protected MenuItem postMenuButton;
     private TextWatcher discussionEditTextWatcher;
 
     private HasSelectedItem selectionFragment;
@@ -99,36 +96,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
         DeviceUtil.showKeyboardDelayed(discussionPostContent);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_discussion_edit_post, menu);
-        postMenuButton = menu.findItem(R.id.discussion_edit_post);
-
-        setActionBarTitle(R.string.discussion);
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         setActionBarSubtitle(null);
         Timber.d("onDestroyOptionsMenu");
 
         super.onDestroyOptionsMenu();
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.discussion_edit_post:
-                postDiscussion();
-                return true;
-            case android.R.id.home:
-                DeviceUtil.dismissKeyboard(getActivity());
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()
@@ -399,15 +372,6 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
         @Override public void afterTextChanged(Editable s)
         {
-            if (postMenuButton != null)
-            {
-                boolean notEmptyText = validateNotEmptyText();
-                if (notEmptyText != postMenuButton.isVisible())
-                {
-                    // TODO do something to enable Post menu button
-                    getSherlockActivity().invalidateOptionsMenu();
-                }
-            }
         }
     }
 }

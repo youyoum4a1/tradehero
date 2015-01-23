@@ -8,9 +8,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -34,13 +31,14 @@ import com.tradehero.th.persistence.message.MessageHeaderCache;
 import com.tradehero.th.persistence.message.MessageHeaderListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionFragment
 {
@@ -112,23 +110,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
             ((PrivateDiscussionView) discussionView).setMessageType(MessageType.PRIVATE);
             ((PrivateDiscussionView) discussionView).setRecipient(correspondentId);
         }
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.private_message_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.private_message_refresh_btn:
-                refresh();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()

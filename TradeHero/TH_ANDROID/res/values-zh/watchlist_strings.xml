@@ -10,7 +10,6 @@
   <string name="watchlist_average_price_header">平均价格 (US$)</string>
   <string name="watchlist_quantity_header">数量</string>
   <string name="watchlist_quantity_initial">1</string>
-  <string name="watchlist_view_graph">查看图表</string>
   <string name="watchlist_number_of_shares"><![CDATA[<b>%1$d</b> 股 @ <b>%2$s</b>]]></string>
   <string name="watchlist_pl_percentage_format">%s %%</string>
   <string name="watchlist_last_price_format"><![CDATA[%1$s <b>%2$s</b>]]></string>
@@ -26,7 +25,6 @@
   <string name="watchlist_more">更多</string>
   <string name="watchlist_quantity_should_not_be_zero">数量最少为 1</string>
   <string name="watchlist_empty_view">点击上方的 \'+\' 按钮，添加至自选股</string>
-  <string name="watchlist_new_discussion">新讨论</string>
   <string name="watchlist_not_yet_implemented">暂未开放. 请保持关注</string>
   <string name="error_fetch_portfolio_watchlist">获取自选股列表发生错误</string>
   <string name="watchlist_marking_date_format">yyyy年 MM月 dd日 HH:mm</string>

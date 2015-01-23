@@ -8,18 +8,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -43,17 +34,17 @@ import com.tradehero.th.persistence.social.FollowerSummaryCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SendMessageFragment extends DashboardFragment
         implements AdapterView.OnItemSelectedListener, View.OnClickListener
@@ -98,32 +89,6 @@ public class SendMessageFragment extends DashboardFragment
         middleCallbackSendMessages = new ArrayList<>();
 
         Timber.d("onCreate messageType:%s,discussionType:%s", messageType, discussionType);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(getString(R.string.broadcast_message_title));
-        inflater.inflate(R.menu.send_message_menu, menu);
-        Timber.d("onCreateOptionsMenu");
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
-        Timber.d("onDestroyOptionsMenu");
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.menu_send_message:
-                fetchFollowerForBroadcast();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void fetchFollowerForBroadcast()

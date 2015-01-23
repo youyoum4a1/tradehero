@@ -3,8 +3,6 @@ package com.tradehero.th.fragments.leaderboard;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -26,10 +24,11 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.list.BaseExpandingItemListener;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragment
 {
@@ -72,14 +71,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
         this.leaderboardCacheListener = createLeaderboardCacheListener();
         this.userOnLeaderboardCacheListener = createUserOnLeaderboardListener();
     }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(getMenuResource(), menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-    //</editor-fold>
 
     @Override public void onResume()
     {
@@ -163,11 +154,6 @@ abstract public class BaseLeaderboardFragment extends BasePurchaseManagerFragmen
                 new UserOnLeaderboardKey(new LeaderboardKey(leaderboardDefKey.key), currentUserId.toUserBaseKey());
         leaderboardCache.register(userOnLeaderboardKey, userOnLeaderboardCacheListener);
         leaderboardCache.getOrFetchAsync(userOnLeaderboardKey);
-    }
-
-    protected int getMenuResource()
-    {
-        return R.menu.leaderboard_menu;
     }
 
     protected void pushLeaderboardListViewFragment(@NotNull LeaderboardDefDTO dto)

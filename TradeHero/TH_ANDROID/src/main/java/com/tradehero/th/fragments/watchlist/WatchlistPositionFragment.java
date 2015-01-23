@@ -13,14 +13,11 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.fortysevendeg.android.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.android.swipelistview.SwipeListView;
 import com.fortysevendeg.android.swipelistview.SwipeListViewListener;
-import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipeListView;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.TwoStateView;
@@ -35,13 +32,13 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
-import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -183,30 +180,6 @@ public class WatchlistPositionFragment extends DashboardFragment
         userWatchlistPositionCache.register(currentUserId.toUserBaseKey(), userWatchlistPositionFetchListener);
         userWatchlistPositionCache.getOrFetchAsync(currentUserId.toUserBaseKey(), false);
     }
-
-    //<editor-fold desc="ActionBar Menu Actions">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.position_watchlist_menu, menu);
-        setActionBarTitle(getString(R.string.watchlist_title));
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.position_watchlist_add:
-            {
-                Bundle bundle = new Bundle();
-                getDashboardNavigator().pushFragment(SecuritySearchWatchlistFragment.class, bundle);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    //</editor-fold>
 
     @Override public void onResume()
     {

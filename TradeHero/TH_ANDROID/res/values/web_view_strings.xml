@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="webview_back">Back</string>
-  <string name="webview_forward">Forward</string>
-  <string name="webview_open_browser">Open in Browser</string>
   <string name="webview_error_no_browser_for_intent_title">Missing a Browser</string>
   <string name="webview_error_no_browser_for_intent_description">There appears to be no browser on your device.</string>
 

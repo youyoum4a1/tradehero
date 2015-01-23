@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
@@ -30,10 +28,11 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
 {
@@ -76,8 +75,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected boolean isTransactionTypeBuy = true;
     protected Integer mBuyQuantity;
     protected Integer mSellQuantity;
-
-    protected MenuItem marketCloseIcon;
 
     public static void putSecurityId(@NotNull Bundle args, @NotNull SecurityId securityId)
     {
@@ -138,13 +135,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         quoteDTO = null;
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
-        displayMarketClose();
-    }
-
     @Override public void onResume()
     {
         super.onResume();
@@ -169,10 +159,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         if (!marketIsOpen)
         {
             notifyOnceMarketClosed();
-        }
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setVisible(!marketIsOpen);
         }
     }
     //</editor-fold>

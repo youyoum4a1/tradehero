@@ -7,14 +7,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.utils.DeviceUtil;
+
 import java.util.List;
 
 abstract public class BaseSearchFragment<
@@ -62,44 +60,6 @@ abstract public class BaseSearchFragment<
     {
         return R.layout.fragment_search_stock;
     }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.search_stock_menu, menu);
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem peopleSearchElements = menu.findItem(R.id.security_search_menu_elements);
-
-        mSearchTextWatcher = new SearchTextWatcher();
-        mSearchTextField =
-                (EditText) peopleSearchElements.getActionView().findViewById(R.id.search_field);
-        if (mSearchTextField != null)
-        {
-            mSearchTextField.setText(mSearchText);
-            mSearchTextField.addTextChangedListener(mSearchTextWatcher);
-            mSearchTextField.setFocusable(true);
-            mSearchTextField.setFocusableInTouchMode(true);
-            mSearchTextField.requestFocus();
-            DeviceUtil.showKeyboardDelayed(mSearchTextField);
-        }
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        if (mSearchTextField != null)
-        {
-            mSearchTextField.removeTextChangedListener(mSearchTextWatcher);
-        }
-        mSearchTextField = null;
-        mSearchTextWatcher = null;
-        super.onDestroyOptionsMenu();
-    }
-    //</editor-fold>
 
     @Override public void onSaveInstanceState(Bundle outState)
     {

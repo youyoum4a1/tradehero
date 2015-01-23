@@ -10,8 +10,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -51,12 +49,13 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.HashMap;
-import java.util.Map;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 @Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
@@ -338,13 +337,6 @@ public class PositionListFragment
         }
 
         getDashboardNavigator().pushFragment(TrendingFragment.class, args);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.position_list_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        displayActionBarTitle();
     }
 
     @Override public void onResume()

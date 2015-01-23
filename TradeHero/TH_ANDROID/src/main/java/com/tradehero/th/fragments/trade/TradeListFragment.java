@@ -10,9 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -47,12 +44,13 @@ import com.tradehero.th.persistence.trade.TradeListCache;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
 public class TradeListFragment extends BasePurchaseManagerFragment
@@ -134,27 +132,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
         }
     }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.trade_list_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_security_action:
-                if (securityAlertAssistant.isPopulated())
-                {
-                    handleActionButtonClicked();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override public void onResume()
     {
         super.onResume();

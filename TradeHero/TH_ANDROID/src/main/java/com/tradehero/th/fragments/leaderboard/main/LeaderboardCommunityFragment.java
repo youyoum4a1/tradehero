@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -48,11 +45,12 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 @Routable("providers")
 public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
@@ -134,31 +132,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         detachWebFragment();
         super.onDestroy();
     }
-
-    //<editor-fold desc="ActionBar">
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.social_search_menu, menu);
-        setActionBarTitle(R.string.dashboard_community);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // TODO switch sorting type for leaderboard
-        switch (item.getItemId())
-        {
-            case R.id.btn_search:
-                pushSearchFragment();
-                return true;
-
-            case R.id.btn_add:
-                pushInvitationFragment();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
 
     private void detachWebFragment()
     {

@@ -9,18 +9,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderIdConstants;
-import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.*;
 import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
@@ -59,14 +52,14 @@ import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.competition.ProviderListCache;
 import com.tradehero.th.persistence.market.ExchangeCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import dagger.Lazy;
-import java.util.HashSet;
-import java.util.Set;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 @Routable("trending-securities")
 public class TrendingFragment extends SecurityListFragment
@@ -170,25 +163,6 @@ public class TrendingFragment extends SecurityListFragment
                 }
             }
         }, 500);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        setActionBarTitle(R.string.trending_header);
-        inflater.inflate(R.menu.search_menu, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_search:
-                pushSearchIn();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStop()

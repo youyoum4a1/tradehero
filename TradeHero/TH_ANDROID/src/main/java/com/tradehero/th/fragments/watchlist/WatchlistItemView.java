@@ -7,19 +7,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -42,11 +36,12 @@ import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.utils.ColorUtils;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
-import java.text.DecimalFormat;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.text.DecimalFormat;
 
 public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistPositionDTO>
 {
@@ -162,24 +157,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                 {
                     return false;
                 }
-                switch (item.getItemId())
-                {
-                    case R.id.watchlist_item_add_alert:
-                        openAlertEditor();
-                        break;
-                    case R.id.watchlist_item_edit_in_watchlist:
-                        openWatchlistEditor();
-                        break;
-                    case R.id.watchlist_item_new_discussion:
-                        THToast.show(getContext().getString(R.string.watchlist_not_yet_implemented));
-                        break;
-                    case R.id.watchlist_item_view_graph:
-                        openSecurityGraph();
-                        break;
-                    case R.id.watchlist_item_trade:
-                        openSecurityProfile();
-                        break;
-                }
+
                 return true;
             }
         };
@@ -489,8 +467,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     private PopupMenu createMoreOptionsPopupMenu()
     {
         PopupMenu popupMenu = new PopupMenu(getContext(), moreButton);
-        MenuInflater menuInflater = popupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.watchlist_more_popup_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(createMoreButtonPopupMenuClickHandler());
         return popupMenu;
     }

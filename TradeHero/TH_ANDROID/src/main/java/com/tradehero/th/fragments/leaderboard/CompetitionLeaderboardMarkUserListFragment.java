@@ -2,16 +2,10 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
 import android.view.View;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionDTOUtil;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.*;
 import com.tradehero.th.api.competition.key.CompetitionId;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
@@ -27,10 +21,11 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCache;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCache;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.List;
 
 abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
 {
@@ -99,28 +94,6 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         return new PerPagedLeaderboardKey(leaderboardDefKey.key, null, null);
     }
 
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem filterMenu = menu.findItem(R.id.button_leaderboard_filter);
-        if (filterMenu != null)
-        {
-            filterMenu.setVisible(false);
-        }
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.competition_leaderboard_list_menu, menu);
-
-        MenuItem wizardButton = menu.findItem(R.id.btn_wizard);
-        if (wizardButton != null)
-        {
-            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
-        }
-    }
-
     @Override protected LeaderboardMarkUserListAdapter createLeaderboardMarkUserAdapter()
     {
         return new LeaderboardMarkUserListAdapter(
@@ -143,17 +116,6 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         leaderboardMarkUserListAdapter.setDTOLoaderCallback(new CompetitionLeaderboardMarkUserListViewFragmentListLoaderCallback());
         return new CompetitionLeaderboardMarkUserListAdapter(getActivity(), providerDTO, leaderboardMarkUserListAdapter);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_wizard:
-                pushWizardElement();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()

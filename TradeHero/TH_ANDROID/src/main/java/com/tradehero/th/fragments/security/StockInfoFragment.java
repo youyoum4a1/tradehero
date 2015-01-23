@@ -8,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCache;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
@@ -30,11 +27,12 @@ import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.viewpagerindicator.PageIndicator;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StockInfoFragment extends DashboardFragment
 {
@@ -53,8 +51,6 @@ public class StockInfoFragment extends DashboardFragment
     protected PaginatedDTO<NewsItemDTO> newsHeadlineList;
     private DTOCache.Listener<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheListener;
     private DTOCache.GetOrFetchTask<SecurityId, PaginatedDTO<NewsItemDTO>> yahooNewsCacheFetchTask;
-
-    private MenuItem marketCloseIcon;
 
     private ViewPager topPager;
     private InfoTopStockPagerAdapter topViewPagerAdapter;
@@ -128,27 +124,6 @@ public class StockInfoFragment extends DashboardFragment
             }
             display();
         }
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.stock_info_menu, menu);
-        displayExchangeSymbol();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        super.onPrepareOptionsMenu(menu);
-
-        marketCloseIcon = menu.findItem(R.id.buy_sell_menu_market_status);
-
-        displayMarketClose();
-    }
-
-    @Override public void onDestroyOptionsMenu()
-    {
-        super.onDestroyOptionsMenu();
     }
 
     @Override public void onPause()
@@ -305,10 +280,6 @@ public class StockInfoFragment extends DashboardFragment
 
     private void displayMarketClose()
     {
-        if (marketCloseIcon != null)
-        {
-            marketCloseIcon.setVisible(securityCompactDTO != null && !securityCompactDTO.marketOpen);
-        }
     }
 
     public void displayTopViewPager()

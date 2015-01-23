@@ -11,7 +11,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -24,13 +23,14 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCache;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import java.util.Date;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.RetrofitError;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.Date;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 {
@@ -124,22 +124,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         super.onResume();
         fetchLeaderboardFriends();
         mProgress.setVisibility(View.VISIBLE);
-    }
-
-    @Override protected int getMenuResource()
-    {
-        return R.menu.friend_leaderboard_menu;
-    }
-
-    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.friend_leaderboard_invite:
-                pushInvitationFragment();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStop()

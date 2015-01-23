@@ -79,8 +79,6 @@ public class SplashActivity extends SherlockActivity
         ButterKnife.inject(this);
         currentActivityHolder.setCurrentActivity(this);
         mShareDialogKeyPreference.set(true);
-        //delay this for first page is not trending fragment, now first page is home page by alex
-        //dtoCacheUtil.anonymousPrefetches();
         if (mTipsText != null)
         {
             String[] sa = getResources().getStringArray(R.array.loading_page_tips);
@@ -122,12 +120,6 @@ public class SplashActivity extends SherlockActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
-    }
-
-    @Override protected void onPause()
-    {
-        //analytics.closeSession();
-        super.onPause();
     }
 
     protected void initialisation()

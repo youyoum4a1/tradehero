@@ -4,17 +4,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.utils.metrics.Analytics;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 /**
  * This fragment will not be the main, but one that is pushed from elsewhere
@@ -31,26 +29,6 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         super.initViews(view);
         mIsOtherProfile = true;
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.timeline_menu_pushable_other, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        Boolean isFollowing = isPurchaserFollowingUserShown();
-        updateBottomButton();
-
-        //MenuItem settingsButton = menu.findItem(R.id.menu_settings);
-        //if (settingsButton != null)
-        //{
-        //    settingsButton.setVisible(false);
-        //}
-
-        super.onPrepareOptionsMenu(menu);
     }
 
     @Override protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)

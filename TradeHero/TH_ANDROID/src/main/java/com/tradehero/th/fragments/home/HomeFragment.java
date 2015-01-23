@@ -7,9 +7,6 @@ import android.view.View;
 import android.webkit.WebView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.route.Routable;
@@ -17,12 +14,7 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.api.form.UserFormFactory;
-import com.tradehero.th.api.social.InviteFormUserDTO;
-import com.tradehero.th.api.social.UserFriendsContactEntryDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsDTOFactory;
-import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
-import com.tradehero.th.api.social.UserFriendsTwitterDTO;
+import com.tradehero.th.api.social.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -44,13 +36,14 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.Arrays;
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.Arrays;
+import java.util.List;
 
 //import com.facebook.FacebookException;
 //import com.facebook.FacebookOperationCanceledException;
@@ -136,25 +129,6 @@ public final class HomeFragment extends BaseWebViewFragment
         super.onActivityCreated(savedInstanceState);
 
         webView.reload();
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, @NotNull MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.dashboard_home);
-        inflater.inflate(R.menu.menu_refresh_button, menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(@NotNull MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_fresh:
-                webView.reload();
-                userProfileCacheLazy.get().getOrFetchAsync(currentUserId.toUserBaseKey(), true);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()

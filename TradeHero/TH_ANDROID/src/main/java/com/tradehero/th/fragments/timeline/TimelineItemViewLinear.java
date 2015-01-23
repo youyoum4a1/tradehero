@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCache;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
+
 import javax.inject.Inject;
 
 public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear<TimelineItemDTOKey>
@@ -90,25 +91,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
         {
             switch (item.getItemId())
             {
-                case R.id.timeline_action_add_to_watchlist:
-                {
-                    openWatchlistEditor();
-                    return true;
-                }
-
-                case R.id.timeline_action_add_alert:
-                    openStockAlertEditor();
-                    return true;
-
-                case R.id.timeline_popup_menu_buy_sell:
-                {
-                    openSecurityProfile();
-                    return true;
-                }
-
-                case R.id.timeline_action_translate:
-                    translate();
-                    break;
             }
             return false;
         }
@@ -124,16 +106,6 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
     {
         PopupMenu popupMenu = new PopupMenu(getContext(), findViewById(R.id.discussion_action_button_more));
         MenuInflater menuInflater = popupMenu.getMenuInflater();
-
-        if (((TimelineItemViewHolder) viewHolder).canShowStockMenu())
-        {
-            menuInflater.inflate(R.menu.timeline_stock_popup_menu, popupMenu.getMenu());
-        }
-
-        if (socialShareHelper.canTranslate(abstractDiscussionCompactDTO))
-        {
-            menuInflater.inflate(R.menu.timeline_comment_share_popup_menu, popupMenu.getMenu());
-        }
 
         popupMenu.setOnMenuItemClickListener(createMonitorPopupMenuItemClickListener());
         return popupMenu;

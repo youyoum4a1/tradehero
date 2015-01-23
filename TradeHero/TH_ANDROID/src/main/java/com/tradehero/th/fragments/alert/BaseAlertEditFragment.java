@@ -7,16 +7,9 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.billing.ProductPurchase;
@@ -48,11 +41,12 @@ import com.tradehero.th.persistence.alert.AlertCompactListCache;
 import com.tradehero.th.persistence.security.SecurityCompactCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import java.text.SimpleDateFormat;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
 {
@@ -172,30 +166,12 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         ButterKnife.inject(this, view);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.alert_edit_menu, menu);
-        displayActionBarTitle();
-    }
-
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         alertToggle.setVisibility(View.GONE);
         targetPercentageChangeToggle.setOnCheckedChangeListener(createPercentageCheckedChangeListener());
         targetPriceToggle.setOnCheckedChangeListener(createTargetPriceCheckedChangeListener());
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.alert_menu_save:
-                conditionalSaveAlert();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()

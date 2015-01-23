@@ -11,9 +11,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -23,11 +20,9 @@ import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.alert.AlertDTO;
 import com.tradehero.th.api.alert.AlertFormDTO;
 import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -42,11 +37,12 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.ocpsoft.prettytime.PrettyTime;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 public class AlertViewFragment extends BasePurchaseManagerFragment
 {
@@ -149,30 +145,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         linkWith(getAlertId(getArguments()), true);
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.alert_view_menu, menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.alert_menu_edit:
-                Bundle bundle = new Bundle();
-                OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-                if (applicablePortfolioId != null)
-                {
-                    AlertEditFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
-                }
-                AlertEditFragment.putAlertId(bundle, alertId);
-                getDashboardNavigator().pushFragment(AlertEditFragment.class, bundle, Navigator.PUSH_UP_FROM_BOTTOM, null);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onDestroyView()

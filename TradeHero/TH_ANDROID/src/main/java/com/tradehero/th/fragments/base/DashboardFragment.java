@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.special.ResideMenu.ResideMenu;
 import com.tradehero.chinabuild.fragment.LoginSuggestDialogFragment;
 import com.tradehero.common.text.RichTextCreator;
@@ -20,13 +19,12 @@ import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import timber.log.Timber;
+
+import javax.inject.Inject;
 
 abstract public class DashboardFragment extends BaseFragment
 {
@@ -222,10 +220,6 @@ abstract public class DashboardFragment extends BaseFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        if (this instanceof WithTutorial)
-        {
-            inflater.inflate(R.menu.menu_with_tutorial, menu);
-        }
 
         Bundle argument = getArguments();
 
@@ -241,11 +235,11 @@ abstract public class DashboardFragment extends BaseFragment
 
         ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setCustomView(R.layout.custom_head_layout);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
 
         if (actionBar != null)
         {
+            actionBar.setCustomView(R.layout.custom_head_layout);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             initHeadViewCustomLayout();
         }
     }
@@ -296,37 +290,6 @@ abstract public class DashboardFragment extends BaseFragment
         if (navigator != null)
         {
             navigator.popFragment();
-        }
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                DashboardNavigator navigator = getDashboardNavigator();
-                if (navigator != null)
-                {
-                    navigator.popFragment();
-                }
-                return true;
-
-            case R.id.menu_info:
-                handleInfoMenuItemClicked();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected void handleInfoMenuItemClicked()
-    {
-        if (this instanceof WithTutorial)
-        {
-            alertDialogUtil.popTutorialContent(getActivity(), ((WithTutorial) this).getTutorialLayout());
-        }
-        else
-        {
-            Timber.d("%s is not implementing WithTutorial interface, but has info menu", getClass().getName());
         }
     }
 

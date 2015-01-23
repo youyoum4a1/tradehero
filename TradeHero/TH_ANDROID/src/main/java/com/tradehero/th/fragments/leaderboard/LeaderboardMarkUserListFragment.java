@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.annotation.ForUser;
@@ -182,32 +181,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             leaderboardMarkUserMarkingTime = (TextView) headerView.findViewById(R.id.leaderboard_marking_time);
         }
     }
-
-    //<editor-fold desc="ActionBar">
-    @Override protected int getMenuResource()
-    {
-        return R.menu.leaderboard_listview_menu;
-    }
-
-    @Override public void onPrepareOptionsMenu(Menu menu)
-    {
-        displayFilterIcon(menu.findItem(R.id.leaderboard_listview_menu_help));
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                break;
-            case R.id.button_leaderboard_filter:
-                pushFilterFragmentIn();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    //</editor-fold>
 
     @Override protected void initViews(View view)
     {

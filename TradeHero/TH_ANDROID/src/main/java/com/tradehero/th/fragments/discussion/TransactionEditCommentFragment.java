@@ -1,9 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.text.Editable;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.tradehero.th.R;
 
 public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFragment
 {
@@ -14,14 +11,6 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
         super.initView();
 
         discussionPostActionButtonsView.hideSocialButtons();
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        postMenuButton.setTitle(R.string.done);
-        setActionBarTitle(R.string.trade_comment);
     }
 
     public Editable getComment()

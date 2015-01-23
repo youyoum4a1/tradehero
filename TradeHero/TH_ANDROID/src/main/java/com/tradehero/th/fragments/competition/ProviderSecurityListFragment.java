@@ -7,9 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -30,8 +27,9 @@ import com.tradehero.th.loaders.security.SecurityListPagedLoader;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCache;
 import com.tradehero.th.utils.DeviceUtil;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class ProviderSecurityListFragment extends SecurityListFragment
 {
@@ -49,8 +47,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
 
     private THIntentPassedListener webViewTHIntentPassedListener;
     private BaseWebViewFragment webViewFragment;
-
-    private MenuItem wizardButton;
 
     public static void putProviderId(@NotNull Bundle args, @NotNull ProviderId providerId)
     {
@@ -82,35 +78,6 @@ public class ProviderSecurityListFragment extends SecurityListFragment
         View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
         initViews(view);
         return view;
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        //THLog.i(TAG, "onCreateOptionsMenu");
-        super.onCreateOptionsMenu(menu, inflater);
-        displayTitle();
-        inflater.inflate(R.menu.provider_security_list_menu, menu);
-
-        wizardButton = menu.findItem(R.id.btn_wizard);
-        if (wizardButton != null)
-        {
-            wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
-        }
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.btn_wizard:
-                pushWizardElement();
-                return true;
-
-            case R.id.btn_search:
-                pushSearchFragment();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onStart()

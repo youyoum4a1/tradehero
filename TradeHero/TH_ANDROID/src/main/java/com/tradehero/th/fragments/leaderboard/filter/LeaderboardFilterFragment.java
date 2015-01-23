@@ -6,17 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 
 public class LeaderboardFilterFragment extends DashboardFragment
 {
@@ -64,27 +62,6 @@ public class LeaderboardFilterFragment extends DashboardFragment
     protected void initViews(View view)
     {
         displayPerPagedFilteredLeaderboardKey();
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.leaderboard_filter_menu, menu);
-        setActionBarTitle(R.string.leaderboard_filter_menu_title);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-                break;
-
-            case R.id.btn_leaderboard_filter_confirm:
-                returnToLeaderboard();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override public void onResume()
