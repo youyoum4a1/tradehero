@@ -60,6 +60,7 @@ public class DiscussSendFragment extends DashboardFragment
 
     public static final String BUNDLE_KEY_COMPETITION = "bundle_key_competition";
     public static final String BUNDLE_KEY_REWARD = "bundle_key_reward";
+    public static final String BUNDLE_KEY_IS_GO_REWARD = "bundle_key_is_go_reward";
 
     @InjectView(R.id.btnAt) Button btnAt;
     @InjectView(R.id.btnSelectStock) Button btnSelectStock;
@@ -139,6 +140,9 @@ public class DiscussSendFragment extends DashboardFragment
             }
             if(args.containsKey(BUNDLE_KEY_REWARD)){
                 isReward = args.getBoolean(BUNDLE_KEY_REWARD);
+            }
+            if(args.containsKey(BUNDLE_KEY_IS_GO_REWARD)){
+                isGoToReward = args.getBoolean(BUNDLE_KEY_IS_GO_REWARD);
             }
         }
     }

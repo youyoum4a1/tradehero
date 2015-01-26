@@ -5,9 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
+import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.utils.THToast;
@@ -46,6 +51,8 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeheroprogressbar_discovery) TradeHeroProgressBar progressBar;
 
+    private TextView tvCreateTimeLine;
+
     private UserTimeLineAdapter adapter;
 
     @Inject Analytics analytics;
@@ -78,8 +85,21 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
         }
-
+        tvCreateTimeLine = (TextView)view.findViewById(R.id.tvCreateTimeLine);
+        tvCreateTimeLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createTimeLine();
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(R.string.discovery_square_discuss);
     }
 
     public void initView()
@@ -134,11 +154,11 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         });
     }
 
-    public void enterTimeLineDetail(TimelineItemDTO dto)
+    private void enterTimeLineDetail(TimelineItemDTO dto)
     {
         Bundle bundle = new Bundle();
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
-        gotoDashboard(TimeLineItemDetailFragment.class, bundle);
+        pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 
     @Override public void onPause()
@@ -220,5 +240,12 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         {
             adapter.OnResumeDataAction();
         }
+    }
+
+    private void createTimeLine()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(DiscussSendFragment.BUNDLE_KEY_REWARD, true);
+        pushFragment(DiscoveryDiscussSendFragment.class, bundle);
     }
 }

@@ -1,37 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+            android:id="@+id/contest_center_content_screen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_timeline"
+            >
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/contest_center_content_screen"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_timeline"
-    >
+        <com.tradehero.common.widget.BetterViewAnimator
+                android:id="@+id/bvaViewAll"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-  <com.tradehero.common.widget.BetterViewAnimator
-      android:id="@+id/bvaViewAll"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
+            <com.tradehero.th.widget.TradeHeroProgressBar
+                    android:id="@+id/tradeheroprogressbar_discovery"
+                    android:layout_width="61dp"
+                    android:layout_height="58dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/logo"
+                    />
+            <com.tradehero.chinabuild.listview.SecurityListView
+                    xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                    ptr:ptrHeaderTextColor="@color/black"
+                    android:id="@+id/listTimeLine"
+                    android:scrollingCache="false"
+                    android:fadingEdge="none"
+                    android:divider="@color/transparent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+            </com.tradehero.chinabuild.listview.SecurityListView>
 
-    <com.tradehero.th.widget.TradeHeroProgressBar
-        android:id="@+id/tradeheroprogressbar_discovery"
-        android:layout_width="61dp"
-        android:layout_height="58dp"
-        android:layout_gravity="center"
-        android:background="@drawable/logo"
-        />
-    <com.tradehero.chinabuild.listview.SecurityListView
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        ptr:ptrHeaderTextColor="@color/black"
-        android:id="@+id/listTimeLine"
-        android:scrollingCache="false"
-        android:fadingEdge="none"
-        android:divider="@color/transparent"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    </com.tradehero.chinabuild.listview.SecurityListView>
+        </com.tradehero.common.widget.BetterViewAnimator>
 
-  </com.tradehero.common.widget.BetterViewAnimator>
-
-</LinearLayout>
-
+    </LinearLayout>
+    <TextView
+            android:id="@+id/tvCreateTimeLine"
+            android:background="@drawable/issue_xml"
+            android:text="发布"
+            android:textColor="@color/white"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="60dp"
+            android:gravity="center"
+            />
+</RelativeLayout>

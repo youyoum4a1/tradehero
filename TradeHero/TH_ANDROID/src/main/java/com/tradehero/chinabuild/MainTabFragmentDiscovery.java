@@ -14,8 +14,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryNewsFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryRecentNewsFragment;
-import com.tradehero.chinabuild.fragment.discovery.DiscoveryRewardFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryStockGodNewsFragment;
 import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
@@ -61,25 +60,21 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
         super.onDestroyView();
     }
 
-    private static final String[] CONTENT = new String[] {"最新动态"
-              , "股市资讯","悬赏帖", "股神动态"
+    private static final String[] CONTENT = new String[] {"广场"
+              , "资讯", "股神动态"
     };
 
     @Override
     public void onPageScrolled(int i, float v, int i2) {
         if(i == 0){
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_LATEST));
+            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_SQUARE));
             return;
         }
-        else if(i == 1){
+        if(i == 1){
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_NEWS));
             return;
         }
-        else if(i == 2){
-            analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_REWARD));
-            return;
-        }
-        else if(i == 3){
+        if(i == 2){
             analytics.addEventAuto(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_DISCOVERY_GOD));
             return;
         }
@@ -108,15 +103,10 @@ public class MainTabFragmentDiscovery extends AbsBaseFragment implements ViewPag
             switch (position)
             {
                 case 0:
-                    return new DiscoveryRecentNewsFragment();
-
+                    return new DiscoverySquareFragment();
                 case 1:
                     return new DiscoveryNewsFragment();
-
                 case 2:
-                    return new DiscoveryRewardFragment();
-
-                case 3:
                     return new DiscoveryStockGodNewsFragment();
             }
             return null;

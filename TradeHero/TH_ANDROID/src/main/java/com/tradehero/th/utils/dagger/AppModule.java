@@ -345,11 +345,11 @@ import java.util.Locale;
                         TradeOfRisePercentFragment.class,
                         TradeOfHotHoldFragment.class,
 
-                        DiscoveryHotTopicFragment.class,
                         DiscoveryStockGodNewsFragment.class,
                         DiscoveryRewardFragment.class,
                         DiscoveryRecentNewsFragment.class,
                         DiscoveryNewsFragment.class,
+                        DiscoverySquareFragment.class,
                         NewsDetailFragment.class,
 
                         SearchFragment.class,
