@@ -43,7 +43,7 @@
   </LinearLayout>
   <TextView
       android:id="@+id/tvCreateCompetition"
-      android:background="@drawable/issue_xml"
+      android:background="@drawable/issue_plus"
       android:text="创建"
       android:textColor="@color/white"
       android:layout_width="56dp"
