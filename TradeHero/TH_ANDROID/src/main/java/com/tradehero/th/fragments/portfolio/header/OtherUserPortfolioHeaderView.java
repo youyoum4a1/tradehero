@@ -20,6 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
@@ -51,6 +52,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject Picasso picasso;
     @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
+    @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogRxUtilLazy;
     @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
@@ -278,12 +280,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     public boolean isCurrentUser(int userId)
     {
-        UserProfileDTO currentUser = this.userCache.getCachedValue(currentUserId.toUserBaseKey());
-        if (currentUser != null)
-        {
-            return currentUser.id == userId;
-        }
-        return false;
+        return currentUserId.get().equals(userId);
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
@@ -86,7 +85,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
     }
 
-    private boolean isSocialLinked(SocialNetworkEnum socialNetworkEnum)
+    private boolean isSocialLinked(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         UserProfileDTO userProfileDTO = userProfileCache.getCachedValue(currentUserId.toUserBaseKey());
 
@@ -123,37 +122,29 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListener()
     {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+        return (compoundButton, isChecked) -> {
+            SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
+            if (socialNetworkEnum != null)
             {
-                SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                if (socialNetworkEnum != null)
+                if(isChecked && !isSocialLinked(socialNetworkEnum))
                 {
-                    if(isChecked && !isSocialLinked(socialNetworkEnum))
-                    {
-                        askToLinkSocial(socialNetworkEnum);
-                        isChecked = false;
-                    }
-                    socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
-                    compoundButton.setChecked(isChecked);
+                    askToLinkSocial(socialNetworkEnum);
+                    isChecked = false;
                 }
+                socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
+                compoundButton.setChecked(isChecked);
             }
         };
     }
 
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListenerForWechat()
     {
-        return new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
+        return (compoundButton, isChecked) -> {
+            SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
+            if (socialNetworkEnum != null)
             {
-                SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
-                if (socialNetworkEnum != null)
-                {
-                    socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
-                    compoundButton.setChecked(isChecked);
-                }
+                socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
+                compoundButton.setChecked(isChecked);
             }
         };
     }
@@ -166,13 +157,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
                 String.format(getContext().getString(R.string.link_description), socialNetworkEnum.getName()),
                 R.string.link_now,
                 R.string.later,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        openSettingScreen();
-                    }
-                },
+                (dialog, which) -> openSettingScreen(),
                 null
         );
     }
@@ -197,7 +182,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         publishableFormDTO.geo_long = null;
     }
 
-    public boolean isShareEnabled(SocialNetworkEnum socialNetworkEnum)
+    public boolean isShareEnabled(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
         return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
     }

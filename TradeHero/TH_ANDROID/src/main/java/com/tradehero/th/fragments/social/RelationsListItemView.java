@@ -7,7 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -19,16 +20,12 @@ import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
+import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
-import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.route.THRouter;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import javax.inject.Inject;
 
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>, View.OnClickListener
@@ -119,20 +116,12 @@ public class RelationsListItemView extends RelativeLayout
 
     @Override public void display(AllowableRecipientDTO allowableRecipientDTO)
     {
-        linkWith(allowableRecipientDTO, true);
-    }
-
-    public void linkWith(AllowableRecipientDTO allowableRecipientDTO, boolean andDisplay)
-    {
         this.allowableRecipientDTO = allowableRecipientDTO;
-        if (andDisplay)
-        {
-            displayPicture();
-            displayTitle();
-            displayUpgradeNow();
-            displayUserType();
-            displayCountryLogo();
-        }
+        displayPicture();
+        displayTitle();
+        displayUpgradeNow();
+        displayUserType();
+        displayCountryLogo();
     }
 
     //<editor-fold desc="Display Methods">

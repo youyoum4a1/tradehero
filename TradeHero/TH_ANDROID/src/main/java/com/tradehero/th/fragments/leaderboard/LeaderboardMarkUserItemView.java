@@ -159,14 +159,11 @@ public class LeaderboardMarkUserItemView
         super.onDetachedFromWindow();
     }
 
-    public void linkWith(UserProfileDTO currentUserProfileDTO, boolean andDisplay)
+    public void linkWith(UserProfileDTO currentUserProfileDTO)
     {
         this.currentUserProfileDTO = currentUserProfileDTO;
-        if (andDisplay)
-        {
-            displayFollow();
-            displayIsFollowing();
-        }
+        displayFollow();
+        displayIsFollowing();
     }
 
     public void linkWith(OwnedPortfolioId applicablePortfolioId)
@@ -191,7 +188,7 @@ public class LeaderboardMarkUserItemView
 
     @Override public void display(LeaderboardUserDTO leaderboardUserDTO)
     {
-        linkWith(leaderboardUserDTO, true);
+        linkWith(leaderboardUserDTO);
     }
 
     private void detachOwnRankingLeaderboardCache()
@@ -204,14 +201,10 @@ public class LeaderboardMarkUserItemView
         leaderboardOwnUserRankingSubscription = null;
     }
 
-    protected void linkWith(LeaderboardUserDTO leaderboardUserDTO, boolean andDisplay)
+    protected void linkWith(LeaderboardUserDTO leaderboardUserDTO)
     {
         this.leaderboardItem = leaderboardUserDTO;
-
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     private void display()

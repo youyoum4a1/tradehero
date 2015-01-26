@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,7 +11,6 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
 import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.fragments.timeline.MainTimelineAdapter;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -22,13 +22,16 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
     private List<Object> orderedItems;
     private final DisplayablePortfolioDTOWithinUserComparator ownDisplayablePortfolioDTOWithinUserComparator;
 
-    public SimpleOwnPortfolioListItemAdapter(Context context, int portfolioLayoutResourceId)
+    //<editor-fold desc="Constructors">
+    public SimpleOwnPortfolioListItemAdapter(
+            @NonNull Context context,
+            @LayoutRes int portfolioLayoutResourceId)
     {
         super(context, portfolioLayoutResourceId);
         this.ownDisplayablePortfolioDTOWithinUserComparator = new DisplayablePortfolioDTOWithinUserComparator();
         orderedItems = new ArrayList<>();
-        HierarchyInjector.inject(context, this);
     }
+    //</editor-fold>
 
     @Override public boolean hasStableIds()
     {

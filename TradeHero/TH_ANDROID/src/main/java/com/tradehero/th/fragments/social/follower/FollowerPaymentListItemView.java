@@ -50,18 +50,10 @@ public class FollowerPaymentListItemView extends RelativeLayout implements DTOVi
 
     public void display(FollowerTransactionDTO followerDTO)
     {
-        linkWith(followerDTO, true);
-    }
-
-    public void linkWith(FollowerTransactionDTO followerDTO, boolean andDisplay)
-    {
         this.userFollowerDTO = followerDTO;
-        if (andDisplay)
-        {
-            displayDurationInfo();
-            displayDateStart();
-            displayRevenue();
-        }
+        displayDurationInfo();
+        displayDateStart();
+        displayRevenue();
     }
 
     //<editor-fold desc="Display Methods">

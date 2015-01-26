@@ -127,11 +127,8 @@ public class PortfolioCompactDTO implements DTO
 
     public boolean equals(PortfolioCompactDTO other)
     {
-        if (other == null)
-        {
-            return false;
-        }
-        return Integer.valueOf(id).equals(other.id);
+        return other != null
+                && Integer.valueOf(id).equals(other.id);
     }
 
     @JsonIgnore public double getUsableForTransactionUsd()

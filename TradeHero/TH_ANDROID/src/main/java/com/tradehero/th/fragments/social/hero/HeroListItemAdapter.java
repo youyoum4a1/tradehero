@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.social.hero;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,24 +25,30 @@ public class HeroListItemAdapter extends ArrayDTOAdapter<HeroDTO, HeroListItemVi
 
     public static final int SUPER_POSITION_OFFSET = 1;
 
-    private final int heroEmptyPlaceholderResId;
-    private final int headerActiveResId;
+    @LayoutRes private final int heroEmptyPlaceholderResId;
+    @LayoutRes private final int headerActiveResId;
 
-    private final int headerInactiveResId;
+    @LayoutRes private final int headerInactiveResId;
     protected UserBaseKey followerId;
     protected List<HeroDTO> activeHeroes;
     protected List<HeroDTO> inactiveHeroes;
     private HeroListItemView.OnHeroStatusButtonClickedListener heroStatusButtonClickedListener;
     private View.OnClickListener mostSkilledClicked;
 
-    public HeroListItemAdapter(Context context, int heroEmptyPlaceholderResId, int heroLayoutResId, int headerActiveResId,
-            int headerInactiveResId)
+    //<editor-fold desc="Constructors">
+    public HeroListItemAdapter(
+            @NonNull Context context,
+            @LayoutRes int heroEmptyPlaceholderResId,
+            @LayoutRes int heroLayoutResId,
+            @LayoutRes int headerActiveResId,
+            @LayoutRes int headerInactiveResId)
     {
         super(context, heroLayoutResId);
         this.heroEmptyPlaceholderResId = heroEmptyPlaceholderResId;
         this.headerActiveResId = headerActiveResId;
         this.headerInactiveResId = headerInactiveResId;
     }
+    //</editor-fold>
 
     public void setFollowerId(UserBaseKey followerId)
     {

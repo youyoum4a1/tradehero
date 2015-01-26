@@ -114,7 +114,6 @@ public class ScaleImageView extends ImageView
         {
             // nothing to measure
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
         }
         else
         {

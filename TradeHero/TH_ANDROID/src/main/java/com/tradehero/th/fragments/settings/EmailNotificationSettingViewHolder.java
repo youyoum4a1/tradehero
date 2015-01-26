@@ -11,7 +11,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -63,13 +62,10 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
                     userServiceWrapper.updateProfilePropertyEmailNotificationsRx(
                             currentUserId.toUserBaseKey(), enable)
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(createUserProfileObserver());
+                            .subscribe(
+                                    this::onProfileUpdated,
+                                    this::onProfileUpdateFailed);
         }
         return false;
-    }
-
-    protected Observer<UserProfileDTO> createUserProfileObserver()
-    {
-        return new UserProfileUpdateObserver();
     }
 }

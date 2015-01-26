@@ -13,8 +13,7 @@ public class UrlEncoderHelper
         {
             Pattern p = Pattern.compile("\\s+|\t|\r|\n|#|&");
             Matcher m = p.matcher(in);
-            String dest = m.replaceAll("-");
-            return dest;
+            return m.replaceAll("-");
         }
         return in;
     }

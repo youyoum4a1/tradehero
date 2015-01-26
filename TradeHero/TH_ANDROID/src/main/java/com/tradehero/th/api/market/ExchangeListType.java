@@ -1,6 +1,5 @@
 package com.tradehero.th.api.market;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 
@@ -12,17 +11,7 @@ public final class ExchangeListType extends AbstractStringDTOKey
     //<editor-fold desc="Constructors">
     public ExchangeListType()
     {
-        this(DEFAULT_KEY);
-    }
-
-    public ExchangeListType(Bundle args)
-    {
-        super(args);
-    }
-
-    public ExchangeListType(String key)
-    {
-        super(key);
+        super(DEFAULT_KEY);
     }
     //</editor-fold>
 

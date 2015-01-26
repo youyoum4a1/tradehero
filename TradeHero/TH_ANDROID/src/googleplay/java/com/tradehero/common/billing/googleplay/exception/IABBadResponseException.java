@@ -1,21 +1,21 @@
 package com.tradehero.common.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.IABConstants;
-import com.tradehero.common.billing.googleplay.IABResult;
 
 public class IABBadResponseException extends IABOneResponseValueException
 {
     public static final int VALID_RESPONSE = IABConstants.IABHELPER_BAD_RESPONSE;
 
-    public IABBadResponseException(IABResult r)
-    {
-        super(r);
-    }
+    //<editor-fold desc="Constructors">
+    //public IABBadResponseException(IABResult r)
+    //{
+    //    super(r);
+    //}
 
-    public IABBadResponseException(IABResult r, Exception cause)
-    {
-        super(r, cause);
-    }
+    //public IABBadResponseException(IABResult r, Exception cause)
+    //{
+    //    super(r, cause);
+    //}
 
     public IABBadResponseException(String message)
     {
@@ -26,6 +26,7 @@ public class IABBadResponseException extends IABOneResponseValueException
     {
         super(VALID_RESPONSE, message, cause);
     }
+    //</editor-fold>
 
     @Override protected int getOnlyValidResponse()
     {

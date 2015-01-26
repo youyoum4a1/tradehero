@@ -22,7 +22,6 @@ import com.tradehero.common.social.facebook.FacebookWebDialogOperator;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.MakePairFunc2;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -146,7 +145,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
         return Observable.combineLatest(
                 userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second),
                 facebookAuthenticationProvider.createSessionObservable(activityProvider.get()),
-                new MakePairFunc2<>())
+                Pair::create)
                 .flatMap(pair -> {
                     if (pair.first.fbLinked)
                     {
@@ -158,7 +157,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                                     .observeOn(Schedulers.io())
                                     .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
                             Observable.just(Session.getActiveSession()),
-                            new MakePairFunc2<>());
+                            Pair::create);
                 });
     }
 }

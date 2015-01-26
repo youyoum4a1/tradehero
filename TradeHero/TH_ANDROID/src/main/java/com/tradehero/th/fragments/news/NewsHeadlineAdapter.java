@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.news;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
@@ -21,12 +22,14 @@ public class NewsHeadlineAdapter extends ArrayDTOAdapter<NewsItemCompactDTO, New
 
     @Nullable private SecurityId securityId = null;
 
-    public NewsHeadlineAdapter(Context context, int layoutResourceId)
+    //<editor-fold desc="Constructors">
+    public NewsHeadlineAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
         setItems(new ArrayList<>());
         loadBackground();
     }
+    //</editor-fold>
 
     private void loadBackground()
     {

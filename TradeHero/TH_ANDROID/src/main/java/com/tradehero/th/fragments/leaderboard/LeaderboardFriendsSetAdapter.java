@@ -155,7 +155,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
                     ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO;
             ((FriendLeaderboardMarkedUserDTO) item).leaderboardUserDTO.setPosition(position); // HACK FIXME
             ((LeaderboardMarkUserItemView) convertView).display(leaderboardUserDTO);
-            ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO, true);
+            ((LeaderboardMarkUserItemView) convertView).linkWith(currentUserProfileDTO);
             ((LeaderboardMarkUserItemView) convertView).setFollowRequestedListener(this::notifyFollowRequested);
         }
         else if (convertView instanceof LeaderboardFriendsItemView)

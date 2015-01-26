@@ -30,7 +30,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
-import com.tradehero.th.rx.view.CompoundButtonSetCheckedAction1;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.AlertDialogUtil;
 import java.util.List;
@@ -42,9 +41,6 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
 
@@ -198,19 +194,14 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         socialLinkingSubscription = AndroidObservable.bindFragment(
                 this,
                 createCheckedLinkingObservable()
-                        .flatMap(new Func1<SocialLinkToggleButton, Observable<Pair<SocialLinkToggleButton, UserProfileDTO>>>()
-                        {
-                            @Override public Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> call(
-                                    final SocialLinkToggleButton socialLinkToggleButton)
+                        .flatMap(socialLinkToggleButton -> {
+                            final SocialNetworkEnum socialNetwork = socialLinkToggleButton.getSocialNetworkEnum();
+                            Boolean socialLinked = isSocialLinked(socialNetwork);
+                            if (socialLinked != null && socialLinked)
                             {
-                                final SocialNetworkEnum socialNetwork = socialLinkToggleButton.getSocialNetworkEnum();
-                                Boolean socialLinked = isSocialLinked(socialNetwork);
-                                if (socialLinked != null && socialLinked)
-                                {
-                                    return Observable.just(Pair.create(socialLinkToggleButton, userProfileDTO));
-                                }
-                                return createSocialAuthObservable(socialLinkToggleButton, socialNetwork);
+                                return Observable.just(Pair.create(socialLinkToggleButton, userProfileDTO));
                             }
+                            return createSocialAuthObservable(socialLinkToggleButton, socialNetwork);
                         }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AlertDialogObserver<Pair<SocialLinkToggleButton, UserProfileDTO>>(getActivity(), alertDialogUtil)
@@ -239,20 +230,16 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     protected Observable<SocialLinkToggleButton> createCheckedLinkingObservable()
     {
         return ViewArrayObservable.clicks(socialLinkingButtons, false)
-                .doOnNext(new Action1<SocialLinkToggleButton>()
-                {
-                    @Override public void call(SocialLinkToggleButton socialLinkToggleButton)
+                .doOnNext(socialLinkToggleButton -> {
+                    if (!socialLinkToggleButton.isChecked())
                     {
-                        if (!socialLinkToggleButton.isChecked())
-                        {
-                            socialSharePreferenceHelperNew.updateSocialSharePreference(
-                                    socialLinkToggleButton.getSocialNetworkEnum(),
-                                    false);
-                        }
+                        socialSharePreferenceHelperNew.updateSocialSharePreference(
+                                socialLinkToggleButton.getSocialNetworkEnum(),
+                                false);
                     }
                 })
                 .filter(CompoundButton::isChecked)
-                .doOnNext(new CompoundButtonSetCheckedAction1(false));
+                .doOnNext(button -> button.setChecked(false));
     }
 
     protected Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> createSocialAuthObservable(
@@ -270,41 +257,18 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
         return Observable.create(onSubscribeBuilder.build())
                 .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
-                .doOnNext(new Action1<Pair<DialogInterface, Integer>>()
-                {
-                    @Override public void call(Pair<DialogInterface, Integer> dialogResult)
-                    {
-                        alertDialogUtil.showProgressDialog(
-                                getActivity(),
-                                getString(
-                                        R.string.authentication_connecting_to,
-                                        getString(socialNetwork.nameResId)));
-                    }
+                .doOnNext(dialogResult -> alertDialogUtil.showProgressDialog(
+                        getActivity(),
+                        getString(
+                                R.string.authentication_connecting_to,
+                                getString(socialNetwork.nameResId))))
+                .flatMap(dialogInterfaceIntegerPair -> {
+                    AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
+                    return ((SocialAuthenticationProvider) socialAuthenticationProvider)
+                            .socialLink(getActivity())
+                            .map(userProfileDTO1 -> Pair.create(socialLinkToggleButton, userProfileDTO1));
                 })
-                .flatMap(new Func1<Pair<DialogInterface, Integer>, Observable<Pair<SocialLinkToggleButton, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<SocialLinkToggleButton, UserProfileDTO>> call(
-                            Pair<DialogInterface, Integer> dialogInterfaceIntegerPair)
-                    {
-                        AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
-                        return ((SocialAuthenticationProvider) socialAuthenticationProvider)
-                                .socialLink(getActivity())
-                                .map(new Func1<UserProfileDTO, Pair<SocialLinkToggleButton, UserProfileDTO>>()
-                                {
-                                    @Override public Pair<SocialLinkToggleButton, UserProfileDTO> call(UserProfileDTO userProfileDTO)
-                                    {
-                                        return Pair.create(socialLinkToggleButton, userProfileDTO);
-                                    }
-                                });
-                    }
-                })
-                .doOnCompleted(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        alertDialogUtil.dismissProgressDialog();
-                    }
-                });
+                .doOnCompleted(alertDialogUtil::dismissProgressDialog);
     }
     //</editor-fold>
 

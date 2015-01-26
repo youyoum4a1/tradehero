@@ -65,17 +65,14 @@ public class ContestCompetitionView extends AspectRatioImageView
         this.contestPageDTO = dto;
         if (contestPageDTO != null)
         {
-            linkWith(((ProviderContestPageDTO) contestPageDTO).providerDTO, true);
+            linkWith(((ProviderContestPageDTO) contestPageDTO).providerDTO);
         }
     }
 
-    private void linkWith(@Nullable ProviderDTO providerDTO, boolean andDisplay)
+    private void linkWith(@Nullable ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
-        if (andDisplay)
-        {
-            displayImageView();
-        }
+        displayImageView();
     }
 
     protected void displayImageView()

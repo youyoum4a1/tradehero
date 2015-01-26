@@ -48,17 +48,9 @@ public class HeroPayoutListItemView extends RelativeLayout implements DTOView<He
 
     public void display(HeroPayoutDTO payoutDTO)
     {
-        linkWith(payoutDTO, true);
-    }
-
-    public void linkWith(HeroPayoutDTO payoutDTO, boolean andDisplay)
-    {
         this.heroPayoutDTO = payoutDTO;
-        if (andDisplay)
-        {
-            displayPayoutDate();
-            displayPayoutAmount();
-        }
+        displayPayoutDate();
+        displayPayoutAmount();
     }
 
     //<editor-fold desc="Display Methods">

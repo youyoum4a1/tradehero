@@ -19,6 +19,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
 
     private Set<DashboardFragmentWatcher> dashboardFragmentWatchers = new LinkedHashSet<>();
 
+    //<editor-fold desc="Constructors">
     public DashboardNavigator(FragmentActivity fragmentActivity, int fragmentContentId)
     {
         this(fragmentActivity, fragmentContentId, null, 1);
@@ -38,6 +39,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
                     .commit();
         }
     }
+    //</editor-fold>
 
     /**
      * To be called when we want it to be GC'ed

@@ -25,19 +25,7 @@ public class HeroAlertDialogUtil extends AlertDialogUtil
     }
     //</editor-fold>
 
-    public AlertDialog popAlertFollowHero(
-            @NonNull Context context,
-            @Nullable DialogInterface.OnClickListener okClickListener)
-    {
-        return popWithOkCancelButton(
-                context,
-                R.string.manage_heroes_alert_follow_title,
-                R.string.manage_heroes_alert_follow_message,
-                R.string.manage_heroes_alert_follow_ok,
-                R.string.manage_heroes_alert_follow_cancel,
-                okClickListener);
-    }
-
+    @Deprecated // Use HeroAlertDialogRxUtil
     @Nullable public FollowDialogCombo showFollowDialog(
             @NonNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,

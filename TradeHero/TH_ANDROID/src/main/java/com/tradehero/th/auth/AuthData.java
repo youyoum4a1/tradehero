@@ -16,6 +16,7 @@ public class AuthData
     public final Date expirationDate;
     public final String email;
 
+    //<editor-fold desc="Constructors">
     public AuthData(String email, String password)
     {
         this.socialNetworkEnum = SocialNetworkEnum.TH;
@@ -47,6 +48,7 @@ public class AuthData
         this.expirationDate = expirationDate;
         this.email = null;
     }
+    //</editor-fold>
 
     public final Map<String, String> getTokenMap()
     {

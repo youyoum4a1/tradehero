@@ -10,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -25,9 +24,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.InstantAutoCompleteTextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
@@ -38,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -173,11 +169,13 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
 
     private void fetchAndSetUserRegional()
     {
-        UserBaseKey currentUserBaseKey = currentUserId.toUserBaseKey();
         detachUserProfileSubscription();
-        userProfileSubscription = userProfileCache.get(currentUserBaseKey)
+        userProfileSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
+                .map(pair -> pair.second)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UserProfileFetchObserver());
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(new THException(e)));
     }
 
     private void detachUserProfileSubscription()
@@ -268,64 +266,29 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     }
     //</editor-fold>
 
-    private class UserProfileFetchObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-    }
-
-    private void linkWith(UserProfileDTO userProfileDTO, @SuppressWarnings("UnusedParameters") boolean display)
+    private void linkWith(UserProfileDTO userProfileDTO)
     {
         this.userProfileDTO = userProfileDTO;
 
         detachCountrySubscription();
         mCountryLanguageFetchSubscription = mNewsServiceWrapper.getCountryLanguagePairsRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CountryLanguageFetchObserver());
+                .subscribe(
+                        paginated -> linkWith(paginated.getData()),
+                        e -> THToast.show(new THException(e)));
     }
 
-    private class CountryLanguageFetchObserver implements Observer<PaginatedDTO<CountryLanguagePairDTO>>
-    {
-        @Override public void onNext(PaginatedDTO<CountryLanguagePairDTO> countryLanguagePairDTOPaginatedDTO)
-        {
-            linkWith(countryLanguagePairDTOPaginatedDTO.getData(), true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-    }
-
-    private void linkWith(List<CountryLanguagePairDTO> data, boolean andDisplay)
+    private void linkWith(List<CountryLanguagePairDTO> data)
     {
         mCountryAdapter.setItems(data);
-        if (andDisplay)
+        Collection<CountryLanguagePairDTO> userCountryLanguagePairs =
+                CollectionUtils.filter(new ArrayList<>(data),
+                        countryLanguagePairDTO -> countryLanguagePairDTO.countryCode.equalsIgnoreCase(userProfileDTO.countryCode));
+        if (!userCountryLanguagePairs.isEmpty())
         {
-            Collection<CountryLanguagePairDTO> userCountryLanguagePairs =
-                    CollectionUtils.filter(new ArrayList<>(data),
-                            countryLanguagePairDTO -> countryLanguagePairDTO.countryCode.equalsIgnoreCase(userProfileDTO.countryCode));
-            if (!userCountryLanguagePairs.isEmpty())
-            {
-                CountryLanguagePairDTO singleCountryLanguagePair = userCountryLanguagePairs.iterator().next();
-                mCountryName = singleCountryLanguagePair.name;
-                mRegionSelector.setText(mCountryName);
-            }
+            CountryLanguagePairDTO singleCountryLanguagePair = userCountryLanguagePairs.iterator().next();
+            mCountryName = singleCountryLanguagePair.name;
+            mRegionSelector.setText(mCountryName);
         }
     }
 }

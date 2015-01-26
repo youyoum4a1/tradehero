@@ -493,7 +493,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             {
                 received = pair.second.users.get(0);
             }
-            linkWith(received, true);
+            linkWith(received);
         }
 
         @Override public void onCompleted()
@@ -504,17 +504,14 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
         {
             Timber.e("Failed to download current User position on leaderboard", e);
             THToast.show(R.string.error_fetch_user_on_leaderboard);
-            linkWith((LeaderboardUserDTO) null, true);
+            linkWith((LeaderboardUserDTO) null);
         }
     }
 
-    protected void linkWith(@Nullable LeaderboardUserDTO leaderboardDTO, boolean andDisplay)
+    protected void linkWith(@Nullable LeaderboardUserDTO leaderboardDTO)
     {
         this.currentLeaderboardUserDTO = leaderboardDTO;
-        if (andDisplay)
-        {
-            updateCurrentRankHeaderViewWithLeaderboardUser();
-        }
+        updateCurrentRankHeaderViewWithLeaderboardUser();
     }
 
     public void initialLoad()

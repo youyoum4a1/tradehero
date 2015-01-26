@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +21,6 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -31,7 +29,6 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -123,34 +120,16 @@ public class LocationListFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUserProfileObserver());
+        AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(R.string.error_fetch_your_user_profile));
     }
 
-    protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileObserver()
-    {
-        return new LocationListUserProfileObserver();
-    }
-
-    protected class LocationListUserProfileObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
-            linkWith(pair.second, true);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(R.string.error_fetch_your_user_profile);
-        }
-    }
-
-    protected void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
+    protected void linkWith(UserProfileDTO userProfileDTO)
     {
         this.currentUserProfile = userProfileDTO;
         if (userProfileDTO != null && userProfileDTO.countryCode != null)
@@ -160,8 +139,7 @@ public class LocationListFragment extends DashboardFragment
                 Country currentCountry = Country.valueOf(userProfileDTO.countryCode);
                 mListAdapter.setCurrentCountry(currentCountry);
                 listView.smoothScrollToPosition(mListAdapter.getPosition(new ListedLocationDTO(currentCountry)));
-            }
-            catch (IllegalArgumentException e)
+            } catch (IllegalArgumentException e)
             {
                 Timber.e(e, "Does not have country code for ", userProfileDTO.countryCode);
                 mListAdapter.setCurrentCountry(null);
@@ -175,7 +153,11 @@ public class LocationListFragment extends DashboardFragment
     }
 
     @OnItemClick(android.R.id.list)
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+    public void onItemClick(
+            @NonNull AdapterView<?> adapterView,
+            @SuppressWarnings("UnusedParameters") View view,
+            int position,
+            @SuppressWarnings("UnusedParameters") long l)
     {
         getProgressDialog().show();
         updateCountryCode(((ListedLocationDTO) adapterView.getItemAtPosition(position)).country.name());
@@ -197,7 +179,7 @@ public class LocationListFragment extends DashboardFragment
         updateCountryCodeSubscription = AndroidObservable.bindFragment(
                 this,
                 userServiceWrapperLazy.get().updateCountryCodeRx(
-                currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
+                        currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new UpdateCountryCodeObserver());
     }

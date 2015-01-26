@@ -51,8 +51,8 @@ public class NewsDialogLayout extends ShareDialogLayout
         super.fillData();
         String[] dataForFirst = {getContext().getString(R.string.sharing),
                 getContext().getString(R.string.translation)};
-        MyListAdapter adapterForFirst =
-                new MyListAdapter(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text, dataForFirst);
+        ArrayAdapter<String> adapterForFirst =
+                new ArrayAdapter<>(getContext(), R.layout.common_dialog_item_layout, R.id.popup_text, dataForFirst);
         listViewOptions.setAdapter(adapterForFirst);
         listViewOptions.setDividerHeight(1);
         setNewsTitle();
@@ -141,15 +141,6 @@ public class NewsDialogLayout extends ShareDialogLayout
         else if (position == 1)
         {
             notifyTranslationClicked();
-        }
-    }
-
-    private class MyListAdapter extends ArrayAdapter<String>
-    {
-        public MyListAdapter(Context context, int resource, int textViewResourceId,
-                String[] objects)
-        {
-            super(context, resource, textViewResourceId, objects);
         }
     }
 

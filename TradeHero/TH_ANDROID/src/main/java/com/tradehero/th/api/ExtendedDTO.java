@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import timber.log.Timber;
 
+@Deprecated // Or at least move it away from prod
 public class ExtendedDTO implements DTO
 {
     public static final boolean VERBOSE = false;

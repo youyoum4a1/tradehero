@@ -24,7 +24,6 @@ import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.MostSkilledLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
@@ -61,6 +60,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
     @Inject Lazy<LeaderboardDefDTOKnowledge> leaderboardDefDTOKnowledge;
+    @Inject LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
@@ -101,7 +101,10 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(getActivity(), R.layout.leaderboard_definition_item_view);
+        leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
+                getActivity(),
+                R.layout.leaderboard_definition_item_view,
+                leaderboardCommunityTypeFactory);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

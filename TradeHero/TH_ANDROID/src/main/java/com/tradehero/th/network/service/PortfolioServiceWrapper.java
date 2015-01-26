@@ -13,9 +13,6 @@ import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -26,26 +23,17 @@ import rx.Observable;
 {
     @NonNull private final PortfolioServiceRx portfolioServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
-    @NonNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
-    @NonNull private final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
-    @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
     @NonNull private final Lazy<HomeContentCacheRx> homeContentCache;
 
     //<editor-fold desc="Constructors">
     @Inject public PortfolioServiceWrapper(
             @NonNull PortfolioServiceRx portfolioServiceRx,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
-            @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
-            @NonNull Lazy<PortfolioCacheRx> portfolioCache,
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         super();
         this.portfolioServiceRx = portfolioServiceRx;
         this.userProfileCache = userProfileCache;
-        this.portfolioCompactListCache = portfolioCompactListCache;
-        this.portfolioCompactCache = portfolioCompactCache;
-        this.portfolioCache = portfolioCache;
         this.homeContentCache = homeContentCache;
     }
     //</editor-fold>

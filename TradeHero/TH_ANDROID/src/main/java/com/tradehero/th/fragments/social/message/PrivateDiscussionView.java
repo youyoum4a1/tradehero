@@ -185,7 +185,7 @@ public class PrivateDiscussionView extends DiscussionView
         return new PrivateDiscussionViewDiscussionCacheObserver();
     }
 
-    protected void linkWithInitiating(DiscussionDTO discussionDTO, boolean andDisplay)
+    protected void linkWithInitiating(DiscussionDTO discussionDTO)
     {
         this.initiatingDiscussion = discussionDTO;
         int topicId;
@@ -199,10 +199,7 @@ public class PrivateDiscussionView extends DiscussionView
         }
         setTopicLayout(topicId);
         inflateDiscussionTopic();
-        if (andDisplay)
-        {
-            displayTopicView();
-        }
+        displayTopicView();
     }
 
     @Override protected void setTopicLayout(int topicLayout)
@@ -287,7 +284,7 @@ public class PrivateDiscussionView extends DiscussionView
             // Check with instanceof to avoid ClassCastException.
             if (pair.second instanceof DiscussionDTO)
             {
-                linkWithInitiating((DiscussionDTO) pair.second, true);
+                linkWithInitiating((DiscussionDTO) pair.second);
             }
         }
 

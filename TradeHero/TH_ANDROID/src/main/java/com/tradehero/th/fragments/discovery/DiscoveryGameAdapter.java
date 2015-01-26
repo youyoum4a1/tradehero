@@ -17,10 +17,12 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class DiscoveryGameAdapter extends ArrayDTOAdapter<MiniGameDefDTO, MiniGameDefItemView>
         implements StickyListHeadersAdapter
 {
+    //<editor-fold desc="Constructors">
     public DiscoveryGameAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
     }
+    //</editor-fold>
 
     @Override public void setItems(@NonNull List<MiniGameDefDTO> miniGameDefDTOs)
     {

@@ -9,6 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import com.tradehero.common.annotation.ViewVisibilityValueDef;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.widget.VotePair;
@@ -89,15 +90,12 @@ public class DiscussionActionButtonsView extends LinearLayout
         displayMoreButton();
     }
 
-    public void linkWith(AbstractDiscussionCompactDTO discussionDTO, boolean andDisplay)
+    public void linkWith(AbstractDiscussionCompactDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
-        if (andDisplay)
-        {
-            displayVotePair();
-            displayCommentCount();
-            displayMoreButton();
-        }
+        displayVotePair();
+        displayCommentCount();
+        displayMoreButton();
     }
 
     public void display()
@@ -124,7 +122,7 @@ public class DiscussionActionButtonsView extends LinearLayout
         }
     }
 
-    public void setCommentCountVisible(int visible)
+    public void setCommentCountVisible(@ViewVisibilityValueDef int visible)
     {
         if (commentCount != null)
         {

@@ -305,7 +305,8 @@ public class PositionListFragment
     {
         return new PositionItemAdapter(
                 getActivity(),
-                getLayoutResIds());
+                getLayoutResIds(),
+                currentUserId);
     }
 
     @NonNull protected Map<Integer, Integer> getLayoutResIds()

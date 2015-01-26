@@ -2,13 +2,17 @@
 package com.tradehero.th.fragments.trending;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.users.UserSearchResultDTO;
 
 public class PeopleItemViewAdapter extends PagedViewDTOAdapter<UserSearchResultDTO, SearchPeopleItemView>
 {
     //<editor-fold desc="Constructors">
-    public PeopleItemViewAdapter(Context context, int peopleItemLayoutResId)
+    public PeopleItemViewAdapter(
+            @NonNull Context context,
+            @LayoutRes int peopleItemLayoutResId)
     {
         super(context, peopleItemLayoutResId);
     }

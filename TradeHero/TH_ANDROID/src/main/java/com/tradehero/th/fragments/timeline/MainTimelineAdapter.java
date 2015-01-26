@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.timeline;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -37,19 +38,20 @@ public class MainTimelineAdapter extends ArrayAdapter
 
     @Nullable private TimelineProfileClickListener profileClickListener;
     private OnLoadFinishedListener onLoadFinishedListener;
-    private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.PORTFOLIO_LIST;
+    @NonNull private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.PORTFOLIO_LIST;
 
     private final SubTimelineAdapter subTimelineAdapter;
 
     private final SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
-    private final int statResId;
+    @LayoutRes private final int statResId;
     private UserProfileDTO userProfileDTO;
 
+    //<editor-fold desc="Constructors">
     public MainTimelineAdapter(@NonNull Activity context,
             @NonNull UserBaseKey shownUserBaseKey,
-            int timelineItemViewResId,
-            int portfolioItemViewResId,
-            int statResId)
+            @LayoutRes int timelineItemViewResId,
+            @LayoutRes int portfolioItemViewResId,
+            @LayoutRes int statResId)
     {
         super(context, 0);
         subTimelineAdapter = new SubTimelineAdapter(context, shownUserBaseKey.key, timelineItemViewResId);
@@ -59,8 +61,9 @@ public class MainTimelineAdapter extends ArrayAdapter
 
         this.statResId = statResId;
     }
+    //</editor-fold>
 
-    public void setCurrentTabType(TimelineFragment.TabType currentTabType)
+    public void setCurrentTabType(@NonNull TimelineFragment.TabType currentTabType)
     {
         this.currentTabType = currentTabType;
         notifyDataSetChanged();
@@ -389,6 +392,7 @@ public class MainTimelineAdapter extends ArrayAdapter
     }
     //</editor-fold>
 
+    @Deprecated // Use Rx
     public static interface OnLoadFinishedListener
     {
         void onLoadFinished();

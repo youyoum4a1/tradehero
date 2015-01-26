@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.location;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,16 +16,16 @@ class LocationViewHolder implements DTOView<ListedLocationDTO>
     @InjectView(R.id.country_name) protected TextView name;
     @InjectView(R.id.location_tick_is_current) protected View currentView;
 
-    protected ListedLocationDTO listedLocationDTO;
-    protected Country currentCountry;
+    @Nullable protected ListedLocationDTO listedLocationDTO;
+    @Nullable protected Country currentCountry;
 
-    @Override public void display(ListedLocationDTO dto)
+    @Override public void display(@Nullable ListedLocationDTO dto)
     {
         this.listedLocationDTO = dto;
         display();
     }
 
-    public void setCurrentCountry(Country currentCountry)
+    public void setCurrentCountry(@Nullable Country currentCountry)
     {
         this.currentCountry = currentCountry;
         display();

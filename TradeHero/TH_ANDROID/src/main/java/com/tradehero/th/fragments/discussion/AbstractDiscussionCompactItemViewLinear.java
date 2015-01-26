@@ -100,7 +100,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
             AbstractDiscussionCompactDTO value = discussionCache.getCachedValue(((DiscussionKey) discussionKey));
             if (value != null)
             {
-                linkWith(value, true);
+                linkWith(value);
             }
             else
             {
@@ -109,7 +109,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         }
         else if (discussionKey instanceof AbstractDiscussionCompactDTO)
         {
-            linkWith((AbstractDiscussionCompactDTO) discussionKey, true);
+            linkWith((AbstractDiscussionCompactDTO) discussionKey);
         }
     }
 
@@ -131,13 +131,10 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         discussionFetchSubscription = null;
     }
 
-    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO, boolean andDisplay)
+    protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO)
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
         viewHolder.linkWith(abstractDiscussionDTO);
-        if (andDisplay)
-        {
-        }
     }
 
     protected DashboardNavigator getNavigator()
@@ -155,7 +152,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
     {
         @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
         {
-            linkWith(pair.second, true);
+            linkWith(pair.second);
         }
 
         @Override public void onCompleted()

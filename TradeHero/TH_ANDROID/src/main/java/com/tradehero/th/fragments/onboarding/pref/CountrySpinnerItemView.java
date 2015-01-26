@@ -45,17 +45,9 @@ public class CountrySpinnerItemView extends RelativeLayout
 
     @Override public void display(Country dto)
     {
-        linkWith(dto, true);
-    }
-
-    public void linkWith(@Nullable Country dto, boolean andDisplay)
-    {
         this.country = dto;
-        if (andDisplay)
-        {
-            displayText();
-            displayIcon();
-        }
+        displayText();
+        displayIcon();
     }
 
     public void displayText()

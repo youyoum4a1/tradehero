@@ -20,12 +20,10 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.position.view.PositionView;
-import com.tradehero.th.inject.HierarchyInjector;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 
 public class PositionItemAdapter extends ArrayAdapter<Object>
 {
@@ -43,14 +41,17 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
     private PortfolioDTO portfolioDTO;
     private UserProfileDTO userProfileDTO;
 
-    @Inject CurrentUserId currentUserId;
+    @NonNull protected final CurrentUserId currentUserId;
 
     //<editor-fold desc="Constructors">
-    public PositionItemAdapter(@NonNull Context context, @NonNull Map<Integer, Integer> itemTypeToLayoutId)
+    public PositionItemAdapter(
+            @NonNull Context context,
+            @NonNull Map<Integer, Integer> itemTypeToLayoutId,
+            @NonNull CurrentUserId currentUserId)
     {
         super(context, 0);
-        HierarchyInjector.inject(context, this);
         this.itemTypeToLayoutId = itemTypeToLayoutId;
+        this.currentUserId = currentUserId;
     }
     //</editor-fold>
 
@@ -275,7 +276,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         else if (itemViewType == VIEW_TYPE_LOCKED)
         {
             PositionLockedView cell = (PositionLockedView) convertView;
-            cell.linkWith((PositionDTO) item, false);
+            cell.linkWith((PositionDTO) item);
             cell.display();
         }
         else if (itemViewType == VIEW_TYPE_PLACEHOLDER)
@@ -408,6 +409,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
         public final Date dateStart;
         public final Date dateEnd;
 
+        //<editor-fold desc="Constructors">
         public HeaderDTO(int headerForViewType, Integer count)
         {
             this.headerForViewType = headerForViewType;
@@ -423,6 +425,7 @@ public class PositionItemAdapter extends ArrayAdapter<Object>
             this.dateStart = dateStart;
             this.dateEnd = dateEnd;
         }
+        //</editor-fold>
 
         @Override public String toString()
         {

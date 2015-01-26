@@ -18,10 +18,7 @@ public class LeaderboardDefDTOCountryCodeContainPredicate implements Predicate<L
 
     @Override public boolean apply(@Nullable LeaderboardDefDTO leaderboardDefDTO)
     {
-        if (leaderboardDefDTO == null)
-        {
-            return false;
-        }
-        return countryCodeListContainCodePredicate.apply(leaderboardDefDTO.countryCodes);
+        return leaderboardDefDTO != null
+                && countryCodeListContainCodePredicate.apply(leaderboardDefDTO.countryCodes);
     }
 }

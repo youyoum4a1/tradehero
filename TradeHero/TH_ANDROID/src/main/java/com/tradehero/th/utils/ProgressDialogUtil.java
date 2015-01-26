@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class ProgressDialogUtil
         return dialog;
     }
 
-    @NonNull public ProgressDialog create(@NonNull Context context, int titleResId, int messageResId)
+    @NonNull public ProgressDialog create(@NonNull Context context, @StringRes int titleResId, @StringRes int messageResId)
     {
         return create(context, context.getString(titleResId), context.getString(messageResId));
     }
@@ -59,7 +60,7 @@ public class ProgressDialogUtil
         return dialog;
     }
 
-    @NonNull public ProgressDialog show(@NonNull Context context, int titleResId, int messageResId)
+    @NonNull public ProgressDialog show(@NonNull Context context, @StringRes int titleResId, @StringRes int messageResId)
     {
         return show(context, context.getString(titleResId), context.getString(messageResId));
     }

@@ -130,7 +130,8 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     public void display(UserFollowerDTO summaryDTO)
     {
-        linkWith(summaryDTO, true);
+        this.userFollowerDTO = summaryDTO;
+        display();
     }
 
     private void showErrorView()
@@ -142,15 +143,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
         if (followerPaymentListView != null)
         {
             followerPaymentListView.setVisibility(View.GONE);
-        }
-    }
-
-    public void linkWith(UserFollowerDTO summaryDTO, boolean andDisplay)
-    {
-        this.userFollowerDTO = summaryDTO;
-        if (andDisplay)
-        {
-            display();
         }
     }
 

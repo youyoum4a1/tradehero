@@ -27,16 +27,26 @@ public class MockQuestBonusId extends QuestBonusId
     @Override
     public boolean equals(@Nullable Object o)
     {
-        if (this == o) return true;
-        if (!(o instanceof MockQuestBonusId)) return false;
-        if (!super.equals(o)) return false;
+        if (this == o)
+        {
+            return true;
+        }
+        if (!(o instanceof MockQuestBonusId))
+        {
+            return false;
+        }
+        if (!super.equals(o))
+        {
+            return false;
+        }
 
         MockQuestBonusId that = (MockQuestBonusId) o;
 
-        if (xpEarned != that.xpEarned) return false;
-        if (xpTotal != that.xpTotal) return false;
-
-        return true;
+        if (xpEarned != that.xpEarned)
+        {
+            return false;
+        }
+        return xpTotal == that.xpTotal;
     }
 
     @Override

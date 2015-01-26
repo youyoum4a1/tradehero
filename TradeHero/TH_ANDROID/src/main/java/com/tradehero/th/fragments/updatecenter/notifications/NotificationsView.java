@@ -18,6 +18,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
@@ -60,7 +61,7 @@ public class NotificationsView extends BetterViewAnimator
 
     @NonNull private SubscriptionList subscriptionList;
     private NotificationListKey notificationListKey;
-    private NotificationListAdapter notificationListAdapter;
+    private ArrayDTOAdapterNew<NotificationDTO, NotificationItemView> notificationListAdapter;
     private SwipeRefreshLayout.OnRefreshListener notificationRefreshListener;
 
     //<editor-fold desc="Constructors">
@@ -94,9 +95,9 @@ public class NotificationsView extends BetterViewAnimator
         notificationListAdapter = createNotificationListAdapter();
     }
 
-    private NotificationListAdapter createNotificationListAdapter()
+    private ArrayDTOAdapterNew<NotificationDTO, NotificationItemView> createNotificationListAdapter()
     {
-        return new NotificationListAdapter(
+        return new ArrayDTOAdapterNew<>(
                 getContext(),
                 R.layout.notification_item_view);
     }

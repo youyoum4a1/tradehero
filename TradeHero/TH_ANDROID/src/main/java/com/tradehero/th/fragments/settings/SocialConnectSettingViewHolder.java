@@ -17,7 +17,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -37,7 +36,6 @@ abstract public class SocialConnectSettingViewHolder
     @NonNull protected final Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider;
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NonNull protected final String authToken;
-    @Nullable protected MiddleCallback<UserProfileDTO> middleCallbackDisconnect;
     @Nullable protected AlertDialog unlinkConfirmDialog;
     @Nullable protected Subscription linkingSubscription;
     @Nullable protected Subscription unLinkingSubscription;
@@ -80,18 +78,8 @@ abstract public class SocialConnectSettingViewHolder
     {
         unsubscribeLinking();
         unsubscribeUnLinking();
-        detachMiddleServerDisconnectCallback();
         hideUnlinkConfirmDialog();
         super.destroyViews();
-    }
-
-    protected void detachMiddleServerDisconnectCallback()
-    {
-        MiddleCallback<UserProfileDTO> middleCallbackDisconnectCopy = middleCallbackDisconnect;
-        if (middleCallbackDisconnectCopy != null)
-        {
-            middleCallbackDisconnectCopy.setPrimaryCallback(null);
-        }
     }
 
     protected void unsubscribeLinking()

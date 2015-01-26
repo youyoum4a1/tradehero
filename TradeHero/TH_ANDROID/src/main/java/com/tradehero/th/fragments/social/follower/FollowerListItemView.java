@@ -106,16 +106,8 @@ public class FollowerListItemView extends RelativeLayout
 
     public void display(UserFollowerDTO followerDTO)
     {
-        linkWith(followerDTO, true);
-    }
-
-    public void linkWith(UserFollowerDTO followerDTO, boolean andDisplay)
-    {
         this.userFollowerDTO = followerDTO;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     //<editor-fold desc="Display Methods">

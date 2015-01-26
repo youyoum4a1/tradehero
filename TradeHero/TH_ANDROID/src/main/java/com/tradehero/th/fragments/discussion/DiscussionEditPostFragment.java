@@ -140,7 +140,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
             {
                 DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
-                linkWith(discussionKey, true);
+                linkWith(discussionKey);
             }
         }
 
@@ -182,7 +182,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         discussionEditSubscription = null;
     }
 
-    private void linkWith(DiscussionDTO discussionDTO, boolean andDisplay)
+    private void linkWith(DiscussionDTO discussionDTO)
     {
         this.discussionDTO = discussionDTO;
     }
@@ -279,31 +279,28 @@ public class DiscussionEditPostFragment extends DashboardFragment
         };
     }
 
-    private void linkWith(@NonNull DiscussionKey discussionKey, boolean andDisplay)
+    private void linkWith(@NonNull DiscussionKey discussionKey)
     {
         this.discussionKey = discussionKey;
         AbstractDiscussionCompactDTO abstractDiscussionDTO = discussionCache.getCachedValue(discussionKey);
-        linkWith(abstractDiscussionDTO, andDisplay);
+        linkWith(abstractDiscussionDTO);
     }
 
-    private void linkWith(@Nullable AbstractDiscussionCompactDTO abstractDiscussionCompactDTO, boolean andDisplay)
+    private void linkWith(@Nullable AbstractDiscussionCompactDTO abstractDiscussionCompactDTO)
     {
         // TODO question, should we subclass this to have a NewsEditPostFragment?
         if (abstractDiscussionCompactDTO instanceof NewsItemDTO)
         {
-            linkWith((NewsItemDTO) abstractDiscussionCompactDTO, andDisplay);
+            linkWith((NewsItemDTO) abstractDiscussionCompactDTO);
         }
     }
 
-    private void linkWith(@NonNull NewsItemDTO newsItemDTO, boolean andDisplay)
+    private void linkWith(@NonNull NewsItemDTO newsItemDTO)
     {
-        if (andDisplay)
+        setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
+        if (getActivity() != null)
         {
-            setActionBarSubtitle(getString(R.string.discussion_edit_post_subtitle, newsItemDTO.title));
-            if (getActivity() != null)
-            {
-                getActivity().invalidateOptionsMenu();
-            }
+            getActivity().invalidateOptionsMenu();
         }
     }
 
@@ -318,7 +315,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             onFinish();
 
-            linkWith(discussionDTO, true);
+            linkWith(discussionDTO);
 
             if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
             {

@@ -57,7 +57,7 @@ public class CompetitionZoneDTOUtil
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_ADS);
                 int randomAds = (int) (randomAd * providerDTO.advertisements.size());
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
-                preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(null, null, 0, pickedAdDTO));
+                preparedOrderedItems.add(new CompetitionZoneAdvertisementDTO(pickedAdDTO));
             }
 
             preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER);

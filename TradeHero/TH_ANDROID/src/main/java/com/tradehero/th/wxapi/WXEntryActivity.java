@@ -34,7 +34,6 @@ import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.inject.Injector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.graphics.ForSecurityItemForeground;
 import com.tradehero.th.network.service.WeChatServiceWrapper;
@@ -61,7 +60,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     private static final String WECHAT_SHARE_NEWS_KEY = "news:";
     private static final String WECHAT_SHARE_TYPE_VALUE = "WeChat";
 
-    private Injector newInjector;
     private WeChatDTO weChatDTO;
     private Bitmap mBitmap;
     @Nullable private Subscription trackShareSubscription;
@@ -88,8 +86,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
     {
         super.onCreate(savedInstanceState);
         THApp app = THApp.get(this);
-        newInjector = app.plus(new WXEntryActivityModule());
-        newInjector.inject(this);
+        app.plus(new WXEntryActivityModule()).inject(this);
 
         // TODO take this intent extraction into a separate method and use a new
         // WeChatDTO method to read from Intent.

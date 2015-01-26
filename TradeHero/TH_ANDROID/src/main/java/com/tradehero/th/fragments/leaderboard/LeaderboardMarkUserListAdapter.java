@@ -56,7 +56,7 @@ public class LeaderboardMarkUserListAdapter
 
     @Override protected void fineTune(int position, LeaderboardUserDTO dto, LeaderboardMarkUserItemView dtoView)
     {
-        dtoView.linkWith(currentUserProfileDTO, true);
+        dtoView.linkWith(currentUserProfileDTO);
         dtoView.linkWith(applicablePortfolioId);
         dtoView.setFollowRequestedListener(createChildFollowRequestedListener());
 

@@ -51,13 +51,10 @@ public class PositionLockedView extends LinearLayout
         ButterKnife.inject(this);
     }
 
-    public void linkWith(PositionDTO positionDTO, boolean andDisplay)
+    public void linkWith(PositionDTO positionDTO)
     {
         this.positionDTO = positionDTO;
-        if (andDisplay)
-        {
-            display();
-        }
+        display();
     }
 
     public void display()

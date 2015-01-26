@@ -10,20 +10,21 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.ArrayDTOAdapter;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefView;
-import com.tradehero.th.inject.HierarchyInjector;
-import javax.inject.Inject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
-    @Inject LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
+    @NonNull final LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
 
     //<editor-fold desc="Constructors">
-    public LeaderboardCommunityAdapter(@NonNull Context context, @LayoutRes int layoutResourceId)
+    public LeaderboardCommunityAdapter(
+            @NonNull Context context,
+            @LayoutRes int layoutResourceId,
+            @NonNull LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory)
     {
         super(context, layoutResourceId);
-        HierarchyInjector.inject(context, this);
+        this.leaderboardCommunityTypeFactory = leaderboardCommunityTypeFactory;
     }
     //</editor-fold>
 

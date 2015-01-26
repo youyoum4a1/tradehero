@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,7 +25,6 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
@@ -162,7 +162,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         return currentUserId != null && (followerId.key.intValue() == currentUserId.toUserBaseKey().key.intValue());
     }
 
-    private int getEmptyViewLayout()
+    @LayoutRes private int getEmptyViewLayout()
     {
         if (isCurrentUser())
         {
@@ -196,7 +196,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         return heroTypeResourceDTOFactory.create(getHeroType());
     }
 
-    abstract protected HeroType getHeroType();
+    @NonNull abstract protected HeroType getHeroType();
 
     @Override public void onStop()
     {
@@ -329,23 +329,14 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     protected void display(List<HeroDTO> heroDTOs)
     {
-        linkWith(heroDTOs, true);
+        linkWith(heroDTOs);
     }
 
-    public void linkWith(UserProfileDTO userProfileDTO, boolean andDisplay)
-    {
-        if (andDisplay)
-        {
-        }
-    }
 
-    public void linkWith(List<HeroDTO> heroDTOs, boolean andDisplay)
+    public void linkWith(List<HeroDTO> heroDTOs)
     {
         heroListAdapter.setItems(heroDTOs);
-        if (andDisplay)
-        {
-            displayHeroList();
-        }
+        displayHeroList();
     }
 
     public void display()

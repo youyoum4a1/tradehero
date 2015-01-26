@@ -121,7 +121,7 @@ public class AbstractDiscussionCompactItemViewHolder<DiscussionDTOType extends A
 
         if (discussionActionButtonsView != null)
         {
-            discussionActionButtonsView.linkWith(discussionDTO, true);
+            discussionActionButtonsView.linkWith(discussionDTO);
         }
 
         display();

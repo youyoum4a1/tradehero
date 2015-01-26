@@ -2,6 +2,7 @@
 
 <com.tradehero.th.widget.list.BaseListHeaderView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,8 +11,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textStyle="bold"
-      android:text="Position Header"
-      android:paddingLeft="8dp"
+      tools:text="Position Header"
+      android:paddingLeft="@dimen/margin_xsmall"
     />
 
 </com.tradehero.th.widget.list.BaseListHeaderView>

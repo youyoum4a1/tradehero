@@ -9,6 +9,9 @@ public class SecurityMediaDTO extends MediaDTO
     public String symbol;
     public String yahooSymbol;
     public String url;
+    public Double risePercent;
+    public Double lastPrice;
+    public String name;
 
     public boolean hasValidSecurityId()
     {

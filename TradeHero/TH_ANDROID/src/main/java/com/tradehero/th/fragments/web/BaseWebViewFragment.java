@@ -101,13 +101,7 @@ public class BaseWebViewFragment extends DashboardFragment
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
 
-        this.thIntentPassedListener = new THIntentPassedListener()
-        {
-            @Override public void onIntentPassed(THIntent thIntent)
-            {
-                notifyParentIntentPassed(thIntent);
-            }
-        };
+        this.thIntentPassedListener = this::notifyParentIntentPassed;
 
         this.thWebViewClient = new THWebViewClient(getActivity());
         thWebViewClient.setThIntentPassedListener(this.thIntentPassedListener);
@@ -163,12 +157,12 @@ public class BaseWebViewFragment extends DashboardFragment
         super.onDestroy();
     }
 
-    public void loadUrl(String url)
+    public void loadUrl(@Nullable String url)
     {
         loadUrl(url, null);
     }
 
-    public void loadUrl(String url, Map<String, String> additionalHttpHeaders)
+    public void loadUrl(@Nullable String url, @Nullable Map<String, String> additionalHttpHeaders)
     {
         if (url != null)
         {

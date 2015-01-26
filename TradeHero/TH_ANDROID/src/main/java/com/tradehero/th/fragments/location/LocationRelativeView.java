@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.location;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
@@ -16,8 +17,8 @@ public class LocationRelativeView extends RelativeLayout
     private static final int BG_CURRENT = R.drawable.basic_green_selector;
 
     protected LocationViewHolder locationViewHolder;
-    protected ListedLocationDTO listedLocationDTO;
-    protected Country currentCountry;
+    @Nullable protected ListedLocationDTO listedLocationDTO;
+    @Nullable protected Country currentCountry;
 
     //<editor-fold desc="Constructors">
     public LocationRelativeView(Context context)
@@ -50,14 +51,14 @@ public class LocationRelativeView extends RelativeLayout
         ButterKnife.inject(locationViewHolder, this);
     }
 
-    @Override public void display(ListedLocationDTO dto)
+    @Override public void display(@Nullable ListedLocationDTO dto)
     {
         this.listedLocationDTO = dto;
         locationViewHolder.display(dto);
         display();
     }
 
-    public void setCurrentCountry(Country currentCountry)
+    public void setCurrentCountry(@Nullable Country currentCountry)
     {
         this.currentCountry = currentCountry;
         locationViewHolder.setCurrentCountry(currentCountry);

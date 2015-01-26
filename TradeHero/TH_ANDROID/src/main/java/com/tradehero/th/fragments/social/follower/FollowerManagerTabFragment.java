@@ -80,7 +80,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
         if (followerListAdapter == null)
         {
             followerListAdapter = new FollowerListItemAdapter(getActivity(),
-                    getActivity().getLayoutInflater(),
                     R.layout.follower_list_item
             );
         }

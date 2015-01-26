@@ -9,7 +9,6 @@ import dagger.Module;
                 FragmentPortfolioHeaderModule.class,
         },
         injects = {
-                SimpleOwnPortfolioListItemAdapter.class,
                 PortfolioListItemView.class,
                 OtherUserPortfolioHeaderView.class,
         },

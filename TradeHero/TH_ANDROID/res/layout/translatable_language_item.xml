@@ -37,7 +37,7 @@
           android:paddingRight="4dp"
           style="@style/TH.Subhead"
           android:text="-"
-          />
+          tools:ignore="HardcodedText"/>
 
       <TextView
           android:id="@+id/translatable_text_local"
