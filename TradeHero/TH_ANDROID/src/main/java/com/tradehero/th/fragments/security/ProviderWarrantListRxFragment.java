@@ -13,6 +13,7 @@ import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantType;
+import com.tradehero.th.api.security.WarrantTypeShortCode;
 import com.tradehero.th.api.security.key.SecurityListType;
 import javax.inject.Inject;
 
@@ -30,7 +31,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
 
     @Nullable private static WarrantType getWarrantType(@NonNull Bundle bundle)
     {
-        String shortCode = bundle.getString(BUNDLE_WARRANT_TYPE_SHORT_CODE_KEY, null);
+        @WarrantTypeShortCode String shortCode = bundle.getString(BUNDLE_WARRANT_TYPE_SHORT_CODE_KEY, null);
         if (shortCode == null)
         {
             return null;

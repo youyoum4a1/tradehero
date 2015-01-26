@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -28,31 +29,31 @@ abstract public class THIntent extends Intent
         setAction(getDefaultAction());
     }
 
-    public static String getDefaultAction()
+    @NonNull public static String getDefaultAction()
     {
         return Intent.ACTION_VIEW;
     }
 
-    public Uri getUri()
+    @NonNull public Uri getUri()
     {
         return Uri.parse(getUriPath());
     }
 
-    public String getUriPath()
+    @NonNull public String getUriPath()
     {
         return getBaseUriPath(resources);
     }
 
-    public static String getBaseUriPath(@NonNull Resources resources)
+    @NonNull public static String getBaseUriPath(@NonNull Resources resources)
     {
         return resources.getString(
                 R.string.intent_uri_base,
                 resources.getString(R.string.intent_scheme));
     }
 
-    public static String getHostUriPath(
+    @NonNull public static String getHostUriPath(
             @NonNull Resources resources,
-            int hostResId)
+            @StringRes int hostResId)
     {
         return resources.getString(
                 R.string.intent_uri_host,
@@ -60,10 +61,10 @@ abstract public class THIntent extends Intent
                 resources.getString(hostResId));
     }
 
-    public static String getActionUriPath(
+    @NonNull public static String getActionUriPath(
             @NonNull Resources resources,
-            int hostResId,
-            int actionResId)
+            @StringRes int hostResId,
+            @StringRes int actionResId)
     {
         return resources.getString(
                 R.string.intent_uri_action,
@@ -79,14 +80,14 @@ abstract public class THIntent extends Intent
         return null;
     }
 
-    public Bundle getBundle()
+    @NonNull public Bundle getBundle()
     {
         Bundle newBundle = new Bundle();
         populate(newBundle);
         return newBundle;
     }
 
-    public void populate(Bundle bundle)
+    public void populate(@NonNull Bundle bundle)
     {
     }
 }

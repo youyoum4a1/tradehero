@@ -266,6 +266,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     {
     }
 
+    @SuppressWarnings("EmptyMethod")
     @OnClick(R.id.user_profile_achievement_count_wrapper) @Optional
     @Override protected void notifyDefaultPortfolioClicked()
     {

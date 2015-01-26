@@ -15,7 +15,7 @@ public class ProviderIntent extends THIntent
     }
     //</editor-fold>
 
-    @Override public String getUriPath()
+    @Override @NonNull public String getUriPath()
     {
         return getHostUriPath(resources, R.string.intent_host_providers);
     }

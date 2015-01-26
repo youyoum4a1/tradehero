@@ -28,7 +28,7 @@ public class GuideActivity extends Activity
         ViewPager.OnPageChangeListener,
         View.OnClickListener
 {
-    private static final int CLOSE_IMAGE_ID = 0x88888;
+    private static final int CLOSE_IMAGE_ID = 0x88888; // TODO what is this?
     @Inject Analytics analytics;
     @Inject CurrentUserId currentUserId;
 

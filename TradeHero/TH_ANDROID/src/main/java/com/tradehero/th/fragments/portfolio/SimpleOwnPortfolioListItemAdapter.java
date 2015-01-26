@@ -142,11 +142,6 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         return true;
     }
 
-    @Override protected void fineTune(int position, DisplayablePortfolioDTO dto, PortfolioListItemView dtoView)
-    {
-        // Nothing to do
-    }
-
     @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable protected Boolean containsFx(@NonNull List<DisplayablePortfolioDTO> items)
     {

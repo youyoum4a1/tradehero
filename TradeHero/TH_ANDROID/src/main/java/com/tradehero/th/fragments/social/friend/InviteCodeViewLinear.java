@@ -10,14 +10,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import retrofit.Callback;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -70,11 +68,6 @@ public class InviteCodeViewLinear extends LinearLayout
         viewHolder.detachView();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
-    }
-
-    public void setParentCallback(@Nullable Callback<BaseResponseDTO> parentCallback)
-    {
-        viewHolder.setParentCallback(parentCallback);
     }
 
     protected void fetchUserProfile()

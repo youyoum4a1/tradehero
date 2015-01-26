@@ -21,6 +21,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
         INVISIBLE,
         GONE,
 })
-public @interface ViewVisibilityValueDef
+public @interface ViewVisibilityValue
 {
 }

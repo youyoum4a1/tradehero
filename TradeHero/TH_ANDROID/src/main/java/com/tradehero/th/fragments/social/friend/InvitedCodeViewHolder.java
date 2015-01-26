@@ -17,8 +17,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,7 +35,6 @@ public class InvitedCodeViewHolder
     @NonNull private final UserServiceWrapper userServiceWrapper;
     @Nullable private UserProfileDTO userProfileDTO;
 
-    @Nullable private Callback<BaseResponseDTO> parentCallback;
     @Nullable private Subscription updateInviteCodeSubscription;
 
     //<editor-fold desc="Constructors">
@@ -85,29 +82,6 @@ public class InvitedCodeViewHolder
         }
     }
 
-    public void setParentCallback(@Nullable Callback<BaseResponseDTO> parentCallback)
-    {
-        this.parentCallback = parentCallback;
-    }
-
-    protected void notifyParentCallbackSuccess(BaseResponseDTO response)
-    {
-        Callback<BaseResponseDTO> callbackCopy = parentCallback;
-        if (callbackCopy != null)
-        {
-            callbackCopy.success(response, null);
-        }
-    }
-
-    protected void notifyParentCallbackFailure(RetrofitError retrofitError)
-    {
-        Callback<BaseResponseDTO> callbackCopy = parentCallback;
-        if (callbackCopy != null)
-        {
-            callbackCopy.failure(retrofitError);
-        }
-    }
-
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_send_code)
     public void submitInviteCode()
@@ -130,7 +104,6 @@ public class InvitedCodeViewHolder
         @Override public void onNext(BaseResponseDTO args)
         {
             showSubmitDone();
-            notifyParentCallbackSuccess(args);
         }
 
         @Override public void onError(Throwable e)
@@ -146,7 +119,6 @@ public class InvitedCodeViewHolder
                 THToast.show(exception);
                 viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
             }
-            notifyParentCallbackFailure((RetrofitError) e);
         }
     }
 

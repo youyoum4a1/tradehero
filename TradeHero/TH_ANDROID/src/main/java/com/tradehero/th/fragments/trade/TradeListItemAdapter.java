@@ -129,10 +129,6 @@ public class TradeListItemAdapter
         this.objects = objectsTemp;
     }
 
-    @Override protected void fineTune(int position, ExpandableTradeItem dto, TradeListItemView convertView)
-    {
-    }
-
     @Override protected ExpandableTradeItem wrap(final PositionTradeDTOKey underlyingItem)
     {
         return new ExpandableTradeItem(underlyingItem);

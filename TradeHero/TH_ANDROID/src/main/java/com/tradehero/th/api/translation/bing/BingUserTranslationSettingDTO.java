@@ -1,6 +1,7 @@
 package com.tradehero.th.api.translation.bing;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.i18n.LanguageDTO;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
@@ -40,7 +41,7 @@ public class BingUserTranslationSettingDTO extends UserTranslationSettingDTO
         return new BingUserTranslationSettingDTO(languageCode, newAutoValue);
     }
 
-    @Override public int getProviderStringResId()
+    @Override @StringRes public int getProviderStringResId()
     {
         return R.string.translation_provided_by_bing;
     }

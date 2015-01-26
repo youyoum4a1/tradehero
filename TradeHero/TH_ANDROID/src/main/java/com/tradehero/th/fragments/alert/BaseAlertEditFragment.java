@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -430,12 +431,12 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected int getFormattedTargetPriceChange()
+    @StringRes protected int getFormattedTargetPriceChange()
     {
         return R.string.stock_alert_target_price_change_format;
     }
 
-    protected int getPercentageChangeFormatResId()
+    @StringRes protected int getPercentageChangeFormatResId()
     {
         return R.string.stock_alert_percentage_change_format;
     }
@@ -597,7 +598,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         return percentageSeekBar.getProgress() - 50;
     }
 
-    protected int getFormattedPercentageChangeTargetValue()
+    @StringRes protected int getFormattedPercentageChangeTargetValue()
     {
         return R.string.stock_alert_percentage_change_target_value_format;
     }

@@ -149,11 +149,6 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
         super.onPause();
     }
 
-    @Override public void onDetach()
-    {
-        super.onDetach();
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         setActionBarSubtitle(null);

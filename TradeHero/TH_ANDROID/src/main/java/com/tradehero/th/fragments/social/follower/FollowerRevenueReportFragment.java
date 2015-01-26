@@ -88,11 +88,6 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-    }
-
     @Override public void onDestroy()
     {
         followerManagerViewContainer = null;

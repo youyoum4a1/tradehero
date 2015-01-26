@@ -6,6 +6,7 @@ import android.os.AsyncTask;
  * This class helps create the illusion of the action taking a minimum time.
  * Can be used to give the system enough time to pop a message.
  * */
+@Deprecated // Use Rx
 abstract public class SlowedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result>
 {
     public final long minimumMilliSeconds;

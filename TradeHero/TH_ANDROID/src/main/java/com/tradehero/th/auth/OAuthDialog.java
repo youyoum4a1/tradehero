@@ -74,7 +74,7 @@ public class OAuthDialog extends Dialog
         Drawable closeDrawable = getContext().getResources().getDrawable(android.R.drawable.btn_dialog);
         closeImage.setImageDrawable(closeDrawable);
 
-        closeImage.setVisibility(4);
+        closeImage.setVisibility(View.INVISIBLE);
     }
 
     public void setProgressDialog(ProgressDialog progressDialog)
@@ -92,7 +92,7 @@ public class OAuthDialog extends Dialog
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(requestUrl);
         webView.setLayoutParams(FILL);
-        webView.setVisibility(4);
+        webView.setVisibility(View.INVISIBLE);
 
         webViewContainer.setPadding(margin, margin, margin, margin);
         webViewContainer.addView(webView);
@@ -163,8 +163,8 @@ public class OAuthDialog extends Dialog
             }
 
             content.setBackgroundColor(0);
-            webView.setVisibility(0);
-            closeImage.setVisibility(0);
+            webView.setVisibility(View.VISIBLE);
+            closeImage.setVisibility(View.VISIBLE);
         }
     }
 }

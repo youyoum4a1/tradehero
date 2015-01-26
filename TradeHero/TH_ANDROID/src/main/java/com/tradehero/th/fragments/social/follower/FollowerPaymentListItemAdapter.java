@@ -100,9 +100,4 @@ public class FollowerPaymentListItemAdapter extends ArrayDTOAdapter<FollowerTran
     {
         return getItemViewType(position) != VIEW_TYPE_HEADER;
     }
-
-    @Override protected void fineTune(int position, FollowerTransactionDTO dto, FollowerPaymentListItemView dtoView)
-    {
-        // Nothing to do
-    }
 }

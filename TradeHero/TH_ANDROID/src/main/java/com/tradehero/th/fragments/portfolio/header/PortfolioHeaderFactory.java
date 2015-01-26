@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.portfolio.header;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -16,9 +17,16 @@ import javax.inject.Singleton;
  */
 @Singleton public class PortfolioHeaderFactory
 {
-    @Inject protected CurrentUserId currentUserId;
+    @NonNull protected final CurrentUserId currentUserId;
 
-    public int layoutIdFor(
+    //<editor-fold desc="Constructors">
+    @Inject public PortfolioHeaderFactory(@NonNull CurrentUserId currentUserId)
+    {
+        this.currentUserId = currentUserId;
+    }
+    //</editor-fold>
+
+    @LayoutRes public int layoutIdFor(
             @NonNull GetPositionsDTOKey getPositionsDTOKey,
             @NonNull PortfolioCompactDTO portfolioCompactDTO)
     {
@@ -41,24 +49,24 @@ import javax.inject.Singleton;
         throw new IllegalArgumentException("Unhandled getPositionDTOKey type " + getPositionsDTOKey.getClass());
     }
 
-    protected int layoutIdForFx(@NonNull OwnedPortfolioId ownedPortfolioId)
+    @LayoutRes protected int layoutIdForFx(@NonNull OwnedPortfolioId ownedPortfolioId)
     {
         // TODO more tests
         return R.layout.portfolio_header_fx_current_user_view;
     }
 
-    protected int layoutIdForStocks(LeaderboardMarkUserId leaderboardMarkUserId)
+    @LayoutRes protected int layoutIdForStocks(LeaderboardMarkUserId leaderboardMarkUserId)
     {
         // TODO check whether we need to see this is current user or not
         return R.layout.portfolio_header_other_user_view;
     }
 
-    protected int layoutIdForStocks(@NonNull OwnedPortfolioId ownedPortfolioId)
+    @LayoutRes protected int layoutIdForStocks(@NonNull OwnedPortfolioId ownedPortfolioId)
     {
         return layoutIdFor(ownedPortfolioId.getUserBaseKey());
     }
 
-    public int layoutIdFor(@NonNull UserBaseKey userBaseKey)
+    @LayoutRes public int layoutIdFor(@NonNull UserBaseKey userBaseKey)
     {
         // TODO distinguish Fx portfolios
         if (userBaseKey.equals(currentUserId.toUserBaseKey()))

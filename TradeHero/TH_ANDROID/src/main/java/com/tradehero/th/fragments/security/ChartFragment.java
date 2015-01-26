@@ -18,7 +18,7 @@ import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
-import com.tradehero.common.annotation.ViewVisibilityValueDef;
+import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -418,7 +418,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         }
     }
 
-    @ViewVisibilityValueDef private int getWarrantVisibility()
+    @ViewVisibilityValue private int getWarrantVisibility()
     {
         return (warrantDTO == null) ? View.GONE : View.VISIBLE;
     }

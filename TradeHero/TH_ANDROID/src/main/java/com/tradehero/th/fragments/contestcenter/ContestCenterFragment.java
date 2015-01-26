@@ -22,12 +22,6 @@ public class ContestCenterFragment extends DashboardFragment
     @InjectView(R.id.pager) ViewPager viewPager;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);

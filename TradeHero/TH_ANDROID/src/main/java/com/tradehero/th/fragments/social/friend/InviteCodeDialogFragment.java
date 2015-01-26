@@ -46,6 +46,7 @@ public class InviteCodeDialogFragment extends BaseDialogFragment
         super.onDestroyView();
     }
 
+    @SuppressWarnings("EmptyMethod")
     @OnClick({R.id.btn_cancel, R.id.btn_cancel_submit, R.id.btn_done})
     @Override public void dismiss()
     {

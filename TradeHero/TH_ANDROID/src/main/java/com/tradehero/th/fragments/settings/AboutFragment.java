@@ -65,11 +65,6 @@ public class AboutFragment extends DashboardFragment
         rotateAnimator.setDuration(getResources().getInteger(R.integer.about_screen_rotation_duration));
         rotateAnimator.addListener(new AnimatorListenerAdapter()
         {
-            @Override public void onAnimationStart(Animator animation)
-            {
-                super.onAnimationStart(animation);
-            }
-
             @Override public void onAnimationEnd(Animator animation)
             {
                 super.onAnimationEnd(animation);

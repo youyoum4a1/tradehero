@@ -38,11 +38,6 @@ abstract public class SecurityItemViewAdapter<SecurityDTOType extends SecurityCo
     abstract public ListCharSequencePredicateFilter<SecurityDTOType> getPredicateFilter();
     abstract public Filter getFilter();
 
-    @Override protected void fineTune(int position, SecurityDTOType securityCompact, final DTOView<SecurityDTOType> dtoView)
-    {
-        // Nothing to do
-    }
-
     @Override public boolean hasStableIds()
     {
         return true;

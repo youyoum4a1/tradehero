@@ -90,7 +90,7 @@ public enum RootFragmentType
         return viewResId != DEFAULT_VIEW_LAYOUT_ID;
     }
 
-    public static Collection<RootFragmentType> forResideMenu()
+    @NonNull public static Collection<RootFragmentType> forResideMenu()
     {
         List<RootFragmentType> forResideMenu = new ArrayList<>(Arrays.asList(
                 TIMELINE, DIVIDER, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER, DIVIDER, FRIEND_REFERRAL, STORE, SETTING
@@ -99,7 +99,7 @@ public enum RootFragmentType
         return Collections.unmodifiableCollection(forResideMenu);
     }
 
-    public static Collection<RootFragmentType> forBottomBar()
+    @NonNull public static Collection<RootFragmentType> forBottomBar()
     {
         List<RootFragmentType> forBottomBar = Arrays.asList(
                 ME, TRENDING, DISCOVERY, COMMUNITY, CONTEST_CENTER
