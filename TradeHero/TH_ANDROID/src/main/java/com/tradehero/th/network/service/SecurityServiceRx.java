@@ -75,7 +75,7 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}")
+    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}") @Deprecated
     Observable<SecurityPositionDetailDTO> getSecurity(
             @Path("exchange") String exchange,
             @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);

@@ -25,7 +25,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -35,7 +35,7 @@ import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
@@ -45,7 +45,7 @@ import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import timber.log.Timber;
 
-public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPositionDetailDTO>
+public class ChartFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
     public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
     public final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
@@ -88,7 +88,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     @InjectView(R.id.vvolume) @Optional protected TextView mVolume;
     @InjectView(R.id.vavg_volume) @Optional protected TextView mAvgVolume;
 
-    @Inject SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Nullable Subscription securityCompactCacheSubscription;
     @Inject Picasso picasso;
     @Inject ChartDTOFactory chartDTOFactory;
@@ -240,9 +240,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         super.onDestroyView();
     }
 
-    @Override protected SecurityPositionDetailCacheRx getInfoCache()
+    @Override protected SecurityCompactCacheRx getInfoCache()
     {
-        return securityPositionDetailCache;
+        return securityCompactCacheRx;
     }
 
     public int getTimeSpanButtonSetVisibility()
@@ -264,7 +264,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
             unsubscribe(securityCompactCacheSubscription);
             securityCompactCacheSubscription = AndroidObservable.bindFragment(
                     this,
-                    securityPositionDetailCache.get(securityId))
+                    securityCompactCacheRx.get(securityId))
                     .map(pair -> pair.second)
                     .subscribe(
                             this::linkWith,
@@ -273,7 +273,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         }
     }
 
-    @Override public void linkWith(SecurityPositionDetailDTO value)
+    @Override public void linkWith(SecurityCompactDTO value)
     {
         super.linkWith(value);
         if (value != null)
@@ -281,9 +281,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
             ChartDTO chartDTOCopy = chartDTO;
             if (chartDTOCopy != null)
             {
-                chartDTOCopy.setSecurityCompactDTO(value.security);
+                chartDTOCopy.setSecurityCompactDTO(value);
             }
-            linkWith((value.security instanceof WarrantDTO) ? (WarrantDTO) value.security : null);
+            linkWith((value instanceof WarrantDTO) ? (WarrantDTO) value : null);
         }
         displayChartImage();
         displayPreviousClose();
@@ -454,13 +454,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mWarrantCode != null)
         {
-            if (value == null || value.security.symbol == null)
+            if (value == null || value.symbol == null)
             {
                 mWarrantCode.setText(R.string.na);
             }
             else
             {
-                mWarrantCode.setText(value.security.symbol);
+                mWarrantCode.setText(value.symbol);
             }
         }
     }
@@ -532,14 +532,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mPreviousClose != null)
         {
-            if (value == null || value.security.previousClose == null)
+            if (value == null || value.previousClose == null)
             {
                 mPreviousClose.setText(R.string.na);
             }
             else
             {
-                mPreviousClose.setText(THSignedMoney.builder(value.security.previousClose)
-                        .currency(value.security.currencyDisplay)
+                mPreviousClose.setText(THSignedMoney.builder(value.previousClose)
+                        .currency(value.currencyDisplay)
                         .build().toString());
             }
         }
@@ -549,14 +549,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mOpen != null)
         {
-            if (value == null || value.security.open == null)
+            if (value == null || value.open == null)
             {
                 mOpen.setText(R.string.na);
             }
             else
             {
-                mOpen.setText(THSignedMoney.builder(value.security.open)
-                        .currency(value.security.currencyDisplay)
+                mOpen.setText(THSignedMoney.builder(value.open)
+                        .currency(value.currencyDisplay)
                         .build().toString());
             }
         }
@@ -566,14 +566,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mDaysHigh != null)
         {
-            if (value == null || value.security.high == null)
+            if (value == null || value.high == null)
             {
                 mDaysHigh.setText(R.string.na);
             }
             else
             {
-                mDaysHigh.setText(THSignedMoney.builder(value.security.high)
-                        .currency(value.security.currencyDisplay)
+                mDaysHigh.setText(THSignedMoney.builder(value.high)
+                        .currency(value.currencyDisplay)
                         .build().toString());
             }
         }
@@ -583,14 +583,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mDaysLow != null)
         {
-            if (value == null || value.security.low == null)
+            if (value == null || value.low == null)
             {
                 mDaysLow.setText(R.string.na);
             }
             else
             {
-                mDaysLow.setText(THSignedMoney.builder(value.security.low)
-                        .currency(value.security.currencyDisplay)
+                mDaysLow.setText(THSignedMoney.builder(value.low)
+                        .currency(value.currencyDisplay)
                         .build().toString());
             }
         }
@@ -600,13 +600,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mPERatio != null)
         {
-            if (value == null || value.security.pe == null)
+            if (value == null || value.pe == null)
             {
                 mPERatio.setText(R.string.na);
             }
             else
             {
-                mPERatio.setText(THSignedNumber.builder(value.security.pe)
+                mPERatio.setText(THSignedNumber.builder(value.pe)
                         .build().toString());
             }
         }
@@ -616,13 +616,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mEps != null)
         {
-            if (value == null || value.security.eps == null)
+            if (value == null || value.eps == null)
             {
                 mEps.setText(R.string.na);
             }
             else
             {
-                mEps.setText(THSignedNumber.builder(value.security.eps)
+                mEps.setText(THSignedNumber.builder(value.eps)
                         .build().toString());
             }
         }
@@ -632,13 +632,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mVolume != null)
         {
-            if (value == null || value.security.volume == null)
+            if (value == null || value.volume == null)
             {
                 mVolume.setText(R.string.na);
             }
             else
             {
-                mVolume.setText(THSignedNumber.builder(value.security.volume)
+                mVolume.setText(THSignedNumber.builder(value.volume)
                         .build().toString());
             }
         }
@@ -648,13 +648,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
     {
         if (!isDetached() && mAvgVolume != null)
         {
-            if (value == null || value.security.averageDailyVolume == null)
+            if (value == null || value.averageDailyVolume == null)
             {
                 mAvgVolume.setText(R.string.na);
             }
             else
             {
-                mAvgVolume.setText(THSignedNumber.builder(value.security.averageDailyVolume)
+                mAvgVolume.setText(THSignedNumber.builder(value.averageDailyVolume)
                         .build().toString());
             }
         }

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trade;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,15 +17,15 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOCompactList;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.persistence.position.SecurityPositionDetailCacheRx;
+import com.tradehero.th.persistence.position.PositionCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
+import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
@@ -34,10 +33,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
@@ -53,8 +50,9 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
-    @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
+    @Inject protected SecurityCompactCacheRx securityCompactCache;
     @Inject protected UserProfileCacheRx userProfileCache;
+    @Inject protected PositionCompactListCacheRx positionCompactListCache;
     @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
@@ -67,10 +65,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Nullable protected Subscription securityCompactSubscription;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
 
-    protected Observable<SecurityPositionDetailDTO> securityPositionDetailObservable;
-    @Nullable protected Subscription securityPositionDetailSubscription;
-    @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
-
+    @Nullable protected Subscription positionCompactListSubscription;
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
@@ -106,11 +101,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         {
             thRouter.inject(this);
         }
-        securityPositionDetailObservable = securityPositionDetailCache
-                        .get(this.securityId)
-                        .map(pair -> pair.second)
-                        .share()
-                        .cache(1);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -131,7 +121,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         super.onStart();
         fetchQuote();
         fetchSecurityCompact();
-        fetchSecurityPositionDetail();
+        fetchPositionCompactList();
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -140,8 +130,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
         unsubscribe(quoteSubscription);
         quoteSubscription = null;
-        unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = null;
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = null;
         unsubscribe(portfolioCompactListCacheSubscription);
@@ -163,19 +151,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         quoteDTO = null;
         unsubscribe(quoteSubscription);
         quoteSubscription = null;
-        unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = null;
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = null;
         unsubscribe(portfolioCompactListCacheSubscription);
         portfolioCompactListCacheSubscription = null;
+        unsubscribe(positionCompactListSubscription);
+        positionCompactListSubscription = null;
         super.onStop();
-    }
-
-    @Override public void onDestroy()
-    {
-        securityPositionDetailObservable = null;
-        super.onDestroy();
     }
 
     protected void collectFromParameters(Bundle args)
@@ -230,15 +212,16 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void fetchSecurityCompact()
     {
         unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = AndroidObservable.bindFragment(this, securityPositionDetailCache
-                .get(this.securityId))
-                .subscribe(new EmptyObserver<Pair<SecurityId, SecurityPositionDetailDTO>>()
-                {
-                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
-                    {
-                        linkWith(pair.second.security, true);
-                    }
-                });
+        securityCompactSubscription = AndroidObservable.bindFragment(
+                this,
+                securityCompactCache.get(this.securityId)
+                        .map(pair -> pair.second))
+                .subscribe(
+                        security -> linkWith(security, true),
+                        e -> {
+                            THToast.show("Failed to fetch security");
+                            Timber.e(e, "Failed to fetch security %s", securityId);
+                        });
     }
 
     public void linkWith(final SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -254,28 +237,19 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
     }
 
-    protected void fetchSecurityPositionDetail()
+    protected void fetchPositionCompactList()
     {
-        unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = AndroidObservable.bindFragment(
+        unsubscribe(positionCompactListSubscription);
+        positionCompactListSubscription = AndroidObservable.bindFragment(
                 this,
-                securityPositionDetailObservable)
+                positionCompactListCache.get(securityId)
+                        .map(pair -> pair.second))
                 .subscribe(
                         this::linkWith,
-                        this::handleFailedFetchSecurityPositionDetail);
-    }
-
-    public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        this.securityPositionDetailDTO = securityPositionDetailDTO;
-        linkWith(securityPositionDetailDTO.security, true);
-        linkWith(securityPositionDetailDTO.positions);
-    }
-
-    protected void handleFailedFetchSecurityPositionDetail(@NonNull Throwable e)
-    {
-        THToast.show(R.string.error_fetch_detailed_security_info);
-        Timber.e(e, "getting %s", securityId);
+                        e -> {
+                            THToast.show("Failed to fetch positions for this security");
+                            Timber.e(e, "Failed to fetch positions for this security");
+                        });
     }
 
     public void linkWith(final PositionDTOCompactList positionDTOCompacts)

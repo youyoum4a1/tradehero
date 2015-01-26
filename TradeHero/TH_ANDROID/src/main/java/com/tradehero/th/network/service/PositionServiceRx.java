@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -16,4 +17,9 @@ interface PositionServiceRx
             @Query("pageNumber") Integer pageNumber,
             @Query("perPage") Integer perPage);
     //</editor-fold>
+
+    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}/positionCompacts")
+    Observable<PositionDTOCompactList> getPositions(
+            @Path("exchange") String exchange,
+            @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
 }

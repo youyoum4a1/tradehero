@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 
-@Singleton @UserCache
+@Singleton @UserCache @Deprecated
 public class SecurityPositionDetailCacheRx extends BaseFetchDTOCacheRx<SecurityId, SecurityPositionDetailDTO>
 {
     public static final int DEFAULT_MAX_VALUE_SIZE = 100;

@@ -1,13 +1,12 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
-
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.route.RouteProperty;
+import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
 
 @RouteProperty
-public class SecurityId implements Comparable, DTOKey, DTO
+public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
 {
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";

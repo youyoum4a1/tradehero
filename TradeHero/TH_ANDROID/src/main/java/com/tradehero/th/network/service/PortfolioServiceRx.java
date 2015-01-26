@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.billing.PurchaseReportDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -26,6 +27,11 @@ public interface PortfolioServiceRx
             @Path("userId") int userId,
             @Path("portfolioId") int portfolioId);
     //</editor-fold>
+
+    @GET("/securities/{exchange}/{pathSafeSecuritySymbol}/applicablePortfolios")
+    Observable<OwnedPortfolioIdList> getApplicablePortfolios(
+            @Path("exchange") String exchange,
+            @Path("pathSafeSecuritySymbol") String pathSafeSecuritySymbol);
 
     //<editor-fold desc="Reset One User Portfolio">
     @POST("/users/{userId}/portfolios/{portfolioId}/reset")

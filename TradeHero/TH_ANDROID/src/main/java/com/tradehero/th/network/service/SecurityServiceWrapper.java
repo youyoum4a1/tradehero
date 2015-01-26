@@ -23,9 +23,7 @@ import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
-import com.tradehero.th.models.security.DTOProcessorSecurityPositionDetailReceived;
 import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -156,16 +154,12 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @NonNull protected DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionDetailDTOProcessor(@NonNull SecurityId securityId)
-    {
-        return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
-    }
-
     @NonNull public Observable<SecurityCompactDTO> getSecurityCompactRx(@NonNull SecurityId securityId)
     {
         return securityServiceRx.getCompactSecurity(securityId.getExchange(), securityId.getPathSafeSymbol());
     }
 
+    @Deprecated
     @NonNull public Observable<SecurityPositionDetailDTO> getSecurityPositionDetailRx(
             @NonNull SecurityId securityId)
     {

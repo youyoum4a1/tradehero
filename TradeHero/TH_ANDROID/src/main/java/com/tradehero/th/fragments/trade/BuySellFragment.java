@@ -22,14 +22,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.position.SecurityPositionDetailDTO;
+import com.tradehero.th.api.position.PositionDTOCompactList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -48,6 +46,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
@@ -99,6 +98,9 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
 
     private AbstractTransactionDialogFragment abstractTransactionDialogFragment;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
+
+    @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
+    @Nullable protected Subscription securityApplicableOwnedPortfolioIdListSubscription;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -188,6 +190,8 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioChangedSubscription = null;
         unsubscribe(portfolioMenuSubscription);
         portfolioMenuSubscription = null;
+        unsubscribe(securityApplicableOwnedPortfolioIdListSubscription);
+        securityApplicableOwnedPortfolioIdListSubscription = null;
         stopListeningToBuySellDialog();
 
         super.onStop();
@@ -241,7 +245,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 {
                     showPrettyReviewAndInvite(isBuy);
                     pushPortfolioFragment(securityPositionTransactionDTO);
-                    securityPositionDetailCache.invalidate(securityPositionTransactionDTO.getSecurityId());
                 }
 
                 @Override public void onTransactionFailed(boolean isBuy, THException error)
@@ -260,37 +263,6 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             displayStockName();
             displayBuySellPrice();
         }
-    }
-
-    @Override public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
-    {
-        super.linkWith(securityPositionDetailDTO);
-
-        ProviderDTOList providerDTOs = securityPositionDetailDTO.providers;
-        if (providerDTOs != null)
-        {
-            for (ProviderDTO providerDTO : providerDTOs)
-            {
-                if (providerDTO.associatedPortfolio != null)
-                {
-                    processPortfolioForProvider(providerDTO);
-                }
-            }
-        }
-
-        setInitialSellQuantityIfCan();
-
-        displayBuySellSwitch();
-        displayBuySellPrice();
-        displayBuySellContainer();
-    }
-
-    protected void processPortfolioForProvider(ProviderDTO providerDTO)
-    {
-        mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
-                new MenuOwnedPortfolioId(
-                        currentUserId.toUserBaseKey(),
-                        providerDTO.associatedPortfolio));
     }
 
     @Override protected void linkWith(QuoteDTO quoteDTO)
@@ -381,6 +353,14 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         displayBuySellSwitch();
     }
 
+    @Override public void linkWith(PositionDTOCompactList positionDTOCompacts)
+    {
+        super.linkWith(positionDTOCompacts);
+        setInitialSellQuantityIfCan();
+        displayBuySellSwitch();
+        displayBuySellContainer();
+    }
+
     public void displayStockName()
     {
         if (securityCompactDTO != null)
@@ -433,7 +413,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             portfolioChangedSubscription = Observable.combineLatest(
                     Observable.just(purchaseApplicablePortfolioId),
                     currentUserPortfolioCompactListObservable,
-                    securityPositionDetailObservable,
+                    ownedPortfolioIdListCache.get(securityId).map(pair -> pair.second),
                     PortfolioChangedHelper::new)
                     .map(PortfolioChangedHelper::isPortfolioChanged)
                     .take(1)
@@ -460,17 +440,17 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         @NonNull public final OwnedPortfolioId applicable;
         @NonNull public final PortfolioCompactDTOList portfolioCompactDTOs;
-        @NonNull public final SecurityPositionDetailDTO securityPositionDetailDTO;
+        @NonNull public final OwnedPortfolioIdList applicablePortfolioIds;
 
         //<editor-fold desc="Constructors">
         private PortfolioChangedHelper(
                 @NonNull OwnedPortfolioId applicable,
                 @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
-                @NonNull SecurityPositionDetailDTO securityPositionDetailDTO)
+                @NonNull OwnedPortfolioIdList applicablePortfolioIds)
         {
             this.applicable = applicable;
             this.portfolioCompactDTOs = portfolioCompactDTOs;
-            this.securityPositionDetailDTO = securityPositionDetailDTO;
+            this.applicablePortfolioIds = applicablePortfolioIds;
         }
         //</editor-fold>
 
@@ -482,13 +462,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                 // Default portfolio is without surprise
                 return false;
             }
-            ProviderDTOList providers = securityPositionDetailDTO.providers;
-            if (providers == null)
-            {
-                return true;
-            }
-            OwnedPortfolioIdList providerPortfolioIds = providers.getAssociatedOwnedPortfolioIds();
-            return !providerPortfolioIds.contains(applicable);
+            return !applicablePortfolioIds.contains(applicable);
         }
     }
 
@@ -718,7 +692,30 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
         super.handleReceivedPortfolioCompactList(portfolioCompactDTOs);
+        fetchSecurityApplicableOwnedPortfolioIds(portfolioCompactDTOs);
         linkWith(portfolioCompactDTOs);
+    }
+
+    protected void fetchSecurityApplicableOwnedPortfolioIds(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
+    {
+        unsubscribe(securityApplicableOwnedPortfolioIdListSubscription);
+        securityApplicableOwnedPortfolioIdListSubscription = AndroidObservable.bindFragment(
+                this,
+                ownedPortfolioIdListCache.get(securityId)
+                        .map(pair -> pair.second))
+                .subscribe(ids -> {
+                            PortfolioCompactDTO candidate;
+                            for (OwnedPortfolioId id : ids)
+                            {
+                                candidate = portfolioCompactDTOs.findFirstWhere(compact -> compact.id == id.portfolioId);
+                                if (candidate != null)
+                                {
+                                    mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
+                                            new MenuOwnedPortfolioId(id, candidate));
+                                }
+                            }
+                        },
+                        e -> Timber.e(e, "Failed to get the applicable portfolio ids"));
     }
 
     protected abstract void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs);
