@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +37,6 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
@@ -247,7 +247,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             subscriptions.add(AndroidObservable.bindFragment(
                     this,
                     heroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
-                    .filter(pair -> pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                    .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                     .flatMap(pair -> userInteractorRx.purchaseAndPremiumFollowAndClear(clickedHeroDTO.getBaseKey()))
                     .subscribe(
                             result -> {
@@ -272,7 +272,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         else
         {
             subscriptions.add(heroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
-                    .filter(pair -> pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                    .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                     .subscribe(
                             pair -> {
                                 THToast.show(getString(R.string.manage_heroes_unfollow_progress_message));

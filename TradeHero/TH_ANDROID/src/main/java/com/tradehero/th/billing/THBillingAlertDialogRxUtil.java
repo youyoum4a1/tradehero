@@ -18,7 +18,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
-import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogRxUtil;
@@ -131,7 +130,7 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull final Context activityContext,
             @NonNull Pair<DialogInterface, Integer> pair)
     {
-        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
             goToCreateAccount(activityContext);
         }
@@ -266,7 +265,7 @@ abstract public class THBillingAlertDialogRxUtil<
                     .build())
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .flatMap(pair -> {
-                        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                         {
                             sendSupportEmailPurchaseRestoreFailed(
                                     activityContext,
@@ -292,7 +291,7 @@ abstract public class THBillingAlertDialogRxUtil<
                     .build())
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .flatMap(pair -> {
-                        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                         {
                             sendSupportEmailPurchaseRestoreFailedPartial(
                                     activityContext,
@@ -366,7 +365,7 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull Throwable throwable,
             @NonNull Pair<DialogInterface, Integer> pair)
     {
-        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
             sendSupportEmailPurchaseNotRestored(activityContext, throwable);
         }

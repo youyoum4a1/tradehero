@@ -29,7 +29,6 @@ import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
-import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.rx.view.CompoundButtonSetCheckedAction1;
 import com.tradehero.th.rx.view.ViewArrayObservable;
@@ -270,7 +269,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             .setNegativeButton(getString(R.string.later));
 
         return Observable.create(onSubscribeBuilder.build())
-                .filter(new AlertButtonClickedFilterFunc1(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+                .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
                 .doOnNext(new Action1<Pair<DialogInterface, Integer>>()
                 {
                     @Override public void call(Pair<DialogInterface, Integer> dialogResult)

@@ -19,7 +19,6 @@ import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
-import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
@@ -106,7 +105,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     {
         return popInventoryFailed(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
-                        AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
+                        DialogInterface.BUTTON_POSITIVE,
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
@@ -129,7 +128,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     {
         return popInventoryNotSupported(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
-                        AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
+                        DialogInterface.BUTTON_POSITIVE,
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
@@ -154,7 +153,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     {
         return popPurchaseFailed(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
-                        AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
+                        DialogInterface.BUTTON_POSITIVE,
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
@@ -177,7 +176,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     {
         return popPurchaseUnsupported(activityContext)
                 .flatMap(new AlertDialogButtonHandler(
-                        AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX,
+                        DialogInterface.BUTTON_POSITIVE,
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
@@ -222,7 +221,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
             @NonNull final Context activityContext,
             @NonNull Pair<DialogInterface, Integer> pair)
     {
-        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
             sendSupportEmailBillingSandbox(activityContext);
             return Observable.empty();

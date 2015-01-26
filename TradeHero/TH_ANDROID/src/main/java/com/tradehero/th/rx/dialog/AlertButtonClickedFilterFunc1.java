@@ -11,8 +11,8 @@ public class AlertButtonClickedFilterFunc1 implements Func1<Pair<DialogInterface
     //<editor-fold desc="Constructors">
     public AlertButtonClickedFilterFunc1(int buttonId)
     {
-        if (buttonId != AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX
-                && buttonId != AlertDialogButtonConstants.NEGATIVE_BUTTON_INDEX)
+        if (buttonId != DialogInterface.BUTTON_POSITIVE
+                && buttonId != DialogInterface.BUTTON_NEGATIVE)
         {
             throw new IllegalArgumentException("Invalid buttonId " + buttonId);
         }

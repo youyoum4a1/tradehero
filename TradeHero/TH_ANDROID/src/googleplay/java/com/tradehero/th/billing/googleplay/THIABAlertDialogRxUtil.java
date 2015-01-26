@@ -21,7 +21,6 @@ import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
-import com.tradehero.th.rx.dialog.AlertDialogButtonConstants;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
@@ -227,7 +226,7 @@ public class THIABAlertDialogRxUtil
             @NonNull Pair<DialogInterface, Integer> pair,
             @NonNull Throwable throwable)
     {
-        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
             sendSupportEmailConsumeFailed(activityContext, throwable);
         }
@@ -270,7 +269,7 @@ public class THIABAlertDialogRxUtil
             @NonNull Pair<DialogInterface, Integer> pair,
             @NonNull Throwable throwable)
     {
-        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
             sendSupportEmailAlreadyOwned(activityContext, throwable);
         }
@@ -313,7 +312,7 @@ public class THIABAlertDialogRxUtil
             @NonNull Pair<DialogInterface, Integer> pair,
             @NonNull Throwable throwable)
     {
-        if (pair.second.equals(AlertDialogButtonConstants.POSITIVE_BUTTON_INDEX))
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
             sendSupportEmailDeveloperError(activityContext, throwable);
         }
