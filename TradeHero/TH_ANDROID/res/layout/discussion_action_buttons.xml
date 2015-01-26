@@ -17,7 +17,7 @@
         style="@style/TH.DiscussionActionButtons.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icn_comment"
+        android:drawableLeft="@drawable/icn_actions_comment"
         android:text="@integer/messages_initial_vote_count"
         tools:text="200"
         />

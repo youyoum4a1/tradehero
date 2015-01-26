@@ -16,14 +16,14 @@
     <com.tradehero.th.widget.VoteUpView
         style="@style/TH.VoteView"
         android:id="@+id/timeline_action_button_vote_up"
-        android:drawableLeft="@drawable/icn_upvote"
+        android:drawableLeft="@drawable/icn_actions_upvote"
         android:text="@integer/messages_initial_vote_count"
         />
 
     <com.tradehero.th.widget.VoteDownView
         style="@style/TH.VoteView"
         android:id="@+id/timeline_action_button_vote_down"
-        android:drawableLeft="@drawable/icn_downvote"
+        android:drawableLeft="@drawable/icn_actions_downvote"
         android:text="@integer/messages_initial_vote_count"
         android:visibility="gone"
         tools:visibility="visible"
