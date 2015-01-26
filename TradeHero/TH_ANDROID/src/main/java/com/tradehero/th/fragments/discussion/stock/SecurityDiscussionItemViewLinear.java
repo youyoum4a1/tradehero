@@ -34,6 +34,10 @@ public class SecurityDiscussionItemViewLinear
     {
         Bundle args = new Bundle();
         SecurityDiscussionCommentFragment.putDiscussionKey(args, discussionKey);
+        if (getNavigator().getCurrentFragment() != null && getNavigator().getCurrentFragment() instanceof SecurityDiscussionCommentFragment)
+        {
+            return;
+        }
         getNavigator().pushFragment(SecurityDiscussionCommentFragment.class, args);
     }
 
