@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.authentication;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
@@ -40,7 +41,6 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -247,24 +247,20 @@ public class EmailSignInFragment extends Fragment
         unsubscribeForgotPassword();
         forgotPasswordSubscription = userServiceWrapper.forgotPasswordRx(forgotPasswordFormDTO)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createForgotPasswordObserver());
+                .subscribe(
+                        this::onReceivedForgotPassword,
+                        this::onForgotPasswordFailed);
     }
 
-    private Observer<ForgotPasswordDTO> createForgotPasswordObserver()
+    public void onReceivedForgotPassword(@NonNull ForgotPasswordDTO args)
     {
-        return new EmptyObserver<ForgotPasswordDTO>()
-        {
-            @Override public void onNext(ForgotPasswordDTO args)
-            {
-                mProgressDialog.dismiss();
-                THToast.show(R.string.authentication_thank_you_message_email);
-            }
+        mProgressDialog.dismiss();
+        THToast.show(R.string.authentication_thank_you_message_email);
+    }
 
-            @Override public void onError(Throwable e)
-            {
-                mProgressDialog.dismiss();
-                THToast.show(new THException(e));
-            }
-        };
+    public void onForgotPasswordFailed(Throwable e)
+    {
+        mProgressDialog.dismiss();
+        THToast.show(new THException(e));
     }
 }
