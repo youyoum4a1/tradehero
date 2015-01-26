@@ -8,8 +8,6 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
 import com.tradehero.th.billing.googleplay.THIABSecurityAlertKnowledge;
 import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
-import com.tradehero.th.billing.googleplay.request.THIABBillingRequestFull;
-import com.tradehero.th.billing.request.THBillingRequest;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
@@ -61,10 +59,5 @@ public class BillingModule
     @Provides SecurityAlertKnowledge provideSecurityAlertKnowledge(THIABSecurityAlertKnowledge thiabSecurityAlertKnowledge)
     {
         return thiabSecurityAlertKnowledge;
-    }
-
-    @Provides THBillingRequest.Builder provideTHBillingRequestBuilder()
-    {
-        return THIABBillingRequestFull.builder();
     }
 }

@@ -65,10 +65,10 @@ public class AmazonExceptionFactory implements BillingExceptionFactory
         switch (requestStatus)
         {
             case FAILED:
-                return new AmazonPurchaseUpdateFailedException(message);
+                return new AmazonException(message);
 
             case NOT_SUPPORTED:
-                return new AmazonPurchaseUpdateUnsupportedException(message);
+                return new AmazonException(message);
 
             case SUCCESSFUL:
                 throw new IllegalArgumentException("PurchaseUpdatesResponse.RequestStatus.SUCCESSFUL is not an error");

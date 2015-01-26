@@ -10,21 +10,15 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.THBasePurchaseActionInteractor;
-import com.tradehero.th.billing.THPurchaseReporter;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.THTabView;
 import java.text.MessageFormat;
@@ -57,11 +51,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     @NonNull public static UserBaseKey getFollowerId(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_FOLLOWER_ID));
-    }
-
-    @Override protected FollowUserAssistant.OnUserFollowedListener createPremiumUserFollowedListener()
-    {
-        return new HeroManagerPremiumUserFollowedListener();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -106,12 +95,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         super.onCreateOptionsMenu(menu, inflater);
 
         setActionBarTitle(getTitle());
-    }
-
-    @Override protected THBasePurchaseActionInteractor.Builder createPurchaseActionInteractorBuilder()
-    {
-        return super.createPurchaseActionInteractorBuilder()
-                .setPurchaseReportedListener(new HeroManagerOnPurchaseReportedListener());
     }
 
     private boolean isCurrentUser()
@@ -163,38 +146,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
             changeTabTitle(new PremiumHeroTypeResourceDTO(), premiumCount);
             changeTabTitle(new FreeHeroTypeResourceDTO(), freeCount);
             changeTabTitle(new AllHeroTypeResourceDTO(), premiumCount + freeCount);
-        }
-    }
-
-    protected class HeroManagerPremiumUserFollowedListener
-            implements FollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(
-                @NonNull UserBaseKey userFollowed,
-                @NonNull UserProfileDTO currentUserProfileDTO)
-        {
-            // TODO
-        }
-
-        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
-        {
-            // nothing for now
-        }
-    }
-
-    protected class HeroManagerOnPurchaseReportedListener
-            implements THPurchaseReporter.OnPurchaseReportedListener
-    {
-        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
-                UserProfileDTO updatedUserPortfolio)
-        {
-            //display(updatedUserPortfolio);
-        }
-
-        @Override public void onPurchaseReportFailed(int requestCode,
-                ProductPurchase reportedPurchase, BillingException error)
-        {
-            // Anything to report?
         }
     }
 }

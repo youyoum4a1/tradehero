@@ -24,7 +24,7 @@ import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityResultRequester;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;

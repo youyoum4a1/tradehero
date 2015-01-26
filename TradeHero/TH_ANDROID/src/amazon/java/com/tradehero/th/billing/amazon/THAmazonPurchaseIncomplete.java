@@ -32,4 +32,9 @@ public class THAmazonPurchaseIncomplete
     {
         return userData.getUserId();
     }
+
+    @Override public boolean isCancelled()
+    {
+        return receipt.isCanceled();
+    }
 }

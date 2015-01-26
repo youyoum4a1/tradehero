@@ -46,6 +46,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.observers.EmptyObserver;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
@@ -53,7 +54,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
-    @Inject UserProfileCacheRx userProfileCache;
+    @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
@@ -66,12 +67,14 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             R.id.btn_share_wb})
     SocialLinkToggleButton[] socialLinkingButtons;
     Subscription socialLinkingSubscription;
+    @NonNull protected SubscriptionList subscriptions;
 
     @Nullable protected UserProfileDTO userProfileDTO;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
         socialSharePreferenceHelperNew.reload();
     }
 
@@ -89,18 +92,27 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         fetchUserProfile();
     }
 
+    @Override public void onStop()
+    {
+        subscriptions.unsubscribe();
+        super.onStop();
+    }
+
     @Override public void onDestroyView()
     {
         unsubscribeWeChatButton();
         unsubscribeSocialLinkingButtons();
+        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserProfileCacheObserver());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
+                .subscribe(createUserProfileCacheObserver()));
     }
 
     protected Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()

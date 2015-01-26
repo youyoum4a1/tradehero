@@ -12,7 +12,7 @@ import com.facebook.TokenCachingStrategy;
 import com.facebook.android.Facebook;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.SubscriberCallback;
-import com.tradehero.th.activities.ActivityResultRequester;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.operator.FacebookAppId;
 import com.tradehero.th.auth.operator.FacebookPermissions;

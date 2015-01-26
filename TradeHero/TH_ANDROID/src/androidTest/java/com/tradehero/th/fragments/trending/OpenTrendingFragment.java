@@ -1,11 +1,11 @@
 package com.tradehero.th.fragments.trending;
 
-import com.tradehero.th.billing.THBillingInteractor;
+import com.tradehero.th.billing.THBillingInteractorRx;
 
 public class OpenTrendingFragment extends TrendingStockFragment
 {
-    public void set(THBillingInteractor userInteractor)
+    public void set(THBillingInteractorRx userInteractorRx)
     {
-        this.userInteractor = userInteractor;
+        this.userInteractorRx = userInteractorRx;
     }
 }

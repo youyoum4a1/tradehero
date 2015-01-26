@@ -115,7 +115,6 @@ public class OnBoardDialogFragment extends BaseDialogFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
-
         exchangeSectorViewHolder.attachView(view);
         heroViewHolder.attachView(view);
         stockViewHolder.attachView(view);
@@ -183,6 +182,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         mExchangeSwitcher.setDisplayedChild(1);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.close)
     public void onCloseClicked(View view)
     {
@@ -190,6 +190,7 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         firstShowOnBoardDialogPreference.justHandled();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.next_button)
     public void onNextClicked(View view)
     {

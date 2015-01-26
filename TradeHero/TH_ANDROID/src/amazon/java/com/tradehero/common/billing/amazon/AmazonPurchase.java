@@ -11,4 +11,5 @@ public interface AmazonPurchase<
         AmazonOrderIdType>
 {
     @NonNull String getAmazonUserId();
+    boolean isCancelled();
 }

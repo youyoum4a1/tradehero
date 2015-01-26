@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
-import com.tradehero.th.activities.ActivityResultRequester;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;

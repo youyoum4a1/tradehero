@@ -20,13 +20,9 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.PurchaseOrder;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -40,12 +36,8 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractor;
-import com.tradehero.th.billing.THPurchaseReporter;
-import com.tradehero.th.billing.THPurchaser;
-import com.tradehero.th.billing.request.BaseTHUIBillingRequest;
+import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
@@ -70,7 +62,6 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
@@ -112,9 +103,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
 
-    @Inject THBillingInteractor userInteractor;
+    @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
-    @Inject Provider<BaseTHUIBillingRequest.Builder> uiBillingRequestBuilderProvider;
 
     protected ProgressDialog mTransactionDialog;
 
@@ -138,7 +128,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     private TextWatcher mQuantityTextWatcher;
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
-    private Integer purchaseRequestCode;
 
     @Nullable protected abstract Integer getMaxValue();
 
@@ -270,7 +259,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         mQuantityEditText.removeTextChangedListener(mQuantityTextWatcher);
         mQuantityTextWatcher = null;
-        detachPurchaseRequestCode();
         destroyTransactionDialog();
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
@@ -466,15 +454,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             mTransactionDialog.dismiss();
         }
         mTransactionDialog = null;
-    }
-
-    protected void detachPurchaseRequestCode()
-    {
-        if (purchaseRequestCode != null)
-        {
-            userInteractor.forgetRequestCode(purchaseRequestCode);
-        }
-        purchaseRequestCode = null;
     }
 
     protected abstract String getLabel();
@@ -699,15 +678,19 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     public void handleBtnAddCashPressed()
     {
-        detachPurchaseRequestCode();
+        DeviceUtil.dismissKeyboard(mCommentsEditText);
         //noinspection unchecked
-        purchaseRequestCode = userInteractor.run(uiBillingRequestBuilderProvider.get()
-                .applicablePortfolioId(new OwnedPortfolioId(currentUserId.get(), portfolioId.key))
-                .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
-                .purchaseReportedListener(createPurchaseReportedListener())
-                .purchaseFinishedListener(createPurchaseFinishedListener())
-                .startWithProgressDialog(true)
-                .build());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+                .subscribe(
+                        result -> {
+                            dismissTransactionProgress();
+                            userProfileCache.get(currentUserId.toUserBaseKey());
+                            portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                        },
+                        error -> dismissTransactionProgress()
+                ));
     }
 
     public void updateTransactionDialog()
@@ -1098,54 +1081,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             {
                 buySellTransactionListener.onTransactionFailed(isBuy, thException);
             }
-        }
-    }
-
-    protected THPurchaser.OnPurchaseFinishedListener createPurchaseFinishedListener()
-    {
-        return new BuySellPurchaseFinishedListener();
-    }
-
-    protected class BuySellPurchaseFinishedListener implements THPurchaser.OnPurchaseFinishedListener
-    {
-        @Override public void onPurchaseFinished(int requestCode, PurchaseOrder purchaseOrder, ProductPurchase purchase)
-        {
-            dismissTransactionProgress();
-            mTransactionDialog = progressDialogUtil.show(
-                    getActivity(),
-                    R.string.store_billing_report_api_launching_window_title,
-                    R.string.store_billing_report_api_launching_window_message);
-        }
-
-        @Override public void onPurchaseFailed(int requestCode, PurchaseOrder purchaseOrder, BillingException billingException)
-        {
-            // TODO
-        }
-    }
-
-    protected BuySellPurchaseReportedListener createPurchaseReportedListener()
-    {
-        return new BuySellPurchaseReportedListener();
-    }
-
-    protected class BuySellPurchaseReportedListener
-            implements THPurchaseReporter.OnPurchaseReportedListener
-    {
-        @Override public void onPurchaseReported(int requestCode, ProductPurchase reportedPurchase,
-                UserProfileDTO updatedUserProfile)
-        {
-            Timber.e(new Exception(), "Reported purchase %s", updatedUserProfile);
-            dismissTransactionProgress();
-            linkWith(updatedUserProfile);
-            fetchPortfolioCompactList();
-        }
-
-        @Override
-        public void onPurchaseReportFailed(int requestCode, ProductPurchase reportedPurchase,
-                BillingException error)
-        {
-            dismissTransactionProgress();
-            // TODO
         }
     }
 

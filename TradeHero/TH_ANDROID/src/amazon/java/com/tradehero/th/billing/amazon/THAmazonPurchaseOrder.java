@@ -1,17 +1,17 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.amazon.AmazonPurchaseOrder;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
     implements THPurchaseOrder<AmazonSKU>
 {
-    @NonNull private OwnedPortfolioId applicablePortfolioId;
+    @NonNull private final OwnedPortfolioId applicablePortfolioId;
     @Nullable private UserBaseKey userToFollow;
 
     //<editor-fold desc="Constructors">
@@ -20,15 +20,20 @@ public class THAmazonPurchaseOrder extends AmazonPurchaseOrder<AmazonSKU>
             int quantity,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {
+        this(sku, quantity, applicablePortfolioId, null);
+    }
+
+    public THAmazonPurchaseOrder(
+            @NonNull AmazonSKU sku,
+            int quantity,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
         super(sku, quantity);
         this.applicablePortfolioId = applicablePortfolioId;
+        this.userToFollow = userToFollow;
     }
     //</editor-fold>
-
-    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this.applicablePortfolioId = applicablePortfolioId;
-    }
 
     @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()
     {

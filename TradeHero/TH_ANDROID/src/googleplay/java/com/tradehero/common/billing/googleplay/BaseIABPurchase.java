@@ -37,7 +37,7 @@ abstract public class BaseIABPurchase<
     public static final String JSON_KEY_TOKEN = "token";
     public static final String JSON_KEY_PURCHASE_TOKEN = "purchaseToken";
 
-    public final String itemType;  // IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
+    @NonNull @SkuTypeValue public final String itemType;  // IABConstants.ITEM_TYPE_INAPP or IABConstants.ITEM_TYPE_SUBS
     @NonNull protected final IABOrderIdType orderId;
     public final String packageName;
     @NonNull protected final IABSKUType iabSKU;
@@ -48,7 +48,11 @@ abstract public class BaseIABPurchase<
     @NonNull public final String originalJson;
     @NonNull public final String signature;
 
-    public BaseIABPurchase(@NonNull String itemType, @NonNull String jsonPurchaseInfo, @NonNull String signature) throws JSONException
+    //<editor-fold desc="Constructors">
+    public BaseIABPurchase(
+            @NonNull @SkuTypeValue String itemType,
+            @NonNull String jsonPurchaseInfo,
+            @NonNull String signature) throws JSONException
     {
         this.itemType = itemType;
         this.originalJson = jsonPurchaseInfo;
@@ -78,11 +82,12 @@ abstract public class BaseIABPurchase<
         this.token = o.optString(JSON_KEY_TOKEN, o.optString(JSON_KEY_PURCHASE_TOKEN));
         this.signature = signature;
     }
+    //</editor-fold>
 
     @NonNull abstract protected IABSKUType createIABSKU(String skuString);
     @NonNull abstract protected IABOrderIdType createIABOrderId(String orderIdString);
 
-    @JsonIgnore @Override public String getType()
+    @JsonIgnore @Override @NonNull @SkuTypeValue public String getType()
     {
         return itemType;
     }

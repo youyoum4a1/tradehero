@@ -74,4 +74,9 @@ public class THComposedAmazonPurchase implements THAmazonPurchase
     {
         return receipt.getProductType().equals(ProductType.CONSUMABLE);
     }
+
+    @Override public boolean isCancelled()
+    {
+        return receipt.isCanceled();
+    }
 }

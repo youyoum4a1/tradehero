@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -32,11 +33,12 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.request.THUIBillingRequest;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
@@ -49,6 +51,7 @@ import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
@@ -401,7 +404,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .first()
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
                 {
                     @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
@@ -418,26 +420,27 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleResetPortfolioItemOnClick()
     {
-        detachRequestCode();
         //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest)
-                uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO)
-                        .applicablePortfolioId(getApplicablePortfolioId())
-                        .startWithProgressDialog(true)
-                        .build());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
+                .subscribe(
+                        result -> {
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     protected void handleExtraCashItemOnClick()
     {
-        detachRequestCode();
         //noinspection unchecked
-        requestCode = userInteractor.run((THUIBillingRequest)
-                uiBillingRequestBuilderProvider.get()
-                        .domainToPresent(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR)
-                        .applicablePortfolioId(getApplicablePortfolioId())
-                        .startWithProgressDialog(true)
-                        .build());
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
+                .subscribe(
+                        result -> {},
+                        error -> THToast.show(new THException((Throwable) error))
+                ));
     }
 
     private void handleEarnCreditItemOnClick()

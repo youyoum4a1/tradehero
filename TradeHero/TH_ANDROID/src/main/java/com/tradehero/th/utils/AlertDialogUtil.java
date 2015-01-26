@@ -41,6 +41,13 @@ public class AlertDialogUtil
         };
     }
 
+    @NonNull public AlertDialog.Builder createDefaultDialogBuilder(@NonNull Context activityContext)
+    {
+        return new AlertDialog.Builder(activityContext)
+                .setIcon(R.drawable.th_app_logo)
+                .setCancelable(true);
+    }
+
     @NonNull
     public AlertDialog popWithNegativeButton(
             @NonNull final Context context,
@@ -97,11 +104,8 @@ public class AlertDialogUtil
             @Nullable final OnClickListener adapterListener,
             @Nullable DialogInterface.OnClickListener cancelListener)
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setIcon(R.drawable.th_app_logo)
-                .setCancelable(true)
-                .setNegativeButton(cancelRes, cancelListener);
+        AlertDialog.Builder alertDialogBuilder = createDefaultDialogBuilder(context);
+        alertDialogBuilder.setNegativeButton(cancelRes, cancelListener);
         if (titleRes != null)
         {
             alertDialogBuilder.setTitle(titleRes);
@@ -192,12 +196,10 @@ public class AlertDialogUtil
             @Nullable final DialogInterface.OnClickListener cancelClickListener,
             @Nullable final DialogInterface.OnDismissListener onDismissListener)
     {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = createDefaultDialogBuilder(context);
         alertDialogBuilder
                 .setTitle(title)
                 .setMessage(description)
-                .setIcon(R.drawable.th_app_logo)
-                .setCancelable(true)
                 .setNegativeButton(cancelResId, cancelClickListener)
                 .setPositiveButton(okResId, okClickListener);
 

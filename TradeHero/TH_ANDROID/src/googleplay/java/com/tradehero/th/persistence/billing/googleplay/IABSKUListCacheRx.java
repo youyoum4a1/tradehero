@@ -20,9 +20,4 @@ import javax.inject.Singleton;
         super(MAX_SIZE, dtoCacheUtil);
     }
     //</editor-fold>
-
-    @Override public IABSKUListKey getKeyForAll()
-    {
-        return IABSKUListKey.getAll();
-    }
 }

@@ -1,0 +1,20 @@
+package com.tradehero.th.billing.samsung.tester;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import com.tradehero.common.billing.samsung.tester.BaseSamsungBillingAvailableTesterRx;
+
+public class THBaseSamsungBillingAvailableTesterRx
+        extends BaseSamsungBillingAvailableTesterRx
+        implements THSamsungBillingAvailableTesterRx
+{
+    //<editor-fold desc="Constructors">
+    public THBaseSamsungBillingAvailableTesterRx(
+            int requestCode,
+            @NonNull Context context,
+            int mode)
+    {
+        super(requestCode, context, mode);
+    }
+    //</editor-fold>
+}

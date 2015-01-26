@@ -41,7 +41,6 @@ import com.tradehero.th.loaders.ListLoader;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.utils.AdapterViewUtils;
@@ -61,6 +60,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
@@ -82,6 +82,8 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     private TextView leaderboardMarkUserMarkingTime;
     private View mRankHeaderView;
 
+    @NonNull SubscriptionList subscriptions;
+
     @Nullable protected Subscription userOnLeaderboardCacheSubscription;
     protected LeaderboardUserDTO currentLeaderboardUserDTO;
 
@@ -95,8 +97,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     protected PerPagedLeaderboardKey currentLeaderboardKey;
     protected LeaderboardType currentLeaderboardType;
     protected FollowDialogCombo followDialogCombo;
-
-    protected ChoiceFollowUserAssistantWithDialog choiceFollowUserAssistantWithDialog;
     private LeaderboardMarkUserListViewFragmentListLoaderCallback leaderboardMarkUserListViewFragmentListLoaderCallback =
             new LeaderboardMarkUserListViewFragmentListLoaderCallback();
 
@@ -108,6 +108,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        subscriptions = new SubscriptionList();
         currentLeaderboardKey = getInitialLeaderboardKey();
         currentLeaderboardType = getInitialLeaderboardType();
         if(currentLeaderboardType != null && currentLeaderboardType.getAssetClass() != null)
@@ -334,10 +335,10 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     @Override public void onStop()
     {
+        subscriptions.unsubscribe();
         unsubscribe(userOnLeaderboardCacheSubscription);
         userOnLeaderboardCacheSubscription = null;
         detachFollowDialogCombo();
-        detachChoiceFollowAssistant();
         super.onStop();
     }
 
@@ -379,16 +380,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
             followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
         }
         followDialogCombo = null;
-    }
-
-    protected void detachChoiceFollowAssistant()
-    {
-        ChoiceFollowUserAssistantWithDialog copy = choiceFollowUserAssistantWithDialog;
-        if (copy != null)
-        {
-            copy.onDestroy();
-        }
-        choiceFollowUserAssistantWithDialog = null;
     }
 
     @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)
@@ -611,41 +602,27 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardFragment
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        detachChoiceFollowAssistant();
-        choiceFollowUserAssistantWithDialog = new ChoiceFollowUserAssistantWithDialog(
-                getActivity(),
-                userBaseDTO.getBaseKey(),
-                createUserFollowedListener(),
-                getApplicablePortfolioId());
-        choiceFollowUserAssistantWithDialog.setHeroBaseInfo(userBaseDTO);
-        choiceFollowUserAssistantWithDialog.launchChoice();
-    }
-
-    @NonNull protected SimpleFollowUserAssistant.OnUserFollowedListener createUserFollowedListener()
-    {
-        return new LeaderboardMarkUserListOnUserFollowedListener();
-    }
-
-    protected class LeaderboardMarkUserListOnUserFollowedListener implements SimpleFollowUserAssistant.OnUserFollowedListener
-    {
-        @Override public void onUserFollowSuccess(@NonNull UserBaseKey userFollowed, @NonNull UserProfileDTO currentUserProfileDTO)
-        {
-            setCurrentUserProfileDTO(currentUserProfileDTO);
-            int followType = currentUserProfileDTO.getFollowType(userFollowed);
-            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
-            {
-                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-            }
-            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-            {
-                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
-            }
-            updateListViewRow(userFollowed);
-        }
-
-        @Override public void onUserFollowFailed(@NonNull UserBaseKey userFollowed, @NonNull Throwable error)
-        {
-            THToast.show(new THException(error));
-        }
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                new ChoiceFollowUserAssistantWithDialog(
+                        getActivity(),
+                        userBaseDTO,
+                        getApplicablePortfolioId()).launchChoiceRx())
+                .subscribe(
+                        pair -> {
+                            setCurrentUserProfileDTO(pair.second);
+                            int followType = pair.second.getFollowType(userBaseDTO);
+                            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                            {
+                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
+                            }
+                            else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+                            {
+                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
+                            }
+                            updateListViewRow(userBaseDTO.getBaseKey());
+                        },
+                        error -> THToast.show(new THException(error))
+                ));
     }
 }

@@ -19,8 +19,6 @@ abstract public class ProductIdentifierListCacheRx<
     }
     //</editor-fold>
 
-    abstract public ProductIdentifierListKeyType getKeyForAll();
-
     public void onNext(Map<ProductIdentifierListKeyType, ProductIdentifierListType> typedLists)
     {
         for (Map.Entry<ProductIdentifierListKeyType, ProductIdentifierListType> entry : typedLists.entrySet())

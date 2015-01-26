@@ -21,7 +21,7 @@ import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserData;
 import com.amazon.device.iap.model.UserDataResponse;
-import com.tradehero.common.billing.amazon.AmazonPurchasingService;
+import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.th.api.users.CurrentUserId;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ import javax.inject.Singleton;
     @Inject public AmazonPurchasingServiceDummy(
             @NonNull Context appContext,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull AmazonAlertDialogUtil dialogUtil,
+            @NonNull AmazonAlertDialogRxUtil dialogUtil,
             @NonNull CurrentUserId currentUserId)
     {
         super(appContext, activityProvider, dialogUtil);

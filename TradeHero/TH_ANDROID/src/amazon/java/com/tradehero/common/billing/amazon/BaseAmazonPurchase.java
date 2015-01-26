@@ -23,4 +23,9 @@ abstract public class BaseAmazonPurchase<
     {
         return purchaseResponse.getUserData().getUserId();
     }
+
+    @Override public boolean isCancelled()
+    {
+        return purchaseResponse.getReceipt().isCanceled();
+    }
 }

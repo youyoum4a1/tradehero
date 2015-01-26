@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.View;
 import com.tradehero.route.Routable;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import javax.inject.Inject;
 
@@ -51,20 +50,13 @@ public class PushableTimelineFragment extends TimelineFragment
     @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable protected Boolean isPurchaserFollowingUserShown()
     {
-        if (userInteractor != null)
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if (applicablePortfolioId != null)
         {
-            OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
-            if (applicablePortfolioId != null)
+            UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(applicablePortfolioId.getUserBaseKey());
+            if (purchaserProfile != null)
             {
-                UserBaseKey purchaserKey = applicablePortfolioId.getUserBaseKey();
-                if (purchaserKey != null)
-                {
-                    UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
-                    if (purchaserProfile != null)
-                    {
-                        return purchaserProfile.isFollowingUser(shownUserBaseKey);
-                    }
-                }
+                return purchaserProfile.isFollowingUser(shownUserBaseKey);
             }
         }
         return null;

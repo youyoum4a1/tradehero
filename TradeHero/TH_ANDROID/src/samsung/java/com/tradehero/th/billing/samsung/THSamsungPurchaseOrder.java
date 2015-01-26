@@ -1,13 +1,13 @@
 package com.tradehero.th.billing.samsung;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THPurchaseOrder;
 import com.tradehero.th.billing.samsung.exception.SamsungInvalidQuantityException;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THSamsungPurchaseOrder
     implements SamsungPurchaseOrder<SamsungSKU>,
@@ -30,10 +30,29 @@ public class THSamsungPurchaseOrder
     public THSamsungPurchaseOrder(
             @NonNull String groupId,
             @NonNull String itemId,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
+        this(groupId, itemId, 1, applicablePortfolioId, userToFollow);
+    }
+
+    public THSamsungPurchaseOrder(
+            @NonNull String groupId,
+            @NonNull String itemId,
             int quantity,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {
         this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId);
+    }
+
+    public THSamsungPurchaseOrder(
+            @NonNull String groupId,
+            @NonNull String itemId,
+            int quantity,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
+        this(new SamsungSKU(groupId, itemId), quantity, applicablePortfolioId, userToFollow);
     }
 
     public THSamsungPurchaseOrder(
@@ -48,9 +67,19 @@ public class THSamsungPurchaseOrder
             int quantity,
             @NonNull OwnedPortfolioId applicablePortfolioId)
     {
+        this(productIdentifier, quantity, applicablePortfolioId, null);
+    }
+
+    public THSamsungPurchaseOrder(
+            @NonNull SamsungSKU productIdentifier,
+            int quantity,
+            @NonNull OwnedPortfolioId applicablePortfolioId,
+            @Nullable UserBaseKey userToFollow)
+    {
         this.productIdentifier = productIdentifier;
         this.quantity = quantity;
         this.applicablePortfolioId = applicablePortfolioId;
+        this.userToFollow = userToFollow;
         if (quantity <= 0)
         {
             throw new SamsungInvalidQuantityException("Quantity " + quantity + " is invalid");
@@ -66,11 +95,6 @@ public class THSamsungPurchaseOrder
     @Override public int getQuantity()
     {
         return quantity;
-    }
-
-    @Override public void setApplicablePortfolioId(@NonNull OwnedPortfolioId applicablePortfolioId)
-    {
-        this.applicablePortfolioId = applicablePortfolioId;
     }
 
     @NonNull @Override public OwnedPortfolioId getApplicablePortfolioId()

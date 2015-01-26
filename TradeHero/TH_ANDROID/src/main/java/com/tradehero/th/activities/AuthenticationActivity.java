@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.metrics.Analytics;
