@@ -49,6 +49,6 @@ public class FollowerTypeDialogFactory
                 activity,
                 R.layout.common_dialog_item_layout,
                 R.id.popup_text,
-                MessageType.getShowingTypes());
+                MessageType.getBroadcastTypes());
     }
 }

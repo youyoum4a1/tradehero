@@ -1,5 +1,6 @@
 package com.tradehero.th.api.discussion.form;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.discussion.MessageType;
 
@@ -8,6 +9,7 @@ abstract public class MessageCreateFormDTO
     public String message;
     public int senderUserId;
 
+    //<editor-fold desc="Constructors">
     public MessageCreateFormDTO()
     {
         super();
@@ -17,7 +19,8 @@ abstract public class MessageCreateFormDTO
     {
         this.message = message;
     }
+    //</editor-fold>
 
-    @JsonProperty
+    @JsonProperty @NonNull
     abstract public MessageType getMessageType();
 }

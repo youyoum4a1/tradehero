@@ -43,7 +43,7 @@ public class PrivatePostCommentView extends PostCommentView
         linkWith(MessageType.PRIVATE);
     }
 
-    @Override protected DiscussionType getDefaultDiscussionType()
+    @NonNull @Override protected DiscussionType getDefaultDiscussionType()
     {
         return DiscussionType.PRIVATE_MESSAGE;
     }

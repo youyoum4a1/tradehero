@@ -129,12 +129,12 @@ public class PostCommentView extends RelativeLayout
         }
     }
 
-    protected DiscussionType getDefaultDiscussionType()
+    @NonNull protected DiscussionType getDefaultDiscussionType()
     {
         return DiscussionType.COMMENT;
     }
 
-    public synchronized DiscussionKey moveNextStubKey()
+    @NonNull public synchronized DiscussionKey moveNextStubKey()
     {
         if (nextStubKey != null)
         {
