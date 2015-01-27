@@ -98,7 +98,7 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        fetchKChart(FXChartGranularity.min1.code);
+        fetchKChart(FXChartGranularity.min1);
         initTimeSpanButton();
         closeUnits = getCloseAttribute(getArguments());
     }
@@ -168,11 +168,11 @@ public class BuySellFXFragment extends BuySellFragment
         return MILLISECOND_FX_QUOTE_REFRESH;
     }
 
-    private void fetchKChart(@NonNull String code)
+    private void fetchKChart(@NonNull FXChartGranularity granularity)
     {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
-                securityServiceWrapper.getFXHistory(securityId, code)
+                securityServiceWrapper.getFXHistory(securityId, granularity)
                         .repeatWhen(observable -> observable.delay(MILLISECOND_FX_CANDLE_CHART_REFRESH, TimeUnit.MILLISECONDS)))
                 .subscribe(createFXHistoryFetchObserver()));
     }
@@ -309,7 +309,7 @@ public class BuySellFXFragment extends BuySellFragment
     @Override
     public void onTimeSpanButtonSelected(ChartTimeSpan selected)
     {
-        fetchKChart(FXChartGranularity.getBestApproximation(selected).code);
+        fetchKChart(FXChartGranularity.getBestApproximation(selected));
         mChartWrapper.setDisplayedChild(0);
     }
 

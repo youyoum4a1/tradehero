@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.fx.FXChartDTO;
+import com.tradehero.th.api.fx.FXChartGranularity;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -253,9 +254,9 @@ import rx.Observable;
     //<editor-fold desc="Get FX KChart">
     @NonNull public Observable<FXChartDTO> getFXHistory(
             @NonNull SecurityId securityId,
-            @NonNull String duration)
+            @NonNull FXChartGranularity granularity)
     {
-        return securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), duration);
+        return securityServiceRx.getFXHistory(securityId.getSecuritySymbol(), granularity.code);
     }
     //</editor-fold>
 
