@@ -17,8 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClickSticky;
-import com.tradehero.common.billing.ProductPurchase;
-import com.tradehero.common.billing.exception.BillingException;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
@@ -322,7 +320,11 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             displayingProfileHeaderLayoutId = userProfileView.getDisplayedChildLayoutId();
         }
-        dashboardTabHost.get().setOnTranslate(null);
+        DashboardTabHost tabHost = dashboardTabHost.get();
+        if (tabHost != null)
+        {
+            tabHost.setOnTranslate(null);
+        }
         mainTimelineAdapter.setProfileClickListener(null);
         mainTimelineAdapter.setOnLoadFinishedListener(null);
         timelineListView.setOnScrollListener(null);
