@@ -63,7 +63,7 @@ import javax.inject.Singleton;
         if (!isSuccessful)
         {
             broadcastQueue.addLast(broadcastData);
-            isProcessing.set(false);
+            nextPlease();
         }
     }
 

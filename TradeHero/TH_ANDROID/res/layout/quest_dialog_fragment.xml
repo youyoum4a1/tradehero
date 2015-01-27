@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/achievement_dummy_container"
@@ -127,4 +127,4 @@
 
   </RelativeLayout>
 
-</LinearLayout>
+</ScrollView>
