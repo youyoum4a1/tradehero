@@ -273,7 +273,7 @@ dependencies {
   debugProvided fileTree(dir: 'libs/qq', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
 
-  samsungCompile project(':samsung_iap')
+  samsungCompile 'com.sec.android.iap:library:2.0@aar'
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   androidTestAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
