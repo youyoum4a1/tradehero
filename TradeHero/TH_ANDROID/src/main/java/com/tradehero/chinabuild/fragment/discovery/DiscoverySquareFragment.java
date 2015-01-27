@@ -22,14 +22,24 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     //Square Recent Views
     private LinearLayout recentLL;
 
+    //Square Favorite Views
+    private LinearLayout favoriteLL;
+
+    //Square Novice Views
+    private LinearLayout noviceLL;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.discovery_square, container, false);
         ButterKnife.inject(this, view);
         recentLL = (LinearLayout)view.findViewById(R.id.linearlayout_square_recent);
         rewardLL = (LinearLayout)view.findViewById(R.id.linearlayout_square_reward);
+        favoriteLL = (LinearLayout)view.findViewById(R.id.linearlayout_square_favorite);
+        noviceLL = (LinearLayout)view.findViewById(R.id.linearlayout_square_learning);
         recentLL.setOnClickListener(this);
         rewardLL.setOnClickListener(this);
+        favoriteLL.setOnClickListener(this);
+        noviceLL.setOnClickListener(this);
         return view;
     }
 
@@ -42,6 +52,10 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
                 break;
             case R.id.linearlayout_square_reward:
                 gotoDashboard(DiscoveryRewardFragment.class, new Bundle());
+                break;
+            case R.id.linearlayout_square_favorite:
+                break;
+            case R.id.linearlayout_square_learning:
                 break;
         }
     }
