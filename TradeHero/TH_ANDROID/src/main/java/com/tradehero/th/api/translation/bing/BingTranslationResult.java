@@ -6,6 +6,9 @@ import org.simpleframework.xml.Text;
 
 public class BingTranslationResult extends TranslationResult
 {
+    private static final String PATTERN_FROM = "\\]\\s+\\([Tt]radehero://security/";
+    private static final String PATTERN_TO = "](tradehero://security/";
+
     private String fromLanguageCode;
     private String languageCode;
 
@@ -34,6 +37,10 @@ public class BingTranslationResult extends TranslationResult
 
     public String getContent()
     {
+        if (content != null) {
+            content = content.replaceAll(PATTERN_FROM, PATTERN_TO);
+        }
+
         return content;
     }
 
