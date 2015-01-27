@@ -41,13 +41,7 @@ public class WatchlistHeaderItem extends TwoStateView
 
     private void init()
     {
-        post(new Runnable()
-        {
-            @Override public void run()
-            {
-                syncTextState();
-            }
-        });
+        post(this::syncTextState);
     }
 
     public void setTitle(@StringRes int title)

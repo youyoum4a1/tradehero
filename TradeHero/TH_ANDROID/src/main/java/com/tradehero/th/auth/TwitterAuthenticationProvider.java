@@ -52,13 +52,7 @@ public class TwitterAuthenticationProvider extends SocialAuthenticationProvider
     @Override protected Observable<AuthData> createAuthDataObservable(Activity activity)
     {
         return createRequestTokenObservable(activity)
-                .flatMap(new Func1<String, Observable<AuthData>>()
-                {
-                    @Override public Observable<AuthData> call(String s)
-                    {
-                        return createRetrieveTokenObservable(s);
-                    }
-                })
+                .flatMap(this::createRetrieveTokenObservable)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

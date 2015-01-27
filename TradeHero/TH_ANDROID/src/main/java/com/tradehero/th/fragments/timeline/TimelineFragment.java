@@ -515,9 +515,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
             onBoardDialogFragment.getDismissedObservable()
                     .subscribe(
-                            dialog -> {
-                                onBoardDialogFragment = null;
-                            },
+                            dialog -> onBoardDialogFragment = null,
                             error -> THToast.show(new THException(error))
                     );
             onBoardDialogFragment.getUserActionTypeObservable()

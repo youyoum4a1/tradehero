@@ -99,9 +99,7 @@ import rx.Observable;
     @NonNull public Observable<PortfolioDTO> getPortfolio(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getPortfolio(providerId.key)
-                .doOnNext(portfolio -> {
-                    portfolio.userId = currentUserId.get();
-                });
+                .doOnNext(portfolio -> portfolio.userId = currentUserId.get());
     }
     //</editor-fold>
 

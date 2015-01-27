@@ -34,7 +34,7 @@ public class DiscussionItemViewLinear<T extends DiscussionKey>
 
     @Override protected DiscussionItemViewHolder createViewHolder()
     {
-        return new DiscussionItemViewHolder<DiscussionDTO>(getContext());
+        return new DiscussionItemViewHolder<>(getContext());
     }
 
     protected void handleUserClicked(UserBaseKey userClicked)

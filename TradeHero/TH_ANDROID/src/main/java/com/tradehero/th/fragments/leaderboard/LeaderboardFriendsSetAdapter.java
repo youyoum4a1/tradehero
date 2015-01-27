@@ -97,9 +97,7 @@ public class LeaderboardFriendsSetAdapter extends DTOSetAdapter<FriendLeaderboar
                         friendLeaderboardMarkedUserDTOs -> {
                             appendHead(friendLeaderboardMarkedUserDTOs);
                             notifyDataSetChanged();
-                        }, throwable -> {
-                            Timber.e(throwable, "Failed setting leaderboardFriendsDTO");
-                        });
+                        }, throwable -> Timber.e(throwable, "Failed setting leaderboardFriendsDTO"));
     }
 
     private void markPositions(@NonNull List<? extends FriendLeaderboardUserDTO> friendLeaderboardUserDTOs)

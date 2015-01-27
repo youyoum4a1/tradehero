@@ -19,7 +19,7 @@ public class TestKChartsFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_kcharts, null);
 		mMyChartsView = (KChartsView) view.findViewById(R.id.my_charts_view);
 
-		List<FXCandleDTO> ohlc = new ArrayList<FXCandleDTO>();
+		List<FXCandleDTO> ohlc = new ArrayList<>();
 		ohlc.add(createDTO(240, 245, 230, 235, "20110827"));
 		ohlc.add(createDTO(235, 245, 230, 240, "20110826"));
 		ohlc.add(createDTO(246, 248, 235, 235, "20110825"));

@@ -84,7 +84,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
 
     protected AbstractDiscussionCompactItemViewHolder createViewHolder()
     {
-        return new AbstractDiscussionCompactItemViewHolder<AbstractDiscussionCompactDTO>(getContext());
+        return new AbstractDiscussionCompactItemViewHolder<>(getContext());
     }
 
     @Override public void display(T discussionKey)

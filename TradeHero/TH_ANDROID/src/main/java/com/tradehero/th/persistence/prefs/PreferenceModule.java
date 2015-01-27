@@ -75,7 +75,7 @@ public class PreferenceModule
                 sharePreferenceDTOFactory,
                 sharedPreferences,
                 PREF_SAVED_SOCIAL_SHARE_KEY,
-                new HashSet<String>());
+                new HashSet<>());
     }
 
     @Provides @Singleton UserTranslationSettingPreference provideUserTranslationSettingPref(
@@ -86,7 +86,7 @@ public class PreferenceModule
                 userTranslationSettingDTOFactory,
                 sharedPreferences,
                 PREF_SAVED_TRANSLATION_SETTING_KEY,
-                new HashSet<String>());
+                new HashSet<>());
     }
 
     @Provides @Singleton @ResetHelpScreens BooleanPreference provideResetHelpScreen(@ForUser SharedPreferences sharedPreferences)

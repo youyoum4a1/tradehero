@@ -57,7 +57,7 @@ public class VisitedFriendListPrefs
     public static List<UserBaseKey> getVisitedIdList()
     {
         final SharedPreferences preferences = THApp.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
-        final Set<String> userKeys = preferences.getStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
+        final Set<String> userKeys = preferences.getStringSet(KEY_VISITED_ID_SET, new TreeSet<>());
 
         final List<UserBaseKey> userBaseKeys = new ArrayList<>();
         for (String userKey: userKeys)
@@ -93,7 +93,7 @@ public class VisitedFriendListPrefs
     public static void clearVisitedIdList()
     {
         SharedPreferences.Editor pref = THApp.context().getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE).edit();
-        pref.putStringSet(KEY_VISITED_ID_SET, new TreeSet<String>());
+        pref.putStringSet(KEY_VISITED_ID_SET, new TreeSet<>());
         pref.commit();
     }
 }
