@@ -237,26 +237,21 @@ public class LeaderboardMarkUserItemView
             lbmuFoF.setText(leaderboardItem.friendOfMarkupString);
         }
 
-        linkWith(leaderboardItem);
-    }
+        displayRankingColor(leaderboardItem);
 
-    public void linkWith(@NonNull UserBaseDTO userBaseDTO)
-    {
-        displayRankingColor(userBaseDTO);
-
-        lbmuDisplayName.setText(userBaseDTO.displayName);
+        lbmuDisplayName.setText(leaderboardItem.displayName);
 
         loadDefaultUserImage();
-        if (userBaseDTO.picture != null)
+        if (leaderboardItem.picture != null)
         {
             picasso.get()
-                    .load(userBaseDTO.picture)
+                    .load(leaderboardItem.picture)
                     .transform(peopleIconTransformation)
                     .placeholder(lbmuProfilePicture.getDrawable())
                     .into(lbmuProfilePicture);
         }
 
-        displayCountryLogo(userBaseDTO);
+        displayCountryLogo(leaderboardItem);
     }
 
     private void displayRankingColor(@NonNull UserBaseDTO userBaseDTO)
