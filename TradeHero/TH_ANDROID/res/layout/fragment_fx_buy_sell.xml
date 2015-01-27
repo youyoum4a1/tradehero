@@ -134,6 +134,7 @@
                   android:id="@+id/my_charts_view"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"/>
+
           </com.tradehero.common.widget.BetterViewAnimator>
 
           <com.tradehero.th.widget.news.TimeSpanButtonSet
@@ -150,7 +151,9 @@
               >
 
               <include layout="@layout/fx_chart_buttons_merge"/>
+
           </com.tradehero.th.widget.news.TimeSpanButtonSet>
+
       </LinearLayout>
 
       <LinearLayout
@@ -172,6 +175,7 @@
               android:paddingBottom="@dimen/dashboard_tabhost_height"
               android:animateLayoutChanges="true"
               >
+
               <Button
                   android:id="@+id/btn_sell"
                   android:layout_width="0dp"
@@ -195,8 +199,11 @@
                   android:layout_marginBottom="5dp"
                   android:text="@string/fx_buy"
                   />
+
           </LinearLayout>
+
       </LinearLayout>
+
   </RelativeLayout>
 
 </LinearLayout>

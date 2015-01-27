@@ -17,6 +17,7 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.fx.FXChartDTO;
+import com.tradehero.th.api.fx.FXChartGranularity;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.PositionDTOCompactList;
@@ -30,7 +31,6 @@ import com.tradehero.th.api.security.key.FxPairSecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.tradehero.th.models.chart.ChartTimeSpan;
-import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
 import com.tradehero.th.models.number.THSignedFXRate;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -98,7 +98,7 @@ public class BuySellFXFragment extends BuySellFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        fetchKChart(YahooTimeSpan.min1.code);
+        fetchKChart(FXChartGranularity.min1.code);
         initTimeSpanButton();
         closeUnits = getCloseAttribute(getArguments());
     }
@@ -168,7 +168,7 @@ public class BuySellFXFragment extends BuySellFragment
         return MILLISECOND_FX_QUOTE_REFRESH;
     }
 
-    private void fetchKChart(String code)
+    private void fetchKChart(@NonNull String code)
     {
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
@@ -309,30 +309,8 @@ public class BuySellFXFragment extends BuySellFragment
     @Override
     public void onTimeSpanButtonSelected(ChartTimeSpan selected)
     {
-        fetchKChart(checkTime(selected.duration));
+        fetchKChart(FXChartGranularity.getBestApproximation(selected).code);
         mChartWrapper.setDisplayedChild(0);
-    }
-
-    private String checkTime(long duration)
-    {
-        switch ((int) duration)
-        {
-            case (int) ChartTimeSpan.MIN_1:
-                return YahooTimeSpan.min1.code;
-            case (int) ChartTimeSpan.MIN_5:
-                return YahooTimeSpan.min5.code;
-            case (int) ChartTimeSpan.MIN_15:
-                return YahooTimeSpan.min15.code;
-            case (int) ChartTimeSpan.MIN_30:
-                return YahooTimeSpan.min30.code;
-            case (int) ChartTimeSpan.HOUR_1:
-                return YahooTimeSpan.hour1.code;
-            case (int) ChartTimeSpan.HOUR_4:
-                return YahooTimeSpan.hour4.code;
-            case (int) ChartTimeSpan.DAY_1:
-                return "D";
-        }
-        return YahooTimeSpan.min1.code;
     }
 
     @Override protected boolean getSupportSell()
