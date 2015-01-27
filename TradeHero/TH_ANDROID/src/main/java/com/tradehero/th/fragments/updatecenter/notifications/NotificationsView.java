@@ -36,11 +36,8 @@ import com.tradehero.th.utils.EndlessScrollingHelper;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
-import timber.log.Timber;
 
 public class NotificationsView extends BetterViewAnimator
 {
@@ -172,7 +169,9 @@ public class NotificationsView extends BetterViewAnimator
                     .get(paginatedNotificationListKey)
                     .observeOn(AndroidSchedulers.mainThread())
                     .take(1)
-                    .subscribe(createNotificationFetchObserver()));
+                    .subscribe(
+                            this::onNotificationsFetched,
+                            this::onNotificationsFetchError));
         }
     }
 
@@ -185,8 +184,45 @@ public class NotificationsView extends BetterViewAnimator
                 .get(firstPage)
                 .observeOn(AndroidSchedulers.mainThread())
                 .take(1)
-                .subscribe(createNotificationFetchObserver()));
+                .subscribe(
+                        this::onNotificationsFetched,
+                        this::onNotificationsFetchError));
         requestUpdateTabCounter();
+    }
+
+    protected void onNotificationsFetched(Pair<NotificationListKey, PaginatedNotificationDTO> pair)
+    {
+        if (pair.second != null)
+        {
+            //TODO right?
+            nextPageDelta = pair.second.getData().isEmpty() ? -1 : 1;
+
+            notificationListAdapter.addAll(pair.second.getData());
+            notificationListAdapter.notifyDataSetChanged();
+            setReadAllLayoutVisible();
+        }
+        onNotificationFetchFinish();
+    }
+
+    protected void onNotificationsFetchError(Throwable e)
+    {
+        onNotificationFetchFinish();
+
+        nextPageDelta = 0;
+        THToast.show(new THException(e));
+    }
+
+    private void onNotificationFetchFinish()
+    {
+        loading = false;
+        swipeRefreshLayout.setRefreshing(false);
+
+        // a bit hacky here to identify whether the list is forced to be refreshed
+        Integer currentPage = paginatedNotificationListKey.getPage();
+        if (currentPage == null || currentPage != 1 || notificationListAdapter.getCount() > 0)
+        {
+            setNotificationListShow();
+        }
     }
 
     private class NotificationListOnScrollListener implements AbsListView.OnScrollListener
@@ -217,7 +253,18 @@ public class NotificationsView extends BetterViewAnimator
                         currentUserId.toUserBaseKey(),
                         new NotificationKey(pushId))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(createMarkNotificationAsReadObserver()));
+                        .subscribe(
+                                this::onNotificationMarkedAsRead,
+                                e -> THToast.show(new THException(e))));
+    }
+
+    protected void onNotificationMarkedAsRead(BaseResponseDTO baseResponseDTO)
+    {
+        if (notificationListAdapter != null)
+        {
+            notificationListAdapter.notifyDataSetChanged();
+        }
+        requestUpdateTabCounter();
     }
 
     protected void reportNotificationReadAll()
@@ -226,93 +273,13 @@ public class NotificationsView extends BetterViewAnimator
                 notificationServiceWrapper.markAsReadAllRx(
                         currentUserId.toUserBaseKey())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(createMarkNotificationAsReadAllObserver()));
+                        .subscribe(
+                                args -> updateAllAsRead(),
+                                e -> THToast.show(new THException(e))
+                        ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience
         updateAllAsRead();
-    }
-
-    protected Observer<Pair<NotificationListKey, PaginatedNotificationDTO>> createNotificationFetchObserver()
-    {
-        return new NotificationFetchObserver();
-    }
-
-    private class NotificationFetchObserver implements Observer<Pair<NotificationListKey, PaginatedNotificationDTO>>
-    {
-        @Override public void onNext(Pair<NotificationListKey, PaginatedNotificationDTO> pair)
-        {
-            if (pair.second != null)
-            {
-                //TODO right?
-                nextPageDelta = pair.second.getData().isEmpty() ? -1 : 1;
-
-                notificationListAdapter.addAll(pair.second.getData());
-                notificationListAdapter.notifyDataSetChanged();
-                setReadAllLayoutVisible();
-            }
-            onFinish();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            onFinish();
-
-            nextPageDelta = 0;
-            THToast.show(new THException(e));
-        }
-
-        private void onFinish()
-        {
-            loading = false;
-            swipeRefreshLayout.setRefreshing(false);
-
-            // a bit hacky here to identify whether the list is forced to be refreshed
-            Integer currentPage = paginatedNotificationListKey.getPage();
-            if (currentPage == null || currentPage != 1 || notificationListAdapter.getCount() > 0)
-            {
-                setNotificationListShow();
-            }
-        }
-    }
-
-    private void setNotificationListShow()
-    {
-        setDisplayedChildByLayoutId(R.id.listViewLayout);
-    }
-
-    protected Observer<BaseResponseDTO> createMarkNotificationAsReadObserver()
-    {
-        return new NotificationMarkAsReadObserver();
-    }
-
-    protected class NotificationMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
-    {
-        @Override public void onNext(BaseResponseDTO baseResponseDTO)
-        {
-            if (notificationListAdapter != null)
-            {
-                notificationListAdapter.notifyDataSetChanged();
-            }
-            requestUpdateTabCounter();
-        }
-    }
-
-    protected Observer<BaseResponseDTO> createMarkNotificationAsReadAllObserver()
-    {
-        return new NotificationMarkAsReadAllObserver();
-    }
-
-    protected class NotificationMarkAsReadAllObserver extends EmptyObserver<BaseResponseDTO>
-    {
-        @Override public void onNext(BaseResponseDTO baseResponseDTO)
-        {
-            Timber.d("NotificationMarkAsReadAllCallback success");
-            updateAllAsRead();
-        }
     }
 
     private void updateAllAsRead()
@@ -320,6 +287,11 @@ public class NotificationsView extends BetterViewAnimator
         setAllNotificationRead();
         setReadAllLayoutVisible();
         requestUpdateTabCounter();
+    }
+
+    private void setNotificationListShow()
+    {
+        setDisplayedChildByLayoutId(R.id.listViewLayout);
     }
 
     private void requestUpdateTabCounter()

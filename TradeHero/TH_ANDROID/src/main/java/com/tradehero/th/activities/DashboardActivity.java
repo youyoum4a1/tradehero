@@ -47,7 +47,6 @@ import com.tradehero.th.api.notification.NotificationDTO;
 import com.tradehero.th.api.notification.NotificationKey;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
@@ -104,7 +103,6 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
-import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.XpToast;
@@ -122,7 +120,6 @@ import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -398,13 +395,15 @@ public class DashboardActivity extends BaseActivity
         subscriptions.add(fromLocalBroadcast(this, XP_INTENT_FILTER)
                 .filter(intent -> (intent != null) && (intent.getBundleExtra(KEY_XP_BROADCAST) != null))
                 .map(intent -> new UserXPAchievementDTO(intent.getBundleExtra(KEY_XP_BROADCAST)))
-                .subscribe(xpToast::showWhenReady, throwable -> {}, () -> broadcastUtilsLazy.get().nextPlease()));
+                .subscribe(xpToast::showWhenReady, throwable -> {
+                }, () -> broadcastUtilsLazy.get().nextPlease()));
 
         subscriptions.add(fromLocalBroadcast(this, ONBOARD_INTENT_FILTER)
                 .subscribe(intent -> {
                     isOnboardShown.set(true);
                     OnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-                }, throwable -> {}));
+                }, throwable -> {
+                }));
 
         // get providers for enrollment page
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
@@ -412,7 +411,7 @@ public class DashboardActivity extends BaseActivity
                         .flatMapIterable(pair -> pair.second)
                         .filter(providerDTO -> {
                             boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
-                            if(!r)
+                            if (!r)
                             {
                                 broadcastUtilsLazy.get().nextPlease();
                             }
@@ -438,7 +437,8 @@ public class DashboardActivity extends BaseActivity
 
         subscriptions.add(fromLocalBroadcast(this, SEND_LOVE_INTENT_FILTER)
                 .subscribe(intent ->
-                        AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {} ));
+                        AskForReviewSuggestedDialogFragment.showReviewDialog(getFragmentManager()), throwable -> {
+                }));
     }
 
     @Override protected void onNewIntent(Intent intent)
@@ -514,31 +514,29 @@ public class DashboardActivity extends BaseActivity
 
     private void showStartDialogsPlease()
     {
-        bindActivity(this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
+        bindActivity(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
                 .first()
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        UserProfileDTO userProfileDTO = args.second;
-                        if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
-                        {
-                            broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                            return;
-                        }
+                .subscribe(
+                        userProfileDTO -> {
+                            if (!isOnboardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
+                            {
+                                broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
+                                return;
+                            }
 
-                        if (!isFxShown.get() && userProfileDTO.fxPortfolio == null)
-                        {
-                            isFxShown.set(true);
-                            FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
-                            return;
-                        }
+                            if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
+                            {
+                                isFxShown.set(true);
+                                FxOnBoardDialogFragment.showOnBoardDialog(getFragmentManager());
+                                return;
+                            }
 
-                        broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
-                    }
-                });
+                            broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
+                        },
+                        e -> THToast.show(new THException(e)));
     }
 
     @Override protected List<Object> getModules()

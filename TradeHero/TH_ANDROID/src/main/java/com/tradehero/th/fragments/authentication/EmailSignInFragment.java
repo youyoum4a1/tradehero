@@ -46,6 +46,7 @@ import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class EmailSignInFragment extends Fragment
 {
@@ -150,14 +151,9 @@ public class EmailSignInFragment extends Fragment
                     password1.forceValidate();
                     return Pair.create(email1.isValid(), password1.isValid());
                 })
-                .subscribe(new EmptyObserver<Pair<Boolean, Boolean>>()
-                {
-                    @Override public void onNext(Pair<Boolean, Boolean> args)
-                    {
-                        loginButton.setEnabled(args.first && args.second);
-                        super.onNext(args);
-                    }
-                });
+                .subscribe(
+                        args -> loginButton.setEnabled(args.first && args.second),
+                        e -> Timber.e(e, "Error in validation"));
 
         signInObservable = ViewObservable.clicks(loginButton, false)
                 .map(view1 -> {

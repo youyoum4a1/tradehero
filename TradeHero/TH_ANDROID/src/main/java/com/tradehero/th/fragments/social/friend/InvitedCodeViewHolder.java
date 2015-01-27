@@ -10,17 +10,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 
 public class InvitedCodeViewHolder
 {
@@ -91,35 +88,21 @@ public class InvitedCodeViewHolder
         UpdateReferralCodeDTO formDTO = new UpdateReferralCodeDTO(inviteCode.getText().toString());
         updateInviteCodeSubscription = userServiceWrapper.updateReferralCodeRx(currentUserId.toUserBaseKey(), formDTO)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createUpdateInviteObserver());
-    }
-
-    protected Observer<BaseResponseDTO> createUpdateInviteObserver()
-    {
-        return new InviteCodeUpdateInviteObserver();
-    }
-
-    protected class InviteCodeUpdateInviteObserver extends EmptyObserver<BaseResponseDTO>
-    {
-        @Override public void onNext(BaseResponseDTO args)
-        {
-            showSubmitDone();
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THException exception = new THException(e);
-            String message = exception.getMessage();
-            if (message != null && message.contains("Already invited"))
-            {
-                showSubmitDone();
-            }
-            else
-            {
-                THToast.show(exception);
-                viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
-            }
-        }
+                .subscribe(
+                        args -> showSubmitDone(),
+                        e -> {
+                            THException exception = new THException(e);
+                            String message = exception.getMessage();
+                            if (message != null && message.contains("Already invited"))
+                            {
+                                showSubmitDone();
+                            }
+                            else
+                            {
+                                THToast.show(exception);
+                                viewSwitcher.setDisplayedChild(VIEW_ENTER_CODE);
+                            }
+                        });
     }
 
     public void showSubmitDone()

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.trending;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +14,6 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -33,10 +31,7 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.competition.CompetitionEnrollmentWebViewFragment;
@@ -64,9 +59,7 @@ import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("trending-securities")
@@ -402,20 +395,22 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .first()
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        if (args.second.activeSurveyURL != null)
-                        {
-                            Bundle bundle = new Bundle();
-                            WebViewFragment.putUrl(bundle, args.second.activeSurveyURL);
-                            navigator.get().pushFragment(WebViewFragment.class, bundle, null);
-                        }
-                    }
-                });
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second)
+                        .first())
+                .subscribe(
+                        profile -> {
+                            if (profile.activeSurveyURL != null)
+                            {
+                                Bundle bundle = new Bundle();
+                                WebViewFragment.putUrl(bundle, profile.activeSurveyURL);
+                                navigator.get().pushFragment(WebViewFragment.class, bundle, null);
+                            }
+                        },
+                        error -> THToast.show(new THException((Throwable) error))
+                        ));
     }
 
     private void handleResetPortfolioItemOnClick()
@@ -438,7 +433,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(
-                        result -> {},
+                        result -> {
+                        },
                         error -> THToast.show(new THException((Throwable) error))
                 ));
     }

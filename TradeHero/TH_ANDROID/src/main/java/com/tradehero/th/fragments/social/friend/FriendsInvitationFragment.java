@@ -376,20 +376,9 @@ public class FriendsInvitationFragment extends DashboardFragment
             ((SocialAuthenticationProvider) socialAuthenticationProvider)
                     .socialLink(getActivity())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new EmptyObserver<UserProfileDTO>()
-                    {
-                        @Override public void onNext(UserProfileDTO args)
-                        {
-                            super.onNext(args);
-                            pushSocialInvitationFragment(socialNetworkEnum);
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            super.onError(e);
-                            THToast.show("Error: " + e.getMessage());
-                        }
-                    });
+                    .subscribe(
+                            args -> pushSocialInvitationFragment(socialNetworkEnum),
+                            e -> THToast.show("Error: " + e.getMessage()));
         }
     }
 

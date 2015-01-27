@@ -159,12 +159,12 @@ import rx.Observable;
                 userWatchlistPositionCache.get());
     }
 
-    @Nullable public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull WatchlistPositionDTO watchlistPositionDTO)
+    @NonNull public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull WatchlistPositionDTO watchlistPositionDTO)
     {
         return deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId());
     }
 
-    @Nullable public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull PositionCompactId positionCompactId)
+    @NonNull public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull PositionCompactId positionCompactId)
     {
         return watchlistServiceRx.deleteWatchlist(positionCompactId.key)
                 .map(createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()));

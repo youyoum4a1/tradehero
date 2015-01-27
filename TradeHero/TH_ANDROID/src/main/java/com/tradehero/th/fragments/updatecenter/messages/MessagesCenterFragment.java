@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.special.residemenu.ResideMenu;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.route.Routable;
@@ -41,6 +42,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.UpdateCenterTabType;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
@@ -626,20 +628,13 @@ public class MessagesCenterFragment extends DashboardFragment
                         this,
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))
-                        .subscribe(createMessageAsReadAllObserver()));
+                        .subscribe(
+                                args -> this.updateAllAsRead(),
+                                e -> THToast.show(new THException(e))
+                        ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience
         updateAllAsRead();
-    }
-
-    @NonNull private Observer<BaseResponseDTO> createMessageAsReadObserver(MessageHeaderDTO messageHeaderDTO)
-    {
-        return new MessageMarkAsReadObserver(messageHeaderDTO);
-    }
-
-    @NonNull private Observer<BaseResponseDTO> createMessageAsReadAllObserver()
-    {
-        return new MessageMarkAsReadAllObserver();
     }
 
     private class MessageMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
@@ -663,15 +658,6 @@ public class MessagesCenterFragment extends DashboardFragment
                 setReadAllLayoutVisable();
                 requestUpdateTabCounter();
             }
-        }
-    }
-
-    private class MessageMarkAsReadAllObserver extends EmptyObserver<BaseResponseDTO>
-    {
-        @Override public void onNext(BaseResponseDTO args)
-        {
-            Timber.d("Message are reported as read all ");
-            updateAllAsRead();
         }
     }
 

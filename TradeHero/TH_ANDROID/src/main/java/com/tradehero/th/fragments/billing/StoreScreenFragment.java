@@ -25,7 +25,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemDTOList;
 import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
@@ -40,7 +39,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable({
@@ -104,15 +102,13 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 this,
                 storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
-                .subscribe(new EmptyObserver<StoreItemDTOList>()
-                {
-                    @Override public void onNext(StoreItemDTOList storeItemDTOs)
-                    {
-                        storeItemAdapter.clear();
-                        storeItemAdapter.addAll(storeItemDTOs);
-                        storeItemAdapter.notifyDataSetChanged();
-                    }
-                });
+                .subscribe(
+                        storeItemDTOs -> {
+                            storeItemAdapter.clear();
+                            storeItemAdapter.addAll(storeItemDTOs);
+                            storeItemAdapter.notifyDataSetChanged();
+                        },
+                        e -> THToast.show(new THException(e)));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -160,8 +156,10 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                 userInteractorRx.testAndClear())
                 .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
                 .subscribe(
-                        pair -> {},
-                        error -> {});
+                        pair -> {
+                        },
+                        error -> {
+                        });
     }
 
     @Override protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
@@ -186,7 +184,8 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .subscribe(
-                                pair -> {},
+                                pair -> {
+                                },
                                 error -> THToast.show(new THException((Throwable) error))
                         ));
             }
@@ -208,18 +207,9 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             AndroidObservable.bindFragment(
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
-                    .subscribe(new EmptyObserver<PurchaseResult>()
-                    {
-                        @Override public void onNext(PurchaseResult args)
-                        {
-                            handlePurchaseFinished(args);
-                        }
-
-                        @Override public void onError(Throwable e)
-                        {
-                            handlePurchaseFailed(e);
-                        }
-                    });
+                    .subscribe(
+                            obj -> this.handlePurchaseFinished((PurchaseResult) obj),
+                            e -> this.handlePurchaseFailed((Throwable) e));
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {
@@ -231,7 +221,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         }
     }
 
-    protected void handlePurchaseFinished(@NonNull PurchaseResult purchaseResult)
+    protected void handlePurchaseFinished(@SuppressWarnings("UnusedParameters") @NonNull PurchaseResult purchaseResult)
     {
         THToast.show("Purchase done");
     }

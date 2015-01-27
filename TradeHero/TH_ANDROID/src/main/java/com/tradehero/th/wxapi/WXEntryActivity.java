@@ -49,7 +49,6 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
@@ -263,7 +262,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         trackShareSubscription = AndroidObservable.bindActivity(
                 this,
                 weChatServiceWrapper.trackShareRx(currentUserId.toUserBaseKey(), weChatTrackShareFormDTO))
-                .subscribe(new TrackShareObserver());
+                .subscribe(
+                        this::onSharedToWeChat,
+                        this::onShareToWeChatError);
     }
 
     private void detachTrackShareSubscription()
@@ -282,18 +283,15 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         super.onDestroy();
     }
 
-    private class TrackShareObserver extends EmptyObserver<TrackShareDTO>
+    public void onSharedToWeChat(@SuppressWarnings("UnusedParameters") TrackShareDTO args)
     {
-        @Override public void onNext(TrackShareDTO args)
-        {
-            finish();
-        }
+        finish();
+    }
 
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            finish();
-        }
+    public void onShareToWeChatError(Throwable e)
+    {
+        THToast.show(new THException(e));
+        finish();
     }
 
     /*

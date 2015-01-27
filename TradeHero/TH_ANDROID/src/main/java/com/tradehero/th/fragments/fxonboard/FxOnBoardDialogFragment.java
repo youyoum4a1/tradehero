@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,7 @@ import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.education.VideoDTO;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.education.VideoAdapter;
@@ -35,9 +31,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -121,7 +115,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                     @Override public void onCompleted()
                     {
                         progressBar.setVisibility(View.GONE);
-                        if(videoAdapter.isEmpty())
+                        if (videoAdapter.isEmpty())
                         {
                             emptyView.setVisibility(View.VISIBLE);
                         }
@@ -167,18 +161,17 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         notifyUserAction(UserActionType.ENROLLED);
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override
-                    public void onNext(Pair<UserBaseKey, UserProfileDTO> args)
-                    {
-                        if (args.second.fxPortfolio == null)
-                        {
-                            createFXPortfolio();
-                        }
-                    }
-                }));
+                userProfileCache.get().get(currentUserId.toUserBaseKey())
+                        .map(pair -> pair.second))
+                .subscribe(
+                        profile -> {
+                            if (profile.fxPortfolio == null)
+                            {
+                                createFXPortfolio();
+                            }
+                        },
+                        e -> {
+                        }));
     }
 
     private void createFXPortfolio()
@@ -186,16 +179,13 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
         subscriptionList.add(AndroidObservable.bindFragment(
                 this,
                 userServiceWrapper.get().createFXPortfolioRx(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<PortfolioDTO>()
-                {
-                    @Override
-                    public void onNext(PortfolioDTO portfolioDTO)
-                    {
-                        userProfileCache.get().get(currentUserId.toUserBaseKey());
-                        securityPositionDetailCache.invalidateAll();
-                    }
-                }));
+                .subscribe(
+                        portfolio -> {
+                            userProfileCache.get().get(currentUserId.toUserBaseKey());
+                            securityPositionDetailCache.invalidateAll();
+                        },
+                        e -> {
+                        }));
     }
 
     @OnClick(R.id.close)

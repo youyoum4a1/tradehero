@@ -19,7 +19,6 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UpdateCountryCodeDTO;
 import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -32,7 +31,6 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class LocationListFragment extends DashboardFragment
@@ -181,21 +179,12 @@ public class LocationListFragment extends DashboardFragment
                 userServiceWrapperLazy.get().updateCountryCodeRx(
                         currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new UpdateCountryCodeObserver());
-    }
-
-    private class UpdateCountryCodeObserver extends EmptyObserver<UpdateCountryCodeDTO>
-    {
-        @Override public void onNext(UpdateCountryCodeDTO args)
-        {
-            backToSettings();
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-            getProgressDialog().hide();
-        }
+                .subscribe(
+                        args -> backToSettings(),
+                        e -> {
+                            THToast.show(new THException(e));
+                            getProgressDialog().hide();
+                        });
     }
 
     private void backToSettings()

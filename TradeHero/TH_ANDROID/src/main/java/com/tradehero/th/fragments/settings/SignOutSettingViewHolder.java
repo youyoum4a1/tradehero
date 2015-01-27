@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.EmptyObserver;
@@ -119,52 +118,46 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         unsubscribe(logoutSubscription);
         logoutSubscription = sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createSignOutObserver());
+                .subscribe(
+                        this::onSignedOut,
+                        this::onSignOutError);
     }
 
-    private Observer<UserProfileDTO> createSignOutObserver()
+    protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO)
     {
-        return new SignOutObserver();
+        for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
+        {
+            if (authHeader.startsWith(entry.getKey().getAuthHeader()))
+            {
+                entry.getValue().logout();
+            }
+        }
+
+        Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
+        if (accounts != null)
+        {
+            for (Account account : accounts)
+            {
+                accountManager.removeAccount(account, null, null);
+            }
+        }
+
+        dismissProgressDialog();
     }
 
-    protected class SignOutObserver extends EmptyObserver<UserProfileDTO>
+    protected void onSignOutError(Throwable e)
     {
-        @Override public void onNext(UserProfileDTO userProfileDTO)
+        Timber.e(e, "Failed to sign out");
+        ProgressDialog progressDialogCopy = progressDialog;
+        if (progressDialogCopy != null)
         {
-            for (Map.Entry<SocialNetworkEnum, AuthenticationProvider> entry : authenticationProviderMap.entrySet())
-            {
-                if (authHeader.startsWith(entry.getKey().getAuthHeader()))
-                {
-                    entry.getValue().logout();
-                }
-            }
-
-            Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
-            if (accounts != null)
-            {
-                for (Account account : accounts)
-                {
-                    accountManager.removeAccount(account, null, null);
-                }
-            }
-
-            dismissProgressDialog();
+            progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
+            progressDialog.setMessage("");
         }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e(e, "Failed to sign out");
-            ProgressDialog progressDialogCopy = progressDialog;
-            if (progressDialogCopy != null)
-            {
-                progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
-                progressDialog.setMessage("");
-            }
-            Observable.just(0)
-                    .delay(3000, TimeUnit.MILLISECONDS)
-                    .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
-                    .subscribe(new EmptyObserver<>());
-        }
+        Observable.just(0)
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
+                .subscribe(new EmptyObserver<>());
     }
 
     private void dismissProgressDialog()

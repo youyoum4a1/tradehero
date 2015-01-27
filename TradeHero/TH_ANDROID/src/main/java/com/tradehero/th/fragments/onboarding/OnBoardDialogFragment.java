@@ -25,7 +25,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
@@ -49,7 +48,6 @@ import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.observers.EmptyObserver;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -273,15 +271,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         if (!heroesList.isEmpty())
         {
             final BatchFollowFormDTO form = new BatchFollowFormDTO(heroesList, new UserBaseDTO());
-            userServiceWrapper.followBatchFreeRx(
-                    form)
-                    .subscribe(new EmptyObserver<UserProfileDTO>()
-                    {
-                        @Override public void onError(Throwable e)
-                        {
-                            Timber.e(new THException(e), "Failed to add heroes %s", form);
-                        }
-                    });
+            userServiceWrapper.followBatchFreeRx(form)
+                    .subscribe(
+                            profile -> {
+                            },
+                            e -> {
+                                Timber.e(new THException(e), "Failed to add heroes %s", form);
+                            });
         }
     }
 
@@ -303,13 +299,13 @@ public class OnBoardDialogFragment extends BaseDialogFragment
         {
             watchlistServiceWrapper.batchCreateRx(
                     new SecurityIntegerIdListForm(stocksList, null))
-                    .subscribe(new EmptyObserver<WatchlistPositionDTOList>()
-                    {
-                        @Override public void onError(Throwable e)
-                        {
-                            Timber.e(new THException(e), "Failed to add watchlist");
-                        }
-                    });
+                    .subscribe(
+                            list -> {
+                            },
+                            e ->
+                            {
+                                Timber.e(new THException(e), "Failed to add watchlist");
+                            });
         }
     }
 }

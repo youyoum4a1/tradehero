@@ -44,10 +44,8 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.text.DecimalFormat;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistPositionDTO>
@@ -177,37 +175,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                         break;
                 }
                 return true;
-            }
-        };
-    }
-
-    @NonNull private Observer<WatchlistPositionDTO> createWatchlistDeletionObserver()
-    {
-        return new EmptyObserver<WatchlistPositionDTO>()
-        {
-            // Make a copy here to sever links back to the origin class.
-            final private Context contextCopy = WatchlistItemView.this.getContext();
-            final private WatchlistPositionDTO watchlistPositionDTOCopy = WatchlistItemView.this.watchlistPositionDTO;
-
-            @Override public void onNext(WatchlistPositionDTO args)
-            {
-                if (watchlistPositionDTO != null)
-                {
-                    Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
-
-                    Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
-                    putDeletedSecurityId(itemDeletionIntent, watchlistPositionDTO.securityDTO.getSecurityId());
-                    LocalBroadcastManager.getInstance(contextCopy).sendBroadcast(itemDeletionIntent);
-                }
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                setEnabledSwipeButtons(true);
-                if (watchlistPositionDTOCopy != null)
-                {
-                    Timber.e(getContext().getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTOCopy.id, e);
-                }
             }
         };
     }
@@ -476,7 +443,32 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
             subscriptions.add(watchlistServiceWrapper.get().deleteWatchlistRx(
                     watchlistPositionDTO)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(createWatchlistDeletionObserver()));
+                    .subscribe(
+                            this::onWatchlistDeleteReceived,
+                            this::onWatchlistDeleteError));
+        }
+    }
+
+    protected void onWatchlistDeleteReceived(WatchlistPositionDTO args)
+    {
+        Context contextCopy = getContext();
+        if (contextCopy != null && watchlistPositionDTO != null)
+        {
+            Timber.d(contextCopy.getString(R.string.watchlist_item_deleted_successfully), watchlistPositionDTO.id);
+
+            Intent itemDeletionIntent = new Intent(WatchlistItemView.WATCHLIST_ITEM_DELETED);
+            putDeletedSecurityId(itemDeletionIntent, watchlistPositionDTO.securityDTO.getSecurityId());
+            LocalBroadcastManager.getInstance(contextCopy).sendBroadcast(itemDeletionIntent);
+        }
+    }
+
+    protected void onWatchlistDeleteError(Throwable e)
+    {
+        Context contextCopy = getContext();
+        setEnabledSwipeButtons(true);
+        if (contextCopy != null && watchlistPositionDTO != null)
+        {
+            Timber.e(contextCopy.getString(R.string.watchlist_item_deleted_failed), watchlistPositionDTO.id, e);
         }
     }
 

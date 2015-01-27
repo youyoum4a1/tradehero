@@ -44,7 +44,6 @@ import rx.android.observables.Assertions;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -213,18 +212,17 @@ public class SignInOrUpFragment extends Fragment
     // TODO better with Observable#retry() ?
     private void resubscribe()
     {
-        subscription = authenticationObservable.subscribe(new EmptyObserver<Pair<AuthData, UserProfileDTO>>()
-        {
-            @Override public void onError(Throwable e)
-            {
-                // CancellationException
-                // Resubscribe on any type of exception for now
-                if (e instanceof Exception)
-                {
-                    resubscribe();
-                }
-            }
-        });
+        subscription = authenticationObservable.subscribe(
+                pair -> {
+                },
+                e -> {
+                    // CancellationException
+                    // Resubscribe on any type of exception for now
+                    if (e instanceof Exception)
+                    {
+                        resubscribe();
+                    }
+                });
     }
 
     private void openWebPage(String url)

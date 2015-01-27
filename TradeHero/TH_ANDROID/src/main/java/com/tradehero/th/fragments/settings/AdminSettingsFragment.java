@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,8 +22,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.fragments.ForKChartFragment;
 import com.tradehero.th.fragments.ForTypographyFragment;
@@ -33,6 +31,7 @@ import com.tradehero.th.fragments.competition.CompetitionPreseasonDialogFragment
 import com.tradehero.th.fragments.level.ForXpTestingFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardDialogFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
@@ -40,8 +39,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.android.observables.AndroidObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.internal.util.SubscriptionList;
 
 public class AdminSettingsFragment extends DashboardPreferenceFragment
 {
@@ -67,6 +65,8 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
     @Inject CurrentUserId currentUserId;
     @Inject Provider<Activity> currentActivity;
 
+    @NonNull SubscriptionList subscriptions;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -74,6 +74,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
         setHasOptionsMenu(true);
         HierarchyInjector.inject(this);
         addPreferencesFromResource(R.xml.admin_settings);
+        subscriptions = new SubscriptionList();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -87,16 +88,15 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
     private void initDefaultValue()
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new EmptyObserver<Pair<UserBaseKey, UserProfileDTO>>()
-                {
-                    @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-                    {
-                        Preference pref = findPreference(KEY_USER_INFO);
-                        pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
-                    }
-                });
+        subscriptions.add(AndroidObservable.bindFragment(
+                this,
+                userProfileCache.get(currentUserId.toUserBaseKey()))
+                .subscribe(
+                        pair -> {
+                            Preference pref = findPreference(KEY_USER_INFO);
+                            pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
+                        },
+                        e -> THToast.show(new THException(e))));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -197,7 +197,6 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
             navigator.get().pushFragment(kChartFragmentClassProvider.get());
             return true;
         });
-
     }
 
     private boolean askForNotificationId()

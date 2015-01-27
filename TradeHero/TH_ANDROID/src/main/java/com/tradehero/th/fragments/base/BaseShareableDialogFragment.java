@@ -42,7 +42,6 @@ import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
@@ -160,14 +159,11 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
         unsubscribeWeChatButton();
         weChatLinkingSubscription = AndroidObservable.bindFragment(this, ViewObservable.clicks(mBtnShareWeChat, false))
-                .subscribe(new EmptyObserver<ToggleButton>()
-                {
-                    @Override public void onNext(ToggleButton toggleButton)
-                    {
-                        super.onNext(toggleButton);
-                        socialSharePreferenceHelperNew.updateSocialSharePreference(SocialNetworkEnum.WECHAT, toggleButton.isChecked());
-                    }
-                });
+                .subscribe(
+                        toggleButton -> socialSharePreferenceHelperNew.updateSocialSharePreference(
+                                SocialNetworkEnum.WECHAT,
+                                toggleButton.isChecked()),
+                        e -> THToast.show(new THException(e)));
     }
     //</editor-fold>
 
@@ -248,12 +244,12 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setIcon(R.drawable.th_app_logo)
-            .setCancelable(true)
-            .setTitle(getString(R.string.link, socialNetwork.getName()))
-            .setMessage(getString(R.string.link_description, socialNetwork.getName()));
+                .setCancelable(true)
+                .setTitle(getString(R.string.link, socialNetwork.getName()))
+                .setMessage(getString(R.string.link_description, socialNetwork.getName()));
         AlertDialogOnSubscribe.Builder onSubscribeBuilder = new AlertDialogOnSubscribe.Builder(alertBuilder);
         onSubscribeBuilder.setPositiveButton(getString(R.string.link_now))
-            .setNegativeButton(getString(R.string.later));
+                .setNegativeButton(getString(R.string.later));
 
         return Observable.create(onSubscribeBuilder.build())
                 .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
