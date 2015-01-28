@@ -53,19 +53,19 @@ public class LeaderboardDefDTO implements DTO
     {
         if (exchangeRestrictions)
         {
-            return new ExchangeLeaderboardDefListKey();
+            return new ExchangeLeaderboardDefListKey(1);
         }
         if (sectorRestrictions)
         {
-            return new SectorLeaderboardDefListKey();
+            return new SectorLeaderboardDefListKey(1);
         }
         if (isTimeRestrictedLeaderboard())
         {
-            return new TimePeriodLeaderboardDefListKey();
+            return new TimePeriodLeaderboardDefListKey(1);
         }
         if (id == LeaderboardDefKeyKnowledge.MOST_SKILLED_ID)
         {
-            return new MostSkilledLeaderboardDefListKey();
+            return new MostSkilledLeaderboardDefListKey(1);
         }
         throw new IllegalStateException("Unhandled situation " + this);
     }

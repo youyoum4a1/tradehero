@@ -39,6 +39,10 @@ public class LeaderboardDefListCacheRx extends BaseFetchDTOCacheRx<LeaderboardDe
 
     @Override @NonNull protected Observable<LeaderboardDefDTOList> fetch(@NonNull LeaderboardDefListKey listKey)
     {
+        if (listKey.page != null && listKey.page > 1)
+        {
+            return Observable.just(new LeaderboardDefDTOList());
+        }
         return leaderboardServiceWrapper.getLeaderboardDefinitionsRx()
                 .observeOn(Schedulers.computation())
                 .map(leaderboardDefDTOFactory::file)

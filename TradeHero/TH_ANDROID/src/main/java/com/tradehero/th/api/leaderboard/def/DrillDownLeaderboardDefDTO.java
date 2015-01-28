@@ -15,6 +15,6 @@ public class DrillDownLeaderboardDefDTO extends LeaderboardDefDTO
 
     @NonNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
     {
-        return new DrillDownLeaderboardDefListKey();
+        return new DrillDownLeaderboardDefListKey(1);
     }
 }

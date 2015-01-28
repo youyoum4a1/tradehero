@@ -5,9 +5,6 @@ import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderCont
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import dagger.Module;
 
-/**
- * Created by tho on 9/9/2014.
- */
 @Module(
         injects = {
                 LeaderboardFriendsItemView.class,

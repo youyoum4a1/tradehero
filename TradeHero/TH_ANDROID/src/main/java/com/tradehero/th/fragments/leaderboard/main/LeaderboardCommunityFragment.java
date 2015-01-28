@@ -27,7 +27,6 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardDefFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserPagerFragment;
@@ -196,7 +195,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         unsubscribe(leaderboardDefListFetchSubscription);
 
         Observable<LeaderboardDefDTOList> leaderboardDefObservable =
-                leaderboardDefListCache.get().get(new LeaderboardDefListKey())
+                leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
                         .map(pair -> pair.second)
                         .map(leaderboardDefDTOs -> communityPageDTOFactory.collectFromCaches(null)) // TODO remove communityPageDTOFactory
                         .subscribeOn(Schedulers.io())
@@ -290,8 +289,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private void pushLeaderboardDefExchange(LeaderboardDefDTO leaderboardDefDTOExchange)
     {
         Bundle bundle = new Bundle(getArguments());
-        (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
-        LeaderboardDefFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
+        (new ExchangeLeaderboardDefListKey(1)).putParameters(bundle);
+        LeaderboardDefListFragment.putLeaderboardDefKey(bundle, leaderboardDefDTOExchange.getLeaderboardDefKey());
         if (navigator != null)
         {
             navigator.get().pushFragment(LeaderboardDefListFragment.class, bundle);

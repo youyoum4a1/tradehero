@@ -1,15 +1,16 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 public class ExchangeLeaderboardDefListKey extends LeaderboardDefListKey
 {
     static final String EXCHANGE = "Exchange";
 
     //<editor-fold desc="Constructors">
-    public ExchangeLeaderboardDefListKey()
+    public ExchangeLeaderboardDefListKey(@Nullable Integer page)
     {
-        super(EXCHANGE);
+        super(EXCHANGE, page);
     }
 
     public ExchangeLeaderboardDefListKey(Bundle args)

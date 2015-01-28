@@ -343,7 +343,7 @@ import rx.observers.EmptyObserver;
 
     public void preFetchLeaderboardDefs()
     {
-        leaderboardDefListCache.get().get(new LeaderboardDefListKey());
+        leaderboardDefListCache.get().get(new LeaderboardDefListKey(1));
     }
 
     public void preFetchHomeContent()

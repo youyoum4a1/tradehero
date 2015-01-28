@@ -21,13 +21,13 @@ class MainLeaderboardDefListKeyFactory
         switch (leaderboardCommunityType)
         {
             case Connected:
-                return new ConnectedLeaderboardDefListKey();
+                return new ConnectedLeaderboardDefListKey(1);
             case SkillAndCountry:
-                return new MostSkilledLeaderboardDefListKey();
+                return new MostSkilledLeaderboardDefListKey(1);
             case TimeRestricted:
-                return new TimePeriodLeaderboardDefListKey();
+                return new TimePeriodLeaderboardDefListKey(1);
             case DrillDown:
-                return new DrillDownLeaderboardDefListKey();
+                return new DrillDownLeaderboardDefListKey(1);
 
             default:
                 throw new IllegalArgumentException("Unhandled LeaderboardCommunityType." + leaderboardCommunityType);

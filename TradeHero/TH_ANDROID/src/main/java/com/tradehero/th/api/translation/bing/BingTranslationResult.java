@@ -37,7 +37,8 @@ public class BingTranslationResult extends TranslationResult
 
     public String getContent()
     {
-        if (content != null) {
+        if (content != null)
+        {
             content = content.replaceAll(PATTERN_FROM, PATTERN_TO);
         }
 

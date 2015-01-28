@@ -2,6 +2,7 @@ package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import javax.inject.Inject;
 
 public class LeaderboardDefListKeyFactory
@@ -38,5 +39,34 @@ public class LeaderboardDefListKeyFactory
             default:
                 throw new IllegalArgumentException("Unhandled key value " + args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY));
         }
+    }
+
+    @NonNull public LeaderboardDefListKey create(@NonNull LeaderboardDefListKey origin, @Nullable Integer page)
+    {
+        if (origin instanceof ConnectedLeaderboardDefListKey)
+        {
+            return new ConnectedLeaderboardDefListKey(page);
+        }
+        if (origin instanceof DrillDownLeaderboardDefListKey)
+        {
+            return new DrillDownLeaderboardDefListKey(page);
+        }
+        if (origin instanceof ExchangeLeaderboardDefListKey)
+        {
+            return new ExchangeLeaderboardDefListKey(page);
+        }
+        if (origin instanceof MostSkilledLeaderboardDefListKey)
+        {
+            return new MostSkilledLeaderboardDefListKey(page);
+        }
+        if (origin instanceof SectorLeaderboardDefListKey)
+        {
+            return new SectorLeaderboardDefListKey(page);
+        }
+        if (origin instanceof TimePeriodLeaderboardDefListKey)
+        {
+            return new TimePeriodLeaderboardDefListKey(page);
+        }
+        throw new IllegalArgumentException("Unhandled type " + origin.getClass());
     }
 }

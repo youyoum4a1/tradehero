@@ -3,10 +3,11 @@ package com.tradehero.th.api.leaderboard.def;
 import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 
 public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
-    implements DTO
+    implements DTO, ContainerDTO<LeaderboardDefDTO, LeaderboardDefDTOList>
 {
     //<editor-fold desc="Contructors">
     public LeaderboardDefDTOList()
@@ -38,5 +39,10 @@ public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
             list.add(leaderboardDefDTO.getLeaderboardDefKey());
         }
         return list;
+    }
+
+    @Override public LeaderboardDefDTOList getList()
+    {
+        return this;
     }
 }

@@ -1,15 +1,16 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 public class DrillDownLeaderboardDefListKey extends LeaderboardDefListKey
 {
     static final String DRILL_DOWN = "DrillDown";
 
     //<editor-fold desc="Constructors">
-    public DrillDownLeaderboardDefListKey()
+    public DrillDownLeaderboardDefListKey(@Nullable Integer page)
     {
-        super(DRILL_DOWN);
+        super(DRILL_DOWN, page);
     }
 
     public DrillDownLeaderboardDefListKey(Bundle args)

@@ -43,7 +43,7 @@ class CommunityPageDTOFactory
                 {
                     collected.addAll(cached);
                 }
-                if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey()))
+                if (ENABLE_COUNTRY_LEADERBOARD_DEF && countryCode != null && key.equals(new MostSkilledLeaderboardDefListKey(1)))
                 {
                     collected.addAll(collectForCountryCodeFromCaches(countryCode));
                 }
@@ -54,7 +54,7 @@ class CommunityPageDTOFactory
 
     @NonNull public LeaderboardDefDTOList collectForCountryCodeFromCaches(@NonNull String countryCode)
     {
-        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getCachedValue(new LeaderboardDefListKey());
+        LeaderboardDefDTOList allKeys = leaderboardDefListCache.getCachedValue(new LeaderboardDefListKey(1));
         if (allKeys != null)
         {
             return allKeys.keepForCountryCode(countryCode);

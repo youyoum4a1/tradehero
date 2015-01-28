@@ -18,6 +18,6 @@ public class ConnectedLeaderboardDefDTO extends LeaderboardDefDTO
 
     @NonNull @Override public LeaderboardDefListKey getLeaderboardDefListKey()
     {
-        return new ConnectedLeaderboardDefListKey();
+        return new ConnectedLeaderboardDefListKey(1);
     }
 }
