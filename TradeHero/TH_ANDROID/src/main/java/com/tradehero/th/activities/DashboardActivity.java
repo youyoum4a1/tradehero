@@ -242,8 +242,15 @@ public class DashboardActivity extends BaseActivity
         dashboardTabHost = (DashboardTabHost) findViewById(android.R.id.tabhost);
         dashboardTabHost.setup();
         dashboardTabHost.setOnTabChangedListener(tabId -> {
-            RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
-            navigator.goToTab(selectedFragmentType);
+            try
+            {
+                RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
+                navigator.goToTab(selectedFragmentType);
+            }
+            catch (java.lang.IllegalStateException e)
+            {
+                Timber.d("setOnTabChangedListener goToTab "+e.toString());
+            }
         });
         navigator.addDashboardFragmentWatcher(analyticsReporter.get());
         navigator.addDashboardFragmentWatcher(dashboardTabHost);
