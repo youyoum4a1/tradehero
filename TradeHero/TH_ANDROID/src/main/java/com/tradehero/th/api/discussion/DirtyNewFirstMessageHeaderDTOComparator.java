@@ -7,6 +7,6 @@ public class DirtyNewFirstMessageHeaderDTOComparator implements Comparator<Messa
 {
     @Override public int compare(MessageHeaderDTO o1, MessageHeaderDTO o2)
     {
-        return o2.id.compareTo(o1.id);
+        return o2.latestMessageAtUtc.compareTo(o1.latestMessageAtUtc);
     }
 }
