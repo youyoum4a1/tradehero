@@ -157,7 +157,11 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     private void enterTimeLineDetail(TimelineItemDTO dto)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
+
+        //For Administrator
+        bundle.putString(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_TIMELINE_FROM, TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT);
+
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 

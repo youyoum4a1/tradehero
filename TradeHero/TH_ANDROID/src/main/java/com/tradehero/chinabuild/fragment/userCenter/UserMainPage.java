@@ -56,12 +56,13 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-16.
@@ -274,7 +275,7 @@ public class UserMainPage extends DashboardFragment
     {
         if (dto == null) return;
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 

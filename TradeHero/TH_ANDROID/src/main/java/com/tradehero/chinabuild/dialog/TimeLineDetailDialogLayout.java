@@ -24,6 +24,16 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
     @InjectView(R.id.view_divider_discuss_delete)View deleteDividerV;
     @InjectView(R.id.view_divider_discuss_report)View reportDividerV;
 
+    //For Administrator
+    @InjectView(R.id.linearlayout_administrator_manage_timeline)LinearLayout managerLL;
+    @InjectView(R.id.textview_administrator_top)TextView topTV;
+    @InjectView(R.id.textview_administrator_learning)TextView learningTV;
+    @InjectView(R.id.textview_administrator_favorite)TextView favoriteTV;
+    @InjectView(R.id.textview_administrator_production)TextView productionTV;
+    @InjectView(R.id.view_divider_administrator_top)View topDividerV;
+    @InjectView(R.id.view_divider_administrator_learning)View learningDividerV;
+
+
     private TimeLineDetailMenuClickListener menuClickListener;
 
 
@@ -74,6 +84,38 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
                 }
             }
         });
+        topTV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (menuClickListener != null) {
+                    menuClickListener.onTopClick();
+                }
+            }
+        });
+        favoriteTV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (menuClickListener != null) {
+                    menuClickListener.onFavoriteClick();
+                }
+            }
+        });
+        productionTV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (menuClickListener != null) {
+                    menuClickListener.onProductionClick();
+                }
+            }
+        });
+        learningTV.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (menuClickListener != null) {
+                    menuClickListener.onLearningClick();
+                }
+            }
+        });
     }
 
     @Override
@@ -86,7 +128,7 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
         this.menuClickListener = menuClickListener;
     }
 
-    public void setBtnStatus(boolean isDeleteAllowed, boolean isReportAllowed) {
+    public void setBtnStatus(boolean isDeleteAllowed, boolean isReportAllowed, boolean isMananger, int isTopType, boolean isProduction, boolean isFavorite, boolean isLearning) {
         if (isDeleteAllowed && deleteTV != null && deleteDividerV!=null) {
             deleteTV.setVisibility(View.VISIBLE);
             deleteDividerV.setVisibility(View.VISIBLE);
@@ -101,14 +143,53 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
             reportTV.setVisibility(View.GONE);
             reportDividerV.setVisibility(View.GONE);
         }
+        if(managerLL==null){
+            return;
+        }
+        if(isMananger){
+            managerLL.setVisibility(View.VISIBLE);
+            if(isTopType ==0){
+                topTV.setVisibility(View.GONE);
+                topDividerV.setVisibility(View.GONE);
+            }else if(isTopType==1){
+                topTV.setText(R.string.administrator_add_top);
+                topTV.setVisibility(View.VISIBLE);
+                topDividerV.setVisibility(View.VISIBLE);
+            }else if(isTopType==2){
+                topTV.setText(R.string.administrator_remove_top);
+                topTV.setVisibility(View.VISIBLE);
+                topDividerV.setVisibility(View.VISIBLE);
+            }
+            if(isProduction){
+                productionTV.setText(R.string.administrator_remove_production);
+            }else{
+                productionTV.setText(R.string.administrator_add_production);
+            }
+            if(isFavorite){
+                favoriteTV.setText(R.string.administrator_remove_favorite);
+            }else {
+                favoriteTV.setText(R.string.administrator_add_favorite);
+            }
+            if(isLearning){
+                learningTV.setVisibility(View.GONE);
+                learningDividerV.setVisibility(View.GONE);
+            }else{
+                learningTV.setVisibility(View.VISIBLE);
+                learningDividerV.setVisibility(View.VISIBLE);
+            }
+        }else {
+            managerLL.setVisibility(View.GONE);
+        }
     }
 
 
     public interface TimeLineDetailMenuClickListener {
         public void onReportClick();
-
         public void onDeleteClick();
-
         public void onShareClick();
+        public void onFavoriteClick();
+        public void onProductionClick();
+        public void onTopClick();
+        public void onLearningClick();
     }
 }

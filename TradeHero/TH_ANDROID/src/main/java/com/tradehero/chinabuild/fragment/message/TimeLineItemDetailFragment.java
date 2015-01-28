@@ -56,10 +56,7 @@ import com.tradehero.th.persistence.discussion.DiscussionCache;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheNew;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.InputTools;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.WeiboUtils;
+import com.tradehero.th.utils.*;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +72,16 @@ import java.util.List;
 public class TimeLineItemDetailFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener, View.OnClickListener
 {
 
-    public static final String BUNDLE_ARGUMENT_DISCUSSTION_ID = "bundle_argment_discusstion_id";
+    public static final String BUNDLE_ARGUMENT_DISCUSSION_ID = "BUNDLE_ARGUMENT_DISCUSSION_ID";
+
+    //For Administrator
+    public static final String BUNDLE_ARGUMENT_TIMELINE_FROM = "BUNDLE_ARGUMENT_TIMELINE_FROM";
+    public static final String BUNDLE_TIMELINE_FROM_LEARNING = "BUNDLE_TIMELINE_FROM_LEARNING";
+    public static final String BUNDLE_TIMELINE_FROM_RECENT = "BUNDLE_TIMELINE_FROM_RECENT";
+    public static final String BUNDLE_TIMELINE_FROM_FAVORITE = "BUNDLE_TIMELINE_FROM_FAVORITE";
+    public static final String BUNDLE_TIMELINE_FROM_REWARD = "BUNDLE_TIMELINE_FROM_REWARD";
+    private String timelineFrom = "";
+
 
     @Inject protected DiscussionCache discussionCache;
     private DTOCacheNew.Listener<DiscussionKey, AbstractDiscussionCompactDTO> discussionFetchListener;
@@ -174,12 +180,16 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public void initArgument()
     {
         Bundle bundle = getArguments();
-        if (bundle.containsKey(BUNDLE_ARGUMENT_DISCUSSTION_ID))
+        if (bundle.containsKey(BUNDLE_ARGUMENT_DISCUSSION_ID))
         {
-            timelineItemDTOKey = discussionKeyFactory.fromBundle(bundle.getBundle(BUNDLE_ARGUMENT_DISCUSSTION_ID));
+            timelineItemDTOKey = discussionKeyFactory.fromBundle(bundle.getBundle(BUNDLE_ARGUMENT_DISCUSSION_ID));
             fetchDiscussion(timelineItemDTOKey, true);
             discussionListKey = new PaginatedDiscussionListKey(timelineItemDTOKey.getType(), timelineItemDTOKey.id, 1, ITEMS_PER_PAGE);
             fetchDiscussList(true);
+        }
+        //For Administrator
+        if(bundle.containsKey(BUNDLE_ARGUMENT_TIMELINE_FROM)){
+            timelineFrom = bundle.getString(BUNDLE_ARGUMENT_TIMELINE_FROM);
         }
     }
 
@@ -985,7 +995,27 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                         share();
                         timeLineDetailMenuDialog.dismiss();
                     }
-                }, isDeleteAllowed, isReportAllowed);
+
+                    @Override
+                    public void onFavoriteClick() {
+
+                    }
+
+                    @Override
+                    public void onProductionClick() {
+
+                    }
+
+                    @Override
+                    public void onTopClick() {
+
+                    }
+
+                    @Override
+                    public void onLearningClick() {
+
+                    }
+                }, isDeleteAllowed, isReportAllowed, isManager(), isTopType(), isProduction(), isFavorite(), isLearning());
     }
 
     public void onCommentClick(final int position)
@@ -1431,4 +1461,38 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
         }
     }
+
+    private boolean isManager(){
+        if(userProfileCache!=null && currentUserId!=null && Constants.isManager) {
+            UserProfileDTO meProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if(meProfileDTO!=null && meProfileDTO.isAdmin){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+
+    private int isTopType(){
+        if(timelineFrom.equals("")){
+            return 0;
+        }
+        return 0;
+    }
+
+    private boolean isFavorite(){
+        return false;
+    }
+
+    private boolean isProduction(){
+        return false;
+    }
+
+    private boolean isLearning(){
+        return false;
+    }
+
+
 }

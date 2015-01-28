@@ -133,7 +133,7 @@ public class DiscoveryStockGodNewsFragment extends DashboardFragment
     public void enterTimeLineDetail(TimelineItemDTO dto)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
         gotoDashboard(TimeLineItemDetailFragment.class, bundle);
     }
 

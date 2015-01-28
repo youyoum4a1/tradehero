@@ -28,10 +28,10 @@ public class DialogFactory {
     }
 
     public Dialog createTimeLineDetailDialog(@NotNull Context context, @NotNull TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener menuClickListener,
-                                             boolean isDeleteAllowed, boolean isReportAllowed) {
+                                             boolean isDeleteAllowed, boolean isReportAllowed, boolean isMananger, int isTopType, boolean isProduction, boolean isFavorite, boolean isLearning) {
         TimeLineDetailDialogLayout contentView = (TimeLineDetailDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_detail_dialog_layout, null);
         contentView.setMenuClickListener(menuClickListener);
-        contentView.setBtnStatus(isDeleteAllowed, isReportAllowed);
+        contentView.setBtnStatus(isDeleteAllowed, isReportAllowed, isMananger, isTopType, isProduction, isFavorite, isLearning);
         return THDialog.showUpDialog(context, contentView);
     }
 
@@ -39,11 +39,11 @@ public class DialogFactory {
                                               boolean isApplyAllowed, boolean isDeleteAllowed, boolean isReportAllowed) {
         TimeLineCommentDialogLayout contentView = (TimeLineCommentDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_comment_dialog_layout, null);
         contentView.setMenuClickListener(menuClickListener);
-        contentView.setBtnStatus(isReportAllowed,isDeleteAllowed, isApplyAllowed);
+        contentView.setBtnStatus(isReportAllowed, isDeleteAllowed, isApplyAllowed);
         return THDialog.showUpDialog(context, contentView);
     }
 
-    public Dialog createTimeLineReportDialog(@NotNull Context context, @NotNull TimeLineReportDialogLayout.TimeLineReportMenuClickListener menuClickListener){
+    public Dialog createTimeLineReportDialog(@NotNull Context context, @NotNull TimeLineReportDialogLayout.TimeLineReportMenuClickListener menuClickListener) {
         TimeLineReportDialogLayout contentView = (TimeLineReportDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_report_dialog_layout, null);
         contentView.setMenuClickListener(menuClickListener);
         return THDialog.showUpDialog(context, contentView);

@@ -7,11 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.*;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
@@ -26,11 +22,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.NotificationListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.notification.NotificationListKey;
-import com.tradehero.th.api.notification.PaginatedNotificationDTO;
-import com.tradehero.th.api.notification.PaginatedNotificationListKey;
+import com.tradehero.th.api.notification.*;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -40,12 +32,13 @@ import com.tradehero.th.persistence.notification.NotificationListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 
 /*
@@ -362,7 +355,7 @@ public class NotificationFragment extends DashboardFragment
         Bundle discussBundle = new Bundle();
         discussBundle.putString(DiscussionKey.BUNDLE_KEY_TYPE, type.name());
         discussBundle.putInt(DiscussionKey.BUNDLE_KEY_ID, replyableId);
-        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, discussBundle);
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, discussBundle);
         pushFragment(TimeLineItemDetailFragment.class, bundle);
         return;
     }

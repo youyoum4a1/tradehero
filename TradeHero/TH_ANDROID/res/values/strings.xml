@@ -500,4 +500,15 @@
   <string name="discovery_square_favorite_description">股神切磋投资技巧</string>
   <string name="discovery_square_novice">新手学堂</string>
   <string name="discovery_square_novice_description">不会用软件？不懂股市？进来瞧瞧！</string>
+
+  <!-- Administrator -->
+  <string name="administrator_add_favorite">加精</string>
+  <string name="administrator_remove_favorite">取消加精</string>
+  <string name="administrator_add_top">置顶</string>
+  <string name="administrator_remove_top">取消置顶</string>
+  <string name="administrator_add_production">公告</string>
+  <string name="administrator_remove_production">取消公告</string>
+  <string name="administrator_add_learning">设为新手教学贴</string>
+  <!-- Administrator -->
+
 </resources>

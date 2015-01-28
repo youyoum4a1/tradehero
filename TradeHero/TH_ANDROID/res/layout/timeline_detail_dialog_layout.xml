@@ -35,4 +35,55 @@
               android:textSize="17sp"
               android:text="@string/discovery_discuss_send_share"
               android:textColor="@color/black"/>
+    <LinearLayout android:id="@+id/linearlayout_administrator_manage_timeline"
+                  android:visibility="gone" android:orientation="vertical" android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <View android:layout_width="match_parent" android:layout_height="1px"
+              android:background="@color/discovery_discuss_reward_gray"
+              android:id="@+id/view_divider_administrator_top"
+                />
+        <TextView android:id="@+id/textview_administrator_top"
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/listPreferredItemHeight"
+                  android:textAppearance="?android:attr/textAppearanceListItem"
+                  android:gravity="center_vertical|center_horizontal"
+                  android:textSize="17sp"
+                  android:text="@string/administrator_add_top"
+                  android:textColor="@color/black"/>
+        <View android:layout_width="match_parent" android:layout_height="1px"
+              android:background="@color/discovery_discuss_reward_gray"
+                />
+        <TextView android:id="@+id/textview_administrator_favorite"
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/listPreferredItemHeight"
+                  android:textAppearance="?android:attr/textAppearanceListItem"
+                  android:gravity="center_vertical|center_horizontal"
+                  android:textSize="17sp"
+                  android:text="@string/administrator_add_favorite"
+                  android:textColor="@color/black"/>
+        <View android:layout_width="match_parent" android:layout_height="1px"
+              android:background="@color/discovery_discuss_reward_gray"
+                />
+        <TextView android:id="@+id/textview_administrator_production"
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/listPreferredItemHeight"
+                  android:textAppearance="?android:attr/textAppearanceListItem"
+                  android:gravity="center_vertical|center_horizontal"
+                  android:textSize="17sp"
+                  android:text="@string/administrator_add_production"
+                  android:textColor="@color/black"/>
+        <View android:layout_width="match_parent" android:layout_height="1px"
+              android:id="@+id/view_divider_administrator_learning"
+              android:background="@color/discovery_discuss_reward_gray"
+                />
+        <TextView android:id="@+id/textview_administrator_learning"
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/listPreferredItemHeight"
+                  android:textAppearance="?android:attr/textAppearanceListItem"
+                  android:gravity="center_vertical|center_horizontal"
+                  android:textSize="17sp"
+                  android:text="@string/administrator_add_learning"
+                  android:textColor="@color/black"/>
+    </LinearLayout>
 </com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout>

@@ -54,14 +54,15 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SecurityDiscussOrNewsFragment extends DashboardFragment implements DiscussionListCacheNew.DiscussionKeyListListener
 {
@@ -229,7 +230,7 @@ public class SecurityDiscussOrNewsFragment extends DashboardFragment implements 
     public void enterTimeLineDetail(AbstractDiscussionCompactDTO dto)
     {
         Bundle bundle = new Bundle();
-        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSTION_ID, dto.getDiscussionKey().getArgs());
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 
