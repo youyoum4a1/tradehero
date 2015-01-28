@@ -16,8 +16,7 @@ import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
-import com.tradehero.th.api.DTOView;
+import com.tradehero.th.adapters.PagedDTOAdapter;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.ArrayList;
@@ -32,8 +31,7 @@ abstract public class BasePagedListRxFragment<
         PagedDTOKeyType extends PagedDTOKey,
         DTOType extends DTO,
         DTOListType extends DTO & List<DTOType>,
-        ContainerDTOType extends DTO & ContainerDTO<DTOType, DTOListType>,
-        ViewType extends View & DTOView<DTOType>>
+        ContainerDTOType extends DTO & ContainerDTO<DTOType, DTOListType>>
         extends BasePurchaseManagerFragment
 {
     private final static String BUNDLE_KEY_PER_PAGE = BasePagedListRxFragment.class.getName() + ".perPage";
@@ -48,7 +46,7 @@ abstract public class BasePagedListRxFragment<
     protected int perPage = DEFAULT_PER_PAGE;
     protected FlagNearEdgeScrollListener nearEndScrollListener;
 
-    protected PagedViewDTOAdapter<DTOType, ViewType> itemViewAdapter;
+    protected PagedDTOAdapter<DTOType> itemViewAdapter;
     @NonNull protected Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected Map<Integer, Subscription> pagedPastSubscriptions;
     protected DTOType selectedItem;
@@ -125,7 +123,7 @@ abstract public class BasePagedListRxFragment<
         updateVisibilities();
     }
 
-    @NonNull abstract protected PagedViewDTOAdapter<DTOType, ViewType> createItemViewAdapter();
+    @NonNull abstract protected PagedDTOAdapter<DTOType> createItemViewAdapter();
 
     @Nullable protected Integer getNextPageToRequest()
     {

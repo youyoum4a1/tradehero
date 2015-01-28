@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.security.SecurityItemView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -13,7 +12,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
-abstract public class TrendingBaseFragment extends SecurityListRxFragment<SecurityItemView>
+abstract public class TrendingBaseFragment extends SecurityListRxFragment
 {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;

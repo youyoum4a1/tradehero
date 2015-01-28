@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.competition;
 import android.support.annotation.NonNull;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
@@ -24,7 +23,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
         fetchFXPrice();
     }
 
-    @NonNull @Override protected PagedViewDTOAdapter createItemViewAdapter()
+    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(
                 getActivity(),
@@ -45,6 +44,6 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
     private void handlePricesReceived(@NonNull List<QuoteDTO> list)
     {
         ((SecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
-        itemViewAdapter.notifyDataSetChanged();
+        ((SecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
     }
 }

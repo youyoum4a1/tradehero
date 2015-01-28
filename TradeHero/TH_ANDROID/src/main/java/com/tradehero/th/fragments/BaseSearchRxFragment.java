@@ -17,7 +17,6 @@ import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.List;
 import javax.inject.Inject;
@@ -26,14 +25,12 @@ abstract public class BaseSearchRxFragment<
         PagedDTOKeyType extends PagedDTOKey,
         DTOType extends DTO,
         DTOListType extends DTO & List<DTOType>,
-        ContainerDTOType extends DTO & ContainerDTO<DTOType, DTOListType>,
-        ViewType extends View & DTOView<DTOType>>
+        ContainerDTOType extends DTO & ContainerDTO<DTOType, DTOListType>>
         extends BasePagedListRxFragment<
         PagedDTOKeyType,
         DTOType,
         DTOListType,
-        ContainerDTOType,
-        ViewType>
+        ContainerDTOType>
 {
     private final static String BUNDLE_KEY_CURRENT_SEARCH_STRING = BaseSearchRxFragment.class.getName() + ".currentSearchString";
 

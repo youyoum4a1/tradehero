@@ -10,7 +10,6 @@ import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -31,8 +30,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         SecurityListType,
         SecurityCompactDTO,
         SecurityCompactDTOList,
-        SecurityCompactDTOList,
-        SecurityItemView>
+        SecurityCompactDTOList>
         implements HasSelectedItem
 {
     private static final String BUNDLE_KEY_ASSET_CLASS = SecuritySearchProviderFragment.class.getName() + ".assetClass";
@@ -122,7 +120,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return selectedItem;
     }
 
-    @Override @NonNull protected PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
+    @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(
                 getActivity(),

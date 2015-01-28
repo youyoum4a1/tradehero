@@ -8,19 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.WarrantType;
 import com.tradehero.th.api.security.WarrantTypeShortCode;
 import com.tradehero.th.api.security.key.SecurityListType;
 import javax.inject.Inject;
 
-public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragment<SecurityItemView>
+public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragment
 {
     private static final String BUNDLE_WARRANT_TYPE_SHORT_CODE_KEY = ProviderWarrantListRxFragment.class + ".warrantType";
-    @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     @Nullable private WarrantType warrantType;
 
@@ -56,7 +54,7 @@ public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragmen
         SecuritySearchProviderFragment.putAssetClass(args, AssetClass.WARRANT);
     }
 
-    @NonNull @Override protected PagedViewDTOAdapter<SecurityCompactDTO, SecurityItemView> createItemViewAdapter()
+    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.warrant_security_item);
     }

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
+import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.education.PagedVideoCategories;
 import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
@@ -23,9 +23,7 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
         PagedVideoCategories,
         VideoCategoryDTO,
         VideoCategoryDTOList,
-        PaginatedVideoCategoryDTO,
-        VideoCategoryView
-        >
+        PaginatedVideoCategoryDTO>
 {
     @Inject PaginatedVideoCategoryCacheRx paginatedVideoCategoryCache;
     @Inject Analytics analytics;
@@ -47,9 +45,9 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
     }
 
-    @Override @NonNull protected PagedViewDTOAdapter<VideoCategoryDTO, VideoCategoryView> createItemViewAdapter()
+    @Override @NonNull protected PagedViewDTOAdapterImpl<VideoCategoryDTO, VideoCategoryView> createItemViewAdapter()
     {
-        return new PagedViewDTOAdapter<>(getActivity(), R.layout.video_category_item_view);
+        return new PagedViewDTOAdapterImpl<>(getActivity(), R.layout.video_category_item_view);
     }
 
     @Override @NonNull protected DTOCacheRx<PagedVideoCategories, PaginatedVideoCategoryDTO> getCache()

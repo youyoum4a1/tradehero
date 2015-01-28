@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapter;
-import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
@@ -33,8 +31,8 @@ import javax.inject.Inject;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
 
-public class ProviderSecurityListRxFragment<ViewType extends View & DTOView<SecurityCompactDTO>>
-        extends SecurityListRxFragment<ViewType>
+public class ProviderSecurityListRxFragment
+        extends SecurityListRxFragment
 {
     @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
     @Inject ProviderCacheRx providerCache;
@@ -144,7 +142,7 @@ public class ProviderSecurityListRxFragment<ViewType extends View & DTOView<Secu
         super.onDestroy();
     }
 
-    @NonNull @Override protected PagedViewDTOAdapter createItemViewAdapter()
+    @NonNull @Override protected SecurityPagedViewDTOAdapter createItemViewAdapter()
     {
         return new SecurityPagedViewDTOAdapter(getActivity(), R.layout.trending_security_item);
     }

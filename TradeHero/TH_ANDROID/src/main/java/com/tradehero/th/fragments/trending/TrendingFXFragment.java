@@ -180,7 +180,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void handlePricesReceived(List<QuoteDTO> list)
     {
         ((SecurityPagedViewDTOAdapter) itemViewAdapter).updatePrices(list);
-        itemViewAdapter.notifyDataSetChanged();
+        ((SecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
     }
 
     @Override public boolean canMakePagedDtoKey()
