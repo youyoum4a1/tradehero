@@ -62,8 +62,8 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
         leaderboardDefKey = getLeadboardDefKey(getArguments());
+        super.onCreate(savedInstanceState);
         subscriptions = new SubscriptionList();
     }
 
@@ -85,6 +85,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     @Override public void onStop()
     {
         subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
         super.onStop();
     }
 
@@ -126,7 +127,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
                 .subscribe(
                         this::setCurrentUserProfileDTO,
                         e -> {
-                            Timber.e("Failed to download current UserProfile", e);
+                            Timber.e(e, "Failed to download current UserProfile");
                             THToast.show(R.string.error_fetch_your_user_profile);
                         }));
     }

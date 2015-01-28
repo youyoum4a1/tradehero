@@ -3,23 +3,19 @@ package com.tradehero.th.fragments.leaderboard;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
-import com.android.internal.util.Predicate;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.adapters.PagedDTOAdapter;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -40,18 +36,17 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
-import retrofit.RetrofitError;
-import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.internal.util.SubscriptionList;
+import timber.log.Timber;
 
-public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragment
+public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
+        LeaderboardFriendsKey,
+        FriendLeaderboardUserDTO,
+        FriendLeaderboardUserDTOList,
+        ProcessableLeaderboardFriendsDTO>
 {
-    @Nullable @Optional @InjectView(R.id.leaderboard_mark_user_listview) ListView leaderboardMarkUserListView;
-    @InjectView(R.id.progress) ProgressBar mProgress;
     @Nullable protected View headerView;
 
-    protected LeaderboardFriendsSetAdapter leaderboardFriendsUserListAdapter;
     private TextView leaderboardMarkUserMarkingTime;
     @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
@@ -60,18 +55,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
 
     protected FollowDialogCombo followDialogCombo;
-    @Nullable Subscription friendsSubscription;
-    @NonNull SubscriptionList subscriptions;
-
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        subscriptions = new SubscriptionList();
-        leaderboardFriendsUserListAdapter = new LeaderboardFriendsSetAdapter(
-                getActivity(),
-                R.layout.lbmu_item_roi_mode,
-                R.layout.leaderboard_friends_social_item_view);
-    }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -79,30 +62,17 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
         View view = inflater.inflate(R.layout.leaderboard_friends_listview, container, false);
         ButterKnife.inject(this, view);
 
-        if (leaderboardMarkUserListView != null)
+        if (listView != null)
         {
             headerView = inflateHeaderView(inflater, container);
-            leaderboardMarkUserListView.setEmptyView(inflateEmptyView(inflater, container));
-        }
-        return view;
-    }
-
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-
-        if (leaderboardMarkUserListView != null)
-        {
-            leaderboardMarkUserListView.setOnItemClickListener(singleExpandingListViewListener);
-            leaderboardMarkUserListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
             if (headerView != null)
             {
-                leaderboardMarkUserListView.addHeaderView(headerView, null, false);
+                ((ListView) listView).addHeaderView(headerView, null, false);
                 initHeaderView();
             }
-            leaderboardMarkUserListView.setAdapter(leaderboardFriendsUserListAdapter);
+            listView.setEmptyView(inflateEmptyView(inflater, container));
         }
-        leaderboardFriendsUserListAdapter.setFollowRequestedListener(new LeaderboardMarkUserListFollowRequestedListener());
+        return view;
     }
 
     protected View inflateHeaderView(@NonNull LayoutInflater inflater, ViewGroup container)
@@ -134,9 +104,11 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override public void onStart()
     {
         super.onStart();
-        leaderboardFriendsUserListAdapter.clear();
-        leaderboardFriendsUserListAdapter.notifyDataSetChanged();
-        fetchLeaderboardFriends();
+        subscriptions.add(((LeaderboardFriendsSetAdapter) itemViewAdapter).getFollowRequestObservable()
+                .subscribe(
+                        this::handleFollowRequested,
+                        e -> Timber.e(e, "Error on follow requested")));
+        requestDtos();
     }
 
     @Override public void onResume()
@@ -166,30 +138,34 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     {
         subscriptions.unsubscribe();
         detachFollowDialogCombo();
-        unsubscribe(friendsSubscription);
-        friendsSubscription = null;
         super.onStop();
     }
 
     @Override public void onDestroyView()
     {
-        leaderboardFriendsUserListAdapter.setFollowRequestedListener(null);
-        if (leaderboardMarkUserListView != null)
-        {
-            leaderboardMarkUserListView.setOnItemClickListener(null);
-            leaderboardMarkUserListView.setOnScrollListener(null);
-        }
-
         headerView = null;
-        ButterKnife.reset(this);
         super.onDestroyView();
     }
 
     @Override public void onDestroy()
     {
-        leaderboardFriendsUserListAdapter.clear();
-        leaderboardFriendsUserListAdapter = null;
+        itemViewAdapter.clear();
         super.onDestroy();
+    }
+
+    @NonNull @Override protected PagedDTOAdapter<FriendLeaderboardUserDTO> createItemViewAdapter()
+    {
+        return new LeaderboardFriendsSetAdapter(
+                getActivity(),
+                R.layout.lbmu_item_roi_mode,
+                R.layout.leaderboard_friends_social_item_view);
+    }
+
+    @NonNull @Override protected DTOCacheRx<LeaderboardFriendsKey, ProcessableLeaderboardFriendsDTO> getCache()
+    {
+        return new ProcessableLeaderboardFriendsCache(
+                leaderboardFriendsCache,
+                ((LeaderboardFriendsSetAdapter) itemViewAdapter).createItemFactory());
     }
 
     protected void detachFollowDialogCombo()
@@ -215,50 +191,32 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
     @Override protected void setCurrentUserProfileDTO(@NonNull UserProfileDTO currentUserProfileDTO)
     {
         super.setCurrentUserProfileDTO(currentUserProfileDTO);
-        if (leaderboardFriendsUserListAdapter != null)
+        if (itemViewAdapter != null)
         {
-            leaderboardFriendsUserListAdapter.setCurrentUserProfileDTO(currentUserProfileDTO);
-            leaderboardFriendsUserListAdapter.notifyDataSetChanged();
+            ((LeaderboardFriendsSetAdapter) itemViewAdapter).setCurrentUserProfileDTO(currentUserProfileDTO);
+            ((LeaderboardFriendsSetAdapter) itemViewAdapter).notifyDataSetChanged();
         }
     }
 
-    private void fetchLeaderboardFriends()
+    @Override protected void onNext(@NonNull LeaderboardFriendsKey key, @NonNull ProcessableLeaderboardFriendsDTO value)
     {
-        unsubscribe(friendsSubscription);
-        friendsSubscription = AndroidObservable.bindFragment(this,
-                leaderboardFriendsCache.get(new LeaderboardFriendsKey()))
-                .subscribe(this::handleFriendsLeaderboardReceived,
-                        this::handleFriendsError);
-    }
-
-    protected void handleFriendsLeaderboardReceived(@NonNull Pair<LeaderboardFriendsKey, LeaderboardFriendsDTO> pair)
-    {
-        mProgress.setVisibility(View.INVISIBLE);
-        Date markingTime = pair.second.leaderboard.markUtc;
+        super.onNext(key, value);
+        Date markingTime = value.leaderboardFriendsDTO.leaderboard.markUtc;
         if (markingTime != null && leaderboardMarkUserMarkingTime != null)
         {
             leaderboardMarkUserMarkingTime.setText(
                     String.format("(%s)", prettyTime.get().format(markingTime)));
         }
-        leaderboardFriendsUserListAdapter.set(pair.second);
     }
 
-    protected void handleFriendsError(@NonNull Throwable e)
+    @Override public boolean canMakePagedDtoKey()
     {
-        mProgress.setVisibility(View.INVISIBLE);
-        if (e instanceof RetrofitError)
-        {
-            THToast.show(new THException(e));
-        }
+        return true;
     }
 
-    protected class LeaderboardMarkUserListFollowRequestedListener
-            implements LeaderboardMarkUserItemView.OnFollowRequestedListener
+    @NonNull @Override public LeaderboardFriendsKey makePagedDtoKey(int page)
     {
-        @Override public void onFollowRequested(@NonNull UserBaseDTO userBaseDTO)
-        {
-            handleFollowRequested(userBaseDTO);
-        }
+        return new LeaderboardFriendsKey(page);
     }
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
@@ -289,13 +247,15 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardFragme
 
     private void updateListViewRow(final UserBaseKey heroId)
     {
-        AdapterView list = leaderboardMarkUserListView;
-        adapterViewUtilsLazy.get().updateSingleRowWhere(list, FriendLeaderboardMarkedUserDTO.class, new Predicate<FriendLeaderboardMarkedUserDTO>()
-        {
-            @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
-            {
-                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
-            }
-        });
+        adapterViewUtilsLazy.get().updateSingleRowWhere(
+                listView,
+                FriendLeaderboardMarkedUserDTO.class,
+                friendLeaderboardMarkedUserDTO -> friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId));
+    }
+
+    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        super.onItemClick(parent, view, position, id);
+        singleExpandingListViewListener.onItemClick(parent, view, position, id);
     }
 }

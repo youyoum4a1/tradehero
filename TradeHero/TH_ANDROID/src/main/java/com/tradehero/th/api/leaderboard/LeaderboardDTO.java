@@ -1,19 +1,18 @@
 package com.tradehero.th.api.leaderboard;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.BaseHasExpiration;
+import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.portfolio.AssetClass;
 import java.io.IOException;
 import java.util.Date;
 
 public class LeaderboardDTO extends BaseHasExpiration
-        implements DTO
+        implements DTO, ContainerDTO<LeaderboardUserDTO, LeaderboardUserDTOList>
 {
     public static final String INCLUDE_FOF = "INCLUDE_FOF";
     public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 300;
@@ -101,5 +100,15 @@ public class LeaderboardDTO extends BaseHasExpiration
             return 1/v;
         }
         return (double)2;
+    }
+
+    @Override public int size()
+    {
+        return users == null ? 0 : users.size();
+    }
+
+    @Override @NonNull public LeaderboardUserDTOList getList()
+    {
+        return users == null ? new LeaderboardUserDTOList() : users;
     }
 }

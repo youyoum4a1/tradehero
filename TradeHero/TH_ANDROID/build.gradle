@@ -285,7 +285,7 @@ dependencies {
   //  exclude group: 'com.android.support', module: 'support-v4'
   //}
 
-  debugCompile 'com.facebook.android:library:3.18.1@aar' // 3.19.1 gives 65k error
+  debugCompile 'com.facebook.android:library:3.15.0@aar' // 3.19.1 gives 65k error
   releaseCompile 'com.facebook.android:library:3.22.0@aar'
   compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
 

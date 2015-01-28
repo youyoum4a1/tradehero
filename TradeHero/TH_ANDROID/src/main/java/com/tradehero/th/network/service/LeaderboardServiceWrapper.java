@@ -14,6 +14,7 @@ import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
@@ -67,7 +68,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Leaderboard">
-    public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
+    @NonNull public Observable<LeaderboardDTO> getLeaderboardRx(@NonNull LeaderboardKey leaderboardKey)
     {
         Integer lbType =
                 leaderboardKey.getAssetClass() != null? leaderboardKey.getAssetClass().getValue() : null;
@@ -130,8 +131,12 @@ import rx.Observable;
         return leaderboardServiceRx.getLeaderboard(leaderboardKey.id, lbType, null, null);
     }
 
-    public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx()
+    @NonNull public Observable<LeaderboardFriendsDTO> getNewFriendsLeaderboardRx(@NonNull LeaderboardFriendsKey key)
     {
+        if (!key.page.equals(1))
+        {
+            return Observable.just(new LeaderboardFriendsDTO());
+        }
         return leaderboardServiceRx.getNewFriendsLeaderboard();
     }
     //</editor-fold>

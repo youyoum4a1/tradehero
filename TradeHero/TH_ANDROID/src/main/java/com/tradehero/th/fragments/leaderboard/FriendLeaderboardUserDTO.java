@@ -1,8 +1,9 @@
 package com.tradehero.th.fragments.leaderboard;
 
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.adapters.ExpandableItem;
 
-abstract public class FriendLeaderboardUserDTO implements ExpandableItem
+abstract public class FriendLeaderboardUserDTO implements ExpandableItem, DTO
 {
     private boolean expanded;
     private int position;

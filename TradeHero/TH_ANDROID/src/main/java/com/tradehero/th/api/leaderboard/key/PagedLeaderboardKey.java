@@ -3,10 +3,12 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.api.PagedDTOKey;
 import java.util.Iterator;
 import java.util.Set;
 
 public class PagedLeaderboardKey extends LeaderboardKey
+    implements PagedDTOKey
 {
     public final static String BUNDLE_KEY_PAGE = PagedLeaderboardKey.class.getName() + ".page";
     public static final String STRING_SET_LEFT_PAGE = "page";
@@ -56,6 +58,11 @@ public class PagedLeaderboardKey extends LeaderboardKey
     {
         return super.equalFields(other)
                 && (page == null ? other.page == null : page.equals(other.page));
+    }
+
+    @Override @Nullable public Integer getPage()
+    {
+        return page;
     }
 
     public PagedLeaderboardKey cloneAtPage(int page)

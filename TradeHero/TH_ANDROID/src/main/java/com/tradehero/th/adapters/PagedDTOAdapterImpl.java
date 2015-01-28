@@ -86,16 +86,20 @@ public class PagedDTOAdapterImpl<DTOType> extends ArrayAdapter<DTOType>
 
     protected void rebuild()
     {
+        super.clear();
+        super.addAll(makeItems());
+        notifyDataSetChanged();
+        setNotifyOnChange(true);
+    }
+
+    @NonNull protected List<DTOType> makeItems()
+    {
         List<DTOType> items = new ArrayList<>();
         for (Integer page : getPages())
         {
             items.addAll(pagedObjects.get(page));
         }
-        setNotifyOnChange(false);
-        super.clear();
-        super.addAll(items);
-        notifyDataSetChanged();
-        setNotifyOnChange(true);
+        return items;
     }
 
     @Override public boolean hasPage(int page)

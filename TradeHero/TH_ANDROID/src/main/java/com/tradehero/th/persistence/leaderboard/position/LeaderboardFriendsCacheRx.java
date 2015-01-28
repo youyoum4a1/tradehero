@@ -18,6 +18,7 @@ public class LeaderboardFriendsCacheRx extends BaseFetchDTOCacheRx<LeaderboardFr
 
     @NonNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
 
+    //<editor-fold desc="Constructors">
     @Inject public LeaderboardFriendsCacheRx(
             @NonNull LeaderboardServiceWrapper leaderboardServiceWrapper,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
@@ -25,9 +26,10 @@ public class LeaderboardFriendsCacheRx extends BaseFetchDTOCacheRx<LeaderboardFr
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
     }
+    //</editor-fold>
 
     @NonNull @Override protected Observable<LeaderboardFriendsDTO> fetch(@NonNull LeaderboardFriendsKey key)
     {
-        return leaderboardServiceWrapper.getNewFriendsLeaderboardRx();
+        return leaderboardServiceWrapper.getNewFriendsLeaderboardRx(key);
     }
 }

@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.leaderboard;
 
 import android.os.Bundle;
 import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.fragments.DashboardNavigator;
