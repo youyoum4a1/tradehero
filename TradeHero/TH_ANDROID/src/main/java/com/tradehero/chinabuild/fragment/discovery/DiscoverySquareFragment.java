@@ -18,6 +18,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
@@ -53,7 +54,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) CirclePageIndicator indicator;
     @InjectView(R.id.btnBannerClose) Button btnBannerClose;
-    private List<View> views = new ArrayList<View>();
+    private List<View> views = new ArrayList();
     private Timer timer;
 
     @Override
@@ -96,6 +97,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     public void onClickBanner()
     {
         dismissTopBanner();
+        MainActivity.SHOW_ADVERTISEMENT = false;
     }
 
     public void dismissTopBanner()
@@ -103,28 +105,23 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         Animation animation = AnimationUtils.loadAnimation(getActivity(),R.anim.alpha_out);
         animation.setAnimationListener(new Animation.AnimationListener()
         {
-            @Override public void onAnimationStart(Animation animation)
-            {
-
-            }
-
+            @Override public void onAnimationStart(Animation animation){}
             @Override public void onAnimationEnd(Animation animation)
             {
                 rlTopBanner.setVisibility(View.GONE);
             }
-
-            @Override public void onAnimationRepeat(Animation animation)
-            {
-
-            }
+            @Override public void onAnimationRepeat(Animation animation){}
         });
         rlTopBanner.startAnimation(animation);
     }
 
     private void initTopBanner()
     {
+        if(!MainActivity.SHOW_ADVERTISEMENT){
+            return;
+        }
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        views = new ArrayList<View>();
+        views = new ArrayList();
         rlTopBanner.setVisibility(View.VISIBLE);
 
         for (int i = 0; i < 3; i++)
@@ -132,7 +129,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             View view = layoutInflater.inflate(R.layout.search_square_top_banner_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.imgTopBannerItem);
             picasso.get()
-                    .load("http://g.hiphotos.baidu.com/image/pic/item/37d12f2eb9389b50e114062d8635e5dde6116ee2.jpg")
+                    .load("http://s10.sinaimg.cn/orignal/4a9f5ee165a82e42a0459.jpg")
                     .placeholder(R.drawable.default_image)
                     .error(R.drawable.default_image)
                     .into(imageView);

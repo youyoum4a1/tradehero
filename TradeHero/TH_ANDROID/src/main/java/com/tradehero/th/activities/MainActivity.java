@@ -123,6 +123,10 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private static final int TAB_ME = 4;
 
     public long TIME_PRESSED_BACK = -1;
+
+    //Advertisement Record
+    public static boolean SHOW_ADVERTISEMENT = true;
+
     /**
      * 定义数组来存放Fragment界面
      */

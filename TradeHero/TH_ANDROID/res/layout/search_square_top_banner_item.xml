@@ -3,16 +3,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contest_center_content_screen"
-    android:background="@color/bg_fragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:layout_height="match_parent">
   <ImageView
       android:id="@+id/imgTopBannerItem"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:scaleType="fitXY"
-      android:background="@drawable/default_image"/>
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="fitXY"/>
 </LinearLayout>
 

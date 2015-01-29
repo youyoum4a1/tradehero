@@ -11,13 +11,12 @@
             android:layout_width="fill_parent"
             android:orientation="vertical"
             android:layout_height="60dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
         <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                />
+                android:layout_height="match_parent"/>
 
         <com.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/indicator"
@@ -27,8 +26,7 @@
                 android:layout_marginBottom="2dp"
                 android:background="@color/transparent"
                 android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                />
+                android:layout_alignParentBottom="true"/>
 
         <Button
                 android:id="@+id/btnBannerClose"
@@ -37,13 +35,13 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/btn_search_x_xml"/>
+                android:background="@drawable/btn_x"/>
     </RelativeLayout>
 
     <LinearLayout
             android:layout_marginTop="5dp" android:orientation="horizontal"
             android:id="@+id/linearlayout_square_learning"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#ffffff">
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/listview_item_selector">
 
         <ImageView android:layout_width="43dp" android:layout_height="43dp"
                    android:background="@drawable/square_novice"
@@ -77,7 +75,7 @@
     </RelativeLayout>
     <LinearLayout
             android:orientation="horizontal" android:id="@+id/linearlayout_square_favorite"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#ffffff">
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/listview_item_selector">
 
         <ImageView android:layout_width="43dp" android:layout_height="43dp"
                    android:background="@drawable/square_favorite"
@@ -111,7 +109,7 @@
     </RelativeLayout>
     <LinearLayout
             android:orientation="horizontal" android:id="@+id/linearlayout_square_reward"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#ffffff">
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/listview_item_selector">
 
         <ImageView android:layout_width="43dp" android:layout_height="43dp"
                    android:background="@drawable/square_reward"
@@ -145,7 +143,7 @@
     </RelativeLayout>
     <LinearLayout android:orientation="horizontal" android:id="@+id/linearlayout_square_recent"
                   android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:background="#ffffff">
+                  android:background="@drawable/listview_item_selector">
         <ImageView android:layout_width="43dp" android:layout_height="43dp"
                    android:background="@drawable/square_discuss"
                    android:layout_margin="15dp"/>
