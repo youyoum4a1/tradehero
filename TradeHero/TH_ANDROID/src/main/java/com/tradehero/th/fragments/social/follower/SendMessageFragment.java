@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -153,7 +154,7 @@ public class SendMessageFragment extends DashboardFragment
         unsubscribe(userProfileSubscription);
         userProfileSubscription = AndroidObservable.bindFragment(
                 this,
-                userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second))
+                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchUserProfileFailed);

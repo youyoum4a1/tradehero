@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClickSticky;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -196,7 +197,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         Observable<LeaderboardDefDTOList> leaderboardDefObservable =
                 leaderboardDefListCache.get().get(new LeaderboardDefListKey(1))
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .map(leaderboardDefDTOs -> communityPageDTOFactory.collectFromCaches(null)) // TODO remove communityPageDTOFactory
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());

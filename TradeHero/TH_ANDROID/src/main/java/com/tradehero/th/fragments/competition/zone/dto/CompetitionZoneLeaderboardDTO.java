@@ -15,7 +15,6 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
     }
     //</editor-fold>
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable public Boolean isActive()
     {
         if (competitionDTO == null || competitionDTO.leaderboard == null)

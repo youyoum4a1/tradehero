@@ -42,11 +42,4 @@ public interface PortfolioServiceRx
             @Path("portfolioId") int portfolioId,
             @Body PurchaseReportDTO purchaseReportDTO);
     //</editor-fold>
-
-    //<editor-fold desc="Mark One User Portfolio">
-    @POST("/users/{userId}/portfolios/{portfolioId}/mark")
-    Observable<PortfolioDTO> markPortfolio(
-            @Path("userId") int userId,
-            @Path("portfolioId") int portfolioId);
-    //</editor-fold>
 }

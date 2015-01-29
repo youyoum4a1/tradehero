@@ -22,6 +22,7 @@ import butterknife.OnCheckedChanged;
 import com.special.residemenu.ResideMenu;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.NotifyingStickyScrollView;
 import com.tradehero.th.R;
@@ -208,7 +209,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     {
         unsubscribe(securitySubscription);
         securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         value -> {
                             hideDialog();

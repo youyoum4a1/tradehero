@@ -34,7 +34,6 @@ import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
 import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailDTO;
 import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
 import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
@@ -56,8 +55,6 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 import retrofit.client.Response;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 @Singleton public class UserServiceWrapper
 {
@@ -96,15 +93,6 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Sign-Up With Email">
-    @NonNull protected DTOProcessor<UserProfileDTO> createSignInUpProfileProcessor()
-    {
-        return new DTOProcessorSignInUpUserProfile(
-                userProfileCache.get(),
-                homeContentCache.get(),
-                currentUserId,
-                dtoCacheUtil);
-    }
-
     @NonNull public Observable<UserProfileDTO> signUpWithEmailRx(
             String authorization,
             UserFormDTO userFormDTO)
@@ -150,13 +138,11 @@ import rx.functions.Func1;
                     userFormDTO.profilePicture);
         }
 
-        return created.doOnNext(new Action1<UserProfileDTO>()
-        {
-            @Override public void call(UserProfileDTO userProfileDTO)
-            {
-                createSignInUpProfileProcessor().process(userProfileDTO);
-            }
-        });
+        return created.map(new DTOProcessorSignInUpUserProfile(
+                userProfileCache.get(),
+                homeContentCache.get(),
+                currentUserId,
+                dtoCacheUtil));
     }
     //</editor-fold>
 
@@ -170,11 +156,6 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update Profile">
-    @NonNull protected DTOProcessor<UserProfileDTO> createUpdateProfileProcessor()
-    {
-        return new DTOProcessorUpdateUserProfileDeep(userProfileCache.get(), homeContentCache.get());
-    }
-
     @NonNull public Observable<UserProfileDTO> updateProfileRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull UserFormDTO userFormDTO)
@@ -218,13 +199,9 @@ import rx.functions.Func1;
                     userFormDTO.profilePicture);
         }
 
-        return created.map(new Func1<UserProfileDTO, UserProfileDTO>()
-        {
-            @Override public UserProfileDTO call(UserProfileDTO userProfileDTO)
-            {
-                return createUpdateProfileProcessor().process(userProfileDTO);
-            }
-        });
+        return created.map(new DTOProcessorUpdateUserProfileDeep(
+                userProfileCache.get(),
+                homeContentCache.get()));
     }
 
     @NonNull public Observable<UserProfileDTO> updateProfilePropertyEmailNotificationsRx(
@@ -267,18 +244,14 @@ import rx.functions.Func1;
     {
         if (key instanceof SearchUserListType)
         {
-            return searchUsersRx((SearchUserListType) key);
+            SearchUserListType searchKey = (SearchUserListType) key;
+            if (searchKey.searchString == null)
+            {
+                return this.userServiceRx.searchUsers(null, null, null);
+            }
+            return this.userServiceRx.searchUsers(searchKey.searchString, searchKey.page, searchKey.perPage);
         }
         throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
-    }
-
-    @NonNull protected Observable<UserSearchResultDTOList> searchUsersRx(@NonNull SearchUserListType key)
-    {
-        if (key.searchString == null)
-        {
-            return this.userServiceRx.searchUsers(null, null, null);
-        }
-        return this.userServiceRx.searchUsers(key.searchString, key.page, key.perPage);
     }
     //</editor-fold>
 
@@ -309,43 +282,22 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update PayPal Email">
-    @NonNull protected DTOProcessorUpdatePayPalEmail createUpdatePaypalEmailProcessor(
-            @NonNull UserBaseKey userBaseKey,
-            @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
-    {
-        return new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey, updatePayPalEmailFormDTO);
-    }
-
     @NonNull public Observable<UpdatePayPalEmailDTO> updatePayPalEmailRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull UpdatePayPalEmailFormDTO updatePayPalEmailFormDTO)
     {
         return userServiceRx.updatePayPalEmail(userBaseKey.key, updatePayPalEmailFormDTO)
-                .map(createUpdatePaypalEmailProcessor(userBaseKey, updatePayPalEmailFormDTO));
+                .map(new DTOProcessorUpdatePayPalEmail(userProfileCache.get(), userBaseKey, updatePayPalEmailFormDTO));
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Alipay account">
-    @NonNull protected DTOProcessorUpdateAlipayAccount createUpdateAlipayAccountProcessor(
-            @NonNull UserBaseKey playerId,
-            @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
-    {
-        return new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), playerId, updateAlipayAccountFormDTO);
-    }
-
     @NonNull public Observable<UpdateAlipayAccountDTO> updateAlipayAccountRx(
             @NonNull UserBaseKey userBaseKey,
             @NonNull UpdateAlipayAccountFormDTO updateAlipayAccountFormDTO)
     {
         return userServiceRx.updateAlipayAccount(userBaseKey.key, updateAlipayAccountFormDTO)
-                .map(createUpdateAlipayAccountProcessor(userBaseKey, updateAlipayAccountFormDTO));
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="Delete User">
-    @NonNull public Observable<BaseResponseDTO> deleteUserRx(@NonNull UserBaseKey userKey)
-    {
-        return userServiceRx.deleteUser(userKey.key);
+                .map(new DTOProcessorUpdateAlipayAccount(userProfileCache.get(), userBaseKey, updateAlipayAccountFormDTO));
     }
     //</editor-fold>
 
@@ -383,26 +335,22 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Search Social Friends">
-    @NonNull public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NonNull UserBaseKey userKey, @NonNull SocialNetworkEnum socialNetworkEnum, @NonNull String query)
+    @NonNull public Observable<UserFriendsDTOList> searchSocialFriendsRx(@NonNull UserBaseKey userKey, @NonNull SocialNetworkEnum socialNetworkEnum,
+            @NonNull String query)
     {
         return userServiceRx.searchSocialFriends(userKey.key, socialNetworkEnum, query);
     }
     //</editor-fold>
 
     //<editor-fold desc="Follow Batch Free">
-    @NonNull protected DTOProcessorFollowFreeUserBatch createBatchFollowFreeProcessor(@NonNull BatchFollowFormDTO batchFollowFormDTO)
-    {
-        return new DTOProcessorFollowFreeUserBatch(
-                userProfileCache.get(),
-                homeContentCache.get(),
-                userMessagingRelationshipCache.get(),
-                batchFollowFormDTO);
-    }
-
     @NonNull public Observable<UserProfileDTO> followBatchFreeRx(@NonNull BatchFollowFormDTO batchFollowFormDTO)
     {
         return userServiceRx.followBatchFree(batchFollowFormDTO)
-                .map(createBatchFollowFreeProcessor(batchFollowFormDTO));
+                .map(new DTOProcessorFollowFreeUserBatch(
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        userMessagingRelationshipCache.get(),
+                        batchFollowFormDTO));
     }
     //</editor-fold>
 
@@ -425,43 +373,42 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @NonNull protected DTOProcessor<UserProfileDTO> createFollowPremiumUserProcessor(@NonNull UserBaseKey heroId)
-    {
-        return new DTOProcessorFollowPremiumUser(
-                userProfileCache.get(),
-                homeContentCache.get(),
-                heroListCache.get(),
-                userMessagingRelationshipCache.get(),
-                currentUserId.toUserBaseKey(),
-                heroId);
-    }
-
     @NonNull public Observable<UserProfileDTO> followRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.follow(heroId.key);
+        return userServiceRx.follow(heroId.key)
+                .map(new DTOProcessorFollowPremiumUser(
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        heroListCache.get(),
+                        userMessagingRelationshipCache.get(),
+                        currentUserId.toUserBaseKey(),
+                        heroId));
     }
 
     @NonNull public Observable<UserProfileDTO> followRx(
             @NonNull UserBaseKey heroId,
             @NonNull PurchaseReportDTO purchaseDTO)
     {
-        return userServiceRx.follow(heroId.key, purchaseDTO);
-    }
-
-    @NonNull protected DTOProcessorFollowFreeUser createFollowFreeUserProcessor(@NonNull UserBaseKey heroId)
-    {
-        return new DTOProcessorFollowFreeUser(
-                userProfileCache.get(),
-                homeContentCache.get(),
-                heroListCache.get(),
-                userMessagingRelationshipCache.get(),
-                currentUserId.toUserBaseKey(),
-                heroId);
+        return userServiceRx.follow(heroId.key, purchaseDTO)
+                .map(new DTOProcessorFollowPremiumUser(
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        heroListCache.get(),
+                        userMessagingRelationshipCache.get(),
+                        currentUserId.toUserBaseKey(),
+                        heroId));
     }
 
     @NonNull public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.freeFollow(heroId.key).map(createFollowFreeUserProcessor(heroId));
+        return userServiceRx.freeFollow(heroId.key)
+                .map(new DTOProcessorFollowFreeUser(
+                        userProfileCache.get(),
+                        homeContentCache.get(),
+                        heroListCache.get(),
+                        userMessagingRelationshipCache.get(),
+                        currentUserId.toUserBaseKey(),
+                        heroId));
     }
     //</editor-fold>
 
@@ -492,40 +439,26 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Update Country Code">
-    @NonNull protected DTOProcessorUpdateCountryCode createUpdateCountryCodeProcessor(
-            @NonNull UserBaseKey playerId,
-            @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
-    {
-        return new DTOProcessorUpdateCountryCode(
-                userProfileCache.get(),
-                providerListCache.get(),
-                playerId,
-                updateCountryCodeFormDTO);
-    }
-
     @NonNull public Observable<UpdateCountryCodeDTO> updateCountryCodeRx(
             @NonNull UserBaseKey userKey,
             @NonNull UpdateCountryCodeFormDTO updateCountryCodeFormDTO)
     {
         return userServiceRx.updateCountryCode(userKey.key, updateCountryCodeFormDTO)
-                .map(createUpdateCountryCodeProcessor(userKey, updateCountryCodeFormDTO));
+                .map(new DTOProcessorUpdateCountryCode(
+                        userProfileCache.get(),
+                        providerListCache.get(),
+                        userKey,
+                        updateCountryCodeFormDTO));
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Referral Code">
-    @NonNull protected DTOProcessorUpdateReferralCode createUpdateReferralCodeProcessor(
-            @NonNull UpdateReferralCodeDTO updateReferralCodeDTO,
-            @NonNull UserBaseKey invitedUserId)
-    {
-        return new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId);
-    }
-
     @NonNull public Observable<BaseResponseDTO> updateReferralCodeRx(
             @NonNull UserBaseKey invitedUserId,
             @NonNull UpdateReferralCodeDTO updateReferralCodeDTO)
     {
         return userServiceRx.updateReferralCode(invitedUserId.key, updateReferralCodeDTO)
-                .map(createUpdateReferralCodeProcessor(updateReferralCodeDTO, invitedUserId));
+                .map(new DTOProcessorUpdateReferralCode(userProfileCache.get(), updateReferralCodeDTO, invitedUserId));
     }
     //</editor-fold>
 

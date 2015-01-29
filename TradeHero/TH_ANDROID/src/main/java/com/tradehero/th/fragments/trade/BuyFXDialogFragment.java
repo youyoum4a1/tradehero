@@ -64,7 +64,6 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
         return (total * (double) mTransactionQuantity / Math.abs((double) shareCount));
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Override @Nullable protected Boolean isClosingPosition()
     {
         if (securityPositionDetailDTO == null)

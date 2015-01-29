@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -340,7 +341,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         if (purchaseApplicablePortfolioId != null)
         {
             portfolioObservable = portfolioCache.get(purchaseApplicablePortfolioId)
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .publish()
                     .refCount();
             fetchPortfolio();

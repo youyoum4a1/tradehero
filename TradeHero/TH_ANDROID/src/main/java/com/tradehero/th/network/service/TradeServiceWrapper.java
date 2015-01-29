@@ -53,12 +53,6 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Trades List">
-    @NonNull private DTOProcessorTradeListReceived createTradeListReceivedProcessor(
-            @NonNull OwnedPositionId ownedPositionId)
-    {
-        return new DTOProcessorTradeListReceived(ownedPositionId);
-    }
-
     @NonNull public Observable<TradeDTOList> getTradesRx(@NonNull OwnedPositionId ownedPositionId)
     {
         basicCheck(ownedPositionId);
@@ -66,17 +60,11 @@ import rx.Observable;
                 ownedPositionId.userId,
                 ownedPositionId.portfolioId,
                 ownedPositionId.positionId)
-                .map(createTradeListReceivedProcessor(ownedPositionId));
+                .map(new DTOProcessorTradeListReceived(ownedPositionId));
     }
     //</editor-fold>
 
     //<editor-fold desc="Get One Trade">
-    @NonNull private DTOProcessorTradeReceived createTradeReceivedProcessor(
-            @NonNull OwnedPositionId ownedPositionId)
-    {
-        return new DTOProcessorTradeReceived(ownedPositionId);
-    }
-
     @NonNull public Observable<TradeDTO> getTradeRx(@NonNull OwnedTradeId ownedTradeId)
     {
         basicCheck(ownedTradeId);
@@ -85,7 +73,7 @@ import rx.Observable;
                 ownedTradeId.portfolioId,
                 ownedTradeId.positionId,
                 ownedTradeId.tradeId)
-                .map(createTradeReceivedProcessor(ownedTradeId));
+                .map(new DTOProcessorTradeReceived(ownedTradeId));
     }
     //</editor-fold>
 }

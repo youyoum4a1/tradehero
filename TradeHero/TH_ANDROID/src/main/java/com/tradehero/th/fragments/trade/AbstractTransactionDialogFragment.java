@@ -20,6 +20,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -307,7 +308,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 portfolioCompactCache.get(getPortfolioId())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         error -> {
@@ -348,7 +349,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 this,
                 securityPositionDetailCache.get()
                         .get(this.securityId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         toastOnErrorAction));
@@ -369,7 +370,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         error -> {

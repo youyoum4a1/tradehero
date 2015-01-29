@@ -3,6 +3,7 @@ package com.tradehero.th.models.user.follow;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Pair;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
@@ -44,7 +45,7 @@ public class ChoiceFollowUserAssistantWithDialog
         return AndroidObservable.bindActivity(
                 activity,
                 userProfileCache.get(currentUserId.toUserBaseKey()).take(1))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .flatMap(currentUserProfile -> heroAlertDialogRxUtil.showFollowDialog(
                         activity,
                         heroBaseInfo,

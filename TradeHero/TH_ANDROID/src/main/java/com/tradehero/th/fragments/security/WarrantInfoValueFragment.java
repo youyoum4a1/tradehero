@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -137,7 +138,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
             securityCompactCacheSubscription = AndroidObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             e -> THToast.show(R.string.error_fetch_security_info));

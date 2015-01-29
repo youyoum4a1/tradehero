@@ -10,13 +10,15 @@ import rx.Observable;
 {
     @NonNull private final YahooNewsServiceRx yahooNewsServiceRx;
 
+    //<editor-fold desc="Constructors">
     @Inject public YahooNewsServiceWrapper(@NonNull YahooNewsServiceRx yahooNewsServiceRx)
     {
         super();
         this.yahooNewsServiceRx = yahooNewsServiceRx;
     }
+    //</editor-fold>
 
-    public Observable<Response> getNewsRx(@NonNull String yahooSymbol)
+    @NonNull public Observable<Response> getNewsRx(@NonNull String yahooSymbol)
     {
         return yahooNewsServiceRx.getNews(yahooSymbol);
     }

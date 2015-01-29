@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.alert;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -61,7 +62,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
         this.alertId = alertId;
         unsubscribe(getAlertSubscription);
         getAlertSubscription = AndroidObservable.bindFragment(this, alertCache.get(alertId))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         e -> {

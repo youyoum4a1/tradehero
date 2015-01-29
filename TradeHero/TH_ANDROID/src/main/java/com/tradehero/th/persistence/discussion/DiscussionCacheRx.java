@@ -5,8 +5,11 @@ import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.network.service.NewsServiceWrapper;
@@ -15,6 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton @UserCache
 public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, AbstractDiscussionCompactDTO>
@@ -45,15 +49,33 @@ public class DiscussionCacheRx extends BaseFetchDTOCacheRx<DiscussionKey, Abstra
         if (discussionKey instanceof TimelineItemDTOKey)
         {
             return timelineServiceWrapper.getTimelineDetailRx((TimelineItemDTOKey) discussionKey)
-                    .map(timelineItem -> (AbstractDiscussionCompactDTO) timelineItem);
+                    .map(new Func1<TimelineItemDTO, AbstractDiscussionCompactDTO>()
+                    {
+                        @Override public AbstractDiscussionCompactDTO call(TimelineItemDTO timelineItem)
+                        {
+                            return timelineItem;
+                        }
+                    });
         }
         else if (discussionKey instanceof NewsItemDTOKey)
         {
             return newsServiceWrapper.getSecurityNewsDetailRx(discussionKey)
-                    .map(news -> (AbstractDiscussionCompactDTO) news);
+                    .map(new Func1<NewsItemDTO, AbstractDiscussionCompactDTO>()
+                    {
+                        @Override public AbstractDiscussionCompactDTO call(NewsItemDTO news)
+                        {
+                            return news;
+                        }
+                    });
         }
         return discussionServiceWrapper.getCommentRx(discussionKey)
-                .map(comment -> (AbstractDiscussionCompactDTO) comment);
+                .map(new Func1<DiscussionDTO, AbstractDiscussionCompactDTO>()
+                {
+                    @Override public AbstractDiscussionCompactDTO call(DiscussionDTO comment)
+                    {
+                        return comment;
+                    }
+                });
     }
 
     public void onNext(@NonNull List<? extends AbstractDiscussionCompactDTO> discussionList)

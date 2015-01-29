@@ -28,6 +28,7 @@ import com.special.residemenu.ResideMenu;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
@@ -415,7 +416,7 @@ public class DashboardActivity extends BaseActivity
         // get providers for enrollment page
         subscriptions.add(bindActivity(this, fromLocalBroadcast(this, ENROLLMENT_INTENT_FILTER)
                         .flatMap(intent -> providerListCache.get().get(new ProviderListKey()))
-                        .flatMapIterable(pair -> pair.second)
+                        .flatMapIterable(new PairGetSecond<>())
                         .filter(providerDTO -> {
                             boolean r = !providerDTO.isUserEnrolled && !enrollmentScreenOpened.contains(providerDTO.id);
                             if (!r)
@@ -524,7 +525,7 @@ public class DashboardActivity extends BaseActivity
         bindActivity(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .first()
                 .subscribe(
                         userProfileDTO -> {

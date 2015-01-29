@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
@@ -155,7 +156,7 @@ public class PositionPartialTopView extends LinearLayout
             unsubscribe(securityCompactCacheFetchSubscription);
             //noinspection Convert2MethodRef
             securityCompactCacheFetchSubscription = securityIdCache.get(positionDTO.getSecurityIntegerId())
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(this::linkWith)
                     .flatMap(securityId -> securityCompactCache.get(securityId))

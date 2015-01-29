@@ -20,7 +20,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Post Timeline Marker">
-    public Observable<TimelineReadDTO> postTimelineMarkerRx(
+    @NonNull public Observable<TimelineReadDTO> postTimelineMarkerRx(
             @NonNull UserBaseKey userId,
             @NonNull TimelineReadDTO lastReadDTO)
     {

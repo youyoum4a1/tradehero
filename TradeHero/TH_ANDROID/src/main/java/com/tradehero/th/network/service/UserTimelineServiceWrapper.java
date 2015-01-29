@@ -61,7 +61,7 @@ import rx.Observable;
         return userTimelineService.getTimeline(section, userId.key, maxCount, maxId, minId);
     }
 
-    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section,
+    @NonNull public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section,
             @NonNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId)
     {
         // Make a key that contains all info.
@@ -69,7 +69,7 @@ import rx.Observable;
                 .doOnNext(timelineProcessorProvider.get());
     }
 
-    public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NonNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
+    @NonNull public Observable<TimelineDTO> getTimelineBySectionRx(TimelineSection section, @NonNull UserBaseKey userBaseKey, RangeDTO rangeDTO)
     {
         return getTimelineBySectionRx(section, userBaseKey, rangeDTO.maxCount, rangeDTO.maxId, rangeDTO.minId);
     }

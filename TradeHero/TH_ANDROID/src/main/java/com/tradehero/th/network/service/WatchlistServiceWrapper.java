@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.api.position.PositionCompactId;
 import com.tradehero.th.api.security.SecurityIntegerIdListForm;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
@@ -55,63 +54,41 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Add a watch item">
-    @NonNull protected DTOProcessorWatchlistCreate createWatchlistCreateProcessor(@NonNull UserBaseKey concernedUser)
-    {
-        return new DTOProcessorWatchlistCreate(
-                watchlistPositionCache.get(),
-                concernedUser,
-                portfolioCache.get(),
-                userWatchlistPositionCache.get());
-    }
-
     @Nullable public Observable<WatchlistPositionDTO> createWatchlistEntryRx(@NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return watchlistServiceRx.createWatchlistEntry(watchlistPositionFormDTO)
-                .map(createWatchlistCreateProcessor(currentUserId.toUserBaseKey()));
+                .map(new DTOProcessorWatchlistCreate(
+                        watchlistPositionCache.get(),
+                        currentUserId.toUserBaseKey(),
+                        portfolioCache.get(),
+                        userWatchlistPositionCache.get()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Edit a watch item">
-    @NonNull protected DTOProcessorWatchlistUpdate createWatchlistUpdateProcessor(@NonNull UserBaseKey concernedUser)
-    {
-        return new DTOProcessorWatchlistUpdate(
-                concernedUser,
-                watchlistPositionCache.get(),
-                portfolioCache.get());
-    }
-
-    @NonNull public Observable<WatchlistPositionDTO> updateWatchlistEntryRx(
-            @NonNull WatchlistPositionDTO watchlistPositionDTO,
-            @NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
-    {
-        return updateWatchlistEntryRx(watchlistPositionDTO.getPositionCompactId(), watchlistPositionFormDTO);
-    }
-
     @NonNull public Observable<WatchlistPositionDTO> updateWatchlistEntryRx(
             @NonNull PositionCompactId positionId,
             @NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return watchlistServiceRx.updateWatchlistEntry(positionId.key, watchlistPositionFormDTO)
-                .map(createWatchlistUpdateProcessor(currentUserId.toUserBaseKey()));
+                .map(new DTOProcessorWatchlistUpdate(
+                        currentUserId.toUserBaseKey(),
+                        watchlistPositionCache.get(),
+                        portfolioCache.get()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Batch Create Watchlist Positions">
-    @NonNull protected DTOProcessorWatchlistCreateList createWatchlistPositionBatchCreate(@NonNull UserBaseKey concernedUser)
-    {
-        return new DTOProcessorWatchlistCreateList(
-                watchlistPositionCache.get(),
-                concernedUser,
-                portfolioCompactCache.get(),
-                portfolioCache.get(),
-                userWatchlistPositionCache.get());
-    }
-
     @NonNull public Observable<WatchlistPositionDTOList> batchCreateRx(
             @NonNull SecurityIntegerIdListForm securityIntegerIds)
     {
         return watchlistServiceRx.batchCreate(securityIntegerIds)
-                .map(createWatchlistPositionBatchCreate(currentUserId.toUserBaseKey()));
+                .map(new DTOProcessorWatchlistCreateList(
+                        watchlistPositionCache.get(),
+                        currentUserId.toUserBaseKey(),
+                        portfolioCompactCache.get(),
+                        portfolioCache.get(),
+                        userWatchlistPositionCache.get()));
     }
     //</editor-fold>
 
@@ -150,24 +127,14 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Delete Watchlist">
-    @NonNull protected DTOProcessorWatchlistDelete createWatchlistDeleteProcessor(@NonNull UserBaseKey concernedUser)
-    {
-        return new DTOProcessorWatchlistDelete(
-                watchlistPositionCache.get(),
-                concernedUser,
-                portfolioCache.get(),
-                userWatchlistPositionCache.get());
-    }
-
-    @NonNull public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull WatchlistPositionDTO watchlistPositionDTO)
-    {
-        return deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId());
-    }
-
     @NonNull public Observable<WatchlistPositionDTO> deleteWatchlistRx(@NonNull PositionCompactId positionCompactId)
     {
         return watchlistServiceRx.deleteWatchlist(positionCompactId.key)
-                .map(createWatchlistDeleteProcessor(currentUserId.toUserBaseKey()));
+                .map(new DTOProcessorWatchlistDelete(
+                        watchlistPositionCache.get(),
+                        currentUserId.toUserBaseKey(),
+                        portfolioCache.get(),
+                        userWatchlistPositionCache.get()));
     }
     //</editor-fold>
 }

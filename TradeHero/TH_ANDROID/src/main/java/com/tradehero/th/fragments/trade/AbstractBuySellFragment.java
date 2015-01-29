@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
@@ -108,7 +109,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         }
         securityPositionDetailObservable = securityPositionDetailCache
                         .get(this.securityId)
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .share()
                         .cache(1);
     }

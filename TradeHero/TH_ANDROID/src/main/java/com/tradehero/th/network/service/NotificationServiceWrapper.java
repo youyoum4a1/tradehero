@@ -36,53 +36,41 @@ public class NotificationServiceWrapper
     //</editor-fold>
 
     //<editor-fold desc="Get Notifications">
-    public Observable<PaginatedNotificationDTO> getNotificationsRx(@NonNull NotificationListKey notificationListKey)
+    @NonNull public Observable<PaginatedNotificationDTO> getNotificationsRx(@NonNull NotificationListKey notificationListKey)
     {
         return notificationServiceRx.getNotifications(notificationListKey.toMap());
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Notification Detail">
-    public Observable<NotificationDTO> getNotificationDetailRx(@NonNull NotificationKey pushKey)
+    @NonNull public Observable<NotificationDTO> getNotificationDetailRx(@NonNull NotificationKey pushKey)
     {
         return notificationServiceRx.getNotificationDetail(pushKey.key);
     }
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read">
-    @NonNull private DTOProcessorNotificationRead createNotificationReadDTOProcessor(
-            @NonNull final UserBaseKey readerId,
-            @NonNull NotificationKey pushKey)
-    {
-        return new DTOProcessorNotificationRead(
-                pushKey,
-                notificationCache.get(),
-                readerId,
-                userProfileCache.get());
-    }
-
-    public Observable<BaseResponseDTO> markAsReadRx(
+    @NonNull public Observable<BaseResponseDTO> markAsReadRx(
             @NonNull final UserBaseKey readerId,
             @NonNull NotificationKey pushKey)
     {
         return notificationServiceRx.markAsRead(pushKey.key)
-                .map(createNotificationReadDTOProcessor(readerId, pushKey));
+                .map(new DTOProcessorNotificationRead(
+                        pushKey,
+                        notificationCache.get(),
+                        readerId,
+                        userProfileCache.get()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Mark As Read All">
-    @NonNull private DTOProcessorNotificationAllRead createNotificationAllReadDTOProcessor(@NonNull UserBaseKey readerId)
-    {
-        return new DTOProcessorNotificationAllRead(
-                notificationCache.get(),
-                readerId,
-                userProfileCache.get());
-    }
-
-    public Observable<BaseResponseDTO> markAsReadAllRx(@NonNull final UserBaseKey readerId)
+    @NonNull public Observable<BaseResponseDTO> markAsReadAllRx(@NonNull final UserBaseKey readerId)
     {
         return notificationServiceRx.markAsReadAll()
-                .map(createNotificationAllReadDTOProcessor(readerId));
+                .map(new DTOProcessorNotificationAllRead(
+                        notificationCache.get(),
+                        readerId,
+                        userProfileCache.get()));
     }
     //</editor-fold>
 }

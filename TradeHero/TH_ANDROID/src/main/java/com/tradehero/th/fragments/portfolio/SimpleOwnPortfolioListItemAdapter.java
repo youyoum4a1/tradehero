@@ -142,7 +142,6 @@ public class SimpleOwnPortfolioListItemAdapter extends ArrayDTOAdapter<Displayab
         return true;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable protected Boolean containsFx(@NonNull List<DisplayablePortfolioDTO> items)
     {
         boolean value = false;

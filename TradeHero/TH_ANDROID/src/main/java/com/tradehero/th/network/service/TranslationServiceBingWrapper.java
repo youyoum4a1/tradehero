@@ -13,13 +13,15 @@ import rx.Observable;
 
     @NonNull private final TranslationServiceBingRx translationServiceBingRx;
 
+    //<editor-fold desc="Constructors">
     @Inject public TranslationServiceBingWrapper(
             @NonNull TranslationServiceBingRx translationServiceBingRx)
     {
         this.translationServiceBingRx = translationServiceBingRx;
     }
+    //</editor-fold>
 
-    public Observable<BingTranslationResult> translateRx(@NonNull BingTranslationToken token, String from, String to, String text)
+    @NonNull public Observable<BingTranslationResult> translateRx(@NonNull BingTranslationToken token, String from, String to, String text)
     {
         return translationServiceBingRx.requestForTranslation(
                 token.getPrefixedAccessToken(),

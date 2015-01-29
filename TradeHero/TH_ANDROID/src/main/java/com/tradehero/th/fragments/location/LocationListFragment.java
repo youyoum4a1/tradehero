@@ -15,6 +15,7 @@ import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
@@ -121,7 +122,7 @@ public class LocationListFragment extends DashboardFragment
         AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_your_user_profile));

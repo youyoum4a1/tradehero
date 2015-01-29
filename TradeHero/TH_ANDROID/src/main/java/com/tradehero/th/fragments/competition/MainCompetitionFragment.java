@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -49,7 +50,6 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioD
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePreSeasonDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -234,7 +234,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         userProfileCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchCurrentUserProfileFailed);
@@ -262,7 +262,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionListCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 competitionListCache.get(providerId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchCompetitionListFailed);
@@ -290,7 +290,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         displayCellListCacheFetchSubscription = AndroidObservable.bindFragment(
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchDisplayCellListFailed);
@@ -318,7 +318,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         competitionPreSeasonSubscription = AndroidObservable.bindFragment(
                 this,
                 competitionPreSeasonCacheRx.get(providerId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchPreSeasonFailed);
@@ -585,7 +585,7 @@ public class MainCompetitionFragment extends CompetitionFragment
         }
         else if (navigator != null)
         {
-            navigator.get().pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
+            navigator.get().pushFragment(CompetitionLeaderboardMarkUserListFragment.class, args);
         }
     }
 

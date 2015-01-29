@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
-import com.tradehero.th.api.social.SocialShareReqFormDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;

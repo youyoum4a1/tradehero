@@ -441,7 +441,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         if (watchlistPositionDTO != null)
         {
             subscriptions.add(watchlistServiceWrapper.get().deleteWatchlistRx(
-                    watchlistPositionDTO)
+                    watchlistPositionDTO.getPositionCompactId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             this::onWatchlistDeleteReceived,

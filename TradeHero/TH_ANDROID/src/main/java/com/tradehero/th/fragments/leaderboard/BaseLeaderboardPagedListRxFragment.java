@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -96,7 +97,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
             subscriptions.add(AndroidObservable.bindFragment(
                     this,
                     leaderboardDefCache.get(leaderboardDefKey)
-            .map(pair -> pair.second))
+            .map(new PairGetSecond<>()))
                     .subscribe(
                             this::linkWith,
                             e -> THToast.show(R.string.error_fetch_leaderboard_def)));
@@ -123,7 +124,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-        .map(pair -> pair.second))
+        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::setCurrentUserProfileDTO,
                         e -> {

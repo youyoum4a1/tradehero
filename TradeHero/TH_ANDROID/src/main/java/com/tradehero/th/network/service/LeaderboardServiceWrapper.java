@@ -41,21 +41,11 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    protected DTOProcessorGetPositions createProcessorReceivedGetPositions(LeaderboardMarkUserId leaderboardMarkUserId)
-    {
-        return new DTOProcessorGetPositions(leaderboardMarkUserId);
-    }
-
-    protected DTOProcessorLeaderboardDefDTOList createProcessorLeaderboardDefDTOList()
-    {
-        return new DTOProcessorLeaderboardDefDTOList(leaderboardDefDTOFactory);
-    }
-
     //<editor-fold desc="Get Leaderboard Definitions">
     @NonNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
-                .map(createProcessorLeaderboardDefDTOList());
+                .map(new DTOProcessorLeaderboardDefDTOList(leaderboardDefDTOFactory));
     }
     //</editor-fold>
 
@@ -142,7 +132,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Positions For Leaderboard Mark User">
-    public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
+    @NonNull public Observable<GetPositionsDTO> getPositionsForLeaderboardMarkUserRx(
             @NonNull LeaderboardMarkUserId key)
     {
         Observable<GetPositionsDTO> received;
@@ -169,7 +159,7 @@ import rx.Observable;
                     null,
                     null);
         }
-        return received.map(createProcessorReceivedGetPositions(key));
+        return received.map(new DTOProcessorGetPositions(key));
     }
     //</editor-fold>
 }

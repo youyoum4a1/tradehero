@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -176,7 +177,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             unsubscribe(alertCacheSubscription);
             alertCacheSubscription = AndroidObservable.bindFragment(this,
                     alertCache.get().get(alertId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .finallyDo(this::hideProgressDialog)
                     .subscribe(
                             this::linkWith,

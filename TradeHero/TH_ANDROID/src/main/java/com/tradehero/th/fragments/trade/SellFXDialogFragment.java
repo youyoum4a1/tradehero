@@ -69,7 +69,6 @@ public class SellFXDialogFragment extends AbstractFXTransactionDialogFragment
         return netProceedsUsd - totalSpentUsd;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Override @Nullable protected Boolean isClosingPosition()
     {
         if (securityPositionDetailDTO == null)

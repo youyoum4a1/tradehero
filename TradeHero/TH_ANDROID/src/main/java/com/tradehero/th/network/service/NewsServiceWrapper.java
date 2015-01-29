@@ -35,83 +35,67 @@ import rx.Observable;
     }
     //</editor-fold>
 
-    public Observable<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairsRx()
+    @NonNull public Observable<PaginatedDTO<CountryLanguagePairDTO>> getCountryLanguagePairsRx()
     {
         return newsServiceRx.getCountryLanguagePairs();
     }
 
-    public Observable<PaginatedDTO<NewsItemCategoryDTO>> getNewsCategoriesRx()
+    @NonNull public Observable<PaginatedDTO<NewsItemCategoryDTO>> getNewsCategoriesRx()
     {
         return newsServiceRx.getCategories();
     }
 
-    public Observable<PaginatedDTO<NewsItemCompactDTO>> getNewsRx(NewsItemListKey key)
+    @NonNull public Observable<PaginatedDTO<NewsItemCompactDTO>> getNewsRx(NewsItemListKey key)
     {
         Observable<PaginatedDTO<NewsItemCompactDTO>> paginatedNewsItemCompactDTO;
         if (key instanceof NewsItemListGlobalKey)
         {
-            paginatedNewsItemCompactDTO = getGlobalNewsRx((NewsItemListGlobalKey) key);
+            paginatedNewsItemCompactDTO = newsServiceRx.getGlobal(key.page, key.perPage);
         }
         else if (key instanceof NewsItemListRegionalKey)
         {
-            paginatedNewsItemCompactDTO = getRegionalNewsRx((NewsItemListRegionalKey) key);
+            paginatedNewsItemCompactDTO = newsServiceRx.getRegional(
+                    ((NewsItemListRegionalKey) key).countryCode,
+                    ((NewsItemListRegionalKey) key).languageCode,
+                    key.page,
+                    key.perPage);
         }
         else if (key instanceof NewsItemListSocialKey)
         {
-            paginatedNewsItemCompactDTO = getSocialNewsRx((NewsItemListSocialKey) key);
+            paginatedNewsItemCompactDTO = newsServiceRx.getSocial(
+                    ((NewsItemListSocialKey) key).categoryId,
+                    key.page,
+                    key.perPage);
         }
         else if (key instanceof NewsItemListInterestKey)
         {
-            paginatedNewsItemCompactDTO = getOfInterestRx((NewsItemListInterestKey) key);
+            paginatedNewsItemCompactDTO = newsServiceRx.getOfInterest(
+                    key.page,
+                    key.perPage);
         }
         else if (key instanceof NewsItemListSecurityKey)
         {
-            paginatedNewsItemCompactDTO = getSecurityNewsRx((NewsItemListSecurityKey) key);
+            paginatedNewsItemCompactDTO = newsServiceRx.getSecuritiesNewsList(
+                    ((NewsItemListSecurityKey) key).securityIntegerId.key,
+                    key.page,
+                    key.perPage);
         }
         else if (key instanceof NewsItemListFeaturedKey)
         {
-            paginatedNewsItemCompactDTO = getFeaturedNewsRx((NewsItemListFeaturedKey) key);
+            paginatedNewsItemCompactDTO = newsServiceRx.getFeaturedNewsList(
+                    key.page,
+                    key.perPage);
         }
         else
         {
-            throw new IllegalStateException("Unhandled type " + key.getClass());
+            return Observable.error(new IllegalStateException("Unhandled type " + key.getClass()));
         }
 
         return paginatedNewsItemCompactDTO
                 .map(newsDTOProcessorProvider.get());
     }
 
-    private Observable<PaginatedDTO<NewsItemCompactDTO>> getFeaturedNewsRx(NewsItemListFeaturedKey key)
-    {
-        return newsServiceRx.getFeaturedNewsList(key.page, key.perPage);
-    }
-
-    private Observable<PaginatedDTO<NewsItemCompactDTO>> getSecurityNewsRx(NewsItemListSecurityKey key)
-    {
-        return newsServiceRx.getSecuritiesNewsList(key.securityIntegerId.key, key.page, key.perPage);
-    }
-
-    private Observable<PaginatedDTO<NewsItemCompactDTO>> getOfInterestRx(NewsItemListInterestKey key)
-    {
-        return newsServiceRx.getOfInterest(key.page, key.perPage);
-    }
-
-    private Observable<PaginatedDTO<NewsItemCompactDTO>> getSocialNewsRx(NewsItemListSocialKey key)
-    {
-        return newsServiceRx.getSocial(key.categoryId, key.page, key.perPage);
-    }
-
-    private Observable<PaginatedDTO<NewsItemCompactDTO>> getRegionalNewsRx(NewsItemListRegionalKey key)
-    {
-        return newsServiceRx.getRegional(key.countryCode, key.languageCode, key.page, key.perPage);
-    }
-
-    private Observable<PaginatedDTO<NewsItemCompactDTO>> getGlobalNewsRx(NewsItemListGlobalKey key)
-    {
-        return newsServiceRx.getGlobal(key.page, key.perPage);
-    }
-
-    public Observable<NewsItemDTO> getSecurityNewsDetailRx(DiscussionKey discussionKey)
+    @NonNull public Observable<NewsItemDTO> getSecurityNewsDetailRx(DiscussionKey discussionKey)
     {
         return newsServiceRx.getNewsDetails(discussionKey.id);
     }

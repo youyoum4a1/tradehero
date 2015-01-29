@@ -25,6 +25,7 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScro
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.fortysevendeg.swipelistview.SwipeListViewListener;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.TwoStateView;
 import com.tradehero.metrics.Analytics;
@@ -319,7 +320,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             portfolioCacheSubscription = AndroidObservable.bindFragment(
                     this,
                     portfolioCache.get(shownPortfolioId)
-                            .map(pair -> pair.second))
+                            .map(new PairGetSecond<>()))
                     .subscribe(
                             this::onPortfolioReceived,
                             this::onPortfolioError);
@@ -347,7 +348,7 @@ public class WatchlistPositionFragment extends DashboardFragment
             userWatchlistPositionFetchSubscription = AndroidObservable.bindFragment(
                     this,
                     userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
-                            .map(pair -> pair.second))
+                            .map(new PairGetSecond<>()))
                     .subscribe(
                             this::displayWatchlist,
                             e -> {

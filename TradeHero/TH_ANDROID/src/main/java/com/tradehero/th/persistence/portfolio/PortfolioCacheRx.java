@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -73,7 +74,7 @@ public class PortfolioCacheRx extends BaseFetchDTOCacheRx<OwnedPortfolioId, Port
     {
         return Observable.from(ownedPortfolioIds)
                 .flatMap(id -> get(id).take(1))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .toList()
                 .map(PortfolioDTOList::new);
     }

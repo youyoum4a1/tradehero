@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -168,7 +169,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
         miniGameDefSubscription = AndroidObservable.bindFragment(
                 this,
                 miniGameDefCache.get(miniGameDefKey))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         this::handleFailedDef);

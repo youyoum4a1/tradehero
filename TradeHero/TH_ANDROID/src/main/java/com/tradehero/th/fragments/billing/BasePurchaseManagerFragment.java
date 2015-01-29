@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.billing;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -56,7 +57,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         currentUserPortfolioCompactListObservable = portfolioCompactListCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .publish()
                         .refCount()
                         .cache(1);

@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import butterknife.InjectView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -218,7 +219,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> {
@@ -250,7 +251,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_user_profile)));
@@ -268,7 +269,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_provider_competition_list)));
@@ -398,7 +399,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .first())
                 .subscribe(
                         profile -> {

@@ -22,7 +22,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Track Share">
-    public Observable<TrackShareDTO> trackShareRx(
+    @NonNull public Observable<TrackShareDTO> trackShareRx(
             @NonNull UserBaseKey userId,
             @NonNull WeChatTrackShareFormDTO weChatTrackShareFormDTO)
     {

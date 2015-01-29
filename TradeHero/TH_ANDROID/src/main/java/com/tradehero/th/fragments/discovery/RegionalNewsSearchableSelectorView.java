@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -171,7 +172,7 @@ public class RegionalNewsSearchableSelectorView extends LinearLayout
     {
         detachUserProfileSubscription();
         userProfileSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::linkWith,

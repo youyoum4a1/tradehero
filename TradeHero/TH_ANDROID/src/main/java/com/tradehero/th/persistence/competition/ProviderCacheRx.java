@@ -44,7 +44,7 @@ public class ProviderCacheRx extends BaseFetchDTOCacheRx<ProviderId, ProviderDTO
         super.onNext(key, value);
     }
 
-    public void onNext(List<? extends  ProviderDTO> providers)
+    public void onNext(@NonNull List<? extends  ProviderDTO> providers)
     {
         for (ProviderDTO provider : providers)
         {

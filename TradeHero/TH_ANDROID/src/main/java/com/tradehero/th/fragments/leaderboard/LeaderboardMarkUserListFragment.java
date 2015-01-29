@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -395,7 +396,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 leaderboardCache.get(userOnLeaderboardKey)
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .map(leaderboard -> {
                             LeaderboardUserDTO received = null;
                             if (leaderboard.users != null && leaderboard.users.size() == 1)

@@ -12,6 +12,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.RequestCodeHolder;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -185,7 +186,7 @@ abstract public class THBillingAlertDialogRxUtil<
                 CollectionUtils.map(
                         productDetails,
                         result -> result.detail))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .flatMap(detail -> {
                     for (ProductInventoryResult<ProductIdentifierType, THProductDetailType> candidate : productDetails)
                     {
@@ -204,7 +205,7 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull List<THProductDetailType> productDetails)
     {
         return popBuyDialog(activityContext, domain, productDetails)
-                .map(pair -> pair.second);
+                .map(new PairGetSecond<>());
     }
 
     @NonNull public Observable<Pair<DialogInterface, THProductDetailType>> popBuyDialog(

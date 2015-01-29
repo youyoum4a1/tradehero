@@ -64,11 +64,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="DTO Processors">
-    @NonNull protected DTOProcessorDiscussion createDiscussionProcessor()
-    {
-        return new DTOProcessorDiscussion(discussionDTOFactory);
-    }
-
     @NonNull protected DTOProcessorDiscussionReply createDiscussionReplyProcessor(@NonNull DiscussionKey initiatingKey,
             @Nullable DiscussionKey stubKey)
     {
@@ -90,7 +85,7 @@ import rx.Observable;
     @NonNull public Observable<DiscussionDTO> getCommentRx(@NonNull DiscussionKey discussionKey)
     {
         return discussionServiceRx.getComment(discussionKey.id)
-                .map(createDiscussionProcessor());
+                .map(new DTOProcessorDiscussion(discussionDTOFactory));
     }
     //</editor-fold>
 
@@ -112,7 +107,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Discussions">
-    public Observable<PaginatedDTO<DiscussionDTO>> getDiscussionsRx(@NonNull PaginatedDiscussionListKey discussionsKey)
+    @NonNull public Observable<PaginatedDTO<DiscussionDTO>> getDiscussionsRx(@NonNull PaginatedDiscussionListKey discussionsKey)
     {
         return discussionServiceRx.getDiscussions(
                 discussionsKey.inReplyToType,
@@ -121,16 +116,7 @@ import rx.Observable;
                 discussionsKey.perPage);
     }
 
-    @Deprecated
-    public Observable<PaginatedDTO<DiscussionDTO>> getPaginatedDiscussionsRx(@NonNull DiscussionListKey discussionsKey)
-    {
-        return discussionServiceRx.getDiscussions(
-                discussionsKey.inReplyToType,
-                discussionsKey.inReplyToId,
-                discussionsKey.toMap());
-    }
-
-    public Observable<PaginatedDTO<DiscussionDTO>> getMessageThreadRx(@NonNull MessageDiscussionListKey discussionsKey)
+    @NonNull public Observable<PaginatedDTO<DiscussionDTO>> getMessageThreadRx(@NonNull MessageDiscussionListKey discussionsKey)
     {
         return discussionServiceRx.getMessageThread(
                 discussionsKey.inReplyToType,
@@ -173,7 +159,7 @@ import rx.Observable;
                 userBaseKey.key,
                 discussionFormDTO)
                 .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
-                .map(createDiscussionProcessor());
+                .map(new DTOProcessorDiscussion(discussionDTOFactory));
     }
     //</editor-fold>
 }

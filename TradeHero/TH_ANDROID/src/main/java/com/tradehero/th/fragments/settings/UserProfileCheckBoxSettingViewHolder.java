@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -65,7 +66,7 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     {
         unsubscribe(userProfileCacheSubscription);
         userProfileCacheSubscription = userProfileCache.get(currentUserId.toUserBaseKey())
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         this::updateStatus,

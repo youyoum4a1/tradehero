@@ -24,9 +24,7 @@ import com.tradehero.th.api.security.key.TrendingPriceSecurityListType;
 import com.tradehero.th.api.security.key.TrendingSecurityListType;
 import com.tradehero.th.api.security.key.TrendingVolumeSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.security.DTOProcessorMultiSecurities;
-import com.tradehero.th.models.security.DTOProcessorSecurityPositionDetailReceived;
 import com.tradehero.th.models.security.DTOProcessorSecurityPositionTransactionUpdated;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -36,6 +34,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton public class SecurityServiceWrapper
 {
@@ -63,15 +62,10 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Multiple Securities">
-    @NonNull private DTOProcessorMultiSecurities createMultipleSecurityProcessor()
-    {
-        return new DTOProcessorMultiSecurities(securityCompactCache.get());
-    }
-
     @NonNull public Observable<Map<Integer, SecurityCompactDTO>> getMultipleSecuritiesRx(@NonNull SecurityIntegerIdList ids)
     {
         return securityServiceRx.getMultipleSecurities(ids.getCommaSeparated())
-                .map(createMultipleSecurityProcessor());
+                .map(new DTOProcessorMultiSecurities(securityCompactCache.get()));
     }
     //</editor-fold>
 
@@ -91,21 +85,21 @@ import rx.Observable;
             }
             else if (trendingKey instanceof TrendingPriceSecurityListType)
             {
-                received =  this.securityServiceRx.getTrendingSecuritiesByPrice(
+                received = this.securityServiceRx.getTrendingSecuritiesByPrice(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingVolumeSecurityListType)
             {
-                received =  this.securityServiceRx.getTrendingSecuritiesByVolume(
+                received = this.securityServiceRx.getTrendingSecuritiesByVolume(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
             }
             else if (trendingKey instanceof TrendingAllSecurityListType)
             {
-                received =  this.securityServiceRx.getTrendingSecuritiesAllInExchange(
+                received = this.securityServiceRx.getTrendingSecuritiesAllInExchange(
                         trendingKey.exchange,
                         trendingKey.getPage(),
                         trendingKey.perPage);
@@ -130,20 +124,20 @@ import rx.Observable;
         else if (key instanceof SearchSecurityListType)
         {
             SearchSecurityListType searchKey = (SearchSecurityListType) key;
-            received =  this.securityServiceRx.searchSecurities(
+            received = this.securityServiceRx.searchSecurities(
                     searchKey.searchString,
                     searchKey.getPage(),
                     searchKey.perPage);
         }
         else if (key instanceof ProviderSecurityListType)
         {
-            received =  providerServiceWrapper.getProviderSecuritiesRx((ProviderSecurityListType) key);
+            received = providerServiceWrapper.getProviderSecuritiesRx((ProviderSecurityListType) key);
         }
         else if (key instanceof ExchangeSectorSecurityListType)
         {
             ExchangeSectorSecurityListType exchangeKey = (ExchangeSectorSecurityListType) key;
             received = this.securityServiceRx.getBySectorAndExchange(
-                    exchangeKey.exchangeId == null ? null: exchangeKey.exchangeId.key,
+                    exchangeKey.exchangeId == null ? null : exchangeKey.exchangeId.key,
                     exchangeKey.sectorId == null ? null : exchangeKey.sectorId.key,
                     key.page,
                     key.perPage);
@@ -157,11 +151,6 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Security">
-    @NonNull protected DTOProcessor<SecurityPositionDetailDTO> createSecurityPositionDetailDTOProcessor(@NonNull SecurityId securityId)
-    {
-        return new DTOProcessorSecurityPositionDetailReceived(securityId, currentUserId.toUserBaseKey());
-    }
-
     @NonNull public Observable<SecurityCompactDTO> getSecurityCompactRx(@NonNull SecurityId securityId)
     {
         return securityServiceRx.getCompactSecurity(securityId.getExchange(), securityId.getPathSafeSymbol());
@@ -173,19 +162,23 @@ import rx.Observable;
         return securityServiceRx.getSecurity(
                 securityId.getExchange(),
                 securityId.getPathSafeSymbol())
-                .map(securityPositionDetailDTO -> {
-                    if (securityPositionDetailDTO.providers != null)
+                .map(new Func1<SecurityPositionDetailDTO, SecurityPositionDetailDTO>()
+                {
+                    @Override public SecurityPositionDetailDTO call(SecurityPositionDetailDTO securityPositionDetailDTO)
                     {
-                        for (ProviderDTO providerDTO : securityPositionDetailDTO.providers)
+                        if (securityPositionDetailDTO.providers != null)
                         {
-                            if (providerDTO.associatedPortfolio != null)
+                            for (ProviderDTO providerDTO : securityPositionDetailDTO.providers)
                             {
-                                providerDTO.associatedPortfolio.userId = currentUserId.get();
+                                if (providerDTO.associatedPortfolio != null)
+                                {
+                                    providerDTO.associatedPortfolio.userId = currentUserId.get();
+                                }
                             }
                         }
-                    }
 
-                    return securityPositionDetailDTO;
+                        return securityPositionDetailDTO;
+                    }
                 });
     }
 
@@ -194,31 +187,40 @@ import rx.Observable;
         SecurityIntegerIdList list = new SecurityIntegerIdList();
         list.add(securityIntegerId);
         return securityServiceRx.getMultipleSecurities(list.getCommaSeparated())
-                .map(map -> map.get(securityIntegerId.key))
-                .filter(compact -> compact != null);
+                .flatMap(new Func1<Map<Integer, SecurityCompactDTO>, Observable<SecurityCompactDTO>>()
+                {
+                    @Override public Observable<SecurityCompactDTO> call(Map<Integer, SecurityCompactDTO> map)
+                    {
+                        SecurityCompactDTO inMap = map.get(securityIntegerId.key);
+                        if (inMap == null)
+                        {
+                            return Observable.empty();
+                        }
+                        return Observable.just(inMap);
+                    }
+                });
     }
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-    @NonNull private DTOProcessorSecurityPositionTransactionUpdated createSecurityPositionTransactionUpdatedProcessor(@NonNull SecurityId securityId)
-    {
-        return new DTOProcessorSecurityPositionTransactionUpdated(
-                securityId,
-                currentUserId.toUserBaseKey(),
-                portfolioCache.get());
-    }
-
     @NonNull public Observable<SecurityPositionTransactionDTO> buyRx(
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
+        Observable<SecurityPositionTransactionDTO> buyResult;
         if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
         {
-            return this.securityServiceRx.buyFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
-                    .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+            buyResult = this.securityServiceRx.buyFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
         }
-        return this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
-            .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+        else
+        {
+            buyResult = this.securityServiceRx.buy(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
+        }
+        return buyResult
+                .map(new DTOProcessorSecurityPositionTransactionUpdated(
+                        securityId,
+                        currentUserId.toUserBaseKey(),
+                        portfolioCache.get()));
     }
     //</editor-fold>
 
@@ -227,13 +229,20 @@ import rx.Observable;
             @NonNull SecurityId securityId,
             @NonNull TransactionFormDTO transactionFormDTO)
     {
+        Observable<SecurityPositionTransactionDTO> sellResult;
         if (securityId.getExchange().equals("FXRATE")) // TODO proper when server is fixed
         {
-            return this.securityServiceRx.sellFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
-                    .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+            sellResult = this.securityServiceRx.sellFx(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
         }
-        return this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO)
-                .map(createSecurityPositionTransactionUpdatedProcessor(securityId));
+        else
+        {
+            sellResult = this.securityServiceRx.sell(securityId.getExchange(), securityId.getSecuritySymbol(), transactionFormDTO);
+        }
+        return sellResult
+                .map(new DTOProcessorSecurityPositionTransactionUpdated(
+                        securityId,
+                        currentUserId.toUserBaseKey(),
+                        portfolioCache.get()));
     }
     //</editor-fold>
 

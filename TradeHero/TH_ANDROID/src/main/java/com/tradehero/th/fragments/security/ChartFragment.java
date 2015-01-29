@@ -19,6 +19,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.annotation.ViewVisibilityValue;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -265,7 +266,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
             securityCompactCacheSubscription = AndroidObservable.bindFragment(
                     this,
                     securityPositionDetailCache.get(securityId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             e -> THToast.show(R.string.error_fetch_security_info)

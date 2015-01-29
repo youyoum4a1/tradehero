@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -162,7 +163,7 @@ public class ProviderSecurityListRxFragment
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId)
-                .map(pair -> pair.second))
+                .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(getString(R.string.error_fetch_provider_info))));

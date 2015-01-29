@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.facebook.Session;
 import com.facebook.widget.WebDialog;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -143,7 +144,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     @NonNull public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
     {
         return Observable.combineLatest(
-                userProfileCache.get(currentUserId.toUserBaseKey()).map(pair -> pair.second),
+                userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
                 facebookAuthenticationProvider.createSessionObservable(activityProvider.get()),
                 Pair::create)
                 .flatMap(pair -> {

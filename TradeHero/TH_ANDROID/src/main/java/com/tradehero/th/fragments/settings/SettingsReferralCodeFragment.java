@@ -17,6 +17,7 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.SocialShareFormDTO;
@@ -126,7 +127,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     {
         profileCacheSubscription = AndroidObservable.bindFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchUserProfileFailed);
@@ -162,7 +163,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
         systemStatusSubscription = AndroidObservable.bindFragment(
                 this,
                 systemStatusCache.get(new SystemStatusKey())
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         Actions.empty());

@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
@@ -196,7 +197,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 providerCache.get(providerId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_provider_info)));
@@ -223,7 +224,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 competitionCache.get(competitionId)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(this::linkWith,
                         e -> {
                             THToast.show(R.string.error_fetch_provider_competition);
@@ -239,7 +240,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         subscriptions.add(AndroidObservable.bindFragment(
                 this,
                 competitionLeaderboardCache.get(key)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFetchCompetitionLeaderboardFailed));

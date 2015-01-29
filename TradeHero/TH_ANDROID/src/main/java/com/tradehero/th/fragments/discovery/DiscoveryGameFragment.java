@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClickSticky;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.games.MiniGameDefDTO;
@@ -106,7 +107,7 @@ public class DiscoveryGameFragment extends DashboardFragment
                         MINIGAMES_LIST_LOADER_ID,
                         AndroidObservable.bindFragment(
                                 this,
-                                miniGameDefListCache.get(new MiniGameDefListKey()).map(pair -> pair.second)))
+                                miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<>())))
                         .doOnError(toastOnErrorAction)
                         .onErrorResumeNext(Observable.empty())
                         .subscribe(miniGamesSubject));

@@ -213,7 +213,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         }
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Nullable public Boolean isCurrentUserFollowing()
     {
         if (currentUserProfileDTO == null || userFriendsDTO == null || !userFriendsDTO.isTradeHeroUser())

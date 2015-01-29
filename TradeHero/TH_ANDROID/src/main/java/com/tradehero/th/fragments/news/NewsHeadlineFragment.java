@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
@@ -148,7 +149,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         securitySubscription = AndroidObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         e -> {
@@ -174,7 +175,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
         securityNewsSubscription = AndroidObservable.bindFragment(
                 this,
                 newsTitleCache.get(listKey))
-                .map(pair -> pair.second)
+                .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,
                         e -> THToast.show(R.string.error_fetch_security_info));

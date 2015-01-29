@@ -22,6 +22,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Singleton public class SessionServiceWrapper
@@ -61,9 +62,13 @@ import timber.log.Timber;
     @NonNull public Observable<SystemStatusDTO> getSystemStatusRx()
     {
         return sessionServiceRx.getSystemStatus()
-                .onErrorReturn(throwable -> {
-                    Timber.e(throwable, "When requesting for systemStatus");
-                    return new SystemStatusDTO();
+                .onErrorReturn(new Func1<Throwable, SystemStatusDTO>()
+                {
+                    @Override public SystemStatusDTO call(Throwable throwable)
+                    {
+                        Timber.e(throwable, "When requesting for systemStatus");
+                        return new SystemStatusDTO();
+                    }
                 });
     }
     //</editor-fold>
@@ -106,30 +111,20 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Logout">
-    @NonNull protected DTOProcessorLogout createLogoutProcessor()
-    {
-        return new DTOProcessorLogout(
-                dtoCacheUtil,
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE));
-    }
-
     @NonNull public Observable<UserProfileDTO> logoutRx()
     {
         return sessionServiceRx.logout()
-                .doOnNext(createLogoutProcessor());
+                .doOnNext(new DTOProcessorLogout(
+                        dtoCacheUtil,
+                        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)));
     }
     //</editor-fold>
 
     //<editor-fold desc="Update Device">
-    @NonNull protected DTOProcessorUpdateUserProfile createUpdateDeviceProcessor()
-    {
-        return new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get());
-    }
-
     @NonNull public Observable<UserProfileDTO> updateDeviceRx()
     {
         return sessionServiceRx.updateDevice(savedPushDeviceIdentifier.get())
-                .map(createUpdateDeviceProcessor());
+                .map(new DTOProcessorUpdateUserProfile(userProfileCache, homeContentCache.get()));
     }
     //</editor-fold>
 

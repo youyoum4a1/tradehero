@@ -48,7 +48,6 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
         return null;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @Override @Nullable protected Boolean isClosingPosition()
     {
         if (securityPositionDetailDTO == null)

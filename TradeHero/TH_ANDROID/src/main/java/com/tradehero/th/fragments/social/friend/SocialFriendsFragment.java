@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.BottomTabs;
@@ -230,7 +231,7 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         friendsListCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 friendsListCache.get(friendsListKey)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::linkWith,
                         this::handleFriendListError);

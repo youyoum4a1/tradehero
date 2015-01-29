@@ -17,12 +17,11 @@ import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantUnderlyersProviderSecurityListType;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.WarrantType;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.DTOProcessor;
+import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
@@ -46,34 +45,12 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    private DTOProcessor<ProviderDTO> createProcessorProviderReceived()
-    {
-        return new DTOProcessorProviderReceived(currentUserId);
-    }
-
-    private DTOProcessorProviderCompactListReceived createProcessorProviderCompactListReceived()
-    {
-        return new DTOProcessorProviderCompactListReceived(createProcessorProviderReceived());
-    }
-
     @NonNull public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
-                .doOnNext(providerDTOList -> {
-                    for (ProviderDTO providerDTO : providerDTOList)
-                    {
-                        if (providerDTO != null)
-                        {
-                            PortfolioCompactDTO associatedPortfolio = providerDTO.associatedPortfolio;
-                            if (associatedPortfolio != null)
-                            {
-                                associatedPortfolio.userId = currentUserId.get();
-                            }
-                        }
-                    }
-                });
+                .map(new DTOProcessorProviderCompactListReceived(
+                        new DTOProcessorProviderReceived(currentUserId)));
     }
-
     //</editor-fold>
 
     //<editor-fold desc="Get Provider">
@@ -85,13 +62,7 @@ import rx.Observable;
     @NonNull public Observable<ProviderDTO> getProviderRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getProvider(providerId.key)
-                .doOnNext(providerDTO -> {
-                    PortfolioCompactDTO associatedPortfolio = providerDTO.associatedPortfolio;
-                    if (associatedPortfolio != null)
-                    {
-                        associatedPortfolio.userId = currentUserId.get();
-                    }
-                });
+                .map(new DTOProcessorProviderReceived(currentUserId));
     }
     //</editor-fold>
 
@@ -99,12 +70,12 @@ import rx.Observable;
     @NonNull public Observable<PortfolioDTO> getPortfolio(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getPortfolio(providerId.key)
-                .doOnNext(portfolio -> portfolio.userId = currentUserId.get());
+                .map(new DTOProcessorPortfolioReceived<>(currentUserId.toUserBaseKey()));
     }
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
-    public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NonNull ProviderSecurityListType key)
+    @NonNull public Observable<SecurityCompactDTOList> getProviderSecuritiesRx(@NonNull ProviderSecurityListType key)
     {
         Observable<SecurityCompactDTOList> received;
         if (key instanceof SearchProviderSecurityListType)
@@ -160,22 +131,22 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Get Display Cells">
-    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderDisplayCellListKey providerDisplayCellListKey)
+    @NonNull public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderDisplayCellListKey providerDisplayCellListKey)
     {
         return this.getDisplayCellsRx(providerDisplayCellListKey.getProviderId());
     }
 
-    public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderId providerId)
+    @NonNull public Observable<ProviderDisplayCellDTOList> getDisplayCellsRx(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getDisplayCells(providerId.key);
     }
 
-    public Observable<CompetitionPreSeasonDTO> getPreseasonDetails(@NonNull ProviderId providerId)
+    @NonNull public Observable<CompetitionPreSeasonDTO> getPreseasonDetails(@NonNull ProviderId providerId)
     {
         return this.providerServiceRx.getPreseasonDetails(providerId.key);
     }
 
-    public Observable<BaseResponseDTO> sharePreSeason(CompetitionPreseasonShareFormDTO competitionPreseasonShareFormDTO)
+    @NonNull public Observable<BaseResponseDTO> sharePreSeason(@NonNull CompetitionPreseasonShareFormDTO competitionPreseasonShareFormDTO)
     {
         return this.providerServiceRx.sharePreseason(competitionPreseasonShareFormDTO);
     }

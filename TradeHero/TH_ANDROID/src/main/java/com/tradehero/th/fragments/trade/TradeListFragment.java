@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -237,7 +238,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionSubscription == null)
         {
             positionSubscription = AndroidObservable.bindFragment(this, positionCache.get(positionDTOKey))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             error -> THToast.show(R.string.error_fetch_position_list_info));
@@ -258,7 +259,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (positionDTO != null && tradesSubscription == null)
         {
             tradesSubscription = AndroidObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             error -> {
@@ -299,7 +300,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
                 securityIdSubscription = AndroidObservable.bindFragment(
                         this,
                         securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
-                        .map(pair -> pair.second)
+                        .map(new PairGetSecond<>())
                         .subscribe(
                                 this::linkWith,
                                 error -> {
@@ -319,7 +320,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (securityId != null && securityCompactSubscription == null)
         {
             securityCompactSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
-                    .map(pair -> pair.second)
+                    .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
                             error -> THToast.show(new THException(error)));

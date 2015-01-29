@@ -31,7 +31,6 @@ public class PositionDTOCompact implements DTO
     }
     //</editor-fold>
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @JsonIgnore @Nullable
     public Boolean isClosed()
     {
@@ -48,7 +47,6 @@ public class PositionDTOCompact implements DTO
         return shares == 0;
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"NP_BOOLEAN_RETURN_NULL"})
     @JsonIgnore @Nullable
     public Boolean isOpen()
     {

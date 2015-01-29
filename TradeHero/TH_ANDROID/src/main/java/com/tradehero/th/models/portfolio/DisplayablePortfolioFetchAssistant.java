@@ -2,6 +2,7 @@ package com.tradehero.th.models.portfolio;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -45,7 +46,7 @@ public class DisplayablePortfolioFetchAssistant
             @NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
         return Observable.zip(
-                userProfileCache.get(userBaseKey).map(pair -> pair.second).take(1),
+                userProfileCache.get(userBaseKey).map(new PairGetSecond<>()).take(1),
                 portfolioCache.getPortfolios(portfolioCompactDTOs, null).take(1),
                 DisplayablePortfolioDTOList::new);
     }

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
@@ -136,7 +137,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .take(1)
-                        .map(pair -> pair.second))
+                        .map(new PairGetSecond<>()))
                 .subscribe(
                         this::handleUserProfileForOnBoardReceived,
                         error -> Timber.e(error, ""));
