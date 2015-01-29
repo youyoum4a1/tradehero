@@ -503,6 +503,10 @@
   <string name="discovery_number_timelines">主贴</string>
   <string name="discovery_number_replies">回帖</string>
 
+  <string name="timeline_top">置顶</string>
+  <string name="timeline_production">公告</string>
+
+
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>
   <string name="administrator_remove_favorite">取消加精</string>

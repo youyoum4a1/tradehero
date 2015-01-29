@@ -255,7 +255,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
                 holder.imgUserTLUserHeader = (ImageView) convertView.findViewById(R.id.imgUserTLUserHeader);
                 holder.tvUserTLName = (TextView) convertView.findViewById(R.id.tvUserTLName);
-                holder.tvTipInTop = (TextView) convertView.findViewById(R.id.tvTipInTop);
 
                 //是股票交易
                 holder.rlUserTLTrade = (RelativeLayout) convertView.findViewById(R.id.rlUserTLTrade);
@@ -303,7 +302,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(View.VISIBLE);
-            holder.tvTipInTop.setVisibility((isShowHeadAndName && item.isHighlight) ? View.VISIBLE : View.INVISIBLE);
             holder.tvUserTLName.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.imgUserTLUserHeader.setVisibility(isShowHeadAndName ? View.VISIBLE : View.GONE);
             holder.tvUserTLTitle.setVisibility(StringUtils.isNullOrEmpty(item.header) ? View.GONE : View.VISIBLE);
@@ -423,9 +421,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     });
                 }
 
-                if (item.lastCommentAtUtc != null)
+                if (item.createdAtUtc != null)
                 {
-                    holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.lastCommentAtUtc));
+                    holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
                 }
             }
 
@@ -803,7 +801,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         public TextView tvUserTLContent = null;
 
         public ImageView imgUserTLUserHeader = null;
-        public TextView tvTipInTop = null;
         public TextView tvReward = null;
         public TextView tvUserTLName = null;
 
