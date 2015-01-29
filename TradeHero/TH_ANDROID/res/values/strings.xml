@@ -500,6 +500,8 @@
   <string name="discovery_square_favorite_description">股神切磋投资技巧</string>
   <string name="discovery_square_novice">新手学堂</string>
   <string name="discovery_square_novice_description">不会用软件？不懂股市？进来瞧瞧！</string>
+  <string name="discovery_number_timelines">主贴</string>
+  <string name="discovery_number_replies">回帖</string>
 
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>

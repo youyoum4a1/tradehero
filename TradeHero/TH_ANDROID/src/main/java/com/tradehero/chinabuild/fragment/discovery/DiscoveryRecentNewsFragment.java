@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -59,6 +60,14 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
 
     private int PERPAGE = 20;
 
+    //head view
+    private View headerView;
+    private ImageView iconHeadIV;
+    private TextView titleHeadTV;
+    private TextView totalHeadTV;
+    private TextView numberTimelinesHeadTV;
+    private TextView numberRepliesHeadTV;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -105,6 +114,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     public void initView()
     {
         listTimeLine.setMode(PullToRefreshBase.Mode.BOTH);
+        initHeadViews();
         listTimeLine.setAdapter(adapter);
 
         adapter.setTimeLineOperater(new UserTimeLineAdapter.TimeLineOperater()
@@ -152,6 +162,19 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
                 fetchTimeLineMore();
             }
         });
+    }
+
+    private void initHeadViews() {
+        headerView = getActivity().getLayoutInflater().inflate(
+                R.layout.discovery_timelines_head, null);
+        iconHeadIV = (ImageView)headerView.findViewById(R.id.imageview_timelines_head_type);
+        iconHeadIV.setBackgroundResource(R.drawable.square_discuss);
+        titleHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_title);
+        titleHeadTV.setText(R.string.discovery_square_discuss);
+        totalHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_total);
+        numberTimelinesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_timeline);
+        numberRepliesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_replies);
+        listTimeLine.getRefreshableView().addHeaderView(headerView);
     }
 
     private void enterTimeLineDetail(TimelineItemDTO dto)

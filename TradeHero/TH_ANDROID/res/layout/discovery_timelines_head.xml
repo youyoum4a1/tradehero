@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" android:background="#ffffff">
+
+    <ImageView android:layout_width="43dp" android:layout_height="43dp"
+               android:id="@+id/imageview_timelines_head_type"
+               android:layout_margin="15dp"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:layout_marginBottom="15dp" android:layout_marginRight="15dp"
+                  android:layout_marginTop="15dp"
+                  android:orientation="vertical">
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:orientation="horizontal" android:layout_marginTop="3dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:id="@+id/textview_timelines_head_title"
+                      android:textSize="15sp" android:textColor="#000000"
+                      android:text="@string/discovery_square_novice"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/textview_timelines_head_total" android:layout_marginLeft="5dp"
+                      android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"
+                      android:text="--"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:orientation="horizontal" android:layout_marginTop="8dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textSize="12sp" android:textColor="#8d8d8d"
+                      android:text="@string/discovery_number_timelines"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp"
+                      android:textColor="#8d8d8d" android:text="--" android:layout_marginLeft="5dp"
+                      android:id="@+id/textview_timelines_head_number_timeline"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textSize="12sp" android:textColor="#8d8d8d" android:layout_marginLeft="10dp"
+                      android:text="@string/discovery_number_replies"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp"
+                      android:textColor="#8d8d8d" android:text="--" android:layout_marginLeft="5dp"
+                      android:id="@+id/textview_timelines_head_number_replies"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
