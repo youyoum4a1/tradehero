@@ -9,13 +9,6 @@ import com.tradehero.common.persistence.DTO;
 public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
     implements DTO, ContainerDTO<LeaderboardDefDTO, LeaderboardDefDTOList>
 {
-    //<editor-fold desc="Contructors">
-    public LeaderboardDefDTOList()
-    {
-        super();
-    }
-    //</editor-fold>
-
     @NonNull
     public LeaderboardDefDTOList keepForCountryCode(@NonNull String countryCode)
     {
@@ -29,16 +22,6 @@ public class LeaderboardDefDTOList extends BaseArrayList<LeaderboardDefDTO>
             }
         }
         return kept;
-    }
-
-    @NonNull public LeaderboardDefKeyList createKeys()
-    {
-        LeaderboardDefKeyList list = new LeaderboardDefKeyList();
-        for (LeaderboardDefDTO leaderboardDefDTO : this)
-        {
-            list.add(leaderboardDefDTO.getLeaderboardDefKey());
-        }
-        return list;
     }
 
     @Override public LeaderboardDefDTOList getList()

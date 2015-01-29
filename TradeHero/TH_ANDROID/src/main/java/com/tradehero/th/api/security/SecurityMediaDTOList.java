@@ -1,27 +1,9 @@
 package com.tradehero.th.api.security;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class SecurityMediaDTOList extends ArrayList<SecurityMediaDTO>
 {
-    //<editor-fold desc="Constructors">
-    public SecurityMediaDTOList(int initialCapacity)
-    {
-        super(initialCapacity);
-    }
-
-    public SecurityMediaDTOList()
-    {
-        super();
-    }
-
-    public SecurityMediaDTOList(Collection<? extends SecurityMediaDTO> c)
-    {
-        super(c);
-    }
-    //</editor-fold>
-
     public SecurityIdList getMediaSecurityIds()
     {
         SecurityIdList securityIds = new SecurityIdList();

@@ -21,8 +21,8 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.WarrantType;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.models.BaseDTOListProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
-import com.tradehero.th.models.provider.DTOProcessorProviderCompactListReceived;
 import com.tradehero.th.models.provider.DTOProcessorProviderReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -48,7 +48,7 @@ import rx.Observable;
     @NonNull public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
-                .map(new DTOProcessorProviderCompactListReceived(
+                .map(new BaseDTOListProcessor<>(
                         new DTOProcessorProviderReceived(currentUserId)));
     }
     //</editor-fold>
