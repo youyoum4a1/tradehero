@@ -5,6 +5,41 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/bg_timeline">
+
+    <RelativeLayout
+            android:id="@+id/rlTopBanner"
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_height="60dp"
+            android:visibility="gone">
+
+        <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                />
+
+        <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/indicator"
+                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:padding="1dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/transparent"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                />
+
+        <Button
+                android:id="@+id/btnBannerClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/btn_search_x_xml"/>
+    </RelativeLayout>
+
     <LinearLayout
             android:layout_marginTop="5dp" android:orientation="horizontal"
             android:id="@+id/linearlayout_square_learning"

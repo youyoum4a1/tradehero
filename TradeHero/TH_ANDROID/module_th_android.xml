@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_th_android" default="compile.module.th_android">
+  <dirname property="module.th_android.basedir" file="${ant.file.module_th_android}"/>
+  
+  <property name="module.jdk.home.th_android" value="${jdk.home.maven_android_api_19_platform_(1)}"/>
+  <property name="module.jdk.bin.th_android" value="${jdk.bin.maven_android_api_19_platform_(1)}"/>
+  <property name="module.jdk.classpath.th_android" value="jdk.classpath.maven_android_api_19_platform_(1)"/>
+  
+  <property name="compiler.args.th_android" value="-encoding UTF-8 -source 1.7 -target 1.7 ${compiler.args}"/>
+  
+  <property name="th_android.output.dir" value="${module.th_android.basedir}/target/idea-classes"/>
+  <property name="th_android.testoutput.dir" value="${module.th_android.basedir}/target/idea-test-classes"/>
+  
+  <path id="th_android.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="th_android.module.production.classpath">
+    <path refid="${module.jdk.classpath.th_android}"/>
+    <path refid="library.pinyin4j-2.5.0.classpath"/>
+    <path refid="library.maven:_com.tradehero.route:route:0.2-snapshot.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/android-support-v4.jar"/>
+    <path refid="library.maven:_com.localytics.android:library:2.19.0.classpath"/>
+    <pathelement location="${library_(1)_(com.special.residemenu).output.dir}"/>
+    <path refid="library.maven:_com.jakewharton.timber:timber:2.2.2.classpath"/>
+    <pathelement location="${library_(2)_(se.emilsjolander.stickylistheaders).output.dir}"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp:1.6.0.classpath"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp-urlconnection:1.6.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-core:1.2.1.2.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-commonshttp4:1.2.1.2.classpath"/>
+    <path refid="library.maven:_commons-codec:commons-codec:1.3.classpath"/>
+    <path refid="library.maven:_stax:stax:1.2.0.classpath"/>
+    <path refid="library.maven:_stax:stax-api:1.0.1.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.4.0.classpath"/>
+    <path refid="library.maven:_com.google.android:android:4.2.2.classpath"/>
+    <path refid="library.maven:_com.nineoldandroids:library:2.4.0.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger:1.2.1.classpath"/>
+    <path refid="library.maven:_com.jakewharton:butterknife:4.0.1.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger-compiler:1.2.1.classpath"/>
+    <path refid="library.maven:_com.squareup:javawriter:2.3.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:15.0.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:retrofit:1.6.1.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.2.4.classpath"/>
+    <path refid="library.maven:_com.squareup.picasso:picasso:2.3.3.classpath"/>
+    <path refid="library.maven:_org.ocpsoft.prettytime:prettytime:3.2.1.final.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.maven:_com.crashlytics.android:crashlytics:1.1.13.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:converter-simplexml:1.4.1.classpath"/>
+    <path refid="library.maven:_org.simpleframework:simple-xml:2.7.1.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/libammsdk.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/Tapstream.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/TalkingDataAnalytics.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/MobileAppTracker-3.2.3.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/weibosdkcore.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/mta-sdk-1.0.0.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/open_sdk.jar"/>
+    <path refid="library.maven:_com.baidu:pushsdk:3.2.0.classpath"/>
+    <pathelement location="${~apklib-com.actionbarsherlock_actionbarsherlock_4.4.0.output.dir}"/>
+    <pathelement location="${~apklib-com.fortysevendeg.android_swipelistview_1.0-20130701.103547-12.output.dir}"/>
+    <path refid="library.pinyin4j.classpath"/>
+  </path>
+  
+  <path id="th_android.runtime.production.module.classpath">
+    <pathelement location="${th_android.output.dir}"/>
+    <path refid="library.pinyin4j-2.5.0.classpath"/>
+    <path refid="library.maven:_com.tradehero.route:route:0.2-snapshot.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/android-support-v4.jar"/>
+    <path refid="library.maven:_com.localytics.android:library:2.19.0.classpath"/>
+    <path refid="library_(1)_(com.special.residemenu).runtime.production.module.classpath"/>
+    <path refid="library.maven:_com.jakewharton.timber:timber:2.2.2.classpath"/>
+    <path refid="library_(2)_(se.emilsjolander.stickylistheaders).runtime.production.module.classpath"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp:1.6.0.classpath"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp-urlconnection:1.6.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-core:1.2.1.2.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-commonshttp4:1.2.1.2.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.4.0.classpath"/>
+    <path refid="library.maven:_com.nineoldandroids:library:2.4.0.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger:1.2.1.classpath"/>
+    <path refid="library.maven:_com.jakewharton:butterknife:4.0.1.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:retrofit:1.6.1.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.2.4.classpath"/>
+    <path refid="library.maven:_com.squareup.picasso:picasso:2.3.3.classpath"/>
+    <path refid="library.maven:_org.ocpsoft.prettytime:prettytime:3.2.1.final.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.maven:_com.crashlytics.android:crashlytics:1.1.13.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:converter-simplexml:1.4.1.classpath"/>
+    <path refid="library.maven:_org.simpleframework:simple-xml:2.7.1.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/libammsdk.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/Tapstream.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/TalkingDataAnalytics.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/MobileAppTracker-3.2.3.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/weibosdkcore.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/mta-sdk-1.0.0.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/open_sdk.jar"/>
+    <path refid="library.maven:_com.baidu:pushsdk:3.2.0.classpath"/>
+    <path refid="~apklib-com.actionbarsherlock_actionbarsherlock_4.4.0.runtime.production.module.classpath"/>
+    <path refid="~apklib-com.fortysevendeg.android_swipelistview_1.0-20130701.103547-12.runtime.production.module.classpath"/>
+    <path refid="library.pinyin4j.classpath"/>
+  </path>
+  
+  <path id="th_android.module.classpath">
+    <path refid="${module.jdk.classpath.th_android}"/>
+    <pathelement location="${th_android.output.dir}"/>
+    <path refid="library.pinyin4j-2.5.0.classpath"/>
+    <path refid="library.maven:_com.tradehero.route:route:0.2-snapshot.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/android-support-v4.jar"/>
+    <path refid="library.maven:_com.localytics.android:library:2.19.0.classpath"/>
+    <pathelement location="${library_(1)_(com.special.residemenu).testoutput.dir}"/>
+    <pathelement location="${library_(1)_(com.special.residemenu).output.dir}"/>
+    <path refid="library.maven:_com.jakewharton.timber:timber:2.2.2.classpath"/>
+    <pathelement location="${library_(2)_(se.emilsjolander.stickylistheaders).testoutput.dir}"/>
+    <pathelement location="${library_(2)_(se.emilsjolander.stickylistheaders).output.dir}"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp:1.6.0.classpath"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp-urlconnection:1.6.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-core:1.2.1.2.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-commonshttp4:1.2.1.2.classpath"/>
+    <path refid="library.maven:_commons-codec:commons-codec:1.3.classpath"/>
+    <path refid="library.maven:_stax:stax:1.2.0.classpath"/>
+    <path refid="library.maven:_stax:stax-api:1.0.1.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.4.0.classpath"/>
+    <path refid="library.maven:_com.google.android:android:4.2.2.classpath"/>
+    <path refid="library.maven:_com.nineoldandroids:library:2.4.0.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger:1.2.1.classpath"/>
+    <path refid="library.maven:_com.jakewharton:butterknife:4.0.1.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger-compiler:1.2.1.classpath"/>
+    <path refid="library.maven:_com.squareup:javawriter:2.3.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:15.0.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:retrofit:1.6.1.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.2.4.classpath"/>
+    <path refid="library.maven:_com.squareup.picasso:picasso:2.3.3.classpath"/>
+    <path refid="library.maven:_org.ocpsoft.prettytime:prettytime:3.2.1.final.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.4.classpath"/>
+    <path refid="library.maven:_org.easytesting:fest-assert-core:2.0m10.classpath"/>
+    <path refid="library.maven:_org.easytesting:fest-util:1.2.5.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-core:1.9.5.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.1.classpath"/>
+    <path refid="library.maven:_org.objenesis:objenesis:1.0.classpath"/>
+    <path refid="library.maven:_org.robolectric:robolectric:2.3.classpath"/>
+    <path refid="library.maven:_com.almworks.sqlite4java:sqlite4java:0.282.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-commons:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-tree:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-util:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-analysis:5.0.1.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.1.1.classpath"/>
+    <path refid="library.maven:_org.apache.httpcomponents:httpclient:4.0.3.classpath"/>
+    <path refid="library.maven:_org.apache.httpcomponents:httpcore:4.0.1.classpath"/>
+    <path refid="library.maven:_com.ximpleware:vtd-xml:2.11.classpath"/>
+    <path refid="library.maven:_com.android.support:support-v4:19.0.1.classpath"/>
+    <path refid="library.maven:_org.easytesting:fest-reflect:1.4.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-ant-tasks:2.1.3.classpath"/>
+    <path refid="library.maven:_org.apache.ant:ant:1.8.0.classpath"/>
+    <path refid="library.maven:_org.apache.ant:ant-launcher:1.8.0.classpath"/>
+    <path refid="library.maven:_classworlds:classworlds:1.1-alpha-2.classpath"/>
+    <path refid="library.maven:_org.codehaus.plexus:plexus-container-default:1.0-alpha-9-stable-1.classpath"/>
+    <path refid="library.maven:_org.codehaus.plexus:plexus-utils:1.5.15.classpath"/>
+    <path refid="library.maven:_org.codehaus.plexus:plexus-interpolation:1.11.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-artifact:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-artifact-manager:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-repository-metadata:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-provider-api:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_backport-util-concurrent:backport-util-concurrent:3.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-model:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-project:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-settings:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-profile:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-plugin-registry:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-error-diagnostics:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-file:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-http-lightweight:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-http-shared:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_nekohtml:xercesminimal:1.9.6.2.classpath"/>
+    <path refid="library.maven:_nekohtml:nekohtml:1.9.6.2.classpath"/>
+    <path refid="library.maven:_junit:junit:4.10.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.1.classpath"/>
+    <path refid="library.maven:_org.reflections:reflections:0.9.9-rc2.classpath"/>
+    <path refid="library.maven:_org.javassist:javassist:3.18.2-ga.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:annotations:2.0.1.classpath"/>
+    <path refid="library.maven:_dom4j:dom4j:1.6.1.classpath"/>
+    <path refid="library.maven:_xml-apis:xml-apis:1.0.b2.classpath"/>
+    <path refid="library.maven:_com.crashlytics.android:crashlytics:1.1.13.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:converter-simplexml:1.4.1.classpath"/>
+    <path refid="library.maven:_org.simpleframework:simple-xml:2.7.1.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/libammsdk.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/Tapstream.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/TalkingDataAnalytics.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/MobileAppTracker-3.2.3.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/weibosdkcore.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/mta-sdk-1.0.0.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/open_sdk.jar"/>
+    <path refid="library.maven:_com.baidu:pushsdk:3.2.0.classpath"/>
+    <pathelement location="${~apklib-com.actionbarsherlock_actionbarsherlock_4.4.0.testoutput.dir}"/>
+    <pathelement location="${~apklib-com.actionbarsherlock_actionbarsherlock_4.4.0.output.dir}"/>
+    <pathelement location="${~apklib-com.fortysevendeg.android_swipelistview_1.0-20130701.103547-12.testoutput.dir}"/>
+    <pathelement location="${~apklib-com.fortysevendeg.android_swipelistview_1.0-20130701.103547-12.output.dir}"/>
+    <path refid="library.pinyin4j.classpath"/>
+  </path>
+  
+  <path id="th_android.runtime.module.classpath">
+    <pathelement location="${th_android.testoutput.dir}"/>
+    <pathelement location="${th_android.output.dir}"/>
+    <path refid="library.pinyin4j-2.5.0.classpath"/>
+    <path refid="library.maven:_com.tradehero.route:route:0.2-snapshot.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/android-support-v4.jar"/>
+    <path refid="library.maven:_com.localytics.android:library:2.19.0.classpath"/>
+    <path refid="library_(1)_(com.special.residemenu).runtime.module.classpath"/>
+    <path refid="library.maven:_com.jakewharton.timber:timber:2.2.2.classpath"/>
+    <path refid="library_(2)_(se.emilsjolander.stickylistheaders).runtime.module.classpath"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp:1.6.0.classpath"/>
+    <path refid="library.maven:_com.squareup.okhttp:okhttp-urlconnection:1.6.0.classpath"/>
+    <path refid="library.maven:_javax.inject:javax.inject:1.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-core:1.2.1.2.classpath"/>
+    <path refid="library.maven:_oauth.signpost:signpost-commonshttp4:1.2.1.2.classpath"/>
+    <path refid="library.maven:_commons-codec:commons-codec:1.3.classpath"/>
+    <path refid="library.maven:_stax:stax:1.2.0.classpath"/>
+    <path refid="library.maven:_stax:stax-api:1.0.1.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-databind:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-annotations:2.4.0.classpath"/>
+    <path refid="library.maven:_com.fasterxml.jackson.core:jackson-core:2.4.0.classpath"/>
+    <path refid="library.maven:_com.google.android:android:4.2.2.classpath"/>
+    <path refid="library.maven:_com.nineoldandroids:library:2.4.0.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger:1.2.1.classpath"/>
+    <path refid="library.maven:_com.jakewharton:butterknife:4.0.1.classpath"/>
+    <path refid="library.maven:_com.squareup.dagger:dagger-compiler:1.2.1.classpath"/>
+    <path refid="library.maven:_com.squareup:javawriter:2.3.0.classpath"/>
+    <path refid="library.maven:_com.google.guava:guava:15.0.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:retrofit:1.6.1.classpath"/>
+    <path refid="library.maven:_com.google.code.gson:gson:2.2.4.classpath"/>
+    <path refid="library.maven:_com.squareup.picasso:picasso:2.3.3.classpath"/>
+    <path refid="library.maven:_org.ocpsoft.prettytime:prettytime:3.2.1.final.classpath"/>
+    <path refid="library.maven:_org.jetbrains:annotations:13.0.classpath"/>
+    <path refid="library.maven:_commons-io:commons-io:2.4.classpath"/>
+    <path refid="library.maven:_org.easytesting:fest-assert-core:2.0m10.classpath"/>
+    <path refid="library.maven:_org.easytesting:fest-util:1.2.5.classpath"/>
+    <path refid="library.maven:_org.mockito:mockito-core:1.9.5.classpath"/>
+    <path refid="library.maven:_org.hamcrest:hamcrest-core:1.1.classpath"/>
+    <path refid="library.maven:_org.objenesis:objenesis:1.0.classpath"/>
+    <path refid="library.maven:_org.robolectric:robolectric:2.3.classpath"/>
+    <path refid="library.maven:_com.almworks.sqlite4java:sqlite4java:0.282.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-commons:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-tree:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-util:5.0.1.classpath"/>
+    <path refid="library.maven:_org.ow2.asm:asm-analysis:5.0.1.classpath"/>
+    <path refid="library.maven:_commons-logging:commons-logging:1.1.1.classpath"/>
+    <path refid="library.maven:_org.apache.httpcomponents:httpclient:4.0.3.classpath"/>
+    <path refid="library.maven:_org.apache.httpcomponents:httpcore:4.0.1.classpath"/>
+    <path refid="library.maven:_com.ximpleware:vtd-xml:2.11.classpath"/>
+    <path refid="library.maven:_com.android.support:support-v4:19.0.1.classpath"/>
+    <path refid="library.maven:_org.easytesting:fest-reflect:1.4.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-ant-tasks:2.1.3.classpath"/>
+    <path refid="library.maven:_org.apache.ant:ant:1.8.0.classpath"/>
+    <path refid="library.maven:_org.apache.ant:ant-launcher:1.8.0.classpath"/>
+    <path refid="library.maven:_classworlds:classworlds:1.1-alpha-2.classpath"/>
+    <path refid="library.maven:_org.codehaus.plexus:plexus-container-default:1.0-alpha-9-stable-1.classpath"/>
+    <path refid="library.maven:_org.codehaus.plexus:plexus-utils:1.5.15.classpath"/>
+    <path refid="library.maven:_org.codehaus.plexus:plexus-interpolation:1.11.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-artifact:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-artifact-manager:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-repository-metadata:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-provider-api:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_backport-util-concurrent:backport-util-concurrent:3.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-model:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-project:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-settings:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-profile:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-plugin-registry:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven:maven-error-diagnostics:2.2.1.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-file:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-http-lightweight:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_org.apache.maven.wagon:wagon-http-shared:1.0-beta-6.classpath"/>
+    <path refid="library.maven:_nekohtml:xercesminimal:1.9.6.2.classpath"/>
+    <path refid="library.maven:_nekohtml:nekohtml:1.9.6.2.classpath"/>
+    <path refid="library.maven:_junit:junit:4.10.classpath"/>
+    <path refid="library.maven:_org.apache.commons:commons-lang3:3.1.classpath"/>
+    <path refid="library.maven:_org.reflections:reflections:0.9.9-rc2.classpath"/>
+    <path refid="library.maven:_org.javassist:javassist:3.18.2-ga.classpath"/>
+    <path refid="library.maven:_com.google.code.findbugs:annotations:2.0.1.classpath"/>
+    <path refid="library.maven:_dom4j:dom4j:1.6.1.classpath"/>
+    <path refid="library.maven:_xml-apis:xml-apis:1.0.b2.classpath"/>
+    <path refid="library.maven:_com.crashlytics.android:crashlytics:1.1.13.classpath"/>
+    <path refid="library.maven:_com.squareup.retrofit:converter-simplexml:1.4.1.classpath"/>
+    <path refid="library.maven:_org.simpleframework:simple-xml:2.7.1.classpath"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/libammsdk.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/Tapstream.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/TalkingDataAnalytics.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/MobileAppTracker-3.2.3.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/weibosdkcore.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/mta-sdk-1.0.0.jar"/>
+    <pathelement location="${basedir}/TradeHero/TH_ANDROID/libs/open_sdk.jar"/>
+    <path refid="library.maven:_com.baidu:pushsdk:3.2.0.classpath"/>
+    <path refid="~apklib-com.actionbarsherlock_actionbarsherlock_4.4.0.runtime.module.classpath"/>
+    <path refid="~apklib-com.fortysevendeg.android_swipelistview_1.0-20130701.103547-12.runtime.module.classpath"/>
+    <path refid="library.pinyin4j.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.th_android">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.th_android">
+    <patternset refid="excluded.from.module.th_android"/>
+  </patternset>
+  
+  <path id="th_android.module.sourcepath">
+    <dirset dir="${module.th_android.basedir}">
+      <include name="target/generated-sources/r"/>
+      <include name="target/generated-sources/aidl"/>
+      <include name="src/main/java"/>
+      <include name="src/debug/java"/>
+      <include name="target/generated-sources/annotations"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.th_android" depends="compile.module.th_android.production,compile.module.th_android.tests" description="Compile module TH_Android"/>
+  
+  <target name="compile.module.th_android.production" depends="register.custom.compilers,compile.module.library_(1)_(com.special.residemenu),compile.module.library_(2)_(se.emilsjolander.stickylistheaders),compile.module.~apklib-com.actionbarsherlock_actionbarsherlock_4.4.0,compile.module.~apklib-com.fortysevendeg.android_swipelistview_1.0-20130701.103547-12" description="Compile module TH_Android; production classes">
+    <mkdir dir="${th_android.output.dir}"/>
+    <javac2 destdir="${th_android.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.th_android}/javac">
+      <compilerarg line="${compiler.args.th_android}"/>
+      <bootclasspath refid="th_android.module.bootclasspath"/>
+      <classpath refid="th_android.module.production.classpath"/>
+      <src refid="th_android.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.th_android"/>
+    </javac2>
+    
+    <copy todir="${th_android.output.dir}">
+      <fileset dir="${module.th_android.basedir}/target/generated-sources/r">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.th_android.basedir}/target/generated-sources/aidl">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.th_android.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.th_android.basedir}/src/debug/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.th_android.basedir}/target/generated-sources/annotations">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.th_android.tests" depends="register.custom.compilers,compile.module.th_android.production" description="compile module TH_Android; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.th_android" description="cleanup module">
+    <delete dir="${th_android.output.dir}"/>
+    <delete dir="${th_android.testoutput.dir}"/>
+  </target>
+</project>
