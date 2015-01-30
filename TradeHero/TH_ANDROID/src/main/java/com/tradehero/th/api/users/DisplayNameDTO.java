@@ -22,11 +22,7 @@ public class DisplayNameDTO implements DTOKey
 
     @Override public boolean equals(@Nullable Object other)
     {
-        return other instanceof DisplayNameDTO && isSameName(((DisplayNameDTO) other).displayName);
-    }
-
-    public boolean isSameName(@Nullable String otherName)
-    {
-        return otherName != null && displayName.equals(otherName);
+        return other instanceof DisplayNameDTO
+                && ((DisplayNameDTO) other).displayName.equals(displayName);
     }
 }

@@ -31,11 +31,6 @@ public class LoginSignUpFormDTO
         return authData.getTokenMap();
     }
 
-    public final boolean isEmailLogin()
-    {
-        return authData.socialNetworkEnum == SocialNetworkEnum.TH;
-    }
-
     public LoginSignUpFormDTO(
             AuthData authData,
             String email,

@@ -2,13 +2,14 @@ package com.tradehero.th.api.leaderboard.def;
 
 import android.content.Context;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
 public class FriendLeaderboardDefDTO extends ConnectedLeaderboardDefDTO
 {
     //<editor-fold desc="Constructors">
-    public FriendLeaderboardDefDTO(Context context)
+    public FriendLeaderboardDefDTO(@NonNull Context context)
     {
         super();
         id = LeaderboardDefKeyKnowledge.FRIEND_ID;

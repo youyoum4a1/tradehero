@@ -3,9 +3,6 @@ package com.tradehero.th.models.social.follower;
 import android.support.annotation.NonNull;
 import com.tradehero.th.persistence.social.HeroType;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 import javax.inject.Inject;
 
 public class HeroTypeResourceDTOFactory

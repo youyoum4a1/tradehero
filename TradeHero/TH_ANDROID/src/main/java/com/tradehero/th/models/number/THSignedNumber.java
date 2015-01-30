@@ -53,7 +53,7 @@ public class THSignedNumber
 
     public static abstract class Builder<BuilderType extends Builder<BuilderType>>
     {
-        private double value;
+        private final double value;
         @Nullable private Double signValue;
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
@@ -74,12 +74,6 @@ public class THSignedNumber
         //</editor-fold>
 
         protected abstract BuilderType self();
-
-        public BuilderType value(double number)
-        {
-            this.value = number;
-            return self();
-        }
 
         public BuilderType withSign()
         {

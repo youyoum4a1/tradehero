@@ -29,7 +29,7 @@ public class LeaderboardKey implements DTOKey
         this.id = id;
     }
 
-    public LeaderboardKey(@NonNull Integer id, @Nullable AssetClass assetClass)
+    public LeaderboardKey(int id, @Nullable AssetClass assetClass)
     {
         this.id = id;
         this.assetClass = assetClass;

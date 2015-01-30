@@ -25,6 +25,7 @@ public final class SharingOptionsEvent extends SecurityEvent
     private final boolean weChatEnabled;
     private final boolean weiboEnabled;
 
+    //<editor-fold desc="Constructors">
     private SharingOptionsEvent(boolean isBuyEvent, SecurityId securityId, ProviderId providerId, String priceSelectMethod, boolean hasComment,
             boolean facebookEnabled,
             boolean twitterEnabled,
@@ -42,6 +43,7 @@ public final class SharingOptionsEvent extends SecurityEvent
         this.weChatEnabled = weChatEnabled;
         this.weiboEnabled = weiboEnabled;
     }
+    //</editor-fold>
 
     @Override public Map<String, String> getAttributes()
     {

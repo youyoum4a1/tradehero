@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class ConnectedLeaderboardDefListKey extends LeaderboardDefListKey
@@ -13,7 +14,7 @@ public class ConnectedLeaderboardDefListKey extends LeaderboardDefListKey
         super(CONNECTED, page);
     }
 
-    public ConnectedLeaderboardDefListKey(Bundle args)
+    public ConnectedLeaderboardDefListKey(@NonNull Bundle args)
     {
         super(args);
         if (!key.equals(CONNECTED))

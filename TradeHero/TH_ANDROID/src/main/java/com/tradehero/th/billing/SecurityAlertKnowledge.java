@@ -9,12 +9,6 @@ import com.tradehero.th.api.alert.AlertPlanDTO;
 
 public abstract class SecurityAlertKnowledge
 {
-    //<editor-fold desc="Constructors">
-    public SecurityAlertKnowledge()
-    {
-    }
-    //</editor-fold>
-
     public int getStockAlertIcon(int count)
     {
         if (count == 0)

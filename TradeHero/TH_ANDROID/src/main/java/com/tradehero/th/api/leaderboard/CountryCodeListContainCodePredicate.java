@@ -9,10 +9,12 @@ public class CountryCodeListContainCodePredicate implements Predicate<CountryCod
     @NonNull
     private final String lookedForCountryCode;
 
+    //<editor-fold desc="Constructors">
     public CountryCodeListContainCodePredicate(@NonNull String countryCode)
     {
         this.lookedForCountryCode = countryCode;
     }
+    //</editor-fold>
 
     @Override public boolean apply(@Nullable CountryCodeList countryCodeList)
     {

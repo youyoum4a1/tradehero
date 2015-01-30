@@ -84,29 +84,32 @@ public class AbstractDiscussionCompactDTOFactory
         toPopulate.text = getSameOrTranslated(toPopulate.text, translationKey, translationResult);
         if (toPopulate instanceof TimelineItemDTO)
         {
-            populateTranslation((TimelineItemDTO) toPopulate, translationKey, translationResult);
+            // Nothing to do
+            //populateTranslation((TimelineItemDTO) toPopulate, translationKey, translationResult);
         }
         else if (toPopulate instanceof DiscussionDTO)
         {
-            populateTranslation((DiscussionDTO) toPopulate, translationKey, translationResult);
+            // Nothing to do
+            //populateTranslation((DiscussionDTO) toPopulate, translationKey, translationResult);
         }
     }
 
-    protected void populateTranslation(TimelineItemDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-    }
+    //protected void populateTranslation(TimelineItemDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
+    //{
+    //}
 
-    protected void populateTranslation(DiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-        if (toPopulate instanceof PrivateDiscussionDTO)
-        {
-            populateTranslation((PrivateDiscussionDTO) toPopulate, translationKey, translationResult);
-        }
-    }
+    //protected void populateTranslation(DiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
+    //{
+    //    if (toPopulate instanceof PrivateDiscussionDTO)
+    //    {
+    //        // Nothing to do
+    //        //populateTranslation((PrivateDiscussionDTO) toPopulate, translationKey, translationResult);
+    //    }
+    //}
 
-    protected void populateTranslation(PrivateDiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
-    {
-    }
+    //protected void populateTranslation(PrivateDiscussionDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
+    //{
+    //}
 
     protected void populateTranslation(NewsItemCompactDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
     {

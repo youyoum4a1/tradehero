@@ -2,6 +2,7 @@ package com.tradehero.th.api.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.position.OwnedPositionId;
 
@@ -18,7 +19,7 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         this.tradeId = tradeId;
     }
 
-    public OwnedTradeId(Bundle args)
+    public OwnedTradeId(@NonNull Bundle args)
     {
         super(args);
         this.tradeId = args.getInt(BUNDLE_KEY_TRADE_ID);
@@ -36,23 +37,18 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return super.hashCode() ^ tradeId.hashCode();
     }
 
-    public boolean equals(OwnedTradeId other)
+    public boolean equals(@Nullable OwnedTradeId other)
     {
         return (other != null) &&
                 super.equals(other) &&
                 tradeId.equals(other.tradeId);
     }
 
-    public int compareTo(OwnedTradeId other)
+    public int compareTo(@NonNull OwnedTradeId other)
     {
         if (this == other)
         {
             return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
         }
 
         int parentComp = super.compareTo(other);

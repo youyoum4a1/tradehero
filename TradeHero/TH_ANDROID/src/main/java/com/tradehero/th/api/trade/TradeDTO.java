@@ -34,10 +34,6 @@ public class TradeDTO implements DTO
     public int positionId;
     //</editor-fold>
 
-    public TradeDTO()
-    {
-    }
-
     @JsonIgnore @NonNull public OwnedTradeId getOwnedTradeId()
     {
         return new OwnedTradeId(userId, portfolioId, positionId, id);

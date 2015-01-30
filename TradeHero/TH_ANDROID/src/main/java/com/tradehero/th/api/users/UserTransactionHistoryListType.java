@@ -1,22 +1,12 @@
 package com.tradehero.th.api.users;
 
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class UserTransactionHistoryListType extends UserBaseKey
 {
     //<editor-fold desc="Constructors">
-    public UserTransactionHistoryListType(Integer key)
-    {
-        super(key);
-    }
-
-    public UserTransactionHistoryListType(Bundle args)
-    {
-        super(args);
-    }
-
-    public UserTransactionHistoryListType(UserBaseKey userBaseKey)
+    public UserTransactionHistoryListType(@NonNull UserBaseKey userBaseKey)
     {
         super(userBaseKey.key);
     }

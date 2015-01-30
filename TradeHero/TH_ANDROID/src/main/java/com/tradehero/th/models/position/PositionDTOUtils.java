@@ -6,9 +6,9 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.models.number.THSignedMoney;
+import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.THColorUtils;
-import com.tradehero.th.models.number.THSignedNumber;
 import javax.inject.Inject;
 
 public class PositionDTOUtils

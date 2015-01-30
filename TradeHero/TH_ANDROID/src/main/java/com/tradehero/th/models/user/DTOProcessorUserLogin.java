@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.ThroughDTOProcessor;
@@ -47,7 +46,6 @@ public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
                 currentUserId.set(profile.id);
                 value.profileDTO = processorSignInUp.process(profile);
 
-                UserBaseKey userKey = profile.getBaseKey();
                 if (value.systemStatusDTO == null)
                 {
                     value.systemStatusDTO = new SystemStatusDTO();

@@ -7,8 +7,10 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
 public class ChartTimeEvent extends SecurityEvent
 {
+    //<editor-fold desc="Constructors">
     public ChartTimeEvent(SecurityId securityId, ChartTimeSpan chartTimeSpan)
     {
         super(String.format(AnalyticsConstants.PickChart, ChartTimeSpanMetricsCodeFactory.createCode(chartTimeSpan)), securityId);
     }
+    //</editor-fold>
 }

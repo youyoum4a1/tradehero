@@ -6,7 +6,6 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
-import com.tradehero.th.api.leaderboard.key.LeaderboardUserIdList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -32,16 +31,11 @@ public class LeaderboardUserCacheRx extends BaseDTOCacheRx<LeaderboardUserId, Le
         }
     }
 
-    public void put(@NonNull List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
+    public void onNext(@NonNull List<? extends LeaderboardUserDTO> leaderboardUserDTOs)
     {
         for (LeaderboardUserDTO leaderboardUserDTO : leaderboardUserDTOs)
         {
             onNext(leaderboardUserDTO.getLeaderboardUserId(), leaderboardUserDTO);
         }
-    }
-
-    public LeaderboardUserIdList getAllKeys()
-    {
-        return new LeaderboardUserIdList(snapshot().keySet(), (LeaderboardUserId) null);
     }
 }

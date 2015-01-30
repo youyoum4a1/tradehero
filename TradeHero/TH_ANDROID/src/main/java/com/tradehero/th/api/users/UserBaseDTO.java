@@ -23,10 +23,6 @@ public class UserBaseDTO extends ExtendedDTO
     public Double roiSinceInception;
     @Nullable public String countryCode;
 
-    public UserBaseDTO()
-    {
-    }
-
     @JsonIgnore @NonNull public UserBaseKey getBaseKey()
     {
         return new UserBaseKey(id);

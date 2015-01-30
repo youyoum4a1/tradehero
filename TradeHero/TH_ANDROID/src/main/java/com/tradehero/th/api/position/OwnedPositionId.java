@@ -19,7 +19,7 @@ public class OwnedPositionId extends OwnedPortfolioId implements PositionDTOKey,
         this.positionId = positionId;
     }
 
-    public OwnedPositionId(Bundle args)
+    public OwnedPositionId(@NonNull Bundle args)
     {
         super(args);
         this.positionId = args.getInt(BUNDLE_KEY_POSITION_ID);

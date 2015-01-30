@@ -23,12 +23,6 @@ public class MenuOwnedPortfolioId extends OwnedPortfolioId
         super(userBaseKey.key, portfolioCompactDTO.id);
         this.title = portfolioCompactDTO.title;
     }
-
-    public MenuOwnedPortfolioId(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioCompactDTO portfolioCompactDTO)
-    {
-        super(ownedPortfolioId);
-        this.title = portfolioCompactDTO == null ? null : portfolioCompactDTO.title;
-    }
     //</editor-fold>
 
     //<editor-fold desc="CharSequence">

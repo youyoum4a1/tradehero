@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class ExchangeLeaderboardDefListKey extends LeaderboardDefListKey
@@ -13,7 +14,7 @@ public class ExchangeLeaderboardDefListKey extends LeaderboardDefListKey
         super(EXCHANGE, page);
     }
 
-    public ExchangeLeaderboardDefListKey(Bundle args)
+    public ExchangeLeaderboardDefListKey(@NonNull Bundle args)
     {
         super(args);
         if (!key.equals(EXCHANGE))

@@ -17,25 +17,29 @@ public class PagedLeaderboardKey extends LeaderboardKey
     @Nullable public final Integer page;
 
     //<editor-fold desc="Constructors">
-    public PagedLeaderboardKey(Integer leaderboardKey, Integer page)
+    public PagedLeaderboardKey(@NonNull Integer leaderboardKey, @Nullable Integer page)
     {
         super(leaderboardKey);
         this.page = page;
     }
 
-    public PagedLeaderboardKey(PagedLeaderboardKey other, Integer page)
+    public PagedLeaderboardKey(@NonNull PagedLeaderboardKey other, @Nullable Integer page)
     {
         super(other.id);
         this.page = page;
     }
 
-    public PagedLeaderboardKey(@NonNull Bundle args, @Nullable PagedLeaderboardKey defaultValues)
+    public PagedLeaderboardKey(
+            @NonNull Bundle args,
+            @Nullable PagedLeaderboardKey defaultValues)
     {
         super(args, defaultValues);
         this.page = args.containsKey(BUNDLE_KEY_PAGE) ? (Integer) args.getInt(BUNDLE_KEY_PAGE) : ((defaultValues != null) ? defaultValues.page : null);
     }
 
-    public PagedLeaderboardKey(@NonNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
+    public PagedLeaderboardKey(
+            @NonNull Set<String> catValues,
+            @Nullable PagedLeaderboardKey defaultValues)
     {
         super(catValues, defaultValues);
         this.page = findPage(catValues, defaultValues);
@@ -65,7 +69,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
         return page;
     }
 
-    public PagedLeaderboardKey cloneAtPage(int page)
+    @NonNull public PagedLeaderboardKey cloneAtPage(int page)
     {
         return new PagedLeaderboardKey(this, page);
     }
@@ -83,7 +87,7 @@ public class PagedLeaderboardKey extends LeaderboardKey
         }
     }
 
-    public static Integer findPage(@NonNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
+    @Nullable public static Integer findPage(@NonNull Set<String> catValues, @Nullable PagedLeaderboardKey defaultValues)
     {
         Iterator<String> iterator = catValues.iterator();
         String catValue;
@@ -104,13 +108,13 @@ public class PagedLeaderboardKey extends LeaderboardKey
         return null;
     }
 
-    @Override public void putParameters(Set<String> catValues)
+    @Override public void putParameters(@NonNull Set<String> catValues)
     {
         super.putParameters(catValues);
         putPage(catValues, this.page);
     }
 
-    public static void putPage(Set<String> catValues, Integer page)
+    public static void putPage(@NonNull Set<String> catValues, @Nullable Integer page)
     {
         if (page != null)
         {

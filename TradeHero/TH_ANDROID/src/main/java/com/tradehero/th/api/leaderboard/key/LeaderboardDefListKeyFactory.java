@@ -14,7 +14,7 @@ public class LeaderboardDefListKeyFactory
     }
     //</editor-fold>
 
-    public LeaderboardDefListKey create(@NonNull Bundle args)
+    @NonNull public LeaderboardDefListKey create(@NonNull Bundle args)
     {
         switch (args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY))
         {

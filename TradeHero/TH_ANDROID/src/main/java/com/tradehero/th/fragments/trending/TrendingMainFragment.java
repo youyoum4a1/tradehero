@@ -21,6 +21,7 @@ import com.tradehero.th.api.games.ViralMiniGameDefDTO;
 import com.tradehero.th.api.games.ViralMiniGameDefDTOList;
 import com.tradehero.th.api.games.ViralMiniGameDefListKey;
 import com.tradehero.th.api.portfolio.AssetClass;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.games.ViralGamePopupDialogFragment;
@@ -43,6 +44,7 @@ public class TrendingMainFragment extends DashboardFragment
     @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
     @Inject @ShowViralGameDialog TimingIntervalPreference showViralGameTimingIntervalPreference;
     @Inject Lazy<ViralMiniGameDefListCache> viralMiniGameDefListCache;
+    @Inject CurrentUserId currentUserId;
 
     private static int lastType = 0;
 
@@ -70,7 +72,13 @@ public class TrendingMainFragment extends DashboardFragment
         AssetClass askedAssetClass = getAssetClass(getArguments());
         if (askedAssetClass != null)
         {
-            lastType = TrendingTabType.getForAssetClass(askedAssetClass).ordinal();
+            try
+            {
+                lastType = TrendingTabType.getForAssetClass(askedAssetClass).ordinal();
+            } catch (IllegalArgumentException e)
+            {
+                Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
+            }
         }
     }
 

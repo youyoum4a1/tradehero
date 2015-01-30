@@ -32,7 +32,7 @@ public class DTOProcessorDiscussionReply extends DTOProcessorDiscussionCreate
     }
     //</editor-fold>
 
-    @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
+    @Override public DiscussionDTO process(@NonNull DiscussionDTO discussionDTO)
     {
         DiscussionDTO processed = super.process(discussionDTO);
         AbstractDiscussionCompactDTO cachedInitiating = discussionCache.getCachedValue(initiatingKey);

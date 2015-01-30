@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class DrillDownLeaderboardDefListKey extends LeaderboardDefListKey
@@ -13,7 +14,7 @@ public class DrillDownLeaderboardDefListKey extends LeaderboardDefListKey
         super(DRILL_DOWN, page);
     }
 
-    public DrillDownLeaderboardDefListKey(Bundle args)
+    public DrillDownLeaderboardDefListKey(@NonNull Bundle args)
     {
         super(args);
         if (!key.equals(DRILL_DOWN))

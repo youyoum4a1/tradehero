@@ -11,8 +11,9 @@ import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.TimePeriodLeaderboardDefListKey;
 import java.util.HashMap;
 import javax.inject.Inject;
+import rx.functions.Func1;
 
-public class LeaderboardDefDTOFactory
+public class LeaderboardDefDTOFactory implements Func1<LeaderboardDefDTOList, LeaderboardDefDTOList>
 {
     @NonNull private final Context context;
 
@@ -24,17 +25,18 @@ public class LeaderboardDefDTOFactory
     }
     //</editor-fold>
 
-    public void complementServerLeaderboardDefDTOs(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
+    @NonNull public LeaderboardDefDTOList call(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
         leaderboardDefDTOs.add(new InviteFriendsLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new HeroLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FollowerLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new FriendLeaderboardDefDTO(context));
         leaderboardDefDTOs.add(new ExchangeContainerLeaderboardDefDTO(context));
+        return leaderboardDefDTOs;
     }
 
-    @NonNull
-    public HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(@NonNull LeaderboardDefDTOList leaderboardDefDTOs)
+    @NonNull public HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(
+            @NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
         HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> filed = new HashMap<>();
         filed.put(new LeaderboardDefListKey(1), new LeaderboardDefDTOList());

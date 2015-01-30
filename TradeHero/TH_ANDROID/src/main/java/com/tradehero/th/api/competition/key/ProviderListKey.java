@@ -11,12 +11,7 @@ public class ProviderListKey extends AbstractIntegerDTOKey
     //<editor-fold desc="Constructor">
     public ProviderListKey()
     {
-        this(ALL_PROVIDERS);
-    }
-
-    public ProviderListKey(Integer key)
-    {
-        super(key);
+        super(ALL_PROVIDERS);
     }
     //</editor-fold>
 

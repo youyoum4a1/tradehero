@@ -1,6 +1,7 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class SectorLeaderboardDefListKey extends LeaderboardDefListKey
@@ -13,7 +14,7 @@ public class SectorLeaderboardDefListKey extends LeaderboardDefListKey
         super(SECTOR, page);
     }
 
-    public SectorLeaderboardDefListKey(Bundle args)
+    public SectorLeaderboardDefListKey(@NonNull Bundle args)
     {
         super(args);
         if (!key.equals(SECTOR))

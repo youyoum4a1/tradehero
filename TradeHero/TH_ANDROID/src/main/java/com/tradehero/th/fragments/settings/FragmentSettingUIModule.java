@@ -21,7 +21,6 @@ import java.util.Set;
                 AskForReviewDialogFragment.class,
                 AskForReviewSuggestedDialogFragment.class,
                 AskForInviteDialogFragment.class,
-                UserFriendDTOView.class,
                 SettingsTransactionHistoryFragment.class,
                 SettingsPayPalFragment.class,
                 SettingsAlipayFragment.class,

@@ -10,7 +10,6 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
@@ -64,11 +63,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public String currencyDisplay;
     public String currencyISO;
 
-    public LeaderboardUserDTO()
-    {
-        super();
-    }
-
     @Nullable public GetPositionsDTOKey getGetPositionsDTOKey()
     {
         GetPositionsDTOKey key = getLeaderboardMarkUserId();
@@ -115,11 +109,6 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public double getWinRatio()
     {
         return winRatio != null ? winRatio : 0;
-    }
-
-    @Nullable public Double getVolatility()
-    {
-        return stdDevPositionRoiInPeriod;
     }
 
     public int getNumberOfTrades()

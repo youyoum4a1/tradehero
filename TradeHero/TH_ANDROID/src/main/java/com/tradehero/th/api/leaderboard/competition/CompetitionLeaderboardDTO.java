@@ -14,29 +14,4 @@ public class CompetitionLeaderboardDTO implements DTO
     public int adFrequencyRows;
     public int adStartRow;
     public List<PrizeDTO> prizes;
-
-    //<editor-fold desc="Constructors">
-    public CompetitionLeaderboardDTO()
-    {
-    }
-
-    public CompetitionLeaderboardDTO(@Nullable LeaderboardDTO leaderboard, List<AdDTO> ads, int adFrequencyRows, int adStartRow,
-            List<PrizeDTO> prizes)
-    {
-        this.leaderboard = leaderboard;
-        this.ads = ads;
-        this.adFrequencyRows = adFrequencyRows;
-        this.adStartRow = adStartRow;
-        this.prizes = prizes;
-    }
-    //</editor-fold>
-
-    public PrizeDTO getPrizeAt(int position)
-    {
-        if (prizes != null && position >= 0 && position < prizes.size())
-        {
-            return prizes.get(position);
-        }
-        return null;
-    }
 }

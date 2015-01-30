@@ -5,6 +5,7 @@ import java.util.Map;
 
 public abstract class THAnalyticsEvent extends AnalyticsEvent
 {
+    //<editor-fold desc="Constructors">
     public THAnalyticsEvent(String name)
     {
         super(name);
@@ -14,4 +15,5 @@ public abstract class THAnalyticsEvent extends AnalyticsEvent
     {
         super(name, attributes);
     }
+    //</editor-fold>
 }

@@ -17,7 +17,6 @@ import com.tradehero.th.models.watchlist.DTOProcessorWatchlistCreateList;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistDelete;
 import com.tradehero.th.models.watchlist.DTOProcessorWatchlistUpdate;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import dagger.Lazy;
@@ -31,7 +30,6 @@ import rx.Observable;
     @NonNull private final WatchlistServiceRx watchlistServiceRx;
     @NonNull private final Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
     @NonNull private final Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache;
-    @NonNull private final Lazy<PortfolioCompactCacheRx> portfolioCompactCache;
     @NonNull private final Lazy<PortfolioCacheRx> portfolioCache;
 
     //<editor-fold desc="Constructors">
@@ -40,7 +38,6 @@ import rx.Observable;
             @NonNull WatchlistServiceRx watchlistServiceRx,
             @NonNull Lazy<WatchlistPositionCacheRx> watchlistPositionCache,
             @NonNull Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache,
-            @NonNull Lazy<PortfolioCompactCacheRx> portfolioCompactCache,
             @NonNull Lazy<PortfolioCacheRx> portfolioCache)
     {
         super();
@@ -48,7 +45,6 @@ import rx.Observable;
         this.watchlistServiceRx = watchlistServiceRx;
         this.watchlistPositionCache = watchlistPositionCache;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
-        this.portfolioCompactCache = portfolioCompactCache;
         this.portfolioCache = portfolioCache;
     }
     //</editor-fold>
@@ -86,7 +82,6 @@ import rx.Observable;
                 .map(new DTOProcessorWatchlistCreateList(
                         watchlistPositionCache.get(),
                         currentUserId.toUserBaseKey(),
-                        portfolioCompactCache.get(),
                         portfolioCache.get(),
                         userWatchlistPositionCache.get()));
     }

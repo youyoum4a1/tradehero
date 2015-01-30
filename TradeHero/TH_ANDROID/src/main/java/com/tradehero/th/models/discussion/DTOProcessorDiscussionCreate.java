@@ -33,7 +33,7 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
     }
     //</editor-fold>
 
-    @Override public DiscussionDTO process(DiscussionDTO discussionDTO)
+    @Override public DiscussionDTO process(@NonNull DiscussionDTO discussionDTO)
     {
         DiscussionDTO processed = super.process(discussionDTO);
         if (stubKey != null)

@@ -8,7 +8,7 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.portfolio.DTOProcessorPortfolioListReceived;
+import com.tradehero.th.models.BaseDTOListProcessor;
 import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.persistence.home.HomeContentCacheRx;
@@ -43,7 +43,8 @@ import rx.Observable;
             @Nullable Boolean includeWatchList)
     {
         return portfolioServiceRx.getPortfolios(userBaseKey.key, includeWatchList)
-                .map(new DTOProcessorPortfolioListReceived<>(userBaseKey));
+                .map(new BaseDTOListProcessor<>(
+                        new DTOProcessorPortfolioReceived<>(userBaseKey)));
     }
     //</editor-fold>
 

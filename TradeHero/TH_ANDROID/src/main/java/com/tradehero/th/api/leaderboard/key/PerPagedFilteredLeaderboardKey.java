@@ -20,13 +20,13 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
     public static final String STRING_SET_LEFT_MIN_SHARPE_RATIO = "minSharpeRatio";
     public static final String STRING_SET_LEFT_MIN_CONSISTENCY = "minConsistency";
 
-    public final Float winRatio;
-    public final Float averageMonthlyTradeCount;
-    public final Float averageHoldingDays;
-    public final Float minSharpeRatio;
-    public final Float minConsistency;
+    @Nullable public final Float winRatio;
+    @Nullable public final Float averageMonthlyTradeCount;
+    @Nullable public final Float averageHoldingDays;
+    @Nullable public final Float minSharpeRatio;
+    @Nullable public final Float minConsistency;
 
-    private static Float clampConsistency(@Nullable Float consistency)
+    @Nullable private static Float clampConsistency(@Nullable Float consistency)
     {
         if (consistency == null)
         {
@@ -36,8 +36,15 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
     }
 
     //<editor-fold desc="Constructors">
-    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage,
-            Float winRatio, Float averageMonthlyTradeCount, Float averageHoldingDays, Float minSharpeRatio, Float minConsistency)
+    public PerPagedFilteredLeaderboardKey(
+            @NonNull Integer leaderboardKey,
+            @Nullable Integer page,
+            @Nullable Integer perPage,
+            @Nullable Float winRatio,
+            @Nullable Float averageMonthlyTradeCount,
+            @Nullable Float averageHoldingDays,
+            @Nullable Float minSharpeRatio,
+            @Nullable Float minConsistency)
     {
         super(leaderboardKey, page, perPage);
         this.winRatio = winRatio;
@@ -47,22 +54,19 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.minConsistency = clampConsistency(minConsistency);
     }
 
-    public PerPagedFilteredLeaderboardKey(Integer leaderboardKey, Integer page, Integer perPage)
-    {
-        super(leaderboardKey, page, perPage);
-        this.winRatio = null;
-        this.averageMonthlyTradeCount = null;
-        this.averageHoldingDays = null;
-        this.minSharpeRatio = null;
-        this.minConsistency = null;
-    }
-
-    public PerPagedFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey other, Integer overrideKey, Integer page)
+    public PerPagedFilteredLeaderboardKey(
+            @NonNull PerPagedFilteredLeaderboardKey other,
+            @NonNull Integer overrideKey,
+            @Nullable Integer page)
     {
         this(other, overrideKey, page, other.perPage);
     }
 
-    public PerPagedFilteredLeaderboardKey(PerPagedFilteredLeaderboardKey other, Integer overrideKey, Integer page, Integer perPage)
+    public PerPagedFilteredLeaderboardKey(
+            @NonNull PerPagedFilteredLeaderboardKey other,
+            @NonNull Integer overrideKey,
+            @Nullable Integer page,
+            @Nullable Integer perPage)
     {
         super(overrideKey, page, perPage);
         this.winRatio = other.winRatio;
@@ -184,7 +188,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
                 (minConsistency == null ? other.minConsistency == null : minConsistency.equals(other.minConsistency));
     }
 
-    @Override public PagedLeaderboardKey cloneAtPage(int page)
+    @NonNull @Override public PagedLeaderboardKey cloneAtPage(int page)
     {
         return new PerPagedFilteredLeaderboardKey(this, id, page);
     }
@@ -238,7 +242,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         }
     }
 
-    @Override public void putParameters(Set<String> catValues)
+    @Override public void putParameters(@NonNull Set<String> catValues)
     {
         super.putParameters(catValues);
         putWinRatio(catValues, this.winRatio);
@@ -248,7 +252,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         putMinConsistency(catValues, this.minConsistency);
     }
 
-    public static void putWinRatio(Set<String> catValues, Float winRatio)
+    public static void putWinRatio(@NonNull Set<String> catValues, @NonNull Float winRatio)
     {
         if (winRatio != null)
         {
@@ -256,7 +260,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         }
     }
 
-    public static void putAverageMonthlyTradeCount(Set<String> catValues, Float averageMonthlyTradeCount)
+    public static void putAverageMonthlyTradeCount(@NonNull Set<String> catValues, @Nullable Float averageMonthlyTradeCount)
     {
         if (averageMonthlyTradeCount != null)
         {
@@ -264,7 +268,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         }
     }
 
-    public static void putAverageHoldingDays(Set<String> catValues, Float averageHoldingDays)
+    public static void putAverageHoldingDays(@NonNull Set<String> catValues, @Nullable Float averageHoldingDays)
     {
         if (averageHoldingDays != null)
         {
@@ -272,7 +276,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         }
     }
 
-    public static void putMinSharpeRatio(Set<String> catValues, Float minSharpeRatio)
+    public static void putMinSharpeRatio(@NonNull Set<String> catValues, @Nullable Float minSharpeRatio)
     {
         if (minSharpeRatio != null)
         {
@@ -280,7 +284,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         }
     }
 
-    public static void putMinConsistency(Set<String> catValues, Float minConsistency)
+    public static void putMinConsistency(@NonNull Set<String> catValues, @Nullable Float minConsistency)
     {
         if (minConsistency != null)
         {

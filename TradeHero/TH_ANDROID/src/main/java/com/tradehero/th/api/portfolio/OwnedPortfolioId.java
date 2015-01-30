@@ -74,7 +74,7 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
         return other.getClass().getName().compareTo(getClass().getName());
     }
 
-    public int compareTo(@NonNull OwnedPortfolioId other)
+    protected int compareTo(@NonNull OwnedPortfolioId other)
     {
         if (this == other)
         {

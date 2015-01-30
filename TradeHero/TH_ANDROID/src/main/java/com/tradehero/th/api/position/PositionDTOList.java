@@ -1,6 +1,7 @@
 package com.tradehero.th.api.position;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
@@ -10,14 +11,7 @@ public class PositionDTOList<PositionDTOType extends PositionDTO>
         extends BaseArrayList<PositionDTOType>
     implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public PositionDTOList()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    public Date getEarliestTradeUtc()
+    @Nullable public Date getEarliestTradeUtc()
     {
         Date earliest = null;
 
@@ -35,7 +29,7 @@ public class PositionDTOList<PositionDTOType extends PositionDTO>
         return earliest;
     }
 
-    public Date getLatestTradeUtc()
+    @Nullable public Date getLatestTradeUtc()
     {
         Date latest = null;
 

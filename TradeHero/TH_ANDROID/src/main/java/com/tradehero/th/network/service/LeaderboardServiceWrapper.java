@@ -19,7 +19,6 @@ import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
 import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.position.DTOProcessorGetPositions;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,7 +44,7 @@ import rx.Observable;
     @NonNull public Observable<LeaderboardDefDTOList> getLeaderboardDefinitionsRx()
     {
         return leaderboardServiceRx.getLeaderboardDefinitions()
-                .map(new DTOProcessorLeaderboardDefDTOList(leaderboardDefDTOFactory));
+                .map(leaderboardDefDTOFactory);
     }
     //</editor-fold>
 

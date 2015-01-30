@@ -14,13 +14,15 @@ import javax.inject.Singleton;
 public class CurrentUserId extends IntPreference
 {
     private static final String PREF_CURRENT_USER_ID_KEY = "PREF_CURRENT_USER_ID_KEY";
-    private final AccountManager accountManager;
+    @NonNull private final AccountManager accountManager;
 
-    @Inject public CurrentUserId(@ForUser SharedPreferences preference, AccountManager accountManager)
+    //<editor-fold desc="Constructors">
+    @Inject public CurrentUserId(@ForUser SharedPreferences preference, @NonNull AccountManager accountManager)
     {
         super(preference, PREF_CURRENT_USER_ID_KEY, 0);
         this.accountManager = accountManager;
     }
+    //</editor-fold>
 
     @NonNull public UserBaseKey toUserBaseKey()
     {

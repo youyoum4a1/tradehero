@@ -40,7 +40,7 @@ public class LeaderboardUserListCacheRx
 
     @Override public void onNext(@NonNull SuggestHeroesListType key, @NonNull LeaderboardUserDTOList value)
     {
-        leaderboardUserCache.get().put(value);
+        leaderboardUserCache.get().onNext(value);
         super.onNext(key, value);
     }
 }
