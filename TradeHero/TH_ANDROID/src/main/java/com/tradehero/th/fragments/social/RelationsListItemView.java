@@ -136,7 +136,7 @@ public class RelationsListItemView extends RelativeLayout
 
     public void displayPicture()
     {
-        if (avatar != null)
+        if (avatar != null && !isInEditMode())
         {
             loadDefaultPicture();
             if (allowableRecipientDTO != null && allowableRecipientDTO.user.picture != null)
@@ -161,7 +161,7 @@ public class RelationsListItemView extends RelativeLayout
 
     protected void loadDefaultPicture()
     {
-        if (avatar != null)
+        if (avatar != null && !isInEditMode())
         {
             picassoLazy.get().load(R.drawable.superman_facebook)
                     .transform(peopleIconTransformationLazy.get())

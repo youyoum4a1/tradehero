@@ -8,7 +8,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,7 +38,6 @@ public class UserProfileCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, UserPro
 
     @Override @NonNull protected Observable<UserProfileDTO> fetch(@NonNull UserBaseKey key)
     {
-        VisitedFriendListPrefs.addVisitedId(key);
         return userServiceWrapper.get().getUserRx(key);
     }
 

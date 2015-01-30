@@ -41,7 +41,6 @@ import javax.inject.Singleton;
                 MetricsModule.class,
                 MetricsBuildTypeModule.class,
                 ModelsModule.class,
-                UserModule.class,
                 PersistenceModule.class,
                 ChartModule.class,
                 FilterModule.class,

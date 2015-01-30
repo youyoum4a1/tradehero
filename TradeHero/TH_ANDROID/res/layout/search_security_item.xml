@@ -22,7 +22,7 @@
       android:adjustViewBounds="true"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      tools:src="@drawable/flag_country_round_australia"
+      tools:src="@drawable/square_au"
       />
 
   <LinearLayout
@@ -57,7 +57,7 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="fitCenter"
-        tools:src="@drawable/flag_country_round_australia"
+        tools:src="@drawable/square_au"
         />
 
   </LinearLayout>

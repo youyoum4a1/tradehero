@@ -25,7 +25,7 @@
       android:layout_height="@dimen/medium_image_w_h"
       android:layout_alignParentLeft="true"
       android:scaleType="fitCenter"
-      tools:src="@drawable/icn_info_normal_small"
+      tools:src="@drawable/square_ad"
       android:contentDescription="@null"
       />
 

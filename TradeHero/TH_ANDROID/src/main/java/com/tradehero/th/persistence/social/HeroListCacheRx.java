@@ -5,11 +5,13 @@ import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
+import com.tradehero.th.api.social.HeroDTOList;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func1;
 
 @Singleton @UserCache
 public class HeroListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HeroDTOExtWrapper>
@@ -34,7 +36,13 @@ public class HeroListCacheRx extends BaseFetchDTOCacheRx<UserBaseKey, HeroDTOExt
     @Override @NonNull protected Observable<HeroDTOExtWrapper> fetch(@NonNull UserBaseKey key)
     {
         return userServiceWrapper.getHeroesRx(key)
-                .map(HeroDTOExtWrapper::new);
+                .map(new Func1<HeroDTOList, HeroDTOExtWrapper>()
+                {
+                    @Override public HeroDTOExtWrapper call(HeroDTOList heroList)
+                    {
+                        return new HeroDTOExtWrapper(heroList);
+                    }
+                });
     }
 
     @Override public void onNext(@NonNull UserBaseKey key, @NonNull HeroDTOExtWrapper value)
