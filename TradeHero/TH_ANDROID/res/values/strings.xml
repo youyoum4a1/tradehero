@@ -505,7 +505,7 @@
 
   <string name="timeline_top">置顶</string>
   <string name="timeline_production">公告</string>
-
+  <string name="timeline_favorite">精华</string>
 
   <!-- Administrator -->
   <string name="administrator_add_favorite">加精</string>

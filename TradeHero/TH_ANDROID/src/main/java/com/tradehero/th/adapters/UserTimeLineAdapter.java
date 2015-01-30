@@ -298,7 +298,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             holder.llNormalAll.setVisibility(item.isHighlight?View.GONE:View.VISIBLE);
             holder.llSimpleAll.setVisibility(item.isHighlight?View.VISIBLE:View.GONE);
 
-            holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.INVISIBLE);
+            holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.GONE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
             holder.llUserTLNoTrade.setVisibility(isTrade ? View.GONE : View.VISIBLE);
             holder.tvUserTLTimeStamp.setVisibility(View.VISIBLE);
