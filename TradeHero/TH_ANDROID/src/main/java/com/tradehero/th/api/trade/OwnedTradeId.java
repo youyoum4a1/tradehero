@@ -31,16 +31,21 @@ public class OwnedTradeId extends OwnedPositionId implements DTOKey
         return isOwnedPositionId(args)
                 && args.containsKey(BUNDLE_KEY_TRADE_ID);
     }
-    
+
     @Override public int hashCode()
     {
         return super.hashCode() ^ tradeId.hashCode();
     }
 
-    public boolean equals(@Nullable OwnedTradeId other)
+    @Override protected boolean equalFields(@NonNull OwnedPositionId other)
     {
-        return (other != null) &&
-                super.equals(other) &&
+        return (other instanceof OwnedTradeId)
+                && super.equalFields(other);
+    }
+
+    protected boolean equalFields(@NonNull OwnedTradeId other)
+    {
+        return super.equalFields(other) &&
                 tradeId.equals(other.tradeId);
     }
 

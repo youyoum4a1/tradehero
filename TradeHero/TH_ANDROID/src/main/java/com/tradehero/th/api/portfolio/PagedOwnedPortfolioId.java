@@ -35,10 +35,15 @@ public class PagedOwnedPortfolioId extends OwnedPortfolioId
         return super.hashCode() ^ (page == null ? 0: page.hashCode());
     }
 
-    public boolean equals(@Nullable PagedOwnedPortfolioId other)
+    @Override protected boolean equalFields(@NonNull OwnedPortfolioId other)
     {
-        return other != null &&
-                super.equals(other) &&
+        return (other instanceof PagedOwnedPortfolioId)
+                && equalFields((PagedOwnedPortfolioId) other);
+    }
+
+    protected boolean equalFields(@NonNull PagedOwnedPortfolioId other)
+    {
+        return super.equalFields(other) &&
                 (page == null ? other.page == null : page.equals(other.page));
     }
 

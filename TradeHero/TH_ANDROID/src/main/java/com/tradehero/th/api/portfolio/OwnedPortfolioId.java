@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 
-public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
+public class OwnedPortfolioId implements Comparable, GetPositionsDTOKey
 {
     public final static String BUNDLE_KEY_USER_ID = OwnedPortfolioId.class.getName() + ".userId";
     public final static String BUNDLE_KEY_PORTFOLIO_ID = OwnedPortfolioId.class.getName() + ".portfolioId";
@@ -56,10 +56,15 @@ public class OwnedPortfolioId  implements Comparable, GetPositionsDTOKey
 
     @Override public boolean equals(@Nullable Object other)
     {
-        return getClass().isInstance(other) && equals(getClass().cast(other));
+        if (other == this)
+        {
+            return true;
+        }
+        return (other instanceof OwnedPortfolioId)
+                && equalFields((OwnedPortfolioId) other);
     }
 
-    public boolean equals(@NonNull OwnedPortfolioId other)
+    protected boolean equalFields(@NonNull OwnedPortfolioId other)
     {
         return userId.equals(other.userId) &&
                 portfolioId.equals(other.portfolioId);
