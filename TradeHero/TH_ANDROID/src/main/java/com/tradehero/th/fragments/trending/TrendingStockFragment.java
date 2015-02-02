@@ -335,6 +335,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);
+        if (isDetached() || item == null)
+        {
+            return;
+        }
         View child = parent.getChildAt(position - parent.getFirstVisiblePosition());
         if (item instanceof SecurityCompactDTO)
         {
