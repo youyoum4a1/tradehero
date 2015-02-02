@@ -14,9 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -36,6 +38,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.IntegerUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -65,7 +68,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     private List<TradeDTO> trades = new ArrayList<>();
 
     public boolean isShowHeadAndName = false;//是否显示头像和名字
-    public boolean isShowLastCommentUtc = false;//是否需要显示时间为最后回复的时间
     public boolean isMySelf = false;
     public boolean isShowFollowBuy = false;
 
@@ -74,7 +76,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     public Animation praiseAnimation;
 
     private static int timeLineItemDeleted = -1;
-    private static int timeLineItemAnswerd = -1;
+    private static int timeLineItemAnswered = -1;
+
+    private String fromWhere = "";
 
     public UserTimeLineAdapter(Context context)
     {
@@ -83,6 +87,16 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         animation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
         praiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_praise);
+    }
+
+    public UserTimeLineAdapter(Context context, String fromWhere)
+    {
+        DaggerUtils.inject(this);
+        this.context = context;
+        inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        animation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
+        praiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_praise);
+        this.fromWhere = fromWhere;
     }
 
     public UserTimeLineAdapter(Context context, boolean isMySelf)
@@ -246,6 +260,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.llSimpleAll = (LinearLayout) convertView.findViewById(R.id.llSimpleAll);
 
                 holder.tvReward = (TextView) convertView.findViewById(R.id.tvIsReward);
+                holder.tvEssential = (TextView)convertView.findViewById(R.id.tvIsFavorite);
+                holder.tvTop = (TextView)convertView.findViewById(R.id.tvIsTop);
                 holder.tvUserTLTimeStamp = (TextView) convertView.findViewById(R.id.tvUserTLTimeStamp);
 
                 //不是股票交易
@@ -295,8 +311,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
             boolean isTrade = item.hasTrader();
 
-            holder.llNormalAll.setVisibility(item.isHighlight?View.GONE:View.VISIBLE);
-            holder.llSimpleAll.setVisibility(item.isHighlight?View.VISIBLE:View.GONE);
+            //item.isHighlight
+            holder.llNormalAll.setVisibility(View.VISIBLE);
+            holder.llSimpleAll.setVisibility(View.GONE);
 
             holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.GONE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
@@ -315,7 +332,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     holder.footerV.setVisibility(View.GONE);
                 }
             }else{
-                if(item.isHighlight){
+                //item.isHighlight
+                if(false){
                     holder.headerV.setVisibility(View.GONE);
                     holder.footerV.setVisibility(View.GONE);
                 }else{
@@ -327,27 +345,29 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     }
                 }
             }
-            if(item.isHighlight){
+
+            //item.isHighlight
+            if(false){
                 if( position != 0) {
                     holder.dividerHighLightV.setVisibility(View.VISIBLE);
                 }else{
                     holder.dividerHighLightV.setVisibility(View.GONE);
                 }
             }
-
-            if (isShowLastCommentUtc)
-            {
-                if (item.lastCommentAtUtc != null)
-                {
-                    holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.lastCommentAtUtc));
-                }
+            if(item.isEssential){
+                holder.tvEssential.setVisibility(View.VISIBLE);
+            }else{
+                holder.tvEssential.setVisibility(View.GONE);
             }
-            else
-            {
-                if (item.createdAtUtc != null)
-                {
+
+            if(showIsTop(item.stickType)){
+                holder.tvTop.setVisibility(View.VISIBLE);
+            }else{
+                holder.tvTop.setVisibility(View.GONE);
+            }
+
+            if (item.createdAtUtc != null) {
                     holder.tvUserTLTimeStamp.setText(prettyTime.get().formatUnrounded(item.createdAtUtc));
-                }
             }
 
             if (isTrade)
@@ -590,18 +610,6 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         return null;
     }
 
-    public SecurityCompactDTO getSecurityDTO(int securityId)
-    {
-        for (SecurityCompactDTO dto : securities)
-        {
-            if (dto.id == securityId)
-            {
-                return dto;
-            }
-        }
-        return null;
-    }
-
 
 
     public void clickedBuy(int position)
@@ -744,7 +752,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     public static void setTimeLineItemAnswered(int itemAnswered)
     {
-        timeLineItemAnswerd = itemAnswered;
+        timeLineItemAnswered = itemAnswered;
     }
 
     //UI主动调用Adapter方法 去除已经删除的帖子
@@ -757,12 +765,12 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     public void updateTimeLineItemAnswerd()
     {
         //悬赏贴已经采纳更新状态
-        if (timeLineItemAnswerd != -1 && enhancedItems != null && enhancedItems.size() > 0)
+        if (timeLineItemAnswered != -1 && enhancedItems != null && enhancedItems.size() > 0)
         {
             for (int i = 0; i < enhancedItems.size(); i++)
             {
                 TimelineItemDTO dto = enhancedItems.get(i);
-                if (dto.id == timeLineItemAnswerd)
+                if (dto.id == timeLineItemAnswered)
                 {
                     enhancedItems.get(i).isAnswered = true;
                     notifyDataSetChanged();
@@ -790,6 +798,26 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         }
     }
 
+    private boolean showIsTop(int stickType){
+        THLog.d("stickType " + stickType);
+        if(stickType == 0 || fromWhere.equals("")){
+            return false;
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
+            return IntegerUtils.isOne(2, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
+            return IntegerUtils.isOne(1, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
+            return IntegerUtils.isOne(0, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
+            return IntegerUtils.isOne(3, stickType);
+        }
+        return false;
+    }
+
     static class ViewHolder
     {
         public LinearLayout llItemAll = null;
@@ -802,6 +830,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
         public ImageView imgUserTLUserHeader = null;
         public TextView tvReward = null;
+        public TextView tvEssential = null;
+        public TextView tvTop = null;
         public TextView tvUserTLName = null;
 
         //不是一个交易相关

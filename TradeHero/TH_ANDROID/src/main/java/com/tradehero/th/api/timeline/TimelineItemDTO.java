@@ -29,6 +29,9 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
 
     public Date lastCommentAtUtc;//最后回复时间
 
+    public boolean isEssential = false;
+    public int stickType;
+
     /*Reward tips*/
     public String header;
     public boolean isQuestionItem;

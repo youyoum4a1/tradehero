@@ -350,6 +350,8 @@ import java.util.Locale;
                         DiscoveryRecentNewsFragment.class,
                         DiscoveryNewsFragment.class,
                         DiscoverySquareFragment.class,
+                        DiscoveryEssentialFragment.class,
+                        DiscoveryLearningFragment.class,
                         NewsDetailFragment.class,
 
                         SearchFragment.class,

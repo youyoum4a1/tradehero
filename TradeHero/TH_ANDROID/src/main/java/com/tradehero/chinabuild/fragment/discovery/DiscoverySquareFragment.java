@@ -87,8 +87,10 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
                 gotoDashboard(DiscoveryRewardFragment.class, new Bundle());
                 break;
             case R.id.linearlayout_square_favorite:
+                gotoDashboard(DiscoveryEssentialFragment.class, new Bundle());
                 break;
             case R.id.linearlayout_square_learning:
+                gotoDashboard(DiscoveryLearningFragment.class, new Bundle());
                 break;
         }
     }

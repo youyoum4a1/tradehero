@@ -12,8 +12,6 @@ import butterknife.InjectView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
-import com.tradehero.chinabuild.fragment.message.DiscoveryDiscussSendFragment;
-import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.utils.THToast;
@@ -37,26 +35,28 @@ import retrofit.client.Response;
 
 import javax.inject.Inject;
 
-/*
-最新动态
+/**
+ * Created by palmer on 15/1/30.
  */
-public class DiscoveryRecentNewsFragment extends DashboardFragment
+public class DiscoveryLearningFragment extends DashboardFragment
 {
-    @Inject CurrentUserId currentUserId;
+    @Inject
+    CurrentUserId currentUserId;
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
     private int maxID = -1;
 
-    @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
+    @InjectView(R.id.listTimeLine)
+    SecurityListView listTimeLine;
 
-    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.bvaViewAll)
+    BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.tradeheroprogressbar_discovery) TradeHeroProgressBar progressBar;
-
-    private TextView tvCreateTimeLine;
 
     private UserTimeLineAdapter adapter;
 
-    @Inject Analytics analytics;
+    @Inject
+    Analytics analytics;
 
     private int PERPAGE = 20;
 
@@ -72,14 +72,14 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        adapter = new UserTimeLineAdapter(getActivity(), TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT);
+        adapter = new UserTimeLineAdapter(getActivity(), TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING);
         adapter.isShowHeadAndName = true;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.discovery_recent_news, container, false);
+        View view = inflater.inflate(R.layout.discovery_learning, container, false);
         ButterKnife.inject(this, view);
 
         initView();
@@ -94,13 +94,6 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         {
             betterViewAnimator.setDisplayedChildByLayoutId(R.id.listTimeLine);
         }
-        tvCreateTimeLine = (TextView)view.findViewById(R.id.tvCreateTimeLine);
-        tvCreateTimeLine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createTimeLine();
-            }
-        });
         return view;
     }
 
@@ -108,7 +101,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(R.string.discovery_square_discuss);
+        setHeadViewMiddleMain(R.string.discovery_square_novice);
     }
 
     public void initView()
@@ -168,9 +161,9 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         headerView = getActivity().getLayoutInflater().inflate(
                 R.layout.discovery_timelines_head, null);
         iconHeadIV = (ImageView)headerView.findViewById(R.id.imageview_timelines_head_type);
-        iconHeadIV.setBackgroundResource(R.drawable.square_discuss);
+        iconHeadIV.setBackgroundResource(R.drawable.square_novice);
         titleHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_title);
-        titleHeadTV.setText(R.string.discovery_square_discuss);
+        titleHeadTV.setText(R.string.discovery_square_novice);
         totalHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_total);
         numberTimelinesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_timeline);
         numberRepliesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_replies);
@@ -183,7 +176,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
 
         //For Administrator
-        bundle.putString(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_TIMELINE_FROM, TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT);
+        bundle.putString(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_TIMELINE_FROM, TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING);
 
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
@@ -218,7 +211,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         detachTimeLineMiddleCallback();
         maxID = -1;
         timeLineMiddleCallback =
-                timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, -1, maxID, new TimeLineCallback());
+                timelineServiceWrapper.get().getTimelineLearning(currentUserId.toUserBaseKey(), PERPAGE, -1, maxID, new TimeLineCallback());
     }
 
     public void fetchTimeLineMore()
@@ -226,7 +219,7 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         detachTimeLineMiddleCallback();
         maxID = adapter.getMaxID();
         timeLineMiddleCallback =
-                timelineServiceWrapper.get().getTimelineSquare(currentUserId.toUserBaseKey(), PERPAGE, maxID, -1, new TimeLineCallback());
+                timelineServiceWrapper.get().getTimelineLearning(currentUserId.toUserBaseKey(), PERPAGE, maxID, -1, new TimeLineCallback());
     }
 
     public class TimeLineCallback implements retrofit.Callback<TimelineDTO>
@@ -269,10 +262,4 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         }
     }
 
-    private void createTimeLine()
-    {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(DiscussSendFragment.BUNDLE_KEY_REWARD, true);
-        pushFragment(DiscoveryDiscussSendFragment.class, bundle);
-    }
 }

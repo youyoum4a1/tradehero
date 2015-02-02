@@ -73,9 +73,8 @@ public class DiscoveryRewardFragment extends DashboardFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new UserTimeLineAdapter(getActivity());
+        adapter = new UserTimeLineAdapter(getActivity(), TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD);
         adapter.isShowHeadAndName = true;
-        adapter.isShowLastCommentUtc = true;
     }
 
     @Override
@@ -174,6 +173,10 @@ public class DiscoveryRewardFragment extends DashboardFragment {
     private void enterTimeLineDetail(TimelineItemDTO dto) {
         Bundle bundle = new Bundle();
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, dto.getDiscussionKey().getArgs());
+
+        //For Administrator
+        bundle.putString(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_TIMELINE_FROM, TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD);
+
         pushFragment(TimeLineItemDetailFragment.class, bundle);
     }
 

@@ -18,7 +18,6 @@ import com.tradehero.th.adapters.NewsItemAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import retrofit.Callback;
@@ -35,8 +34,6 @@ import java.util.List;
  */
 public class DiscoveryNewsFragment extends DashboardFragment {
 
-
-    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     @Inject Lazy<NewsServiceWrapper> newsServiceWrapper;
 
     private int currPageNumber = 1;

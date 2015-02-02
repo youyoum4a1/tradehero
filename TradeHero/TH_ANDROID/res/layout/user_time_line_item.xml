@@ -79,7 +79,7 @@
                                   android:layout_alignParentRight="true">
                         <TextView
                                 android:id="@+id/tvIsTop"
-                                android:visibility="visible"
+                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingLeft="6dp"
@@ -94,7 +94,7 @@
                                 android:textColor="@color/discovery_discuss_reward_orange"/>
                         <TextView
                                 android:id="@+id/tvIsFavorite"
-                                android:visibility="visible"
+                                android:visibility="gone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingLeft="6dp"
