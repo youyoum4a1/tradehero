@@ -17,11 +17,18 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -57,7 +64,8 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     private List<View> views = new ArrayList();
     private Timer timer;
 
-
+    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+    @Inject CurrentUserId currentUserId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -73,6 +81,10 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         favoriteLL.setOnClickListener(this);
         noviceLL.setOnClickListener(this);
         initTopBanner();
+
+        //Download Notice News
+        retrieveNoticeNews();
+
         return view;
     }
 
@@ -224,6 +236,18 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         }, 1000, 3000);
     }
 
+    private void retrieveNoticeNews(){
+        timelineServiceWrapper.get().getTimelineNotice(currentUserId.toUserBaseKey(), new Callback<TimelineDTO>() {
+            @Override
+            public void success(TimelineDTO timelineDTO, Response response) {
+                NoticeNewsCache.getInstance().setTimelineDTO(timelineDTO);
+            }
 
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+    }
 
 }

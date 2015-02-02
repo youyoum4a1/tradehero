@@ -19,20 +19,17 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.chinabuild.*;
-import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -51,7 +48,6 @@ import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.PositionServiceWrapper;
 import com.tradehero.th.network.service.ShareServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
@@ -115,7 +111,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     @InjectView(R.id.imageview_main_tab4_record) ImageView guideTab4IV;
 
     @Inject ShareServiceWrapper shareServiceWrapper;
-    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
 
     private FragmentTabHost frg_tabHost;
     private static GetPositionsDTO getPositionsDTO;
@@ -205,9 +200,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
         //Download Endpoint
         downloadEndPoint();
-
-        //Download Notice News
-        retrieveNoticeNews();
     }
 
     public void fetchUserProfile(boolean force)
@@ -793,20 +785,5 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
                 guideTab4IV.setVisibility(View.INVISIBLE);
             }
         }
-    }
-
-    private void retrieveNoticeNews(){
-        timelineServiceWrapper.get().getTimelineNotice(currentUserId.toUserBaseKey(), new Callback<TimelineDTO>() {
-            @Override
-            public void success(TimelineDTO timelineDTO, Response response) {
-                NoticeNewsCache.getInstance().setTimelineDTO(timelineDTO);
-                THLog.d("retrieve notice news successfully, " + timelineDTO.getEnhancedItems().size());
-            }
-
-            @Override
-            public void failure(RetrofitError retrofitError) {
-
-            }
-        });
     }
 }
