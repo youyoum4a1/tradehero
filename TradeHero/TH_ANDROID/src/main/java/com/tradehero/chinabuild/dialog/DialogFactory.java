@@ -28,10 +28,10 @@ public class DialogFactory {
     }
 
     public Dialog createTimeLineDetailDialog(@NotNull Context context, @NotNull TimeLineDetailDialogLayout.TimeLineDetailMenuClickListener menuClickListener,
-                                             boolean isDeleteAllowed, boolean isReportAllowed, boolean isMananger, int isTopType, boolean isProduction, boolean isFavorite, boolean isLearning) {
+                                             boolean isDeleteAllowed, boolean isReportAllowed, boolean isManager, boolean isTop, boolean isProduction, boolean isFavorite, boolean isLearning) {
         TimeLineDetailDialogLayout contentView = (TimeLineDetailDialogLayout) LayoutInflater.from(context).inflate(R.layout.timeline_detail_dialog_layout, null);
         contentView.setMenuClickListener(menuClickListener);
-        contentView.setBtnStatus(isDeleteAllowed, isReportAllowed, isMananger, isTopType, isProduction, isFavorite, isLearning);
+        contentView.setBtnStatus(isDeleteAllowed, isReportAllowed, isManager, isTop, isProduction, isFavorite, isLearning);
         return THDialog.showUpDialog(context, contentView);
     }
 

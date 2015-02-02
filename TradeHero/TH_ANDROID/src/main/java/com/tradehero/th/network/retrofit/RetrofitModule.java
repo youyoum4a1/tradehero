@@ -170,11 +170,6 @@ public class RetrofitModule
         return adapter.create(WatchlistService.class);
     }
 
-    @Provides @Singleton WeChatService provideWeChatService(RestAdapter adapter)
-    {
-        return adapter.create(WeChatService.class);
-    }
-
     @Provides @Singleton YahooNewsService provideYahooService(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);

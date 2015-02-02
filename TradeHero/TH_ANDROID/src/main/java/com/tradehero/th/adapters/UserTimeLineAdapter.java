@@ -18,7 +18,6 @@ import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -360,7 +359,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.tvEssential.setVisibility(View.GONE);
             }
 
-            if(showIsTop(item.stickType)){
+            if(showIsTop(item.stickType, fromWhere)){
                 holder.tvTop.setVisibility(View.VISIBLE);
             }else{
                 holder.tvTop.setVisibility(View.GONE);
@@ -798,9 +797,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         }
     }
 
-    private boolean showIsTop(int stickType){
-        THLog.d("stickType " + stickType);
-        if(stickType == 0 || fromWhere.equals("")){
+    public static boolean showIsTop(int stickType, String fromWhere){
+        if(stickType==0 || fromWhere.equals("")){
             return false;
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
@@ -817,6 +815,45 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         }
         return false;
     }
+
+    public static int toOne(int stickType, String fromWhere){
+        if(fromWhere.equals("")){
+            return 0;
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
+            return IntegerUtils.toOne(0, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
+            return IntegerUtils.toOne(1, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
+            return IntegerUtils.toOne(2, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
+            return IntegerUtils.toOne(3, stickType);
+        }
+        return 0;
+    }
+
+    public static int toZero(int stickType, String fromWhere){
+        if(fromWhere.equals("")){
+            return 0;
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
+            return IntegerUtils.toZero(0, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
+            return IntegerUtils.toZero(1, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
+            return IntegerUtils.toZero(2, stickType);
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
+            return IntegerUtils.toZero(3, stickType);
+        }
+        return 0;
+    }
+
 
     static class ViewHolder
     {

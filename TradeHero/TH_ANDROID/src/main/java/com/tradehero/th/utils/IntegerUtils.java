@@ -27,4 +27,32 @@ public class IntegerUtils {
             }
         }
     }
+
+    public static int toZero(int target, int number){
+        switch(target){
+            case 0:
+                return number&14;
+            case 1:
+                return number&13;
+            case 2:
+                return number&11;
+            case 3:
+                return number&7;
+        }
+        return 0;
+    }
+
+    public static int toOne(int target, int number){
+        switch(target){
+            case 0:
+                return number|1;
+            case 1:
+                return number|2;
+            case 2:
+                return number|4;
+            case 3:
+                return number|8;
+        }
+        return 0;
+    }
 }

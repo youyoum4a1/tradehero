@@ -103,6 +103,12 @@ public class RetrofitProtectedModule
         return adapter.create(SocialServiceAsync.class);
     }
 
+
+    @Provides @Singleton AdministratorManageTimelineServiceAsync provideAdministratorManageTimelineServiceAsync(RestAdapter adapter)
+    {
+        return adapter.create(AdministratorManageTimelineServiceAsync.class);
+    }
+
     @Provides @Singleton TradeServiceAsync provideTradeServiceAsync(RestAdapter adapter)
     {
         return adapter.create(TradeServiceAsync.class);

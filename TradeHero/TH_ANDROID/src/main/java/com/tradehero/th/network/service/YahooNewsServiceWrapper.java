@@ -1,11 +1,10 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import org.jetbrains.annotations.NotNull;
+import retrofit.client.Response;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.jetbrains.annotations.NotNull;
-import retrofit.Callback;
-import retrofit.client.Response;
 
 @Singleton public class YahooNewsServiceWrapper
 {
@@ -26,11 +25,4 @@ import retrofit.client.Response;
         return yahooNewsService.getNews(yahooSymbol);
     }
 
-    public BaseMiddleCallback<Response> getNews(String yahooSymbol,
-            Callback<Response> callback)
-    {
-        BaseMiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
-        yahooNewsServiceAsync.getNews(yahooSymbol, middleCallback);
-        return middleCallback;
-    }
 }

@@ -128,7 +128,7 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
         this.menuClickListener = menuClickListener;
     }
 
-    public void setBtnStatus(boolean isDeleteAllowed, boolean isReportAllowed, boolean isMananger, int isTopType, boolean isProduction, boolean isFavorite, boolean isLearning) {
+    public void setBtnStatus(boolean isDeleteAllowed, boolean isReportAllowed, boolean isManager, boolean isTop, boolean isProduction, boolean isFavorite, boolean isLearning) {
         if (isDeleteAllowed && deleteTV != null && deleteDividerV!=null) {
             deleteTV.setVisibility(View.VISIBLE);
             deleteDividerV.setVisibility(View.VISIBLE);
@@ -146,17 +146,14 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
         if(managerLL==null){
             return;
         }
-        if(isMananger){
+        if(isManager){
             managerLL.setVisibility(View.VISIBLE);
-            if(isTopType ==0){
-                topTV.setVisibility(View.GONE);
-                topDividerV.setVisibility(View.GONE);
-            }else if(isTopType==1){
-                topTV.setText(R.string.administrator_add_top);
+            if(isTop){
+                topTV.setText(R.string.administrator_remove_top);
                 topTV.setVisibility(View.VISIBLE);
                 topDividerV.setVisibility(View.VISIBLE);
-            }else if(isTopType==2){
-                topTV.setText(R.string.administrator_remove_top);
+            }else{
+                topTV.setText(R.string.administrator_add_top);
                 topTV.setVisibility(View.VISIBLE);
                 topDividerV.setVisibility(View.VISIBLE);
             }
@@ -171,11 +168,9 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
                 favoriteTV.setText(R.string.administrator_add_favorite);
             }
             if(isLearning){
-                learningTV.setVisibility(View.GONE);
-                learningDividerV.setVisibility(View.GONE);
+                learningTV.setText(R.string.administrator_remove_learning);
             }else{
-                learningTV.setVisibility(View.VISIBLE);
-                learningDividerV.setVisibility(View.VISIBLE);
+                learningTV.setText(R.string.administrator_add_learning);
             }
         }else {
             managerLL.setVisibility(View.GONE);

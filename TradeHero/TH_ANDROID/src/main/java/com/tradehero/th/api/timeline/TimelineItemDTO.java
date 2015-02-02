@@ -31,6 +31,8 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
 
     public boolean isEssential = false;
     public int stickType;
+    public boolean isNotice;
+    public boolean isGuide;
 
     /*Reward tips*/
     public String header;
