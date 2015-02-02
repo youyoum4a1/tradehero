@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -15,35 +16,37 @@ import rx.functions.Action1;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
-public class AuthDataAction implements Action1<Pair<AuthData, UserProfileDTO>>
+public class AuthDataAccountAction implements Action1<Pair<AuthData, UserProfileDTO>>
 {
-    private final Activity activity;
-    private final AccountManager accountManager;
+    @NonNull private final Activity activity;
+    @NonNull private final AccountManager accountManager;
 
-    @Inject public AuthDataAction(Activity activity, AccountManager accountManager)
+    //<editor-fold desc="Constructors">
+    @Inject public AuthDataAccountAction(@NonNull Activity activity, @NonNull AccountManager accountManager)
     {
         this.activity = activity;
         this.accountManager = accountManager;
     }
+    //</editor-fold>
 
-    @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
+    @Override public void call(@NonNull Pair<AuthData, UserProfileDTO> pair)
     {
-        Account account = getOrAddAccount(authDataUserProfileDTOPair);
-        AuthData authData = authDataUserProfileDTOPair.first;
+        Account account = getOrAddAccount(pair);
+        AuthData authData = pair.first;
         if (authData.socialNetworkEnum != SocialNetworkEnum.TH || !StringUtils.isNullOrEmpty(authData.password))
         {
-            accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, authDataUserProfileDTOPair.first.getTHToken());
+            accountManager.setAuthToken(account, PARAM_AUTHTOKEN_TYPE, pair.first.getTHToken());
         }
-        finishAuthentication(authDataUserProfileDTOPair);
+        finishAuthentication(pair);
     }
 
-    private Account getOrAddAccount(Pair<AuthData, UserProfileDTO> authDataUserLoginDTOPair)
+    @NonNull private Account getOrAddAccount(@NonNull Pair<AuthData, UserProfileDTO> pair)
     {
         Account[] accounts = accountManager.getAccountsByType(PARAM_ACCOUNT_TYPE);
         Account account = accounts.length != 0 ? accounts[0] :
-                new Account(authDataUserLoginDTOPair.second.email, PARAM_ACCOUNT_TYPE);
+                new Account(pair.second.email, PARAM_ACCOUNT_TYPE);
 
-        String password = authDataUserLoginDTOPair.first.password;
+        String password = pair.first.password;
         if (accounts.length == 0)
         {
             accountManager.addAccountExplicitly(account, password, null);
@@ -55,11 +58,11 @@ public class AuthDataAction implements Action1<Pair<AuthData, UserProfileDTO>>
         return account;
     }
 
-    private void finishAuthentication(Pair<AuthData, UserProfileDTO> authDataUserLoginDTOPair)
+    private void finishAuthentication(@NonNull Pair<AuthData, UserProfileDTO> pair)
     {
         Intent intent = new Intent();
-        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, authDataUserLoginDTOPair.second.email);
-        intent.putExtra(AccountManager.KEY_AUTHTOKEN, authDataUserLoginDTOPair.first.getTHToken());
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, pair.second.email);
+        intent.putExtra(AccountManager.KEY_AUTHTOKEN, pair.first.getTHToken());
         intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, PARAM_ACCOUNT_TYPE);
 
         activity.setResult(Activity.RESULT_OK, intent);

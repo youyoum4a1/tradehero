@@ -10,6 +10,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
@@ -107,6 +108,29 @@ import timber.log.Timber;
         }
 
         return userLoginDTOObservable.map(createUserLoginProcessor());
+    }
+
+    @NonNull public Observable<UserLoginDTO> signUpAndLoginOrUpdateTokensRx(
+            @NonNull String authorizationHeader,
+            @NonNull LoginSignUpFormDTO loginSignUpFormDTO)
+    {
+        return signupAndLoginRx(
+                authorizationHeader, loginSignUpFormDTO)
+                .retry((integer, throwable) -> {
+                    THException thException = new THException(throwable);
+                    if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
+                    {
+                        try
+                        {
+                            updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
+                            return true;
+                        } catch (Exception ignored)
+                        {
+                            return false;
+                        }
+                    }
+                    return false;
+                });
     }
     //</editor-fold>
 

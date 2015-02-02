@@ -60,7 +60,7 @@ public class EmailSignInFragment extends Fragment
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
-    @Inject Provider<AuthDataAction> authDataActionProvider;
+    @Inject Provider<AuthDataAccountAction> authDataActionProvider;
     @Inject THAppsFlyer thAppsFlyer;
 
     @InjectView(R.id.authentication_sign_in_email) SelfValidatedText email;

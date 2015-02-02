@@ -23,7 +23,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.fragments.authentication.AuthDataAction;
+import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -53,7 +53,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject ProgressDialogUtil progressDialogUtil;
-    @Inject Provider<AuthDataAction> authDataActionProvider;
+    @Inject Provider<AuthDataAccountAction> authDataActionProvider;
 
     @Nullable Subscription userProfileSubscription;
     @Nullable Subscription userProfileUpdateSubscription;

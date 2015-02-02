@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -26,7 +27,6 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
@@ -43,9 +43,9 @@ import rx.Subscription;
 import rx.android.observables.Assertions;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class SignInOrUpFragment extends Fragment
 {
@@ -54,21 +54,23 @@ public class SignInOrUpFragment extends Fragment
     @Inject SessionServiceWrapper sessionServiceWrapper;
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
-    @Inject Provider<AuthDataAction> authDataActionProvider;
+    @Inject Provider<AuthDataAccountAction> authDataAccountSaveActionProvider;
     @Inject THAppsFlyer thAppsFlyer;
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.authentication_email_sign_up_link) void handleSignUpButtonClick()
+    @OnClick(R.id.authentication_email_sign_up_link)
+    void handleSignUpButtonClick()
     {
         navigator.get().pushFragment(EmailSignUpFragment.class);
-        subscription.unsubscribe();
+        socialButtonsSubscription.unsubscribe();
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.authentication_email_sign_in_link) void handleEmailSignInButtonClick()
+    @OnClick(R.id.authentication_email_sign_in_link)
+    void handleEmailSignInButtonClick()
     {
         navigator.get().pushFragment(EmailSignInFragment.class);
-        subscription.unsubscribe();
+        socialButtonsSubscription.unsubscribe();
     }
 
     @Optional @InjectViews({
@@ -80,9 +82,8 @@ public class SignInOrUpFragment extends Fragment
     })
     AuthenticationButton[] observableViews;
 
-    private Subscription subscription;
+    private Subscription socialButtonsSubscription;
     private Observable<Pair<AuthData, UserProfileDTO>> authenticationObservable;
-    private ProgressDialog progressDialog;
     @Inject Provider<ToastOnErrorAction> toastOnErrorActionProvider;
 
     @SuppressWarnings("UnusedDeclaration")
@@ -121,71 +122,8 @@ public class SignInOrUpFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.inject(this, view);
 
-        authenticationObservable = Observable.from(observableViews)
-                .filter(authenticationButton -> authenticationButton != null)
-                .flatMap(authenticationButton -> ViewObservable.clicks(authenticationButton, false))
-                .map(AuthenticationButton::getType)
-                .doOnNext(socialNetworkEnum -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
-                        getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
-                        true))
-                .flatMap(socialNetworkEnum -> Observable.just(socialNetworkEnum)
-                        .map(enumToAuthProviderMap::get)
-                        .flatMap(authenticationProvider -> authenticationProvider.logIn(getActivity()))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(authData -> {
-                            if (progressDialog != null)
-                            {
-                                progressDialog.setMessage(
-                                        getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName()));
-                            }
-                        })
-                        .map(authData -> authenticationFormBuilderProvider.get()
-                                .authData(authData)
-                                .build())
-                        .flatMap(loginSignUpFormDTO -> {
-                            AuthData authData = loginSignUpFormDTO.authData;
-                            Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
-                                    authData.getTHToken(), loginSignUpFormDTO)
-                                    .retry((integer, throwable) -> {
-                                        THException thException = new THException(throwable);
-                                        if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
-                                        {
-                                            try
-                                            {
-                                                sessionServiceWrapper.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
-                                                return true;
-                                            } catch (Exception ignored)
-                                            {
-                                                return false;
-                                            }
-                                        }
-                                        return false;
-                                    })
-                                    .subscribeOn(AndroidSchedulers.mainThread())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .onErrorResumeNext(new OperatorSignUpAndLoginFallback(authData))
-                                    .map(userLoginDTO -> userLoginDTO.profileDTO);
-
-                            return Observable.zip(Observable.just(authData), userLoginDTOObservable, Pair::create)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread());
-                        })
-                        .doOnError(error -> {
-                            Timber.e(error, "Error on logging in");
-                            THToast.show(new THException(error));
-                        })
-                        .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(
-                                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL, socialNetworkEnum.name()))))
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnUnsubscribe(() -> {
-                    if (progressDialog != null)
-                    {
-                        progressDialog.dismiss();
-                    }
-                })
-                .doOnNext(authDataActionProvider.get())
-                .doOnNext(new OpenDashboardAction(getActivity()))
-        ;
+        authenticationObservable = getClickedSocialNetwork()
+                .flatMap(this::handleConnectionRequest);
     }
 
     @Override public void onResume()
@@ -193,7 +131,7 @@ public class SignInOrUpFragment extends Fragment
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.SignIn));
 
-        if (subscription == null || subscription.isUnsubscribed())
+        if (socialButtonsSubscription == null || socialButtonsSubscription.isUnsubscribed())
         {
             resubscribe();
         }
@@ -201,20 +139,75 @@ public class SignInOrUpFragment extends Fragment
 
     @Override public void onDestroy()
     {
-        if (subscription != null)
+        if (socialButtonsSubscription != null)
         {
-            subscription.unsubscribe();
+            // We unsubscribe only onDestroy because we need to account for the fact that we may push the TwitterEmailFragment
+            socialButtonsSubscription.unsubscribe();
         }
         ButterKnife.reset(this);
         super.onDestroy();
     }
 
+    @NonNull protected Observable<SocialNetworkEnum> getClickedSocialNetwork()
+    {
+        return Observable.from(observableViews)
+                .filter(authenticationButton -> authenticationButton != null)
+                .flatMap(authenticationButton -> ViewObservable.clicks(authenticationButton, false))
+                .map(AuthenticationButton::getType);
+    }
+
+    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleConnectionRequest(SocialNetworkEnum socialNetworkEnum)
+    {
+        ProgressDialog progressDialog = ProgressDialog.show(
+                getActivity(),
+                getString(R.string.alert_dialog_please_wait),
+                getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),
+                true);
+        return Observable.just(socialNetworkEnum)
+                .map(enumToAuthProviderMap::get)
+                .flatMap(authenticationProvider -> authenticationProvider.logIn(getActivity()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(authData -> progressDialog.setMessage(
+                        getString(R.string.authentication_connecting_tradehero, authData.socialNetworkEnum.getName())))
+                .map(this::createLoginFormFromAuthData)
+                .flatMap(loginForm -> safeSignUpAndLogin(loginForm, progressDialog))
+                .doOnError(new THToast.ToastAndLog("Error on logging in"))
+                .doOnNext(pair -> trackSocialRegistration(socialNetworkEnum))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(progressDialog::dismiss)
+                .doOnNext(authDataAccountSaveActionProvider.get())
+                .doOnNext(new OpenDashboardAction(getActivity()))
+                ;
+    }
+
+    @NonNull protected LoginSignUpFormDTO createLoginFormFromAuthData(@NonNull AuthData authData)
+    {
+        return authenticationFormBuilderProvider.get()
+                .authData(authData)
+                .build();
+    }
+
+    @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> safeSignUpAndLogin(
+            @NonNull LoginSignUpFormDTO loginSignUpFormDTO,
+            @NonNull ProgressDialog progressDialog)
+    {
+        return sessionServiceWrapper.signUpAndLoginOrUpdateTokensRx(loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO)
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(new SocialNetworkSpecificExtensions(loginSignUpFormDTO.authData, progressDialog))
+                .map(userLoginDTO -> Pair.create(loginSignUpFormDTO.authData, userLoginDTO.profileDTO));
+    }
+
+    protected void trackSocialRegistration(@NonNull SocialNetworkEnum socialNetworkEnum)
+    {
+        thAppsFlyer.sendTrackingWithEvent(
+                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL, socialNetworkEnum.name()));
+    }
+
     // TODO better with Observable#retry() ?
     private void resubscribe()
     {
-        subscription = authenticationObservable.subscribe(
-                pair -> {
-                },
+        socialButtonsSubscription = authenticationObservable.subscribe(
+                Actions.empty(),
                 e -> {
                     // CancellationException
                     // Resubscribe on any type of exception for now
@@ -238,13 +231,17 @@ public class SignInOrUpFragment extends Fragment
         }
     }
 
-    private class OperatorSignUpAndLoginFallback implements Func1<Throwable, Observable<UserLoginDTO>>
+    private class SocialNetworkSpecificExtensions implements Func1<Throwable, Observable<UserLoginDTO>>
     {
-        private final AuthData authData;
+        @NonNull private final AuthData authData;
+        @NonNull private final ProgressDialog progressDialog;
 
-        public OperatorSignUpAndLoginFallback(AuthData authData)
+        public SocialNetworkSpecificExtensions(
+                @NonNull AuthData authData,
+                @NonNull ProgressDialog progressDialog)
         {
             this.authData = authData;
+            this.progressDialog = progressDialog;
         }
 
         @Override public Observable<UserLoginDTO> call(Throwable throwable)
@@ -253,33 +250,35 @@ public class SignInOrUpFragment extends Fragment
 
             if (authData.socialNetworkEnum == SocialNetworkEnum.TW)
             {
-                TwitterEmailFragment twitterEmailFragment = navigator.get().pushFragment(TwitterEmailFragment.class);
-                if (progressDialog != null)
-                {
-                    progressDialog.hide();
-                }
-                return twitterEmailFragment.obtainEmail()
-                        .map(email -> authenticationFormBuilderProvider.get()
-                                .authData(authData)
-                                .email(email)
-                                .build())
-                        .doOnNext(loginSignUpFormDTO -> {
-                            if (progressDialog != null)
-                            {
-                                progressDialog.show();
-                            }
-                        })
-                        .flatMap(loginSignUpFormDTO -> sessionServiceWrapper.signupAndLoginRx(
-                                loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnError(toastOnErrorActionProvider.get())
-                        .retry()
-                        .doOnNext(userLoginDTO -> progressDialog.show())
-                        .doOnCompleted(() -> resubscribe());
+                progressDialog.hide();
+                return signUpAndLoginWithTwitterEmail(
+                        navigator.get().pushFragment(TwitterEmailFragment.class),
+                        authData,
+                        progressDialog);
             }
 
             throw new RuntimeException(throwable);
         }
+    }
+
+    @NonNull protected Observable<UserLoginDTO> signUpAndLoginWithTwitterEmail(
+            @NonNull TwitterEmailFragment twitterEmailFragment,
+            @NonNull AuthData authData,
+            @NonNull ProgressDialog progressDialog)
+    {
+        return twitterEmailFragment.obtainEmail()
+                .map(email -> authenticationFormBuilderProvider.get()
+                        .authData(authData)
+                        .email(email)
+                        .build())
+                .doOnNext(loginSignUpFormDTO -> progressDialog.show())
+                .flatMap(loginSignUpFormDTO -> sessionServiceWrapper.signupAndLoginRx(
+                        loginSignUpFormDTO.authData.getTHToken(), loginSignUpFormDTO))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(toastOnErrorActionProvider.get())
+                .retry()
+                .doOnNext(userLoginDTO -> progressDialog.show())
+                .doOnCompleted(this::resubscribe);
     }
 }

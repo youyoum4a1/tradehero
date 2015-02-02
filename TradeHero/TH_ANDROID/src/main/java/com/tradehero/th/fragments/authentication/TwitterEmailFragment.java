@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ public class TwitterEmailFragment extends Fragment
     @InjectView(R.id.authentication_twitter_email_txt) EditText twitterEmail;
     @InjectView(R.id.authentication_twitter_email_button) View twitterConfirm;
 
-    private PublishSubject<String> loginRequestSubject = PublishSubject.create();
+    @NonNull private PublishSubject<String> loginRequestSubject = PublishSubject.create();
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -40,10 +41,11 @@ public class TwitterEmailFragment extends Fragment
     @Override public void onDetach()
     {
         loginRequestSubject.onCompleted();
+        loginRequestSubject = PublishSubject.create();
         super.onDetach();
     }
 
-    public Observable<String> obtainEmail()
+    @NonNull public Observable<String> obtainEmail()
     {
         return loginRequestSubject.asObservable();
     }

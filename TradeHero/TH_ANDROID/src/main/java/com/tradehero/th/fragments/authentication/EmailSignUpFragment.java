@@ -45,7 +45,7 @@ public class EmailSignUpFragment extends Fragment
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject AuthDataAction authDataAction;
+    @Inject AuthDataAccountAction authDataAccountAction;
     @Inject ToastOnErrorAction toastOnErrorAction;
     @Inject THAppsFlyer thAppsFlyer;
 
@@ -99,7 +99,7 @@ public class EmailSignUpFragment extends Fragment
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .doOnNext(pair -> thAppsFlyer.sendTrackingWithEvent(AppsFlyerConstants.REGISTRATION_EMAIL))
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(authDataAction)
+                .doOnNext(authDataAccountAction)
                 .doOnNext(new OpenDashboardAction(getActivity()))
                 .doOnError(toastOnErrorAction)
                 .doOnUnsubscribe(() -> {
