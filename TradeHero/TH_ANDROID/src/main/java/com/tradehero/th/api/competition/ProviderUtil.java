@@ -15,9 +15,9 @@ public class ProviderUtil
     public static final String QUERY_KEY_AUTHORISATION = "authorization";
     public static final String QUERY_KEY_SHOW_NEXT_BUTTON = "showNextButton";
 
-    public static final String RULES = "rules/";
+    public static final String RULES = "rules";
 
-    public static final String TERMS = "terms/";
+    public static final String TERMS = "terms";
 
     public static final String WIZARD = "wizard/";
     public static final String QUERY_KEY_FULL_SCREEN = "fullScreen";
