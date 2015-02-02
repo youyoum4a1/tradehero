@@ -1,5 +1,6 @@
 package com.tradehero.th.api.timeline.form;
 
+import android.support.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class PublishableFormDTO
     }
     //</editor-fold>
 
-    public Map<String, String> toStringMap()
+    @NonNull public Map<String, String> toStringMap()
     {
         Map<String, String> map = new HashMap<>();
         if (publishToFb != null)

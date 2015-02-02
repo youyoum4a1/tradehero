@@ -14,13 +14,6 @@ public class WatchlistPositionDTO extends PositionDTO
     @Nullable public Double watchlistPriceRefCcy;
     @Nullable public SecurityCompactDTO securityDTO;
 
-    //<editor-fold desc="Constructors">
-    public WatchlistPositionDTO()
-    {
-        super();
-    }
-    //</editor-fold>
-
     @NonNull @Override public String getNiceCurrency()
     {
         if (securityDTO != null

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import com.tradehero.common.activities.ActivityResultRequester;
-import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -12,6 +11,7 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.SignInOrUpFragment;
 import com.tradehero.th.inject.Injector;
+import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -27,7 +27,7 @@ public class AuthenticationActivity extends BaseActivity
         implements Injector
 {
     @Inject Analytics analytics;
-    @Inject DTOCacheUtilRx dtoCacheUtilRx;
+    @Inject DTOCacheUtilImpl dtoCacheUtilImpl;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
 
     private DashboardNavigator navigator;
@@ -39,7 +39,7 @@ public class AuthenticationActivity extends BaseActivity
         setContentView(R.layout.authentication_layout);
 
         setupNavigator();
-        dtoCacheUtilRx.clearUserCaches();
+        dtoCacheUtilImpl.clearUserCaches();
     }
 
     private void setupNavigator()

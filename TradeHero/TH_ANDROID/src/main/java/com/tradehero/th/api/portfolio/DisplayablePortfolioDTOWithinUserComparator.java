@@ -1,17 +1,20 @@
 package com.tradehero.th.api.portfolio;
 
+import android.support.annotation.NonNull;
 import java.util.Comparator;
 
 public class DisplayablePortfolioDTOWithinUserComparator implements Comparator<DisplayablePortfolioDTO>
 {
-    private final PortfolioCompactDTODisplayComparator portfolioCompactDTODisplayComparator;
-    private final OwnedPortfolioIdDisplayComparator ownedPortfolioIdDisplayComparator;
+    @NonNull private final PortfolioCompactDTODisplayComparator portfolioCompactDTODisplayComparator;
+    @NonNull private final OwnedPortfolioIdDisplayComparator ownedPortfolioIdDisplayComparator;
 
+    //<editor-fold desc="Constructors">
     public DisplayablePortfolioDTOWithinUserComparator()
     {
         this.portfolioCompactDTODisplayComparator = new PortfolioCompactDTODisplayComparator();
         this.ownedPortfolioIdDisplayComparator = new OwnedPortfolioIdDisplayComparator();
     }
+    //</editor-fold>
 
     @Override public int compare(DisplayablePortfolioDTO lhs, DisplayablePortfolioDTO rhs)
     {

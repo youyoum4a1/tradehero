@@ -1,5 +1,6 @@
 package com.tradehero.th.api.social;
 
+import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.users.UserProfileCompactDTO;
 import com.tradehero.th.persistence.social.HeroType;
@@ -16,12 +17,7 @@ public class UserFollowerDTO extends UserProfileCompactDTO implements DTO
     // This one does not appear to be in TH_SVR
     public double roiSinceInception;
 
-    public UserFollowerDTO()
-    {
-        super();
-    }
-
-    public HeroType getHeroType()
+    @NonNull public HeroType getHeroType()
     {
         return isFreeFollow ? HeroType.FREE : HeroType.PREMIUM;
     }

@@ -5,10 +5,4 @@ package com.tradehero.th.api;
  */
 public class BaseResponseDTO
 {
-    //<editor-fold desc="Constructors">
-    public BaseResponseDTO()
-    {
-        super();
-    }
-    //</editor-fold>
 }

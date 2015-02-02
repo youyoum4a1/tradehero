@@ -67,7 +67,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Disconnect">
-    @NonNull public Observable<UserProfileDTO> disconnectRx(@NonNull UserBaseKey userBaseKey, SocialNetworkFormDTO socialNetworkFormDTO)
+    @NonNull public Observable<UserProfileDTO> disconnectRx(
+            @NonNull UserBaseKey userBaseKey,
+            @NonNull SocialNetworkFormDTO socialNetworkFormDTO)
     {
         return socialServiceRx.disconnect(userBaseKey.key, socialNetworkFormDTO)
                 .map(dtoProcessorUpdateUserProfileProvider.get());

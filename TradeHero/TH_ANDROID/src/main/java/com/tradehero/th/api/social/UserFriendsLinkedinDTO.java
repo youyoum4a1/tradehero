@@ -12,7 +12,8 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
     public String liHeadline; // LI: gives current position/title?
 
     //<editor-fold desc="Constructors">
-    public UserFriendsLinkedinDTO()
+    @SuppressWarnings("UnusedDeclaration") // Needed for deserialisation
+    UserFriendsLinkedinDTO()
     {
         super();
     }
@@ -43,9 +44,9 @@ public class UserFriendsLinkedinDTO extends UserFriendsDTO
         return super.hashCode() ^ liId.hashCode();
     }
 
-    @Override protected boolean equals(@NonNull UserFriendsDTO other)
+    @Override protected boolean equalFields(@NonNull UserFriendsDTO other)
     {
-        return super.equals(other) &&
+        return super.equalFields(other) &&
                 other instanceof UserFriendsLinkedinDTO &&
                 liId.equals(((UserFriendsLinkedinDTO) other).liId);
     }

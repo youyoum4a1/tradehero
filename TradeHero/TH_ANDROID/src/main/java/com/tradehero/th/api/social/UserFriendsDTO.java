@@ -13,13 +13,6 @@ abstract public class UserFriendsDTO
     public String email; // Not provided from the server
     public boolean selected = false; // HACK not from server
 
-    //<editor-fold desc="Constructors">
-    public UserFriendsDTO()
-    {
-        super();
-    }
-    //</editor-fold>
-
     abstract public int getNetworkLabelImage();
 
     public String getProfilePictureURL()
@@ -50,14 +43,11 @@ abstract public class UserFriendsDTO
         {
             return true;
         }
-        if (other == null || other.getClass() != ((Object) this).getClass())
-        {
-            return false;
-        }
-        return equals((UserFriendsDTO) other);
+        return other instanceof UserFriendsDTO
+                && equalFields((UserFriendsDTO) other);
     }
 
-    protected boolean equals(@NonNull UserFriendsDTO other)
+    protected boolean equalFields(@NonNull UserFriendsDTO other)
     {
         return (thUserId == other.thUserId) &&
             name == null ? other.name == null : name.equals(other.name);

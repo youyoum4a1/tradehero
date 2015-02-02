@@ -22,7 +22,7 @@ public class BatchFollowFormDTO implements DTO
 
     public BatchFollowFormDTO(
             @NonNull List<? extends UserFriendsDTO> userFriendsDTOs,
-            @Nullable UserFriendsDTO typeQualifier)
+            @SuppressWarnings("UnusedParameters") @Nullable UserFriendsDTO typeQualifier)
     {
         this();
         for (UserFriendsDTO friendsDTO : userFriendsDTOs)
@@ -33,7 +33,7 @@ public class BatchFollowFormDTO implements DTO
 
     public BatchFollowFormDTO(
             @NonNull List<? extends UserBaseDTO> userBaseDTOs,
-            @Nullable UserBaseDTO typeQualifier)
+            @SuppressWarnings("UnusedParameters") @Nullable UserBaseDTO typeQualifier)
     {
         this();
         for (UserBaseDTO userBaseDTO : userBaseDTOs)

@@ -15,14 +15,6 @@ public class TimelineItemShareFormDTO implements SocialShareFormDTOWithEnum
     public TimelineItemShareFormDTO()
     {
     }
-
-    public TimelineItemShareFormDTO(
-            DiscussionListKey discussionListKey,
-            TimelineItemShareRequestDTO timelineItemShareRequestDTO)
-    {
-        this.discussionListKey = discussionListKey;
-        this.timelineItemShareRequestDTO = timelineItemShareRequestDTO;
-    }
     //</editor-fold>
 
     @Override @Nullable public SocialNetworkEnum getSocialNetworkEnum()

@@ -13,11 +13,6 @@ public class DisplayablePortfolioDTOList extends BaseArrayList<DisplayablePortfo
         super();
     }
 
-    public DisplayablePortfolioDTOList(@NonNull Collection<? extends DisplayablePortfolioDTO> c)
-    {
-        super(c);
-    }
-
     public DisplayablePortfolioDTOList(@NonNull UserBaseDTO userBaseDTO,
             @NonNull Collection<? extends PortfolioDTO> portfolioDTOs)
     {

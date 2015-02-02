@@ -6,45 +6,15 @@ import android.support.annotation.Nullable;
 public class TrendingPriceSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingPriceSecurityListType(@NonNull TrendingSecurityListType other)
-    {
-        super(other);
-    }
-
     public TrendingPriceSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(exchange, page, perPage);
     }
-
-    public TrendingPriceSecurityListType(@Nullable String exchange, @Nullable Integer page)
-    {
-        super(exchange, page);
-    }
-
-    public TrendingPriceSecurityListType(@Nullable String exchange)
-    {
-        super(exchange);
-    }
-
-    public TrendingPriceSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
-    {
-        super(page, perPage);
-    }
-
-    public TrendingPriceSecurityListType(@Nullable Integer page)
-    {
-        super(page);
-    }
-
-    public TrendingPriceSecurityListType()
-    {
-        super();
-    }
     //</editor-fold>
 
-    @Override protected boolean equals(@NonNull TrendingSecurityListType other)
+    @Override protected boolean equalFields(@NonNull TrendingSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && other instanceof TrendingPriceSecurityListType;
     }
 

@@ -1,7 +1,8 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
-
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.route.RouteProperty;
@@ -77,25 +78,20 @@ public class SecurityId implements Comparable, DTOKey, DTO
                 (securitySymbol == null ? 0 : securitySymbol.hashCode());
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return (other instanceof SecurityId) && equals((SecurityId) other);
+        return (other instanceof SecurityId)
+                && equalFields((SecurityId) other);
     }
 
-    public boolean equals(SecurityId other)
+    protected boolean equalFields(@NonNull SecurityId other)
     {
-        return (other != null) &&
-                (exchange == null ? other.exchange == null : exchange.equals(other.exchange)) &&
+        return (exchange == null ? other.exchange == null : exchange.equals(other.exchange)) &&
                 (securitySymbol == null ? other.securitySymbol == null : securitySymbol.equals(other.securitySymbol));
     }
 
-    @Override public int compareTo(Object other)
+    @Override public int compareTo(@NonNull Object other)
     {
-        if (other == null)
-        {
-            return 1;
-        }
-
         if (other.getClass() == getClass())
         {
             return compareTo(getClass().cast(other));
@@ -103,16 +99,11 @@ public class SecurityId implements Comparable, DTOKey, DTO
         return other.getClass().getName().compareTo(getClass().getName());
     }
 
-    public int compareTo(SecurityId other)
+    public int compareTo(@NonNull SecurityId other)
     {
         if (this == other)
         {
             return 0;
-        }
-
-        if (other == null)
-        {
-            return 1;
         }
 
         int exchangeComp = exchange.compareTo(other.exchange);

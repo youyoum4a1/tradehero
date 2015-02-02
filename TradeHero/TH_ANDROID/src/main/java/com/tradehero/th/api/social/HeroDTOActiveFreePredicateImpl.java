@@ -1,8 +1,9 @@
 package com.tradehero.th.api.social;
 
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 
-public class HeroDTOActiveFreePredicateImpl extends HeroDTOActiveFreePredicate
+public class HeroDTOActiveFreePredicateImpl implements Predicate<HeroDTO>
 {
     @Nullable private final Boolean active;
     @Nullable private final Boolean freeFollow;

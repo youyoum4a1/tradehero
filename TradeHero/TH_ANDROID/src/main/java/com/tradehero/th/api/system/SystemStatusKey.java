@@ -1,5 +1,6 @@
 package com.tradehero.th.api.system;
 
+import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
 
 public class SystemStatusKey implements DTOKey
@@ -9,7 +10,7 @@ public class SystemStatusKey implements DTOKey
         return 0;
     }
 
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
         return other instanceof SystemStatusKey;
     }

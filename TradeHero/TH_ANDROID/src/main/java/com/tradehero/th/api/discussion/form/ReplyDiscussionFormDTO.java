@@ -9,11 +9,6 @@ abstract public class ReplyDiscussionFormDTO extends DiscussionFormDTO
 {
     public int inReplyToId;
 
-    public ReplyDiscussionFormDTO()
-    {
-        super();
-    }
-
     @JsonProperty
     abstract public DiscussionType getInReplyToType();
 

@@ -21,21 +21,6 @@ public class WeChatDTO implements SocialShareFormDTO
     {
     }
 
-    public WeChatDTO(int id, WeChatMessageType type, String title)
-    {
-        this.id = id;
-        this.type = type;
-        this.title = title;
-    }
-
-    public WeChatDTO(int id, WeChatMessageType type, String title, String imageURL)
-    {
-        this.id = id;
-        this.type = type;
-        this.title = title;
-        this.imageURL = imageURL;
-    }
-
     public WeChatDTO(@NonNull Bundle args)
     {
         id = args.getInt(WECHAT_MESSAGE_ID_KEY);

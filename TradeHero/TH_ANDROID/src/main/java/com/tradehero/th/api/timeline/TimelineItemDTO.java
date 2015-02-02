@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
 {
-    public int type;
+    public TimeLineItemType type;
     public Date userViewedAtUtc;
     private SecurityMediaDTOList medias;
     public Integer pushTypeId;
@@ -25,7 +25,8 @@ public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>
     private UserProfileCompactDTO user;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemDTO()
+    @SuppressWarnings("UnusedDeclaration") // Needed for deserialiser
+    TimelineItemDTO()
     {
     }
 

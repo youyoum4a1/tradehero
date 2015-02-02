@@ -4,28 +4,10 @@ import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.users.UserBaseKey;
 
 public class HeroDTOList extends BaseArrayList<HeroDTO>
     implements DTO
 {
-    //<editor-fold desc="Constructors">
-    public HeroDTOList()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull public FollowerHeroRelationIdList createKeys(@NonNull UserBaseKey followerId)
-    {
-        FollowerHeroRelationIdList followerHeroRelationIdList = new FollowerHeroRelationIdList();
-        for (HeroDTO heroDTO : this)
-        {
-            followerHeroRelationIdList.add(heroDTO.getHeroId(followerId));
-        }
-        return followerHeroRelationIdList;
-    }
-
     @NonNull public HeroDTOList filter(@NonNull Predicate<HeroDTO> predicate)
     {
         HeroDTOList filtered = new HeroDTOList();

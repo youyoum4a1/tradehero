@@ -18,17 +18,6 @@ public class SecurityIntegerIdListForm
     }
 
     public SecurityIntegerIdListForm(
-            @NonNull Collection<? extends SecurityIntegerId> securityIntegerIds,
-            @SuppressWarnings("UnusedParameters") @Nullable SecurityIntegerId typeQualifier)
-    {
-        this();
-        for (SecurityIntegerId securityIntegerId : securityIntegerIds)
-        {
-            securityIds.add(securityIntegerId.key);
-        }
-    }
-
-    public SecurityIntegerIdListForm(
             @NonNull Collection<? extends SecurityCompactDTO> securityCompactDTOs,
             @SuppressWarnings("UnusedParameters") @Nullable SecurityCompactDTO typeQualifier)
     {

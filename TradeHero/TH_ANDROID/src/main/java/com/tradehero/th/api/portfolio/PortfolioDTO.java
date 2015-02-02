@@ -28,6 +28,7 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
     public Double roiY2DAnnualized;
     public double plY2D;
 
+    @Deprecated
     public List<UpdatePricesQuoteDTO> yahooSymbols;
 
     public int countTrades;

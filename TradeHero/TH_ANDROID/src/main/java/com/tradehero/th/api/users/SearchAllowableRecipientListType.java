@@ -1,5 +1,6 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public class SearchAllowableRecipientListType extends SearchUserListType
@@ -13,4 +14,10 @@ public class SearchAllowableRecipientListType extends SearchUserListType
         super(searchString, page, perPage);
     }
     //</editor-fold>
+
+    @Override public boolean equalFields(@NonNull SearchUserListType other)
+    {
+        return other instanceof SearchAllowableRecipientListType
+                && super.equalFields(other);
+    }
 }

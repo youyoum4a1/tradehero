@@ -6,34 +6,9 @@ import android.support.annotation.Nullable;
 public class TrendingBasicSecurityListType extends TrendingSecurityListType
 {
     //<editor-fold desc="Constructors">
-    public TrendingBasicSecurityListType(@NonNull TrendingSecurityListType other)
-    {
-        super(other);
-    }
-
     public TrendingBasicSecurityListType(@Nullable String exchange, @Nullable Integer page, @Nullable Integer perPage)
     {
         super(exchange, page, perPage);
-    }
-
-    public TrendingBasicSecurityListType(@Nullable String exchange, @Nullable Integer page)
-    {
-        super(exchange, page);
-    }
-
-    public TrendingBasicSecurityListType(@Nullable String exchange)
-    {
-        super(exchange);
-    }
-
-    public TrendingBasicSecurityListType(@Nullable Integer page, @Nullable Integer perPage)
-    {
-        super(page, perPage);
-    }
-
-    public TrendingBasicSecurityListType(@Nullable Integer page)
-    {
-        super(page);
     }
 
     public TrendingBasicSecurityListType()
@@ -42,9 +17,9 @@ public class TrendingBasicSecurityListType extends TrendingSecurityListType
     }
     //</editor-fold>
 
-    @Override protected boolean equals(@NonNull TrendingSecurityListType other)
+    @Override protected boolean equalFields(@NonNull TrendingSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && other instanceof TrendingBasicSecurityListType;
     }
 

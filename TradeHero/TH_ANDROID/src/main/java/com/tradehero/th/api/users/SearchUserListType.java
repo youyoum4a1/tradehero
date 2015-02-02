@@ -35,12 +35,13 @@ public class SearchUserListType extends UserListType
                 (perPage == null ? 0 : perPage.hashCode());
     }
 
-    @Override public boolean equalFields(UserListType other)
+    @Override public boolean equalFields(@NonNull UserListType other)
     {
-        return equalFields ((SearchUserListType) other);
+        return other instanceof SearchUserListType
+                && equalFields((SearchUserListType) other);
     }
 
-    public boolean equalFields(SearchUserListType other)
+    public boolean equalFields(@NonNull SearchUserListType other)
     {
         return (searchString == null ? other.searchString == null : searchString.equals(other.searchString)) &&
                 (page == null ? other.page == null : page.equals(other.page)) &&

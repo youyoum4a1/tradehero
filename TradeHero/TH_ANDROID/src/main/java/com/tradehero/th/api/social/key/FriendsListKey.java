@@ -43,16 +43,10 @@ public class FriendsListKey implements DTOKey
                 (searchQuery == null ? 0 : searchQuery.hashCode());
     }
 
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return equalClass(other) &&
-                equalFields((FriendsListKey) other);
-    }
-
-    protected boolean equalClass(Object other)
-    {
-        return other != null && other.getClass().equals(getClass());
+        return other instanceof FriendsListKey
+                && equalFields((FriendsListKey) other);
     }
 
     protected boolean equalFields(@NonNull FriendsListKey other)

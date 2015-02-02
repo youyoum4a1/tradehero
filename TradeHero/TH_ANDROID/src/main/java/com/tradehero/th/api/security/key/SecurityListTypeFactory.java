@@ -1,5 +1,6 @@
 package com.tradehero.th.api.security.key;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.competition.key.BasicProviderSecurityListType;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.competition.key.WarrantUnderlyersProviderSecurityListType;
@@ -8,11 +9,13 @@ import javax.inject.Singleton;
 
 @Singleton public class SecurityListTypeFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public SecurityListTypeFactory()
     {
     }
+    //</editor-fold>
 
-    public SecurityListType cloneAtPage(SecurityListType initial, int page)
+    public SecurityListType cloneAtPage(@NonNull SecurityListType initial, int page)
     {
         if (initial instanceof TrendingSecurityListType)
         {

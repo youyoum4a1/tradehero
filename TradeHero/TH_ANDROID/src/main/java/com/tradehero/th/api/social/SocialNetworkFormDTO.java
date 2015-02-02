@@ -4,14 +4,11 @@ public class SocialNetworkFormDTO
 {
     public SocialNetworkEnum socialNetwork;
 
-    public SocialNetworkFormDTO()
-    {
-        super();
-    }
-
+    //<editor-fold desc="Constructors">
     public SocialNetworkFormDTO(SocialNetworkEnum socialNetwork)
     {
         super();
         this.socialNetwork = socialNetwork;
     }
+    //</editor-fold>
 }

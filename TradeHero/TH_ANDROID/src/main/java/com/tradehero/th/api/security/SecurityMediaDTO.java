@@ -1,12 +1,14 @@
 package com.tradehero.th.api.security;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.misc.MediaDTO;
 
 public class SecurityMediaDTO extends MediaDTO
 {
     public int securityId;
-    public String exchange;
-    public String symbol;
+    @Nullable public String exchange;
+    @Nullable public String symbol;
     public String yahooSymbol;
     public String url;
     public Double risePercent;
@@ -18,7 +20,7 @@ public class SecurityMediaDTO extends MediaDTO
         return exchange != null && symbol != null;
     }
 
-    public SecurityId createSecurityId()
+    @NonNull public SecurityId createSecurityId()
     {
         return new SecurityId(exchange, symbol);
     }

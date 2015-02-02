@@ -1,21 +1,20 @@
 package com.tradehero.th.api.users;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.api.PagedDTOKey;
 
 abstract public class UserListType implements Comparable<UserListType>, PagedDTOKey
 {
-    @Override abstract public int hashCode();
-
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    @Override public boolean equals(Object other)
+    @Override public boolean equals(@Nullable Object other)
     {
-        return equalClass(other) && equalFields((UserListType) other);
+        if (other == this)
+        {
+            return true;
+        }
+        return other instanceof UserListType
+                && equalFields((UserListType) other);
     }
 
-    public boolean equalClass(Object other)
-    {
-        return other != null && other.getClass().equals(((Object) this).getClass());
-    }
-
-    abstract public boolean equalFields(UserListType other);
+    abstract protected boolean equalFields(@NonNull UserListType other);
 }

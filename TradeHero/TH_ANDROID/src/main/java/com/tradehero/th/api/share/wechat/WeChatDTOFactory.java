@@ -86,7 +86,10 @@ public class WeChatDTOFactory
         return weChatDTO;
     }
 
-    protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull UserAchievementDTO userAchievementDTO)
+    protected void populateWith(
+            @NonNull Context context,
+            @NonNull WeChatDTO weChatDTO,
+            @NonNull UserAchievementDTO userAchievementDTO)
     {
         weChatDTO.id = userAchievementDTO.id;
         if (userAchievementDTO.achievementDef.isQuest)
@@ -109,21 +112,31 @@ public class WeChatDTOFactory
         return weChatDTO;
     }
 
-    protected void populateWith(@NonNull Context context, @NonNull WeChatDTO weChatDTO, @NonNull ReferralCodeDTO referralCodeDTO)
+    protected void populateWith(
+            @NonNull Context context,
+            @NonNull WeChatDTO weChatDTO,
+            @NonNull ReferralCodeDTO referralCodeDTO)
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.Referral;
         weChatDTO.title = context.getString(R.string.share_to_wechat_referral_text, referralCodeDTO.referralCode);
     }
 
-    @NonNull public WeChatDTO createFrom(@NonNull Context context, @NonNull CompetitionPreSeasonDTO preSeasonDTO, @NonNull ProviderDTO providerDTO)
+    @NonNull public WeChatDTO createFrom(
+            @NonNull Context context,
+            @NonNull CompetitionPreSeasonDTO preSeasonDTO,
+            @NonNull ProviderDTO providerDTO)
     {
         WeChatDTO weChatDTO = new WeChatDTO();
         populateWith(context, preSeasonDTO, providerDTO, weChatDTO);
         return weChatDTO;
     }
 
-    private void populateWith(Context context, CompetitionPreSeasonDTO preSeasonDTO, ProviderDTO providerDTO, WeChatDTO weChatDTO)
+    private void populateWith(
+            @NonNull Context context,
+            @NonNull CompetitionPreSeasonDTO preSeasonDTO,
+            @NonNull ProviderDTO providerDTO,
+            @NonNull WeChatDTO weChatDTO)
     {
         weChatDTO.id = 0;
         weChatDTO.type = WeChatMessageType.PreSeason;

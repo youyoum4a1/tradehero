@@ -40,16 +40,15 @@ abstract public class ProviderSecurityListType extends SecurityListType
         return super.hashCode() ^ providerId.hashCode();
     }
 
-    @Override protected boolean equals(@NonNull SecurityListType other)
+    @Override protected boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
-                && other instanceof ProviderSecurityListType
-                && equals((ProviderSecurityListType) other);
+        return other instanceof ProviderSecurityListType
+                && equalFields((ProviderSecurityListType) other);
     }
 
-    protected boolean equals(@NonNull ProviderSecurityListType other)
+    protected boolean equalFields(@NonNull ProviderSecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
                 && providerId.equals(other.providerId);
     }
 

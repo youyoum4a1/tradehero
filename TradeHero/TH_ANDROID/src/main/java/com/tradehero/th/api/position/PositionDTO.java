@@ -1,14 +1,11 @@
 package com.tradehero.th.api.position;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.users.UserBaseKey;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class PositionDTO extends PositionDTOCompact
 {
@@ -62,44 +59,9 @@ public class PositionDTO extends PositionDTOCompact
         return getOwnedPositionId();
     }
 
-    public static List<PositionDTOKey> getPositionDTOKeys(List<PositionDTO> positionDTOs)
-    {
-        if (positionDTOs == null)
-        {
-            return null;
-        }
-
-        List<PositionDTOKey> positionIds = new ArrayList<>();
-
-        for (PositionDTO positionDTO: positionDTOs)
-        {
-            positionIds.add(positionDTO.getPositionDTOKey());
-        }
-
-        return positionIds;
-    }
-
     @NonNull public SecurityIntegerId getSecurityIntegerId()
     {
         return new SecurityIntegerId(securityId);
-    }
-
-    @Nullable
-    public static List<PositionDTOKey> getFiledPositionIds(@Nullable List<PositionDTO> positionDTOs)
-    {
-        if (positionDTOs == null)
-        {
-            return null;
-        }
-
-        List<PositionDTOKey> positionDTOKeys = new ArrayList<>();
-
-        for (PositionDTO positionDTO: positionDTOs)
-        {
-            positionDTOKeys.add(positionDTO.getPositionDTOKey());
-        }
-
-        return positionDTOKeys;
     }
 
     public Double getROISinceInception()
@@ -110,7 +72,8 @@ public class PositionDTO extends PositionDTOCompact
         }
 
         double numberToDisplay = realizedPLRefCcy;
-        if (isOpen())
+        Boolean isOpen = isOpen();
+        if (isOpen != null && isOpen)
         {
             numberToDisplay += unrealizedPLRefCcy;
         }

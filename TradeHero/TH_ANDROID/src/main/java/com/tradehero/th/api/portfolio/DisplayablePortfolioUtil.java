@@ -11,14 +11,22 @@ import javax.inject.Inject;
 
 public class DisplayablePortfolioUtil
 {
-    @Inject public CurrentUserId currentUserId;
-    @Inject public Lazy<PortfolioDTOUtil> portfolioDTOUtil;
-    @Inject public Lazy<UserBaseDTOUtil> userBaseDTOUtil;
+    @NonNull public final CurrentUserId currentUserId;
+    @NonNull public final Lazy<PortfolioDTOUtil> portfolioDTOUtil;
+    @NonNull public final Lazy<UserBaseDTOUtil> userBaseDTOUtil;
 
-    @Inject public DisplayablePortfolioUtil()
+    //<editor-fold desc="Constructors">
+    @Inject public DisplayablePortfolioUtil(
+            @NonNull CurrentUserId currentUserId,
+            @NonNull Lazy<PortfolioDTOUtil> portfolioDTOUtil,
+            @NonNull Lazy<UserBaseDTOUtil> userBaseDTOUtil)
     {
         super();
+        this.currentUserId = currentUserId;
+        this.portfolioDTOUtil = portfolioDTOUtil;
+        this.userBaseDTOUtil = userBaseDTOUtil;
     }
+    //</editor-fold>
 
     @NonNull public String getLongTitle(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {

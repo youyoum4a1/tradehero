@@ -10,11 +10,6 @@ public class TimelineItemReplyCommentFormDTO extends ReplyDiscussionFormDTO
 {
     public static final DiscussionType TYPE = DiscussionType.TIMELINE_ITEM;
 
-    public TimelineItemReplyCommentFormDTO()
-    {
-        super();
-    }
-
     @Override @NonNull public DiscussionType getInReplyToType()
     {
         return TYPE;

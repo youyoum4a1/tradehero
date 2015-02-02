@@ -13,11 +13,4 @@ public class SystemStatusDTO implements DTO
     public String androidAppPackageNameInUse;
 
     public PriceDTO friendReferralAward;
-
-    //<editor-fold desc="Constructors">
-    public SystemStatusDTO()
-    {
-        super();
-    }
-    //</editor-fold>
 }

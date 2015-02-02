@@ -1,8 +1,5 @@
 package com.tradehero.th.api.timeline;
 
-/**
- * Created by thonguyen on 27/10/14.
- */
 public enum TimelineSection
 {
     Timeline("timeline"),

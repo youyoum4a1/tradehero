@@ -14,8 +14,7 @@ public class UserTransactionHistoryListType extends UserBaseKey
 
     @Override public boolean equals(@Nullable Object other)
     {
-        return other != null &&
-                other instanceof UserTransactionHistoryListType &&
+        return other instanceof UserTransactionHistoryListType &&
                 super.equals(other);
     }
 }

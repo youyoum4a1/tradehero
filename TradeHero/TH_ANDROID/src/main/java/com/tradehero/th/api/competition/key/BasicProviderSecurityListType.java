@@ -28,9 +28,9 @@ public class BasicProviderSecurityListType extends ProviderSecurityListType
     }
     //</editor-fold>
 
-    @Override protected boolean equals(@NonNull SecurityListType other)
+    @Override protected boolean equalFields(@NonNull SecurityListType other)
     {
-        return super.equals(other)
+        return super.equalFields(other)
             && other instanceof BasicProviderSecurityListType;
     }
 }

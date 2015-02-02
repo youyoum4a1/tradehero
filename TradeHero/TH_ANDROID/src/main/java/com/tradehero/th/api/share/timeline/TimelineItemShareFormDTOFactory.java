@@ -13,10 +13,12 @@ import javax.inject.Inject;
 
 public class TimelineItemShareFormDTOFactory
 {
+    //<editor-fold desc="Constructors">
     @Inject public TimelineItemShareFormDTOFactory()
     {
         super();
     }
+    //</editor-fold>
 
     @NonNull public TimelineItemShareFormDTO createFrom(
             @NonNull SocialNetworkEnum socialNetwork,
