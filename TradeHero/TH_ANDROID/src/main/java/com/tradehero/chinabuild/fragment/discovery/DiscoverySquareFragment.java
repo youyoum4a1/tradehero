@@ -57,6 +57,8 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     private List<View> views = new ArrayList();
     private Timer timer;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -221,6 +223,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             }
         }, 1000, 3000);
     }
+
 
 
 }

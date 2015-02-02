@@ -90,5 +90,10 @@ import javax.inject.Singleton;
         userTimelineServiceAsync.getTimelineEssential(userId.key, maxCount, maxId, minId, middleCallback);
         return middleCallback;
     }
+
+    //公告, only one page with 20 items
+    public void getTimelineNotice(@NotNull UserBaseKey userId, @Nullable Callback<TimelineDTO> callback){
+        userTimelineServiceAsync.getTimelineNotice(userId.key, 20, -1, -1, callback);
+    }
     //</editor-fold>
 }

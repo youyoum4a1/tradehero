@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
+import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
@@ -154,6 +155,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
     public void parseTimeLineDTO(TimelineDTO timelineDTO)
     {
         clearAll();
+        if(showNoticeNews() && NoticeNewsCache.getInstance().getTimelineDTO()!=null){
+            addItems(NoticeNewsCache.getInstance().getTimelineDTO());
+        }
         addItems(timelineDTO);
     }
 
@@ -311,8 +315,8 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             boolean isTrade = item.hasTrader();
 
             //item.isHighlight
-            holder.llNormalAll.setVisibility(View.VISIBLE);
-            holder.llSimpleAll.setVisibility(View.GONE);
+            holder.llNormalAll.setVisibility(item.isNotice?View.GONE:View.VISIBLE);
+            holder.llSimpleAll.setVisibility(item.isNotice?View.VISIBLE:View.GONE);
 
             holder.tvReward.setVisibility(item.isQuestionItem ? View.VISIBLE : View.GONE);
             holder.rlUserTLTrade.setVisibility(isTrade ? View.VISIBLE : View.GONE);
@@ -331,8 +335,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                     holder.footerV.setVisibility(View.GONE);
                 }
             }else{
-                //item.isHighlight
-                if(false){
+                if(item.isNotice){
                     holder.headerV.setVisibility(View.GONE);
                     holder.footerV.setVisibility(View.GONE);
                 }else{
@@ -346,7 +349,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             }
 
             //item.isHighlight
-            if(false){
+            if(item.isNotice){
                 if( position != 0) {
                     holder.dividerHighLightV.setVisibility(View.VISIBLE);
                 }else{
@@ -852,6 +855,22 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             return IntegerUtils.toZero(3, stickType);
         }
         return 0;
+    }
+
+    private boolean showNoticeNews(){
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
+            return true;
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
+            return true;
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
+            return true;
+        }
+        if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
+            return true;
+        }
+        return false;
     }
 
 

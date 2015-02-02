@@ -236,9 +236,12 @@
 
         </RelativeLayout>
 
-        <include
-                android:id="@+id/includeTLOperater"
-                layout="@layout/timeline_operater_line"/>
+        <LinearLayout android:layout_width="match_parent" android:visibility="gone"
+                      android:layout_height="wrap_content">
+            <include
+                    android:id="@+id/includeTLOperater"
+                    layout="@layout/timeline_operater_line"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -261,7 +264,7 @@
                     android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/timeline_top"
+                    android:text="@string/timeline_production"
                     android:textColor="@color/white"
                     android:textSize="10sp"
                     android:paddingLeft="5dp"

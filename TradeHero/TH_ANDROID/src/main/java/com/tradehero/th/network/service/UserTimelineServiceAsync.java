@@ -68,4 +68,14 @@ interface UserTimelineServiceAsync
             @Query("minId") Integer minId,
             Callback<TimelineDTO> callback);
     //</editor-fold>
+
+    //公告
+    @GET("/users/{userId}/timeline?type=notice")
+    void getTimelineNotice(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<TimelineDTO> callback);
+    //</editor-fold>
 }
