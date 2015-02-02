@@ -3,29 +3,23 @@ package com.tradehero.th.fragments.discussion;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.widget.LinearLayout;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import java.util.List;
 import javax.inject.Inject;
-import rx.Observer;
-import rx.Subscription;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 
 abstract public class AbstractDiscussionCompactItemViewLinear<T>
         extends LinearLayout
@@ -39,13 +33,14 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
     protected T discussionKey;
     protected AbstractDiscussionCompactDTO abstractDiscussionCompactDTO;
 
-    private Subscription discussionFetchSubscription;
+    @NonNull protected SubscriptionList subscriptions;
 
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewLinear(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
+        subscriptions = new SubscriptionList();
     }
     //</editor-fold>
 
@@ -56,7 +51,6 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         {
             viewHolder = createViewHolder();
             viewHolder.onFinishInflate(this);
-            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
         }
     }
 
@@ -66,25 +60,45 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
         if (!isInEditMode())
         {
             viewHolder.onAttachedToWindow(this);
+            //noinspection unchecked
             viewHolder.linkWith(abstractDiscussionCompactDTO);
-            viewHolder.setMenuClickedListener(createViewHolderMenuClickedListener());
-            socialShareHelper.setMenuClickedListener(createSocialShareMenuClickedListener());
+            //noinspection unchecked
+            subscriptions.add(viewHolder.getUserActionObservable()
+                    .flatMap(new Func1<DiscussionActionButtonsView.UserAction,
+                            Observable<DiscussionActionButtonsView.UserAction>>()
+                    {
+                        @Override public Observable<DiscussionActionButtonsView.UserAction> call(
+                                DiscussionActionButtonsView.UserAction userAction)
+                        {
+                            return handleUserAction(userAction);
+                        }
+                    })
+                    .subscribe(new EmptyObserver()));
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        detachFetchDiscussionTask();
-        socialShareHelper.onDetach();
-        viewHolder.setMenuClickedListener(null);
         viewHolder.onDetachedFromWindow();
-        discussionFetchSubscription = null;
+        subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
         super.onDetachedFromWindow();
     }
 
-    protected AbstractDiscussionCompactItemViewHolder createViewHolder()
+    @NonNull protected AbstractDiscussionCompactItemViewHolder createViewHolder()
     {
         return new AbstractDiscussionCompactItemViewHolder<>(getContext());
+    }
+
+    @NonNull protected Observable<DiscussionActionButtonsView.UserAction> handleUserAction(
+            DiscussionActionButtonsView.UserAction userAction)
+    {
+        if (userAction instanceof DiscussionActionButtonsView.MoreUserAction)
+        {
+            return socialShareHelper.show(abstractDiscussionCompactDTO, false)
+                    .flatMap(result -> Observable.empty());
+        }
+        return Observable.just(userAction);
     }
 
     @Override public void display(T discussionKey)
@@ -115,137 +129,24 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
 
     public void refresh()
     {
-        detachFetchDiscussionTask();
-        discussionFetchSubscription = discussionCache.get((DiscussionKey) discussionKey)
+        subscriptions.add(discussionCache.get((DiscussionKey) discussionKey)
+                .map(pair -> pair.second)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createDiscussionFetchObserver());
-    }
-
-    private void detachFetchDiscussionTask()
-    {
-        Subscription copy = discussionFetchSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        discussionFetchSubscription = null;
+                .subscribe(
+                        this::linkWith,
+                        e -> THToast.show(new THException(e))
+                ));
     }
 
     protected void linkWith(AbstractDiscussionCompactDTO abstractDiscussionDTO)
     {
         this.abstractDiscussionCompactDTO = abstractDiscussionDTO;
+        //noinspection unchecked
         viewHolder.linkWith(abstractDiscussionDTO);
     }
 
     protected DashboardNavigator getNavigator()
     {
         return dashboardNavigator;
-    }
-
-    @NonNull protected Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>> createDiscussionFetchObserver()
-    {
-        return new DiscussionFetchObserver();
-    }
-
-    private class DiscussionFetchObserver
-            implements Observer<Pair<DiscussionKey, AbstractDiscussionCompactDTO>>
-    {
-        @Override public void onNext(Pair<DiscussionKey, AbstractDiscussionCompactDTO> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            THToast.show(new THException(e));
-        }
-    }
-
-    protected AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener createViewHolderMenuClickedListener()
-    {
-        return new AbstractDiscussionViewHolderClickedListener()
-        {
-            @Override public void onShareButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onCommentButtonClicked()
-            {
-                // Nothing to do
-            }
-
-            @Override public void onUserClicked(UserBaseKey userClicked)
-            {
-                // Nothing to do
-            }
-
-            @Override public void onTranslationRequested()
-            {
-                // Nothing to do
-            }
-        };
-    }
-
-    abstract protected class AbstractDiscussionViewHolderClickedListener implements AbstractDiscussionItemViewHolder.OnMenuClickedListener
-    {
-        @Override public void onMoreButtonClicked()
-        {
-            socialShareHelper.shareOrTranslate(abstractDiscussionCompactDTO);
-        }
-    }
-
-    protected SocialShareTranslationHelper.OnMenuClickedListener createSocialShareMenuClickedListener()
-    {
-        return new AbstractDiscussionItemViewShareTranslationMenuClickListener();
-    }
-
-    protected class AbstractDiscussionItemViewShareTranslationMenuClickListener implements SocialShareTranslationHelper.OnMenuClickedListener
-    {
-        @Override public void onCancelClicked()
-        {
-        }
-
-        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
-        {
-            THToast.show(R.string.content_sharing_started);
-        }
-
-        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
-        {
-        }
-
-        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
-                @NonNull SocialShareResultDTO socialShareResultDTO)
-        {
-            THToast.show(R.string.content_shared);
-        }
-
-        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
-        {
-        }
-
-        @Override public void onTranslationClicked(AbstractDiscussionCompactDTO toTranslate)
-        {
-        }
-
-        @Override public void onTranslatedOneAttribute(AbstractDiscussionCompactDTO toTranslate,
-                TranslationResult translationResult)
-        {
-        }
-
-        @Override public void onTranslatedAllAtributes(AbstractDiscussionCompactDTO toTranslate,
-                AbstractDiscussionCompactDTO translated)
-        {
-        }
-
-        @Override public void onTranslateFailed(AbstractDiscussionCompactDTO toTranslate,
-                Throwable error)
-        {
-        }
     }
 }

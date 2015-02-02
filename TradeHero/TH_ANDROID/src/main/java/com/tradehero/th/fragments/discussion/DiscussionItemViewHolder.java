@@ -2,23 +2,17 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
-import butterknife.OnClick;
-import butterknife.Optional;
 import com.squareup.picasso.RequestCreator;
-import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 
 public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>
     extends AbstractDiscussionItemViewHolder<DiscussionDTOType>
 {
     //<editor-fold desc="Constructors">
-
-    public DiscussionItemViewHolder(Context context)
+    public DiscussionItemViewHolder(@NonNull Context context)
     {
         super(context);
     }
-
     //</editor-fold>
 
     @Override public void linkWith(DiscussionDTOType discussionDTO)
@@ -52,18 +46,4 @@ public class DiscussionItemViewHolder<DiscussionDTOType extends DiscussionDTO>
         return super.createUserPicassoRequest();
     }
     //</editor-fold>
-
-    @Optional @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
-    protected void handleUserClicked(View view)
-    {
-        if (discussionDTO != null)
-        {
-            notifyUserClicked(discussionDTO.getSenderKey());
-        }
-    }
-
-    public static interface OnMenuClickedListener extends AbstractDiscussionItemViewHolder.OnMenuClickedListener
-    {
-        // Nothing yet
-    }
 }

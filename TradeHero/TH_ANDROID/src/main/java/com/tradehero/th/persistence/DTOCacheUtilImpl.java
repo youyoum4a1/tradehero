@@ -220,14 +220,14 @@ import rx.observers.EmptyObserver;
 
     public void preFetchExchanges()
     {
-        exchangeCompactListCache.get().get(new ExchangeListType());
+        exchangeCompactListCache.get().getOne(new ExchangeListType());
     }
 
     public void preFetchTrending()
     {
         Observable.zip(
-                userProfileCache.get().get(currentUserId.toUserBaseKey()),
-                exchangeCompactListCache.get().get(new ExchangeListType()),
+                userProfileCache.get().getOne(currentUserId.toUserBaseKey()),
+                exchangeCompactListCache.get().getOne(new ExchangeListType()),
                 (obs1, obs2) -> Pair.create(obs1.second, obs2.second))
                 .first()
                 .doOnNext(this::preFetchTrending)
@@ -266,25 +266,25 @@ import rx.observers.EmptyObserver;
         }
         TrendingFilterTypeBasicDTO filterTypeBasicDTO = new TrendingFilterTypeBasicDTO(initialExchangeSpinner);
 
-        this.securityCompactListCache.get().get(
+        this.securityCompactListCache.get().getOne(
                 filterTypeBasicDTO.getSecurityListType(1, TrendingStockFragment.DEFAULT_PER_PAGE));
     }
 
     private void preFetchTraderLevels()
     {
-        this.levelDefListCache.get().get(new LevelDefListId());
+        this.levelDefListCache.get().getOne(new LevelDefListId());
     }
 
     private void preFetchQuestBonus()
     {
-        this.questBonusListCacheLazy.get().get(new QuestBonusListId());
+        this.questBonusListCacheLazy.get().getOne(new QuestBonusListId());
     }
 
     public void prefetchesUponLogin(@Nullable UserProfileDTO profile)
     {
         if (profile != null)
         {
-            exchangeCompactListCache.get().get(new ExchangeListType())
+            exchangeCompactListCache.get().getOne(new ExchangeListType())
                     .doOnNext(pair -> {
                         Country country = profile.getCountry();
                         if (pair.second != null && country != null)
@@ -292,7 +292,7 @@ import rx.observers.EmptyObserver;
                             ExchangeCompactDTO initialExchange = pair.second.findFirstDefaultFor(country);
                             if (initialExchange != null)
                             {
-                                securityCompactListCache.get().get(
+                                securityCompactListCache.get().getOne(
                                         new TrendingBasicSecurityListType(
                                                 initialExchange.name,
                                                 1,
@@ -309,18 +309,19 @@ import rx.observers.EmptyObserver;
     public void initialPrefetches()
     {
         preFetchWatchlist();
+        preFetchTranslationToken();
 
         conveniencePrefetches(); // TODO move them so time after the others
     }
 
     public void preFetchWatchlist()
     {
-        userWatchlistPositionCache.get().get(currentUserId.toUserBaseKey());
+        userWatchlistPositionCache.get().getOne(currentUserId.toUserBaseKey());
     }
 
     public void preFetchProviders()
     {
-        this.providerListCache.get().get(new ProviderListKey());
+        this.providerListCache.get().getOne(new ProviderListKey());
     }
 
     public void conveniencePrefetches()
@@ -333,21 +334,21 @@ import rx.observers.EmptyObserver;
 
     public void preFetchAlerts()
     {
-        alertCompactListCache.get().get(currentUserId.toUserBaseKey());
+        alertCompactListCache.get().getOne(currentUserId.toUserBaseKey());
     }
 
     public void preFetchTranslationToken()
     {
-        translationTokenCache.get().get(new TranslationTokenKey());
+        translationTokenCache.get().getOne(new TranslationTokenKey());
     }
 
     public void preFetchLeaderboardDefs()
     {
-        leaderboardDefListCache.get().get(new LeaderboardDefListKey(1));
+        leaderboardDefListCache.get().getOne(new LeaderboardDefListKey(1));
     }
 
     public void preFetchHomeContent()
     {
-        homeContentCache.get().get(currentUserId.toUserBaseKey());
+        homeContentCache.get().getOne(currentUserId.toUserBaseKey());
     }
 }

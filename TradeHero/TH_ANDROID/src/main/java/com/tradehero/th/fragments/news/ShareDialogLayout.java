@@ -15,13 +15,13 @@ import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareFormDTOFactory;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.ShareDestination;
 import com.tradehero.th.models.share.ShareDestinationFactory;
 import java.util.Comparator;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class ShareDialogLayout extends LinearLayout
 {
@@ -30,17 +30,17 @@ public class ShareDialogLayout extends LinearLayout
     @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
 
     @Inject ShareDestinationFactory shareDestinationFactory;
-    @Inject SocialShareFormDTOFactory socialShareFormDTOFactory;
     @Inject @NonNull Comparator<ShareDestination> shareDestinationIndexResComparator;
 
-    @Nullable protected OnShareMenuClickedListener menuClickedListener;
     @Nullable protected DTO whatToShare;
+    @NonNull protected BehaviorSubject<UserAction> shareActionBehavior;
 
     //<editor-fold desc="Constructors">
     public ShareDialogLayout(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
+        shareActionBehavior = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -55,7 +55,11 @@ public class ShareDialogLayout extends LinearLayout
     {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        fillData();
+        listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
+                getContext(),
+                shareDestinationIndexResComparator,
+                shareDestinationFactory.getAllShareDestinations()));
+        listViewSharingOptions.setDividerHeight(1);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -64,34 +68,18 @@ public class ShareDialogLayout extends LinearLayout
         super.onDetachedFromWindow();
     }
 
-    protected void fillData()
-    {
-        listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
-                getContext(),
-                shareDestinationIndexResComparator,
-                shareDestinationFactory.getAllShareDestinations()));
-        listViewSharingOptions.setDividerHeight(1);
-    }
-
-    public void setWhatToShare(@SuppressWarnings("NullableProblems") @NonNull DTO whatToShare)
+    @NonNull public Observable<UserAction> show(@SuppressWarnings("NullableProblems") @NonNull DTO whatToShare)
     {
         this.whatToShare = whatToShare;
-    }
-
-    public void setMenuClickedListener(@Nullable OnShareMenuClickedListener menuClickedListener)
-    {
-        this.menuClickedListener = menuClickedListener;
+        return shareActionBehavior.asObservable();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.news_action_share_cancel)
     protected void onCancelClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        OnShareMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onCancelClicked();
-        }
+        shareActionBehavior.onNext(new CancelUserAction());
+        shareActionBehavior.onCompleted();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -102,27 +90,28 @@ public class ShareDialogLayout extends LinearLayout
             int position,
             @SuppressWarnings("UnusedParameters") long id)
     {
-        OnShareMenuClickedListener listenerCopy = menuClickedListener;
-        DTO whatToShareCopy = whatToShare;
-        if (listenerCopy != null && whatToShareCopy != null)
-        {
-            if (whatToShareCopy instanceof SocialShareFormDTO)
-            {
-                listenerCopy.onShareRequestedClicked((SocialShareFormDTO) whatToShareCopy);
-            }
-            else
-            {
-                listenerCopy.onShareRequestedClicked(
-                        socialShareFormDTOFactory.createForm(
-                                (ShareDestination) parent.getItemAtPosition(position),
-                                whatToShareCopy));
-            }
-        }
+        shareActionBehavior.onNext(new ShareUserAction(
+                (ShareDestination) parent.getItemAtPosition(position)));
+        shareActionBehavior.onCompleted();
     }
 
-    public static interface OnShareMenuClickedListener
+    public interface UserAction
     {
-        void onCancelClicked();
-        void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO);
+    }
+
+    public static class CancelUserAction implements UserAction
+    {
+    }
+
+    public static class ShareUserAction implements UserAction
+    {
+        @NonNull public final ShareDestination shareDestination;
+
+        //<editor-fold desc="Constructors">
+        public ShareUserAction(@NonNull ShareDestination shareDestination)
+        {
+            this.shareDestination = shareDestination;
+        }
+        //</editor-fold>
     }
 }

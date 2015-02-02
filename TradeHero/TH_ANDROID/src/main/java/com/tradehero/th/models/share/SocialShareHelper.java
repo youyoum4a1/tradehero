@@ -1,27 +1,37 @@
 package com.tradehero.th.models.share;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Pair;
+import android.view.Window;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.tradehero.th.api.share.SocialShareFormDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.auth.AuthenticationProvider;
+import com.tradehero.th.auth.SocialAuth;
+import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.ShareDialogFactory;
 import com.tradehero.th.fragments.news.ShareDialogLayout;
-import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.network.share.dto.ConnectRequired;
+import com.tradehero.th.network.share.dto.SocialDialogResult;
+import com.tradehero.th.network.share.dto.SocialShareResult;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observable;
+import rx.functions.Action0;
+import rx.functions.Func1;
 
 public class SocialShareHelper
 {
@@ -29,16 +39,10 @@ public class SocialShareHelper
     @NonNull protected final Provider<Activity> activityHolder;
     @NonNull protected final Provider<DashboardNavigator> navigatorProvider;
     @NonNull protected final ShareDialogFactory shareDialogFactory;
-    @NonNull protected final AlertDialogUtil alertDialogUtil;
+    @NonNull protected final SocialAlertDialogRxUtil alertDialogUtil;
     @NonNull protected final Provider<SocialSharer> socialSharerProvider;
-
-    @Nullable protected OnMenuClickedListener menuClickedListener;
-
-    protected Dialog shareDialog;
-    protected SocialSharer currentSocialSharer;
-    protected AlertDialog popOfferConnectDialog;
-
-    protected SocialShareFormDTO formWaitingToConnect;
+    @NonNull protected final SocialShareFormDTOFactory socialShareFormDTOFactory;
+    @NonNull protected final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialShareHelper(
@@ -46,8 +50,10 @@ public class SocialShareHelper
             @NonNull Provider<Activity> activityHolder,
             @NonNull Provider<DashboardNavigator> navigatorProvider,
             @NonNull ShareDialogFactory shareDialogFactory,
-            @NonNull AlertDialogUtil alertDialogUtil,
-            @NonNull Provider<SocialSharer> socialSharerProvider)
+            @NonNull SocialAlertDialogRxUtil alertDialogUtil,
+            @NonNull Provider<SocialSharer> socialSharerProvider,
+            @NonNull SocialShareFormDTOFactory socialShareFormDTOFactory,
+            @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders)
     {
         this.applicationContext = applicationContext;
         this.activityHolder = activityHolder;
@@ -55,237 +61,124 @@ public class SocialShareHelper
         this.shareDialogFactory = shareDialogFactory;
         this.alertDialogUtil = alertDialogUtil;
         this.socialSharerProvider = socialSharerProvider;
+        this.socialShareFormDTOFactory = socialShareFormDTOFactory;
+        this.authenticationProviders = authenticationProviders;
     }
     //</editor-fold>
 
-    public void onDetach()
+    @NonNull public Observable<SocialDialogResult> show(@NonNull DTO whatToShare)
     {
-        setMenuClickedListener(null);
-        dismissShareDialog();
-        detachSocialSharer();
-        detachOfferConnectDialog();
-        cancelFormWaiting();
+        return createDialog(whatToShare)
+                .flatMap(new Func1<Pair<Dialog, ShareDialogLayout>, Observable<ShareDialogLayout.UserAction>>()
+                {
+                    @Override public Observable<ShareDialogLayout.UserAction> call(Pair<Dialog, ShareDialogLayout> pair)
+                    {
+                        return pair.second.show(whatToShare)
+                                .finallyDo(new Action0()
+                                {
+                                    @Override public void call()
+                                    {
+                                        pair.first.dismiss();
+                                    }
+                                });
+                    }
+                })
+                .flatMap(new Func1<ShareDialogLayout.UserAction, Observable<? extends SocialDialogResult>>()
+                {
+                    @Override public Observable<? extends SocialDialogResult> call(ShareDialogLayout.UserAction userAction)
+                    {
+                        return SocialShareHelper.this.handleUserAction(userAction, whatToShare);
+                    }
+                });
     }
 
-    protected void dismissShareDialog()
+    @NonNull protected Observable<Pair<Dialog, ShareDialogLayout>> createDialog(@NonNull DTO whatToShare)
     {
-        Dialog shareDialogCopy = shareDialog;
-        if (shareDialogCopy != null)
+        return Observable.just(shareDialogFactory.createShareDialog(activityHolder.get()));
+    }
+
+    @NonNull protected Observable<? extends SocialDialogResult> handleUserAction(
+            @NonNull ShareDialogLayout.UserAction userAction,
+            @NonNull DTO whatToShare)
+    {
+        if (userAction instanceof ShareDialogLayout.ShareUserAction)
         {
-            shareDialogCopy.dismiss();
+            return share(socialShareFormDTOFactory.createForm(
+                    ((ShareDialogLayout.ShareUserAction) userAction).shareDestination,
+                    whatToShare));
         }
-        shareDialog = null;
-    }
-
-    protected void detachSocialSharer()
-    {
-        SocialSharer socialSharerCopy = currentSocialSharer;
-        if (socialSharerCopy != null)
+        if (userAction instanceof ShareDialogLayout.CancelUserAction)
         {
-            socialSharerCopy.setSharedListener(null);
+            return Observable.empty();
         }
-        currentSocialSharer = null;
+        return Observable.error(new IllegalStateException("Unhandled UserAction " + userAction));
     }
 
-    protected void detachOfferConnectDialog()
+    @NonNull public Observable<SocialShareResult> share(@NonNull SocialShareFormDTO socialShareFormDTO)
     {
-        popOfferConnectDialog = null;
+        return socialSharerProvider.get().share(socialShareFormDTO)
+                .flatMap(new Func1<SocialShareResult, Observable<SocialShareResult>>()
+                {
+                    @Override public Observable<SocialShareResult> call(SocialShareResult socialShareResult)
+                    {
+                        if (socialShareResult instanceof ConnectRequired)
+                        {
+                            return offerToConnect(((ConnectRequired) socialShareResult).toConnect)
+                                    .flatMap(new Func1<UserProfileDTO, Observable<SocialShareResult>>()
+                                    {
+                                        @Override public Observable<SocialShareResult> call(UserProfileDTO userProfileDTO)
+                                        {
+                                            return share(socialShareFormDTO);
+                                        }
+                                    });
+                        }
+                        return Observable.just(socialShareResult);
+                    }
+                });
     }
 
-    protected void cancelFormWaiting()
-    {
-        formWaitingToConnect = null;
-    }
-
-    //<editor-fold desc="Listener Handling">
-    public void setMenuClickedListener(@Nullable OnMenuClickedListener menuClickedListener)
-    {
-        this.menuClickedListener = menuClickedListener;
-    }
-
-    protected void notifyShareMenuCancelClicked()
-    {
-        cancelFormWaiting();
-        OnMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onCancelClicked();
-        }
-    }
-
-    protected void notifyShareMenuRequestedClicked(@NonNull SocialShareFormDTO shareFormDTO)
-    {
-        OnMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onShareRequestedClicked(shareFormDTO);
-        }
-    }
-
-    protected void notifyConnectRequired(@NonNull SocialShareFormDTO shareFormDTO,
-            @NonNull List<SocialNetworkEnum> toConnect)
-    {
-        OnMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onConnectRequired(shareFormDTO, toConnect);
-        }
-    }
-
-    protected void notifyShared(@NonNull SocialShareFormDTO shareFormDTO,
-            @NonNull SocialShareResultDTO shareResultDTO)
-    {
-        cancelFormWaiting();
-        OnMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onShared(shareFormDTO, shareResultDTO);
-        }
-    }
-
-    protected void notifyShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable error)
-    {
-        cancelFormWaiting();
-        OnMenuClickedListener listenerCopy = menuClickedListener;
-        if (listenerCopy != null)
-        {
-            listenerCopy.onShareFailed(shareFormDTO, error);
-        }
-    }
-    //</editor-fold>
-
-    public void share(@NonNull DTO whatToShare)
-    {
-        cancelFormWaiting();
-        dismissShareDialog();
-        shareDialog = shareDialogFactory.createShareDialog(
-                activityHolder.get(),
-                whatToShare,
-                createShareMenuClickedListener());
-    }
-
-    @NonNull protected ShareDialogLayout.OnShareMenuClickedListener createShareMenuClickedListener()
-    {
-        return new SocialShareHelperShareMenuClickedListener();
-    }
-
-    protected class SocialShareHelperShareMenuClickedListener
-            implements ShareDialogLayout.OnShareMenuClickedListener
-    {
-        @Override public void onCancelClicked()
-        {
-            dismissShareDialog();
-            notifyShareMenuCancelClicked();
-        }
-
-        @Override public void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO)
-        {
-            dismissShareDialog();
-            notifyShareMenuRequestedClicked(socialShareFormDTO);
-            share(socialShareFormDTO);
-        }
-    }
-
-    public void share(@NonNull SocialShareFormDTO socialShareFormDTO)
-    {
-        cancelFormWaiting();
-        formWaitingToConnect = socialShareFormDTO;
-        detachSocialSharer();
-        currentSocialSharer = socialSharerProvider.get();
-        currentSocialSharer.setSharedListener(createSharedListener());
-        currentSocialSharer.share(socialShareFormDTO);
-    }
-
-    @NonNull protected SocialSharer.OnSharedListener createSharedListener()
-    {
-        return new SocialShareHelperSharedListener();
-    }
-
-    protected class SocialShareHelperSharedListener implements SocialSharer.OnSharedListener
-    {
-        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
-        {
-            notifyConnectRequired(shareFormDTO, toConnect);
-            offerToConnect(toConnect);
-        }
-
-        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO,
-                @NonNull SocialShareResultDTO socialShareResultDTO)
-        {
-            notifyShared(shareFormDTO, socialShareResultDTO);
-        }
-
-        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
-        {
-            notifyShareFailed(shareFormDTO, throwable);
-        }
-    }
-
-    public void offerToConnect(@NonNull List<SocialNetworkEnum> toConnect)
+    @NonNull public Observable<UserProfileDTO> offerToConnect(@NonNull List<SocialNetworkEnum> toConnect)
     {
         // HACK FIXME Connect first only
-        offerToConnect(toConnect.get(0));
+        return offerToConnect(toConnect.get(0));
     }
 
-    public void offerToConnect(@NonNull SocialNetworkEnum socialNetwork)
+    @NonNull public Observable<UserProfileDTO> offerToConnect(@NonNull SocialNetworkEnum socialNetwork)
     {
-        detachOfferConnectDialog();
-        alertDialogUtil.popWithOkCancelButton(
+        return alertDialogUtil.popNeedToLinkSocial(
                 activityHolder.get(),
-                activityHolder.get().getString(R.string.link, socialNetwork.getName()),
-                activityHolder.get().getString(R.string.link_description, socialNetwork.getName()),
-                R.string.link_now,
-                R.string.later,
-                createConnectDialogListener(socialNetwork),
-                createNoConnectDialogListener());
+                socialNetwork)
+                .flatMap(new Func1<Pair<DialogInterface, Integer>, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(Pair<DialogInterface, Integer> pair)
+                    {
+                        return handleNeedToLink(pair, socialNetwork);
+                    }
+                });
     }
 
-    @NonNull protected DialogInterface.OnClickListener createNoConnectDialogListener()
+    @NonNull public Observable<UserProfileDTO> handleNeedToLink(Pair<DialogInterface, Integer> pair, SocialNetworkEnum socialNetwork)
     {
-        return new SocialShareHelperNoConnectClickListener();
-    }
-
-    protected class SocialShareHelperNoConnectClickListener implements DialogInterface.OnClickListener
-    {
-        @Override public void onClick(DialogInterface dialog, int which)
+        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
         {
-            notifyShareMenuCancelClicked();
+            ProgressDialog progressDialog = new ProgressDialog(activityHolder.get());
+            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setMessage(activityHolder.get().getString(
+                    R.string.authentication_connecting_to,
+                    activityHolder.get().getString(socialNetwork.nameResId)));
+            progressDialog.show();
+            AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
+            return ((SocialAuthenticationProvider) socialAuthenticationProvider)
+                    .socialLink(activityHolder.get())
+                    .finallyDo(new Action0()
+                    {
+                        @Override public void call()
+                        {
+                            progressDialog.dismiss();
+                        }
+                    });
         }
-    }
-
-    @NonNull protected DialogInterface.OnClickListener createConnectDialogListener(SocialNetworkEnum socialNetwork)
-    {
-        return new SocialShareHelperConnectClickListener(socialNetwork);
-    }
-
-    protected class SocialShareHelperConnectClickListener implements DialogInterface.OnClickListener
-    {
-        private final SocialNetworkEnum socialNetwork;
-
-        //<editor-fold desc="Constructors">
-        public SocialShareHelperConnectClickListener(
-                SocialNetworkEnum socialNetwork)
-        {
-            this.socialNetwork = socialNetwork;
-        }
-        //</editor-fold>
-
-        @Override public void onClick(DialogInterface dialog, int which)
-        {
-            // TODO use new SocialLinkHelper
-            detachOfferConnectDialog();
-            Bundle args = new Bundle();
-            SettingsFragment.putSocialNetworkToConnect(args, socialNetwork);
-            navigatorProvider.get().pushFragment(SettingsFragment.class, args);
-        }
-    }
-
-    public interface OnMenuClickedListener
-    {
-        void onCancelClicked();
-        void onShareRequestedClicked(@NonNull SocialShareFormDTO socialShareFormDTO);
-        void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect);
-        void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO);
-        void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable);
+        return Observable.empty();
     }
 }

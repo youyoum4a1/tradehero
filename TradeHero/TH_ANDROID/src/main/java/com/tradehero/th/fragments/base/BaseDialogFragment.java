@@ -18,11 +18,13 @@ public abstract class BaseDialogFragment extends DialogFragment
 {
     private BehaviorSubject<DialogInterface> dismissedSubject;
 
+    //<editor-fold desc="Constructors">
     public BaseDialogFragment()
     {
         super();
         dismissedSubject = BehaviorSubject.create();
     }
+    //</editor-fold>
 
     @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {

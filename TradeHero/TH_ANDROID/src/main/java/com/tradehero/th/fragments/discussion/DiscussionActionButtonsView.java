@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -13,6 +14,8 @@ import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.widget.VotePair;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class DiscussionActionButtonsView extends LinearLayout
 {
@@ -26,26 +29,29 @@ public class DiscussionActionButtonsView extends LinearLayout
 
     protected boolean downVote = HAS_DOWN_VOTE;
     private boolean showMore = DEFAULT_SHOW_MORE;
-    private OnButtonClickedListener buttonClickedListener;
     protected AbstractDiscussionCompactDTO discussionDTO;
+    @NonNull protected BehaviorSubject<UserAction> userActionBehavior;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context)
     {
         super(context);
+        this.userActionBehavior = BehaviorSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        this.userActionBehavior = BehaviorSubject.create();
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
+        this.userActionBehavior = BehaviorSubject.create();
     }
     //</editor-fold>
 
@@ -64,15 +70,15 @@ public class DiscussionActionButtonsView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        setButtonClickedListener(null);
+        this.userActionBehavior.onCompleted();
+        this.userActionBehavior = BehaviorSubject.create();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
 
-    public void setButtonClickedListener(
-            OnButtonClickedListener buttonClickedListener)
+    @NonNull public Observable<UserAction> getUserActionObservable()
     {
-        this.buttonClickedListener = buttonClickedListener;
+        return userActionBehavior.asObservable();
     }
 
     public void setDownVote(boolean downVote)
@@ -142,56 +148,36 @@ public class DiscussionActionButtonsView extends LinearLayout
     @OnClick(R.id.discussion_action_button_comment_count) @Optional
     protected void handleCommentButtonClicked(View view)
     {
-        notifyCommentButtonClicked();
-    }
-
-    protected void notifyCommentButtonClicked()
-    {
-        OnButtonClickedListener buttonClickedListenerCopy = buttonClickedListener;
-        if (buttonClickedListenerCopy != null)
-        {
-            buttonClickedListenerCopy.onCommentButtonClicked();
-        }
+        userActionBehavior.onNext(new CommentUserAction());
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_share) @Optional
     protected void handleShareButtonClicked(View view)
     {
-        notifyShareButtonClicked();
-    }
-
-    protected void notifyShareButtonClicked()
-    {
-        OnButtonClickedListener buttonClickedListenerCopy = buttonClickedListener;
-        if (buttonClickedListenerCopy != null)
-        {
-            buttonClickedListenerCopy.onShareButtonClicked();
-        }
+        userActionBehavior.onNext(new ShareUserAction());
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.discussion_action_button_more) @Optional
     protected void handleMoreButtonClicked(View view)
     {
-        notifyMoreButtonClicked();
+        userActionBehavior.onNext(new MoreUserAction());
     }
 
-    protected void notifyMoreButtonClicked()
+    public interface UserAction
     {
-        OnButtonClickedListener buttonClickedListenerCopy = buttonClickedListener;
-        if (buttonClickedListenerCopy != null)
-        {
-            buttonClickedListenerCopy.onMoreButtonClicked();
-        }
     }
 
-    public static interface OnButtonClickedListener
+    public static class CommentUserAction implements UserAction
     {
-        void onCommentButtonClicked();
+    }
 
-        void onShareButtonClicked();
+    public static class ShareUserAction implements UserAction
+    {
+    }
 
-        void onMoreButtonClicked();
+    public static class MoreUserAction implements UserAction
+    {
     }
 }

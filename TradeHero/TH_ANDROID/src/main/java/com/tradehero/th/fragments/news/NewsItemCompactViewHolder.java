@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.news;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +23,7 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
     @InjectView(R.id.news_item_placeholder) @Optional ImageView newsItemPlaceholder;
 
     //<editor-fold desc="Constructors">
-    public NewsItemCompactViewHolder(Context context)
+    public NewsItemCompactViewHolder(@NonNull Context context)
     {
         super(context);
     }
@@ -144,11 +145,5 @@ public class NewsItemCompactViewHolder<DiscussionType extends NewsItemCompactDTO
             this.newsItemPlaceholder.setBackgroundResource(resId);
         }
     }
-
     //</editor-fold>
-
-    public static interface OnMenuClickedListener extends AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener
-    {
-        // Nothing for now
-    }
 }

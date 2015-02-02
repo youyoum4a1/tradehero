@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import butterknife.Optional;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -20,14 +21,13 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.SecurityIntegerId;
 import com.tradehero.th.api.security.SecurityIntegerIdList;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
 import com.tradehero.th.fragments.security.SimpleSecurityItemViewAdapter;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -46,8 +46,7 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> exten
     protected Subscription multiFetchSubscription;
 
     //<editor-fold desc="Constructors">
-
-    public NewsItemViewHolder(Context context)
+    public NewsItemViewHolder(@NonNull Context context)
     {
         super(context);
     }
@@ -61,7 +60,6 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> exten
             simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(
                     context, R.layout.trending_security_item);
             mNewsDetailReference.setAdapter(simpleSecurityItemViewAdapter);
-            mNewsDetailReference.setOnItemClickListener(createSecurityItemClickListener());
         }
     }
 
@@ -98,9 +96,25 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> exten
                 detachMultiFetchAssistant();
                 multiFetchSubscription = multiFetchAssistant.get(new SecurityIntegerIdList(securityIds, 0))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(createMultiSecurityObserver());
+                        .subscribe(
+                                this::onReceivedSecurities,
+                                e -> {});
             }
         }
+    }
+
+    public void onReceivedSecurities(Map<SecurityIntegerId, SecurityCompactDTO> map)
+    {
+        if (mNewsDetailReferenceContainer != null)
+        {
+            ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
+            //TODO it changes with solution
+            lp.width = (int) context.getResources().getDimension(R.dimen.stock_item_width) * map.size();
+            mNewsDetailReferenceContainer.setLayoutParams(lp);
+        }
+        mNewsDetailReference.setNumColumns(map.size());
+        simpleSecurityItemViewAdapter.setItems(new ArrayList<>(map.values()));
+        simpleSecurityItemViewAdapter.notifyDataSetChanged();
     }
 
     //<editor-fold desc="Display Methods">
@@ -199,81 +213,34 @@ public class NewsItemViewHolder<DiscussionType extends NewsItemCompactDTO> exten
     @OnClick(R.id.news_start_new_discussion) @Optional
     protected void handleStartNewDiscussionClicked(View view)
     {
-        notifyCommentButtonClicked();
+        userActionBehavior.onNext(new DiscussionActionButtonsView.CommentUserAction());
     }
 
     @SuppressWarnings("UnusedDeclaration")
     @Optional @OnClick(R.id.news_view_on_web)
     protected void handleOpenOnWebClicked(View view)
     {
-        notifyOpenOnWebClicked();
+        userActionBehavior.onNext(new OpenWebUserAction());
     }
 
-    protected void notifyOpenOnWebClicked()
+    @Optional @OnItemClick(R.id.news_detail_reference)
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
-        if (menuClickedListenerCopy instanceof OnMenuClickedListener)
+        SecurityId securityId = ((SecurityCompactDTO) parent.getItemAtPosition(position)).getSecurityId();
+        userActionBehavior.onNext(new SecurityUserAction(securityId));
+    }
+
+    public static class OpenWebUserAction implements DiscussionActionButtonsView.UserAction
+    {
+    }
+
+    public static class SecurityUserAction implements DiscussionActionButtonsView.UserAction
+    {
+        @NonNull public final SecurityId securityId;
+
+        public SecurityUserAction(@NonNull SecurityId securityId)
         {
-            ((OnMenuClickedListener) menuClickedListenerCopy).onOpenOnWebClicked();
+            this.securityId = securityId;
         }
-    }
-
-    protected void notifySecurityClicked(SecurityId securityId)
-    {
-        AbstractDiscussionCompactItemViewHolder.OnMenuClickedListener menuClickedListenerCopy = menuClickedListener;
-        if (menuClickedListenerCopy instanceof OnMenuClickedListener)
-        {
-            ((OnMenuClickedListener) menuClickedListenerCopy).onSecurityClicked(securityId);
-        }
-    }
-
-    protected Observer<Map<SecurityIntegerId, SecurityCompactDTO>> createMultiSecurityObserver()
-    {
-        return new NewsItemViewHolderMultiSecurityObserver();
-    }
-
-    protected class NewsItemViewHolderMultiSecurityObserver implements Observer<Map<SecurityIntegerId, SecurityCompactDTO>>
-    {
-        @Override public void onNext(Map<SecurityIntegerId, SecurityCompactDTO> map)
-        {
-            if (mNewsDetailReferenceContainer != null)
-            {
-                ViewGroup.LayoutParams lp = mNewsDetailReferenceContainer.getLayoutParams();
-                //TODO it changes with solution
-                lp.width = (int) context.getResources().getDimension(R.dimen.stock_item_width) * map.size();
-                mNewsDetailReferenceContainer.setLayoutParams(lp);
-            }
-            mNewsDetailReference.setNumColumns(map.size());
-            simpleSecurityItemViewAdapter.setItems(new ArrayList<>(map.values()));
-            simpleSecurityItemViewAdapter.notifyDataSetChanged();
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-        }
-    }
-
-    protected AdapterView.OnItemClickListener createSecurityItemClickListener()
-    {
-        return new NewsItemViewHolderSecurityItemClickListener();
-    }
-
-    protected class NewsItemViewHolderSecurityItemClickListener implements AdapterView.OnItemClickListener
-    {
-        @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
-            notifySecurityClicked(((SecurityCompactDTO) parent.getItemAtPosition(position)).getSecurityId());
-        }
-    }
-
-    public static interface OnMenuClickedListener extends NewsItemCompactViewHolder.OnMenuClickedListener
-    {
-        void onOpenOnWebClicked();
-
-        void onSecurityClicked(SecurityId securityId);
     }
 }

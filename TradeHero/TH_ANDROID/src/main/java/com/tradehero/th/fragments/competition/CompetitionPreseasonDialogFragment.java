@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -40,6 +39,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragment
@@ -87,12 +87,14 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         return inflater.inflate(R.layout.competition_preseason_dialog, container, false);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.close)
     public void onCloseClicked()
     {
         getDialog().dismiss();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.preseason_share)
     public void onShareClicked()
     {
@@ -152,9 +154,11 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     private void shareToWeChat()
     {
         WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
-        socialSharerLazy.get().share(weChatDTO);
+        subscriptions.add(socialSharerLazy.get().share(weChatDTO)
+                .subscribe(new EmptyObserver<>()));
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.preseason_prize_tncs)
     public void onTncsClicked()
     {
@@ -167,6 +171,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.preseason_share_retry)
     public void onRetryClicked()
     {

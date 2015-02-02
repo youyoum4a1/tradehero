@@ -274,7 +274,8 @@ public class FriendsInvitationFragment extends DashboardFragment
             weChatDTO.id = 0;
             weChatDTO.type = WeChatMessageType.Invite;
             weChatDTO.title = getString(WeChatMessageType.Invite.getTitleResId(), userProfileDTO.referralCode);
-            socialSharerLazy.get().share(weChatDTO); // TODO proper callback?
+            socialSharerLazy.get().share(weChatDTO)
+                    .subscribe(new EmptyObserver<>()); // TODO proper callback?
         }
     }
 

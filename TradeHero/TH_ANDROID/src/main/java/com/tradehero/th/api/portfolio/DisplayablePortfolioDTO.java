@@ -71,7 +71,7 @@ public class DisplayablePortfolioDTO implements Comparable
     public boolean equals(DisplayablePortfolioDTO other)
     {
         return (other != null) &&
-                (this.ownedPortfolioId == null ? other.ownedPortfolioId == null : this.ownedPortfolioId.equals(other.ownedPortfolioId));
+                (this.ownedPortfolioId == null ? other.ownedPortfolioId == null : this.ownedPortfolioId.equalFields(other.ownedPortfolioId));
     }
 
     @Override public int hashCode()

@@ -47,8 +47,6 @@ import com.tradehero.th.api.achievement.key.UserAchievementId;
 import com.tradehero.th.api.level.LevelDefDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.level.key.LevelDefListId;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
 import com.tradehero.th.api.share.achievement.AchievementShareFormDTOFactory;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
@@ -59,6 +57,8 @@ import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.AchievementServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.ConnectRequired;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.utils.GraphicUtil;
@@ -73,6 +73,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
@@ -326,8 +327,27 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             {
                 shareTos.remove(SocialNetworkEnum.WECHAT);
                 WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
-                socialSharerLazy.get().setSharedListener(createSocialSharedListener());
-                socialSharerLazy.get().share(weChatDTO);
+                subscriptions.add(socialSharerLazy.get().share(weChatDTO)
+                .subscribe(
+                        new Action1<SocialShareResult>()
+                        {
+                            @Override public void call(SocialShareResult obj)
+                            {
+                                if (obj instanceof ConnectRequired)
+                                {
+                                    throw new IllegalStateException("It should have been taken care of at the network button press");
+                                }
+                                showShareSuccess();
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
+                            {
+                                Timber.e(e, "Failed when sharing");
+                                showShareFailed();
+                            }
+                        }));
             }
             if (!shareTos.isEmpty())
             {
@@ -549,7 +569,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         mBadgeCallback = null;
         userLevelProgressBar.setUserLevelProgressBarLevelUpListener(null);
 
-        socialSharerLazy.get().setSharedListener(null);
         super.onDestroyView();
     }
 
@@ -676,29 +695,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                         dialogFragment.setArguments(args);
                         return dialogFragment;
                     });
-        }
-    }
-
-    protected SocialSharer.OnSharedListener createSocialSharedListener()
-    {
-        return new ShareAchievementListener();
-    }
-
-    protected class ShareAchievementListener implements SocialSharer.OnSharedListener
-    {
-        @Override public void onConnectRequired(@NonNull SocialShareFormDTO shareFormDTO, @NonNull List<SocialNetworkEnum> toConnect)
-        {
-            throw new IllegalStateException("It should have been taken care of at the network button press");
-        }
-
-        @Override public void onShared(@NonNull SocialShareFormDTO shareFormDTO, @NonNull SocialShareResultDTO socialShareResultDTO)
-        {
-            showShareSuccess();
-        }
-
-        @Override public void onShareFailed(@NonNull SocialShareFormDTO shareFormDTO, @NonNull Throwable throwable)
-        {
-            showShareFailed();
         }
     }
 

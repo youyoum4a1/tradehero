@@ -32,6 +32,7 @@ import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
+    @Inject protected SocialAlertDialogRxUtil socialAlertDialogRxUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
     @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
@@ -251,7 +253,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
         onSubscribeBuilder.setPositiveButton(getString(R.string.link_now))
                 .setNegativeButton(getString(R.string.later));
 
-        return Observable.create(onSubscribeBuilder.build())
+        return socialAlertDialogRxUtil.popNeedToLinkSocial(getActivity(), socialNetwork)
                 .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
                 .doOnNext(dialogResult -> alertDialogUtil.showProgressDialog(
                         getActivity(),

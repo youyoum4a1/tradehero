@@ -3,10 +3,10 @@ package com.tradehero.th.fragments.news;
 import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import javax.inject.Inject;
 
 public class NewsDialogFactory extends ShareDialogFactory
@@ -17,15 +17,12 @@ public class NewsDialogFactory extends ShareDialogFactory
     }
     //</editor-fold>
 
-    public Dialog createNewsDialog(Context context,
-            @NonNull AbstractDiscussionCompactDTO abstractDiscussionCompactDTO,
-            NewsDialogLayout.OnMenuClickedListener menuClickedListener)
+    @NonNull public Pair<Dialog, NewsDialogLayout> createNewsDialogRx(@NonNull Context context)
     {
         NewsDialogLayout contentView = (NewsDialogLayout) LayoutInflater.from(context)
                 .inflate(R.layout.sharing_translation_dialog_layout, null);
-        contentView.setWhatToShare(abstractDiscussionCompactDTO);
-        contentView.setMenuClickedListener(
-                menuClickedListener);
-        return THDialog.showUpDialog(context, contentView);
+        return Pair.create(
+                THDialog.showUpDialog(context, contentView),
+                contentView);
     }
 }
