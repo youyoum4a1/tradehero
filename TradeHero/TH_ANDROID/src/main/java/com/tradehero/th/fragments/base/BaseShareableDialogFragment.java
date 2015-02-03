@@ -231,13 +231,15 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     protected Observable<SocialLinkToggleButton> createCheckedLinkingObservable()
     {
         return ViewArrayObservable.clicks(socialLinkingButtons, false)
-                .doOnNext(socialLinkToggleButton -> {
+                .map(event -> {
+                    SocialLinkToggleButton socialLinkToggleButton = (SocialLinkToggleButton) event.view();
                     if (!socialLinkToggleButton.isChecked())
                     {
                         socialSharePreferenceHelperNew.updateSocialSharePreference(
                                 socialLinkToggleButton.getSocialNetworkEnum(),
                                 false);
                     }
+                    return socialLinkToggleButton;
                 })
                 .filter(CompoundButton::isChecked)
                 .doOnNext(button -> button.setChecked(false));
