@@ -43,23 +43,17 @@ import javax.inject.Inject;
  */
 public class DiscoveryRewardFragment extends DashboardFragment {
 
-    @InjectView(R.id.listTimeLine)
-    SecurityListView listTimeLine;
-    @InjectView(R.id.bvaViewAll)
-    BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.tradeheroprogressbar_discovery)
-    TradeHeroProgressBar progressBar;
+    @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.tradeheroprogressbar_discovery) TradeHeroProgressBar progressBar;
     private TextView tvCreateTimeLine;
     private UserTimeLineAdapter adapter;
     private int maxID = -1;
-    @Inject
-    CurrentUserId currentUserId;
-    @Inject
-    Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
 
-    @Inject
-    Analytics analytics;
+    @Inject Analytics analytics;
     private int PERPAGE = 20;
 
     //head view

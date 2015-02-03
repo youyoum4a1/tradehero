@@ -94,6 +94,9 @@ public class AnalyticsConstants
     public final static String BUTTON_DISCOVERY_NEWS = "BUTTON_DISCOVERY_NEWS";
     public final static String BUTTON_DISCOVERY_REWARD = "BUTTON_DISCOVERY_REWARD";
     public final static String BUTTON_DISCOVERY_GOD = "BUTTON_DISCOVERY_GOD";
+    public final static String DISCOVERY_GUIDE_ITEM = "DISCOVERY_GUIDE_ITEM";
+    public final static String DISCOVERY_ESSENTIAL_ITEM = "DISCOVERY_ESSENTIAL_ITEM";
+    public final static String DISCOVERY_NEWS_ITEM = "DISCOVERY_NEWS_ITEM";
 
     //确定购买或售出股票
     public final static String BUTTON_STOCK_BUY_SALE_CONFIRM = "BUTTON_STOCK_BUY_SALE_CONFIRM";

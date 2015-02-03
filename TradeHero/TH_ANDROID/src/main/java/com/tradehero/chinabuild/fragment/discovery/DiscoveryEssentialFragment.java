@@ -40,25 +40,19 @@ import javax.inject.Inject;
  */
 public class DiscoveryEssentialFragment extends DashboardFragment
 {
-    @Inject
-    CurrentUserId currentUserId;
-    @Inject
-    Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     private MiddleCallback<TimelineDTO> timeLineMiddleCallback;
     private int maxID = -1;
 
-    @InjectView(R.id.listTimeLine)
-    SecurityListView listTimeLine;
+    @InjectView(R.id.listTimeLine) SecurityListView listTimeLine;
 
-    @InjectView(R.id.bvaViewAll)
-    BetterViewAnimator betterViewAnimator;
-    @InjectView(R.id.tradeheroprogressbar_discovery)
-    TradeHeroProgressBar progressBar;
+    @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
+    @InjectView(R.id.tradeheroprogressbar_discovery) TradeHeroProgressBar progressBar;
 
     private UserTimeLineAdapter adapter;
 
-    @Inject
-    Analytics analytics;
+    @Inject Analytics analytics;
 
     private int PERPAGE = 20;
 
@@ -118,7 +112,7 @@ public class DiscoveryEssentialFragment extends DashboardFragment
             {
                 TimelineItemDTO dto = (TimelineItemDTO) adapter.getItem(position);
                 enterTimeLineDetail(dto);
-                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.BUTTON_DISCOVERY_LATEST, String.valueOf(position)));
+                analytics.addEventAuto(new MethodEvent(AnalyticsConstants.DISCOVERY_ESSENTIAL_ITEM, String.valueOf(position)));
             }
 
             @Override public void OnTimeLinePraiseClicked(int position)
