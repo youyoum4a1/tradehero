@@ -34,7 +34,7 @@ import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFragment
@@ -132,7 +132,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
     protected void fetchFollowers()
     {
         unSubscribe();
-        followerSubscription = AndroidObservable.bindFragment(
+        followerSubscription = AppObservable.bindFragment(
                 this,
                 followerSummaryCache.get(heroId))
                 .subscribe(createFollowerSummaryCacheObserver());

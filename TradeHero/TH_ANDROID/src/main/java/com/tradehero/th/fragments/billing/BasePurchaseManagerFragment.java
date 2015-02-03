@@ -16,7 +16,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class BasePurchaseManagerFragment extends DashboardFragment
@@ -98,7 +98,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     protected void fetchPortfolioCompactList()
     {
         unsubscribe(portfolioCompactListCacheSubscription);
-        portfolioCompactListCacheSubscription = AndroidObservable.bindFragment(
+        portfolioCompactListCacheSubscription = AppObservable.bindFragment(
                 this,
                 currentUserPortfolioCompactListObservable)
                 .subscribe(

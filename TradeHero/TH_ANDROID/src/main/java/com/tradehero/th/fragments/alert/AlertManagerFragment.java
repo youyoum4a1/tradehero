@@ -32,7 +32,7 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -130,7 +130,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchUserProfile()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(
@@ -148,7 +148,7 @@ public class AlertManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchAlertCompactList()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 alertCompactListCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(

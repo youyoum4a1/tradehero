@@ -11,7 +11,7 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 {
@@ -32,7 +32,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 
     private void fetchFXPrice()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
                         .repeatWhen(observable -> observable.delay(TrendingFXFragment.MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))

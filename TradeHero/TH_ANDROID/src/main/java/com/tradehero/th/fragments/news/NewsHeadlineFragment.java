@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 /**
@@ -146,7 +146,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
     protected void fetchSecurity(@NonNull SecurityId securityId)
     {
         unsubscribe(securitySubscription);
-        securitySubscription = AndroidObservable.bindFragment(
+        securitySubscription = AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(securityId))
                 .map(new PairGetSecond<>())
@@ -172,7 +172,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment<SecurityC
 
         unsubscribe(securityNewsSubscription);
         NewsItemListKey listKey = new NewsItemListSecurityKey(value.getSecurityIntegerId(), null, null);
-        securityNewsSubscription = AndroidObservable.bindFragment(
+        securityNewsSubscription = AppObservable.bindFragment(
                 this,
                 newsTitleCache.get(listKey))
                 .map(new PairGetSecond<>())

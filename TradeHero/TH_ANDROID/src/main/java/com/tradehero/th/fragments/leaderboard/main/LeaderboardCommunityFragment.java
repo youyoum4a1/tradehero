@@ -46,7 +46,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -202,7 +202,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
 
-        leaderboardDefListFetchSubscription = AndroidObservable.bindFragment(
+        leaderboardDefListFetchSubscription = AppObservable.bindFragment(
                 this,
                 leaderboardDefObservable)
                 .doOnNext((i) -> communityScreen.setDisplayedChildByLayoutId(R.id.leaderboard_community_list))

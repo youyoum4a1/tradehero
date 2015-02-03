@@ -71,7 +71,7 @@ import retrofit.RetrofitError;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
@@ -251,7 +251,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
         if (followerSummaryCacheSubscription == null)
         {
-            followerSummaryCacheSubscription = AndroidObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
+            followerSummaryCacheSubscription = AppObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
                     .subscribe(new FollowerSummaryObserver());
         }
     }
@@ -385,7 +385,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     protected void fetchMessageThreadHeader()
     {
         unsubscribe(messageThreadHeaderFetchSubscription);
-        messageThreadHeaderFetchSubscription = AndroidObservable.bindFragment(
+        messageThreadHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(shownUserBaseKey))
                 .subscribe(new TimelineMessageThreadHeaderCacheObserver());
@@ -396,7 +396,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (portfolioSubscription == null)
         {
-            portfolioSubscription = AndroidObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(shownUserBaseKey))
+            portfolioSubscription = AppObservable.bindFragment(this, displayablePortfolioFetchAssistant.get(shownUserBaseKey))
                     .subscribe(new Observer<DisplayablePortfolioDTOList>()
                     {
                         @Override public void onCompleted()
@@ -474,7 +474,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         if (userProfileCacheSubscription == null)
         {
-            userProfileCacheSubscription = AndroidObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
+            userProfileCacheSubscription = AppObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
                     .subscribe(new TimelineFragmentUserProfileCacheObserver());
         }
     }

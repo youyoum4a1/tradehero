@@ -26,7 +26,7 @@ import com.tradehero.th.persistence.games.MiniGameDefCache;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class HowToPlayDialogFragment extends BaseDialogSupportFragment
 {
@@ -124,7 +124,7 @@ public class HowToPlayDialogFragment extends BaseDialogSupportFragment
     protected void fetchMiniGameDef()
     {
         unsubscribe(miniGameDefSubscription);
-        miniGameDefSubscription = AndroidObservable.bindFragment(
+        miniGameDefSubscription = AppObservable.bindFragment(
                 this,
                 miniGameDefCache.get(gameId))
                 .subscribe(createMiniGameDefObserver());

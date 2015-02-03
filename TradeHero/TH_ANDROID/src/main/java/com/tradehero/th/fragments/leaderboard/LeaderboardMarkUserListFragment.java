@@ -58,7 +58,7 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -393,7 +393,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
                 new UserOnLeaderboardKey(
                         new LeaderboardKey(leaderboardDefKey.key, currentLeaderboardType != null ? currentLeaderboardType.getAssetClass() : null),
                         currentUserId.toUserBaseKey());
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 leaderboardCache.get(userOnLeaderboardKey)
                         .map(new PairGetSecond<>())
@@ -530,7 +530,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 new ChoiceFollowUserAssistantWithDialog(
                         getActivity(),

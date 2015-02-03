@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import com.tradehero.th.R;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.ViewObservable;
+import rx.android.view.ViewObservable;
 import rx.subjects.PublishSubject;
 
 public class LearnMoreView extends LinearLayout

@@ -65,7 +65,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -337,7 +337,7 @@ public class PositionListFragment
     {
         if (userProfileSubscription == null)
         {
-            userProfileSubscription = AndroidObservable.bindFragment(
+            userProfileSubscription = AppObservable.bindFragment(
                     this,
                     userProfileCache.get(shownUser))
                     .subscribe(
@@ -369,7 +369,7 @@ public class PositionListFragment
         {
             if (portfolioSubscription == null)
             {
-                portfolioSubscription = AndroidObservable.bindFragment(
+                portfolioSubscription = AppObservable.bindFragment(
                         this,
                         portfolioCache.get(((OwnedPortfolioId) getPositionsDTOKey)))
                         .subscribe(
@@ -458,7 +458,7 @@ public class PositionListFragment
     {
         if (getPositionsDTOKey.isValid() && getPositionsSubscription == null)
         {
-            getPositionsSubscription = AndroidObservable.bindFragment(
+            getPositionsSubscription = AppObservable.bindFragment(
                     this,
                     getPositionsCache.get(getPositionsDTOKey))
                     .subscribe(
@@ -555,7 +555,7 @@ public class PositionListFragment
     @Override public void onFollowRequested(final UserBaseKey userBaseKey)
     {
         //noinspection unchecked
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
                 .subscribe(

@@ -11,7 +11,7 @@ import oauth.signpost.OAuth;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.subscriptions.AndroidSubscriptions;
+import rx.android.AndroidSubscriptions;
 
 public class OperatorOAuthDialog implements Observable.OnSubscribe<String>
 {

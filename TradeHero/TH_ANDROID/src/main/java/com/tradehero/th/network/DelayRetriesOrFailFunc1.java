@@ -9,7 +9,7 @@ import rx.Notification;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class DelayRetriesOrFailFunc1 implements Func1<Observable<? extends Notification<?>>, Observable<?>>
+public class DelayRetriesOrFailFunc1 implements Func1<Observable<? extends Throwable>, Observable<?>>
 {
     private int countDown;
     private long delayMillis;
@@ -22,11 +22,10 @@ public class DelayRetriesOrFailFunc1 implements Func1<Observable<? extends Notif
     }
     //</editor-fold>
 
-    @Override public Observable<?> call(Observable<? extends Notification<?>> attempts)
+    @Override public Observable<?> call(Observable<? extends Throwable> attempts)
     {
-        return attempts.flatMap(attempt ->
+        return attempts.flatMap(error ->
         {
-            Throwable error = ((Notification) attempt).getThrowable();
             if (countDown <= 0)
             {
                 return Observable.error(error);
@@ -36,7 +35,7 @@ public class DelayRetriesOrFailFunc1 implements Func1<Observable<? extends Notif
                     countDown,
                     new THException(error).getMessage()));
             countDown--;
-            return Observable.just(attempt)
+            return Observable.just(1)
                     .delay(delayMillis, TimeUnit.MILLISECONDS);
         });
     }

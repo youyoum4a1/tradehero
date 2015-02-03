@@ -21,10 +21,10 @@ import butterknife.Optional;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
+import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.FileUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -41,7 +41,8 @@ import com.tradehero.th.widget.ValidatedPasswordText;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.android.observables.ViewObservable;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Func8;
 import timber.log.Timber;
 
@@ -326,28 +327,34 @@ public class ProfileInfoView extends LinearLayout
     public Observable<UserFormDTO> obtainUserFormDTO()
     {
         return Observable.combineLatest(
-                ViewObservable.text(email, true),
-                ViewObservable.text(password, true),
-                ViewObservable.text(confirmPassword, true),
-                ViewObservable.text(displayName, true),
-                ViewObservable.text(referralCode, true),
-                ViewObservable.text(firstName, true),
-                ViewObservable.text(lastName, true),
+                WidgetObservable.text(email, true),
+                WidgetObservable.text(password, true),
+                WidgetObservable.text(confirmPassword, true),
+                WidgetObservable.text(displayName, true),
+                WidgetObservable.text(referralCode, true),
+                WidgetObservable.text(firstName, true),
+                WidgetObservable.text(lastName, true),
                 Observable.just(profileImage),
-                new Func8<ServerValidatedEmailText, ValidatedPasswordText, MatchingPasswordText, ServerValidatedUsernameText, EditText, EditText, EditText, ImageView, UserFormDTO>()
+                new Func8<OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, ImageView, UserFormDTO>()
                 {
-                    @Override public UserFormDTO call(ServerValidatedEmailText serverValidatedEmailText, ValidatedPasswordText validatedPasswordText,
-                            MatchingPasswordText matchingPasswordText, ServerValidatedUsernameText serverValidatedUsernameText, EditText referralCode,
-                            EditText firstName, EditText lastName, ImageView profileImage)
+                    @Override public UserFormDTO call(
+                            OnTextChangeEvent serverValidatedEmailText,
+                            OnTextChangeEvent validatedPasswordText,
+                            OnTextChangeEvent matchingPasswordText,
+                            OnTextChangeEvent serverValidatedUsernameText,
+                            OnTextChangeEvent referralCode1,
+                            OnTextChangeEvent firstName1,
+                            OnTextChangeEvent lastName1,
+                            ImageView profileImage)
                     {
-                        serverValidatedEmailText.forceValidate();
-                        validatedPasswordText.forceValidate();
-                        matchingPasswordText.forceValidate();
-                        serverValidatedUsernameText.forceValidate();
+                        email.forceValidate();
+                        password.forceValidate();
+                        confirmPassword.forceValidate();
+                        displayName.forceValidate();
                         return userFormBuilderProvider.get()
-                                .email(serverValidatedEmailText.getText().toString())
-                                .password(validatedPasswordText.getText().toString())
-                                .displayName(serverValidatedUsernameText.getText().toString())
+                                .email(email.getText().toString())
+                                .password(password.getText().toString())
+                                .displayName(displayName.getText().toString())
                                 .inviteCode(referralCode.getText().toString())
                                 .firstName(firstName.getText().toString())
                                 .lastName(lastName.getText().toString())

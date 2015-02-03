@@ -29,7 +29,7 @@ import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class CompetitionLeaderboardMarkUserListFragment extends LeaderboardMarkUserListFragment
@@ -194,7 +194,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchProvider()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(providerId)
                         .map(new PairGetSecond<>()))
@@ -221,7 +221,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
 
     protected void fetchCompetition()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionCache.get(competitionId)
                         .map(new PairGetSecond<>()))
@@ -237,7 +237,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
         this.competitionDTO = competitionDTO;
 
         CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionLeaderboardCache.get(key)
                         .map(new PairGetSecond<>()))

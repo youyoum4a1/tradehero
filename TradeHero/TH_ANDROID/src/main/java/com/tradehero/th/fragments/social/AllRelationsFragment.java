@@ -34,7 +34,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -136,7 +136,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         alertDialogUtilLazy.get()
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
                 .subscribe(
@@ -180,7 +180,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void handleFollowRequested(UserBaseKey userBaseKey)
     {
         //noinspection unchecked,RedundantCast
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
                 .subscribe(
@@ -204,7 +204,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     protected void forceUpdateLook(@NonNull final UserBaseKey userFollowed)
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userMessagingRelationshipCache.get(userFollowed))
                 .subscribe(new Observer<Pair<UserBaseKey, UserMessagingRelationshipDTO>>()

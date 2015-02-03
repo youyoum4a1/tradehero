@@ -31,7 +31,7 @@ import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -114,7 +114,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void fetchProfile()
     {
-        subscriptions.add(AndroidObservable.bindFragment(this,
+        subscriptions.add(AppObservable.bindFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
                 .subscribe(
@@ -149,7 +149,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
 
     protected void fetchSystemStatus()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 systemStatusCache.get(new SystemStatusKey())
                         .map(new PairGetSecond<>()))

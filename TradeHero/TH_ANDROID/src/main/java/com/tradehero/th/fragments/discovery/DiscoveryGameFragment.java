@@ -28,7 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -105,7 +105,7 @@ public class DiscoveryGameFragment extends DashboardFragment
         subscriptions.add(
                 rxLoaderManager.create(
                         MINIGAMES_LIST_LOADER_ID,
-                        AndroidObservable.bindFragment(
+                        AppObservable.bindFragment(
                                 this,
                                 miniGameDefListCache.get(new MiniGameDefListKey()).map(new PairGetSecond<>())))
                         .doOnError(toastOnErrorAction)

@@ -45,7 +45,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -152,7 +152,7 @@ public class SendMessageFragment extends DashboardFragment
     private void fetchCurrentUserProfile()
     {
         unsubscribe(userProfileSubscription);
-        userProfileSubscription = AndroidObservable.bindFragment(
+        userProfileSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<>()))
                 .subscribe(
@@ -251,7 +251,7 @@ public class SendMessageFragment extends DashboardFragment
                         R.string.broadcast_message_sending_hint);
 
         sendMessageSubscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().createMessageRx(
                                 createMessageForm(text)))

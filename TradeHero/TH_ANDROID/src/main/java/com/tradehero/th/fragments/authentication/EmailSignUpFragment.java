@@ -33,7 +33,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.ViewObservable;
+import rx.android.view.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Actions;
 

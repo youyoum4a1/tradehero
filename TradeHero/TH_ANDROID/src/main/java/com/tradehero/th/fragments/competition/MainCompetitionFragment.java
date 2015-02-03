@@ -75,7 +75,7 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable({
@@ -231,7 +231,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchCurrentUserProfile()
     {
         unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = AndroidObservable.bindFragment(
+        userProfileCacheSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -259,7 +259,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchCompetitionList()
     {
         unsubscribe(competitionListCacheSubscription);
-        competitionListCacheSubscription = AndroidObservable.bindFragment(
+        competitionListCacheSubscription = AppObservable.bindFragment(
                 this,
                 competitionListCache.get(providerId)
                         .map(new PairGetSecond<>()))
@@ -287,7 +287,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchDisplayCells()
     {
         unsubscribe(displayCellListCacheFetchSubscription);
-        displayCellListCacheFetchSubscription = AndroidObservable.bindFragment(
+        displayCellListCacheFetchSubscription = AppObservable.bindFragment(
                 this,
                 providerDisplayListCellCache.get(new ProviderDisplayCellListKey(providerId))
                         .map(new PairGetSecond<>()))
@@ -315,7 +315,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchPreSeason()
     {
         unsubscribe(competitionPreSeasonSubscription);
-        competitionPreSeasonSubscription = AndroidObservable.bindFragment(
+        competitionPreSeasonSubscription = AppObservable.bindFragment(
                 this,
                 competitionPreSeasonCacheRx.get(providerId)
                         .map(new PairGetSecond<>()))
@@ -345,7 +345,7 @@ public class MainCompetitionFragment extends CompetitionFragment
     private void fetchPrizePool()
     {
         unsubscribe(displayPrizePoolSubscription);
-        displayPrizePoolSubscription = AndroidObservable.bindFragment(
+        displayPrizePoolSubscription = AppObservable.bindFragment(
                 this, providerServiceWrapper.getProviderPrizePoolRx(providerId))
                 .subscribe(
                         this::linkWith,

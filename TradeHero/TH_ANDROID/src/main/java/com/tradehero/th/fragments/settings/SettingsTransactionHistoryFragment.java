@@ -27,7 +27,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class SettingsTransactionHistoryFragment extends DashboardFragment
 {
@@ -105,7 +105,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     {
         UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
         unsubscribe(transactionListCacheSubscription);
-        transactionListCacheSubscription = AndroidObservable.bindFragment(
+        transactionListCacheSubscription = AppObservable.bindFragment(
                 this,
                 userTransactionHistoryListCache.get(key))
                 .subscribe(createTransactionHistoryObserver());

@@ -11,9 +11,9 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
+import rx.android.content.ContentObservable;
 import rx.functions.Func1;
-import rx.operators.OperatorLocalBroadcastRegister;
 import rx.schedulers.Schedulers;
 
 public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
@@ -29,9 +29,9 @@ public class RegionalNewsHeadlineFragment extends NewsHeadlineFragment
         super.initView(view);
 
         subscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
-                        Observable.create(new OperatorLocalBroadcastRegister(getActivity(), new IntentFilter(REGION_CHANGED)))
+                        ContentObservable.fromLocalBroadcast(getActivity(), new IntentFilter(REGION_CHANGED))
                                 .map((Func1<Intent, NewsItemListKey>) intent -> newsItemListKeyFromPref())
                                 .subscribeOn(Schedulers.io()))
                         .onErrorResumeNext(Observable.empty())

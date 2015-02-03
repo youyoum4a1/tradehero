@@ -25,7 +25,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.util.List;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -94,7 +94,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
     {
         if (leaderboardDefKey.key > 0)
         {
-            subscriptions.add(AndroidObservable.bindFragment(
+            subscriptions.add(AppObservable.bindFragment(
                     this,
                     leaderboardDefCache.get(leaderboardDefKey)
             .map(new PairGetSecond<>()))
@@ -121,7 +121,7 @@ abstract public class BaseLeaderboardPagedListRxFragment<
 
     protected void fetchCurrentUserProfile()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
         .map(new PairGetSecond<>()))

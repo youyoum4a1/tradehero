@@ -40,9 +40,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.Assertions;
-import rx.android.observables.ViewObservable;
+import rx.android.internal.Assertions;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.ViewObservable;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -153,7 +153,7 @@ public class SignInOrUpFragment extends Fragment
         return Observable.from(observableViews)
                 .filter(authenticationButton -> authenticationButton != null)
                 .flatMap(authenticationButton -> ViewObservable.clicks(authenticationButton, false))
-                .map(AuthenticationButton::getType);
+                .map(event -> ((AuthenticationButton) event.view()).getType());
     }
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleConnectionRequest(SocialNetworkEnum socialNetworkEnum)

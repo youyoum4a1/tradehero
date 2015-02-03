@@ -41,7 +41,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -175,7 +175,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
             unsubscribe(alertCacheSubscription);
-            alertCacheSubscription = AndroidObservable.bindFragment(this,
+            alertCacheSubscription = AppObservable.bindFragment(this,
                     alertCache.get().get(alertId))
                     .map(new PairGetSecond<>())
                     .finallyDo(this::hideProgressDialog)
@@ -332,7 +332,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
             alertFormDTO.priceMovement = alertDTO.priceMovement;
             alertFormDTO.active = alertActive;
             unsubscribe(updateAlertSubscription);
-            updateAlertSubscription = AndroidObservable.bindFragment(
+            updateAlertSubscription = AppObservable.bindFragment(
                     this,
                     alertServiceWrapper.get().updateAlertRx(alertId, alertFormDTO))
                     .finallyDo(this::hideProgressDialog)

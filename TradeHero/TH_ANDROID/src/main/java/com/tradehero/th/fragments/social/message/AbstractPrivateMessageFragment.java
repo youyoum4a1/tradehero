@@ -40,7 +40,7 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -180,7 +180,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         this.messageHeaderId = messageHeaderId;
         unsubscribe(messageHeaderFetchSubscription);
-        messageHeaderFetchSubscription = AndroidObservable.bindFragment(
+        messageHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageHeaderCache.get(messageHeaderId))
                 .subscribe(createMessageHeaderCacheObserver());
@@ -206,7 +206,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void fetchCorrespondentProfile()
     {
         Timber.d("fetchCorrespondentProfile");
-        AndroidObservable.bindFragment(this, userProfileCache.get(correspondentId))
+        AppObservable.bindFragment(this, userProfileCache.get(correspondentId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());
     }

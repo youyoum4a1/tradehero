@@ -30,7 +30,7 @@ import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
@@ -107,7 +107,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
 
     protected void fetchFollowerSummary()
     {
-        AndroidObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
+        AppObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createFollowerObserver());
     }

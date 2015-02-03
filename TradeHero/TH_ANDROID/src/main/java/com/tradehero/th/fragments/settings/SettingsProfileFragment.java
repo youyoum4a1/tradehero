@@ -39,7 +39,7 @@ import javax.inject.Provider;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Actions;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
@@ -136,7 +136,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     private void populateCurrentUser()
     {
         unsubscribe(userProfileSubscription);
-        userProfileSubscription = AndroidObservable.bindFragment(
+        userProfileSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileCacheObserver());
@@ -183,7 +183,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
             profileView.progressDialog.setCancelable(true);
 
             unsubscribe(userProfileUpdateSubscription);
-            userProfileUpdateSubscription = AndroidObservable.bindFragment(
+            userProfileUpdateSubscription = AppObservable.bindFragment(
                     this,
                     profileView.obtainUserFormDTO()
                             .flatMap(userFormDTO -> {

@@ -13,7 +13,7 @@ import com.tradehero.th.persistence.alert.AlertCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class AlertEditFragment extends BaseAlertEditFragment
@@ -61,7 +61,7 @@ public class AlertEditFragment extends BaseAlertEditFragment
     {
         this.alertId = alertId;
         unsubscribe(getAlertSubscription);
-        getAlertSubscription = AndroidObservable.bindFragment(this, alertCache.get(alertId))
+        getAlertSubscription = AppObservable.bindFragment(this, alertCache.get(alertId))
                 .map(new PairGetSecond<>())
                 .subscribe(
                         this::linkWith,

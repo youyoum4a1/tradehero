@@ -23,7 +23,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable("achievements")
@@ -100,7 +100,7 @@ public class AchievementListFragment extends DashboardFragment
     {
         hideEmpty();
         unsubscribe(achievementListSubscription);
-        achievementListSubscription = AndroidObservable.bindFragment(this,
+        achievementListSubscription = AppObservable.bindFragment(this,
                 achievementCategoryListCache.get(shownUserId))
                 .subscribe(
                         this::onReceivedAchievementList,

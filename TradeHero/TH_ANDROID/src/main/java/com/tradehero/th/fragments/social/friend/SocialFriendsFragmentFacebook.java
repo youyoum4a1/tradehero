@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
@@ -63,7 +63,7 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
     protected void fetchInvitableFriends()
     {
         unsubscribe(invitableFriendsSubscription);
-        invitableFriendsSubscription = AndroidObservable.bindFragment(
+        invitableFriendsSubscription = AppObservable.bindFragment(
                 this,
                 facebookSocialFriendHandlerProvider.get().createProfileSessionObservable()
                         .take(1)

@@ -5,7 +5,7 @@ import android.view.MenuItem;
 import android.widget.PopupMenu;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.observables.Assertions;
+import rx.android.internal.Assertions;
 
 public class PopupMenuItemClickOperator implements Observable.OnSubscribe<MenuItem>
 {

@@ -47,7 +47,7 @@ import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
@@ -208,7 +208,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
     protected void fetchSecurityCompact()
     {
         unsubscribe(securitySubscription);
-        securitySubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
+        securitySubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .map(new PairGetSecond<>())
                 .subscribe(
                         value -> {
@@ -255,7 +255,7 @@ abstract public class BaseAlertEditFragment extends BasePurchaseManagerFragment
         else
         {
             unsubscribe(alertSlotSubscription);
-            alertSlotSubscription = AndroidObservable.bindFragment(
+            alertSlotSubscription = AppObservable.bindFragment(
                     this,
                     securityAlertCountingHelper.getAlertSlots(currentUserId.toUserBaseKey())
                     .take(1)

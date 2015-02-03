@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 //@Routable("trending-securities")
@@ -112,7 +112,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void waitForEnrolled()
     {
         unsubscribe(waitForEnrolledSubscription);
-        waitForEnrolledSubscription = AndroidObservable.bindFragment(
+        waitForEnrolledSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .doOnNext(pair -> mProgress.setVisibility(pair.second.fxPortfolio == null ? View.VISIBLE : View.GONE))
@@ -133,7 +133,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void checkFXPortfolio()
     {
         unsubscribe(checkEnrollmentSubscription);
-        checkEnrollmentSubscription = AndroidObservable.bindFragment(
+        checkEnrollmentSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .take(1)
@@ -169,7 +169,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void fetchFXPrice()
     {
         unsubscribe(fetchFxPriceSubscription);
-        fetchFxPriceSubscription = AndroidObservable.bindFragment(
+        fetchFxPriceSubscription = AppObservable.bindFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
                         .repeatWhen(observable -> observable.delay(MS_DELAY_FOR_QUOTE_FETCH, TimeUnit.MILLISECONDS)))

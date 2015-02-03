@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -209,7 +209,7 @@ public final class HomeFragment extends BaseWebViewFragment
             inviteFriendForm.add(userFriendsDTO);
             getProgressDialog().show();
             unsubscribe(inviteSubscription);
-            inviteSubscription = AndroidObservable.bindFragment(
+            inviteSubscription = AppObservable.bindFragment(
                     this,
                     userServiceWrapperLazy.get()
                             .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))
@@ -261,7 +261,7 @@ public final class HomeFragment extends BaseWebViewFragment
         inviteFriendForm.add(userDto);
         getProgressDialog().show();
         unsubscribe(inviteSubscription);
-        inviteSubscription = AndroidObservable.bindFragment(
+        inviteSubscription = AppObservable.bindFragment(
                 this,
                 userServiceWrapperLazy.get()
                         .inviteFriendsRx(currentUserId.toUserBaseKey(), inviteFriendForm))

@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable({
@@ -166,7 +166,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
     protected void fetchMiniGameDef()
     {
         unsubscribe(miniGameDefSubscription);
-        miniGameDefSubscription = AndroidObservable.bindFragment(
+        miniGameDefSubscription = AppObservable.bindFragment(
                 this,
                 miniGameDefCache.get(miniGameDefKey))
                 .map(new PairGetSecond<>())
@@ -219,7 +219,7 @@ public class GameWebViewFragment extends BaseWebViewFragment
             else
             {
                 unsubscribe(scoreSubmitSubscription);
-                scoreSubmitSubscription = AndroidObservable.bindFragment(
+                scoreSubmitSubscription = AppObservable.bindFragment(
                         this,
                         gamesServiceWrapper.recordScore(new MiniGameDefKey(gameId), new GameScore(score, level)))
                         .subscribe(

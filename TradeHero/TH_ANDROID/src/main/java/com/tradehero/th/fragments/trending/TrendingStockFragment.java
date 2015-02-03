@@ -59,7 +59,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -180,7 +180,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchFilter()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 this.filterSelectorView.getObservableFilter())
                 .subscribe(
@@ -216,7 +216,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void fetchExchangeList()
     {
         ExchangeListType key = new ExchangeListType();
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 exchangeCompactListCache.get(key)
                         .map(new PairGetSecond<>()))
@@ -248,7 +248,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchUserProfile()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -266,7 +266,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchProviderList()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
                         .map(new PairGetSecond<>()))
@@ -400,7 +400,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>())
@@ -421,7 +421,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void handleResetPortfolioItemOnClick()
     {
         //noinspection unchecked
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
                 .subscribe(
@@ -434,7 +434,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     protected void handleExtraCashItemOnClick()
     {
         //noinspection unchecked
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(

@@ -43,7 +43,7 @@ import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -119,7 +119,7 @@ public class UpdateCenterFragment extends DashboardFragment
 
     private void fetchUserProfile(boolean forceUpdate)
     {
-        AndroidObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        AppObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createUserProfileCacheObserver());
     }

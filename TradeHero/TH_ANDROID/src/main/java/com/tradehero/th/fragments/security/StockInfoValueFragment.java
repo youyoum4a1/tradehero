@@ -17,7 +17,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class StockInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -79,7 +79,7 @@ public class StockInfoValueFragment extends AbstractSecurityInfoFragment<Securit
         if (this.securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+            securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
                     .map(new PairGetSecond<>())

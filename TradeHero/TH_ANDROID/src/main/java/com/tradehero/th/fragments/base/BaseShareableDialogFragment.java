@@ -38,8 +38,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
-import rx.android.observables.ViewObservable;
+import rx.android.app.AppObservable;
+import rx.android.view.ViewObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -106,7 +106,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserProfileCacheObserver()));
@@ -161,11 +161,11 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     {
         mBtnShareWeChat.setChecked(initialShareButtonState(SocialNetworkEnum.WB));
         unsubscribeWeChatButton();
-        weChatLinkingSubscription = AndroidObservable.bindFragment(this, ViewObservable.clicks(mBtnShareWeChat, false))
+        weChatLinkingSubscription = AppObservable.bindFragment(this, ViewObservable.clicks(mBtnShareWeChat, false))
                 .subscribe(
-                        toggleButton -> socialSharePreferenceHelperNew.updateSocialSharePreference(
+                        event -> socialSharePreferenceHelperNew.updateSocialSharePreference(
                                 SocialNetworkEnum.WECHAT,
-                                toggleButton.isChecked()),
+                                ((ToggleButton) event.view()).isChecked()),
                         e -> THToast.show(new THException(e)));
     }
     //</editor-fold>
@@ -190,7 +190,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             }
         }
         unsubscribeSocialLinkingButtons();
-        socialLinkingSubscription = AndroidObservable.bindFragment(
+        socialLinkingSubscription = AppObservable.bindFragment(
                 this,
                 createCheckedLinkingObservable()
                         .flatMap(socialLinkToggleButton -> {

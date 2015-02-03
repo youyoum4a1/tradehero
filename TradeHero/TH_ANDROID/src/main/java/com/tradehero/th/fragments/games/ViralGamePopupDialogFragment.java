@@ -37,7 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
 {
@@ -88,7 +88,7 @@ public class ViralGamePopupDialogFragment extends BaseDialogSupportFragment
         if (b != null && b.getBundle(BUNDLE_KEY_VIRAL_MINI_GAME) != null)
         {
             viralMiniGameDefKey = new ViralMiniGameDefKey(b.getBundle(BUNDLE_KEY_VIRAL_MINI_GAME));
-            subscription = AndroidObservable.bindFragment(this, viralMiniGameDefCache.get(viralMiniGameDefKey))
+            subscription = AppObservable.bindFragment(this, viralMiniGameDefCache.get(viralMiniGameDefKey))
                     .subscribe(new Observer<Pair<ViralMiniGameDefKey, ViralMiniGameDefDTO>>()
                     {
                         @Override public void onCompleted()

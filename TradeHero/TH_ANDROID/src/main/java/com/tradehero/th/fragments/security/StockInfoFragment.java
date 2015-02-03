@@ -29,7 +29,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -158,7 +158,7 @@ public class StockInfoFragment extends DashboardFragment
 
     private void queryCompactCache(final SecurityId securityId, final boolean andDisplay)
     {
-        AndroidObservable.bindFragment(this, securityCompactCache.get().get(securityId))
+        AppObservable.bindFragment(this, securityCompactCache.get().get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createSecurityCompactCacheObserver());
     }

@@ -33,7 +33,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class TrendingMainFragment extends DashboardFragment
@@ -110,7 +110,7 @@ public class TrendingMainFragment extends DashboardFragment
         super.onResume();
         if (showViralGameTimingIntervalPreference.isItTime())
         {
-            viralSubscription = AndroidObservable.bindFragment(this, viralMiniGameDefListCache.get().get(new ViralMiniGameDefListKey()))
+            viralSubscription = AppObservable.bindFragment(this, viralMiniGameDefListCache.get().get(new ViralMiniGameDefListKey()))
                     .take(1)
                     .subscribe(new Observer<Pair<ViralMiniGameDefListKey, ViralMiniGameDefDTOList>>()
                     {

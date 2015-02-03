@@ -31,7 +31,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -110,7 +110,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                             }
                         },
                         throwable -> Timber.e(throwable, "Unable to handle Forex onboard views"));
-        subscriptionList.add(AndroidObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
+        subscriptionList.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
                 .subscribe(new Subscriber<List<VideoDTO>>()
                 {
                     @Override public void onCompleted()
@@ -160,7 +160,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     private void checkFXPortfolio()
     {
         notifyUserAction(UserActionType.ENROLLED);
-        subscriptionList.add(AndroidObservable.bindFragment(
+        subscriptionList.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -177,7 +177,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 
     private void createFXPortfolio()
     {
-        subscriptionList.add(AndroidObservable.bindFragment(
+        subscriptionList.add(AppObservable.bindFragment(
                 this,
                 userServiceWrapper.get().createFXPortfolioRx(currentUserId.toUserBaseKey()))
                 .subscribe(

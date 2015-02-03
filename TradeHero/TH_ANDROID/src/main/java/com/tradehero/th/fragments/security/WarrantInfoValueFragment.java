@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<SecurityCompactDTO>
 {
@@ -135,7 +135,7 @@ public class WarrantInfoValueFragment extends AbstractSecurityInfoFragment<Secur
         if (securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+            securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityCompactCache.get(securityId))
                     .map(new PairGetSecond<>())

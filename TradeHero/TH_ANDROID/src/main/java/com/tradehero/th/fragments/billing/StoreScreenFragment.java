@@ -37,7 +37,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -98,7 +98,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         storeItemAdapter.clear();
         unsubscribe(storeItemSubscription);
-        storeItemSubscription = AndroidObservable.bindFragment(
+        storeItemSubscription = AppObservable.bindFragment(
                 this,
                 storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
@@ -151,7 +151,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
 
         unsubscribe(testAvailableSubscription);
         //noinspection unchecked
-        testAvailableSubscription = AndroidObservable.bindFragment(
+        testAvailableSubscription = AppObservable.bindFragment(
                 this,
                 userInteractorRx.testAndClear())
                 .finallyDo(() -> alreadyNotifiedNeedCreateAccount = true)
@@ -180,7 +180,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
             else
             {
                 //noinspection unchecked
-                subscriptions.add(AndroidObservable.bindFragment(
+                subscriptions.add(AppObservable.bindFragment(
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .subscribe(
@@ -204,7 +204,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         if (clickedItem instanceof StoreItemPromptPurchaseDTO)
         {
             //noinspection unchecked
-            AndroidObservable.bindFragment(
+            AppObservable.bindFragment(
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .subscribe(

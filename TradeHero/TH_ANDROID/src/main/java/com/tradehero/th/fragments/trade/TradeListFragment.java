@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId/position/:positionId")
@@ -218,7 +218,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (alertsSubscription == null)
         {
-            alertsSubscription = AndroidObservable.bindFragment(
+            alertsSubscription = AppObservable.bindFragment(
                     this,
                     alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                     .subscribe(
@@ -237,7 +237,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionSubscription == null)
         {
-            positionSubscription = AndroidObservable.bindFragment(this, positionCache.get(positionDTOKey))
+            positionSubscription = AppObservable.bindFragment(this, positionCache.get(positionDTOKey))
                     .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
@@ -258,7 +258,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (positionDTO != null && tradesSubscription == null)
         {
-            tradesSubscription = AndroidObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
+            tradesSubscription = AppObservable.bindFragment(this, tradeListCache.get(positionDTO.getOwnedPositionId()))
                     .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,
@@ -297,7 +297,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             }
             else if (securityIdSubscription == null)
             {
-                securityIdSubscription = AndroidObservable.bindFragment(
+                securityIdSubscription = AppObservable.bindFragment(
                         this,
                         securityIdCache.get(new SecurityIntegerId(positionDTO.securityId)))
                         .map(new PairGetSecond<>())
@@ -319,7 +319,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     {
         if (securityId != null && securityCompactSubscription == null)
         {
-            securityCompactSubscription = AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
+            securityCompactSubscription = AppObservable.bindFragment(this, securityCompactCache.get(securityId))
                     .map(new PairGetSecond<>())
                     .subscribe(
                             this::linkWith,

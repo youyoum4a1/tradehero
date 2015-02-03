@@ -26,7 +26,7 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class FollowerRevenueReportFragment extends DashboardFragment
@@ -74,7 +74,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         super.onResume();
         followerManagerViewContainer.displayChild(FollowerManagerViewContainer.INDEX_VIEW_PROGRESS);
         fetchFollowerSummary();
-        AndroidObservable.bindFragment(
+        AppObservable.bindFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
                 .subscribe(this::onListItemClick, toastOnErrorAction);
@@ -128,7 +128,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 
     protected void fetchFollowerSummary()
     {
-        AndroidObservable.bindFragment(
+        AppObservable.bindFragment(
                 this,
                 followerSummaryCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())

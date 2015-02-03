@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 abstract public class BasePagedListRxFragment<
@@ -211,7 +211,7 @@ abstract public class BasePagedListRxFragment<
         if (!isRequesting(pageToLoad))
         {
             final boolean[] alreadyGotNext = new boolean[] {false};
-            Subscription subscription = AndroidObservable.bindFragment(
+            Subscription subscription = AppObservable.bindFragment(
                     this,
                     getCache().get(pagedKey)
                     .doOnNext(pair -> {

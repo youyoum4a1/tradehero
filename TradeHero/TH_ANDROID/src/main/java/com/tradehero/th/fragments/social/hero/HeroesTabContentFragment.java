@@ -42,7 +42,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -223,7 +223,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     protected void fetchHeroes()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 heroListCache.get(followerId))
                 .subscribe(new HeroManagerHeroListCacheObserver()));
@@ -244,7 +244,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         if (!clickedHeroDTO.active)
         {
             //noinspection unchecked
-            subscriptions.add(AndroidObservable.bindFragment(
+            subscriptions.add(AppObservable.bindFragment(
                     this,
                     heroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
                     .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
@@ -286,7 +286,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     protected void unfollow(@NonNull UserBaseKey userBaseKey)
     {
         subscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         new SimpleFollowUserAssistant(getActivity(), userBaseKey)
                                 .launchUnFollowRx())

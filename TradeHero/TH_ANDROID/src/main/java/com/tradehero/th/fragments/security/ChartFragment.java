@@ -43,7 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPositionDetailDTO>
@@ -263,7 +263,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment<SecurityPosition
         if (securityId != null)
         {
             unsubscribe(securityCompactCacheSubscription);
-            securityCompactCacheSubscription = AndroidObservable.bindFragment(
+            securityCompactCacheSubscription = AppObservable.bindFragment(
                     this,
                     securityPositionDetailCache.get(securityId))
                     .map(new PairGetSecond<>())

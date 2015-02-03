@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class QuestListTestingFragment extends DashboardFragment
@@ -136,7 +136,7 @@ public class QuestListTestingFragment extends DashboardFragment
     protected void attachAndFetchAchievementCategory()
     {
         arrayAdapter.clear();
-        AndroidObservable.bindFragment(this,
+        AppObservable.bindFragment(this,
                 questBonusListCache.get(questBonusListId))
                 .subscribe(createAchievementCategoryListCacheObserver());
     }

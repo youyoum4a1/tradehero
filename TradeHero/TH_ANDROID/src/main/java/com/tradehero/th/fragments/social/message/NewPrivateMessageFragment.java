@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import retrofit.RetrofitError;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
@@ -39,7 +39,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected void fetchMessageThreadHeader()
     {
         unsubscribe(messageThreadHeaderFetchSubscription);
-        messageThreadHeaderFetchSubscription = AndroidObservable.bindFragment(
+        messageThreadHeaderFetchSubscription = AppObservable.bindFragment(
                 this,
                 messageThreadHeaderCache.get(correspondentId))
                 .subscribe(createMessageThreadHeaderCacheObserver());

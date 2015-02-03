@@ -134,8 +134,8 @@ import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCA
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
 import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
-import static rx.android.observables.AndroidObservable.bindActivity;
-import static rx.android.observables.AndroidObservable.fromLocalBroadcast;
+import static rx.android.app.AppObservable.bindActivity;
+import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
 public class DashboardActivity extends BaseActivity
         implements ResideMenu.OnMenuListener

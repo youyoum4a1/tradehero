@@ -65,7 +65,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -288,7 +288,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchSecurityCompact()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 securityCompactCache.get(getSecurityId()))
                 .take(1)
@@ -305,7 +305,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchPortfolioCompact()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactCache.get(getPortfolioId())
                         .map(new PairGetSecond<>()))
@@ -324,7 +324,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchQuote()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS)))
@@ -345,7 +345,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void fetchSecurityPositionDetail()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 securityPositionDetailCache.get()
                         .get(this.securityId)
@@ -367,7 +367,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected void fetchPortfolioCompactList()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 portfolioCompactListCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -681,7 +681,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         DeviceUtil.dismissKeyboard(mCommentsEditText);
         //noinspection unchecked
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .subscribe(

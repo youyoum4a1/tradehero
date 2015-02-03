@@ -44,7 +44,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Actions;
 import timber.log.Timber;
 
@@ -210,7 +210,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             unsubscribe(discussionEditSubscription);
-            discussionEditSubscription = AndroidObservable.bindFragment(
+            discussionEditSubscription = AppObservable.bindFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
                     .subscribe(new SecurityDiscussionEditCallback());

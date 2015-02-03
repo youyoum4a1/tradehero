@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Actions;
 import timber.log.Timber;
 
@@ -124,7 +124,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
         if (!shareList.isEmpty())
         {
-            shareSubscription = AndroidObservable.bindFragment(this,
+            shareSubscription = AppObservable.bindFragment(this,
                     providerServiceWrapper.sharePreSeason(competitionPreseasonShareFormDTOFactoryLazy.get().createFrom(shareList, providerId)))
                     .subscribe(new Observer<BaseResponseDTO>()
                     {
@@ -192,7 +192,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        AndroidObservable.bindFragment(this, providerCacheRx.get(providerId))
+        AppObservable.bindFragment(this, providerCacheRx.get(providerId))
                 .subscribe(new Subscriber<Pair<ProviderId, ProviderDTO>>()
                 {
                     @Override public void onStart()
@@ -216,7 +216,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
                         linkAndShowLogo(providerIdProviderDTOPair.second);
                     }
                 });
-        AndroidObservable.bindFragment(this, competitionPreseasonCacheRx.get(providerId))
+        AppObservable.bindFragment(this, competitionPreseasonCacheRx.get(providerId))
                 .subscribe(new Subscriber<Pair<ProviderId, CompetitionPreSeasonDTO>>()
                 {
                     @Override public void onCompleted()

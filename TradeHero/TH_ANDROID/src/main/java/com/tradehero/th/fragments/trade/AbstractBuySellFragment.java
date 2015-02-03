@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import timber.log.Timber;
@@ -210,7 +210,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void fetchQuote()
     {
         unsubscribe(quoteSubscription);
-        quoteSubscription = AndroidObservable.bindFragment(
+        quoteSubscription = AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS)))
@@ -232,7 +232,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void fetchSecurityCompact()
     {
         unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = AndroidObservable.bindFragment(this, securityPositionDetailCache
+        securityCompactSubscription = AppObservable.bindFragment(this, securityPositionDetailCache
                 .get(this.securityId))
                 .subscribe(new Action1<Pair<SecurityId, SecurityPositionDetailDTO>>()
                            {
@@ -260,7 +260,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     protected void fetchSecurityPositionDetail()
     {
         unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = AndroidObservable.bindFragment(
+        securityPositionDetailSubscription = AppObservable.bindFragment(
                 this,
                 securityPositionDetailObservable)
                 .subscribe(

@@ -30,7 +30,7 @@ import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -119,7 +119,7 @@ public class LocationListFragment extends DashboardFragment
 
     protected void fetchUserProfile()
     {
-        AndroidObservable.bindFragment(
+        AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -175,7 +175,7 @@ public class LocationListFragment extends DashboardFragment
 
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
         unsubscribe(updateCountryCodeSubscription);
-        updateCountryCodeSubscription = AndroidObservable.bindFragment(
+        updateCountryCodeSubscription = AppObservable.bindFragment(
                 this,
                 userServiceWrapperLazy.get().updateCountryCodeRx(
                         currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))

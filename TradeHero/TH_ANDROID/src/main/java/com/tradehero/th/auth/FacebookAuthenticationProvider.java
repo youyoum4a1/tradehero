@@ -29,8 +29,8 @@ import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.android.observables.Assertions;
-import rx.android.subscriptions.AndroidSubscriptions;
+import rx.android.internal.Assertions;
+import rx.android.AndroidSubscriptions;
 import rx.functions.Action0;
 import timber.log.Timber;
 

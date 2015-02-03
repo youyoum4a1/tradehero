@@ -30,7 +30,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class SettingsAlipayFragment extends DashboardFragment
@@ -104,7 +104,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     protected void fetchUserProfile()
     {
         unsubscribe(userProfileCacheSubscription);
-        userProfileCacheSubscription = AndroidObservable.bindFragment(
+        userProfileCacheSubscription = AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<>()))
@@ -139,7 +139,7 @@ public class SettingsAlipayFragment extends DashboardFragment
         accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
         accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
         unsubscribe(updateAlipayAccountSubscription);
-        updateAlipayAccountSubscription = AndroidObservable.bindFragment(
+        updateAlipayAccountSubscription = AppObservable.bindFragment(
                 this,
                 userServiceWrapper.updateAlipayAccountRx(
                         currentUserId.toUserBaseKey(), accountDTO))

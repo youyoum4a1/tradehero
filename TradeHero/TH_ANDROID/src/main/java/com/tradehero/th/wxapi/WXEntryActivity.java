@@ -48,7 +48,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler //created by alex
@@ -259,7 +259,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         weChatTrackShareFormDTO.type = WECHAT_SHARE_TYPE_VALUE;
 
         detachTrackShareSubscription();
-        trackShareSubscription = AndroidObservable.bindActivity(
+        trackShareSubscription = AppObservable.bindActivity(
                 this,
                 weChatServiceWrapper.trackShareRx(currentUserId.toUserBaseKey(), weChatTrackShareFormDTO))
                 .subscribe(

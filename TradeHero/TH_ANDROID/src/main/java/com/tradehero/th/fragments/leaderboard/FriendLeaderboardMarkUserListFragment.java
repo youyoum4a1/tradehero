@@ -36,7 +36,7 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.ocpsoft.prettytime.PrettyTime;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxFragment<
@@ -221,7 +221,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 new ChoiceFollowUserAssistantWithDialog(
                         getActivity(),

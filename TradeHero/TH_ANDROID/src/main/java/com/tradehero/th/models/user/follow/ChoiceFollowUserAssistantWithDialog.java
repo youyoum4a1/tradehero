@@ -14,7 +14,7 @@ import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class ChoiceFollowUserAssistantWithDialog
 {
@@ -42,7 +42,7 @@ public class ChoiceFollowUserAssistantWithDialog
 
     @NonNull public Observable<Pair<FollowRequest, UserProfileDTO>> launchChoiceRx()
     {
-        return AndroidObservable.bindActivity(
+        return AppObservable.bindActivity(
                 activity,
                 userProfileCache.get(currentUserId.toUserBaseKey()).take(1))
                 .map(new PairGetSecond<>())

@@ -18,7 +18,7 @@ import com.tradehero.th.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
@@ -50,7 +50,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     private void fetchQuestBonusList()
     {
-        AndroidObservable.bindFragment(
+        AppObservable.bindFragment(
                 this,
                 questBonusListCache.get(questBonusListId))
                 .subscribe(new QuestBonusCacheObserver());

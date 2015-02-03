@@ -38,7 +38,7 @@ import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 
 public class AdminSettingsFragment extends DashboardPreferenceFragment
@@ -88,7 +88,7 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
 
     private void initDefaultValue()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(

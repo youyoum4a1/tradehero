@@ -54,7 +54,7 @@ import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -340,7 +340,7 @@ public class MessagesCenterFragment extends DashboardFragment
         if (nextMoreRecentMessageListKey != null)
         {
             listSubscriptions.add(
-                    AndroidObservable.bindFragment(
+                    AppObservable.bindFragment(
                             this,
                             messageListCache.get().get(nextMoreRecentMessageListKey))
                             .subscribe(createMessageHeaderIdListCacheObserver()));
@@ -360,7 +360,7 @@ public class MessagesCenterFragment extends DashboardFragment
         MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
         listSubscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         messageListCache.get().get(messageListKey))
                         .subscribe(createMessageHeaderIdListCacheObserver()));
@@ -470,7 +470,7 @@ public class MessagesCenterFragment extends DashboardFragment
 
     private void removeMessageOnServer(@NonNull MessageHeaderDTO messageHeaderDTO)
     {
-        listSubscriptions.add(AndroidObservable.bindFragment(
+        listSubscriptions.add(AppObservable.bindFragment(
                 this,
                 messageServiceWrapper.get().deleteMessageRx(
                         messageHeaderDTO.getDTOKey(),
@@ -623,7 +623,7 @@ public class MessagesCenterFragment extends DashboardFragment
     {
         Timber.d("reportMessageAllRead...");
         listSubscriptions.add(
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))

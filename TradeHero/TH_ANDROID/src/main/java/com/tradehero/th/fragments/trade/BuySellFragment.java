@@ -60,7 +60,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -361,7 +361,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     protected void fetchPortfolio()
     {
         unsubscribe(portfolioCacheSubscription);
-        portfolioCacheSubscription = AndroidObservable.bindFragment(
+        portfolioCacheSubscription = AppObservable.bindFragment(
                 this,
                 portfolioObservable)
                 .subscribe(new Action1<PortfolioDTO>()
@@ -526,7 +526,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     protected void showPortfolioSelector()
     {
         unsubscribe(portfolioMenuSubscription);
-        portfolioMenuSubscription = AndroidObservable.bindFragment(
+        portfolioMenuSubscription = AppObservable.bindFragment(
                 this,
                 mSelectedPortfolioContainer.createMenuObservable())
                 .subscribe(new Action1<MenuOwnedPortfolioId>()

@@ -28,7 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 public class TranslatableLanguageListFragment extends DashboardFragment
@@ -93,7 +93,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
     protected void fetchToken()
     {
         unsubscribe(tokenFetchSubscription);
-        tokenFetchSubscription = AndroidObservable.bindFragment(
+        tokenFetchSubscription = AppObservable.bindFragment(
                 this,
                 translationTokenCache.get(new TranslationTokenKey()))
                 .subscribe(createTokenFetchObserver());

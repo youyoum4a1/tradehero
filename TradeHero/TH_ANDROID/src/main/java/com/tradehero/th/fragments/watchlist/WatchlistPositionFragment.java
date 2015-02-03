@@ -46,7 +46,7 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 
 public class WatchlistPositionFragment extends DashboardFragment
 {
@@ -317,7 +317,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (portfolioCacheSubscription == null)
         {
-            portfolioCacheSubscription = AndroidObservable.bindFragment(
+            portfolioCacheSubscription = AppObservable.bindFragment(
                     this,
                     portfolioCache.get(shownPortfolioId)
                             .map(new PairGetSecond<>()))
@@ -345,7 +345,7 @@ public class WatchlistPositionFragment extends DashboardFragment
     {
         if (userWatchlistPositionFetchSubscription == null)
         {
-            userWatchlistPositionFetchSubscription = AndroidObservable.bindFragment(
+            userWatchlistPositionFetchSubscription = AppObservable.bindFragment(
                     this,
                     userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
                             .map(new PairGetSecond<>()))

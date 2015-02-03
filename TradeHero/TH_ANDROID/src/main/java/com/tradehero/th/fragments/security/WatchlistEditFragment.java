@@ -34,7 +34,7 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -143,7 +143,7 @@ public class WatchlistEditFragment extends DashboardFragment
             unsubscribe(updateSubscription);
             if (existingWatchlistPosition != null)
             {
-                updateSubscription = AndroidObservable.bindFragment(
+                updateSubscription = AppObservable.bindFragment(
                         this,
                         watchlistServiceWrapper.updateWatchlistEntryRx(
                         existingWatchlistPosition.getPositionCompactId(),
@@ -152,7 +152,7 @@ public class WatchlistEditFragment extends DashboardFragment
             }
             else
             {
-                updateSubscription = AndroidObservable.bindFragment(
+                updateSubscription = AppObservable.bindFragment(
                         this,
                         watchlistServiceWrapper.createWatchlistEntryRx(
                         watchPositionItemForm))
@@ -203,7 +203,7 @@ public class WatchlistEditFragment extends DashboardFragment
         {
             showProgressBar();
             unsubscribe(deleteSubscription);
-            deleteSubscription = AndroidObservable.bindFragment(
+            deleteSubscription = AppObservable.bindFragment(
                     this,
                     watchlistServiceWrapper.deleteWatchlistRx(watchlistPositionDTO.getPositionCompactId()))
                     .subscribe(createWatchlistDeleteObserver());
@@ -294,7 +294,7 @@ public class WatchlistEditFragment extends DashboardFragment
             progressBar = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait), getString(R.string.loading_loading), true);
         }
 
-        AndroidObservable.bindFragment(this, securityCompactCache.get(securityId))
+        AppObservable.bindFragment(this, securityCompactCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createSecurityCompactCacheObserver());
     }

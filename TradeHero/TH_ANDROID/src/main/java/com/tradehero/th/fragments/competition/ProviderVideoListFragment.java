@@ -32,7 +32,7 @@ import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -92,7 +92,7 @@ public class ProviderVideoListFragment extends CompetitionFragment
         }
 
         HelpVideoListKey key = new HelpVideoListKey(providerId);
-        subscriptions.add(AndroidObservable.bindFragment(this, helpVideoListCache.get(key))
+        subscriptions.add(AppObservable.bindFragment(this, helpVideoListCache.get(key))
                 .subscribe(createVideoListCacheObserver()));
     }
 

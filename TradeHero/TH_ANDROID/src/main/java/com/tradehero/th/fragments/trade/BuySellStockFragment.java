@@ -53,7 +53,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import timber.log.Timber;
 
 @Routable("security/:securityRawInfo")
@@ -146,7 +146,7 @@ public class BuySellStockFragment extends BuySellFragment
     public void fetchAlertCompactList()
     {
         unsubscribe(alertCompactListCacheSubscription);
-        alertCompactListCacheSubscription = AndroidObservable.bindFragment(
+        alertCompactListCacheSubscription = AppObservable.bindFragment(
                 this,
                 alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                 .subscribe(new Observer<Map<SecurityId, AlertId>>()
@@ -172,7 +172,7 @@ public class BuySellStockFragment extends BuySellFragment
     public void fetchWatchlist()
     {
         unsubscribe(userWatchlistPositionCacheSubscription);
-        userWatchlistPositionCacheSubscription = AndroidObservable.bindFragment(
+        userWatchlistPositionCacheSubscription = AppObservable.bindFragment(
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                 .subscribe(createUserWatchlistCacheObserver());

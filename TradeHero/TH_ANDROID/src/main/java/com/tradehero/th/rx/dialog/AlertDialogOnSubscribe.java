@@ -9,7 +9,7 @@ import android.util.Pair;
 import android.widget.ListAdapter;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.observables.Assertions;
+import rx.android.internal.Assertions;
 
 public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterface, Integer>>
 {

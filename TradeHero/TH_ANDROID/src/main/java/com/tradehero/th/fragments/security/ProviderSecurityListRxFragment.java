@@ -29,7 +29,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.internal.util.SubscriptionList;
 
 public class ProviderSecurityListRxFragment
@@ -160,7 +160,7 @@ public class ProviderSecurityListRxFragment
 
     protected void fetchProviderDTO()
     {
-        subscriptions.add(AndroidObservable.bindFragment(
+        subscriptions.add(AppObservable.bindFragment(
                 this,
                 providerCache.get(this.providerId)
                 .map(new PairGetSecond<>()))

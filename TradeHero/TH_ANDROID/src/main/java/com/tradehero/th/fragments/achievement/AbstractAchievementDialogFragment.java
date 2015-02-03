@@ -72,7 +72,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.observables.AndroidObservable;
+import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -188,7 +188,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         super.onStart();
         unsubscribe(levelDefSubscription);
-        levelDefSubscription = AndroidObservable.bindFragment(
+        levelDefSubscription = AppObservable.bindFragment(
                 this,
                 levelDefListCache.get(mLevelDefListId))
                 .subscribe(createLevelDefCacheObserver());
@@ -352,7 +352,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             if (!shareTos.isEmpty())
             {
                 //If only there are other social network to share to other than WeChat.
-                AndroidObservable.bindFragment(
+                AppObservable.bindFragment(
                         this,
                         achievementServiceWrapper.shareAchievementRx(
                                 achievementShareFormDTOFactory.createFrom(

@@ -42,8 +42,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.ViewObservable;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Actions;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -144,12 +145,12 @@ public class EmailSignInFragment extends Fragment
         }
 
         validationSubscription = Observable.combineLatest(
-                ViewObservable.text(email),
-                ViewObservable.text(password),
+                WidgetObservable.text(email),
+                WidgetObservable.text(password),
                 (email1, password1) -> {
-                    email1.forceValidate();
-                    password1.forceValidate();
-                    return Pair.create(email1.isValid(), password1.isValid());
+                    email.forceValidate();
+                    password.forceValidate();
+                    return Pair.create(email.isValid(), password.isValid());
                 })
                 .subscribe(
                         args -> loginButton.setEnabled(args.first && args.second),
@@ -157,7 +158,7 @@ public class EmailSignInFragment extends Fragment
 
         signInObservable = ViewObservable.clicks(loginButton, false)
                 .map(view1 -> {
-                    DeviceUtil.dismissKeyboard(view1);
+                    DeviceUtil.dismissKeyboard(view1.view());
                     return new AuthData(email.getText().toString(), password.getText().toString());
                 })
                 .doOnNext(AuthData -> progressDialog = ProgressDialog.show(getActivity(), getString(R.string.alert_dialog_please_wait),
