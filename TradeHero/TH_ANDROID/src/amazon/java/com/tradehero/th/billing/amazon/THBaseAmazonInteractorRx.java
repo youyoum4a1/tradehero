@@ -16,7 +16,6 @@ import com.tradehero.th.billing.THBaseBillingInteractorRx;
 import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -43,7 +42,6 @@ public class THBaseAmazonInteractorRx
     //<editor-fold desc="Constructors">
     @Inject public THBaseAmazonInteractorRx(
             @NonNull Provider<Activity> activityProvider,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THAmazonAlertDialogRxUtil thAmazonAlertDialogUtil,
             @NonNull THAmazonLogicHolderRx billingActor,
             @NonNull CurrentUserId currentUserId,
@@ -53,7 +51,6 @@ public class THBaseAmazonInteractorRx
         super(
                 billingActor,
                 activityProvider,
-                progressDialogUtil,
                 thAmazonAlertDialogUtil);
         this.currentUserId = currentUserId;
         this.userProfileDTOUtil = userProfileDTOUtil;

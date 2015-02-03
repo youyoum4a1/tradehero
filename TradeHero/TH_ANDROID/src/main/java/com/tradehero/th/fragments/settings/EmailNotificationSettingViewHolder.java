@@ -22,10 +22,9 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
     @Inject EmailNotificationSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
+        super(currentUserId, userProfileCache, userServiceWrapper);
     }
     //</editor-fold>
 
@@ -54,7 +53,7 @@ class EmailNotificationSettingViewHolder extends UserProfileCheckBoxSettingViewH
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)
         {
-            progressDialog = progressDialogUtil.show(preferenceFragmentCopy.getActivity(),
+            progressDialog = ProgressDialogUtil.show(preferenceFragmentCopy.getActivity(),
                     R.string.settings_notifications_email_alert_title,
                     R.string.settings_notifications_email_alert_message);
             unsubscribe(changeStatusSubscription);

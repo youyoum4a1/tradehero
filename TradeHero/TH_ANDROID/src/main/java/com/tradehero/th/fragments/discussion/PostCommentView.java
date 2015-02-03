@@ -61,7 +61,6 @@ public class PostCommentView extends RelativeLayout
     @Nullable private MessageType messageType = null;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject CurrentUserId currentUserId;
-    @Inject EditableUtil editableUtil;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject DiscussionKeyFactory discussionKeyFactory;
@@ -207,7 +206,7 @@ public class PostCommentView extends RelativeLayout
         {
             ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
         }
-        discussionFormDTO.text = editableUtil.unSpanText(commentText.getText()).toString();
+        discussionFormDTO.text = EditableUtil.unSpanText(commentText.getText()).toString();
         if (USE_QUICK_STUB_DISCUSSION)
         {
             discussionFormDTO.stubKey = moveNextStubKey();
@@ -227,7 +226,7 @@ public class PostCommentView extends RelativeLayout
     @NonNull protected MessageCreateFormDTO buildMessageCreateFormDTO()
     {
         MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
-        messageCreateFormDTO.message = editableUtil.unSpanText(commentText.getText()).toString();
+        messageCreateFormDTO.message = EditableUtil.unSpanText(commentText.getText()).toString();
         messageCreateFormDTO.senderUserId = currentUserId.toUserBaseKey().key;
         return messageCreateFormDTO;
     }

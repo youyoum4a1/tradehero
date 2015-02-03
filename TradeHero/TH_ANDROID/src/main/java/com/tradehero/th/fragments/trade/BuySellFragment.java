@@ -53,6 +53,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -452,7 +453,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (isPortfolioChanged)
         {
-            alertDialogUtil.popWithNegativeButton(getActivity(),
+            AlertDialogUtil.popWithNegativeButton(getActivity(),
                     R.string.buy_sell_portfolio_changed_title,
                     R.string.buy_sell_portfolio_changed_message,
                     R.string.ok);
@@ -594,7 +595,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             }
             else
             {
-                alertDialogUtil.popWithNegativeButton(
+                AlertDialogUtil.popWithNegativeButton(
                         getActivity(),
                         R.string.buy_sell_no_portfolio_title,
                         R.string.buy_sell_no_portfolio_message,
@@ -603,7 +604,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(
+            AlertDialogUtil.popWithNegativeButton(
                     getActivity(),
                     R.string.buy_sell_no_quote_title,
                     R.string.buy_sell_no_quote_message,

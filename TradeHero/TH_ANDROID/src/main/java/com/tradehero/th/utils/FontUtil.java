@@ -2,24 +2,16 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.TextView;
 import java.util.WeakHashMap;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public class FontUtil
 {
-    private final Context context;
-    private final WeakHashMap<FontType, Typeface> fontTypeToTypeFaceMap;
+    private final WeakHashMap<FontType, Typeface> fontTypeToTypeFaceMap = new WeakHashMap<>();
 
-    @Inject public FontUtil(Context context)
-    {
-        this.context = context;
-        fontTypeToTypeFaceMap = new WeakHashMap<>();
-    }
-
-    public void setTypeFace(TextView textView, FontType fontType)
+    public void setTypeFace(@NonNull Context context, @Nullable TextView textView, @NonNull FontType fontType)
     {
         if (textView != null)
         {

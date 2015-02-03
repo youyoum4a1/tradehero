@@ -6,34 +6,17 @@ import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
-import dagger.Lazy;
-import javax.inject.Inject;
 
 public class DisplayablePortfolioUtil
 {
-    @NonNull public final CurrentUserId currentUserId;
-    @NonNull public final Lazy<PortfolioDTOUtil> portfolioDTOUtil;
-    @NonNull public final Lazy<UserBaseDTOUtil> userBaseDTOUtil;
-
-    //<editor-fold desc="Constructors">
-    @Inject public DisplayablePortfolioUtil(
-            @NonNull CurrentUserId currentUserId,
-            @NonNull Lazy<PortfolioDTOUtil> portfolioDTOUtil,
-            @NonNull Lazy<UserBaseDTOUtil> userBaseDTOUtil)
-    {
-        super();
-        this.currentUserId = currentUserId;
-        this.portfolioDTOUtil = portfolioDTOUtil;
-        this.userBaseDTOUtil = userBaseDTOUtil;
-    }
-    //</editor-fold>
-
-    @NonNull public String getLongTitle(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
+    @NonNull public static String getLongTitle(
+            @NonNull Context context,
+            @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         String title = null;
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.portfolioDTO != null)
         {
-            title = portfolioDTOUtil.get().getLongTitle(context,
+            title = PortfolioDTOUtil.getLongTitle(context,
                     displayablePortfolioDTO.portfolioDTO);
         }
         if (title != null)
@@ -43,7 +26,9 @@ public class DisplayablePortfolioUtil
         return context.getString(R.string.portfolio_title_unnamed);
     }
 
-    public int getLongTitleTextColor(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
+    public static int getLongTitleTextColor(
+            @NonNull Context context,
+            @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         int colorRes;
         if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
@@ -57,7 +42,10 @@ public class DisplayablePortfolioUtil
         return context.getResources().getColor(colorRes);
     }
 
-    public String getLongSubTitle(@NonNull Context context, @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
+    @Nullable public static String getLongSubTitle(
+            @NonNull Context context,
+            @NonNull CurrentUserId currentUserId,
+            @Nullable DisplayablePortfolioDTO displayablePortfolioDTO)
     {
         String subTitle = null;
         if (displayablePortfolioDTO instanceof DummyFxDisplayablePortfolioDTO)
@@ -69,14 +57,14 @@ public class DisplayablePortfolioUtil
             boolean isCurrentUser = displayablePortfolioDTO.userBaseDTO != null && currentUserId.toUserBaseKey().equals(displayablePortfolioDTO.userBaseDTO.getBaseKey());
             if (!isCurrentUser)
             {
-                subTitle = portfolioDTOUtil.get().getLongSubTitle(
+                subTitle = PortfolioDTOUtil.getLongSubTitle(
                         context,
                         displayablePortfolioDTO.portfolioDTO,
-                        userBaseDTOUtil.get().getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO));
+                        UserBaseDTOUtil.getLongDisplayName(context, displayablePortfolioDTO.userBaseDTO));
             }
             else
             {
-                subTitle = portfolioDTOUtil.get().getLongSubTitle(
+                subTitle = PortfolioDTOUtil.getLongSubTitle(
                         context,
                         displayablePortfolioDTO.portfolioDTO);
             }

@@ -95,11 +95,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject PortfolioCompactCacheRx portfolioCompactCache;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
-    @Inject PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject ToastOnErrorAction toastOnErrorAction;
@@ -470,7 +468,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             // This means we have incomplete information
             return null;
         }
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+        return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 portfolioCompactDTO,
                 quoteDTO,
                 positionDTOCompact);
@@ -483,7 +481,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             // This means we have incomplete information
             return null;
         }
-        return portfolioCompactDTOUtil.getMaxSellableShares(
+        return PortfolioCompactDTOUtil.getMaxSellableShares(
                 portfolioCompactDTO,
                 quoteDTO,
                 positionDTOCompact);
@@ -491,7 +489,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Nullable protected Double getRemainingForPurchaseInPortfolioRefCcy()
     {
-        QuoteDTO quoteInPortfolioCcy = portfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
+        QuoteDTO quoteInPortfolioCcy = PortfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
         if (quoteInPortfolioCcy != null
                 && quoteInPortfolioCcy.ask != null
                 && portfolioCompactDTO != null)
@@ -505,7 +503,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     @Nullable protected Double getRemainingForShortingInPortfolioRefCcy()
     {
-        QuoteDTO quoteInPortfolioCcy = portfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
+        QuoteDTO quoteInPortfolioCcy = PortfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
         if (quoteInPortfolioCcy != null
                 && quoteInPortfolioCcy.bid != null
                 && portfolioCompactDTO != null)
@@ -800,7 +798,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             if (transactionFormDTO != null)
             {
                 dismissTransactionProgress();
-                mTransactionDialog = progressDialogUtil.show(getActivity(),
+                mTransactionDialog = ProgressDialogUtil.show(getActivity(),
                         R.string.processing, R.string.alert_dialog_please_wait);
 
                 unsubscribe(buySellSubscription);

@@ -37,19 +37,16 @@ abstract public class THBillingAlertDialogUtil<
                 ProductDetailViewType>>
         extends AlertDialogUtil
 {
-    @NonNull public final ActivityUtil activityUtil;
     @NonNull private final Analytics analytics;
     @NonNull protected final VersionUtils versionUtils;
 
     //<editor-fold desc="Constructors">
     public THBillingAlertDialogUtil(
             @NonNull Analytics analytics,
-            @NonNull ActivityUtil activityUtil,
             @NonNull VersionUtils versionUtils)
     {
         super();
         this.analytics = analytics;
-        this.activityUtil = activityUtil;
         this.versionUtils = versionUtils;
     }
     //</editor-fold>
@@ -226,7 +223,7 @@ abstract public class THBillingAlertDialogUtil<
     {
         Intent emailIntent = versionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
     public AlertDialog popFailedToReport(final Context context)
@@ -269,7 +266,7 @@ abstract public class THBillingAlertDialogUtil<
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
                 versionUtils.getExceptionStringsAndTraceParameters(context, exception));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an unidentified error");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
     public AlertDialog popUserCancelled(final Context context)
@@ -293,7 +290,7 @@ abstract public class THBillingAlertDialogUtil<
     {
         Intent emailIntent = versionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
     public AlertDialog popNoPurchaseToRestore(final Context context)

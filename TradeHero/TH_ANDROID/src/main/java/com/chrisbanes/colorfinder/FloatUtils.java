@@ -16,15 +16,17 @@ package com.chrisbanes.colorfinder;
  * limitations under the License.
  */
 
-public class FloatUtils {
-
-    public static float weightedAverage(float... values) {
+public class FloatUtils
+{
+    public static float weightedAverage(float... values)
+    {
         assert values.length % 2 == 0;
 
         float sum = 0;
         float sumWeight = 0;
 
-        for (int i = 0; i < values.length; i += 2) {
+        for (int i = 0; i < values.length; i += 2)
+        {
             float value = values[i];
             float weight = values[i + 1];
 
@@ -34,5 +36,4 @@ public class FloatUtils {
 
         return sum / sumWeight;
     }
-
 }

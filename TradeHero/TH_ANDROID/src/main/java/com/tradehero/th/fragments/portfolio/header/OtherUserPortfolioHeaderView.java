@@ -53,7 +53,6 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     @Inject Analytics analytics;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogRxUtilLazy;
-    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     @Nullable private Subscription freeFollowMiddleSubscription;
@@ -123,7 +122,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
         detachFollowDialogCombo();
-        followDialogCombo = heroAlertDialogUtilLazy.get().showFollowDialog(getContext(), userProfileDTO,
+        followDialogCombo = HeroAlertDialogUtil.showFollowDialog(getContext(), userProfileDTO,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER,
                 new OtherUserPortfolioFollowRequestedListener());
     }
@@ -143,7 +142,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     protected void freeFollow(@NonNull UserBaseKey heroId)
     {
-        heroAlertDialogUtilLazy.get().showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
+        HeroAlertDialogUtil.showProgressDialog(getContext(), getContext().getString(R.string.following_this_hero));
         detachFreeFollowMiddleCallback();
         freeFollowMiddleSubscription =
                 userServiceWrapperLazy.get().freeFollowRx(heroId)
@@ -183,7 +182,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         @Override public void onNext(UserProfileDTO userProfileDTO)
         {
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
+            HeroAlertDialogUtil.dismissProgressDialog();
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
@@ -196,7 +195,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         @Override public void onError(Throwable e)
         {
             THToast.show(new THException(e));
-            heroAlertDialogUtilLazy.get().dismissProgressDialog();
+            HeroAlertDialogUtil.dismissProgressDialog();
         }
     }
 

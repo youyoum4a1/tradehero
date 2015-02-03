@@ -53,18 +53,15 @@ abstract public class THBillingAlertDialogRxUtil<
     public static final int MAX_RANDOM_RETRIES = 50;
 
     @NonNull protected final Analytics analytics;
-    @NonNull protected final ActivityUtil activityUtil;
     protected String storeName;
 
     //<editor-fold desc="Constructors">
     public THBillingAlertDialogRxUtil(
             @NonNull Analytics analytics,
-            @NonNull ActivityUtil activityUtil,
             @NonNull VersionUtils versionUtils)
     {
         super(versionUtils);
         this.analytics = analytics;
-        this.activityUtil = activityUtil;
     }
     //</editor-fold>
 
@@ -326,7 +323,7 @@ abstract public class THBillingAlertDialogRxUtil<
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
                 versionUtils.getExceptionStringsAndTraceParameters(context, throwables));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error restoring my purchases");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
     public void sendSupportEmailPurchaseRestoreFailedPartial(
@@ -336,7 +333,7 @@ abstract public class THBillingAlertDialogRxUtil<
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
                 versionUtils.getExceptionStringsAndTraceParameters(context, throwables));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error restoring part of my purchases");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
     @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreFailedAndHandle(
@@ -377,7 +374,7 @@ abstract public class THBillingAlertDialogRxUtil<
     {
         Intent emailIntent = versionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My purchase is not being handled even after restart");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
     //</editor-fold>
 
@@ -386,13 +383,13 @@ abstract public class THBillingAlertDialogRxUtil<
         Intent emailIntent = versionUtils.getSupportEmailIntent(
                 versionUtils.getExceptionStringsAndTraceParameters(context, throwable));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
     public void sendSupportEmailCancelledPurchase(final Context context)
     {
         Intent emailIntent = versionUtils.getSupportEmailIntent(context, true);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "I cancelled the purchase");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 }

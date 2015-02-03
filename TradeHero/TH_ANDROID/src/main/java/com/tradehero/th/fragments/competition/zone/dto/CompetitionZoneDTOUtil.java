@@ -21,15 +21,12 @@ import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
 {
-    @NonNull private final PortfolioCompactDTOUtil portfolioCompactDTOUtil;
-
     private double randomAd;
 
     //<editor-fold desc="Constructors">
-    @Inject public CompetitionZoneDTOUtil(@NonNull PortfolioCompactDTOUtil portfolioCompactDTOUtil)
+    @Inject public CompetitionZoneDTOUtil()
     {
         super();
-        this.portfolioCompactDTOUtil = portfolioCompactDTOUtil;
         randomiseAd();
     }
     //</editor-fold>
@@ -83,7 +80,7 @@ public class CompetitionZoneDTOUtil
 
             if (providerDTO.associatedPortfolio != null && portfolioUserProfileCompact != null)
             {
-                String subtitle = portfolioCompactDTOUtil.getPortfolioSubtitle(context, providerDTO.associatedPortfolio, null);
+                String subtitle = PortfolioCompactDTOUtil.getPortfolioSubtitle(context, providerDTO.associatedPortfolio, null);
                 preparedOrderedTypes.add(CompetitionZoneListItemAdapter.ITEM_TYPE_PORTFOLIO);
                 preparedOrderedItems.add(new CompetitionZonePortfolioDTO(
                         context.getString(R.string.provider_competition_portfolio_title),

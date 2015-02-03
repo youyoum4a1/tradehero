@@ -38,7 +38,6 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
     @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Nullable protected Subscription transactionListCacheSubscription;
 
@@ -70,7 +69,7 @@ public class SettingsTransactionHistoryFragment extends DashboardFragment
         transactionListView.setAdapter(transactionListViewAdapter);
         transactionListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
 
-        progressDialog = progressDialogUtil.show(
+        progressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);

@@ -150,9 +150,7 @@ public class DashboardActivity extends BaseActivity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
     @Inject Lazy<AlertDialogRxUtil> alertDialogRxUtil;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCacheRx> notificationCache;
     @Inject SystemStatusCache systemStatusCache;
     @Inject Lazy<MarketUtil> marketUtilLazy;
@@ -313,7 +311,7 @@ public class DashboardActivity extends BaseActivity
     {
         if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
         {
-            alertDialogUtil.get().popWithOkCancelButton(
+            AlertDialogUtil.popWithOkCancelButton(
                     this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
                     R.string.later,
                     (dialog, which) -> {
@@ -464,7 +462,7 @@ public class DashboardActivity extends BaseActivity
     {
         if (extras != null && extras.containsKey(NotificationKey.BUNDLE_KEY_KEY))
         {
-            progressDialog = progressDialogUtil.get().show(this, "", "");
+            progressDialog = ProgressDialogUtil.show(this, "", "");
 
             detachNotificationFetchTask();
             NotificationKey key = new NotificationKey(extras);

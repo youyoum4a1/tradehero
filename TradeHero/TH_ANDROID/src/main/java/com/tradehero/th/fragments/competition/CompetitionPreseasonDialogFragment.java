@@ -31,6 +31,7 @@ import com.tradehero.th.network.service.ProviderServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.widget.MarkdownTextView;
 import dagger.Lazy;
 import java.util.List;
@@ -101,7 +102,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         List<SocialNetworkEnum> shareList = getEnabledSharePreferences();
         if (shareList.isEmpty())
         {
-            alertDialogUtil.popWithNegativeButton(
+            AlertDialogUtil.popWithNegativeButton(
                     getActivity(),
                     R.string.link_select_one_social,
                     R.string.link_select_one_social_description,

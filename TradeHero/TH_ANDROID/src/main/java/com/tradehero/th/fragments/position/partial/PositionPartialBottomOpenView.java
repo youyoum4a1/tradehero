@@ -9,6 +9,7 @@ import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.position.PositionDTOUtils;
 
 public class PositionPartialBottomOpenView
         extends AbstractPartialBottomView
@@ -121,7 +122,7 @@ public class PositionPartialBottomOpenView
     {
         if (unrealisedPLValue != null)
         {
-            positionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+            PositionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
         }
     }
 
@@ -144,7 +145,7 @@ public class PositionPartialBottomOpenView
     {
         if (realisedPLValue != null)
         {
-            positionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
+            PositionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -154,7 +155,7 @@ public class PositionPartialBottomOpenView
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionDTOUtils.getSumInvested(getResources(), positionDTO));
+                totalInvestedValue.setText(PositionDTOUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }
@@ -165,7 +166,7 @@ public class PositionPartialBottomOpenView
         {
             if (positionDTO != null)
             {
-                marketValueValue.setText(positionDTOUtils.getMarketValue(getResources(), positionDTO));
+                marketValueValue.setText(PositionDTOUtils.getMarketValue(getResources(), positionDTO));
             }
         }
     }

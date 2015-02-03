@@ -44,6 +44,7 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
@@ -235,7 +236,7 @@ public class FriendsInvitationFragment extends DashboardFragment
         }
         else
         {
-            socialLinkingDialog = alertDialogUtil.popWithOkCancelButton(
+            socialLinkingDialog = AlertDialogUtil.popWithOkCancelButton(
                     getActivity(),
                     getString(R.string.link, item.socialNetwork.getName()),
                     getString(R.string.link_description, item.socialNetwork.getName()),
@@ -252,7 +253,7 @@ public class FriendsInvitationFragment extends DashboardFragment
                     {
                         @Override public void onClick(DialogInterface dialogInterface, int i)
                         {
-                            alertDialogUtil.dismissProgressDialog();
+                            AlertDialogUtil.dismissProgressDialog();
                         }
                     },
                     new DialogInterface.OnDismissListener()

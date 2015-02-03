@@ -12,7 +12,6 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -23,7 +22,6 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
     @Inject public SocialConnectFacebookSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull SocialAlertDialogRxUtil socialAlertDialogRxUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
@@ -33,7 +31,6 @@ public class SocialConnectFacebookSettingViewHolder extends SocialConnectSetting
     {
         super(currentUserId,
                 userProfileCache,
-                progressDialogUtil,
                 userServiceWrapper,
                 socialAlertDialogRxUtil,
                 socialServiceWrapper,

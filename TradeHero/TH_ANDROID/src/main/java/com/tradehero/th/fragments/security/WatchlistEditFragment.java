@@ -61,7 +61,6 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
@@ -180,7 +179,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
         else
         {
-            progressBar = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
+            progressBar = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.watchlist_updating);
         }
     }
 

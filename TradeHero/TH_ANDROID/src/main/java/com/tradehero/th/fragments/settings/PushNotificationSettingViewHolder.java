@@ -30,11 +30,10 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
     @Inject public PushNotificationSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull PushNotificationManager pushNotificationManager)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
+        super(currentUserId, userProfileCache, userServiceWrapper);
         this.pushNotificationManager = pushNotificationManager;
     }
     //</editor-fold>
@@ -118,7 +117,7 @@ public class PushNotificationSettingViewHolder extends UserProfileCheckBoxSettin
         PreferenceFragment preferenceFragmentCopy = preferenceFragment;
         if (preferenceFragmentCopy != null)
         {
-            progressDialog = progressDialogUtil.show(preferenceFragmentCopy.getActivity(),
+            progressDialog = ProgressDialogUtil.show(preferenceFragmentCopy.getActivity(),
                     R.string.settings_notifications_push_alert_title,
                     R.string.settings_notifications_push_alert_message);
             unsubscribe(updatePropertySubscription);

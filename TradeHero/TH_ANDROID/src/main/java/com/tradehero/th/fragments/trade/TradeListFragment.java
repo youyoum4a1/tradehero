@@ -77,7 +77,6 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
     @Inject SecurityActionDialogFactory securityActionDialogFactory;
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -481,7 +480,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         if (navigator != null)
         {
             // TODO add command to go direct to pop-up
-            navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+            navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }
 

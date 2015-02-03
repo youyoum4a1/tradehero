@@ -7,11 +7,6 @@ import javax.inject.Inject;
 
 public class AlertDialogUtilBuySell extends AlertDialogUtil
 {
-    @Inject public AlertDialogUtilBuySell()
-    {
-        super();
-    }
-
     public void informBuySellOrderWasNull(Context context)
     {
         popWithNegativeButton(context,

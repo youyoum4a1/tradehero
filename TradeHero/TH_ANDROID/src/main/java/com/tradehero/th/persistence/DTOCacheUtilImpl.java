@@ -23,7 +23,6 @@ import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
@@ -90,7 +89,6 @@ import rx.functions.Actions;
     protected final SharedPreferences userSharedPreferences;
     private final BooleanPreference isOnboardShown;
     @NonNull protected final BroadcastUtils broadcastUtils;
-    @NonNull protected final UserBaseDTOUtil userBaseDTOUtil;
     @NonNull protected final Context context;
 
     @NonNull private List<DTOCacheRx> userCacheRxs;
@@ -122,7 +120,6 @@ import rx.functions.Actions;
             @ForUser SharedPreferences userSharedPreferences,
             @IsOnBoardShown BooleanPreference isOnboardShown,
             @NonNull BroadcastUtils broadcastUtils,
-            @NonNull UserBaseDTOUtil userBaseDTOUtil,
             @NonNull Context context)
     {
         this.userCacheRxs = new ArrayList<>();
@@ -154,7 +151,6 @@ import rx.functions.Actions;
         this.userSharedPreferences = userSharedPreferences;
         this.isOnboardShown = isOnboardShown;
         this.broadcastUtils = broadcastUtils;
-        this.userBaseDTOUtil = userBaseDTOUtil;
         this.context = context;
     }
     //</editor-fold>

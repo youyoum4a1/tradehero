@@ -12,7 +12,6 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionDTOUtil;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
@@ -41,7 +40,6 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     @Inject CompetitionCacheRx competitionCache;
     @Inject ProviderUtil providerUtil;
     @Inject CompetitionLeaderboardCacheRx competitionLeaderboardCache;
-    @Inject CompetitionDTOUtil competitionDTOUtil;
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -236,7 +234,7 @@ abstract public class CompetitionLeaderboardMarkUserListFragment extends Leaderb
     {
         this.competitionDTO = competitionDTO;
 
-        CompetitionLeaderboardId key = competitionDTOUtil.getCompetitionLeaderboardId(providerId, competitionDTO.getCompetitionId());
+        CompetitionLeaderboardId key = new CompetitionLeaderboardId(providerId.key, competitionDTO.getCompetitionId().key);
         subscriptions.add(AppObservable.bindFragment(
                 this,
                 competitionLeaderboardCache.get(key)

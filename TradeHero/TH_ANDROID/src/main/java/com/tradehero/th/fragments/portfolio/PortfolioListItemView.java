@@ -50,7 +50,6 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject UserProfileCacheRx userProfileCache;
     @Inject GetPositionsCacheRx getPositionsCache;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    @Inject DisplayablePortfolioUtil displayablePortfolioUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userImageTransformation;
     @Inject DashboardNavigator navigator;
@@ -252,9 +251,9 @@ public class PortfolioListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(displayablePortfolioUtil.getLongTitle(getContext(),
+            title.setText(DisplayablePortfolioUtil.getLongTitle(getContext(),
                     displayablePortfolioDTO));
-            title.setTextColor(displayablePortfolioUtil.getLongTitleTextColor(getContext(),
+            title.setTextColor(DisplayablePortfolioUtil.getLongTitleTextColor(getContext(),
                     displayablePortfolioDTO));
         }
     }
@@ -270,7 +269,7 @@ public class PortfolioListItemView extends RelativeLayout
 
     public String getDescription()
     {
-        return displayablePortfolioUtil.getLongSubTitle(getContext(), displayablePortfolioDTO);
+        return DisplayablePortfolioUtil.getLongSubTitle(getContext(), currentUserId, displayablePortfolioDTO);
     }
 
     public void displayRoiValue()

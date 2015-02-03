@@ -55,14 +55,12 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionCacheRx discussionCache;
     @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
-    @Inject EditableUtil editableUtil;
     @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
 
     private DiscussionDTO discussionDTO;
@@ -208,7 +206,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             discussionPostActionButtonsView.populate(discussionFormDTO);
             discussionPostActionButtonsView.onPostDiscussion();
 
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.alert_dialog_please_wait, R.string.processing);
             unsubscribe(discussionEditSubscription);
             discussionEditSubscription = AppObservable.bindFragment(
                     this,
@@ -233,7 +231,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             ((ReplyDiscussionFormDTO) discussionFormDTO).inReplyToId = discussionKey.id;
         }
-        discussionFormDTO.text = editableUtil.unSpanText(discussionPostContent.getText()).toString();
+        discussionFormDTO.text = EditableUtil.unSpanText(discussionPostContent.getText()).toString();
         return discussionFormDTO;
     }
 

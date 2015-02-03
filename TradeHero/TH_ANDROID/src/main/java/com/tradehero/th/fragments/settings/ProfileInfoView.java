@@ -33,7 +33,7 @@ import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.BitmapForProfileFactory;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
@@ -60,11 +60,8 @@ public class ProfileInfoView extends LinearLayout
     @InjectView(R.id.et_lastname) EditText lastName;
     @InjectView(R.id.image_optional) @Optional ImageView profileImage;
 
-    @Inject AlertDialogUtil alertDialogUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
-    @Inject BitmapForProfileFactory bitmapForProfileFactory;
-    @Inject BitmapTypedOutputFactory bitmapTypedOutputFactory;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @Inject AccountManager accountManager;
 
@@ -120,7 +117,7 @@ public class ProfileInfoView extends LinearLayout
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(getContext(),
+            AlertDialogUtil.popWithNegativeButton(getContext(),
                     R.string.error_fetch_image_library,
                     R.string.error_fetch_image_library,
                     R.string.cancel);
@@ -140,8 +137,8 @@ public class ProfileInfoView extends LinearLayout
         {
             try
             {
-                created = bitmapTypedOutputFactory.createForProfilePhoto(
-                        getResources(), bitmapForProfileFactory, newImagePath);
+                created = BitmapTypedOutputFactory.createForProfilePhoto(
+                        getResources(), newImagePath);
             }
             catch (OutOfMemoryError e)
             {
@@ -176,7 +173,7 @@ public class ProfileInfoView extends LinearLayout
     {
         if (newImagePath != null)
         {
-            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(getResources(), newImagePath);
+            Bitmap decoded = GraphicUtil.decodeBitmapForProfile(getResources(), newImagePath);
             if (decoded != null)
             {
                 displayProfileImage(decoded);

@@ -73,8 +73,6 @@ public class BuySellStockFragment extends BuySellFragment
     @InjectView(R.id.btn_add_trigger) protected Button mBtnAddTrigger;
     @InjectView(R.id.btn_add_watch_list) protected Button mBtnAddWatchlist;
 
-    @Inject ProgressDialogUtil progressDialogUtil;
-
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject Picasso picasso;
@@ -138,7 +136,7 @@ public class BuySellStockFragment extends BuySellFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        progressDialogUtil.dismiss(getActivity());
+        ProgressDialogUtil.dismiss(getActivity());
         unsubscribe(userWatchlistPositionCacheSubscription);
         userWatchlistPositionCacheSubscription = null;
     }

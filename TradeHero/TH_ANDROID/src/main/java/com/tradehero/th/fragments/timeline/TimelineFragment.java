@@ -103,7 +103,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
-    @Inject Lazy<HeroAlertDialogUtil> heroAlertDialogUtilLazy;
     @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogUtilRxLazy;
     @Inject Analytics analytics;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -112,7 +111,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Inject MessageThreadHeaderCacheRx messageThreadHeaderCache;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
     @Inject protected THRouter thRouter;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
     @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
@@ -461,7 +459,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             }
             else
             {
-                setActionBarTitle(userBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
+                setActionBarTitle(UserBaseDTOUtil.getLongDisplayName(getActivity(), shownProfile));
             }
         }
         else
@@ -667,7 +665,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                             getActivity(),
                             shownProfile,
                             getApplicablePortfolioId()).launchChoiceRx()
-                            .finallyDo(() -> heroAlertDialogUtilLazy.get().dismissProgressDialog())
+                            .finallyDo(() -> HeroAlertDialogUtil.dismissProgressDialog())
                             .subscribe(
                                     pair -> {
                                         if (!mIsOtherProfile)
@@ -738,10 +736,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
     {
-        heroAlertDialogUtilLazy.get().showProgressDialog(getActivity(), getString(R.string.following_this_hero));
+        HeroAlertDialogUtil.showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(() -> heroAlertDialogUtilLazy.get().dismissProgressDialog());
+                .finallyDo(() -> HeroAlertDialogUtil.dismissProgressDialog());
     }
 
     protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>

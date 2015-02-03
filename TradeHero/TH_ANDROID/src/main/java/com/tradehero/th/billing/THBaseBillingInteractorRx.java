@@ -16,7 +16,6 @@ import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.List;
 import javax.inject.Provider;
 import rx.Observable;
@@ -69,7 +68,6 @@ abstract public class THBaseBillingInteractorRx<
     public static final int ACTION_RESET_PORTFOLIO = 1;
 
     @NonNull protected final Provider<Activity> activityProvider;
-    @NonNull protected final ProgressDialogUtil progressDialogUtil;
     @NonNull protected final THBillingAlertDialogRxUtil<
             ProductIdentifierType,
             THProductDetailType,
@@ -83,7 +81,6 @@ abstract public class THBaseBillingInteractorRx<
     protected THBaseBillingInteractorRx(
             @NonNull THBillingLogicHolderType billingLogicHolder,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THBillingAlertDialogRxUtil<
                     ProductIdentifierType,
                     THProductDetailType,
@@ -95,7 +92,6 @@ abstract public class THBaseBillingInteractorRx<
     {
         super(billingLogicHolder);
         this.activityProvider = activityProvider;
-        this.progressDialogUtil = progressDialogUtil;
         this.billingAlertDialogUtil = billingAlertDialogUtil;
         this.billingAlertDialogUtil.setStoreName(getName());
     }

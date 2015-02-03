@@ -48,7 +48,6 @@ import rx.internal.util.SubscriptionList;
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
-    @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
@@ -206,7 +205,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                 {
                     @Override public void call()
                     {
-                        alertDialogUtil.dismissProgressDialog();
+                        AlertDialogUtil.dismissProgressDialog();
                         registerSocialButtons();
                     }
                 })
@@ -260,7 +259,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
         return socialAlertDialogRxUtil.popNeedToLinkSocial(getActivity(), socialNetwork)
                 .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
-                .doOnNext(dialogResult -> alertDialogUtil.showProgressDialog(
+                .doOnNext(dialogResult -> AlertDialogUtil.showProgressDialog(
                         getActivity(),
                         getString(
                                 R.string.authentication_connecting_to,
@@ -271,7 +270,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                             .socialLink(getActivity())
                             .map(userProfileDTO1 -> Pair.create(socialLinkToggleButton, userProfileDTO1));
                 })
-                .doOnCompleted(alertDialogUtil::dismissProgressDialog);
+                .doOnCompleted(AlertDialogUtil::dismissProgressDialog);
     }
     //</editor-fold>
 

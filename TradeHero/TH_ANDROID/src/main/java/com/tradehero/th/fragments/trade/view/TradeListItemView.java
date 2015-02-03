@@ -45,7 +45,6 @@ public class TradeListItemView extends LinearLayout
     private boolean prettyDate = true;
     @Nullable private String strDisplay;
 
-    @Inject Lazy<PositionDTOUtils> positionDTOUtils;
     @Inject PrettyTime prettyTime;
 
     // all the 3 caches below are needed to get the security currencyDisplay display
@@ -337,7 +336,7 @@ public class TradeListItemView extends LinearLayout
             Boolean isOpen = position.isOpen();
             if (tradeItem.isLastTrade() && isOpen != null && isOpen)
             {
-                positionDTOUtils.get().setUnrealizedPLLook(unrealizedPLValue, position);
+                PositionDTOUtils.setUnrealizedPLLook(unrealizedPLValue, position);
             }
             else
             {

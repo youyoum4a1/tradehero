@@ -97,7 +97,6 @@ public class MainCompetitionFragment extends CompetitionFragment
     @Inject ProviderDisplayCellListCacheRx providerDisplayListCellCache;
     @Inject ProviderUtil providerUtil;
     @Inject CompetitionZoneDTOUtil competitionZoneDTOUtil;
-    @Inject GraphicUtil graphicUtil;
     @Inject THIntentFactory thIntentFactory;
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
@@ -429,12 +428,12 @@ public class MainCompetitionFragment extends CompetitionFragment
         {
             btnTradeNow.setVisibility(View.VISIBLE);
 
-            int bgColor = graphicUtil.parseColor(providerDTO.hexColor);
-            StateListDrawable stateListDrawable = graphicUtil.createStateListDrawable(getActivity(), bgColor);
+            int bgColor = GraphicUtil.parseColor(providerDTO.hexColor);
+            StateListDrawable stateListDrawable = GraphicUtil.createStateListDrawable(getActivity(), bgColor);
 
-            graphicUtil.setBackground(btnTradeNow, stateListDrawable);
+            GraphicUtil.setBackground(btnTradeNow, stateListDrawable);
 
-            int textColor = graphicUtil.parseColor(providerDTO.textHexColor, graphicUtil.getContrastingColor(bgColor));
+            int textColor = GraphicUtil.parseColor(providerDTO.textHexColor, GraphicUtil.getContrastingColor(bgColor));
             btnTradeNow.setTextColor(textColor);
         }
     }

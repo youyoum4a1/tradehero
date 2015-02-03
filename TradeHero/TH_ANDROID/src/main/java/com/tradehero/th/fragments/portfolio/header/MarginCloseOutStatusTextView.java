@@ -22,7 +22,6 @@ public class MarginCloseOutStatusTextView extends TextView
     private static final long PULSATING_DURATION_MS = 750;
     private static final int RELEVANT_DIGIT_MARGIN = 3;
 
-    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Nullable private ObjectAnimator currentAnimator;
     @NonNull private Pair<MarginCloseOutState, MarginCloseOutState> stateTransition;
     protected PortfolioCompactDTO portfolioCompactDTO;
@@ -65,7 +64,7 @@ public class MarginCloseOutStatusTextView extends TextView
         {
             return null;
         }
-        return portfolioCompactDTOUtil.getMarginCloseOutState(
+        return PortfolioCompactDTOUtil.getMarginCloseOutState(
                 getResources(),
                 portfolioCompactDTO.marginCloseOutPercent);
     }
@@ -77,7 +76,7 @@ public class MarginCloseOutStatusTextView extends TextView
         {
             setVisibility(VISIBLE);
 
-            MarginCloseOutState closeOutState = portfolioCompactDTOUtil.getMarginCloseOutState(
+            MarginCloseOutState closeOutState = PortfolioCompactDTOUtil.getMarginCloseOutState(
                     getResources(),
                     portfolioCompactDTO.marginCloseOutPercent);
 

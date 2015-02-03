@@ -36,7 +36,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
 
     @Inject @ForUserPhotoBackground protected Transformation peopleBackgroundTransformation;
-    @Inject GraphicUtil graphicUtil;
     @Inject LevelDefListCacheRx levelDefListCache;
 
     private Target topBackgroundTarget;
@@ -248,7 +247,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (profileTop != null)
             {
-                graphicUtil.setBackground(profileTop, new BitmapDrawable(context.getResources(), bitmap));
+                GraphicUtil.setBackground(profileTop, new BitmapDrawable(context.getResources(), bitmap));
             }
         }
 

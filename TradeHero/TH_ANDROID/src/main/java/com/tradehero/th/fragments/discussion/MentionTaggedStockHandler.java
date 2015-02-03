@@ -19,17 +19,14 @@ public class MentionTaggedStockHandler
     public static final String SECURITY_TAG_FORMAT = "[$%s](tradehero://security/%d_%s)";
     public static final String MENTIONED_FORMAT = "<@@%s,%d@>";
 
-    @NonNull EditableUtil editableUtil;
     @NonNull RichTextCreator parser;
     @Nullable EditText discussionPostContent;
     @Nullable private HasSelectedItem hasSelectedItemFragment;
 
     //<editor-fold desc="Constructors">
     @Inject public MentionTaggedStockHandler(
-            @NonNull EditableUtil editableUtil,
             @NonNull RichTextCreator parser)
     {
-        this.editableUtil = editableUtil;
         this.parser = parser;
     }
     //</editor-fold>
@@ -101,7 +98,7 @@ public class MentionTaggedStockHandler
                 int start = discussionPostContent.getSelectionStart();
                 int end = discussionPostContent.getSelectionEnd();
                 editable = editable.replace(start, end, extraText);
-                nonMarkUpText = editableUtil.unSpanText(editable).toString();
+                nonMarkUpText = EditableUtil.unSpanText(editable).toString();
             }
 
             Timber.d("Original text: %s", nonMarkUpText);

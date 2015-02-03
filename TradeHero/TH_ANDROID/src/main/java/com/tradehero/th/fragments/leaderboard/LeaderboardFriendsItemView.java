@@ -69,7 +69,6 @@ public class LeaderboardFriendsItemView extends RelativeLayout
     @Inject Picasso picasso;
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<SocialFriendHandlerFacebook> socialFriendHandlerFacebookLazy;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject THRouter thRouter;
@@ -345,7 +344,7 @@ public class LeaderboardFriendsItemView extends RelativeLayout
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(
+        progressDialog = ProgressDialogUtil.show(
                 activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);

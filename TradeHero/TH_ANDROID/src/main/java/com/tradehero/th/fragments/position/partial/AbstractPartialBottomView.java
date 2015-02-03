@@ -17,8 +17,6 @@ public class AbstractPartialBottomView
     protected ExpandableListItem<PositionDTO> expandableListItem;
     protected PositionDTO positionDTO;
 
-    @Inject protected PositionDTOUtils positionDTOUtils;
-
     //<editor-fold desc="Constructors">
     public AbstractPartialBottomView(Context context)
     {

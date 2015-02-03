@@ -21,7 +21,6 @@ import timber.log.Timber;
 
 abstract public class DashboardFragment extends BaseFragment
 {
-    @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected Lazy<DashboardNavigator> navigator;
     @Inject Lazy<ResideMenu> resideMenuLazy;
 
@@ -66,7 +65,7 @@ abstract public class DashboardFragment extends BaseFragment
     {
         if (this instanceof WithTutorial)
         {
-            alertDialogUtil.popTutorialContent(getActivity(), ((WithTutorial) this).getTutorialLayout());
+            AlertDialogUtil.popTutorialContent(getActivity(), ((WithTutorial) this).getTutorialLayout());
         }
         else
         {

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class StringUtils
 {
-    public static String join(String glue, @Nullable List elements)
+    @Nullable public static String join(String glue, @Nullable List elements)
     {
         if (elements == null)
         {
@@ -31,7 +31,7 @@ public class StringUtils
         return out.toString();
     }
 
-    public static String join(String glue, Object... elements)
+    @Nullable public static String join(String glue, Object... elements)
     {
         if (elements == null)
         {

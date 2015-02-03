@@ -69,7 +69,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
 {
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
     @Inject ProviderListCacheRx providerListCache;
-    @Inject ExchangeCompactDTOUtil exchangeCompactDTOUtil;
     @Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
 
@@ -232,7 +231,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
                 getResources(),
-                exchangeCompactDTOUtil.filterAndOrderForTrending(
+                ExchangeCompactDTOUtil.filterAndOrderForTrending(
                         exchangeDTOs,
                         new ExchangeCompactDTODescriptionNameComparator<>()));
         // Adding the "All" choice

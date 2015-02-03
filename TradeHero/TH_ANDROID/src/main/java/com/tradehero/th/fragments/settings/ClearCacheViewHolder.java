@@ -24,16 +24,13 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
 {
     private static final Pair<Long, TimeUnit> APPARENT_DURATION = Pair.create(500l, TimeUnit.MILLISECONDS);
 
-    @NonNull private final ProgressDialogUtil progressDialogUtil;
     @NonNull private final LruCache lruCache;
     @Nullable private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ClearCacheViewHolder(
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull @ForPicasso LruCache lruCache)
     {
-        this.progressDialogUtil = progressDialogUtil;
         this.lruCache = lruCache;
     }
     //</editor-fold>
@@ -53,7 +50,7 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
                 Context activityContext = preferenceFragmentCopy.getActivity();
                 if (activityContext != null)
                 {
-                    progressDialog = progressDialogUtil.show(
+                    progressDialog = ProgressDialogUtil.show(
                             activityContext,
                             R.string.settings_misc_cache_clearing_alert_title,
                             R.string.settings_misc_cache_clearing_alert_message);
@@ -98,7 +95,7 @@ public class ClearCacheViewHolder extends OneSettingViewHolder
             {
                 if (progressDialog == null)
                 {
-                    progressDialog = progressDialogUtil.show(
+                    progressDialog = ProgressDialogUtil.show(
                             activity,
                             R.string.settings_misc_cache_cleared_alert_title,
                             R.string.empty);

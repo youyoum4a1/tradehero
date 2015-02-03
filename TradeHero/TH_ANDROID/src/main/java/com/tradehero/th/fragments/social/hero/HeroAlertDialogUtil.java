@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,19 +13,11 @@ import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.OnFollowRequestedListener;
 import com.tradehero.th.utils.AlertDialogUtil;
-import javax.inject.Inject;
 
 public class HeroAlertDialogUtil extends AlertDialogUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public HeroAlertDialogUtil()
-    {
-        super();
-    }
-    //</editor-fold>
-
     @Deprecated // Use HeroAlertDialogRxUtil
-    @Nullable public FollowDialogCombo showFollowDialog(
+    @Nullable public static FollowDialogCombo showFollowDialog(
             @NonNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,
             final int followType,

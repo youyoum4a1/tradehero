@@ -41,7 +41,6 @@ public class FollowerListItemView extends RelativeLayout
     protected UserFollowerDTO userFollowerDTO;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
 
@@ -159,7 +158,7 @@ public class FollowerListItemView extends RelativeLayout
     {
         if (title != null)
         {
-            title.setText(userBaseDTOUtil.getShortDisplayName(getContext(), userFollowerDTO));
+            title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), userFollowerDTO));
         }
     }
 

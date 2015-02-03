@@ -1,21 +1,16 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.th.utils.AlertDialogUtil;
-import javax.inject.Inject;
 import android.support.annotation.NonNull;
+import com.tradehero.common.utils.THToast;
+import javax.inject.Inject;
 
 public class SamsungMarketUtil implements MarketUtil
 {
-
-    @NonNull protected final AlertDialogUtil alertDialogUtil;
-
     //<editor-fold desc="Constructors">
-    @Inject public SamsungMarketUtil(@NonNull AlertDialogUtil alertDialogUtil)
+    @Inject public SamsungMarketUtil()
     {
         super();
-        this.alertDialogUtil = alertDialogUtil;
     }
     //</editor-fold>
 

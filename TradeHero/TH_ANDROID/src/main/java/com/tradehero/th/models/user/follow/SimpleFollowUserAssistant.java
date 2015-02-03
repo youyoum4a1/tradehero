@@ -9,14 +9,12 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class SimpleFollowUserAssistant
 {
-    @Inject protected Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject protected UserServiceWrapper userServiceWrapper;
 
     @NonNull private final Context context;
@@ -39,7 +37,7 @@ public class SimpleFollowUserAssistant
         showProgress(R.string.manage_heroes_unfollow_progress_message);
         return userServiceWrapper.unfollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(() -> alertDialogUtilLazy.get().dismissProgressDialog());
+                .finallyDo(AlertDialogUtil::dismissProgressDialog);
     }
 
     @NonNull public Observable<UserProfileDTO> launchFreeFollowRx()
@@ -47,7 +45,7 @@ public class SimpleFollowUserAssistant
         showProgress(R.string.following_this_hero);
         return userServiceWrapper.freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(() -> alertDialogUtilLazy.get().dismissProgressDialog());
+                .finallyDo(AlertDialogUtil::dismissProgressDialog);
     }
 
     @NonNull protected Observable<UserProfileDTO> launchPremiumFollowRx()
@@ -55,12 +53,12 @@ public class SimpleFollowUserAssistant
         showProgress(R.string.following_this_hero);
         return userServiceWrapper.followRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(() -> alertDialogUtilLazy.get().dismissProgressDialog());
+                .finallyDo(AlertDialogUtil::dismissProgressDialog);
     }
 
     protected void showProgress(@StringRes int contentResId)
     {
-        alertDialogUtilLazy.get().showProgressDialog(
+        AlertDialogUtil.showProgressDialog(
                 context,
                 context.getString(contentResId));
     }

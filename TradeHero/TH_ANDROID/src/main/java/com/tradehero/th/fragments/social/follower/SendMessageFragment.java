@@ -66,7 +66,6 @@ public class SendMessageFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
@@ -143,7 +142,7 @@ public class SendMessageFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         sendMessageSubscriptions.unsubscribe();
-        progressDialogUtilLazy.get().dismiss(getActivity());
+        ProgressDialogUtil.dismiss(getActivity());
         DeviceUtil.dismissKeyboard(inputText);
         ButterKnife.reset(this);
         super.onDestroyView();
@@ -243,10 +242,10 @@ public class SendMessageFragment extends DashboardFragment
 
     private void sendMessage()
     {
-        progressDialogUtilLazy.get().dismiss(getActivity());
+        ProgressDialogUtil.dismiss(getActivity());
         String text = inputText.getText().toString();
         this.progressDialog =
-                progressDialogUtilLazy.get().show(getActivity(),
+                ProgressDialogUtil.show(getActivity(),
                         R.string.broadcast_message_waiting,
                         R.string.broadcast_message_sending_hint);
 

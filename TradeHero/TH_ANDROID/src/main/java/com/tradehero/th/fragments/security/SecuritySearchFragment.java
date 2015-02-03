@@ -37,7 +37,6 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
 
     @Inject SecurityCompactListCacheRx securityCompactListCache;
     @Inject Analytics analytics;
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @Nullable protected AssetClass assetClass;
 
@@ -166,7 +165,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
             BuySellFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
         BuySellFragment.putSecurityId(args, securityCompactDTO.getSecurityId());
-        navigator.get().pushFragment(securityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+        navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 
     @Override protected void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)

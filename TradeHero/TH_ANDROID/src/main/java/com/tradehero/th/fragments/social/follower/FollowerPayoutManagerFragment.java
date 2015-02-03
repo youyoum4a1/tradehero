@@ -51,7 +51,6 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
     @Inject protected Lazy<Picasso> picasso;
     @Inject protected Lazy<UserFollowerCacheRx> userFollowerCache;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject THRouter thRouter;
 
     public static void put(@NonNull Bundle args, @NonNull FollowerHeroRelationId followerHeroRelationId)
@@ -125,7 +124,7 @@ public class FollowerPayoutManagerFragment extends BasePurchaseManagerFragment
                 return followerHeroRelationId.followerName;
             }
         }
-        return userBaseDTOUtil.getShortDisplayName(getActivity(), userFollowerDTO);
+        return UserBaseDTOUtil.getShortDisplayName(getActivity(), userFollowerDTO);
     }
 
     public void display(UserFollowerDTO summaryDTO)

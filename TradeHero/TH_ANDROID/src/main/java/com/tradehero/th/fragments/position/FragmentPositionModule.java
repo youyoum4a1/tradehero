@@ -18,7 +18,6 @@ import dagger.Module;
                 PositionPartialBottomOpenView.class,
                 PositionLockedView.class,
                 PositionPartialBottomInPeriodViewHolder.class,
-                PositionSectionHeaderItemView.class,
         },
         library = true,
         complete = false

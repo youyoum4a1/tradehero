@@ -39,7 +39,6 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
     @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
-    @Inject protected GraphicUtil graphicUtil;
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -70,7 +69,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         {
             addTab(resourceDTO);
         }
-        graphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
+        GraphicUtil.setBackground(mTabHost.getTabWidget(), getResources().getDrawable(R.drawable.ab_background));
         return mTabHost;
     }
 

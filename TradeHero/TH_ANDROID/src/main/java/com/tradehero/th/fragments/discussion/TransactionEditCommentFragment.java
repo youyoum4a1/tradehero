@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
+import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.th.R;
 import javax.inject.Inject;
 
@@ -35,7 +36,7 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
 
     @Override protected void postDiscussion()
     {
-        unSpannedComment = editableUtil.unSpanText(discussionPostContent.getText());
+        unSpannedComment = EditableUtil.unSpanText(discussionPostContent.getText());
         navigator.get().popFragment();
     }
 }

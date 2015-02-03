@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -79,7 +80,7 @@ public class WebViewFragment extends BaseWebViewFragment
                     catch (ActivityNotFoundException e)
                     {
                         Timber.e(e, "No activity for %s", url);
-                        alertDialogUtil.popWithNegativeButton(
+                        AlertDialogUtil.popWithNegativeButton(
                                 getActivity(),
                                 R.string.webview_error_no_browser_for_intent_title,
                                 R.string.webview_error_no_browser_for_intent_description,

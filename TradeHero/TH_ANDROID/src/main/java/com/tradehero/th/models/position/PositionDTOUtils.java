@@ -1,6 +1,8 @@
 package com.tradehero.th.models.position;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
@@ -9,16 +11,10 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.THColorUtils;
-import javax.inject.Inject;
 
 public class PositionDTOUtils
 {
-    @Inject public PositionDTOUtils()
-    {
-        super();
-    }
-
-    public String getSumInvested(Resources resources, PositionDTO position)
+    @NonNull public static String getSumInvested(@NonNull Resources resources, PositionDTO position)
     {
         if (position != null)
         {
@@ -30,7 +26,9 @@ public class PositionDTOUtils
         }
     }
 
-    private String getSumInvested(Resources resources, PositionDTO position, String refCurrency)
+    @NonNull private static String getSumInvested(@NonNull Resources resources,
+            @Nullable PositionDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null && position.sumInvestedAmountRefCcy != null)
         {
@@ -46,7 +44,7 @@ public class PositionDTOUtils
         }
     }
 
-    public String getValueAtStart(Resources resources, PositionInPeriodDTO position)
+    @NonNull public static String getValueAtStart(@NonNull Resources resources, @Nullable PositionInPeriodDTO position)
     {
         if (position != null)
         {
@@ -58,7 +56,10 @@ public class PositionDTOUtils
         }
     }
 
-    private String getValueAtStart(Resources resources, PositionInPeriodDTO position, String refCurrency)
+    @NonNull private static String getValueAtStart(
+            @NonNull Resources resources,
+            @Nullable PositionInPeriodDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null &&
                 position.marketValueStartPeriodRefCcy != null &&
@@ -76,7 +77,7 @@ public class PositionDTOUtils
         }
     }
 
-    public void setRealizedPLLook(TextView textView, PositionDTO positionDTO)
+    public static void setRealizedPLLook(@NonNull TextView textView, @NonNull PositionDTO positionDTO)
     {
         textView.setText(getRealizedPL(textView.getResources(), positionDTO));
         if (positionDTO.realizedPLRefCcy != null)
@@ -89,7 +90,9 @@ public class PositionDTOUtils
         }
     }
 
-    private String getRealizedPL(Resources resources, PositionDTO position)
+    @NonNull private static String getRealizedPL(
+            @NonNull Resources resources,
+            @Nullable PositionDTO position)
     {
         if (position != null)
         {
@@ -101,7 +104,10 @@ public class PositionDTOUtils
         }
     }
 
-    private String getRealizedPL(Resources resources, PositionDTO position, String refCurrency)
+    @NonNull private static String getRealizedPL(
+            @NonNull Resources resources,
+            @Nullable PositionDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null && position.realizedPLRefCcy != null)
         {
@@ -117,7 +123,9 @@ public class PositionDTOUtils
         }
     }
 
-    public String getInPeriodRealizedPL(Resources resources, PositionInPeriodDTO position)
+    @NonNull public static String getInPeriodRealizedPL(
+            @NonNull Resources resources,
+            @Nullable PositionInPeriodDTO position)
     {
         if (position != null)
         {
@@ -129,7 +137,10 @@ public class PositionDTOUtils
         }
     }
 
-    private String getInPeriodRealizedPL(Resources resources, PositionInPeriodDTO position, String refCurrency)
+    @NonNull private static String getInPeriodRealizedPL(
+            @NonNull Resources resources,
+            @Nullable PositionInPeriodDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null && position.totalPLInPeriodRefCcy != null)
         {
@@ -145,7 +156,9 @@ public class PositionDTOUtils
         }
     }
 
-    public String getMarketValue(Resources resources, PositionDTO position)
+    @NonNull public static String getMarketValue(
+            @NonNull Resources resources,
+            @Nullable PositionDTO position)
     {
         if (position != null)
         {
@@ -157,7 +170,10 @@ public class PositionDTOUtils
         }
     }
 
-    private String getMarketValue(Resources resources, PositionDTO position, String refCurrency)
+    @NonNull private static String getMarketValue(
+            @NonNull Resources resources,
+            @Nullable PositionDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null)
         {
@@ -173,7 +189,9 @@ public class PositionDTOUtils
         }
     }
 
-    public void setUnrealizedPLLook(TextView textView, PositionDTO positionDTO)
+    public static void setUnrealizedPLLook(
+            @NonNull TextView textView,
+            @NonNull PositionDTO positionDTO)
     {
         textView.setText(getUnrealizedPL(textView.getResources(), positionDTO));
         if (positionDTO.unrealizedPLRefCcy != null)
@@ -186,7 +204,9 @@ public class PositionDTOUtils
         }
     }
 
-    private String getUnrealizedPL(Resources resources, PositionDTO position)
+    @NonNull private static String getUnrealizedPL(
+            @NonNull Resources resources,
+            @Nullable PositionDTO position)
     {
         if (position != null)
         {
@@ -198,7 +218,10 @@ public class PositionDTOUtils
         }
     }
 
-    private String getUnrealizedPL(Resources resources, PositionDTO position, String refCurrency)
+    @NonNull private static String getUnrealizedPL(
+            @NonNull Resources resources,
+            @Nullable PositionDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null && position.unrealizedPLRefCcy != null)
         {
@@ -214,7 +237,9 @@ public class PositionDTOUtils
         }
     }
 
-    public void setROISinceInception(TextView textView, PositionDTO positionDTO)
+    public static void setROISinceInception(
+            @NonNull TextView textView,
+            @Nullable PositionDTO positionDTO)
     {
         if (positionDTO != null)
         {
@@ -222,7 +247,9 @@ public class PositionDTOUtils
         }
     }
 
-    public void setROIInPeriod(TextView textView, PositionInPeriodDTO positionInPeriodDTO)
+    public static void setROIInPeriod(
+            @NonNull TextView textView,
+            @Nullable PositionInPeriodDTO positionInPeriodDTO)
     {
         if (positionInPeriodDTO != null)
         {
@@ -230,7 +257,7 @@ public class PositionDTOUtils
         }
     }
 
-    void setROILook(TextView textView, Double roiValue)
+    static void setROILook(@NonNull TextView textView, @Nullable Double roiValue)
     {
         if (roiValue == null)
         {
@@ -248,7 +275,9 @@ public class PositionDTOUtils
         }
     }
 
-    public String getAdditionalInvested(Resources resources, PositionInPeriodDTO position)
+    @NonNull public static String getAdditionalInvested(
+            @NonNull Resources resources,
+            @Nullable PositionInPeriodDTO position)
     {
         if (position != null)
         {
@@ -260,7 +289,10 @@ public class PositionDTOUtils
         }
     }
 
-    private String getAdditionalInvested(Resources resources, PositionInPeriodDTO position, String refCurrency)
+    @NonNull private static String getAdditionalInvested(
+            @NonNull Resources resources,
+            @Nullable PositionInPeriodDTO position,
+            @Nullable String refCurrency)
     {
         if (position != null && position.sum_purchasesInPeriodRefCcy != null)
         {

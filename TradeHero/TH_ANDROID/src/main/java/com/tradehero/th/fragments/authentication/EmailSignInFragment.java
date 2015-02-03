@@ -55,7 +55,6 @@ public class EmailSignInFragment extends Fragment
     private View forgotDialogView;
 
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
@@ -238,7 +237,7 @@ public class EmailSignInFragment extends Fragment
         ForgotPasswordFormDTO forgotPasswordFormDTO = new ForgotPasswordFormDTO();
         forgotPasswordFormDTO.userEmail = email;
 
-        mProgressDialog = progressDialogUtil.show(
+        mProgressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);

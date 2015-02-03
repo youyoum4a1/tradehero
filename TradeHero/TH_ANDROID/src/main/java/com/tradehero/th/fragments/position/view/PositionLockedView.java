@@ -25,8 +25,6 @@ public class PositionLockedView extends LinearLayout
 
     private PositionDTO positionDTO;
 
-    @Inject protected PositionDTOUtils positionDTOUtils;
-
     //<editor-fold desc="Constructors">
     public PositionLockedView(Context context)
     {
@@ -91,7 +89,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (unrealisedPLValue != null)
         {
-            positionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
+            PositionDTOUtils.setUnrealizedPLLook(unrealisedPLValue, positionDTO);
         }
     }
 
@@ -114,7 +112,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (realisedPLValue != null)
         {
-            positionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
+            PositionDTOUtils.setRealizedPLLook(realisedPLValue, positionDTO);
         }
     }
 
@@ -124,7 +122,7 @@ public class PositionLockedView extends LinearLayout
         {
             if (positionDTO != null)
             {
-                totalInvestedValue.setText(positionDTOUtils.getSumInvested(getResources(), positionDTO));
+                totalInvestedValue.setText(PositionDTOUtils.getSumInvested(getResources(), positionDTO));
             }
         }
     }
@@ -133,7 +131,7 @@ public class PositionLockedView extends LinearLayout
     {
         if (positionPercent != null)
         {
-            positionDTOUtils.setROISinceInception(positionPercent, positionDTO);
+            PositionDTOUtils.setROISinceInception(positionPercent, positionDTO);
         }
     }
 }

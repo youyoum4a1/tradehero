@@ -1,33 +1,25 @@
 package com.tradehero.th.api.security;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trade.BuySellFXFragment;
 import com.tradehero.th.fragments.trade.BuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import java.text.DecimalFormatSymbols;
-import javax.inject.Inject;
 
 public class SecurityCompactDTOUtil
 {
     public static final int DEFAULT_RELEVANT_DIGITS = 20;
 
-    //<editor-fold desc="Constructors">
-    @Inject public SecurityCompactDTOUtil()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    public int getExpectedPrecision(@NonNull SecurityCompactDTO securityCompactDTO)
+    public static int getExpectedPrecision(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         return getExpectedPrecision(securityCompactDTO.askPrice, securityCompactDTO.bidPrice);
     }
 
-    public int getExpectedPrecision(double ask, double bid)
+    public static int getExpectedPrecision(double ask, double bid)
     {
         String askPrice = THSignedNumber.builder(ask)
                 .relevantDigitCount(DEFAULT_RELEVANT_DIGITS)
@@ -57,7 +49,7 @@ public class SecurityCompactDTOUtil
         return 0;
     }
 
-    @NonNull public String getShortSymbol(@NonNull SecurityCompactDTO securityCompactDTO)
+    @NonNull public static String getShortSymbol(@NonNull SecurityCompactDTO securityCompactDTO)
     {
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
@@ -72,7 +64,7 @@ public class SecurityCompactDTOUtil
                 securityId.getSecuritySymbol());
     }
 
-    public Class<? extends BuySellFragment> fragmentFor(SecurityCompactDTO securityCompactDTO)
+    @NonNull public static Class<? extends BuySellFragment> fragmentFor(@Nullable SecurityCompactDTO securityCompactDTO)
     {
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {

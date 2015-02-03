@@ -47,7 +47,6 @@ public class SettingsAlipayFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -130,7 +129,7 @@ public class SettingsAlipayFragment extends DashboardFragment
     @OnClick(R.id.settings_alipay_update_button)
     public void onSubmitClicked(@SuppressWarnings("UnusedParameters") View view)
     {
-        progressDialog = progressDialogUtil.show(
+        progressDialog = ProgressDialogUtil.show(
                 getActivity(),
                 R.string.alert_dialog_please_wait,
                 R.string.authentication_connecting_tradehero_only);

@@ -1,6 +1,7 @@
 package com.tradehero.th.api.competition;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.CompetitionUrl;
@@ -22,21 +23,23 @@ public class ProviderUtil
     public static final String WIZARD = "wizard/";
     public static final String QUERY_KEY_FULL_SCREEN = "fullScreen";
 
-    private final CurrentUserId currentUserId;
-    private final String competitionUrl;
-    private final String authenticationHeader;
+    @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final String competitionUrl;
+    @NonNull private final String authenticationHeader;
 
+    //<editor-fold desc="Constructors">
     @Inject ProviderUtil(
-            CurrentUserId currentUserId,
-            @CompetitionUrl String competitionUrl,
-            @AuthHeader String authenticationHeader)
+            @NonNull CurrentUserId currentUserId,
+            @CompetitionUrl @NonNull String competitionUrl,
+            @AuthHeader @NonNull String authenticationHeader)
     {
         this.currentUserId = currentUserId;
         this.competitionUrl = competitionUrl;
         this.authenticationHeader = authenticationHeader;
     }
+    //</editor-fold>
 
-    public String getLandingPage(ProviderId providerId, UserBaseKey userBaseKey)
+    @NonNull public String getLandingPage(@NonNull ProviderId providerId, UserBaseKey userBaseKey)
     {
         String url = competitionUrl + LANDING;
         url = appendProviderId(url, '?', providerId);
@@ -45,12 +48,12 @@ public class ProviderUtil
         return appendAuthorization(url, '&');
     }
 
-    public String getRulesPage(ProviderId providerId)
+    @NonNull public String getRulesPage(@NonNull ProviderId providerId)
     {
         return getRulesPage(providerId, false);
     }
 
-    public String getRulesPage(ProviderId providerId, boolean showNextButton)
+    @NonNull public String getRulesPage(@NonNull ProviderId providerId, boolean showNextButton)
     {
         String url = competitionUrl + RULES;
         url = appendProviderId(url, '?', providerId);
@@ -62,7 +65,7 @@ public class ProviderUtil
         return appendAuthorization(url, '&');
     }
 
-    public String getTermsPage(ProviderId providerId)
+    @NonNull public String getTermsPage(@NonNull ProviderId providerId)
     {
         String url = competitionUrl + TERMS;
         url = appendProviderId(url, '?', providerId);
@@ -70,7 +73,7 @@ public class ProviderUtil
         return appendAuthorization(url, '&');
     }
 
-    public String getWizardPage(ProviderId providerId)
+    @NonNull public String getWizardPage(@NonNull ProviderId providerId)
     {
         String url = competitionUrl + WIZARD;
         url = appendProviderId(url, '?', providerId);
@@ -78,17 +81,17 @@ public class ProviderUtil
         return appendAuthorization(url, '&');
     }
 
-    public String appendProviderId(String url, char separator, ProviderId providerId)
+    @NonNull public String appendProviderId(@NonNull String url, char separator, @NonNull ProviderId providerId)
     {
         return appendToUrl(url, separator + QUERY_KEY_PROVIDER_ID + "=" + providerId.key);
     }
 
-    public String appendUserId(String url, char separator)
+    @NonNull public String appendUserId(@NonNull String url, char separator)
     {
         return appendToUrl(url, separator + QUERY_KEY_USER_ID + "=" + currentUserId.get());
     }
 
-    public String appendToUrl(String url, String forAppend)
+    @NonNull public String appendToUrl(@NonNull String url, @NonNull String forAppend)
     {
         if (url.contains("?") || forAppend.startsWith("?"))
         {
@@ -100,17 +103,17 @@ public class ProviderUtil
         }
     }
 
-    public String appendShowNextButton(String url, char separator)
+    @NonNull public String appendShowNextButton(@NonNull String url, char separator)
     {
         return url + separator + QUERY_KEY_SHOW_NEXT_BUTTON + "=1";
     }
 
-    public String appendAuthorization(String url, char separator)
+    @NonNull public String appendAuthorization(@NonNull String url, char separator)
     {
         return url + separator + QUERY_KEY_AUTHORISATION + "=" + Uri.encode(authenticationHeader);
     }
 
-    public String appendFullScreen(String url, char separator)
+    @NonNull public String appendFullScreen(@NonNull String url, char separator)
     {
         return url + separator + QUERY_KEY_FULL_SCREEN + "=1";
     }

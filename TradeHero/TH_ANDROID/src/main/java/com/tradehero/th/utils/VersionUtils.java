@@ -25,7 +25,7 @@ public class VersionUtils
     }
     //</editor-fold>
 
-    public Intent getSupportEmailIntent(Context context)
+    @NonNull public Intent getSupportEmailIntent(@NonNull Context context)
     {
         return getSupportEmailIntent(context, false);
     }

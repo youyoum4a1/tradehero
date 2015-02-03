@@ -52,12 +52,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     private final static long MILLISECOND_QUOTE_REFRESH = 30000;
 
-    @Inject protected AlertDialogUtil alertDialogUtil;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
     @Inject protected SecurityPositionDetailCacheRx securityPositionDetailCache;
     @Inject protected UserProfileCacheRx userProfileCache;
-    @Inject protected PortfolioCompactDTOUtil portfolioCompactDTOUtil;
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
     @Inject protected ToastOnErrorAction toastOnErrorAction;
@@ -323,7 +321,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     public Integer getMaxPurchasableShares()
     {
-        return portfolioCompactDTOUtil.getMaxPurchasableShares(
+        return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 this.portfolioCompactDTO,
                 this.quoteDTO,
                 this.positionDTOCompact);
@@ -351,7 +349,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     @Nullable public Integer getMaxSellableShares()
     {
-        return portfolioCompactDTOUtil.getMaxSellableShares(
+        return PortfolioCompactDTOUtil.getMaxSellableShares(
                 this.portfolioCompactDTO,
                 this.quoteDTO,
                 this.positionDTOCompact);
@@ -395,6 +393,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void notifyMarketClosed()
     {
-        alertDialogUtil.popMarketClosed(getActivity(), securityId);
+        AlertDialogUtil.popMarketClosed(getActivity(), securityId);
     }
 }

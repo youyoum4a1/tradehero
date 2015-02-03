@@ -59,7 +59,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @InjectView(android.R.id.progress) View progressBar;
     @InjectView(R.id.main_content_wrapper) BetterViewAnimator mainContentWrapper;
 
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject Provider<Activity> activityProvider;
     @Inject Lazy<UserProfileCacheRx> userProfileCacheLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -294,7 +293,7 @@ public final class HomeFragment extends BaseWebViewFragment
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(
+        progressDialog = ProgressDialogUtil.show(
                 activityProvider.get(),
                 R.string.loading_loading,
                 R.string.alert_dialog_please_wait);

@@ -43,7 +43,6 @@ abstract public class SocialConnectSettingViewHolder
     protected SocialConnectSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull SocialAlertDialogRxUtil socialAlertDialogRxUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
@@ -51,7 +50,7 @@ abstract public class SocialConnectSettingViewHolder
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull String authToken)
     {
-        super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
+        super(currentUserId, userProfileCache, userServiceWrapper);
         this.socialAlertDialogRxUtil = socialAlertDialogRxUtil;
         this.socialServiceWrapper = socialServiceWrapper;
         this.socialAuthenticationProvider = socialAuthenticationProvider;
@@ -112,7 +111,7 @@ abstract public class SocialConnectSettingViewHolder
 
     @NonNull protected Observable<UserProfileDTO> linkRx(@NonNull Activity activityContext)
     {
-        ProgressDialog progressDialog = progressDialogUtil.show(
+        ProgressDialog progressDialog = ProgressDialogUtil.show(
                 activityContext,
                 getSocialNetworkEnum().nameResId,
                 getLinkingDialogMessage());
@@ -134,7 +133,7 @@ abstract public class SocialConnectSettingViewHolder
 
     @NonNull protected Observable<UserProfileDTO> effectUnlinkRx(@NonNull Context activityContext)
     {
-        ProgressDialog progressDialog = progressDialogUtil.show(
+        ProgressDialog progressDialog = ProgressDialogUtil.show(
                 activityContext,
                 getSocialNetworkEnum().nameResId,
                 getUnlinkingProgressDialogMessage());

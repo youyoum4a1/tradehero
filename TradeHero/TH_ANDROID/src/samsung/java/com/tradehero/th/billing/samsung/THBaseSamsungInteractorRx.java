@@ -15,7 +15,6 @@ import com.tradehero.th.billing.THBaseBillingInteractorRx;
 import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -43,7 +42,6 @@ public class THBaseSamsungInteractorRx
     //<editor-fold desc="Constructors">
     @Inject public THBaseSamsungInteractorRx(
             @NonNull Provider<Activity> activityProvider,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THSamsungAlertDialogRxUtil thSamsungAlertDialogUtil,
             @NonNull THSamsungLogicHolderRx billingActor,
             @NonNull CurrentUserId currentUserId,
@@ -52,7 +50,6 @@ public class THBaseSamsungInteractorRx
         super(
                 billingActor,
                 activityProvider,
-                progressDialogUtil,
                 thSamsungAlertDialogUtil);
         this.currentUserId = currentUserId;
         this.portfolioCompactListCache = portfolioCompactListCache;

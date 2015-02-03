@@ -53,7 +53,6 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
 import com.tradehero.th.widget.list.BaseExpandingItemListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -74,7 +73,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     @Inject Analytics analytics;
     @Inject Provider<PrettyTime> prettyTime;
     @Inject @ForUser SharedPreferences preferences;
-    @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject PagedLeaderboardWrapperCacheRx pagedLeaderboardWrapperCache;
     @Inject LeaderboardCacheRx leaderboardCache;
@@ -483,7 +481,7 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     private void updateListViewRow(@NonNull final UserBaseKey heroId)
     {
-        adapterViewUtilsLazy.get().updateSingleRowWhere(
+        AdapterViewUtils.updateSingleRowWhere(
                 listView,
                 UserBaseDTO.class,
                 userBaseDTO -> userBaseDTO.getBaseKey().equals(heroId));

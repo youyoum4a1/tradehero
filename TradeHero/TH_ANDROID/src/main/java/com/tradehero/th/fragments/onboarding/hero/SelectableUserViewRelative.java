@@ -7,7 +7,6 @@ import android.widget.RelativeLayout;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
@@ -15,7 +14,6 @@ import javax.inject.Inject;
 public class SelectableUserViewRelative extends RelativeLayout
     implements DTOView<SelectableUserDTO>
 {
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation transformation;
     @NonNull SelectableUserViewHolder viewHolder;
@@ -34,7 +32,7 @@ public class SelectableUserViewRelative extends RelativeLayout
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            viewHolder = new SelectableUserViewHolder(getContext(), userBaseDTOUtil, picasso, transformation);
+            viewHolder = new SelectableUserViewHolder(getContext(), picasso, transformation);
             viewHolder.attachView(this);
         }
     }

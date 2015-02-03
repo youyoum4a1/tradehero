@@ -24,7 +24,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.NewsDiscussionFragment;
 import com.tradehero.th.fragments.news.NewsHeadlineAdapter;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
@@ -37,8 +36,6 @@ public class StockInfoFragment extends DashboardFragment
 {
     public final static String BUNDLE_KEY_SECURITY_ID_BUNDLE = StockInfoFragment.class.getName() + ".securityId";
     public final static String BUNDLE_KEY_PROVIDER_ID_BUNDLE = StockInfoFragment.class.getName() + ".providerId";
-
-    @Inject protected AlertDialogUtil alertDialogUtil;
 
     protected ProviderId providerId;
 

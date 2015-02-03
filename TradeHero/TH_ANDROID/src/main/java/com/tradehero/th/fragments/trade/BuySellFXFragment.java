@@ -58,7 +58,6 @@ public class BuySellFXFragment extends BuySellFragment
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    @Inject SecurityCompactDTOUtil securityCompactDTOUtil;
 
     @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
     @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
@@ -259,7 +258,7 @@ public class BuySellFXFragment extends BuySellFragment
             int precision = 0;
             if (quoteDTO.ask != null && quoteDTO.bid != null)
             {
-                precision = securityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
+                precision = SecurityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
             }
 
             if (quoteDTO.ask == null)

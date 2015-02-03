@@ -63,7 +63,6 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
     @Inject protected Lazy<AlertCacheRx> alertCache;
     @Inject protected Lazy<AlertServiceWrapper> alertServiceWrapper;
     @Inject protected Lazy<Picasso> picasso;
-    @Inject protected ProgressDialogUtil progressDialogUtil;
     @Inject protected Lazy<UserProfileCacheRx> userProfileCache;
     @Inject protected CurrentUserId currentUserId;
 
@@ -172,7 +171,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
         this.alertId = alertId;
         if (alertId != null)
         {
-            progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+            progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
             progressDialog.setCanceledOnTouchOutside(true);
             unsubscribe(alertCacheSubscription);
             alertCacheSubscription = AppObservable.bindFragment(this,
@@ -320,7 +319,7 @@ public class AlertViewFragment extends BasePurchaseManagerFragment
 
     private void handleAlertToggleChanged(boolean alertActive)
     {
-        progressDialog = progressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading, R.string.alert_dialog_please_wait);
         progressDialog.setCanceledOnTouchOutside(true);
 
         if (alertDTO != null)

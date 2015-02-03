@@ -36,7 +36,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject AlertDialogUtil alertDialogUtil;
     @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject DashboardNavigator navigator;
 
@@ -151,7 +150,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private void askToLinkSocial(SocialNetworkEnum socialNetworkEnum)
     {
-        alertDialogUtil.popWithOkCancelButton(
+        AlertDialogUtil.popWithOkCancelButton(
                 getContext(),
                 getContext().getString(R.string.link, socialNetworkEnum.getName()),
                 String.format(getContext().getString(R.string.link_description), socialNetworkEnum.getName()),

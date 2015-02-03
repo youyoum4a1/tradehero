@@ -61,6 +61,7 @@ import com.tradehero.th.network.share.dto.ConnectRequired;
 import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -118,7 +119,6 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     @Inject UserAchievementCacheRx userAchievementCache;
     @Inject Picasso picasso;
-    @Inject GraphicUtil graphicUtil;
     @Inject LevelDefListCacheRx levelDefListCache;
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
@@ -205,7 +205,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         UserAchievementDTO userAchievementDTOCopy = userAchievementDTO;
         if (userAchievementDTOCopy != null && colorScheme == null)
         {
-            int color = graphicUtil.parseColor(userAchievementDTO.achievementDef.hexColor, Color.BLACK);
+            int color = GraphicUtil.parseColor(userAchievementDTO.achievementDef.hexColor, Color.BLACK);
             updateColor(color);
         }
         else if (colorScheme != null)
@@ -247,7 +247,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     private void setColor(int color)
     {
         pulsatingRing.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-        graphicUtil.applyColorFilter(imagesToColorFilter, color);
+        GraphicUtil.applyColorFilter(imagesToColorFilter, color);
         title.setTextColor(color);
     }
 
@@ -463,7 +463,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
     private void setShareButtonColor()
     {
-        List<PropertyValuesHolder> propertyValuesHolders = graphicUtil.wiggleWiggle(1f);
+        List<PropertyValuesHolder> propertyValuesHolders = GraphicUtil.wiggleWiggle(1f);
 
         PropertyValuesHolder pvhColor = PropertyValuesHolder.ofObject(PROPERTY_BTN_COLOR,
                 new ArgbEvaluator(),
@@ -479,9 +479,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         btnColorAnimation.setDuration(getResources().getInteger(R.integer.achievement_share_button_animation_duration));
         btnColorAnimation.addUpdateListener(valueAnimator -> {
             int color = (Integer) valueAnimator.getAnimatedValue(PROPERTY_BTN_COLOR);
-            StateListDrawable drawable = graphicUtil.createStateListDrawable(getActivity(), color);
-            int textColor = graphicUtil.getContrastingColor(color);
-            graphicUtil.setBackground(btnShare, drawable);
+            StateListDrawable drawable = GraphicUtil.createStateListDrawable(getActivity(), color);
+            int textColor = GraphicUtil.getContrastingColor(color);
+            GraphicUtil.setBackground(btnShare, drawable);
             btnShare.setTextColor(textColor);
         });
         btnColorAnimation.setStartDelay(getResources().getInteger(R.integer.achievement_share_button_animation_delay));
@@ -527,7 +527,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
         else
         {
-            alertDialogUtil.popWithNegativeButton(
+            AlertDialogUtil.popWithNegativeButton(
                     getActivity(),
                     R.string.link_select_one_social,
                     R.string.link_select_one_social_description,

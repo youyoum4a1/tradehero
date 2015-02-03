@@ -34,12 +34,11 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     //<editor-fold desc="Constructors">
     @Inject public THSamsungAlertDialogRxUtil(
             @NonNull Analytics analytics,
-            @NonNull ActivityUtil activityUtil,
             @NonNull VersionUtils versionUtils,
             @NonNull THSamsungPurchaseCacheRx thSamsungPurchaseCache,
             @NonNull SamsungStoreUtils samsungStoreUtils)
     {
-        super(analytics, activityUtil, versionUtils);
+        super(analytics, versionUtils);
         this.thSamsungPurchaseCache = thSamsungPurchaseCache;
         this.samsungStoreUtils = samsungStoreUtils;
     }

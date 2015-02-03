@@ -18,7 +18,6 @@ import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -50,7 +49,6 @@ import rx.Observable;
     @Inject public THBaseIABInteractorRx(
             @NonNull THIABLogicHolderRx billingActor,
             @NonNull Provider<Activity> activityProvider,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull THIABAlertDialogRxUtil thIABAlertDialogUtil,
             @NonNull CurrentUserId currentUserId,
             @NonNull THIABProductDetailCacheRx thiabProductDetailCache,
@@ -60,7 +58,6 @@ import rx.Observable;
         super(
                 billingActor,
                 activityProvider,
-                progressDialogUtil,
                 thIABAlertDialogUtil);
         this.currentUserId = currentUserId;
         this.thiabProductDetailCache = thiabProductDetailCache;

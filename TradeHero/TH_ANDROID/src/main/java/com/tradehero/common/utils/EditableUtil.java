@@ -8,13 +8,7 @@ import javax.inject.Inject;
 
 public class EditableUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public EditableUtil()
-    {
-    }
-    //</editor-fold>
-
-    @NonNull public Editable unSpanText(@NonNull Editable editable)
+    @NonNull public static Editable unSpanText(@NonNull Editable editable)
     {
         // keep editable unchange
         SpannableStringBuilder editableCopy = new SpannableStringBuilder(editable);

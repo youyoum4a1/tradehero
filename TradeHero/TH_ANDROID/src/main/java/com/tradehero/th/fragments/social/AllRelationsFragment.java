@@ -30,7 +30,6 @@ import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.AlertDialogUtil;
-import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
@@ -42,10 +41,8 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         implements AdapterView.OnItemClickListener, HasSelectedItem
 {
     List<AllowableRecipientDTO> mRelationsList;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtilLazy;
     @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @Inject UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
-    @Inject Lazy<AdapterViewUtils> adapterViewUtils;
 
     @InjectView(R.id.sending_to_header) View sendingToHeader;
 
@@ -98,7 +95,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     @Override public void onPause()
     {
-        alertDialogUtilLazy.get().dismissProgressDialog();
+        AlertDialogUtil.dismissProgressDialog();
         super.onPause();
     }
 
@@ -134,7 +131,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
 
     public void downloadRelations()
     {
-        alertDialogUtilLazy.get()
+        AlertDialogUtil
                 .showProgressDialog(getActivity(), getString(R.string.downloading_relations));
         subscriptions.add(AppObservable.bindFragment(
                 this,
@@ -147,7 +144,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void onNextRecipients(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
     {
         mRelationsList = pair.second.getData();
-        alertDialogUtilLazy.get().dismissProgressDialog();
+        AlertDialogUtil.dismissProgressDialog();
         mRelationsListItemAdapter.addAll(mRelationsList);
         mRelationsListItemAdapter.notifyDataSetChanged();
     }
@@ -155,7 +152,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     protected void onErrorRecipients(Throwable e)
     {
         THToast.show(new THException(e));
-        alertDialogUtilLazy.get().dismissProgressDialog();
+        AlertDialogUtil.dismissProgressDialog();
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
@@ -229,7 +226,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                     {
                         isEmpty = false;
                         mRelationsListItemAdapter.updateItem(userFollowed, pair.second);
-                        adapterViewUtils.get()
+                        AdapterViewUtils
                                 .updateSingleRowWhere(mRelationsListView, AllowableRecipientDTO.class,
                                         allowableRecipientDTO -> allowableRecipientDTO != null
                                                 && allowableRecipientDTO.user.getBaseKey().equals(userFollowed));

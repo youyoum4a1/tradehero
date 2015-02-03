@@ -13,16 +13,13 @@ import javax.inject.Inject;
 public class ResetHelpScreensViewHolder extends OneSettingViewHolder
 {
     @NonNull private final BooleanPreference resetHelpScreen;
-    @NonNull private final ProgressDialogUtil progressDialogUtil;
     private ProgressDialog progressDialog;
 
     //<editor-fold desc="Constructors">
     @Inject public ResetHelpScreensViewHolder(
-            @NonNull @ResetHelpScreens BooleanPreference resetHelpScreen,
-            @NonNull ProgressDialogUtil progressDialogUtil)
+            @NonNull @ResetHelpScreens BooleanPreference resetHelpScreen)
     {
         this.resetHelpScreen = resetHelpScreen;
-        this.progressDialogUtil = progressDialogUtil;
     }
     //</editor-fold>
 
@@ -42,7 +39,7 @@ public class ResetHelpScreensViewHolder extends OneSettingViewHolder
                 Context activityContext = preferenceFragmentCopy.getActivity();
                 if (activityContext != null)
                 {
-                    progressDialog = progressDialogUtil.show(
+                    progressDialog = ProgressDialogUtil.show(
                             activityContext,
                             preferenceFragmentCopy.getString(R.string.settings_misc_reset_help_screen),
                             "");

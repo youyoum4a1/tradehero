@@ -40,7 +40,6 @@ public class BaseActivity extends FragmentActivity
     @Inject @ForSocialToken IntentFilter socialTokenIntentFilter;
     BroadcastReceiver socialTokenBroadcastListener;
     @Inject Lazy<MarketUtil> marketUtil;
-    @Inject Lazy<AlertDialogUtil> alertDialogUtil;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -128,7 +127,7 @@ public class BaseActivity extends FragmentActivity
 
     private void showUpgradeDialog()
     {
-        alertDialogUtil.get().popWithOkCancelButton(
+        AlertDialogUtil.popWithOkCancelButton(
                 this,
                 R.string.upgrade_needed,
                 R.string.please_update,

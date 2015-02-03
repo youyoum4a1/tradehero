@@ -5,28 +5,20 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.BitmapForProfileFactory;
+import com.tradehero.th.utils.GraphicUtil;
 import javax.inject.Inject;
 
 public class BitmapTypedOutputFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public BitmapTypedOutputFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Nullable public BitmapTypedOutput createForProfilePhoto(
+    @Nullable public static BitmapTypedOutput createForProfilePhoto(
             @NonNull Resources resources,
-            @NonNull BitmapForProfileFactory bitmapForProfileFactory,
             @NonNull String profilePicturePath)
     {
         BitmapTypedOutput output = null;
-        Bitmap bitmap = bitmapForProfileFactory.decodeBitmapForProfile(resources, profilePicturePath);
+        Bitmap bitmap = GraphicUtil.decodeBitmapForProfile(resources, profilePicturePath);
         if (bitmap != null)
         {
-            Bitmap decoded = bitmapForProfileFactory.decodeBitmapForProfile(resources, profilePicturePath);
+            Bitmap decoded = GraphicUtil.decodeBitmapForProfile(resources, profilePicturePath);
             if (decoded != null)
             {
                 output = new BitmapTypedOutput(

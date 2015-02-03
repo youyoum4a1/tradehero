@@ -44,12 +44,11 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     //<editor-fold desc="Constructors">
     @Inject public THAmazonAlertDialogRxUtil(
             @NonNull Analytics analytics,
-            @NonNull ActivityUtil activityUtil,
             @NonNull VersionUtils versionUtils,
             @NonNull THAmazonPurchaseCacheRx thAmazonPurchaseCache,
             @NonNull AmazonStoreUtils amazonStoreUtils)
     {
-        super(analytics, activityUtil, versionUtils);
+        super(analytics, versionUtils);
         this.thAmazonPurchaseCache = thAmazonPurchaseCache;
         this.amazonStoreUtils = amazonStoreUtils;
     }
@@ -234,7 +233,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         Intent emailIntent = VersionUtils.getSupportEmailIntent(
                 versionUtils.getSupportEmailTraceParameters(context, true));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "My Amazon Store in-app purchases are in sandbox mode");
-        activityUtil.sendSupportEmail(context, emailIntent);
+        ActivityUtil.sendSupportEmail(context, emailIntent);
     }
     //</editor-fold>
 

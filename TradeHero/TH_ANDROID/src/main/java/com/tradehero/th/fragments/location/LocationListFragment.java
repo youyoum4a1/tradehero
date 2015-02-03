@@ -44,7 +44,6 @@ public class LocationListFragment extends DashboardFragment
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject Lazy<ProgressDialogUtil> progressDialogUtilLazy;
     @Inject ListedLocationDTOFactory listedLocationDTOFactory;
     @Inject UserProfileCacheRx userProfileCache;
 
@@ -200,7 +199,7 @@ public class LocationListFragment extends DashboardFragment
         {
             return progressDialog;
         }
-        progressDialog = progressDialogUtilLazy.get().show(getActivity(), R.string.loading_loading,
+        progressDialog = ProgressDialogUtil.show(getActivity(), R.string.loading_loading,
                 R.string.alert_dialog_please_wait);
         progressDialog.hide();
         return progressDialog;

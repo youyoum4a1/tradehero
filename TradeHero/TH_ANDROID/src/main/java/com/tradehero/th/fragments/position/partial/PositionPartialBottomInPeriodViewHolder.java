@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -13,7 +14,6 @@ import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.utils.DateUtils;
-import javax.inject.Inject;
 
 public class PositionPartialBottomInPeriodViewHolder
 {
@@ -27,13 +27,11 @@ public class PositionPartialBottomInPeriodViewHolder
     @InjectView(R.id.position_list_bottom_in_period_container) @Optional protected View inPeriodPositionContainer;
     @InjectView(R.id.position_list_overall_title) @Optional protected View overallTitle;
 
-    private final Context context;
+    @NonNull private final Context context;
     private ExpandableListItem<PositionDTO> expandableListItem;
     private PositionDTO positionDTO;
 
-    @Inject protected PositionDTOUtils positionDTOUtils;
-
-    public PositionPartialBottomInPeriodViewHolder(Context context, View container)
+    public PositionPartialBottomInPeriodViewHolder(@NonNull Context context, @NonNull View container)
     {
         super();
         this.context = context;
@@ -126,7 +124,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodPL.setText(positionDTOUtils.getInPeriodRealizedPL(context.getResources(), (PositionInPeriodDTO) positionDTO));
+                inPeriodPL.setText(PositionDTOUtils.getInPeriodRealizedPL(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -135,7 +133,7 @@ public class PositionPartialBottomInPeriodViewHolder
     {
         if (positionDTO instanceof PositionInPeriodDTO)
         {
-            positionDTOUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionDTO);
+            PositionDTOUtils.setROIInPeriod(inPeriodRoiValue, (PositionInPeriodDTO) positionDTO);
         }
     }
 
@@ -145,7 +143,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodAdditionalInvested.setText(positionDTOUtils.getAdditionalInvested(context.getResources(), (PositionInPeriodDTO) positionDTO));
+                inPeriodAdditionalInvested.setText(PositionDTOUtils.getAdditionalInvested(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }
@@ -156,7 +154,7 @@ public class PositionPartialBottomInPeriodViewHolder
         {
             if (positionDTO instanceof PositionInPeriodDTO)
             {
-                inPeriodValueAtStart.setText(positionDTOUtils.getValueAtStart(context.getResources(), (PositionInPeriodDTO) positionDTO));
+                inPeriodValueAtStart.setText(PositionDTOUtils.getValueAtStart(context.getResources(), (PositionInPeriodDTO) positionDTO));
             }
         }
     }

@@ -9,24 +9,13 @@ import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.models.resource.ResourceUtil;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class PortfolioCompactDTOUtil
 {
-    @NonNull protected final ResourceUtil resourceUtil;
-
-    //<editor-fold desc="Constructors">
-    @Inject public PortfolioCompactDTOUtil(@NonNull ResourceUtil resourceUtil)
-    {
-        super();
-        this.resourceUtil = resourceUtil;
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Max Purchasable Shares">
     // TODO handle refCurrency different from USD
-    @Nullable public Integer getMaxPurchasableShares(
+    @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO)
     {
@@ -44,7 +33,7 @@ public class PortfolioCompactDTOUtil
         return (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
     }
 
-    @Nullable public Integer getMaxPurchasableShares(
+    @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact positionDTOCompact)
@@ -70,7 +59,7 @@ public class PortfolioCompactDTOUtil
     }
     //</editor-fold>
 
-    @Nullable public Integer getMaxSellableShares(
+    @Nullable public static Integer getMaxSellableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO)
     {
@@ -92,7 +81,7 @@ public class PortfolioCompactDTOUtil
         return (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
     }
 
-    @Nullable public Integer getMaxSellableShares(
+    @Nullable public static Integer getMaxSellableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact positionDTOCompact)
@@ -117,7 +106,10 @@ public class PortfolioCompactDTOUtil
         return getMaxSellableShares(portfolioCompactDTO, quoteDTO);
     }
 
-    public String getPortfolioSubtitle(Context context, PortfolioCompactDTO portfolioCompactDTO, String userName)
+    @Nullable public static String getPortfolioSubtitle(
+            @NonNull Context context,
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable String userName)
     {
         if (portfolioCompactDTO != null)
         {
@@ -164,14 +156,14 @@ public class PortfolioCompactDTOUtil
         return null;
     }
 
-    @NonNull public MarginCloseOutState getMarginCloseOutState(
+    @NonNull public static MarginCloseOutState getMarginCloseOutState(
             @NonNull Resources resources,
             double marginCloseOut)
     {
         for (MarginCloseOutState marginState : MarginCloseOutState.values())
         {
-            if (resourceUtil.getFloat(resources, marginState.lowerBoundResId) <= marginCloseOut
-                    && marginCloseOut <= resourceUtil.getFloat(resources, marginState.upperBoundResId))
+            if (ResourceUtil.getFloat(resources, marginState.lowerBoundResId) <= marginCloseOut
+                    && marginCloseOut <= ResourceUtil.getFloat(resources, marginState.upperBoundResId))
             {
                 return marginState;
             }
@@ -180,7 +172,7 @@ public class PortfolioCompactDTOUtil
         throw new IllegalArgumentException();
     }
 
-    @Nullable public QuoteDTO createQuoteInPortfolioRefCcy(@Nullable QuoteDTO quoteDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
+    @Nullable public static QuoteDTO createQuoteInPortfolioRefCcy(@Nullable QuoteDTO quoteDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         if (quoteDTO == null
                 || quoteDTO.toUSDRate == null
@@ -191,7 +183,7 @@ public class PortfolioCompactDTOUtil
             return null;
         }
 
-        QuoteDTO converted = null;
+        QuoteDTO converted;
         try
         {
             converted = quoteDTO.clone();

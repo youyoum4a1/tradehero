@@ -52,7 +52,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject ProgressDialogUtil progressDialogUtil;
     @Inject Provider<AuthDataAccountAction> authDataActionProvider;
 
     @Nullable Subscription userProfileSubscription;
@@ -176,7 +175,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         }
         else
         {
-            profileView.progressDialog = progressDialogUtil.show(
+            profileView.progressDialog = ProgressDialogUtil.show(
                     getActivity(),
                     R.string.alert_dialog_please_wait,
                     R.string.authentication_connecting_tradehero_only);

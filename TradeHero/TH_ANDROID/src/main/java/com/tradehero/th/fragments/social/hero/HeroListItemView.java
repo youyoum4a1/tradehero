@@ -47,7 +47,6 @@ public class HeroListItemView extends RelativeLayout
     private HeroDTO heroDTO;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
-    @Inject UserBaseDTOUtil userBaseDTOUtil;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject DashboardNavigator navigator;
@@ -177,7 +176,7 @@ public class HeroListItemView extends RelativeLayout
 
     public void displayTitle()
     {
-        title.setText(userBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
+        title.setText(UserBaseDTOUtil.getShortDisplayName(getContext(), heroDTO));
     }
 
     public void displayDateInfo()

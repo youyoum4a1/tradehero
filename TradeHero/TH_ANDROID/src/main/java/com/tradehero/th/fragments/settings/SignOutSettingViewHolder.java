@@ -29,7 +29,6 @@ import timber.log.Timber;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
 {
-    @NonNull private final ProgressDialogUtil progressDialogUtil;
     @NonNull private final SessionServiceWrapper sessionServiceWrapper;
     @NonNull private final String authHeader;
     @NonNull private final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
@@ -39,13 +38,11 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
 
     //<editor-fold desc="Constructors">
     @Inject public SignOutSettingViewHolder(
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull SessionServiceWrapper sessionServiceWrapper,
             @NonNull @AuthHeader String authHeader,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap,
             @NonNull AccountManager accountManager)
     {
-        this.progressDialogUtil = progressDialogUtil;
         this.sessionServiceWrapper = sessionServiceWrapper;
         this.authHeader = authHeader;
         this.authenticationProviderMap = authenticationProviderMap;
@@ -99,7 +96,7 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         {
             if (activityContext != null)
             {
-                progressDialog = progressDialogUtil.show(
+                progressDialog = ProgressDialogUtil.show(
                         activityContext,
                         R.string.settings_misc_sign_out_alert_title,
                         R.string.settings_misc_sign_out_alert_message);

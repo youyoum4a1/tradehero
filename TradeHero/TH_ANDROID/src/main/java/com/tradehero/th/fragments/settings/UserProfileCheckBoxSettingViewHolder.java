@@ -10,7 +10,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -18,7 +17,6 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
 {
     @NonNull protected final CurrentUserId currentUserId;
     @NonNull protected final UserProfileCacheRx userProfileCache;
-    @NonNull protected final ProgressDialogUtil progressDialogUtil;
     @NonNull protected final UserServiceWrapper userServiceWrapper;
 
     protected ProgressDialog progressDialog;
@@ -28,12 +26,10 @@ abstract public class UserProfileCheckBoxSettingViewHolder extends BaseOneCheckb
     protected UserProfileCheckBoxSettingViewHolder(
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.userProfileCache = userProfileCache;
-        this.progressDialogUtil = progressDialogUtil;
         this.userServiceWrapper = userServiceWrapper;
     }
     //</editor-fold>

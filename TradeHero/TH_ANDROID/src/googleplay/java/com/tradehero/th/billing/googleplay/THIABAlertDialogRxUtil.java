@@ -46,12 +46,11 @@ public class THIABAlertDialogRxUtil
     //<editor-fold desc="Constructors">
     @Inject public THIABAlertDialogRxUtil(
             @NonNull Analytics analytics,
-            @NonNull ActivityUtil activityUtil,
             @NonNull VersionUtils versionUtils,
             @NonNull THIABPurchaseCacheRx thiabPurchaseCache,
             @NonNull GooglePlayUtils googlePlayUtils)
     {
-        super(analytics, activityUtil, versionUtils);
+        super(analytics, versionUtils);
         this.thiabPurchaseCache = thiabPurchaseCache;
         this.googlePlayUtils = googlePlayUtils;
     }
@@ -235,7 +234,7 @@ public class THIABAlertDialogRxUtil
 
     public void sendSupportEmailConsumeFailed(@NonNull final Context context, @NonNull Throwable exception)
     {
-        activityUtil.sendSupportEmail(
+        ActivityUtil.sendSupportEmail(
                 context,
                 googlePlayUtils.getSupportPurchaseConsumeEmailIntent(context, exception));
     }
@@ -278,7 +277,7 @@ public class THIABAlertDialogRxUtil
 
     public void sendSupportEmailAlreadyOwned(@NonNull final Context context, @NonNull Throwable exception)
     {
-        activityUtil.sendSupportEmail(
+        ActivityUtil.sendSupportEmail(
                 context,
                 googlePlayUtils.getSupportAlreadyOwnedIntent(context, exception));
     }
@@ -321,7 +320,7 @@ public class THIABAlertDialogRxUtil
 
     public void sendSupportEmailDeveloperError(@NonNull final Context context, @NonNull Throwable exception)
     {
-        activityUtil.sendSupportEmail(
+        ActivityUtil.sendSupportEmail(
                 context,
                 googlePlayUtils.getSupportDeveloperErrorIntent(context, exception));
     }

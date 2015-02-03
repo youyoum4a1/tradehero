@@ -31,7 +31,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
-import dagger.Lazy;
 import java.util.Date;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -52,7 +51,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
-    @Inject Lazy<AdapterViewUtils> adapterViewUtilsLazy;
 
     protected FollowDialogCombo followDialogCombo;
 
@@ -247,7 +245,7 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
 
     private void updateListViewRow(final UserBaseKey heroId)
     {
-        adapterViewUtilsLazy.get().updateSingleRowWhere(
+        AdapterViewUtils.updateSingleRowWhere(
                 listView,
                 FriendLeaderboardMarkedUserDTO.class,
                 friendLeaderboardMarkedUserDTO -> friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId));
