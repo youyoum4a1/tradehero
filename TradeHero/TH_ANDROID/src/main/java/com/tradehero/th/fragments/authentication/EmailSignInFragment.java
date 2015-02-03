@@ -44,7 +44,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -197,7 +197,9 @@ public class EmailSignInFragment extends Fragment
         super.onResume();
         if (signInSubscription == null || signInSubscription.isUnsubscribed())
         {
-            signInSubscription = signInObservable.subscribe(new EmptyObserver<>());
+            signInSubscription = signInObservable.subscribe(
+                    Actions.empty(),
+                    Actions.empty());
         }
     }
 

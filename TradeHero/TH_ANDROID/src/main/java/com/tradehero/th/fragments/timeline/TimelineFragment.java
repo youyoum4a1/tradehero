@@ -73,8 +73,8 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
@@ -628,7 +628,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                                 shownProfile,
                                 UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                         .flatMap(this::handleFollowRequest)
-                        .subscribe(new EmptyObserver<>()));
+                        .subscribe(Actions.empty(), Actions.empty()));
             }
             else
             {

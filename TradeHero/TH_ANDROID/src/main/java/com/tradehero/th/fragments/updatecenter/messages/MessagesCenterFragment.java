@@ -56,7 +56,6 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.android.observables.AndroidObservable;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -637,7 +636,7 @@ public class MessagesCenterFragment extends DashboardFragment
         updateAllAsRead();
     }
 
-    private class MessageMarkAsReadObserver extends EmptyObserver<BaseResponseDTO>
+    private class MessageMarkAsReadObserver implements Observer<BaseResponseDTO>
     {
         private final MessageHeaderDTO messageHeaderDTO;
 
@@ -658,6 +657,14 @@ public class MessagesCenterFragment extends DashboardFragment
                 setReadAllLayoutVisable();
                 requestUpdateTabCounter();
             }
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
         }
     }
 

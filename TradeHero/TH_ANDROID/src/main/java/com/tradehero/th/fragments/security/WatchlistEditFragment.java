@@ -36,7 +36,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class WatchlistEditFragment extends DashboardFragment
@@ -377,7 +376,7 @@ public class WatchlistEditFragment extends DashboardFragment
         }
     }
 
-    protected class WatchlistEditTHObserver extends EmptyObserver<WatchlistPositionDTO>
+    protected class WatchlistEditTHObserver implements Observer<WatchlistPositionDTO>
     {
         @Override public void onNext(WatchlistPositionDTO args)
         {
@@ -386,6 +385,10 @@ public class WatchlistEditFragment extends DashboardFragment
                 navigator.get().popFragment();
             }
             dismissProgress();
+        }
+
+        @Override public void onCompleted()
+        {
         }
 
         @Override public void onError(Throwable e)

@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import rx.android.observables.AndroidObservable;
 import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class SettingsReferralCodeFragment extends DashboardFragment
@@ -186,7 +185,7 @@ public class SettingsReferralCodeFragment extends DashboardFragment
     protected void shareToSocialNetwork(View view)
     {
         subscriptions.add(socialShareHelper.show(new ReferralCodeDTO(userProfileDTO.referralCode))
-                .subscribe(new EmptyObserver<>()));
+                .subscribe(Actions.empty(), Actions.empty()));
     }
 
     @SuppressWarnings("UnusedParameters")

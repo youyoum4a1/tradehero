@@ -40,7 +40,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 
 public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
 {
@@ -202,7 +202,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                         navigator.get().popFragment();
                     })
                     .doOnError(error -> THToast.show(R.string.error_update_your_user_profile))
-                    .subscribe(new EmptyObserver<>());
+                    .subscribe(Actions.empty(), Actions.empty());
         }
     }
 

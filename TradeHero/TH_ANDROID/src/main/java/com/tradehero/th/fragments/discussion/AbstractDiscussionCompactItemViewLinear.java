@@ -17,9 +17,9 @@ import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 
 abstract public class AbstractDiscussionCompactItemViewLinear<T>
         extends LinearLayout
@@ -73,7 +73,7 @@ abstract public class AbstractDiscussionCompactItemViewLinear<T>
                             return handleUserAction(userAction);
                         }
                     })
-                    .subscribe(new EmptyObserver()));
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 

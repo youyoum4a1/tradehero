@@ -51,9 +51,10 @@ import java.util.Map;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable("refer-friends")
@@ -275,7 +276,7 @@ public class FriendsInvitationFragment extends DashboardFragment
             weChatDTO.type = WeChatMessageType.Invite;
             weChatDTO.title = getString(WeChatMessageType.Invite.getTitleResId(), userProfileDTO.referralCode);
             socialSharerLazy.get().share(weChatDTO)
-                    .subscribe(new EmptyObserver<>()); // TODO proper callback?
+                    .subscribe(Actions.empty(), Actions.empty()); // TODO proper callback?
         }
     }
 
@@ -535,12 +536,16 @@ public class FriendsInvitationFragment extends DashboardFragment
         return new UserFriendsDTOList(hashSet);
     }
 
-    class SearchFriendsObserver extends EmptyObserver<UserFriendsDTOList>
+    class SearchFriendsObserver implements Observer<UserFriendsDTOList>
     {
         @Override public void onNext(UserFriendsDTOList args)
         {
             FriendsInvitationFragment.this.userFriendsDTOs = filterTheDuplicated(userFriendsDTOs);
             bindSearchData();
+        }
+
+        @Override public void onCompleted()
+        {
         }
 
         @Override public void onError(Throwable e)

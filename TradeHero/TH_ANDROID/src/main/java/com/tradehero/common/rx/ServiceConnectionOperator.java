@@ -11,7 +11,6 @@ import java.net.UnknownServiceException;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
-import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 

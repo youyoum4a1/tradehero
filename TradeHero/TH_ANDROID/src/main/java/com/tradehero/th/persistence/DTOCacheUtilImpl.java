@@ -57,7 +57,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 
 @Singleton public class DTOCacheUtilImpl
     implements DTOCacheUtilRx
@@ -231,7 +231,7 @@ import rx.observers.EmptyObserver;
                 (obs1, obs2) -> Pair.create(obs1.second, obs2.second))
                 .first()
                 .doOnNext(this::preFetchTrending)
-                .subscribe(new EmptyObserver<>());
+                .subscribe(Actions.empty(), Actions.empty());
     }
 
     protected void preFetchTrending(@NonNull Pair<? extends UserBaseDTO, ExchangeCompactDTOList> pair)
@@ -300,7 +300,7 @@ import rx.observers.EmptyObserver;
                             }
                         }
                     })
-                    .subscribe(new EmptyObserver<>());
+                    .subscribe(Actions.empty(), Actions.empty());
         }
 
         //initialPrefetches();

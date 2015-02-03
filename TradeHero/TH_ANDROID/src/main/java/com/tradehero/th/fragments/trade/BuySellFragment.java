@@ -62,7 +62,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 abstract public class BuySellFragment extends AbstractBuySellFragment
@@ -363,13 +364,14 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioCacheSubscription = AndroidObservable.bindFragment(
                 this,
                 portfolioObservable)
-                .subscribe(new EmptyObserver<PortfolioDTO>()
-                {
-                    @Override public void onNext(PortfolioDTO portfolioDTO)
-                    {
-                        linkWith(portfolioDTO);
-                    }
-                });
+                .subscribe(new Action1<PortfolioDTO>()
+                           {
+                               @Override public void call(PortfolioDTO portfolioDTO)
+                               {
+                                   linkWith(portfolioDTO);
+                               }
+                           },
+                        Actions.empty());
     }
 
     @Override protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
@@ -527,14 +529,14 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
         portfolioMenuSubscription = AndroidObservable.bindFragment(
                 this,
                 mSelectedPortfolioContainer.createMenuObservable())
-                .subscribe(new EmptyObserver<MenuOwnedPortfolioId>()
-                {
-                    @Override public void onNext(MenuOwnedPortfolioId args)
-                    {
-                        super.onNext(args);
-                        linkWithApplicable(args, true);
-                    }
-                });
+                .subscribe(new Action1<MenuOwnedPortfolioId>()
+                           {
+                               public void call(MenuOwnedPortfolioId args)
+                               {
+                                   linkWithApplicable(args, true);
+                               }
+                           },
+                        Actions.empty());
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -650,7 +652,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                         R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
             }
             socialSharerLazy.get().share(weChatDTO)
-                    .subscribe(new EmptyObserver<>()); // TODO proper callback?
+                    .subscribe(Actions.empty(), Actions.empty()); // TODO proper callback?
         }
     }
 

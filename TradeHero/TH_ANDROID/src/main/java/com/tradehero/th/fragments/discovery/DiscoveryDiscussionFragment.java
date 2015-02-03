@@ -40,7 +40,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -212,7 +211,7 @@ public class DiscoveryDiscussionFragment extends Fragment
         }
     }
 
-    private class UpdateRangeObserver extends EmptyObserver<List<TimelineItemDTO>>
+    private class UpdateRangeObserver implements Observer<List<TimelineItemDTO>>
     {
         @Override public void onNext(List<TimelineItemDTO> timelineItemDTOKeys)
         {
@@ -226,6 +225,14 @@ public class DiscoveryDiscussionFragment extends Fragment
             {
                 currentRangeDTO = RangeDTO.create(TIMELINE_ITEM_PER_PAGE, null, null);
             }
+        }
+
+        @Override public void onCompleted()
+        {
+        }
+
+        @Override public void onError(Throwable e)
+        {
         }
     }
 }

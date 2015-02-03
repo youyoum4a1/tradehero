@@ -24,7 +24,6 @@ import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedString;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
@@ -150,7 +149,7 @@ public class BaiduPushMessageReceiver extends FrontiaPushMessageReceiver
         pushDeviceIdentifierSentFlag.set(bind);
     }
 
-    class UpdateDeviceIdentifierObserver extends EmptyObserver<UserProfileDTO>
+    class UpdateDeviceIdentifierObserver implements Observer<UserProfileDTO>
     {
         @Override public void onNext(UserProfileDTO userProfileDTO)
         {

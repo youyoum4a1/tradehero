@@ -38,7 +38,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragment
@@ -108,10 +109,10 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
             thRouter.inject(this);
         }
         securityPositionDetailObservable = securityPositionDetailCache
-                        .get(this.securityId)
-                        .map(new PairGetSecond<>())
-                        .share()
-                        .cache(1);
+                .get(this.securityId)
+                .map(new PairGetSecond<>())
+                .share()
+                .cache(1);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -233,13 +234,14 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
         unsubscribe(securityCompactSubscription);
         securityCompactSubscription = AndroidObservable.bindFragment(this, securityPositionDetailCache
                 .get(this.securityId))
-                .subscribe(new EmptyObserver<Pair<SecurityId, SecurityPositionDetailDTO>>()
-                {
-                    @Override public void onNext(Pair<SecurityId, SecurityPositionDetailDTO> pair)
-                    {
-                        linkWith(pair.second.security, true);
-                    }
-                });
+                .subscribe(new Action1<Pair<SecurityId, SecurityPositionDetailDTO>>()
+                           {
+                               @Override public void call(Pair<SecurityId, SecurityPositionDetailDTO> pair)
+                               {
+                                   linkWith(pair.second.security, true);
+                               }
+                           },
+                        Actions.empty());
     }
 
     public void linkWith(final SecurityCompactDTO securityCompactDTO, boolean andDisplay)

@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class SignOutSettingViewHolder extends OneSettingViewHolder
@@ -157,7 +157,7 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
         Observable.just(0)
                 .delay(3000, TimeUnit.MILLISECONDS)
                 .doOnCompleted(SignOutSettingViewHolder.this::dismissProgressDialog)
-                .subscribe(new EmptyObserver<>());
+                .subscribe(Actions.empty(), Actions.empty());
     }
 
     private void dismissProgressDialog()

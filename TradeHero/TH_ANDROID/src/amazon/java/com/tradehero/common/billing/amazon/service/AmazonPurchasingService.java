@@ -19,7 +19,7 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 @Singleton public class AmazonPurchasingService
@@ -44,7 +44,7 @@ import timber.log.Timber;
         if (PurchasingService.IS_SANDBOX_MODE)
         {
             dialogUtil.popSandboxModeAndHandle(activityProvider.get())
-                    .subscribe(new EmptyObserver<>());
+                    .subscribe(Actions.empty(), Actions.empty());
         }
     }
     //</editor-fold>

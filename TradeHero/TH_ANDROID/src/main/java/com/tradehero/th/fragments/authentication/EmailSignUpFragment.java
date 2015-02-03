@@ -35,7 +35,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.observables.ViewObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 
 /**
  * Register using email.
@@ -145,7 +145,7 @@ public class EmailSignUpFragment extends Fragment
         super.onResume();
         if (subscription == null || subscription.isUnsubscribed())
         {
-            subscription = signUpObservable.subscribe(new EmptyObserver<>());
+            subscription = signUpObservable.subscribe(Actions.empty(), Actions.empty());
         }
     }
 

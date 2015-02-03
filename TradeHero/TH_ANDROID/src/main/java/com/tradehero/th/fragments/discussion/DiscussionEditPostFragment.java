@@ -45,7 +45,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
@@ -321,7 +321,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
             if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
             {
                 socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO))
-                        .subscribe(new EmptyObserver<>()); // Proper callback?
+                        .subscribe(Actions.empty(), Actions.empty()); // Proper callback?
             }
 
             DeviceUtil.dismissKeyboard(getActivity());

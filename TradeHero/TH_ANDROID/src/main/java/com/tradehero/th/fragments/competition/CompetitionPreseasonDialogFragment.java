@@ -39,7 +39,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragment
@@ -155,7 +155,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     {
         WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
         subscriptions.add(socialSharerLazy.get().share(weChatDTO)
-                .subscribe(new EmptyObserver<>()));
+                .subscribe(Actions.empty(), Actions.empty()));
     }
 
     @SuppressWarnings("UnusedDeclaration")

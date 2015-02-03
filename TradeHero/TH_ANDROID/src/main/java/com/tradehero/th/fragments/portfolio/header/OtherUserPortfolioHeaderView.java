@@ -34,9 +34,9 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
 import java.lang.ref.WeakReference;
 import javax.inject.Inject;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
@@ -179,7 +179,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         followDialogCombo = null;
     }
 
-    public class FreeFollowObserver extends EmptyObserver<UserProfileDTO>
+    public class FreeFollowObserver implements Observer<UserProfileDTO>
     {
         @Override public void onNext(UserProfileDTO userProfileDTO)
         {
@@ -187,6 +187,10 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
             configureFollowItemsVisibility();
             notifyUserFollowed(userProfileDTO.getBaseKey());
             analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.PositionList));
+        }
+
+        @Override public void onCompleted()
+        {
         }
 
         @Override public void onError(Throwable e)

@@ -5,9 +5,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Window;
-import rx.observers.EmptyObserver;
+import rx.Observer;
 
-public class RequestObserver<T> extends EmptyObserver<T>
+public class RequestObserver<T> implements Observer<T>
 {
     @Nullable private ProgressDialog dialog;
     @NonNull private Context context;
@@ -53,5 +53,9 @@ public class RequestObserver<T> extends EmptyObserver<T>
     @Override public void onError(Throwable e)
     {
         dismissDialog();
+    }
+
+    @Override public void onCompleted()
+    {
     }
 }

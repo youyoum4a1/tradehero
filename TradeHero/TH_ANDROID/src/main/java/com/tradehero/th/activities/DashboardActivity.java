@@ -122,7 +122,7 @@ import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
+import rx.functions.Actions;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -352,7 +352,7 @@ public class DashboardActivity extends BaseActivity
         switch (item.getItemId())
         {
             case R.id.menu_network:
-                alertDialogRxUtil.get().popNetworkUnavailable(this).subscribe(new EmptyObserver<>());
+                alertDialogRxUtil.get().popNetworkUnavailable(this).subscribe(Actions.empty(), Actions.empty());
                 return true;
             case R.id.admin_settings:
                 navigator.pushFragment(AdminSettingsFragment.class);

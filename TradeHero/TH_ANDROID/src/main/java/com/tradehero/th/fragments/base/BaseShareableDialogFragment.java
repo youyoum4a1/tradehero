@@ -42,8 +42,8 @@ import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
-import rx.observers.EmptyObserver;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
@@ -222,7 +222,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                         {
                             @Override public void call(Throwable e)
                             {
-                                socialAlertDialogRxUtil.popErrorSocialAuth(getActivity(), e).subscribe(new EmptyObserver<>());
+                                socialAlertDialogRxUtil.popErrorSocialAuth(getActivity(), e).subscribe(Actions.empty(), Actions.empty());
                             }
                         }
                 );

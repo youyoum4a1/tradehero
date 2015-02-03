@@ -48,7 +48,6 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observers.EmptyObserver;
 import timber.log.Timber;
 
 @Routable({
@@ -269,12 +268,17 @@ public final class HomeFragment extends BaseWebViewFragment
                 .subscribe(new TrackShareObserver());
     }
 
-    private class TrackShareObserver extends EmptyObserver<BaseResponseDTO>
+    private class TrackShareObserver implements Observer<BaseResponseDTO>
     {
         @Override public void onNext(BaseResponseDTO args)
         {
             THToast.show(R.string.invite_friend_success);
             getProgressDialog().hide();
+        }
+
+        @Override public void onCompleted()
+        {
+
         }
 
         @Override public void onError(Throwable e)
