@@ -9,11 +9,6 @@ public class WatchPositionItem implements PositionInterface
 {
     public WatchlistPositionDTO watchlistPosition;
 
-
-    public WatchPositionItem()
-    {
-    }
-
     public WatchPositionItem(WatchlistPositionDTO watchlistPosition)
     {
         this.watchlistPosition = watchlistPosition;

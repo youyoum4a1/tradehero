@@ -6,10 +6,6 @@ package com.tradehero.chinabuild.data;
 public class PositionHeadItem implements PositionInterface
 {
     public String strHead;
-    public PositionHeadItem()
-    {
-
-    }
 
     public PositionHeadItem(String strHead)
     {

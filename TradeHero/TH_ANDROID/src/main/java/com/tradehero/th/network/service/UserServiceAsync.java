@@ -1,6 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.chinabuild.data.*;
+import com.tradehero.chinabuild.data.AppInfoDTO;
+import com.tradehero.chinabuild.data.FollowStockForm;
+import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.chinabuild.data.RecommendItems;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.social.HeroDTOList;
@@ -331,7 +334,7 @@ interface UserServiceAsync
 
     //<editor_fold desc="Track Share">
     @GET("/social/trackShare")
-    void trackShare(@Query("eventName") String eventName, Callback<TrackShareDTO> cb);
+    void trackShare(@Query("eventName") String eventName, Callback<Response> cb);
     //</editor-fold>
 
     //<editor_fold desc="Login Times">

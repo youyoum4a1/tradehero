@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.th.R;
-import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.utils.Constants;
 
 public class ActivityHelper

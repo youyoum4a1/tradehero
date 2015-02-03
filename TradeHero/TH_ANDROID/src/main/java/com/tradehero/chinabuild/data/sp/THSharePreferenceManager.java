@@ -1,4 +1,4 @@
-package com.tradehero.th.data.sp;
+package com.tradehero.chinabuild.data.sp;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -6,10 +6,6 @@ package com.tradehero.chinabuild.data;
 public class CompetitionHeadItem implements CompetitionInterface
 {
     public String strHead;
-    public CompetitionHeadItem()
-    {
-
-    }
 
     public CompetitionHeadItem(String strHead)
     {

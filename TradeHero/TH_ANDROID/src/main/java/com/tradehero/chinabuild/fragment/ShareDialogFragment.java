@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
@@ -15,7 +16,6 @@ import com.tradehero.th.api.social.InviteFormDTO;
 import com.tradehero.th.api.social.InviteFormWeiboDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.WeiboSocialLinkHelper;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerWeibo;
@@ -25,11 +25,12 @@ import com.tradehero.th.network.share.SocialSharerImpl;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.WeiboUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 
 public class ShareDialogFragment extends BaseDialogFragment implements View.OnClickListener

@@ -137,6 +137,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     private LinearLayout mRefreshView;
     private TextView tvIsReward;
+    private TextView tvIsEssential;
     private TextView tvUserTVTitle;
 
     private String strReply = "";
@@ -321,6 +322,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             return;
         }
         tvIsReward = (TextView) mRefreshView.findViewById(R.id.tvIsReward);
+        tvIsEssential = (TextView) mRefreshView.findViewById(R.id.tvIsEssential);
         tvUserTVTitle = (TextView) mRefreshView.findViewById(R.id.tvUserTVTitle);
         if (!TextUtils.isEmpty(getHeader())) {
             tvUserTVTitle.setVisibility(View.VISIBLE);
@@ -331,8 +333,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (isRewardTimeLine() && !TextUtils.isEmpty(getRewardCount())) {
             tvIsReward.setVisibility(View.VISIBLE);
             tvIsReward.setText(getRewardCount());
-        } else {
-            tvIsReward.setVisibility(View.GONE);
+        }
+
+        if(isEssentialTimeLine()){
+            tvIsEssential.setVisibility(View.VISIBLE);
         }
     }
 
@@ -905,6 +909,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                         if (dataDto == null || currentUserId == null) {
                             return;
                         }
+                        if(timelineFrom.equals("")){
+                            THToast.show("Please not...");
+                            return;
+                        }
                         if (dataDto instanceof TimelineItemDTO) {
                             int timeLineId = ((TimelineItemDTO) dataDto).id;
                             int originalStickType = ((TimelineItemDTO) dataDto).stickType;
@@ -1263,6 +1271,19 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         return false;
     }
 
+    private boolean isEssentialTimeLine(){
+        if (dataDto == null) {
+            return false;
+        }
+        if (dataDto instanceof TimelineItemDTO) {
+            TimelineItemDTO dto = (TimelineItemDTO) dataDto;
+            if (dto.isEssential) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private String getRewardCount() {
         if (dataDto instanceof TimelineItemDTO) {
             TimelineItemDTO dto = (TimelineItemDTO) dataDto;
@@ -1292,9 +1313,6 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     }
 
     private boolean isManager() {
-        if(timelineFrom.equals("")){
-            return false;
-        }
         if (userProfileCache != null && currentUserId != null && Constants.isManager) {
             UserProfileDTO meProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
             if (meProfileDTO != null && meProfileDTO.isAdmin) {

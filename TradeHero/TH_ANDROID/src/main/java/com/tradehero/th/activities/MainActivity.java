@@ -21,6 +21,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.tradehero.chinabuild.*;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -36,7 +37,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.base.Navigator;
-import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.misc.callback.THCallback;
 import com.tradehero.th.misc.callback.THResponse;
@@ -123,9 +123,6 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private static final int TAB_ME = 4;
 
     public long TIME_PRESSED_BACK = -1;
-
-    //Advertisement Record
-    public static boolean SHOW_ADVERTISEMENT = true;
 
     /**
      * 定义数组来存放Fragment界面

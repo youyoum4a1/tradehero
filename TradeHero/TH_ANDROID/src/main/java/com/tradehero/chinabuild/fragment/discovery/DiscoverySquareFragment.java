@@ -19,7 +19,6 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -67,6 +66,9 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     @Inject CurrentUserId currentUserId;
 
+    //Advertisement Record
+    public static boolean SHOW_ADVERTISEMENT = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -113,7 +115,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     public void onClickBanner()
     {
         dismissTopBanner();
-        MainActivity.SHOW_ADVERTISEMENT = false;
+        SHOW_ADVERTISEMENT = false;
     }
 
     public void dismissTopBanner()
@@ -133,7 +135,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
 
     private void initTopBanner()
     {
-        if(!MainActivity.SHOW_ADVERTISEMENT){
+        if(!SHOW_ADVERTISEMENT){
             return;
         }
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
@@ -146,8 +148,6 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
             ImageView imageView = (ImageView) view.findViewById(R.id.imgTopBannerItem);
             picasso.get()
                     .load("http://s10.sinaimg.cn/orignal/4a9f5ee165a82e42a0459.jpg")
-                    .placeholder(R.drawable.default_image)
-                    .error(R.drawable.default_image)
                     .into(imageView);
             views.add(view);
             view.setOnClickListener(new View.OnClickListener()

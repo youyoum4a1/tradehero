@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
 import com.tradehero.th.fragments.social.WeiboSocialLinkHelper;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandler;
@@ -26,11 +26,12 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.touch.MoneyUtils;
 import dagger.Lazy;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import org.jetbrains.annotations.NotNull;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 public class ShareSellDialogFragment extends BaseDialogFragment
 {

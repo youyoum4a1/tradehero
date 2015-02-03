@@ -51,18 +51,37 @@
                         android:textColor="@color/text_gray_normal"
                         />
             </LinearLayout>
-
-            <TextView
-                      android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:layout_centerVertical="true" android:id="@+id/tvIsReward"
-                      android:layout_alignParentRight="true"
-                      android:gravity="center" android:visibility="gone"
-                      android:paddingLeft="6dp"
-                      android:paddingRight="6dp"
-                      android:paddingTop="5dp"
-                      android:paddingBottom="5dp"
-                      android:background="@drawable/reward_frame" android:textSize="12sp"
-                      android:textColor="@color/discovery_discuss_reward_orange"/>
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_centerVertical="true"
+                          android:orientation="horizontal"
+                          android:layout_alignParentRight="true">
+                <TextView
+                        android:id="@+id/tvIsEssential"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:gravity="center"
+                        android:layout_marginRight="5dp"
+                        android:text="@string/timeline_favorite"
+                        android:background="@drawable/favorite_frame"
+                        android:textSize="12sp"
+                        android:textColor="#ff978f"/>
+                <TextView
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:id="@+id/tvIsReward"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:background="@drawable/reward_frame" android:textSize="12sp"
+                        android:textColor="@color/discovery_discuss_reward_orange"/>
+            </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
     <TextView

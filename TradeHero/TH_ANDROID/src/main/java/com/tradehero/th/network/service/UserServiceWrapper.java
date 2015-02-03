@@ -1,6 +1,9 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.chinabuild.data.*;
+import com.tradehero.chinabuild.data.AppInfoDTO;
+import com.tradehero.chinabuild.data.FollowStockForm;
+import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
+import com.tradehero.chinabuild.data.RecommendItems;
 import com.tradehero.common.billing.googleplay.GooglePlayPurchaseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -947,7 +950,7 @@ import java.util.List;
     }
 
     //Track when user share to the wechat
-    public void trackShare(String eventName, @Nullable Callback<TrackShareDTO> callback){
+    public void trackShare(String eventName, @Nullable Callback<Response> callback){
         userServiceAsync.trackShare(eventName, callback);
     }
 

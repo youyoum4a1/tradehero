@@ -12,6 +12,7 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableL
 import com.tradehero.chinabuild.data.PositionInterface;
 import com.tradehero.chinabuild.data.SecurityPositionItem;
 import com.tradehero.chinabuild.data.WatchPositionItem;
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
@@ -32,7 +33,6 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.data.sp.THSharePreferenceManager;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
