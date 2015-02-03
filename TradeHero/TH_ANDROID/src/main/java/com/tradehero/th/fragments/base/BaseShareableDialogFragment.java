@@ -27,7 +27,6 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.AlertDialogObserver;
 import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
 import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.rx.view.ViewArrayObservable;
@@ -41,8 +40,10 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.observables.AndroidObservable;
 import rx.android.observables.ViewObservable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
+import rx.observers.EmptyObserver;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
@@ -201,28 +202,30 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                             }
                             return createSocialAuthObservable(socialLinkToggleButton, socialNetwork);
                         }))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new AlertDialogObserver<Pair<SocialLinkToggleButton, UserProfileDTO>>(getActivity(), alertDialogUtil)
+                .finallyDo(new Action0()
                 {
-                    @Override public void onNext(Pair<SocialLinkToggleButton, UserProfileDTO> args)
-                    {
-                        setPublishEnable(args.first.getSocialNetworkEnum());
-                        linkWith(args.second);
-                    }
-
-                    @Override public void onCompleted()
+                    @Override public void call()
                     {
                         alertDialogUtil.dismissProgressDialog();
                         registerSocialButtons();
                     }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        super.onError(e);
-                        alertDialogUtil.dismissProgressDialog();
-                        registerSocialButtons();
-                    }
-                });
+                })
+                .subscribe(new Action1<Pair<SocialLinkToggleButton, UserProfileDTO>>()
+                           {
+                               @Override public void call(Pair<SocialLinkToggleButton, UserProfileDTO> args)
+                               {
+                                   setPublishEnable(args.first.getSocialNetworkEnum());
+                                   linkWith(args.second);
+                               }
+                           },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable e)
+                            {
+                                socialAlertDialogRxUtil.popErrorSocialAuth(getActivity(), e).subscribe(new EmptyObserver<>());
+                            }
+                        }
+                );
     }
 
     protected Observable<SocialLinkToggleButton> createCheckedLinkingObservable()

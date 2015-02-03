@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.settings;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.CheckBoxPreference;
@@ -20,25 +20,24 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.AlertDialogObserver;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import dagger.Lazy;
+import rx.Observable;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
+import rx.observers.EmptyObserver;
 
 abstract public class SocialConnectSettingViewHolder
         extends UserProfileCheckBoxSettingViewHolder
 {
-    @NonNull protected final AlertDialogUtil alertDialogUtil;
+    @NonNull protected final SocialAlertDialogRxUtil socialAlertDialogRxUtil;
     @NonNull protected final SocialServiceWrapper socialServiceWrapper;
     @NonNull protected final Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider;
     @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NonNull protected final String authToken;
-    @Nullable protected AlertDialog unlinkConfirmDialog;
-    @Nullable protected Subscription linkingSubscription;
-    @Nullable protected Subscription unLinkingSubscription;
+    @Nullable protected Subscription sequenceSubscription;
 
     //<editor-fold desc="Constructors">
     protected SocialConnectSettingViewHolder(
@@ -46,14 +45,14 @@ abstract public class SocialConnectSettingViewHolder
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper,
-            @NonNull AlertDialogUtil alertDialogUtil,
+            @NonNull SocialAlertDialogRxUtil socialAlertDialogRxUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
             @NonNull Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull String authToken)
     {
         super(currentUserId, userProfileCache, progressDialogUtil, userServiceWrapper);
-        this.alertDialogUtil = alertDialogUtil;
+        this.socialAlertDialogRxUtil = socialAlertDialogRxUtil;
         this.socialServiceWrapper = socialServiceWrapper;
         this.socialAuthenticationProvider = socialAuthenticationProvider;
         this.userProfileDTOUtil = userProfileDTOUtil;
@@ -76,38 +75,8 @@ abstract public class SocialConnectSettingViewHolder
 
     @Override public void destroyViews()
     {
-        unsubscribeLinking();
-        unsubscribeUnLinking();
-        hideUnlinkConfirmDialog();
+        unsubscribe(sequenceSubscription);
         super.destroyViews();
-    }
-
-    protected void unsubscribeLinking()
-    {
-        if (linkingSubscription != null)
-        {
-            linkingSubscription.unsubscribe();
-        }
-        linkingSubscription = null;
-    }
-
-    protected void unsubscribeUnLinking()
-    {
-        if (unLinkingSubscription != null)
-        {
-            unLinkingSubscription.unsubscribe();
-        }
-        unLinkingSubscription = null;
-    }
-
-    protected void hideUnlinkConfirmDialog()
-    {
-        AlertDialog unlinkConfirmDialogCopy = unlinkConfirmDialog;
-        if (unlinkConfirmDialogCopy != null)
-        {
-            unlinkConfirmDialogCopy.dismiss();
-        }
-        unlinkConfirmDialog = null;
     }
 
     @Override protected boolean changeStatus(boolean enable)
@@ -118,101 +87,74 @@ abstract public class SocialConnectSettingViewHolder
         {
             activityContext = preferenceFragmentCopy.getActivity();
         }
-        Timber.d("Sharing is asked to change");
-        if (activityContext != null && enable)
+        if (activityContext != null)
         {
-            dismissProgress();
-            progressDialog = progressDialogUtil.show(
-                    activityContext,
-                    getSocialNetworkEnum().nameResId,
-                    getLinkingDialogMessage());
-            progressDialog.setCancelable(true);
-            progressDialog.setCanceledOnTouchOutside(true);
-            unsubscribeLinking();
-            linkingSubscription = socialAuthenticationProvider.get()
-                    .socialLink(activityContext)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ChangedStatusObserver(activityContext, alertDialogUtil));
-        }
-        else if (activityContext != null)
-        {
-            if (isMainLogin())
+            Observable<UserProfileDTO> sequence;
+            if (enable)
             {
-                dismissProgress();
-                alertDialogUtil.popWithNegativeButton(
-                        activityContext,
-                        R.string.app_name,
-                        R.string.authentication_unlink_fail_message,
-                        R.string.ok);
+                sequence = linkRx(activityContext);
+            }
+            else if (isMainLogin())
+            {
+                sequence = socialAlertDialogRxUtil.popErrorUnlinkDefaultAccount(activityContext)
+                        .flatMap(pair -> Observable.empty());
             }
             else
             {
-                popConfirmUnlinkDialog();
+                sequence = confirmUnLinkRx(activityContext);
             }
+            unsubscribe(sequenceSubscription);
+            sequenceSubscription = sequence.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new ChangedStatusObserver(activityContext));
         }
         return false;
     }
 
-    protected void popConfirmUnlinkDialog()
+    @NonNull protected Observable<UserProfileDTO> linkRx(@NonNull Activity activityContext)
     {
-        Context activityContext = null;
-        if (preferenceFragment != null)
-        {
-            activityContext = preferenceFragment.getActivity();
-        }
-        if (activityContext != null)
-        {
-            hideUnlinkConfirmDialog();
-            unlinkConfirmDialog = alertDialogUtil.popWithOkCancelButton(
-                    activityContext,
-                    activityContext.getString(R.string.authentication_unlink_confirm_dialog_title, getSocialNetworkName()),
-                    activityContext.getString(R.string.authentication_unlink_confirm_dialog_message, getSocialNetworkName()),
-                    R.string.authentication_unlink_confirm_dialog_button_ok,
-                    R.string.cancel,
-                    new DialogInterface.OnClickListener()
-                    {
-                        @Override public void onClick(DialogInterface dialogInterface, int i)
-                        {
-                            dialogInterface.dismiss();
-                            effectUnlink();
-                        }
-                    });
-        }
+        ProgressDialog progressDialog = progressDialogUtil.show(
+                activityContext,
+                getSocialNetworkEnum().nameResId,
+                getLinkingDialogMessage());
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(true);
+        return socialAuthenticationProvider.get()
+                .socialLink(activityContext)
+                .finallyDo(progressDialog::dismiss);
     }
 
-    protected void effectUnlink()
+    @NonNull protected Observable<UserProfileDTO> confirmUnLinkRx(@NonNull Context activityContext)
     {
-        Context activityContext = null;
-        if (preferenceFragment != null)
-        {
-            activityContext = preferenceFragment.getActivity();
-        }
-        if (activityContext != null)
-        {
-            dismissProgress();
-            progressDialog = progressDialogUtil.show(
-                    activityContext,
-                    getSocialNetworkEnum().nameResId,
-                    getUnlinkingProgressDialogMessage());
-            progressDialog.setCancelable(true);
-            progressDialog.setCanceledOnTouchOutside(true);
-
-            unsubscribeUnLinking();
-            unLinkingSubscription = socialServiceWrapper.disconnectRx(
-                    currentUserId.toUserBaseKey(),
-                    new SocialNetworkFormDTO(getSocialNetworkEnum()))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ChangedStatusObserver(activityContext, alertDialogUtil));
-        }
+        return socialAlertDialogRxUtil.popConfirmUnlinkAccount(
+                activityContext,
+                getSocialNetworkEnum())
+                .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                .flatMap(pair -> effectUnlinkRx(activityContext));
     }
 
-    protected class ChangedStatusObserver extends AlertDialogObserver<UserProfileDTO>
+    @NonNull protected Observable<UserProfileDTO> effectUnlinkRx(@NonNull Context activityContext)
     {
+        ProgressDialog progressDialog = progressDialogUtil.show(
+                activityContext,
+                getSocialNetworkEnum().nameResId,
+                getUnlinkingProgressDialogMessage());
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(true);
+
+        return socialServiceWrapper.disconnectRx(
+                currentUserId.toUserBaseKey(),
+                new SocialNetworkFormDTO(getSocialNetworkEnum()))
+                .finallyDo(progressDialog::dismiss);
+    }
+
+    protected class ChangedStatusObserver implements Observer<UserProfileDTO>
+    {
+        @NonNull private final Context activityContext;
+
         //<editor-fold desc="Constructors">
-        protected ChangedStatusObserver(@NonNull Context activityContext,
-                @NonNull AlertDialogUtil alertDialogUtil)
+        protected ChangedStatusObserver(@NonNull Context activityContext)
         {
-            super(activityContext, alertDialogUtil);
+            this.activityContext = activityContext;
         }
         //</editor-fold>
 
@@ -223,22 +165,16 @@ abstract public class SocialConnectSettingViewHolder
 
         @Override public void onCompleted()
         {
-            dismissProgress();
         }
 
         @Override public void onError(Throwable e)
         {
-            dismissProgress();
-            super.onError(e);
+            socialAlertDialogRxUtil.popErrorSocialAuth(activityContext, e)
+                    .subscribe(new EmptyObserver<>());
         }
     }
 
     @NonNull abstract protected SocialNetworkEnum getSocialNetworkEnum();
-
-    @Nullable protected String getSocialNetworkName()
-    {
-        return getString(getSocialNetworkEnum().nameResId);
-    }
 
     @StringRes abstract protected int getLinkingDialogMessage();
 

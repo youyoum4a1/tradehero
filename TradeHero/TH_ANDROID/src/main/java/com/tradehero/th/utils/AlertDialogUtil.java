@@ -264,24 +264,6 @@ public class AlertDialogUtil
         return dialog;
     }
 
-    @NonNull public AlertDialog popAccountAlreadyLinked(@NonNull final Context context)
-    {
-        return popWithNegativeButton(
-                context,
-                R.string.account_already_linked_title,
-                R.string.account_already_linked_message,
-                R.string.ok);
-    }
-
-    @NonNull public AlertDialog popNetworkUnavailable(@NonNull final Context context)
-    {
-        return popWithNegativeButton(
-                context,
-                R.string.not_connected,
-                R.string.not_connected_desc,
-                R.string.ok);
-    }
-
     public void showProgressDialog(@NonNull final Context context, @Nullable String content)
     {
         if (mProgressDialog != null)

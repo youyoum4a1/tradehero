@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.widget.ListAdapter;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.observables.Assertions;
 
 public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterface, Integer>>
 {
@@ -23,6 +24,7 @@ public class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<Dialo
 
     @Override public void call(final Subscriber<? super Pair<DialogInterface, Integer>> subscriber)
     {
+        Assertions.assertUiThread();
         DialogInterface.OnClickListener passingOnListener = new DialogInterface.OnClickListener()
         {
             @Override public void onClick(DialogInterface dialogInterface, int i)

@@ -12,8 +12,8 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -25,7 +25,7 @@ public class SocialConnectQQSettingViewHolder extends SocialConnectSettingViewHo
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull ProgressDialogUtil progressDialogUtil,
             @NonNull UserServiceWrapper userServiceWrapper,
-            @NonNull AlertDialogUtil alertDialogUtil,
+            @NonNull SocialAlertDialogRxUtil socialAlertDialogRxUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
             @NonNull Lazy<QQAuthenticationProvider> socialAuthenticationProvider,
             @NonNull UserProfileDTOUtil userProfileDTOUtil,
@@ -35,7 +35,7 @@ public class SocialConnectQQSettingViewHolder extends SocialConnectSettingViewHo
                 userProfileCache,
                 progressDialogUtil,
                 userServiceWrapper,
-                alertDialogUtil,
+                socialAlertDialogRxUtil,
                 socialServiceWrapper,
                 socialAuthenticationProvider,
                 userProfileDTOUtil,

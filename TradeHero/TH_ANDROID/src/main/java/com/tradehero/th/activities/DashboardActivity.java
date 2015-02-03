@@ -98,6 +98,7 @@ import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.ui.AppContainer;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -121,6 +122,7 @@ import javax.inject.Singleton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.EmptyObserver;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
@@ -149,6 +151,7 @@ public class DashboardActivity extends BaseActivity
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
     @Inject Lazy<AlertDialogUtil> alertDialogUtil;
+    @Inject Lazy<AlertDialogRxUtil> alertDialogRxUtil;
     @Inject Lazy<ProgressDialogUtil> progressDialogUtil;
     @Inject Lazy<NotificationCacheRx> notificationCache;
     @Inject SystemStatusCache systemStatusCache;
@@ -349,7 +352,7 @@ public class DashboardActivity extends BaseActivity
         switch (item.getItemId())
         {
             case R.id.menu_network:
-                alertDialogUtil.get().popNetworkUnavailable(this);
+                alertDialogRxUtil.get().popNetworkUnavailable(this).subscribe(new EmptyObserver<>());
                 return true;
             case R.id.admin_settings:
                 navigator.pushFragment(AdminSettingsFragment.class);
