@@ -46,7 +46,6 @@ import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsProfileFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogUtil;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
@@ -60,6 +59,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -665,7 +665,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
                             getActivity(),
                             shownProfile,
                             getApplicablePortfolioId()).launchChoiceRx()
-                            .finallyDo(() -> HeroAlertDialogUtil.dismissProgressDialog())
+                            .finallyDo(AlertDialogUtil::dismissProgressDialog)
                             .subscribe(
                                     pair -> {
                                         if (!mIsOtherProfile)
@@ -736,10 +736,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
 
     protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
     {
-        HeroAlertDialogUtil.showProgressDialog(getActivity(), getString(R.string.following_this_hero));
+        AlertDialogUtil.showProgressDialog(getActivity(), getString(R.string.following_this_hero));
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(() -> HeroAlertDialogUtil.dismissProgressDialog());
+                .finallyDo(AlertDialogUtil::dismissProgressDialog);
     }
 
     protected class TimelineMessageThreadHeaderCacheObserver implements Observer<Pair<UserBaseKey, MessageHeaderDTO>>

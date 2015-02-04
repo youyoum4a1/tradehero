@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import butterknife.Optional;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import rx.Observable;
 
 /**
  * Header displayed on a Portfolio owned by the authenticated user.
@@ -42,6 +44,11 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     {
         super.onFinishInflate();
         ButterKnife.inject(this);
+    }
+
+    @NonNull @Override public Observable<UserAction> getUserActionObservable()
+    {
+        return Observable.empty();
     }
 
     @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
@@ -79,15 +86,5 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                 cashValueTextView.setText(cashString);
             }
         }
-    }
-
-    @Override public void setFollowRequestedListener(OnFollowRequestedListener followRequestedListener)
-    {
-        // Nothing to do
-    }
-
-    @Override public void setTimelineRequestedListener(OnTimelineRequestedListener timelineRequestedListener)
-    {
-        // Nothing to do
     }
 }

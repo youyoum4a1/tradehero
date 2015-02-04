@@ -66,6 +66,7 @@ import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -95,7 +96,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject PortfolioCompactCacheRx portfolioCompactCache;
-    @Inject AlertDialogUtilBuySell alertDialogUtilBuySell;
+    @Inject AlertDialogBuySellRxUtil alertDialogBuySellRxUtil;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     @Inject Analytics analytics;
@@ -397,9 +398,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     private void initSecurityRelatedInfo()
     {
-        if (securityCompactDTO != null )
+        if (securityCompactDTO != null)
         {
-            if(!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
             {
                 mStockNameTextView.setText(securityCompactDTO.name);
             }
@@ -806,7 +807,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             }
             else
             {
-                alertDialogUtilBuySell.informBuySellOrderWasNull(getActivity());
+                alertDialogBuySellRxUtil.informBuySellOrderWasNull(getActivity())
+                        .subscribe(Actions.empty());
             }
         }
     }
@@ -1046,7 +1048,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         {
             if (securityPositionDetailDTO == null)
             {
-                alertDialogUtilBuySell.informBuySellOrderReturnedNull(getActivity());
+                alertDialogBuySellRxUtil.informBuySellOrderReturnedNull(getActivity())
+                        .subscribe(Actions.empty());
                 return;
             }
 

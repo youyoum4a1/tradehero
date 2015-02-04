@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.position;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnItemClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
@@ -35,8 +37,8 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
@@ -44,37 +46,45 @@ import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
+import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.social.FollowRequest;
+import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
+import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Actions;
+import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 @Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends BasePurchaseManagerFragment
-        implements PortfolioHeaderView.OnFollowRequestedListener,
-        PortfolioHeaderView.OnTimelineRequestedListener,
-        WithTutorial
+        implements WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
@@ -94,6 +104,8 @@ public class PositionListFragment
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
+    @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogRxUtilLazy;
+    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
@@ -191,9 +203,18 @@ public class PositionListFragment
         {
             pushSecurityFragment();
         }
-        else if (view instanceof PositionLockedView)
+        else if (view instanceof PositionLockedView && userProfileDTO != null)
         {
-            popFollowUser(shownUser);
+            subscriptions.add(showFollowDialog(userProfileDTO)
+                    .subscribe(
+                            Actions.empty(), // TODO ?
+                            e -> {
+                                heroAlertDialogRxUtilLazy.get().popErrorMessage(
+                                        getActivity(),
+                                        e);
+                                // TODO
+                            }
+                    ));
         }
         else
         {
@@ -223,7 +244,7 @@ public class PositionListFragment
             SecurityListRxFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        if(portfolioDTO != null && portfolioDTO.assetClass != null)
+        if (portfolioDTO != null && portfolioDTO.assetClass != null)
         {
             TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
         }
@@ -260,17 +281,13 @@ public class PositionListFragment
     @Override public void onStop()
     {
         subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
         unsubscribe(portfolioSubscription);
         portfolioSubscription = null;
         unsubscribe(userProfileSubscription);
         userProfileSubscription = null;
         unsubscribe(getPositionsSubscription);
         getPositionsSubscription = null;
-        if (portfolioHeaderView != null)
-        {
-            portfolioHeaderView.setFollowRequestedListener(null);
-            portfolioHeaderView.setTimelineRequestedListener(null);
-        }
         super.onStop();
     }
 
@@ -328,11 +345,101 @@ public class PositionListFragment
     {
         if (portfolioHeaderView != null)
         {
-            portfolioHeaderView.setFollowRequestedListener(this);
-            portfolioHeaderView.setTimelineRequestedListener(this);
+            subscriptions.add(portfolioHeaderView.getUserActionObservable()
+                    .flatMap(this::handleHeaderUserAction)
+                    .subscribe(
+                            Actions.empty(), // TODO ?
+                            e -> {
+                                heroAlertDialogRxUtilLazy.get().popErrorMessage(
+                                        getActivity(),
+                                        e);
+                                // TODO
+                            }
+                    ));
         }
     }
-    
+
+    @NonNull protected Observable<UserProfileDTO> handleHeaderUserAction(@NonNull PortfolioHeaderView.UserAction userAction)
+    {
+        if (userAction instanceof PortfolioHeaderView.TimelineUserAction)
+        {
+            Bundle args = new Bundle();
+            thRouter.save(args, userAction.requested.getBaseKey());
+            if (currentUserId.toUserBaseKey().equals(userAction.requested.getBaseKey()))
+            {
+                navigator.get().pushFragment(MeTimelineFragment.class, args);
+            }
+            else
+            {
+                navigator.get().pushFragment(PushableTimelineFragment.class, args);
+            }
+        }
+        else if (userAction instanceof PortfolioHeaderView.FollowUserAction)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
+            return showFollowDialog(userAction.requested);
+        }
+        throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
+    }
+
+    @NonNull protected Observable<UserProfileDTO> showFollowDialog(@NonNull UserProfileDTO toBeFollowed)
+    {
+        return heroAlertDialogRxUtilLazy.get().showFollowDialog(
+                getActivity(),
+                toBeFollowed,
+                UserProfileDTOUtil.IS_NOT_FOLLOWER)
+                .flatMap(request -> {
+                    Observable<UserProfileDTO> fromServer;
+                    if (request.isPremium)
+                    {
+                        fromServer = premiumFollow(request.heroId);
+                    }
+                    else
+                    {
+                        fromServer = freeFollow(request.heroId);
+                    }
+                    return fromServer.doOnNext(profile -> handleSuccessfulFollow(request));
+                });
+    }
+
+    @NonNull protected Observable<UserProfileDTO> premiumFollow(@NonNull UserBaseKey heroId)
+    {
+        //noinspection unchecked
+        return userInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
+                .map(new Func1<PurchaseResult, UserProfileDTO>()
+                {
+                    @Override public UserProfileDTO call(PurchaseResult result)
+                    {
+                        return userProfileDTO;
+                    }
+                });
+    }
+
+    @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
+    {
+        ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
+        return userServiceWrapperLazy.get().freeFollowRx(heroId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        progress.dismiss();
+                    }
+                });
+    }
+
+    protected void handleSuccessfulFollow(@NonNull FollowRequest request)
+    {
+        analytics.addEvent(new ScreenFlowEvent(
+                request.isPremium
+                        ? AnalyticsConstants.PremiumFollow_Success
+                        : AnalyticsConstants.FreeFollow_Success,
+                AnalyticsConstants.PositionList));
+        swipeToRefreshLayout.setRefreshing(true);
+        refreshSimplePage();
+    }
+
     protected void fetchUserProfile()
     {
         if (userProfileSubscription == null)
@@ -521,7 +628,7 @@ public class PositionListFragment
     public void displayActionBarTitle()
     {
         String title = null;
-        String subtitle = null;
+        String subtitle;
         if (portfolioDTO != null)
         {
             title = portfolioDTO.title;
@@ -550,58 +657,6 @@ public class PositionListFragment
         setActionBarTitle(title);
         setActionBarSubtitle(subtitle);
     }
-
-    //<editor-fold desc="PortfolioHeaderView.OnFollowRequestedListener">
-    @Override public void onFollowRequested(final UserBaseKey userBaseKey)
-    {
-        //noinspection unchecked
-        subscriptions.add(AppObservable.bindFragment(
-                this,
-                userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
-                .subscribe(
-                        result-> {
-                            displayHeaderView();
-                            fetchSimplePage();
-                            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.PositionList));
-                        },
-                        error -> THToast.show(new THException((Throwable) error))
-                ));
-    }
-
-    @Override public void onUserFollowed(UserBaseKey userBaseKey)
-    {
-        //
-        swipeToRefreshLayout.setRefreshing(true);
-        refreshSimplePage();
-    }
-
-    //</editor-fold>
-
-    protected void popFollowUser(final UserBaseKey userBaseKey)
-    {
-        //TODO need to improve
-        if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
-        {
-            ((OtherUserPortfolioHeaderView) portfolioHeaderView).showFollowDialog();
-        }
-        //else do nothing
-    }
-
-    //<editor-fold desc="PortfolioHeaderView.OnTimelineRequestedListener">
-    @Override public void onTimelineRequested(UserBaseKey userBaseKey)
-    {
-        Bundle args = new Bundle();
-        thRouter.save(args, userBaseKey);
-        if (currentUserId.toUserBaseKey().equals(userBaseKey))
-        {
-            navigator.get().pushFragment(MeTimelineFragment.class, args);
-        }
-        else
-        {
-            navigator.get().pushFragment(PushableTimelineFragment.class, args);
-        }
-    }
-    //</editor-fold>
 
     @Override public int getTutorialLayout()
     {
