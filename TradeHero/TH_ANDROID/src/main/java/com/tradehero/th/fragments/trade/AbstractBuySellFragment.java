@@ -31,7 +31,6 @@ import com.tradehero.th.persistence.prefs.ShowMarketClosed;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -59,6 +58,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
     @Inject protected ToastOnErrorAction toastOnErrorAction;
+    @Inject protected AlertDialogBuySellRxUtil alertDialogBuySellRxUtil;
 
     protected ProviderId providerId;
     @InjectRoute protected SecurityId securityId;
@@ -393,6 +393,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void notifyMarketClosed()
     {
-        AlertDialogUtil.popMarketClosed(getActivity(), securityId);
+        alertDialogBuySellRxUtil.popMarketClosed(getActivity(), securityId)
+                .subscribe(Actions.empty(), Actions.empty());
     }
 }

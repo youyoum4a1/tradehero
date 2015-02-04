@@ -161,17 +161,6 @@ public class AlertDialogUtil
             @NonNull final Context context,
             @NonNull String title, @NonNull String description,
             int okResId, int cancelResId,
-            @Nullable final DialogInterface.OnClickListener okClickListener)
-    {
-        return popWithOkCancelButton(context, title, description, okResId, cancelResId,
-                okClickListener, createDefaultCancelListener());
-    }
-
-    @NonNull
-    public static AlertDialog popWithOkCancelButton(
-            @NonNull final Context context,
-            @NonNull String title, @NonNull String description,
-            int okResId, int cancelResId,
             @Nullable final DialogInterface.OnClickListener okClickListener,
             @Nullable final DialogInterface.OnClickListener cancelClickListener)
     {
@@ -227,32 +216,6 @@ public class AlertDialogUtil
                 .setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         dialog.show();
-        return dialog;
-    }
-
-    @NonNull
-    public static AlertDialog popMarketClosed(
-            @NonNull final Context context,
-            @Nullable SecurityId securityId)
-    {
-        AlertDialog dialog;
-        if (securityId == null)
-        {
-            dialog = popWithNegativeButton(context,
-                    R.string.alert_dialog_market_close_title,
-                    R.string.alert_dialog_market_close_message_basic,
-                    R.string.alert_dialog_market_close_cancel);
-        }
-        else
-        {
-            dialog = popWithNegativeButton(context,
-                    context.getString(R.string.alert_dialog_market_close_title),
-                    context.getString(R.string.alert_dialog_market_close_message,
-                            securityId.getExchange(),
-                            securityId.getSecuritySymbol()),
-                    context.getString(R.string.alert_dialog_market_close_cancel));
-        }
-        dialog.setIcon(R.drawable.market_sleep_grey);
         return dialog;
     }
 

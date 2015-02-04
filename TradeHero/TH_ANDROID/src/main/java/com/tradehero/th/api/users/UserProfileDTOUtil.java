@@ -83,7 +83,7 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
         }
     }
 
-    public boolean checkLinkedStatus(@NonNull UserProfileCompactDTO userProfileCompactDTO, @NonNull SocialNetworkEnum socialNetwork)
+    public static boolean checkLinkedStatus(@NonNull UserProfileCompactDTO userProfileCompactDTO, @NonNull SocialNetworkEnum socialNetwork)
     {
         switch (socialNetwork)
         {
