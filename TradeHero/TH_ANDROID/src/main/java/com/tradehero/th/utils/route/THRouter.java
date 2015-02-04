@@ -11,13 +11,14 @@ import com.tradehero.route.RouterParams;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Singleton
 public class THRouter extends Router
@@ -181,10 +182,6 @@ public class THRouter extends Router
         private Class<? extends Fragment> fragmentClass;
 
         //<editor-fold desc="Constructors">
-        public THRouterOptions(Class<? extends Fragment> fragmentClass)
-        {
-            this.fragmentClass = fragmentClass;
-        }
 
         public THRouterOptions(Class<? extends Runnable>[] preOpenRunnableClasses, Class<? extends Fragment> fragmentClass)
         {
@@ -192,11 +189,6 @@ public class THRouter extends Router
             this.fragmentClass = fragmentClass;
         }
         //</editor-fold>
-
-        public void setOpenFragmentClass(Class<? extends Fragment> fragmentClass)
-        {
-            this.fragmentClass = fragmentClass;
-        }
 
         public Class<? extends Fragment> getOpenFragmentClass()
         {
@@ -208,9 +200,5 @@ public class THRouter extends Router
             return preOpenRunnableClasses;
         }
 
-        public void setPreOpenRunnableClasses(Class<? extends Runnable>[] preOpenRunnableClasses)
-        {
-            this.preOpenRunnableClasses = preOpenRunnableClasses;
-        }
     }
 }

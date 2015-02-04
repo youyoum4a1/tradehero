@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
+import com.tradehero.chinabuild.fragment.discovery.DiscoveryUtils;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
@@ -38,7 +39,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.retrofit.MiddleCallback;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.IntegerUtils;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -805,16 +805,16 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             return false;
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
-            return IntegerUtils.isOne(2, stickType);
+            return DiscoveryUtils.isOne(2, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
-            return IntegerUtils.isOne(1, stickType);
+            return DiscoveryUtils.isOne(1, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
-            return IntegerUtils.isOne(0, stickType);
+            return DiscoveryUtils.isOne(0, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
-            return IntegerUtils.isOne(3, stickType);
+            return DiscoveryUtils.isOne(3, stickType);
         }
         return false;
     }
@@ -824,16 +824,16 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             return 0;
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
-            return IntegerUtils.toOne(0, stickType);
+            return DiscoveryUtils.toOne(0, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
-            return IntegerUtils.toOne(1, stickType);
+            return DiscoveryUtils.toOne(1, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
-            return IntegerUtils.toOne(2, stickType);
+            return DiscoveryUtils.toOne(2, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
-            return IntegerUtils.toOne(3, stickType);
+            return DiscoveryUtils.toOne(3, stickType);
         }
         return 0;
     }
@@ -843,16 +843,16 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
             return 0;
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_RECENT)){
-            return IntegerUtils.toZero(0, stickType);
+            return DiscoveryUtils.toZero(0, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_LEARNING)){
-            return IntegerUtils.toZero(1, stickType);
+            return DiscoveryUtils.toZero(1, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_FAVORITE)){
-            return IntegerUtils.toZero(2, stickType);
+            return DiscoveryUtils.toZero(2, stickType);
         }
         if(fromWhere.equals(TimeLineItemDetailFragment.BUNDLE_TIMELINE_FROM_REWARD)){
-            return IntegerUtils.toZero(3, stickType);
+            return DiscoveryUtils.toZero(3, stickType);
         }
         return 0;
     }

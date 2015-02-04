@@ -62,7 +62,6 @@ public class DiscoveryLearningFragment extends DashboardFragment
     private TextView titleHeadTV;
     private TextView totalHeadTV;
     private TextView numberTimelinesHeadTV;
-    private TextView numberRepliesHeadTV;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -162,7 +161,6 @@ public class DiscoveryLearningFragment extends DashboardFragment
         titleHeadTV.setText(R.string.discovery_square_novice);
         totalHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_total);
         numberTimelinesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_timeline);
-        numberRepliesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_replies);
         listTimeLine.getRefreshableView().addHeaderView(headerView);
     }
 

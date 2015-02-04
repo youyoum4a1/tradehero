@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.touch;
+package com.tradehero.th.utils;
 
 import android.content.Context;
 import com.tradehero.th.R;

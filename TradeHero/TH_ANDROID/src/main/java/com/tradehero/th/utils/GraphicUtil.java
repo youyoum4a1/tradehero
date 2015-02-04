@@ -10,18 +10,18 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.media.ExifInterface;
-import android.util.DisplayMetrics;
 import android.view.View;
 import com.tradehero.common.graphics.RotateTransformation;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class GraphicUtil implements BitmapForProfileFactory
 {
@@ -57,10 +57,6 @@ public class GraphicUtil implements BitmapForProfileFactory
         }
     }
 
-    public int getRotationDegree(@NotNull String imagePath)
-    {
-        return getRotationDegree(new File(imagePath));
-    }
 
     public int getRotationDegree(@NotNull File imageFile)
     {
@@ -107,13 +103,6 @@ public class GraphicUtil implements BitmapForProfileFactory
 
         int maxEdgePixel = resources.getInteger(R.integer.user_profile_photo_max_edge_pixel);
         return decodeFileWithinSize(imageFile, maxEdgePixel, maxEdgePixel);
-    }
-
-    @Nullable
-    public Bitmap decodeFileForDisplay(@NotNull Context context, @NotNull File f)
-    {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return decodeFileWithinSize(f, metrics.widthPixels, metrics.heightPixels);
     }
 
     @Nullable

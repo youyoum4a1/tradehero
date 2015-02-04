@@ -1,9 +1,9 @@
-package com.tradehero.th.utils;
+package com.tradehero.chinabuild.fragment.discovery;
 
 /**
  * Created by palmer on 15/1/30.
  */
-public class IntegerUtils {
+public class DiscoveryUtils {
 
     public static boolean isOne(int target, int number) {
         if (number == 0) {

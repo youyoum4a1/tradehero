@@ -52,7 +52,10 @@ import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.utils.*;
+import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
+import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
@@ -123,6 +126,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
     private static final int TAB_ME = 4;
 
     public long TIME_PRESSED_BACK = -1;
+    public static final long TIME_TO_EXIT_APP = 1000;
 
     /**
      * 定义数组来存放Fragment界面
@@ -381,7 +385,7 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
 
     public void exitApp()
     {
-        if (TIME_PRESSED_BACK == -1 || (System.currentTimeMillis() - TIME_PRESSED_BACK) > ConstantsChinaBuild.TIME_TO_EXIT_APP)
+        if (TIME_PRESSED_BACK == -1 || (System.currentTimeMillis() - TIME_PRESSED_BACK) > TIME_TO_EXIT_APP)
         {
             THToast.show(R.string.press_back_again_to_exit);
             TIME_PRESSED_BACK = System.currentTimeMillis();

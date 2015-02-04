@@ -32,12 +32,6 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp"
                       android:textColor="#8d8d8d" android:text="--" android:layout_marginLeft="5dp"
                       android:id="@+id/textview_timelines_head_number_timeline"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textSize="12sp" android:textColor="#8d8d8d" android:layout_marginLeft="10dp"
-                      android:text="@string/discovery_number_replies"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp"
-                      android:textColor="#8d8d8d" android:text="--" android:layout_marginLeft="5dp"
-                      android:id="@+id/textview_timelines_head_number_replies"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -233,7 +233,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
                     }
                 });
             }
-        }, 1000, 3000);
+        }, 1000, 6000);
     }
 
     private void retrieveNoticeNews(){

@@ -4,8 +4,9 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
+
+import javax.inject.Inject;
 
 public class AdapterViewUtils
 {
@@ -19,11 +20,6 @@ public class AdapterViewUtils
     public <T> boolean updateSingleRowWhere(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate)
     {
         return updateRowsWhere(adapterView, type, predicate, 1) == 1;
-    }
-
-    public <T> int updateAllRowsWhere(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate)
-    {
-        return updateRowsWhere(adapterView, type, predicate, Integer.MAX_VALUE);
     }
 
     public <T> int updateRowsWhere(@NotNull AdapterView adapterView, @NotNull Class<T> type, @NotNull Predicate<T> predicate, int maxCount)
