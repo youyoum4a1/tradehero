@@ -20,7 +20,6 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.social.OnFollowRequestedListener;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
@@ -43,7 +42,6 @@ public class FollowDialogView extends LinearLayout
     @Inject Lazy<Picasso> picasso;
 
     @Nullable private UserBaseDTO userBaseDTO;
-    @Nullable private OnFollowRequestedListener followRequestedListener;
     private BehaviorSubject<FollowRequest> requestSubject;
 
     //<editor-fold desc="Constructors">
@@ -98,11 +96,6 @@ public class FollowDialogView extends LinearLayout
             R.id.free_follow})
     void onFreeFollowClicked()
     {
-        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
-        if (followRequestedListenerCopy != null && userBaseDTO != null)
-        {
-            followRequestedListenerCopy.freeFollowRequested(userBaseDTO.getBaseKey());
-        }
         if (userBaseDTO != null)
         {
             requestSubject.onNext(new FollowRequest(userBaseDTO.getBaseKey(), false));
@@ -117,11 +110,6 @@ public class FollowDialogView extends LinearLayout
     })
     void onPremiumFollowButtonClicked()
     {
-        OnFollowRequestedListener followRequestedListenerCopy = followRequestedListener;
-        if (followRequestedListenerCopy != null && userBaseDTO != null)
-        {
-            followRequestedListenerCopy.premiumFollowRequested(userBaseDTO.getBaseKey());
-        }
         if (userBaseDTO != null)
         {
             requestSubject.onNext(new FollowRequest(userBaseDTO.getBaseKey(), true));
@@ -200,10 +188,5 @@ public class FollowDialogView extends LinearLayout
         {
             initNotFollowDialog();
         }
-    }
-
-    public void setFollowRequestedListener(@Nullable OnFollowRequestedListener followRequestedListener)
-    {
-        this.followRequestedListener = followRequestedListener;
     }
 }

@@ -40,7 +40,6 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PagedLeaderboardWrapperCacheRx;
@@ -90,7 +89,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
 
     protected PerPagedLeaderboardKey currentLeaderboardKey;
     protected LeaderboardType currentLeaderboardType;
-    protected FollowDialogCombo followDialogCombo;
 
     public static void putLeaderboardType(@NonNull Bundle args, @NonNull LeaderboardType leaderboardType)
     {
@@ -259,12 +257,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
         }
     }
 
-    @Override public void onStop()
-    {
-        detachFollowDialogCombo();
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         mRankHeaderView = null;
@@ -347,16 +339,6 @@ public class LeaderboardMarkUserListFragment extends BaseLeaderboardPagedListRxF
     protected void saveCurrentFilterKey()
     {
         savedPreference.set(currentLeaderboardKey);
-    }
-
-    protected void detachFollowDialogCombo()
-    {
-        FollowDialogCombo followDialogComboCopy = followDialogCombo;
-        if (followDialogComboCopy != null)
-        {
-            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
-        }
-        followDialogCombo = null;
     }
 
     @Override protected void linkWithApplicable(OwnedPortfolioId purchaseApplicablePortfolioId, boolean andDisplay)

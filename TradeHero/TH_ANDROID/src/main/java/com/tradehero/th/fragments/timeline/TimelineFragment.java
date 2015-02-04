@@ -52,7 +52,6 @@ import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.watchlist.WatchlistPositionFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
-import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -127,7 +126,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     @Nullable protected Subscription messageThreadHeaderFetchSubscription;
     @NonNull protected SubscriptionList subscriptions;
 
-    protected FollowDialogCombo followDialogCombo;
     protected MessageHeaderDTO messageThreadHeaderDTO;
     @Nullable protected UserProfileDTO shownProfile;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
@@ -336,7 +334,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         freeFollowSubscription = null;
         unsubscribe(messageThreadHeaderFetchSubscription);
         messageThreadHeaderFetchSubscription = null;
-        detachFollowDialogCombo();
 
         super.onStop();
     }
@@ -368,16 +365,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mainTimelineAdapter = null;
         messageThreadHeaderFetchSubscription = null;
         super.onDestroy();
-    }
-
-    protected void detachFollowDialogCombo()
-    {
-        FollowDialogCombo followDialogComboCopy = followDialogCombo;
-        if (followDialogComboCopy != null)
-        {
-            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
-        }
-        followDialogCombo = null;
     }
 
     protected void fetchMessageThreadHeader()
@@ -434,7 +421,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         mainTimelineAdapter.setCurrentTabType(tabType);
     }
 
-    protected void linkWithMessageThread(MessageHeaderDTO messageHeaderDTO, boolean andDisplay)
+    protected void linkWithMessageThread(MessageHeaderDTO messageHeaderDTO)
     {
         this.messageThreadHeaderDTO = messageHeaderDTO;
     }
@@ -619,7 +606,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                     || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
             {
-                detachFollowDialogCombo();
                 subscriptions.add(heroAlertDialogUtilRxLazy.get()
                         .showFollowDialog(
                                 getActivity(),
@@ -746,7 +732,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     {
         @Override public void onNext(Pair<UserBaseKey, MessageHeaderDTO> pair)
         {
-            linkWithMessageThread(pair.second, true);
+            linkWithMessageThread(pair.second);
         }
 
         @Override public void onCompleted()

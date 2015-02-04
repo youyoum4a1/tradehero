@@ -25,7 +25,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
@@ -34,6 +33,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
+import rx.functions.Actions;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -72,8 +72,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListItemAdapter = new RelationsListItemAdapter(
                 getActivity(),
                 R.layout.relations_list_item);
-        mRelationsListItemAdapter.setPremiumFollowRequestedListener(
-                createFollowRequestedListener());
         mRelationsListView.setAdapter(mRelationsListItemAdapter);
         mRelationsListView.setOnItemClickListener(this);
         mRelationsListView.setOnScrollListener(dashboardBottomTabsListViewScrollListener.get());
@@ -91,6 +89,11 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
     {
         super.onStart();
         downloadRelations();
+        subscriptions.add(mRelationsListItemAdapter.getFollowRequestObservable()
+                .subscribe(
+                        request -> handlePremiumFollowRequested(request.heroId),
+                        Actions.empty()
+                ));
     }
 
     @Override public void onPause()
@@ -112,7 +115,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         mRelationsListView.setOnScrollListener(null);
         mRelationsListView = null;
         mRelationsListItemAdapter.clear();
-        mRelationsListItemAdapter.setPremiumFollowRequestedListener(null);
         mRelationsListItemAdapter = null;
         mRelationsList = null;
         super.onDestroyView();
@@ -174,7 +176,7 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
         navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
-    protected void handleFollowRequested(UserBaseKey userBaseKey)
+    protected void handlePremiumFollowRequested(UserBaseKey userBaseKey)
     {
         //noinspection unchecked,RedundantCast
         subscriptions.add(AppObservable.bindFragment(
@@ -184,19 +186,6 @@ public class AllRelationsFragment extends BasePurchaseManagerFragment
                         result -> forceUpdateLook(userBaseKey),
                         error -> THToast.show(new THException((Throwable) error))
                 ));
-    }
-
-    protected OnPremiumFollowRequestedListener createFollowRequestedListener()
-    {
-        return new AllRelationsFollowRequestedListener();
-    }
-
-    protected class AllRelationsFollowRequestedListener implements OnPremiumFollowRequestedListener
-    {
-        @Override public void premiumFollowRequested(@NonNull UserBaseKey userBaseKey)
-        {
-            handleFollowRequested(userBaseKey);
-        }
     }
 
     protected void forceUpdateLook(@NonNull final UserBaseKey userFollowed)

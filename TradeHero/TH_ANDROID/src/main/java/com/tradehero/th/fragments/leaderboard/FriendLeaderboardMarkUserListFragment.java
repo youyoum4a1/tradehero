@@ -23,7 +23,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.social.FollowDialogCombo;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
 import com.tradehero.th.utils.AdapterViewUtils;
@@ -51,8 +50,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Inject Provider<PrettyTime> prettyTime;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
-
-    protected FollowDialogCombo followDialogCombo;
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -135,7 +132,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
     @Override public void onStop()
     {
         subscriptions.unsubscribe();
-        detachFollowDialogCombo();
         super.onStop();
     }
 
@@ -164,16 +160,6 @@ public class FriendLeaderboardMarkUserListFragment extends BaseLeaderboardPagedL
         return new ProcessableLeaderboardFriendsCache(
                 leaderboardFriendsCache,
                 ((LeaderboardFriendsSetAdapter) itemViewAdapter).createItemFactory());
-    }
-
-    protected void detachFollowDialogCombo()
-    {
-        FollowDialogCombo followDialogComboCopy = followDialogCombo;
-        if (followDialogComboCopy != null)
-        {
-            followDialogComboCopy.followDialogView.setFollowRequestedListener(null);
-        }
-        followDialogCombo = null;
     }
 
     protected View inflateEmptyView(@NonNull LayoutInflater inflater, ViewGroup container)

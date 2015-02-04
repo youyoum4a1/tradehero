@@ -9,53 +9,32 @@ import com.tradehero.th.adapters.ArrayDTOAdapterNew;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
-import com.tradehero.th.models.social.OnPremiumFollowRequestedListener;
+import com.tradehero.th.models.social.FollowRequest;
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipientDTO, RelationsListItemView>
 {
-    private OnPremiumFollowRequestedListener premiumFollowRequestedListener;
+    @NonNull private BehaviorSubject<FollowRequest> followRequestBehavior;
 
     //<editor-fold desc="Constructors">
     public RelationsListItemAdapter(@NonNull Context context, @LayoutRes int layoutResId)
     {
         super(context, layoutResId);
+        this.followRequestBehavior = BehaviorSubject.create();
     }
     //</editor-fold>
+
+    @NonNull public Observable<FollowRequest> getFollowRequestObservable()
+    {
+        return followRequestBehavior.asObservable();
+    }
 
     @Override public RelationsListItemView getView(int position, View convertView, ViewGroup viewGroup)
     {
         RelationsListItemView prepared = super.getView(position, convertView, viewGroup);
-        prepared.setPremiumFollowRequestedListener(createFollowRequestedListener());
+        prepared.getFollowRequestObservable().subscribe(followRequestBehavior);
         return prepared;
-    }
-
-    public void setPremiumFollowRequestedListener(
-            OnPremiumFollowRequestedListener premiumFollowRequestedListener)
-    {
-        this.premiumFollowRequestedListener = premiumFollowRequestedListener;
-    }
-
-    protected void notifyFollowRequested(@NonNull UserBaseKey userBaseKey)
-    {
-        OnPremiumFollowRequestedListener listener = premiumFollowRequestedListener;
-        if (listener != null)
-        {
-            listener.premiumFollowRequested(userBaseKey);
-        }
-    }
-
-    protected OnPremiumFollowRequestedListener createFollowRequestedListener()
-    {
-        return new RelationsListItemAdapterFollowRequestedListener();
-    }
-
-    protected class RelationsListItemAdapterFollowRequestedListener implements
-            OnPremiumFollowRequestedListener
-    {
-        @Override public void premiumFollowRequested(@NonNull UserBaseKey userBaseKey)
-        {
-            notifyFollowRequested(userBaseKey);
-        }
     }
 
     public void updateItem(
