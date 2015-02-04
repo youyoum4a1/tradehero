@@ -20,7 +20,6 @@ import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
-import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
@@ -111,14 +110,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryFailed(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.amazon_store_billing_inventory_failed_error_window_title)
-                        .setMessage(R.string.amazon_store_billing_inventory_failed_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_inventory_failed_error_window_title)
+                .setMessage(R.string.amazon_store_billing_inventory_failed_error_window_description)
                 .setPositiveButton(R.string.amazon_store_billing_inventory_failed_error_ok)
                 .setNegativeButton(R.string.amazon_store_billing_inventory_failed_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build());
+                .build();
     }
 
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupportedAndHandle(
@@ -134,14 +132,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupported(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.amazon_store_billing_inventory_unsupported_error_window_title)
-                        .setMessage(R.string.amazon_store_billing_inventory_unsupported_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_inventory_unsupported_error_window_title)
+                .setMessage(R.string.amazon_store_billing_inventory_unsupported_error_window_description)
                 .setPositiveButton(R.string.amazon_store_billing_inventory_unsupported_error_ok)
                 .setNegativeButton(R.string.amazon_store_billing_inventory_unsupported_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build());
+                .build();
     }
     //</editor-fold>
 
@@ -159,14 +156,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseFailed(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.amazon_store_billing_purchase_failed_error_window_title)
-                        .setMessage(R.string.amazon_store_billing_purchase_failed_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_purchase_failed_error_window_title)
+                .setMessage(R.string.amazon_store_billing_purchase_failed_error_window_description)
                 .setPositiveButton(R.string.amazon_store_billing_purchase_failed_error_ok)
                 .setNegativeButton(R.string.amazon_store_billing_purchase_failed_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build());
+                .build();
     }
 
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupportedAndHandle(
@@ -182,14 +178,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupported(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.amazon_store_billing_purchase_unsupported_error_window_title)
-                        .setMessage(R.string.amazon_store_billing_purchase_unsupported_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_purchase_unsupported_error_window_title)
+                .setMessage(R.string.amazon_store_billing_purchase_unsupported_error_window_description)
                 .setPositiveButton(R.string.amazon_store_billing_purchase_unsupported_error_ok)
                 .setNegativeButton(R.string.amazon_store_billing_purchase_unsupported_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build());
+                .build();
     }
     //</editor-fold>
 
@@ -206,14 +201,13 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popSandboxMode(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.amazon_store_billing_sandbox_window_title)
-                        .setMessage(R.string.amazon_store_billing_sandbox_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.amazon_store_billing_sandbox_window_title)
+                .setMessage(R.string.amazon_store_billing_sandbox_window_description)
                 .setPositiveButton(R.string.amazon_store_billing_sandbox_window_ok)
                 .setNegativeButton(R.string.amazon_store_billing_sandbox_window_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build());
+                .build();
     }
 
     @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopSandboxMode(

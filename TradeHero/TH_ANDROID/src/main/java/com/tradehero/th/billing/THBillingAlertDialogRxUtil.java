@@ -19,7 +19,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
-import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.VersionUtils;
@@ -28,7 +27,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 abstract public class THBillingAlertDialogRxUtil<
@@ -113,15 +111,13 @@ abstract public class THBillingAlertDialogRxUtil<
     @NonNull public Observable<Pair<DialogInterface, Integer>> popBillingUnavailableRx(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.store_billing_unavailable_window_title)
-                        .setMessage(activityContext.getString(R.string.store_billing_unavailable_window_description, storeName)))
+        return buildDefault(activityContext)
+                .setTitle(R.string.store_billing_unavailable_window_title)
+                .setMessage(activityContext.getString(R.string.store_billing_unavailable_window_description, storeName))
                 .setPositiveButton(R.string.store_billing_unavailable_act)
                 .setNegativeButton(R.string.store_billing_unavailable_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
 
     @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopBillingUnavailable(
@@ -215,17 +211,14 @@ abstract public class THBillingAlertDialogRxUtil<
         detailAdapter.setProductDetailComparator(createProductDetailComparator());
         detailAdapter.setItems(productDetails);
         //noinspection unchecked
-        return Observable.create(
-                AlertDialogOnSubscribe.builder(
-                        createDefaultDialogBuilder(activityContext)
-                                .setTitle(domain.storeTitleResId))
-                        .setCanceledOnTouchOutside(true)
-                        .setSingleChoiceItems(detailAdapter, 0)
-                        .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
-                        .build())
+        return buildDefault(activityContext)
+                .setTitle(domain.storeTitleResId)
+                .setCanceledOnTouchOutside(true)
+                .setSingleChoiceItems(detailAdapter, 0)
+                .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
+                .build()
                 .filter(pair -> pair.second >= 0)
-                .map(pair -> Pair.create(pair.first, (THProductDetailType) detailAdapter.getItem(pair.second)))
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .map(pair -> Pair.create(pair.first, (THProductDetailType) detailAdapter.getItem(pair.second)));
     }
     //</editor-fold>
 
@@ -240,28 +233,24 @@ abstract public class THBillingAlertDialogRxUtil<
         Observable<Pair<DialogInterface, Integer>> observable;
         if (result.getCount() == 0)
         {
-            observable = Observable.create(AlertDialogOnSubscribe.builder(
-                    createDefaultDialogBuilder(activityContext)
-                            .setTitle(R.string.iap_purchase_restored_none_title)
-                            .setMessage(R.string.iap_purchase_restored_none_message))
+            observable = buildDefault(activityContext)
+                    .setTitle(R.string.iap_purchase_restored_none_title)
+                    .setMessage(R.string.iap_purchase_restored_none_message)
                     .setNegativeButton(R.string.iap_purchase_restored_none_cancel)
                     .setCanceledOnTouchOutside(true)
-                    .build())
-                    .subscribeOn(AndroidSchedulers.mainThread());
+                    .build();
         }
         else if (result.getFailedCount() > 0 && result.getSucceededCount() == 0)
         {
-            observable = Observable.create(AlertDialogOnSubscribe.builder(
-                    createDefaultDialogBuilder(activityContext)
-                            .setTitle(R.string.iap_send_support_email_restore_fail_title)
-                            .setMessage(activityContext.getString(
-                                    R.string.iap_send_support_email_restore_fail_message,
-                                    result.getFailedCount())))
+            observable = buildDefault(activityContext)
+                    .setTitle(R.string.iap_send_support_email_restore_fail_title)
+                    .setMessage(activityContext.getString(
+                            R.string.iap_send_support_email_restore_fail_message,
+                            result.getFailedCount()))
                     .setPositiveButton(R.string.iap_send_support_email_restore_fail_ok)
                     .setNegativeButton(R.string.iap_send_support_email_restore_fail_cancel)
                     .setCanceledOnTouchOutside(true)
-                    .build())
-                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .build()
                     .flatMap(pair -> {
                         if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                         {
@@ -276,18 +265,16 @@ abstract public class THBillingAlertDialogRxUtil<
         }
         else if (result.getFailedCount() > 0 && result.getSucceededCount() > 0)
         {
-            observable = Observable.create(AlertDialogOnSubscribe.builder(
-                    createDefaultDialogBuilder(activityContext)
-                            .setTitle(R.string.iap_send_support_email_restore_fail_partial_title)
-                            .setMessage(activityContext.getString(
-                                    R.string.iap_send_support_email_restore_fail_partial_message,
-                                    result.getSucceededCount(),
-                                    result.getFailedCount())))
+            observable = buildDefault(activityContext)
+                    .setTitle(R.string.iap_send_support_email_restore_fail_partial_title)
+                    .setMessage(activityContext.getString(
+                            R.string.iap_send_support_email_restore_fail_partial_message,
+                            result.getSucceededCount(),
+                            result.getFailedCount()))
                     .setPositiveButton(R.string.iap_send_support_email_restore_fail_partial_ok)
                     .setNegativeButton(R.string.iap_send_support_email_restore_fail_partial_cancel)
                     .setCanceledOnTouchOutside(true)
-                    .build())
-                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .build()
                     .flatMap(pair -> {
                         if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                         {
@@ -302,16 +289,14 @@ abstract public class THBillingAlertDialogRxUtil<
         }
         else
         {
-            observable = Observable.create(AlertDialogOnSubscribe.builder(
-                    createDefaultDialogBuilder(activityContext)
-                            .setTitle(R.string.iap_purchase_restored_title)
-                            .setMessage(activityContext.getString(
-                                    R.string.iap_purchase_restored_message,
-                                    result.getSucceededCount())))
+            observable = buildDefault(activityContext)
+                    .setTitle(R.string.iap_purchase_restored_title)
+                    .setMessage(activityContext.getString(
+                            R.string.iap_purchase_restored_message,
+                            result.getSucceededCount()))
                     .setNegativeButton(R.string.iap_purchase_restored_cancel)
                     .setCanceledOnTouchOutside(true)
-                    .build())
-                    .subscribeOn(AndroidSchedulers.mainThread());
+                    .build();
         }
         return observable.flatMap(pair -> Observable.empty()); // We do not want anything propagated
     }
@@ -347,15 +332,13 @@ abstract public class THBillingAlertDialogRxUtil<
     @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreFailed(
             @NonNull Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.iap_send_support_email_restore_fail_title)
-                        .setMessage(R.string.iap_send_support_email_restore_fail_message))
+        return buildDefault(activityContext)
+                .setTitle(R.string.iap_send_support_email_restore_fail_title)
+                .setMessage(R.string.iap_send_support_email_restore_fail_message)
                 .setPositiveButton(R.string.iap_send_support_email_restore_fail_ok)
                 .setNegativeButton(R.string.iap_send_support_email_restore_fail_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
 
     @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopRestoreFailed(

@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.base;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,7 +27,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
-import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
@@ -248,15 +246,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             @NonNull final SocialLinkToggleButton socialLinkToggleButton,
             @NonNull final SocialNetworkEnum socialNetwork)
     {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
-        alertBuilder.setIcon(R.drawable.th_app_logo)
-                .setCancelable(true)
-                .setTitle(getString(R.string.link, socialNetwork.getName()))
-                .setMessage(getString(R.string.link_description, socialNetwork.getName()));
-        AlertDialogOnSubscribe.Builder onSubscribeBuilder = new AlertDialogOnSubscribe.Builder(alertBuilder);
-        onSubscribeBuilder.setPositiveButton(getString(R.string.link_now))
-                .setNegativeButton(getString(R.string.later));
-
         return socialAlertDialogRxUtil.popNeedToLinkSocial(getActivity(), socialNetwork)
                 .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
                 .doOnNext(dialogResult -> AlertDialogUtil.showProgressDialog(

@@ -21,13 +21,11 @@ import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
-import com.tradehero.th.rx.dialog.AlertDialogOnSubscribe;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class THIABAlertDialogRxUtil
@@ -98,14 +96,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popVerificationFailed(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.google_play_billing_verification_failed_window_title)
-                        .setMessage(R.string.google_play_billing_verification_failed_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_verification_failed_window_title)
+                .setMessage(R.string.google_play_billing_verification_failed_window_description)
                 .setNegativeButton(R.string.google_play_billing_verification_failed_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
     //</editor-fold>
 
@@ -120,14 +116,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popBadResponse(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.google_play_billing_bad_response_window_title)
-                        .setMessage(R.string.google_play_billing_bad_response_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_bad_response_window_title)
+                .setMessage(R.string.google_play_billing_bad_response_window_description)
                 .setNegativeButton(R.string.google_play_billing_bad_response_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
     //</editor-fold>
 
@@ -142,14 +136,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popResultError(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.google_play_billing_result_error_window_title)
-                        .setMessage(R.string.google_play_billing_result_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_result_error_window_title)
+                .setMessage(R.string.google_play_billing_result_error_window_description)
                 .setNegativeButton(R.string.google_play_billing_result_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
     //</editor-fold>
 
@@ -164,14 +156,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popRemoteError(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.google_play_billing_remote_error_window_title)
-                        .setMessage(R.string.google_play_billing_remote_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_remote_error_window_title)
+                .setMessage(R.string.google_play_billing_remote_error_window_description)
                 .setNegativeButton(R.string.google_play_billing_remote_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
     //</editor-fold>
 
@@ -186,14 +176,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popSendIntent(
             @NonNull final Context activityContext)
     {
-        return Observable.create(AlertDialogOnSubscribe.builder(
-                createDefaultDialogBuilder(activityContext)
-                        .setTitle(R.string.google_play_billing_send_intent_error_window_title)
-                        .setMessage(R.string.google_play_billing_send_intent_error_window_description))
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_send_intent_error_window_title)
+                .setMessage(R.string.google_play_billing_send_intent_error_window_description)
                 .setNegativeButton(R.string.google_play_billing_send_intent_error_cancel)
                 .setCanceledOnTouchOutside(true)
-                .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+                .build();
     }
     //</editor-fold>
 
@@ -209,15 +197,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popSendEmailSupportConsumeFailed(
             @NonNull final Context activityContext)
     {
-        return Observable.create(
-                AlertDialogOnSubscribe.builder(
-                        createDefaultDialogBuilder(activityContext)
-                                .setTitle(R.string.google_play_send_support_email_consume_fail_title)
-                                .setMessage(R.string.google_play_send_support_email_consume_fail_message))
-                        .setPositiveButton(R.string.google_play_send_support_email_consume_fail_ok)
-                        .setNegativeButton(R.string.google_play_send_support_email_consume_fail_cancel)
-                        .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_send_support_email_consume_fail_title)
+                .setMessage(R.string.google_play_send_support_email_consume_fail_message)
+                .setPositiveButton(R.string.google_play_send_support_email_consume_fail_ok)
+                .setNegativeButton(R.string.google_play_send_support_email_consume_fail_cancel)
+                .build();
     }
 
     @NonNull public Observable<Pair<DialogInterface, Integer>> handleSendEmailSupportConsumeFailed(
@@ -252,15 +237,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popAlreadyOwned(
             @NonNull final Context activityContext)
     {
-        return Observable.create(
-                AlertDialogOnSubscribe.builder(
-                        createDefaultDialogBuilder(activityContext)
-                                .setTitle(R.string.google_play_billing_already_owned_window_title)
-                                .setMessage(R.string.google_play_billing_already_owned_window_description))
-                        .setPositiveButton(R.string.google_play_billing_already_owned_ok)
-                        .setNegativeButton(R.string.google_play_billing_already_owned_cancel)
-                        .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_already_owned_window_title)
+                .setMessage(R.string.google_play_billing_already_owned_window_description)
+                .setPositiveButton(R.string.google_play_billing_already_owned_ok)
+                .setNegativeButton(R.string.google_play_billing_already_owned_cancel)
+                .build();
     }
 
     @NonNull public Observable<Pair<DialogInterface, Integer>> handleSendEmailAlreadyOwned(
@@ -295,15 +277,12 @@ public class THIABAlertDialogRxUtil
     @NonNull public Observable<Pair<DialogInterface, Integer>> popDeveloperError(
             @NonNull final Context activityContext)
     {
-        return Observable.create(
-                AlertDialogOnSubscribe.builder(
-                        createDefaultDialogBuilder(activityContext)
-                                .setTitle(R.string.google_play_billing_developer_error_window_title)
-                                .setMessage(R.string.google_play_billing_developer_error_window_description))
-                        .setPositiveButton(R.string.google_play_billing_developer_error_ok)
-                        .setNegativeButton(R.string.google_play_billing_developer_error_cancel)
-                        .build())
-                .subscribeOn(AndroidSchedulers.mainThread());
+        return buildDefault(activityContext)
+                .setTitle(R.string.google_play_billing_developer_error_window_title)
+                .setMessage(R.string.google_play_billing_developer_error_window_description)
+                .setPositiveButton(R.string.google_play_billing_developer_error_ok)
+                .setNegativeButton(R.string.google_play_billing_developer_error_cancel)
+                .build();
     }
 
     @NonNull public Observable<Pair<DialogInterface, Integer>> handleSendEmailDeveloperError(
@@ -325,7 +304,6 @@ public class THIABAlertDialogRxUtil
                 googlePlayUtils.getSupportDeveloperErrorIntent(context, exception));
     }
     //</editor-fold>
-
 
     //<editor-fold desc="SKU related">
     @Override @NonNull protected THIABSKUDetailAdapter createProductDetailAdapter(
@@ -355,5 +333,4 @@ public class THIABAlertDialogRxUtil
                 googlePlayUtils.getSupportPurchaseRestoreEmailIntent(context, exception),
                 context.getString(R.string.iap_send_support_email_chooser_title)));
     }
-
 }
