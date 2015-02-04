@@ -230,11 +230,16 @@ public abstract class SocialFriendsFragment extends DashboardFragment
         unsubscribe(friendsListCacheSubscription);
         friendsListCacheSubscription = AppObservable.bindFragment(
                 this,
-                friendsListCache.get(friendsListKey)
-                        .map(new PairGetSecond<>()))
+                getFetchAllFriendsObservable())
                 .subscribe(
                         this::linkWith,
                         this::handleFriendListError);
+    }
+
+    @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
+    {
+        return friendsListCache.get(friendsListKey)
+                .map(new PairGetSecond<>());
     }
 
     protected void linkWith(@NonNull UserFriendsDTOList value)
