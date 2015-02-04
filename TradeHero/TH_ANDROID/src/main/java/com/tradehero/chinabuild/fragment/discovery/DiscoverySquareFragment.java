@@ -307,11 +307,11 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         gotoDashboard(CompetitionDetailFragment.class, bundle);
     }
 
-    private void jumpTimeLine(int timelineId){
+    private void jumpTimeLine(int timeLineItemId){
         Bundle bundle = new Bundle();
         Bundle discussBundle = new Bundle();
         discussBundle.putString(TimelineItemDTOKey.BUNDLE_KEY_TYPE, DiscussionType.TIMELINE_ITEM.name());
-        discussBundle.putInt(TimelineItemDTOKey.BUNDLE_KEY_ID, timelineId);
+        discussBundle.putInt(TimelineItemDTOKey.BUNDLE_KEY_ID, timeLineItemId);
         bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, discussBundle);
         gotoDashboard(TimeLineItemDetailFragment.class, bundle);
         return;

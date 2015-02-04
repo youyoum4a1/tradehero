@@ -21,8 +21,7 @@
                       android:text="@string/discovery_square_novice"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:id="@+id/textview_timelines_head_total" android:layout_marginLeft="5dp"
-                      android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"
-                      android:text="--"/>
+                      android:layout_gravity="center_vertical" android:textSize="11sp" android:textColor="#afafaf"/>
         </LinearLayout>
         <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:orientation="horizontal" android:layout_marginTop="8dp">
@@ -30,7 +29,8 @@
                       android:textSize="12sp" android:textColor="#8d8d8d"
                       android:text="@string/discovery_number_timelines"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="12sp"
-                      android:textColor="#8d8d8d" android:text="--" android:layout_marginLeft="5dp"
+                      android:textColor="#8d8d8d"
+                      android:layout_marginLeft="5dp"
                       android:id="@+id/textview_timelines_head_number_timeline"/>
         </LinearLayout>
     </LinearLayout>
