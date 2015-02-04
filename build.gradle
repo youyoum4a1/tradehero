@@ -3,8 +3,12 @@ buildscript {
     mavenCentral()
   }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-        classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
-    }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:1.0.0'
+    classpath 'org.robolectric:robolectric-gradle-plugin:0.13.+'
   }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.2'
+}
