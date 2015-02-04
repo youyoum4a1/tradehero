@@ -18,8 +18,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
+import com.tradehero.chinabuild.data.AdsDTO;
+import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
+import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
@@ -82,7 +88,9 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         rewardLL.setOnClickListener(this);
         favoriteLL.setOnClickListener(this);
         noviceLL.setOnClickListener(this);
-        initTopBanner();
+
+        //Download Advertisement
+        downloadAdvertisements();
 
         //Download Notice News
         retrieveNoticeNews();
@@ -133,27 +141,29 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         rlTopBanner.startAnimation(animation);
     }
 
-    private void initTopBanner()
+    private void initTopBanner(List<AdsDTO> adsDTOs)
     {
-        if(!SHOW_ADVERTISEMENT){
+        if(getActivity()== null|| rlTopBanner == null){
             return;
         }
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         views = new ArrayList();
         rlTopBanner.setVisibility(View.VISIBLE);
 
-        for (int i = 0; i < 3; i++)
+        for (int num = 0; num < adsDTOs.size(); num++)
         {
+            final AdsDTO adsDTO = adsDTOs.get(num);
             View view = layoutInflater.inflate(R.layout.search_square_top_banner_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.imgTopBannerItem);
             picasso.get()
-                    .load("http://s10.sinaimg.cn/orignal/4a9f5ee165a82e42a0459.jpg")
+                    .load(adsDTO.bannerImageUrl)
                     .into(imageView);
             views.add(view);
             view.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(View view)
                 {
+                    enterTargetTopic(adsDTO);
                 }
             });
         }
@@ -233,7 +243,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
                     }
                 });
             }
-        }, 1000, 6000);
+        }, 6000, 6000);
     }
 
     private void retrieveNoticeNews(){
@@ -250,4 +260,67 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         });
     }
 
+    private void downloadAdvertisements(){
+        if(!SHOW_ADVERTISEMENT){
+            if(rlTopBanner.getVisibility()==View.VISIBLE){
+                rlTopBanner.setVisibility(View.GONE);
+            }
+            return;
+        }
+        timelineServiceWrapper.get().downloadAdvertisements(new Callback<List<AdsDTO>>() {
+            @Override
+            public void success(List<AdsDTO> adsDTOSet, Response response) {
+                if(rlTopBanner == null){
+                    return;
+                }
+                if(adsDTOSet!=null && adsDTOSet.size()>0){
+                    initTopBanner(adsDTOSet);
+                }else {
+                    rlTopBanner.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+            }
+        });
+    }
+
+    private void enterTargetTopic(AdsDTO adsDTO){
+        if(adsDTO.competitionId >0){
+            jumpCompetitionDetailPage(adsDTO.competitionId);
+            return;
+        }
+        if(adsDTO.timeLineItemId >0){
+            jumpTimeLine(adsDTO.timeLineItemId);
+            return;
+        }
+        if(!adsDTO.redirectUrl.equals("")){
+            jumpWeb(adsDTO.redirectUrl);
+            return;
+        }
+    }
+
+    private void jumpCompetitionDetailPage(int competitionId){
+        Bundle bundle = new Bundle();
+        bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
+        gotoDashboard(CompetitionDetailFragment.class, bundle);
+    }
+
+    private void jumpTimeLine(int timelineId){
+        Bundle bundle = new Bundle();
+        Bundle discussBundle = new Bundle();
+        discussBundle.putString(TimelineItemDTOKey.BUNDLE_KEY_TYPE, DiscussionType.TIMELINE_ITEM.name());
+        discussBundle.putInt(TimelineItemDTOKey.BUNDLE_KEY_ID, timelineId);
+        bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, discussBundle);
+        gotoDashboard(TimeLineItemDetailFragment.class, bundle);
+        return;
+    }
+
+    private void jumpWeb(String url){
+        Bundle bundle = new Bundle();
+        bundle.putString(WebViewFragment.BUNDLE_WEBVIEW_URL, url);
+        bundle.putString(WebViewFragment.BUNDLE_WEBVIEW_TITLE, "");
+        gotoDashboard(WebViewFragment.class, bundle);
+    }
 }

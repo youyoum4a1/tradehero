@@ -1,10 +1,13 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+
+import java.util.List;
 
 interface UserTimelineServiceAsync
 {
@@ -77,5 +80,10 @@ interface UserTimelineServiceAsync
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
             Callback<TimelineDTO> callback);
+    //</editor-fold>
+
+    //Advertisement
+    @GET("/misc/ads")
+    void downloadAdvertisements(Callback<List<AdsDTO>> callback);
     //</editor-fold>
 }

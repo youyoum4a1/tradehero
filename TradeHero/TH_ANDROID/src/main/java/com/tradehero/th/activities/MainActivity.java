@@ -23,6 +23,7 @@ import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
+import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
@@ -173,6 +174,8 @@ public class MainActivity extends SherlockFragmentActivity implements DashboardN
         DaggerUtils.inject(this);
         currentActivityHolder.setCurrentActivity(this);
         tabInit();
+
+        DiscoverySquareFragment.SHOW_ADVERTISEMENT = true;
 
 
         //Download TradeHero Version

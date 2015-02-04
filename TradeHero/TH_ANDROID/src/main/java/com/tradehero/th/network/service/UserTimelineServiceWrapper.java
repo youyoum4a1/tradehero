@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
@@ -12,6 +13,7 @@ import retrofit.Callback;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.List;
 
 @Singleton public class UserTimelineServiceWrapper
 {
@@ -94,6 +96,10 @@ import javax.inject.Singleton;
     //公告, only one page with 20 items
     public void getTimelineNotice(@NotNull UserBaseKey userId, @Nullable Callback<TimelineDTO> callback){
         userTimelineServiceAsync.getTimelineNotice(userId.key, 20, -1, -1, callback);
+    }
+
+    public void downloadAdvertisements(Callback<List<AdsDTO>> callback){
+        userTimelineServiceAsync.downloadAdvertisements(callback);
     }
     //</editor-fold>
 }
