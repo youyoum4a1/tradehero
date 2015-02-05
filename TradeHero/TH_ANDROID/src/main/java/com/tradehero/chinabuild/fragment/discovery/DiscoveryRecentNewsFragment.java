@@ -172,6 +172,9 @@ public class DiscoveryRecentNewsFragment extends DashboardFragment
         titleHeadTV.setText(R.string.discovery_square_discuss);
         totalHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_total);
         numberTimelinesHeadTV = (TextView)headerView.findViewById(R.id.textview_timelines_head_number_timeline);
+        if(DiscoverySquareFragment.NUMBER_TIMELINES_RECENT > 0){
+            numberTimelinesHeadTV.setText(String.valueOf(DiscoverySquareFragment.NUMBER_TIMELINES_RECENT));
+        }
         listTimeLine.getRefreshableView().addHeaderView(headerView);
     }
 

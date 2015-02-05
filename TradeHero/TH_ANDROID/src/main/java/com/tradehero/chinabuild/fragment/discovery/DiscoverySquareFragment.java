@@ -75,6 +75,11 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     //Advertisement Record
     public static boolean SHOW_ADVERTISEMENT = true;
 
+    public static int NUMBER_TIMELINES_NOTICE = 0;
+    public static int NUMBER_TIMELINES_ESSENTIAL = 0;
+    public static int NUMBER_TIMELINES_REWRAD = 0;
+    public static int NUMBER_TIMELINES_RECENT = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -97,6 +102,13 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
 
         return view;
     }
+
+    @Override
+    public void onDestroyView(){
+        stopTimer();
+        super.onDestroyView();
+    }
+
 
     @Override
     public void onClick(View view)
