@@ -166,7 +166,11 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
             if (activeSession != null && activeSession.isOpened())
             {
                 // if requesting permissions is just subset of activeSession.getPermissions() - existing one
-                if (isSubsetPermissions(activeSession.getPermissions(), permissions))
+                //if (isSubsetPermissions(activeSession.getPermissions(), permissions))
+                List<String> currentPermissions = activeSession.getPermissions();
+                if ((permissions == null)
+                        || ((currentPermissions != null) && (currentPermissions.containsAll(permissions)))
+                   )
                 {
                     subscriber.onNext(activeSession);
                     subscriber.onCompleted();
@@ -203,27 +207,5 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
             subscriber.add(subscription);
         }
-    }
-
-    private static boolean isSubsetPermissions(List<String> permissions, List<String> newPermissions)
-    {
-        if (newPermissions == null)
-        {
-            return true;
-        }
-        if (permissions == null)
-        {
-            return false;
-        }
-
-        List<String> temp = new ArrayList<>(permissions);
-        for (String permission : newPermissions)
-        {
-            if (!temp.remove(permission))
-            {
-                return false;
-            }
-        }
-        return true;
     }
 }
