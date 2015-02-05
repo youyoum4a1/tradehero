@@ -32,10 +32,8 @@ import rx.functions.Actions;
 abstract public class SocialConnectSettingViewHolder
         extends UserProfileCheckBoxSettingViewHolder
 {
-    @NonNull protected final SocialAlertDialogRxUtil socialAlertDialogRxUtil;
     @NonNull protected final SocialServiceWrapper socialServiceWrapper;
     @NonNull protected final Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider;
-    @NonNull protected final UserProfileDTOUtil userProfileDTOUtil;
     @NonNull protected final String authToken;
     @Nullable protected Subscription sequenceSubscription;
 
@@ -44,17 +42,13 @@ abstract public class SocialConnectSettingViewHolder
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull UserServiceWrapper userServiceWrapper,
-            @NonNull SocialAlertDialogRxUtil socialAlertDialogRxUtil,
             @NonNull SocialServiceWrapper socialServiceWrapper,
             @NonNull Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider,
-            @NonNull UserProfileDTOUtil userProfileDTOUtil,
             @NonNull String authToken)
     {
         super(currentUserId, userProfileCache, userServiceWrapper);
-        this.socialAlertDialogRxUtil = socialAlertDialogRxUtil;
         this.socialServiceWrapper = socialServiceWrapper;
         this.socialAuthenticationProvider = socialAuthenticationProvider;
-        this.userProfileDTOUtil = userProfileDTOUtil;
         this.authToken = authToken;
     }
     //</editor-fold>
@@ -95,7 +89,7 @@ abstract public class SocialConnectSettingViewHolder
             }
             else if (isMainLogin())
             {
-                sequence = socialAlertDialogRxUtil.popErrorUnlinkDefaultAccount(activityContext)
+                sequence = SocialAlertDialogRxUtil.popErrorUnlinkDefaultAccount(activityContext)
                         .flatMap(pair -> Observable.empty());
             }
             else
@@ -124,7 +118,7 @@ abstract public class SocialConnectSettingViewHolder
 
     @NonNull protected Observable<UserProfileDTO> confirmUnLinkRx(@NonNull Context activityContext)
     {
-        return socialAlertDialogRxUtil.popConfirmUnlinkAccount(
+        return SocialAlertDialogRxUtil.popConfirmUnlinkAccount(
                 activityContext,
                 getSocialNetworkEnum())
                 .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
@@ -168,7 +162,7 @@ abstract public class SocialConnectSettingViewHolder
 
         @Override public void onError(Throwable e)
         {
-            socialAlertDialogRxUtil.popErrorSocialAuth(activityContext, e)
+            SocialAlertDialogRxUtil.popErrorSocialAuth(activityContext, e)
                     .subscribe(Actions.empty(), Actions.empty());
         }
     }
@@ -186,7 +180,7 @@ abstract public class SocialConnectSettingViewHolder
         if (clickablePrefCopy != null)
         {
             clickablePrefCopy.setChecked(
-                    userProfileDTOUtil.checkLinkedStatus(userProfileDTO, getSocialNetworkEnum()));
+                    UserProfileDTOUtil.checkLinkedStatus(userProfileDTO, getSocialNetworkEnum()));
         }
     }
 

@@ -39,7 +39,6 @@ public class SocialShareHelper
     @NonNull protected final Provider<Activity> activityHolder;
     @NonNull protected final Provider<DashboardNavigator> navigatorProvider;
     @NonNull protected final ShareDialogFactory shareDialogFactory;
-    @NonNull protected final SocialAlertDialogRxUtil alertDialogUtil;
     @NonNull protected final Provider<SocialSharer> socialSharerProvider;
     @NonNull protected final SocialShareFormDTOFactory socialShareFormDTOFactory;
     @NonNull protected final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
@@ -50,7 +49,6 @@ public class SocialShareHelper
             @NonNull Provider<Activity> activityHolder,
             @NonNull Provider<DashboardNavigator> navigatorProvider,
             @NonNull ShareDialogFactory shareDialogFactory,
-            @NonNull SocialAlertDialogRxUtil alertDialogUtil,
             @NonNull Provider<SocialSharer> socialSharerProvider,
             @NonNull SocialShareFormDTOFactory socialShareFormDTOFactory,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders)
@@ -59,7 +57,6 @@ public class SocialShareHelper
         this.activityHolder = activityHolder;
         this.navigatorProvider = navigatorProvider;
         this.shareDialogFactory = shareDialogFactory;
-        this.alertDialogUtil = alertDialogUtil;
         this.socialSharerProvider = socialSharerProvider;
         this.socialShareFormDTOFactory = socialShareFormDTOFactory;
         this.authenticationProviders = authenticationProviders;
@@ -145,7 +142,7 @@ public class SocialShareHelper
 
     @NonNull public Observable<UserProfileDTO> offerToConnect(@NonNull SocialNetworkEnum socialNetwork)
     {
-        return alertDialogUtil.popNeedToLinkSocial(
+        return SocialAlertDialogRxUtil.popNeedToLinkSocial(
                 activityHolder.get(),
                 socialNetwork)
                 .flatMap(new Func1<Pair<DialogInterface, Integer>, Observable<UserProfileDTO>>()

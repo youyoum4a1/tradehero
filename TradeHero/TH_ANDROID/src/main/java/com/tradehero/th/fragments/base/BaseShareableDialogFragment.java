@@ -49,7 +49,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
-    @Inject protected SocialAlertDialogRxUtil socialAlertDialogRxUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
     @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
@@ -219,7 +218,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                         {
                             @Override public void call(Throwable e)
                             {
-                                socialAlertDialogRxUtil.popErrorSocialAuth(getActivity(), e).subscribe(Actions.empty(), Actions.empty());
+                                SocialAlertDialogRxUtil.popErrorSocialAuth(getActivity(), e).subscribe(Actions.empty(), Actions.empty());
                             }
                         }
                 );
@@ -246,7 +245,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             @NonNull final SocialLinkToggleButton socialLinkToggleButton,
             @NonNull final SocialNetworkEnum socialNetwork)
     {
-        return socialAlertDialogRxUtil.popNeedToLinkSocial(getActivity(), socialNetwork)
+        return SocialAlertDialogRxUtil.popNeedToLinkSocial(getActivity(), socialNetwork)
                 .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
                 .doOnNext(dialogResult -> AlertDialogUtil.showProgressDialog(
                         getActivity(),

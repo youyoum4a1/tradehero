@@ -61,8 +61,8 @@ import com.tradehero.th.network.share.dto.ConnectRequired;
 import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
 import com.tradehero.th.persistence.level.LevelDefListCacheRx;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.widget.UserLevelProgressBar;
@@ -75,6 +75,7 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public abstract class AbstractAchievementDialogFragment extends BaseShareableDialogFragment
@@ -328,26 +329,26 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                 shareTos.remove(SocialNetworkEnum.WECHAT);
                 WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
                 subscriptions.add(socialSharerLazy.get().share(weChatDTO)
-                .subscribe(
-                        new Action1<SocialShareResult>()
-                        {
-                            @Override public void call(SocialShareResult obj)
-                            {
-                                if (obj instanceof ConnectRequired)
+                        .subscribe(
+                                new Action1<SocialShareResult>()
                                 {
-                                    throw new IllegalStateException("It should have been taken care of at the network button press");
-                                }
-                                showShareSuccess();
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable e)
-                            {
-                                Timber.e(e, "Failed when sharing");
-                                showShareFailed();
-                            }
-                        }));
+                                    @Override public void call(SocialShareResult obj)
+                                    {
+                                        if (obj instanceof ConnectRequired)
+                                        {
+                                            throw new IllegalStateException("It should have been taken care of at the network button press");
+                                        }
+                                        showShareSuccess();
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable e)
+                                    {
+                                        Timber.e(e, "Failed when sharing");
+                                        showShareFailed();
+                                    }
+                                }));
             }
             if (!shareTos.isEmpty())
             {
@@ -527,11 +528,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
         }
         else
         {
-            AlertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.link_select_one_social,
-                    R.string.link_select_one_social_description,
-                    R.string.ok);
+            subscriptions.add(SocialAlertDialogRxUtil.popSelectOneSocialNetwork(getActivity())
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 

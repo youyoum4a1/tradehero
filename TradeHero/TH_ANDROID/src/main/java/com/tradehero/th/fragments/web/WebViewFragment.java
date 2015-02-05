@@ -11,9 +11,10 @@ import android.view.MenuItem;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 @Routable("web/url/:requiredUrlEncoded")
@@ -33,8 +34,7 @@ public class WebViewFragment extends BaseWebViewFragment
             try
             {
                 putUrl(args, Uri.decode(requiredUrlEncoded));
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 Timber.e(e, "Failed to decode Url %s", requiredUrlEncoded);
             }
@@ -76,15 +76,15 @@ public class WebViewFragment extends BaseWebViewFragment
                     try
                     {
                         getActivity().startActivity(intent);
-                    }
-                    catch (ActivityNotFoundException e)
+                    } catch (ActivityNotFoundException e)
                     {
                         Timber.e(e, "No activity for %s", url);
-                        AlertDialogUtil.popWithNegativeButton(
-                                getActivity(),
-                                R.string.webview_error_no_browser_for_intent_title,
-                                R.string.webview_error_no_browser_for_intent_description,
-                                R.string.cancel);
+                        onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                                .setTitle(R.string.webview_error_no_browser_for_intent_title)
+                                .setMessage(R.string.webview_error_no_browser_for_intent_description)
+                                .setPositiveButton(R.string.cancel)
+                                .build()
+                                .subscribe(Actions.empty(), Actions.empty()));
                     }
                 }
             }

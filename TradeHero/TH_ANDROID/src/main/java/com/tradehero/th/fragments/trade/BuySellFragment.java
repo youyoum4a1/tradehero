@@ -53,7 +53,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -453,10 +453,12 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     {
         if (isPortfolioChanged)
         {
-            AlertDialogUtil.popWithNegativeButton(getActivity(),
-                    R.string.buy_sell_portfolio_changed_title,
-                    R.string.buy_sell_portfolio_changed_message,
-                    R.string.ok);
+            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                    .setTitle(R.string.buy_sell_portfolio_changed_title)
+                    .setMessage(R.string.buy_sell_portfolio_changed_message)
+                    .setPositiveButton(R.string.ok)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 
@@ -595,20 +597,22 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
             }
             else
             {
-                AlertDialogUtil.popWithNegativeButton(
-                        getActivity(),
-                        R.string.buy_sell_no_portfolio_title,
-                        R.string.buy_sell_no_portfolio_message,
-                        R.string.buy_sell_no_portfolio_cancel);
+                onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                        .setTitle(R.string.buy_sell_no_portfolio_title)
+                        .setMessage(R.string.buy_sell_no_portfolio_message)
+                        .setPositiveButton(R.string.buy_sell_no_portfolio_cancel)
+                        .build()
+                        .subscribe(Actions.empty(), Actions.empty()));
             }
         }
         else
         {
-            AlertDialogUtil.popWithNegativeButton(
-                    getActivity(),
-                    R.string.buy_sell_no_quote_title,
-                    R.string.buy_sell_no_quote_message,
-                    R.string.buy_sell_no_quote_cancel);
+            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                    .setTitle(R.string.buy_sell_no_quote_title)
+                    .setMessage(R.string.buy_sell_no_quote_message)
+                    .setPositiveButton(R.string.buy_sell_no_quote_cancel)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 

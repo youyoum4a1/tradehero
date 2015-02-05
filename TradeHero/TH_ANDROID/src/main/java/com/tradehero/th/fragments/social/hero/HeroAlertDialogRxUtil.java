@@ -13,20 +13,11 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.VersionUtils;
-import javax.inject.Inject;
 import rx.Observable;
 
 public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public HeroAlertDialogRxUtil(@NonNull VersionUtils versionUtils)
-    {
-        super(versionUtils);
-    }
-    //</editor-fold>
-
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popAlertFollowHero(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlertFollowHero(
             @NonNull Context activityContext)
     {
         return buildDefault(activityContext)
@@ -38,7 +29,7 @@ public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popAlertUnFollowHero(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlertUnFollowHero(
             @NonNull Context activityContext)
     {
         return buildDefault(activityContext)
@@ -50,7 +41,7 @@ public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popAlertNoMoreMessageFollow(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlertNoMoreMessageFollow(
             @NonNull Context activityContext,
             @Nullable String heroName)
     {
@@ -65,7 +56,7 @@ public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<FollowRequest> showFollowDialog(
+    @NonNull public static Observable<FollowRequest> showFollowDialog(
             @NonNull final Context context,
             @Nullable UserBaseDTO userBaseDTO,
             final int followType)

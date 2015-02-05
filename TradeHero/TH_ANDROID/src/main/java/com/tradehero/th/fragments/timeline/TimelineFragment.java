@@ -102,7 +102,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
     }
 
     @Inject DiscussionKeyFactory discussionKeyFactory;
-    @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogUtilRxLazy;
     @Inject Analytics analytics;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -606,11 +605,10 @@ public class TimelineFragment extends BasePurchaseManagerFragment
             if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                     || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
             {
-                subscriptions.add(heroAlertDialogUtilRxLazy.get()
-                        .showFollowDialog(
-                                getActivity(),
-                                shownProfile,
-                                UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
+                subscriptions.add(HeroAlertDialogRxUtil.showFollowDialog(
+                        getActivity(),
+                        shownProfile,
+                        UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
                         .flatMap(this::handleFollowRequest)
                         .subscribe(Actions.empty(), Actions.empty()));
             }

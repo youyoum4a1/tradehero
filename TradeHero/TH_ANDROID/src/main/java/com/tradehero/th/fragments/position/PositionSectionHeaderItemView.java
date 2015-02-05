@@ -10,10 +10,11 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.tradehero.th.R;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import rx.functions.Actions;
 
 public class PositionSectionHeaderItemView extends RelativeLayout
 {
@@ -105,7 +106,12 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
         if (resInt != -1)
         {
-            AlertDialogUtil.popWithNegativeButton(getContext(), R.string.position_title_info, resInt, R.string.ok);
+            AlertDialogRxUtil.buildDefault(getContext())
+                    .setTitle(R.string.position_title_info)
+                    .setMessage(resInt)
+                    .setPositiveButton(R.string.ok)
+                    .build()
+                    .subscribe(Actions.empty(), Actions.empty());
         }
     }
 }

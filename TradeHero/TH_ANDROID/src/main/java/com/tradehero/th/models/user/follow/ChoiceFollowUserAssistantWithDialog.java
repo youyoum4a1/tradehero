@@ -20,7 +20,6 @@ public class ChoiceFollowUserAssistantWithDialog
 {
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
-    @Inject HeroAlertDialogRxUtil heroAlertDialogRxUtil;
 
     @NonNull private final Activity activity;
     @NonNull protected UserBaseDTO heroBaseInfo;
@@ -46,7 +45,7 @@ public class ChoiceFollowUserAssistantWithDialog
                 activity,
                 userProfileCache.get(currentUserId.toUserBaseKey()).take(1))
                 .map(new PairGetSecond<>())
-                .flatMap(currentUserProfile -> heroAlertDialogRxUtil.showFollowDialog(
+                .flatMap(currentUserProfile -> HeroAlertDialogRxUtil.showFollowDialog(
                         activity,
                         heroBaseInfo,
                         currentUserProfile.getFollowType(heroBaseInfo)))

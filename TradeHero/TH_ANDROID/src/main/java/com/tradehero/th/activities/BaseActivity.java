@@ -12,12 +12,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
-import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.Lazy;
@@ -26,6 +27,8 @@ import dagger.Provides;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
+import rx.functions.Action1;
+import rx.functions.Actions;
 import timber.log.Timber;
 
 public class BaseActivity extends FragmentActivity
@@ -125,23 +128,23 @@ public class BaseActivity extends FragmentActivity
         }
     }
 
-    private void showUpgradeDialog()
+    protected void showUpgradeDialog()
     {
-        AlertDialogUtil.popWithOkCancelButton(
-                this,
-                R.string.upgrade_needed,
-                R.string.please_update,
-                R.string.update_now,
-                R.string.later,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override public void onClick(DialogInterface dialog, int which)
-                    {
-                        THToast.show(R.string.update_guide);
-                        marketUtil.get().showAppOnMarket(BaseActivity.this);
-                        finish();
-                    }
-                });
+        AlertDialogRxUtil.popUpgradeRequired(this)
+                .subscribe(
+                        new Action1<Pair<DialogInterface, Integer>>()
+                        {
+                            @Override public void call(Pair<DialogInterface, Integer> pair)
+                            {
+                                if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                                {
+                                    THToast.show(R.string.update_guide);
+                                    marketUtil.get().showAppOnMarket(BaseActivity.this);
+                                    finish();
+                                }
+                            }
+                        },
+                        Actions.empty());
     }
 
     protected class SocialTokenListener extends BroadcastReceiver

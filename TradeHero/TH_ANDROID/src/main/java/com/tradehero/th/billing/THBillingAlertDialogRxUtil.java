@@ -51,6 +51,7 @@ abstract public class THBillingAlertDialogRxUtil<
     public static final int MAX_RANDOM_RETRIES = 50;
 
     @NonNull protected final Analytics analytics;
+    @NonNull protected final VersionUtils versionUtils;
     protected String storeName;
 
     //<editor-fold desc="Constructors">
@@ -58,8 +59,8 @@ abstract public class THBillingAlertDialogRxUtil<
             @NonNull Analytics analytics,
             @NonNull VersionUtils versionUtils)
     {
-        super(versionUtils);
         this.analytics = analytics;
+        this.versionUtils = versionUtils;
     }
     //</editor-fold>
 
@@ -329,7 +330,7 @@ abstract public class THBillingAlertDialogRxUtil<
                 .flatMap(pair -> handlePopRestoreFailed(activityContext, throwable, pair));
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreFailed(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popRestoreFailed(
             @NonNull Context activityContext)
     {
         return buildDefault(activityContext)
@@ -363,7 +364,7 @@ abstract public class THBillingAlertDialogRxUtil<
 
     public void sendSupportEmailBillingGenericError(final Context context, final Throwable throwable)
     {
-        Intent emailIntent = versionUtils.getSupportEmailIntent(
+        Intent emailIntent = VersionUtils.getSupportEmailIntent(
                 versionUtils.getExceptionStringsAndTraceParameters(context, throwable));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "There was an error");
         ActivityUtil.sendSupportEmail(context, emailIntent);

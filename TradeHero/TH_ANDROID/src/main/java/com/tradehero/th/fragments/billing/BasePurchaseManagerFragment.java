@@ -15,7 +15,6 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
@@ -33,7 +32,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
     protected Observable<PortfolioCompactDTOList> currentUserPortfolioCompactListObservable;
-    @Nullable protected Subscription portfolioCompactListCacheSubscription;
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
     {
@@ -69,13 +67,6 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
         softFetchPortfolioCompactList();
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(portfolioCompactListCacheSubscription);
-        portfolioCompactListCacheSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroy()
     {
         currentUserPortfolioCompactListObservable = null;
@@ -97,8 +88,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void fetchPortfolioCompactList()
     {
-        unsubscribe(portfolioCompactListCacheSubscription);
-        portfolioCompactListCacheSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 currentUserPortfolioCompactListObservable)
                 .subscribe(
@@ -106,7 +96,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                         e -> {
                             Timber.e(e, "Failed fetching portfolios list");
                             THToast.show(R.string.error_fetch_portfolio_list_info);
-                        });
+                        }));
     }
 
     protected void handleReceivedPortfolioCompactList(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)

@@ -99,7 +99,6 @@ import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.ui.AppContainer;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -150,10 +149,8 @@ public class DashboardActivity extends BaseActivity
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserProfileDTOUtil> userProfileDTOUtilLazy;
-    @Inject Lazy<AlertDialogRxUtil> alertDialogRxUtil;
     @Inject Lazy<NotificationCacheRx> notificationCache;
     @Inject SystemStatusCache systemStatusCache;
-    @Inject Lazy<MarketUtil> marketUtilLazy;
 
     @Inject AppContainer appContainer;
     @Inject ResideMenu resideMenu;
@@ -311,13 +308,7 @@ public class DashboardActivity extends BaseActivity
     {
         if (getIntent() != null && getIntent().getBooleanExtra(UserLoginDTO.SUGGEST_UPGRADE, false))
         {
-            AlertDialogUtil.popWithOkCancelButton(
-                    this, R.string.upgrade_needed, R.string.suggest_to_upgrade, R.string.update_now,
-                    R.string.later,
-                    (dialog, which) -> {
-                        THToast.show(R.string.update_guide);
-                        marketUtilLazy.get().showAppOnMarket(DashboardActivity.this);
-                    });
+            showUpgradeDialog();
         }
     }
 
@@ -350,7 +341,7 @@ public class DashboardActivity extends BaseActivity
         switch (item.getItemId())
         {
             case R.id.menu_network:
-                alertDialogRxUtil.get().popNetworkUnavailable(this).subscribe(Actions.empty(), Actions.empty());
+                AlertDialogRxUtil.popNetworkUnavailable(this).subscribe(Actions.empty(), Actions.empty());
                 return true;
             case R.id.admin_settings:
                 navigator.pushFragment(AdminSettingsFragment.class);

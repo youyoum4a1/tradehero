@@ -86,14 +86,14 @@ public class THIABAlertDialogRxUtil
     }
 
     //<editor-fold desc="Verification Failed">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popVerificationFailedAndHandle(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popVerificationFailedAndHandle(
             @NonNull final Context activityContext)
     {
         return popVerificationFailed(activityContext)
                 .flatMap(pair -> Observable.empty());
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popVerificationFailed(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popVerificationFailed(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -106,14 +106,14 @@ public class THIABAlertDialogRxUtil
     //</editor-fold>
 
     //<editor-fold desc="Bad Response">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popBadResponseAndHandle(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popBadResponseAndHandle(
             @NonNull final Context activityContext)
     {
         return popBadResponse(activityContext)
                 .flatMap(pair -> Observable.empty());
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popBadResponse(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popBadResponse(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -126,14 +126,14 @@ public class THIABAlertDialogRxUtil
     //</editor-fold>
 
     //<editor-fold desc="Result Error">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popResultErrorAndHandle(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popResultErrorAndHandle(
             @NonNull final Context activityContext)
     {
         return popResultError(activityContext)
                 .flatMap(pair -> Observable.empty());
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popResultError(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popResultError(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -146,14 +146,14 @@ public class THIABAlertDialogRxUtil
     //</editor-fold>
 
     //<editor-fold desc="Remote Error">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popRemoteErrorAndHandle(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popRemoteErrorAndHandle(
             @NonNull final Context activityContext)
     {
         return popRemoteError(activityContext)
                 .flatMap(pair -> Observable.empty());
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popRemoteError(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popRemoteError(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -166,14 +166,14 @@ public class THIABAlertDialogRxUtil
     //</editor-fold>
 
     //<editor-fold desc="Send Intent">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popSendIntentAndHandle(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popSendIntentAndHandle(
             @NonNull final Context activityContext)
     {
         return popSendIntent(activityContext)
                 .flatMap(pair -> Observable.empty());
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popSendIntent(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popSendIntent(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -194,7 +194,7 @@ public class THIABAlertDialogRxUtil
                 .flatMap(pair -> handleSendEmailSupportConsumeFailed(activityContext, pair, throwable));
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popSendEmailSupportConsumeFailed(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popSendEmailSupportConsumeFailed(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -234,7 +234,7 @@ public class THIABAlertDialogRxUtil
                 .flatMap(pair -> handleSendEmailAlreadyOwned(activityContext, pair, throwable));
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popAlreadyOwned(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlreadyOwned(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -274,7 +274,7 @@ public class THIABAlertDialogRxUtil
                 .flatMap(pair -> handleSendEmailDeveloperError(activityContext, pair, throwable));
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popDeveloperError(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popDeveloperError(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)

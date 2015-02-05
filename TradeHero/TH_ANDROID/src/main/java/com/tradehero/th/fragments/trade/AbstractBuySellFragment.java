@@ -35,7 +35,6 @@ import com.tradehero.th.utils.route.THRouter;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -58,17 +57,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Inject protected THRouter thRouter;
     @Inject @ShowMarketClosed TimingIntervalPreference showMarketClosedIntervalPreference;
     @Inject protected ToastOnErrorAction toastOnErrorAction;
-    @Inject protected AlertDialogBuySellRxUtil alertDialogBuySellRxUtil;
 
     protected ProviderId providerId;
     @InjectRoute protected SecurityId securityId;
-    @Nullable Subscription quoteSubscription;
     @Nullable protected QuoteDTO quoteDTO;
-    @Nullable protected Subscription securityCompactSubscription;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
 
     protected Observable<SecurityPositionDetailDTO> securityPositionDetailObservable;
-    @Nullable protected Subscription securityPositionDetailSubscription;
     @Nullable protected SecurityPositionDetailDTO securityPositionDetailDTO;
 
     @Nullable protected PositionDTOCompactList positionDTOCompactList;
@@ -138,15 +133,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     {
         super.onSaveInstanceState(outState);
 
-        unsubscribe(quoteSubscription);
-        quoteSubscription = null;
-        unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = null;
-        unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = null;
-        unsubscribe(portfolioCompactListCacheSubscription);
-        portfolioCompactListCacheSubscription = null;
-
         outState.putBoolean(BUNDLE_KEY_IS_BUY, isTransactionTypeBuy);
         if (mBuyQuantity != null)
         {
@@ -161,14 +147,6 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
     @Override public void onStop()
     {
         quoteDTO = null;
-        unsubscribe(quoteSubscription);
-        quoteSubscription = null;
-        unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = null;
-        unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = null;
-        unsubscribe(portfolioCompactListCacheSubscription);
-        portfolioCompactListCacheSubscription = null;
         super.onStop();
     }
 
@@ -207,14 +185,13 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void fetchQuote()
     {
-        unsubscribe(quoteSubscription);
-        quoteSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(observable -> observable.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS)))
                 .subscribe(
                         this::linkWith,
-                        toastOnErrorAction);
+                        toastOnErrorAction));
     }
 
     protected void linkWith(QuoteDTO quoteDTO)
@@ -229,8 +206,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void fetchSecurityCompact()
     {
-        unsubscribe(securityCompactSubscription);
-        securityCompactSubscription = AppObservable.bindFragment(this, securityPositionDetailCache
+        onStopSubscriptions.add(AppObservable.bindFragment(this, securityPositionDetailCache
                 .get(this.securityId))
                 .subscribe(new Action1<Pair<SecurityId, SecurityPositionDetailDTO>>()
                            {
@@ -239,7 +215,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
                                    linkWith(pair.second.security, true);
                                }
                            },
-                        Actions.empty());
+                        Actions.empty()));
     }
 
     public void linkWith(final SecurityCompactDTO securityCompactDTO, boolean andDisplay)
@@ -257,13 +233,12 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void fetchSecurityPositionDetail()
     {
-        unsubscribe(securityPositionDetailSubscription);
-        securityPositionDetailSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 securityPositionDetailObservable)
                 .subscribe(
                         this::linkWith,
-                        this::handleFailedFetchSecurityPositionDetail);
+                        this::handleFailedFetchSecurityPositionDetail));
     }
 
     public void linkWith(@NonNull final SecurityPositionDetailDTO securityPositionDetailDTO)
@@ -393,7 +368,7 @@ abstract public class AbstractBuySellFragment extends BasePurchaseManagerFragmen
 
     protected void notifyMarketClosed()
     {
-        alertDialogBuySellRxUtil.popMarketClosed(getActivity(), securityId)
+        AlertDialogBuySellRxUtil.popMarketClosed(getActivity(), securityId)
                 .subscribe(Actions.empty(), Actions.empty());
     }
 }

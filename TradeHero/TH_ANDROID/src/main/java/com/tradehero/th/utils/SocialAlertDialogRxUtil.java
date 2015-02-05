@@ -8,19 +8,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.misc.exception.KnownServerErrors;
 import com.tradehero.th.misc.exception.THException;
-import javax.inject.Inject;
 import rx.Observable;
 
 public class SocialAlertDialogRxUtil extends AlertDialogRxUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public SocialAlertDialogRxUtil(@NonNull VersionUtils versionUtils)
-    {
-        super(versionUtils);
-    }
-    //</editor-fold>
-
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popNeedToLinkSocial(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popNeedToLinkSocial(
             @NonNull Context activityContext,
             @NonNull SocialNetworkEnum socialNetwork)
     {
@@ -37,7 +29,7 @@ public class SocialAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popErrorSocialAuth(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popErrorSocialAuth(
             @NonNull final Context activityContext,
             @NonNull final Throwable error)
     {
@@ -55,7 +47,7 @@ public class SocialAlertDialogRxUtil extends AlertDialogRxUtil
         }
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popAccountAlreadyLinked(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAccountAlreadyLinked(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -66,7 +58,7 @@ public class SocialAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popErrorUnlinkDefaultAccount(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popErrorUnlinkDefaultAccount(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -77,7 +69,7 @@ public class SocialAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popConfirmUnlinkAccount(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popConfirmUnlinkAccount(
             @NonNull final Context activityContext,
             @NonNull final SocialNetworkEnum socialNetworkEnum)
     {
@@ -91,6 +83,16 @@ public class SocialAlertDialogRxUtil extends AlertDialogRxUtil
                 .setPositiveButton(R.string.authentication_unlink_confirm_dialog_button_ok)
                 .setNegativeButton(R.string.cancel)
                 .setCanceledOnTouchOutside(true)
+                .build();
+    }
+
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popSelectOneSocialNetwork(
+            @NonNull final Context activityContext)
+    {
+        return AlertDialogRxUtil.buildDefault(activityContext)
+                .setTitle(R.string.link_select_one_social)
+                .setMessage(R.string.link_select_one_social_description)
+                .setPositiveButton(R.string.ok)
                 .build();
     }
 }

@@ -57,7 +57,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @NonNull private UserBaseKey followerId;
 
     @Inject HeroListCacheRx heroListCache;
-    @Inject public HeroAlertDialogRxUtil heroAlertDialogRxUtil;
     /** when no heroes */
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
     @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
@@ -246,7 +245,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             //noinspection unchecked
             subscriptions.add(AppObservable.bindFragment(
                     this,
-                    heroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
+                    HeroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
                     .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                     .flatMap(pair -> userInteractorRx.purchaseAndPremiumFollowAndClear(clickedHeroDTO.getBaseKey()))
                     .subscribe(
@@ -271,7 +270,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         }
         else
         {
-            subscriptions.add(heroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
+            subscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
                     .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
                     .subscribe(
                             pair -> {

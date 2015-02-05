@@ -96,7 +96,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject PortfolioCompactCacheRx portfolioCompactCache;
-    @Inject AlertDialogBuySellRxUtil alertDialogBuySellRxUtil;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Lazy<SecurityPositionDetailCacheRx> securityPositionDetailCache;
     @Inject Analytics analytics;
@@ -807,7 +806,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             }
             else
             {
-                alertDialogBuySellRxUtil.informBuySellOrderWasNull(getActivity())
+                AlertDialogBuySellRxUtil.informBuySellOrderWasNull(getActivity())
                         .subscribe(Actions.empty());
             }
         }
@@ -1048,7 +1047,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         {
             if (securityPositionDetailDTO == null)
             {
-                alertDialogBuySellRxUtil.informBuySellOrderReturnedNull(getActivity())
+                AlertDialogBuySellRxUtil.informBuySellOrderReturnedNull(getActivity())
                         .subscribe(Actions.empty());
                 return;
             }

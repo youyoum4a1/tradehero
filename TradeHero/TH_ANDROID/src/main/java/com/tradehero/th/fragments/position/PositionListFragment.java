@@ -60,6 +60,7 @@ import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -104,7 +105,6 @@ public class PositionListFragment
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
-    @Inject Lazy<HeroAlertDialogRxUtil> heroAlertDialogRxUtilLazy;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
 
     @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
@@ -209,7 +209,7 @@ public class PositionListFragment
                     .subscribe(
                             Actions.empty(), // TODO ?
                             e -> {
-                                heroAlertDialogRxUtilLazy.get().popErrorMessage(
+                                AlertDialogRxUtil.popErrorMessage(
                                         getActivity(),
                                         e);
                                 // TODO
@@ -350,7 +350,7 @@ public class PositionListFragment
                     .subscribe(
                             Actions.empty(), // TODO ?
                             e -> {
-                                heroAlertDialogRxUtilLazy.get().popErrorMessage(
+                                AlertDialogRxUtil.popErrorMessage(
                                         getActivity(),
                                         e);
                                 // TODO
@@ -384,7 +384,7 @@ public class PositionListFragment
 
     @NonNull protected Observable<UserProfileDTO> showFollowDialog(@NonNull UserProfileDTO toBeFollowed)
     {
-        return heroAlertDialogRxUtilLazy.get().showFollowDialog(
+        return HeroAlertDialogRxUtil.showFollowDialog(
                 getActivity(),
                 toBeFollowed,
                 UserProfileDTOUtil.IS_NOT_FOLLOWER)

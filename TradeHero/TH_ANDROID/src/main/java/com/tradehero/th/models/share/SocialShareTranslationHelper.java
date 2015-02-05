@@ -29,7 +29,6 @@ import com.tradehero.th.persistence.translation.TranslationKeyFactory;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
-import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,6 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             @NonNull Provider<Activity> activityProvider,
             @NonNull Provider<DashboardNavigator> navigatorProvider,
             @NonNull NewsDialogFactory newsDialogFactory,
-            @NonNull SocialAlertDialogRxUtil alertDialogUtil,
             @NonNull Provider<SocialSharer> socialSharerProvider,
             @NonNull SocialShareFormDTOFactory socialShareFormDTOFactory,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders,
@@ -69,7 +67,6 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                 activityProvider,
                 navigatorProvider,
                 newsDialogFactory,
-                alertDialogUtil,
                 socialSharerProvider,
                 socialShareFormDTOFactory,
                 authenticationProviders);

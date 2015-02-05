@@ -9,21 +9,12 @@ import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.VersionUtils;
-import javax.inject.Inject;
 import rx.Observable;
 
 public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil
 {
-    //<editor-fold desc="Constructors">
-    @Inject public AlertDialogBuySellRxUtil(@NonNull VersionUtils versionUtils)
-    {
-        super(versionUtils);
-    }
-    //</editor-fold>
-
     @SuppressLint("StringFormatMatches")
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popMarketClosed(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popMarketClosed(
             @NonNull final Context activityContext,
             @Nullable SecurityId securityId)
     {
@@ -49,7 +40,7 @@ public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> informBuySellOrderWasNull(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> informBuySellOrderWasNull(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -60,7 +51,7 @@ public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> informBuySellOrderFailedRetrofit(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> informBuySellOrderFailedRetrofit(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -71,7 +62,7 @@ public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> informBuySellOrderReturnedNull(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> informBuySellOrderReturnedNull(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -82,7 +73,7 @@ public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> informErrorWithMessage(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> informErrorWithMessage(
             @NonNull final Context activityContext,
             @NonNull String message)
     {

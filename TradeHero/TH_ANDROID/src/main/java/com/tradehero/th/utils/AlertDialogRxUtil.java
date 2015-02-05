@@ -8,21 +8,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import java.util.concurrent.CancellationException;
-import javax.inject.Inject;
 import rx.Observable;
 
 public class AlertDialogRxUtil
 {
-    @NonNull protected final VersionUtils versionUtils;
-
-    //<editor-fold desc="Constructors">
-    @Inject public AlertDialogRxUtil(@NonNull VersionUtils versionUtils)
-    {
-        super();
-        this.versionUtils = versionUtils;
-    }
-    //</editor-fold>
-
     @NonNull public static AlertDialogRx.Builder buildDefault(@NonNull Context activityContext)
     {
         return build(activityContext)
@@ -35,7 +24,7 @@ public class AlertDialogRxUtil
         return AlertDialogRx.build(activityContext);
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popNetworkUnavailable(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popNetworkUnavailable(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -46,7 +35,7 @@ public class AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popErrorMessage(
+    @NonNull public static Observable<Pair<DialogInterface, Integer>> popErrorMessage(
             @NonNull final Context activityContext,
             @NonNull final Throwable error)
     {
@@ -64,6 +53,18 @@ public class AlertDialogRxUtil
                 .setTitle(R.string.error)
                 .setMessage(errorMessage)
                 .setPositiveButton(R.string.ok)
+                .setCanceledOnTouchOutside(true)
+                .build();
+    }
+
+    @NonNull public static strictfp Observable<Pair<DialogInterface, Integer>> popUpgradeRequired(
+            @NonNull final Context activityContext)
+    {
+        return buildDefault(activityContext)
+                .setTitle(R.string.upgrade_needed)
+                .setMessage(R.string.please_update)
+                .setPositiveButton(R.string.update_now)
+                .setNegativeButton(R.string.later)
                 .setCanceledOnTouchOutside(true)
                 .build();
     }
