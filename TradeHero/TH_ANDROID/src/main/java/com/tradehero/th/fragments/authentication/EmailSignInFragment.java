@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.authentication;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +27,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -45,6 +46,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.ViewObservable;
 import rx.android.widget.WidgetObservable;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -80,35 +82,46 @@ public class EmailSignInFragment extends Fragment
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.authentication_sign_in_forgot_password) void showForgotPasswordUI()
     {
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        forgotDialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
-
-        String message = getActivity().getString(R.string.authentication_ask_for_email);
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-        dialog.setMessage(message)
+        forgotDialogView = LayoutInflater.from(getActivity()).inflate(R.layout.forgot_password_dialog, null);
+        AlertDialogRxUtil.buildDefault(getActivity())
+                .setTitle(R.string.authentication_ask_for_email)
+                .setPositiveButton(R.string.ok)
+                .setNegativeButton(R.string.authentication_cancel)
                 .setView(forgotDialogView)
-                .setNegativeButton(R.string.authentication_cancel, (dialogInterface, which) -> dialogInterface.cancel())
-                .setPositiveButton(R.string.ok, (dialogInterface, which) -> {
+                .build()
+                .subscribe(
+                        new Action1<Pair<DialogInterface, Integer>>()
+                        {
+                            @Override public void call(Pair<DialogInterface, Integer> pair)
+                            {
+                                if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                                {
+                                    effectAskForgotEmail(forgotDialogView);
+                                }
+                            }
+                        }
+                );
+    }
 
-                    ServerValidatedEmailText serverValidatedEmailText =
-                            (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
-                    if (serverValidatedEmailText == null)
-                    {
-                        return;
-                    }
-                    serverValidatedEmailText.forceValidate();
+    protected void effectAskForgotEmail(@NonNull View forgotDialogView)
+    {
+        ServerValidatedEmailText serverValidatedEmailText =
+                (ServerValidatedEmailText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email);
+        if (serverValidatedEmailText == null)
+        {
+            return;
+        }
+        serverValidatedEmailText.forceValidate();
 
-                    if (!serverValidatedEmailText.isValid())
-                    {
-                        THToast.show(R.string.forgot_email_incorrect_input_email);
-                    }
-                    else
-                    {
-                        String email1 = serverValidatedEmailText.getText().toString();
-                        doForgotPassword(email1);
-                        dialogInterface.dismiss();
-                    }
-                }).create().show();
+        if (!serverValidatedEmailText.isValid())
+        {
+            THToast.show(R.string.forgot_email_incorrect_input_email);
+        }
+        else
+        {
+            String email1 = serverValidatedEmailText.getText().toString();
+            doForgotPassword(email1);
+        }
     }
 
     @Nullable protected Subscription forgotPasswordSubscription;

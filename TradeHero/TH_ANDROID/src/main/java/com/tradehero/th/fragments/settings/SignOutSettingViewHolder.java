@@ -3,12 +3,13 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
+import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -16,6 +17,7 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import java.util.Map;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import timber.log.Timber;
 
@@ -69,17 +72,24 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
             Context activityContext = preferenceFragmentCopy.getActivity();
             if (activityContext != null)
             {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activityContext);
-                alertDialogBuilder
+                AlertDialogRxUtil.buildDefault(activityContext)
                         .setTitle(R.string.settings_misc_sign_out_are_you_sure)
                         .setCancelable(true)
-                        .setNegativeButton(R.string.settings_misc_sign_out_no,
-                                (dialog, id) -> dialog.cancel())
-                        .setPositiveButton(R.string.settings_misc_sign_out_yes,
-                                (dialogInterface, i) -> effectSignOut());
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                        .setNegativeButton(R.string.settings_misc_sign_out_no)
+                        .setPositiveButton(R.string.settings_misc_sign_out_yes)
+                        .build()
+                        .subscribe(
+                                new Action1<Pair<DialogInterface, Integer>>()
+                                {
+                                    @Override public void call(Pair<DialogInterface, Integer> pair)
+                                    {
+                                        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                                        {
+                                            effectSignOut();
+                                        }
+                                    }
+                                },
+                                Actions.empty());
             }
         }
     }
