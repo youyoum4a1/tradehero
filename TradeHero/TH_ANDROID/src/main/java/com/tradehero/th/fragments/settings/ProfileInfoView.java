@@ -3,14 +3,20 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.util.Pair;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +34,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
@@ -38,20 +45,26 @@ import com.tradehero.th.widget.MatchingPasswordText;
 import com.tradehero.th.widget.ServerValidatedEmailText;
 import com.tradehero.th.widget.ServerValidatedUsernameText;
 import com.tradehero.th.widget.ValidatedPasswordText;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
+import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func8;
+import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
 import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 
 public class ProfileInfoView extends LinearLayout
-    implements ActivityResultRequester
+        implements ActivityResultRequester
 {
+    public static final int REQUEST_GALLERY = 1309;
+    public static final int REQUEST_CAMERA = 1310;
+
     @InjectView(R.id.authentication_sign_up_email) ServerValidatedEmailText email;
     @InjectView(R.id.authentication_sign_up_password) ValidatedPasswordText password;
     @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
@@ -65,17 +78,21 @@ public class ProfileInfoView extends LinearLayout
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @Inject AccountManager accountManager;
+    @Inject DashboardNavigator dashboardNavigator;
 
     ProgressDialog progressDialog;
     private UserProfileDTO userProfileDTO;
     private String newImagePath;
-    private AlertDialog imagePickerDialog;
+    @NonNull protected SubscriptionList subscriptions;
 
+    //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         HierarchyInjector.inject(this);
+        subscriptions = new SubscriptionList();
     }
+    //</editor-fold>
 
     @Override protected void onFinishInflate()
     {
@@ -96,6 +113,8 @@ public class ProfileInfoView extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
+        subscriptions.unsubscribe();
+        subscriptions = new SubscriptionList();
         ButterKnife.reset(this);
         super.onDetachedFromWindow();
     }
@@ -142,8 +161,7 @@ public class ProfileInfoView extends LinearLayout
             {
                 created = BitmapTypedOutputFactory.createForProfilePhoto(
                         getResources(), newImagePath);
-            }
-            catch (OutOfMemoryError e)
+            } catch (OutOfMemoryError e)
             {
                 THToast.show(R.string.error_decode_image_memory);
             }
@@ -248,7 +266,7 @@ public class ProfileInfoView extends LinearLayout
         if (accounts != null && accounts.length > 0)
         {
             String emailValue = null, passwordValue = null;
-            for (Account account: accounts)
+            for (Account account : accounts)
             {
                 if (account.name != null)
                 {
@@ -275,45 +293,100 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.image_optional) @Optional
     protected void showImageFromDialog()
     {
-        ImagePickerView imagePickerView = (ImagePickerView) LayoutInflater.from(getContext())
-                .inflate(R.layout.image_picker, null);
-        imagePickerDialog = new AlertDialog.Builder(getContext())
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                getContext(),
+                R.layout.image_picker_item,
+                new String[]{
+                        getContext().getString(R.string.user_profile_choose_image_from_camera),
+                        getContext().getString(R.string.user_profile_choose_image_from_library)
+                });
+        subscriptions.add(AlertDialogRxUtil.build(getContext())
                 .setTitle(R.string.user_profile_choose_image_from_choice)
-                .setNegativeButton(R.string.cancel, null)
-                .setView(imagePickerView)
-                .create();
-        imagePickerDialog.show();
+                .setNegativeButton(R.string.cancel)
+                .setSingleChoiceItems(adapter, -1)
+                .setCanceledOnTouchOutside(true)
+                .build()
+                .subscribe(new Action1<Pair<DialogInterface, Integer>>()
+                {
+                    @Override public void call(Pair<DialogInterface, Integer> pair)
+                    {
+                        pair.first.dismiss();
+                        switch (pair.second)
+                        {
+                            case 0:
+                                onImageFromCameraRequested();
+                                break;
+                            case 1:
+                                onImageFromLibraryRequested();
+                                break;
+                        }
+                    }
+                }, Actions.empty()));
+    }
+
+    private void onImageFromCameraRequested()
+    {
+        PackageManager pm = getContext().getPackageManager();
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+        List<ResolveInfo> handlerActivities = pm.queryIntentActivities(cameraIntent, 0);
+        if (handlerActivities.size() > 0)
+        {
+            //cameraIntent.setType("image/jpeg");
+            Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+            if (currentFragment != null)
+            {
+                currentFragment.startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            }
+        }
+        else
+        {
+            THToast.show(R.string.device_no_camera);
+        }
+    }
+
+    private void onImageFromLibraryRequested()
+    {
+        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
+        libraryIntent.setType("image/jpeg");
+        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
+        if (currentFragment != null)
+        {
+            try
+            {
+                currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            } catch (ActivityNotFoundException e)
+            {
+                Timber.e(e, "Could not request gallery");
+                THToast.show(R.string.error_launch_photo_library);
+            }
+        }
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (imagePickerDialog != null)
-        {
-            imagePickerDialog.dismiss();
-        }
         // handle image upload
         if (resultCode == Activity.RESULT_OK)
         {
-            if ((requestCode == ImagePickerView.REQUEST_CAMERA || requestCode == ImagePickerView.REQUEST_GALLERY) && data != null)
+            if ((requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) && data != null)
             {
                 try
                 {
                     handleDataFromLibrary(data);
-                }
-                catch (OutOfMemoryError e)
+                } catch (OutOfMemoryError e)
                 {
                     THToast.show(R.string.error_decode_image_memory);
-                }
-                catch (Exception e)
+                } catch (Exception e)
                 {
                     THToast.show(R.string.error_fetch_image_library);
                     Timber.e(e, "Failed to extract image from library");
                 }
             }
-            else if (requestCode == ImagePickerView.REQUEST_GALLERY)
+            else if (requestCode == REQUEST_GALLERY)
             {
                 Timber.e(new Exception("Got null data from library"), "");
             }
@@ -324,7 +397,7 @@ public class ProfileInfoView extends LinearLayout
         }
     }
 
-    public Observable<UserFormDTO> obtainUserFormDTO()
+    @NonNull public Observable<UserFormDTO> obtainUserFormDTO()
     {
         return Observable.combineLatest(
                 WidgetObservable.text(email, true),

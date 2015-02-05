@@ -1,13 +1,10 @@
 package com.tradehero.th.fragments.settings;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.fragments.authentication.AuthDataAccountAction;
@@ -37,12 +34,10 @@ import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Actions;
 
-public class SettingsProfileFragment extends DashboardFragment implements View.OnClickListener, ValidationListener
+public class SettingsProfileFragment extends DashboardFragment implements ValidationListener
 {
     @InjectView(R.id.authentication_sign_up_button) protected Button updateButton;
     @InjectView(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
@@ -54,27 +49,15 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
     @Inject Provider<AuthDataAccountAction> authDataActionProvider;
 
-    @Nullable Subscription userProfileSubscription;
-    @Nullable Subscription userProfileUpdateSubscription;
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_settings_profile, container, false);
-        initSetup(view);
+        ButterKnife.inject(this, view);
+        updateButton.setText(R.string.update);
+        referralCodeEditText.setVisibility(View.GONE);
+        scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
         setHasOptionsMenu(true);
         return view;
-    }
-
-    protected void initSetup(View view)
-    {
-        ButterKnife.inject(this, view);
-
-        updateButton.setText(R.string.update);
-        updateButton.setOnClickListener(this);
-
-        referralCodeEditText.setVisibility(View.GONE);
-
-        scrollView.setOnScrollChangedListener(dashboardBottomTabScrollViewScrollListener.get());
     }
 
     @Override public void onStart()
@@ -83,39 +66,14 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
         populateCurrentUser();
     }
 
-    @Override public void onStop()
-    {
-        unsubscribe(userProfileUpdateSubscription);
-        userProfileUpdateSubscription = null;
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = null;
-        super.onStop();
-    }
-
     @Override public void onDestroyView()
     {
         profileView = null;
-        if (updateButton != null)
-        {
-            updateButton.setOnClickListener(null);
-        }
         scrollView.setOnScrollChangedListener(null);
         updateButton = null;
         referralCodeEditText = null;
+        ButterKnife.reset(this);
         super.onDestroyView();
-    }
-
-    @Override public void onClick(View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.authentication_sign_up_button:
-                updateProfile(view);
-                break;
-            case R.id.image_optional:
-                askImageFromLibrary();
-                break;
-        }
     }
 
     public boolean areFieldsValid()
@@ -134,34 +92,17 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
 
     private void populateCurrentUser()
     {
-        unsubscribe(userProfileSubscription);
-        userProfileSubscription = AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
-                .subscribe(createUserProfileCacheObserver());
+                .subscribe(
+                        pair -> profileView.populate(pair.second),
+                        e -> THToast.show(new THException(e))));
     }
 
-    private Observer<Pair<UserBaseKey, UserProfileDTO>> createUserProfileCacheObserver()
-    {
-        return new Observer<Pair<UserBaseKey, UserProfileDTO>>()
-        {
-            @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-            {
-                profileView.populate(pair.second);
-            }
-
-            @Override public void onCompleted()
-            {
-            }
-
-            @Override public void onError(Throwable e)
-            {
-                THToast.show(new THException(e));
-            }
-        };
-    }
-
-    private void updateProfile(View view)
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.authentication_sign_up_button)
+    protected void updateProfile(View view)
     {
         DeviceUtil.dismissKeyboard(view);
 
@@ -181,8 +122,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                     R.string.authentication_connecting_tradehero_only);
             profileView.progressDialog.setCancelable(true);
 
-            unsubscribe(userProfileUpdateSubscription);
-            userProfileUpdateSubscription = AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindFragment(
                     this,
                     profileView.obtainUserFormDTO()
                             .flatMap(userFormDTO -> {
@@ -201,7 +141,7 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                         navigator.get().popFragment();
                     })
                     .doOnError(error -> THToast.show(R.string.error_update_your_user_profile))
-                    .subscribe(Actions.empty(), Actions.empty());
+                    .subscribe(Actions.empty(), Actions.empty()));
         }
     }
 
@@ -213,19 +153,6 @@ public class SettingsProfileFragment extends DashboardFragment implements View.O
                 .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
-    }
-
-    protected void askImageFromLibrary()
-    {
-        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
-        libraryIntent.setType("image/jpeg");
-        try
-        {
-            startActivityForResult(libraryIntent, ImagePickerView.REQUEST_GALLERY);
-        } catch (ActivityNotFoundException e)
-        {
-            THToast.show(R.string.error_launch_photo_library);
-        }
     }
 
     @Override public void notifyValidation(ValidationMessage message)

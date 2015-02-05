@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Pair;
+import android.view.View;
 import android.widget.ListAdapter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -28,6 +29,7 @@ public class AlertDialogRx
         @Nullable String title;
         @Nullable @StringRes Integer messageRes;
         @Nullable String message;
+        @Nullable View view;
         @Nullable CharSequence positiveButton;
         @Nullable @StringRes Integer positiveButtonRes;
         @Nullable CharSequence negativeButton;
@@ -53,7 +55,7 @@ public class AlertDialogRx
             return this;
         }
 
-        @NonNull public Builder setIcon(@Nullable @DrawableRes Integer iconRes)
+        @NonNull public Builder setIcon(@DrawableRes int iconRes)
         {
             this.iconRes = iconRes;
             return this;
@@ -65,7 +67,7 @@ public class AlertDialogRx
             return this;
         }
 
-        @NonNull public Builder setTitle(@Nullable @StringRes Integer titleRes)
+        @NonNull public Builder setTitle(@StringRes int titleRes)
         {
             this.titleRes = titleRes;
             return this;
@@ -77,7 +79,7 @@ public class AlertDialogRx
             return this;
         }
 
-        @NonNull public Builder setMessage(@Nullable @StringRes Integer messageRes)
+        @NonNull public Builder setMessage(@StringRes int messageRes)
         {
             this.messageRes = messageRes;
             return this;
@@ -86,6 +88,12 @@ public class AlertDialogRx
         @NonNull public Builder setMessage(@Nullable String message)
         {
             this.message = message;
+            return this;
+        }
+
+        @NonNull public Builder setView(@Nullable View view)
+        {
+            this.view = view;
             return this;
         }
 
@@ -107,9 +115,9 @@ public class AlertDialogRx
             return this;
         }
 
-        @NonNull public Builder setNegativeButton(int negativeButton)
+        @NonNull public Builder setNegativeButton(@StringRes int negativeButtonRes)
         {
-            this.negativeButtonRes = negativeButton;
+            this.negativeButtonRes = negativeButtonRes;
             return this;
         }
 
@@ -119,9 +127,9 @@ public class AlertDialogRx
             return this;
         }
 
-        @NonNull public Builder setNeutralButton(int neutralButton)
+        @NonNull public Builder setNeutralButton(@StringRes int neutralButtonRes)
         {
-            this.neutralButtonRes = neutralButton;
+            this.neutralButtonRes = neutralButtonRes;
             return this;
         }
 

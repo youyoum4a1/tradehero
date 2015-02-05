@@ -49,6 +49,10 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterf
         {
             dialogBuilder.setMessage(builder.message);
         }
+        if (builder.view != null)
+        {
+            dialogBuilder.setView(builder.view);
+        }
 
         DialogInterface.OnClickListener passingOnListener = new DialogInterface.OnClickListener()
         {

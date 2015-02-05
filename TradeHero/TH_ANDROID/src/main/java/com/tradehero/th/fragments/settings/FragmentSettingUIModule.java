@@ -14,7 +14,6 @@ import java.util.Set;
                 AdminSettingsFragment.class,
                 SettingsProfileFragment.class,
                 ProfileInfoView.class,
-                ImagePickerView.class,
                 SettingsReferralCodeFragment.class,
                 AboutFragment.class,
                 SettingsFragment.class,
