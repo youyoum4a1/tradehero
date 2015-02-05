@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.rx.view.list.ListViewObservable;
 import rx.Observable;
+import rx.android.widget.WidgetObservable;
 
 public class FollowerTypeDialogFactory
 {
@@ -31,8 +31,8 @@ public class FollowerTypeDialogFactory
         list.setAdapter(createMessageTypeAdapter(activity));
         return Pair.create(
                 THDialog.showUpDialog(activity, expanded, null),
-                ListViewObservable.itemClicks(list)
-                        .map(object -> (MessageType) object));
+                WidgetObservable.itemClicks(list)
+                .map(event -> (MessageType) event.parent().getItemAtPosition(event.position())));
     }
 
     @NonNull public static ArrayAdapter createMessageTypeAdapter(@NonNull Activity activity)

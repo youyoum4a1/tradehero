@@ -13,9 +13,9 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.rx.view.list.ListViewObservable;
 import com.tradehero.th.utils.SecurityUtils;
 import rx.Observable;
+import rx.android.widget.WidgetObservable;
 
 public class FollowerManagerViewContainer
 {
@@ -101,9 +101,9 @@ public class FollowerManagerViewContainer
         }
     }
 
-    public Observable<UserFollowerDTO> getClickedUserFollower()
+    @NonNull public Observable<UserFollowerDTO> getClickedUserFollower()
     {
-        return ListViewObservable.itemClicks(followerListView)
-                .cast(UserFollowerDTO.class);
+        return WidgetObservable.itemClicks(followerListView)
+                .map(event -> (UserFollowerDTO) event.parent().getItemAtPosition(event.position()));
     }
 }
