@@ -146,7 +146,7 @@ public class AlertDialogRx
             return this;
         }
 
-        @NonNull public Observable<Pair<DialogInterface, Integer>> build()
+        @NonNull public Observable<OnDialogClickEvent> build()
         {
             return Observable.create(new AlertDialogOnSubscribe(this))
                     .subscribeOn(AndroidSchedulers.mainThread());

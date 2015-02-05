@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -37,6 +36,7 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.List;
@@ -245,7 +245,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
             subscriptions.add(AppObservable.bindFragment(
                     this,
                     HeroAlertDialogRxUtil.popAlertFollowHero(getActivity()))
-                    .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                    .filter(OnDialogClickEvent::isPositive)
                     .flatMap(pair -> userInteractorRx.purchaseAndPremiumFollowAndClear(clickedHeroDTO.getBaseKey()))
                     .subscribe(
                             result -> {
@@ -270,7 +270,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
         else
         {
             subscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
-                    .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                    .filter(OnDialogClickEvent::isPositive)
                     .subscribe(
                             pair -> {
                                 THToast.show(getString(R.string.manage_heroes_unfollow_progress_message));

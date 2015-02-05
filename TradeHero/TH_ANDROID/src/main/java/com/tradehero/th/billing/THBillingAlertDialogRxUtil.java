@@ -19,6 +19,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.VersionUtils;
@@ -90,7 +91,7 @@ abstract public class THBillingAlertDialogRxUtil<
         this.storeName = storeName;
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popErrorAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popErrorAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable)
     {
@@ -102,14 +103,14 @@ abstract public class THBillingAlertDialogRxUtil<
     }
 
     //<editor-fold desc="Billing Available">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popBillingUnavailableAndHandleRx(
+    @NonNull public Observable<OnDialogClickEvent> popBillingUnavailableAndHandleRx(
             @NonNull final Context activityContext)
     {
         return popBillingUnavailableRx(activityContext)
                 .flatMap(pair -> handlePopBillingUnavailable(activityContext, pair));
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popBillingUnavailableRx(
+    @NonNull public Observable<OnDialogClickEvent> popBillingUnavailableRx(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -121,11 +122,11 @@ abstract public class THBillingAlertDialogRxUtil<
                 .build();
     }
 
-    @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopBillingUnavailable(
+    @NonNull protected Observable<OnDialogClickEvent> handlePopBillingUnavailable(
             @NonNull final Context activityContext,
-            @NonNull Pair<DialogInterface, Integer> pair)
+            @NonNull OnDialogClickEvent event)
     {
-        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+        if (event.isPositive())
         {
             goToCreateAccount(activityContext);
         }
@@ -218,20 +219,20 @@ abstract public class THBillingAlertDialogRxUtil<
                 .setSingleChoiceItems(detailAdapter, 0)
                 .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
                 .build()
-                .filter(pair -> pair.second >= 0)
-                .map(pair -> Pair.create(pair.first, (THProductDetailType) detailAdapter.getItem(pair.second)));
+                .filter(event -> event.which >= 0)
+                .map(pair -> Pair.create(pair.dialog, (THProductDetailType) detailAdapter.getItem(pair.which)));
     }
     //</editor-fold>
 
     //<editor-fold desc="Purchases Restored">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreResultAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popRestoreResultAndHandle(
             @NonNull Context activityContext,
             @NonNull PurchaseRestoreTotalResult<
                     ProductIdentifierType,
                     THOrderIdType,
                     THProductPurchaseType> result)
     {
-        Observable<Pair<DialogInterface, Integer>> observable;
+        Observable<OnDialogClickEvent> observable;
         if (result.getCount() == 0)
         {
             observable = buildDefault(activityContext)
@@ -252,8 +253,8 @@ abstract public class THBillingAlertDialogRxUtil<
                     .setNegativeButton(R.string.iap_send_support_email_restore_fail_cancel)
                     .setCanceledOnTouchOutside(true)
                     .build()
-                    .flatMap(pair -> {
-                        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                    .flatMap(event -> {
+                        if (event.isPositive())
                         {
                             sendSupportEmailPurchaseRestoreFailed(
                                     activityContext,
@@ -276,8 +277,8 @@ abstract public class THBillingAlertDialogRxUtil<
                     .setNegativeButton(R.string.iap_send_support_email_restore_fail_partial_cancel)
                     .setCanceledOnTouchOutside(true)
                     .build()
-                    .flatMap(pair -> {
-                        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                    .flatMap(event -> {
+                        if (event.isPositive())
                         {
                             sendSupportEmailPurchaseRestoreFailedPartial(
                                     activityContext,
@@ -322,7 +323,7 @@ abstract public class THBillingAlertDialogRxUtil<
         ActivityUtil.sendSupportEmail(context, emailIntent);
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popRestoreFailedAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popRestoreFailedAndHandle(
             @NonNull Context activityContext,
             @NonNull Throwable throwable)
     {
@@ -330,7 +331,7 @@ abstract public class THBillingAlertDialogRxUtil<
                 .flatMap(pair -> handlePopRestoreFailed(activityContext, throwable, pair));
     }
 
-    @NonNull public static Observable<Pair<DialogInterface, Integer>> popRestoreFailed(
+    @NonNull public static Observable<OnDialogClickEvent> popRestoreFailed(
             @NonNull Context activityContext)
     {
         return buildDefault(activityContext)
@@ -342,12 +343,12 @@ abstract public class THBillingAlertDialogRxUtil<
                 .build();
     }
 
-    @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopRestoreFailed(
+    @NonNull protected Observable<OnDialogClickEvent> handlePopRestoreFailed(
             @NonNull Context activityContext,
             @NonNull Throwable throwable,
-            @NonNull Pair<DialogInterface, Integer> pair)
+            @NonNull OnDialogClickEvent event)
     {
-        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+        if (event.isPositive())
         {
             sendSupportEmailPurchaseNotRestored(activityContext, throwable);
         }

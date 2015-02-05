@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.settings;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -10,7 +9,6 @@ import android.preference.Preference;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,6 +35,7 @@ import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -211,11 +210,11 @@ public class AdminSettingsFragment extends DashboardPreferenceFragment
                 .setView(view)
                 .setPositiveButton(R.string.ok)
                 .build()
-                .subscribe(new Action1<Pair<DialogInterface, Integer>>()
+                .subscribe(new Action1<OnDialogClickEvent>()
                 {
-                    @Override public void call(Pair<DialogInterface, Integer> dialogInterfaceIntegerPair)
+                    @Override public void call(OnDialogClickEvent event)
                     {
-                        if (dialogInterfaceIntegerPair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                        if (event.isPositive())
                         {
                             Editable value = input.getText();
                             int notificationId = 0;

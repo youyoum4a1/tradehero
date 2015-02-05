@@ -1,12 +1,11 @@
 package com.tradehero.th.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import java.util.concurrent.CancellationException;
 import rx.Observable;
 
@@ -24,7 +23,7 @@ public class AlertDialogRxUtil
         return AlertDialogRx.build(activityContext);
     }
 
-    @NonNull public static Observable<Pair<DialogInterface, Integer>> popNetworkUnavailable(
+    @NonNull public static Observable<OnDialogClickEvent> popNetworkUnavailable(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -35,7 +34,7 @@ public class AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public static Observable<Pair<DialogInterface, Integer>> popErrorMessage(
+    @NonNull public static Observable<OnDialogClickEvent> popErrorMessage(
             @NonNull final Context activityContext,
             @NonNull final Throwable error)
     {
@@ -57,7 +56,7 @@ public class AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public static strictfp Observable<Pair<DialogInterface, Integer>> popUpgradeRequired(
+    @NonNull public static strictfp Observable<OnDialogClickEvent> popUpgradeRequired(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)

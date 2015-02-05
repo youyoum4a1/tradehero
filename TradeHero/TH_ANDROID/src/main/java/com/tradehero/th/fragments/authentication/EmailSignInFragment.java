@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.authentication;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +26,7 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
@@ -90,11 +90,11 @@ public class EmailSignInFragment extends Fragment
                 .setView(forgotDialogView)
                 .build()
                 .subscribe(
-                        new Action1<Pair<DialogInterface, Integer>>()
+                        new Action1<OnDialogClickEvent>()
                         {
-                            @Override public void call(Pair<DialogInterface, Integer> pair)
+                            @Override public void call(OnDialogClickEvent event)
                             {
-                                if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                                if (event.isPositive())
                                 {
                                     effectAskForgotEmail(forgotDialogView);
                                 }

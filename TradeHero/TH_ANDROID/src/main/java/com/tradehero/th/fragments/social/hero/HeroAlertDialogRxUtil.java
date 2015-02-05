@@ -2,22 +2,21 @@ package com.tradehero.th.fragments.social.hero;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.social.FollowDialogView;
 import com.tradehero.th.models.social.FollowRequest;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import rx.Observable;
 
 public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
 {
-    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlertFollowHero(
+    @NonNull public static Observable<OnDialogClickEvent> popAlertFollowHero(
             @NonNull Context activityContext)
     {
         return buildDefault(activityContext)
@@ -29,7 +28,7 @@ public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlertUnFollowHero(
+    @NonNull public static Observable<OnDialogClickEvent> popAlertUnFollowHero(
             @NonNull Context activityContext)
     {
         return buildDefault(activityContext)
@@ -41,7 +40,7 @@ public class HeroAlertDialogRxUtil extends AlertDialogRxUtil
                 .build();
     }
 
-    @NonNull public static Observable<Pair<DialogInterface, Integer>> popAlertNoMoreMessageFollow(
+    @NonNull public static Observable<OnDialogClickEvent> popAlertNoMoreMessageFollow(
             @NonNull Context activityContext,
             @Nullable String heroName)
     {

@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -15,7 +14,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +37,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.BitmapTypedOutputFactory;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.MatchingPasswordText;
@@ -310,12 +309,12 @@ public class ProfileInfoView extends LinearLayout
                 .setSingleChoiceItems(adapter, -1)
                 .setCanceledOnTouchOutside(true)
                 .build()
-                .subscribe(new Action1<Pair<DialogInterface, Integer>>()
+                .subscribe(new Action1<OnDialogClickEvent>()
                 {
-                    @Override public void call(Pair<DialogInterface, Integer> pair)
+                    @Override public void call(OnDialogClickEvent event)
                     {
-                        pair.first.dismiss();
-                        switch (pair.second)
+                        event.dialog.dismiss();
+                        switch (event.which)
                         {
                             case 0:
                                 onImageFromCameraRequested();

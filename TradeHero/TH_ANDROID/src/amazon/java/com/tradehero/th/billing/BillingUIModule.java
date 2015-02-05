@@ -2,8 +2,11 @@ package com.tradehero.th.billing;
 
 import com.tradehero.common.billing.BillingInteractorRx;
 import com.tradehero.common.billing.BillingLogicHolderRx;
+import com.tradehero.th.billing.amazon.AmazonAlertDialogRxUtil;
 import com.tradehero.th.billing.amazon.THAmazonAlertDialogRxUtil;
 import com.tradehero.th.billing.amazon.THAmazonLogicHolderRx;
+import com.tradehero.th.billing.amazon.THBaseAmazonInteractorRx;
+import com.tradehero.th.billing.amazon.THAmazonInteractorRx;
 import com.tradehero.th.billing.amazon.THBaseAmazonLogicHolderRx;
 import com.tradehero.th.billing.amazon.consume.THAmazonPurchaseConsumerHolderRx;
 import com.tradehero.th.billing.amazon.consume.THBaseAmazonPurchaseConsumerHolderRx;
@@ -87,7 +90,22 @@ public class BillingUIModule
         return billingDialogRxUtil;
     }
 
+    @Provides AmazonAlertDialogRxUtil provideAmazonAlertDialogRxUtil(THAmazonAlertDialogRxUtil billingDialogRxUtil)
+    {
+        return billingDialogRxUtil;
+    }
+
     @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
+
+    @Provides @Singleton THBillingInteractorRx provideBillingInteractorRx(THAmazonInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
+
+    @Provides @Singleton THAmazonInteractorRx provideBillingInteractorRx(THBaseAmazonInteractorRx billingInteractorRx)
     {
         return billingInteractorRx;
     }

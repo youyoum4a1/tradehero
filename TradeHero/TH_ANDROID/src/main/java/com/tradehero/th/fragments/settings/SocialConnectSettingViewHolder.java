@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.settings;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.support.annotation.IntegerRes;
@@ -20,6 +19,7 @@ import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import dagger.Lazy;
@@ -121,7 +121,7 @@ abstract public class SocialConnectSettingViewHolder
         return SocialAlertDialogRxUtil.popConfirmUnlinkAccount(
                 activityContext,
                 getSocialNetworkEnum())
-                .filter(pair -> pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                .filter(OnDialogClickEvent::isPositive)
                 .flatMap(pair -> effectUnlinkRx(activityContext));
     }
 

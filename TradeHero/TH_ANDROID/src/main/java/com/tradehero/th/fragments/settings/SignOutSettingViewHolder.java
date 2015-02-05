@@ -5,11 +5,9 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.preference.PreferenceFragment;
-import android.util.Pair;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -17,6 +15,7 @@ import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -79,11 +78,11 @@ public class SignOutSettingViewHolder extends OneSettingViewHolder
                         .setPositiveButton(R.string.settings_misc_sign_out_yes)
                         .build()
                         .subscribe(
-                                new Action1<Pair<DialogInterface, Integer>>()
+                                new Action1<OnDialogClickEvent>()
                                 {
-                                    @Override public void call(Pair<DialogInterface, Integer> pair)
+                                    @Override public void call(OnDialogClickEvent event)
                                     {
-                                        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                                        if (event.isPositive())
                                         {
                                             effectSignOut();
                                         }

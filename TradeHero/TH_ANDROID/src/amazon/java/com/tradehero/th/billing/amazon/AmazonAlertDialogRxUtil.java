@@ -1,37 +1,36 @@
 package com.tradehero.th.billing.amazon;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.util.Pair;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import rx.Observable;
 
 public interface AmazonAlertDialogRxUtil
 {
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryFailedAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popInventoryFailedAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable);
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryFailed(
+    @NonNull public Observable<OnDialogClickEvent> popInventoryFailed(
             @NonNull final Context activityContext);
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupportedAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupportedAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable);
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupported(
+    @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupported(
             @NonNull final Context activityContext);
 
-    @NonNull Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupportedAndHandle(
+    @NonNull Observable<OnDialogClickEvent> popPurchaseUnsupportedAndHandle(
             @NonNull final Context context,
             @NonNull final Throwable throwable);
 
-    @NonNull Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupported(
+    @NonNull Observable<OnDialogClickEvent> popPurchaseUnsupported(
             @NonNull final Context context);
 
-    @NonNull Observable<Pair<DialogInterface, Integer>> popSandboxModeAndHandle(
+    @NonNull Observable<OnDialogClickEvent> popSandboxModeAndHandle(
             @NonNull final Context context);
 
-    @NonNull Observable<Pair<DialogInterface, Integer>> popSandboxMode(
+    @NonNull Observable<OnDialogClickEvent> popSandboxMode(
             @NonNull final Context context);
 }

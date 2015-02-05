@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryFailedException;
@@ -20,6 +19,7 @@ import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
 import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.ActivityUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.util.HashMap;
@@ -73,7 +73,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     }
     //</editor-fold>
 
-    @NonNull @Override public Observable<Pair<DialogInterface, Integer>> popErrorAndHandle(
+    @NonNull @Override public Observable<OnDialogClickEvent> popErrorAndHandle(
             @NonNull Context activityContext,
             @NonNull Throwable throwable)
     {
@@ -97,7 +97,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     }
 
     //<editor-fold desc="Inventory Fetch related">
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryFailedAndHandle(
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryFailedAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable)
     {
@@ -107,7 +107,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryFailed(
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryFailed(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -119,7 +119,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                 .build();
     }
 
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupportedAndHandle(
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupportedAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable)
     {
@@ -129,7 +129,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popInventoryNotSupported(
+    @Override @NonNull public Observable<OnDialogClickEvent> popInventoryNotSupported(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -143,7 +143,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     //</editor-fold>
 
     //<editor-fold desc="Purchase Related">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseFailedAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popPurchaseFailedAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable)
     {
@@ -153,7 +153,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseFailed(
+    @NonNull public Observable<OnDialogClickEvent> popPurchaseFailed(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -165,7 +165,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                 .build();
     }
 
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupportedAndHandle(
+    @Override @NonNull public Observable<OnDialogClickEvent> popPurchaseUnsupportedAndHandle(
             @NonNull final Context activityContext,
             @NonNull final Throwable throwable)
     {
@@ -175,7 +175,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                         () -> sendSupportEmailBillingGenericError(activityContext, throwable)));
     }
 
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popPurchaseUnsupported(
+    @Override @NonNull public Observable<OnDialogClickEvent> popPurchaseUnsupported(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -189,7 +189,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     //</editor-fold>
 
     //<editor-fold desc="Sandbox Related">
-    @NonNull public Observable<Pair<DialogInterface, Integer>> popSandboxModeAndHandle(
+    @NonNull public Observable<OnDialogClickEvent> popSandboxModeAndHandle(
             @NonNull final Context activityContext)
     {
         return popSandboxMode(activityContext)
@@ -198,7 +198,7 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                         pair));
     }
 
-    @Override @NonNull public Observable<Pair<DialogInterface, Integer>> popSandboxMode(
+    @Override @NonNull public Observable<OnDialogClickEvent> popSandboxMode(
             @NonNull final Context activityContext)
     {
         return buildDefault(activityContext)
@@ -210,16 +210,16 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
                 .build();
     }
 
-    @NonNull protected Observable<Pair<DialogInterface, Integer>> handlePopSandboxMode(
+    @NonNull protected Observable<OnDialogClickEvent> handlePopSandboxMode(
             @NonNull final Context activityContext,
-            @NonNull Pair<DialogInterface, Integer> pair)
+            @NonNull OnDialogClickEvent event)
     {
-        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+        if (event.isPositive())
         {
             sendSupportEmailBillingSandbox(activityContext);
             return Observable.empty();
         }
-        return Observable.just(pair);
+        return Observable.just(event);
     }
 
     public void sendSupportEmailBillingSandbox(final Context context)

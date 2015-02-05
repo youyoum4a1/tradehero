@@ -6,18 +6,17 @@ import android.accounts.OnAccountsUpdateListener;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.inject.Injector;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.dagger.AppModule;
@@ -132,11 +131,11 @@ public class BaseActivity extends FragmentActivity
     {
         AlertDialogRxUtil.popUpgradeRequired(this)
                 .subscribe(
-                        new Action1<Pair<DialogInterface, Integer>>()
+                        new Action1<OnDialogClickEvent>()
                         {
-                            @Override public void call(Pair<DialogInterface, Integer> pair)
+                            @Override public void call(OnDialogClickEvent event)
                             {
-                                if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+                                if (event.isPositive())
                                 {
                                     THToast.show(R.string.update_guide);
                                     marketUtil.get().showAppOnMarket(BaseActivity.this);

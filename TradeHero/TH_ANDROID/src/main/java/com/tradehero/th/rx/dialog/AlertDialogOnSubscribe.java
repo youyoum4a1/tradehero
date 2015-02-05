@@ -3,13 +3,12 @@ package com.tradehero.th.rx.dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.th.R;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.internal.Assertions;
 
-class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterface, Integer>>
+class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEvent>
 {
     @NonNull final AlertDialogRx.Builder builder;
 
@@ -20,7 +19,7 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterf
     }
     //</editor-fold>
 
-    @Override public void call(final Subscriber<? super Pair<DialogInterface, Integer>> subscriber)
+    @Override public void call(final Subscriber<? super OnDialogClickEvent> subscriber)
     {
         Assertions.assertUiThread();
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(builder.activityContext)
@@ -59,7 +58,7 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<Pair<DialogInterf
             @Override public void onClick(DialogInterface dialogInterface, int i)
             {
                 dialogInterface.dismiss();
-                subscriber.onNext(Pair.create(dialogInterface, i));
+                subscriber.onNext(new OnDialogClickEvent(dialogInterface, i));
             }
         };
         if (builder.positiveButtonRes != null)

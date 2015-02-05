@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.Window;
@@ -24,6 +23,7 @@ import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.network.share.dto.ConnectRequired;
 import com.tradehero.th.network.share.dto.SocialDialogResult;
 import com.tradehero.th.network.share.dto.SocialShareResult;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
 import java.util.List;
 import java.util.Map;
@@ -140,18 +140,18 @@ public class SocialShareHelper
         return SocialAlertDialogRxUtil.popNeedToLinkSocial(
                 activityHolder.get(),
                 socialNetwork)
-                .flatMap(new Func1<Pair<DialogInterface, Integer>, Observable<UserProfileDTO>>()
+                .flatMap(new Func1<OnDialogClickEvent, Observable<UserProfileDTO>>()
                 {
-                    @Override public Observable<UserProfileDTO> call(Pair<DialogInterface, Integer> pair)
+                    @Override public Observable<UserProfileDTO> call(OnDialogClickEvent pair)
                     {
                         return handleNeedToLink(pair, socialNetwork);
                     }
                 });
     }
 
-    @NonNull public Observable<UserProfileDTO> handleNeedToLink(Pair<DialogInterface, Integer> pair, SocialNetworkEnum socialNetwork)
+    @NonNull public Observable<UserProfileDTO> handleNeedToLink(OnDialogClickEvent event, SocialNetworkEnum socialNetwork)
     {
-        if (pair.second.equals(DialogInterface.BUTTON_POSITIVE))
+        if (event.isPositive())
         {
             ProgressDialog progressDialog = new ProgressDialog(activityHolder.get());
             progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

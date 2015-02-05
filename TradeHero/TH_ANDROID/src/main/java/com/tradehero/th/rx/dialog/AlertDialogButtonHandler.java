@@ -7,7 +7,7 @@ import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Func1;
 
-public class AlertDialogButtonHandler implements Func1<Pair<DialogInterface, Integer>, Observable<Pair<DialogInterface, Integer>>>
+public class AlertDialogButtonHandler implements Func1<OnDialogClickEvent, Observable<OnDialogClickEvent>>
 {
     private final int buttonIndex;
     @NonNull private final Action0 action;
@@ -18,13 +18,13 @@ public class AlertDialogButtonHandler implements Func1<Pair<DialogInterface, Int
         this.action = action;
     }
 
-    @Override public Observable<Pair<DialogInterface, Integer>> call(Pair<DialogInterface, Integer> pair)
+    @Override public Observable<OnDialogClickEvent> call(OnDialogClickEvent event)
     {
-        if (pair.second.equals(buttonIndex))
+        if (event.which == buttonIndex)
         {
             action.call();
             return Observable.empty();
         }
-        return Observable.just(pair);
+        return Observable.just(event);
     }
 }
