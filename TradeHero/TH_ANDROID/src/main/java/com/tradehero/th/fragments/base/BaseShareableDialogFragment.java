@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.base;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,11 +21,10 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.auth.AuthenticationProvider;
 import com.tradehero.th.auth.SocialAuth;
-import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.dialog.AlertButtonClickedFilterFunc1;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
@@ -50,6 +48,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected UserProfileDTOUtil userProfileDTOUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
+    @Inject protected SocialShareHelper socialShareHelper;
 
     @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
     Subscription weChatLinkingSubscription;
@@ -246,19 +245,8 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
             @NonNull final SocialNetworkEnum socialNetwork)
     {
         return SocialAlertDialogRxUtil.popNeedToLinkSocial(getActivity(), socialNetwork)
-                .filter(new AlertButtonClickedFilterFunc1(DialogInterface.BUTTON_POSITIVE))
-                .doOnNext(dialogResult -> AlertDialogUtil.showProgressDialog(
-                        getActivity(),
-                        getString(
-                                R.string.authentication_connecting_to,
-                                getString(socialNetwork.nameResId))))
-                .flatMap(dialogInterfaceIntegerPair -> {
-                    AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
-                    return ((SocialAuthenticationProvider) socialAuthenticationProvider)
-                            .socialLink(getActivity())
-                            .map(userProfileDTO1 -> Pair.create(socialLinkToggleButton, userProfileDTO1));
-                })
-                .doOnCompleted(AlertDialogUtil::dismissProgressDialog);
+                .flatMap(event -> socialShareHelper.handleNeedToLink(event, socialNetwork))
+                .map(userProfileDTO -> Pair.create(socialLinkToggleButton, userProfileDTO));
     }
     //</editor-fold>
 

@@ -6,12 +6,11 @@ import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.auth.TwitterAuthenticationProvider;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import dagger.Lazy;
 import javax.inject.Inject;
 
 public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingViewHolder
@@ -22,15 +21,15 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull SocialServiceWrapper socialServiceWrapper,
-            @NonNull Lazy<TwitterAuthenticationProvider> socialAuthenticationProvider,
-            @NonNull @AuthHeader String authToken)
+            @NonNull @AuthHeader String authToken,
+            @NonNull SocialShareHelper socialShareHelper)
     {
         super(currentUserId,
                 userProfileCache,
                 userServiceWrapper,
                 socialServiceWrapper,
-                socialAuthenticationProvider,
-                authToken);
+                authToken,
+                socialShareHelper);
     }
     //</editor-fold>
 
@@ -47,11 +46,6 @@ public class SocialConnectTwitterSettingViewHolder extends SocialConnectSettingV
     @NonNull @Override protected SocialNetworkEnum getSocialNetworkEnum()
     {
         return SocialNetworkEnum.TW;
-    }
-
-    @StringRes @Override protected int getLinkingDialogMessage()
-    {
-        return R.string.authentication_twitter_connecting;
     }
 
     @StringRes @Override protected int getUnlinkingProgressDialogMessage()

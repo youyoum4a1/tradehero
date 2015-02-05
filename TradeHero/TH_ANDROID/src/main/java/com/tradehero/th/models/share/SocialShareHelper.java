@@ -149,28 +149,35 @@ public class SocialShareHelper
                 });
     }
 
-    @NonNull public Observable<UserProfileDTO> handleNeedToLink(OnDialogClickEvent event, SocialNetworkEnum socialNetwork)
+    @NonNull public Observable<UserProfileDTO> handleNeedToLink(
+            @NonNull OnDialogClickEvent event,
+            @NonNull SocialNetworkEnum socialNetwork)
     {
         if (event.isPositive())
         {
-            ProgressDialog progressDialog = new ProgressDialog(activityHolder.get());
-            progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage(activityHolder.get().getString(
-                    R.string.authentication_connecting_to,
-                    activityHolder.get().getString(socialNetwork.nameResId)));
-            progressDialog.show();
-            AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
-            return ((SocialAuthenticationProvider) socialAuthenticationProvider)
-                    .socialLink(activityHolder.get())
-                    .finallyDo(new Action0()
-                    {
-                        @Override public void call()
-                        {
-                            progressDialog.dismiss();
-                        }
-                    });
+            return handleNeedToLink(socialNetwork);
         }
         return Observable.empty();
+    }
+
+    @NonNull public Observable<UserProfileDTO> handleNeedToLink(@NonNull SocialNetworkEnum socialNetwork)
+    {
+        ProgressDialog progressDialog = new ProgressDialog(activityHolder.get());
+        progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage(activityHolder.get().getString(
+                R.string.authentication_connecting_to,
+                activityHolder.get().getString(socialNetwork.nameResId)));
+        progressDialog.show();
+        AuthenticationProvider socialAuthenticationProvider = authenticationProviders.get(socialNetwork);
+        return ((SocialAuthenticationProvider) socialAuthenticationProvider)
+                .socialLink(activityHolder.get())
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        progressDialog.dismiss();
+                    }
+                });
     }
 }

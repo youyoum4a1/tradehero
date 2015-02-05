@@ -15,16 +15,15 @@ import com.tradehero.th.api.social.SocialNetworkFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.auth.SocialAuthenticationProvider;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
-import dagger.Lazy;
+import java.util.concurrent.CancellationException;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Actions;
@@ -33,8 +32,8 @@ abstract public class SocialConnectSettingViewHolder
         extends UserProfileCheckBoxSettingViewHolder
 {
     @NonNull protected final SocialServiceWrapper socialServiceWrapper;
-    @NonNull protected final Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider;
     @NonNull protected final String authToken;
+    @NonNull protected final SocialShareHelper socialShareHelper;
     @Nullable protected Subscription sequenceSubscription;
 
     //<editor-fold desc="Constructors">
@@ -43,13 +42,13 @@ abstract public class SocialConnectSettingViewHolder
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull UserServiceWrapper userServiceWrapper,
             @NonNull SocialServiceWrapper socialServiceWrapper,
-            @NonNull Lazy<? extends SocialAuthenticationProvider> socialAuthenticationProvider,
-            @NonNull String authToken)
+            @NonNull String authToken,
+            @NonNull SocialShareHelper socialShareHelper)
     {
         super(currentUserId, userProfileCache, userServiceWrapper);
         this.socialServiceWrapper = socialServiceWrapper;
-        this.socialAuthenticationProvider = socialAuthenticationProvider;
         this.authToken = authToken;
+        this.socialShareHelper = socialShareHelper;
     }
     //</editor-fold>
 
@@ -85,7 +84,7 @@ abstract public class SocialConnectSettingViewHolder
             Observable<UserProfileDTO> sequence;
             if (enable)
             {
-                sequence = linkRx(activityContext);
+                sequence = linkRx();
             }
             else if (isMainLogin())
             {
@@ -97,23 +96,18 @@ abstract public class SocialConnectSettingViewHolder
                 sequence = confirmUnLinkRx(activityContext);
             }
             unsubscribe(sequenceSubscription);
+            final Activity finalActivityContext = activityContext;
             sequenceSubscription = sequence.observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new ChangedStatusObserver(activityContext));
+                    .subscribe(
+                            this::updateStatus,
+                            e -> onChangeStatusError(finalActivityContext, e));
         }
         return false;
     }
 
-    @NonNull protected Observable<UserProfileDTO> linkRx(@NonNull Activity activityContext)
+    @NonNull protected Observable<UserProfileDTO> linkRx()
     {
-        ProgressDialog progressDialog = ProgressDialogUtil.show(
-                activityContext,
-                getSocialNetworkEnum().nameResId,
-                getLinkingDialogMessage());
-        progressDialog.setCancelable(true);
-        progressDialog.setCanceledOnTouchOutside(true);
-        return socialAuthenticationProvider.get()
-                .socialLink(activityContext)
-                .finallyDo(progressDialog::dismiss);
+        return socialShareHelper.handleNeedToLink(getSocialNetworkEnum());
     }
 
     @NonNull protected Observable<UserProfileDTO> confirmUnLinkRx(@NonNull Context activityContext)
@@ -140,39 +134,6 @@ abstract public class SocialConnectSettingViewHolder
                 .finallyDo(progressDialog::dismiss);
     }
 
-    protected class ChangedStatusObserver implements Observer<UserProfileDTO>
-    {
-        @NonNull private final Context activityContext;
-
-        //<editor-fold desc="Constructors">
-        protected ChangedStatusObserver(@NonNull Context activityContext)
-        {
-            this.activityContext = activityContext;
-        }
-        //</editor-fold>
-
-        @Override public void onNext(UserProfileDTO args)
-        {
-            updateStatus(args);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            SocialAlertDialogRxUtil.popErrorSocialAuth(activityContext, e)
-                    .subscribe(Actions.empty(), Actions.empty());
-        }
-    }
-
-    @NonNull abstract protected SocialNetworkEnum getSocialNetworkEnum();
-
-    @StringRes abstract protected int getLinkingDialogMessage();
-
-    @StringRes abstract protected int getUnlinkingProgressDialogMessage();
-
     @Override protected void updateStatus(@NonNull UserProfileDTO userProfileDTO)
     {
         showIsMainLogin();
@@ -183,6 +144,19 @@ abstract public class SocialConnectSettingViewHolder
                     UserProfileDTOUtil.checkLinkedStatus(userProfileDTO, getSocialNetworkEnum()));
         }
     }
+
+    protected void onChangeStatusError(@NonNull Context activityContext, @NonNull Throwable e)
+    {
+        if (!(e instanceof CancellationException))
+        {
+            SocialAlertDialogRxUtil.popErrorSocialAuth(activityContext, e)
+                    .subscribe(Actions.empty(), Actions.empty());
+        }
+    }
+
+    @NonNull abstract protected SocialNetworkEnum getSocialNetworkEnum();
+
+    @StringRes abstract protected int getUnlinkingProgressDialogMessage();
 
     protected void showIsMainLogin()
     {
