@@ -10,17 +10,10 @@ import com.tradehero.th.api.news.NewsItemDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.inject.Inject;
 
 public class TranslationKeyFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public TranslationKeyFactory()
-    {
-    }
-    //</editor-fold>
-
-    @NonNull public TranslationKeyList createFrom(
+    @NonNull public static TranslationKeyList createFrom(
             @NonNull AbstractDiscussionCompactDTO fromDiscussion,
             @NonNull String toLanguage)
     {
@@ -34,7 +27,7 @@ public class TranslationKeyFactory
                 getTranslatableTexts(fromDiscussion));
     }
 
-    @NonNull protected List<String> getTranslatableTexts(
+    @NonNull static List<String> getTranslatableTexts(
             @NonNull AbstractDiscussionCompactDTO fromDiscussion)
     {
         List<String> texts = new ArrayList<>();
@@ -77,7 +70,7 @@ public class TranslationKeyFactory
         return texts;
     }
 
-    @NonNull public TranslationKeyList createKeys(
+    @NonNull public static TranslationKeyList createKeys(
             @NonNull String fromLang,
             @NonNull String toLang,
             @NonNull Collection<String> texts)
@@ -90,7 +83,7 @@ public class TranslationKeyFactory
         return keys;
     }
 
-    public boolean isValidLangCode(@Nullable String langCode)
+    public static boolean isValidLangCode(@Nullable String langCode)
     {
         return langCode != null
                 && !TextUtils.isEmpty(langCode)

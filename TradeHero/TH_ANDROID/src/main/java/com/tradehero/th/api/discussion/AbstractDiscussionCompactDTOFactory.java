@@ -1,22 +1,17 @@
 package com.tradehero.th.api.discussion;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.persistence.translation.TranslationKey;
-import javax.inject.Inject;
 
 public class AbstractDiscussionCompactDTOFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public AbstractDiscussionCompactDTOFactory()
-    {
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Clone">
-    public AbstractDiscussionCompactDTO clone(AbstractDiscussionCompactDTO original)
+    @Nullable public static AbstractDiscussionCompactDTO clone(@Nullable AbstractDiscussionCompactDTO original)
     {
         if (original == null)
         {
@@ -54,7 +49,10 @@ public class AbstractDiscussionCompactDTOFactory
     //</editor-fold>
 
     //<editor-fold desc="Populate Translations">
-    public void populateTranslation(AbstractDiscussionCompactDTO toPopulate, TranslationKey translationKey, TranslationResult translationResult)
+    public static void populateTranslation(
+            @Nullable AbstractDiscussionCompactDTO toPopulate,
+            @NonNull TranslationKey translationKey,
+            @NonNull TranslationResult translationResult)
     {
         if (toPopulate instanceof AbstractDiscussionDTO)
         {
@@ -76,7 +74,10 @@ public class AbstractDiscussionCompactDTOFactory
         }
     }
 
-    protected String getSameOrTranslated(String original, TranslationKey translationKey, TranslationResult translationResult)
+    @Nullable protected static String getSameOrTranslated(
+            @Nullable String original,
+            @NonNull TranslationKey translationKey,
+            @NonNull TranslationResult translationResult)
     {
         if (original == null || original.hashCode() != translationKey.textHashCode)
         {

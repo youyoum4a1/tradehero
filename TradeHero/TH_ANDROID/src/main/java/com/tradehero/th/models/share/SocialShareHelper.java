@@ -38,9 +38,7 @@ public class SocialShareHelper
     @NonNull protected final Context applicationContext;
     @NonNull protected final Provider<Activity> activityHolder;
     @NonNull protected final Provider<DashboardNavigator> navigatorProvider;
-    @NonNull protected final ShareDialogFactory shareDialogFactory;
     @NonNull protected final Provider<SocialSharer> socialSharerProvider;
-    @NonNull protected final SocialShareFormDTOFactory socialShareFormDTOFactory;
     @NonNull protected final Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders;
 
     //<editor-fold desc="Constructors">
@@ -48,17 +46,13 @@ public class SocialShareHelper
             @NonNull Context applicationContext,
             @NonNull Provider<Activity> activityHolder,
             @NonNull Provider<DashboardNavigator> navigatorProvider,
-            @NonNull ShareDialogFactory shareDialogFactory,
             @NonNull Provider<SocialSharer> socialSharerProvider,
-            @NonNull SocialShareFormDTOFactory socialShareFormDTOFactory,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders)
     {
         this.applicationContext = applicationContext;
         this.activityHolder = activityHolder;
         this.navigatorProvider = navigatorProvider;
-        this.shareDialogFactory = shareDialogFactory;
         this.socialSharerProvider = socialSharerProvider;
-        this.socialShareFormDTOFactory = socialShareFormDTOFactory;
         this.authenticationProviders = authenticationProviders;
     }
     //</editor-fold>
@@ -91,7 +85,7 @@ public class SocialShareHelper
 
     @NonNull protected Observable<Pair<Dialog, ShareDialogLayout>> createDialog(@NonNull DTO whatToShare)
     {
-        return Observable.just(shareDialogFactory.createShareDialog(activityHolder.get()));
+        return Observable.just(ShareDialogFactory.createShareDialog(activityHolder.get()));
     }
 
     @NonNull protected Observable<? extends SocialDialogResult> handleUserAction(
@@ -100,7 +94,8 @@ public class SocialShareHelper
     {
         if (userAction instanceof ShareDialogLayout.ShareUserAction)
         {
-            return share(socialShareFormDTOFactory.createForm(
+            return share(SocialShareFormDTOFactory.createForm(
+                    applicationContext,
                     ((ShareDialogLayout.ShareUserAction) userAction).shareDestination,
                     whatToShare));
         }

@@ -11,17 +11,13 @@ import timber.log.Timber;
 
 public class SocialShareSetPreference extends StringSetPreference
 {
-    @NonNull private final SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory;
-
     //<editor-fold desc="Constructors">
     public SocialShareSetPreference(
-            @NonNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory,
             @NonNull SharedPreferences preference,
             @NonNull String key,
             @NonNull Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
-        this.socialSharePreferenceDTOFactory = socialSharePreferenceDTOFactory;
     }
     //</editor-fold>
 
@@ -33,7 +29,7 @@ public class SocialShareSetPreference extends StringSetPreference
         {
             try
             {
-                socialSharePreferenceDTOs.add(socialSharePreferenceDTOFactory.create(jsonString));
+                socialSharePreferenceDTOs.add(SocialSharePreferenceDTOFactory.create(jsonString));
             } catch (JSONException e)
             {
                 Timber.e(e, "Parsing savedToken: %s", jsonString);

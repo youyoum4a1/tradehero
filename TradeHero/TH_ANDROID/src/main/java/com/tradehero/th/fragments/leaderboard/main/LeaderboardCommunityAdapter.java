@@ -15,16 +15,12 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefDTO, LeaderboardDefView>
         implements StickyListHeadersAdapter
 {
-    @NonNull final LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
-
     //<editor-fold desc="Constructors">
     public LeaderboardCommunityAdapter(
             @NonNull Context context,
-            @LayoutRes int layoutResourceId,
-            @NonNull LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory)
+            @LayoutRes int layoutResourceId)
     {
         super(context, layoutResourceId);
-        this.leaderboardCommunityTypeFactory = leaderboardCommunityTypeFactory;
     }
     //</editor-fold>
 
@@ -36,7 +32,7 @@ public class LeaderboardCommunityAdapter extends ArrayDTOAdapter<LeaderboardDefD
     @Override public int getItemViewType(int position)
     {
         LeaderboardDefDTO leaderboardDefDTO = (LeaderboardDefDTO) getItem(position);
-        return leaderboardCommunityTypeFactory.createFrom(leaderboardDefDTO).ordinal();
+        return LeaderboardCommunityTypeFactory.createFrom(leaderboardDefDTO).ordinal();
     }
 
     //<editor-fold desc="For headers">

@@ -3,18 +3,10 @@ package com.tradehero.th.api.leaderboard.key;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import javax.inject.Inject;
 
 public class LeaderboardDefListKeyFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefListKeyFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @NonNull public LeaderboardDefListKey create(@NonNull Bundle args)
+    @NonNull public static LeaderboardDefListKey create(@NonNull Bundle args)
     {
         switch (args.getString(LeaderboardDefListKey.BUNDLE_KEY_KEY))
         {
@@ -41,7 +33,7 @@ public class LeaderboardDefListKeyFactory
         }
     }
 
-    @NonNull public LeaderboardDefListKey create(@NonNull LeaderboardDefListKey origin, @Nullable Integer page)
+    @NonNull public static LeaderboardDefListKey create(@NonNull LeaderboardDefListKey origin, @Nullable Integer page)
     {
         if (origin instanceof ConnectedLeaderboardDefListKey)
         {

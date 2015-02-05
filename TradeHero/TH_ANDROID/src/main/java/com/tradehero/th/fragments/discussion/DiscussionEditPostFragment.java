@@ -56,10 +56,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
-    @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
     @Inject DiscussionCacheRx discussionCache;
-    @Inject WeChatDTOFactory weChatDTOFactory;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
     @Inject MentionTaggedStockHandler mentionTaggedStockHandler;
 
@@ -138,7 +135,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         {
             if (args.containsKey(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE))
             {
-                DiscussionKey discussionKey = discussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
+                DiscussionKey discussionKey = DiscussionKeyFactory.fromBundle(args.getBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE));
                 linkWith(discussionKey);
             }
         }
@@ -221,7 +218,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         DiscussionType discussionType = getDiscussionType();
         if (discussionType != null)
         {
-            discussionFormDTO = discussionFormDTOFactory.createEmpty(discussionType);
+            discussionFormDTO = DiscussionFormDTOFactory.createEmpty(discussionType);
         }
         else
         {
@@ -318,7 +315,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
 
             if (discussionPostActionButtonsView.isShareEnabled(SocialNetworkEnum.WECHAT))
             {
-                socialSharerLazy.get().share(weChatDTOFactory.createFrom(discussionDTO))
+                socialSharerLazy.get().share(WeChatDTOFactory.createFrom(discussionDTO))
                         .subscribe(Actions.empty(), Actions.empty()); // Proper callback?
             }
 

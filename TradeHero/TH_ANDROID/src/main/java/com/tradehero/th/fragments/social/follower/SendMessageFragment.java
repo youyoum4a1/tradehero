@@ -67,9 +67,7 @@ public class SendMessageFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject MessageCreateFormDTOFactory messageCreateFormDTOFactory;
     @Inject Analytics analytics;
-    @Inject FollowerTypeDialogFactory followerTypeDialogFactory;
     @Inject UserProfileDTOUtil userProfileDTOUtil;
 
     @Nullable Subscription userProfileSubscription;
@@ -191,7 +189,7 @@ public class SendMessageFragment extends DashboardFragment
     @OnClick(R.id.message_type)
     protected void showHeroTypeDialog(View view)
     {
-        Pair<Dialog, Observable<MessageType>> dialogPair = followerTypeDialogFactory.showHeroTypeDialog(getActivity());
+        Pair<Dialog, Observable<MessageType>> dialogPair = FollowerTypeDialogFactory.showHeroTypeDialog(getActivity());
         dialogPair.second
                 .subscribe(
                         messageType -> {
@@ -261,7 +259,7 @@ public class SendMessageFragment extends DashboardFragment
 
     private MessageCreateFormDTO createMessageForm(@NonNull String messageText)
     {
-        MessageCreateFormDTO messageCreateFormDTO = messageCreateFormDTOFactory.createEmpty(messageType);
+        MessageCreateFormDTO messageCreateFormDTO = MessageCreateFormDTOFactory.createEmpty(messageType);
         messageCreateFormDTO.message = messageText;
         return messageCreateFormDTO;
     }

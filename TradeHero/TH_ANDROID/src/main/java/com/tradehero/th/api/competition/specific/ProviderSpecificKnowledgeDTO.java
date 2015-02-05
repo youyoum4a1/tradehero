@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 @Deprecated
 public class ProviderSpecificKnowledgeDTO
 {
-    @Nullable public Boolean includeProviderPortfolioOnWarrants;
     @Nullable public Boolean hasWizard; //TODO Remove this when SGX is finished
 
     //<editor-fold desc="Constructors">

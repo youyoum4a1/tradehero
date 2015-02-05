@@ -1,6 +1,6 @@
 package com.tradehero.th.api.i18n;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.i18n.lang.LanguageChineseSimplifiedDTO;
@@ -13,27 +13,19 @@ import com.tradehero.th.api.i18n.lang.LanguageKlingonDTO;
 import com.tradehero.th.api.i18n.lang.LanguageKlingonQaakDTO;
 import com.tradehero.th.api.i18n.lang.LanguageNorwegianDTO;
 import java.util.Locale;
-import javax.inject.Inject;
 
 public class LanguageDTOFactory
 {
-    @NonNull private final Context applicationContext;
-
-    //<editor-fold desc="Constructors">
-    @Inject public LanguageDTOFactory(@NonNull Context applicationContext)
-    {
-        this.applicationContext = applicationContext;
-    }
-    //</editor-fold>
-
-    public LanguageDTO createFromCode(@NonNull String languageCode)
+    @NonNull public static LanguageDTO createFromCode(
+            @NonNull Resources resources,
+            @NonNull String languageCode)
     {
         Locale locale = forLanguageTag(languageCode);
         if (locale != null)
         {
             return new LanguageDTO(languageCode, locale);
         }
-        LanguageDTO known = getHardCodedLanguages().get(languageCode);
+        LanguageDTO known = getHardCodedLanguages(resources).get(languageCode);
         if (known != null)
         {
             return known;
@@ -41,7 +33,7 @@ public class LanguageDTOFactory
         return new LanguageDTO(languageCode, Locale.ENGLISH);
     }
 
-    @Nullable public Locale forLanguageTag(String languageCode)
+    @Nullable public static Locale forLanguageTag(@Nullable String languageCode)
     {
         for (Locale locale : Locale.getAvailableLocales())
         {
@@ -53,18 +45,18 @@ public class LanguageDTOFactory
         return null;
     }
 
-    @NonNull public LanguageDTOMap getHardCodedLanguages()
+    @NonNull public static LanguageDTOMap getHardCodedLanguages(@NonNull Resources resources)
     {
         LanguageDTOMap known = new LanguageDTOMap();
-        known.add(new LanguageHaitianCreoleDTO(applicationContext.getResources()));
-        known.add(new LanguageHebrewDTO(applicationContext.getResources()));
-        known.add(new LanguageHmongDawDTO(applicationContext.getResources()));
-        known.add(new LanguageIndonesianDTO(applicationContext.getResources()));
-        known.add(new LanguageKlingonDTO(applicationContext.getResources()));
-        known.add(new LanguageKlingonQaakDTO(applicationContext.getResources()));
-        known.add(new LanguageNorwegianDTO(applicationContext.getResources()));
-        known.add(new LanguageChineseSimplifiedDTO(applicationContext.getResources()));
-        known.add(new LanguageChineseTraditionalDTO(applicationContext.getResources()));
+        known.add(new LanguageHaitianCreoleDTO(resources));
+        known.add(new LanguageHebrewDTO(resources));
+        known.add(new LanguageHmongDawDTO(resources));
+        known.add(new LanguageIndonesianDTO(resources));
+        known.add(new LanguageKlingonDTO(resources));
+        known.add(new LanguageKlingonQaakDTO(resources));
+        known.add(new LanguageNorwegianDTO(resources));
+        known.add(new LanguageChineseSimplifiedDTO(resources));
+        known.add(new LanguageChineseTraditionalDTO(resources));
         return known;
     }
 }

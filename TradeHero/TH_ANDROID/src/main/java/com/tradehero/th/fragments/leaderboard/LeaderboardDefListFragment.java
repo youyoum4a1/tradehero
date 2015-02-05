@@ -21,7 +21,6 @@ public class LeaderboardDefListFragment extends BaseLeaderboardPagedListRxFragme
         LeaderboardDefDTOList,
         LeaderboardDefDTOList>
 {
-    @Inject protected LeaderboardDefListKeyFactory leaderboardDefListKeyFactory;
     @Inject Lazy<LeaderboardDefListCacheRx> leaderboardDefListCache;
 
     @NonNull LeaderboardDefListKey baseKey;
@@ -29,7 +28,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardPagedListRxFragme
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        baseKey = leaderboardDefListKeyFactory.create(getArguments());
+        baseKey = LeaderboardDefListKeyFactory.create(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -62,7 +61,7 @@ public class LeaderboardDefListFragment extends BaseLeaderboardPagedListRxFragme
 
     @NonNull @Override public LeaderboardDefListKey makePagedDtoKey(int page)
     {
-        return leaderboardDefListKeyFactory.create(baseKey, page);
+        return LeaderboardDefListKeyFactory.create(baseKey, page);
     }
 
     @Override protected void handleDtoClicked(LeaderboardDefDTO clicked)

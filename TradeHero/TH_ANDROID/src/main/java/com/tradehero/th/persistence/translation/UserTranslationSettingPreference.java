@@ -1,6 +1,7 @@
 package com.tradehero.th.persistence.translation;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -16,16 +17,19 @@ import java.util.Set;
 
 public class UserTranslationSettingPreference extends StringSetPreference
 {
+    @NonNull private final Resources resources;
     @NonNull private final UserTranslationSettingDTOFactory userTranslationSettingDTOFactory;
 
     //<editor-fold desc="Constructors">
     public UserTranslationSettingPreference(
+            @NonNull Resources resources,
             @NonNull UserTranslationSettingDTOFactory userTranslationSettingDTOFactory,
             @NonNull SharedPreferences preference,
             @NonNull String key,
             @NonNull Set<String> defaultValue)
     {
         super(preference, key, defaultValue);
+        this.resources = resources;
         this.userTranslationSettingDTOFactory = userTranslationSettingDTOFactory;
     }
     //</editor-fold>
@@ -47,7 +51,7 @@ public class UserTranslationSettingPreference extends StringSetPreference
     @Nullable public UserTranslationSettingDTO getOfSameTypeOrDefault(@NonNull TranslationToken translationToken)
             throws JsonParseException, JsonMappingException, IOException
     {
-        UserTranslationSettingDTO defaultOne = userTranslationSettingDTOFactory.createDefaultPerType(translationToken);
+        UserTranslationSettingDTO defaultOne = userTranslationSettingDTOFactory.createDefaultPerType(resources, translationToken);
         if (defaultOne == null)
         {
             return null;
@@ -99,8 +103,7 @@ public class UserTranslationSettingPreference extends StringSetPreference
         {
             // Here we catch in order to overwrite if reading failed.
             existing = getSettingDTOs();
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }

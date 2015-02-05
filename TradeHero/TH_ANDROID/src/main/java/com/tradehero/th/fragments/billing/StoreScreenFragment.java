@@ -32,6 +32,7 @@ import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -52,7 +53,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
-    @Inject StoreItemFactory storeItemFactory;
+    @Inject SystemStatusCache systemStatusCache;
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
@@ -100,7 +101,7 @@ public class StoreScreenFragment extends BasePurchaseManagerFragment
         unsubscribe(storeItemSubscription);
         storeItemSubscription = AppObservable.bindFragment(
                 this,
-                storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
+                StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
                 .subscribe(
                         storeItemDTOs -> {

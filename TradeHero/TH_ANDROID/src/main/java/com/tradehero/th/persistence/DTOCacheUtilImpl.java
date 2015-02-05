@@ -27,7 +27,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.trending.TrendingStockFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeBasicDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import com.tradehero.th.models.security.WarrantSpecificKnowledgeFactory;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -84,7 +83,6 @@ import rx.functions.Actions;
     protected final Lazy<WatchlistPositionCacheRx> watchlistPositionCache;
     //</editor-fold>
 
-    protected final Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy;
     protected final StringPreference serverEndpointPreference;
     protected final SharedPreferences userSharedPreferences;
     private final BooleanPreference isOnboardShown;
@@ -114,7 +112,6 @@ import rx.functions.Actions;
             Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
             Lazy<UserWatchlistPositionCacheRx> userWatchlistPositionCache,
             Lazy<WatchlistPositionCacheRx> watchlistPositionCache,
-            Lazy<WarrantSpecificKnowledgeFactory> warrantSpecificKnowledgeFactoryLazy,
             Lazy<QuestBonusListCacheRx> questBonusListCacheLazy,
             @ServerEndpoint StringPreference serverEndpointPreference,
             @ForUser SharedPreferences userSharedPreferences,
@@ -146,7 +143,6 @@ import rx.functions.Actions;
         this.userWatchlistPositionCache = userWatchlistPositionCache;
         this.watchlistPositionCache = watchlistPositionCache;
 
-        this.warrantSpecificKnowledgeFactoryLazy = warrantSpecificKnowledgeFactoryLazy;
         this.serverEndpointPreference = serverEndpointPreference;
         this.userSharedPreferences = userSharedPreferences;
         this.isOnboardShown = isOnboardShown;
@@ -198,7 +194,6 @@ import rx.functions.Actions;
             userCacheRxs.get(i).invalidateAll();
         }
 
-        warrantSpecificKnowledgeFactoryLazy.get().clear();
         serverEndpointPreference.delete();
         isOnboardShown.delete();
         userSharedPreferences.edit().clear().apply();

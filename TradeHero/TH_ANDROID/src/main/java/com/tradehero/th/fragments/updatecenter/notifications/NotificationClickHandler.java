@@ -30,7 +30,6 @@ public class NotificationClickHandler
 {
     private final NotificationDTO notificationDTO;
 
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
     @Inject DashboardNavigator navigator;
@@ -148,7 +147,7 @@ public class NotificationClickHandler
                     }
                     if (notificationDTO.threadId != null)
                     {
-                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.threadId));
+                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, DiscussionKeyFactory.create(discussionType, notificationDTO.threadId));
                     }
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
                 }
@@ -170,7 +169,7 @@ public class NotificationClickHandler
                     }
                     if (notificationDTO.replyableId != null)
                     {
-                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, discussionKeyFactory.create(discussionType, notificationDTO.replyableId));
+                        ReplyPrivateMessageFragment.putDiscussionKey(bundle, DiscussionKeyFactory.create(discussionType, notificationDTO.replyableId));
                     }
                     navigator.pushFragment(ReplyPrivateMessageFragment.class, bundle);
                 }

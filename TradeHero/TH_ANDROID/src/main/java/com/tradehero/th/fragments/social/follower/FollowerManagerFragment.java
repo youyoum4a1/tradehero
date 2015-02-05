@@ -47,7 +47,6 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
             FollowerManagerFragment.class.getName() + ".heroId";
 
     @Inject CurrentUserId currentUserId;
-    @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject @BottomTabs Lazy<DashboardTabHost> dashboardTabHost;
 
@@ -218,7 +217,7 @@ public class FollowerManagerFragment extends DashboardFragment /*BasePurchaseMan
 
     @NonNull protected ArrayList<HeroTypeResourceDTO> getTabResourceDTOs()
     {
-        return heroTypeResourceDTOFactory.getListOfHeroType();
+        return HeroTypeResourceDTOFactory.getListOfHeroType();
     }
 
     private void addTab(@NonNull HeroTypeResourceDTO resourceDTO)

@@ -9,7 +9,6 @@ import android.util.Pair;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTOFactory;
-import com.tradehero.th.api.share.SocialShareFormDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.translation.TranslationResult;
 import com.tradehero.th.api.translation.TranslationToken;
@@ -40,8 +39,6 @@ import rx.functions.Func1;
 
 public class SocialShareTranslationHelper extends SocialShareHelper
 {
-    @NonNull protected final TranslationKeyFactory translationKeyFactory;
-    @NonNull protected final AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory;
     @NonNull protected final TranslationTokenCacheRx translationTokenCache;
     @NonNull protected final TranslationCacheRx translationCache;
     @NonNull protected final UserTranslationSettingPreference userTranslationSettingPreference;
@@ -53,12 +50,8 @@ public class SocialShareTranslationHelper extends SocialShareHelper
             @NonNull Context applicationContext,
             @NonNull Provider<Activity> activityProvider,
             @NonNull Provider<DashboardNavigator> navigatorProvider,
-            @NonNull NewsDialogFactory newsDialogFactory,
             @NonNull Provider<SocialSharer> socialSharerProvider,
-            @NonNull SocialShareFormDTOFactory socialShareFormDTOFactory,
             @NonNull @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviders,
-            @NonNull TranslationKeyFactory translationKeyFactory,
-            @NonNull AbstractDiscussionCompactDTOFactory abstractDiscussionCompactDTOFactory,
             @NonNull TranslationTokenCacheRx translationTokenCache,
             @NonNull TranslationCacheRx translationCache,
             @NonNull UserTranslationSettingPreference userTranslationSettingPreference)
@@ -66,12 +59,8 @@ public class SocialShareTranslationHelper extends SocialShareHelper
         super(applicationContext,
                 activityProvider,
                 navigatorProvider,
-                newsDialogFactory,
                 socialSharerProvider,
-                socialShareFormDTOFactory,
                 authenticationProviders);
-        this.translationKeyFactory = translationKeyFactory;
-        this.abstractDiscussionCompactDTOFactory = abstractDiscussionCompactDTOFactory;
         this.translationTokenCache = translationTokenCache;
         this.translationCache = translationCache;
         this.userTranslationSettingPreference = userTranslationSettingPreference;
@@ -143,7 +132,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                             @Override public Boolean call(String targetLanguage)
                             {
                                 return pair.second != null &&
-                                        translationKeyFactory.isValidLangCode(discussionToTranslate.langCode) &&
+                                        TranslationKeyFactory.isValidLangCode(discussionToTranslate.langCode) &&
                                         discussionToTranslate.langCode != null &&
                                         !discussionToTranslate.langCode.equals(targetLanguage);
                             }
@@ -172,7 +161,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                     {
                         if (can && !shareOnly)
                         {
-                            Pair<Dialog, NewsDialogLayout> pair = ((NewsDialogFactory) shareDialogFactory).createNewsDialogRx(activityHolder.get());
+                            Pair<Dialog, NewsDialogLayout> pair = NewsDialogFactory.createNewsDialogRx(activityHolder.get());
                             return Observable.just(Pair.create(pair.first, pair.second));
                         }
                         return SocialShareTranslationHelper.super.createDialog(whatToShare);
@@ -194,7 +183,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
     @NonNull public Observable<? extends SocialDialogResult> translate(
             @NonNull AbstractDiscussionCompactDTO toTranslate)
     {
-        AbstractDiscussionCompactDTO translated = abstractDiscussionCompactDTOFactory.clone(toTranslate);
+        AbstractDiscussionCompactDTO translated = AbstractDiscussionCompactDTOFactory.clone(toTranslate);
         if (toTranslate.langCode != null)
         {
             return getTargetLanguage()
@@ -202,7 +191,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                     {
                         @Override public Observable<TranslationKey> call(String targetLanguage)
                         {
-                            return Observable.from(translationKeyFactory.createFrom(toTranslate, targetLanguage));
+                            return Observable.from(TranslationKeyFactory.createFrom(toTranslate, targetLanguage));
                         }
                     })
                     .flatMap(new Func1<TranslationKey, Observable<? extends Pair<TranslationKey, TranslationResult>>>()
@@ -216,7 +205,7 @@ public class SocialShareTranslationHelper extends SocialShareHelper
                     {
                         @Override public void call(Pair<TranslationKey, TranslationResult> pair)
                         {
-                            abstractDiscussionCompactDTOFactory.populateTranslation(translated, pair.first, pair.second) // TODO remove?
+                            AbstractDiscussionCompactDTOFactory.populateTranslation(translated, pair.first, pair.second) // TODO remove?
                             ;
                         }
                     })

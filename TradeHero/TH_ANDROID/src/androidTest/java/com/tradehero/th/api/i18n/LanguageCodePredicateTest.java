@@ -3,7 +3,6 @@ package com.tradehero.th.api.i18n;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.th.base.TestTHApp;
-import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +13,6 @@ import static org.junit.Assume.assumeTrue;
 @RunWith(THRobolectricTestRunner.class)
 public class LanguageCodePredicateTest
 {
-    @Inject LanguageDTOFactory languageDTOFactory;
-
     @Before public void setUp()
     {
         TestTHApp.staticInject(this);
@@ -35,7 +32,7 @@ public class LanguageCodePredicateTest
     {
         assumeTrue(!TestConstants.IS_INTELLIJ);
         //noinspection ConstantConditions
-        new LanguageCodePredicate(null).apply(languageDTOFactory.createFromCode("en"));
+        new LanguageCodePredicate(null).apply(LanguageDTOFactory.createFromCode(TestTHApp.context().getResources(), "en"));
     }
     //</editor-fold>
 

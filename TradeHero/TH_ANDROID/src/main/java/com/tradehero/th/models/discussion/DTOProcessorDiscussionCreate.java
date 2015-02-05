@@ -3,7 +3,6 @@ package com.tradehero.th.models.discussion;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -19,13 +18,11 @@ public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 
     //<editor-fold desc="Constructors">
     public DTOProcessorDiscussionCreate(
-            @NonNull DiscussionDTOFactory discussionDTOFactory,
             @NonNull CurrentUserId currentUserId,
             @NonNull DiscussionCacheRx discussionCache,
             @NonNull UserMessagingRelationshipCacheRx userMessagingRelationshipCache,
             @Nullable DiscussionKey stubKey)
     {
-        super(discussionDTOFactory);
         this.currentUserId = currentUserId;
         this.discussionCache = discussionCache;
         this.userMessagingRelationshipCache = userMessagingRelationshipCache;

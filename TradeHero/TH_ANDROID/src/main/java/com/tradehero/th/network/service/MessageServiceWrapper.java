@@ -3,7 +3,6 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
@@ -39,7 +38,6 @@ public class MessageServiceWrapper
     private static final long RETRY_DELAY_MILLIS = 1000;
 
     @NonNull private final MessageServiceRx messageServiceRx;
-    @NonNull private final DiscussionDTOFactory discussionDTOFactory;
     @NonNull private final CurrentUserId currentUserId;
 
     // We need Lazy here because MessageStatusCache also injects a MessageServiceWrapper
@@ -53,7 +51,6 @@ public class MessageServiceWrapper
     //<editor-fold desc="Constructors">
     @Inject MessageServiceWrapper(
             @NonNull MessageServiceRx messageServiceRx,
-            @NonNull DiscussionDTOFactory discussionDTOFactory,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<MessageHeaderListCacheRx> messageHeaderListCache,
             @NonNull Lazy<MessageHeaderCacheRx> messageHeaderCache,
@@ -63,7 +60,6 @@ public class MessageServiceWrapper
             @NonNull Lazy<HomeContentCacheRx> homeContentCache)
     {
         this.messageServiceRx = messageServiceRx;
-        this.discussionDTOFactory = discussionDTOFactory;
         this.currentUserId = currentUserId;
         this.messageHeaderListCache = messageHeaderListCache;
         this.messageHeaderCache = messageHeaderCache;
@@ -142,7 +138,6 @@ public class MessageServiceWrapper
         return messageServiceRx.createMessage(form)
                 .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
                 .map(new DTOProcessorDiscussionCreate(
-                        discussionDTOFactory,
                         currentUserId,
                         discussionCache.get(),
                         userMessagingRelationshipCache.get(),

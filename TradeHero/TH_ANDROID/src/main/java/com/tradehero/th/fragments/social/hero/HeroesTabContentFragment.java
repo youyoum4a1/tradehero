@@ -59,7 +59,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
     @Inject HeroListCacheRx heroListCache;
     /** when no heroes */
     @Inject Lazy<LeaderboardDefCacheRx> leaderboardDefCache;
-    @Inject HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
 
@@ -192,7 +191,7 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     protected HeroTypeResourceDTO getHeroTypeResource()
     {
-        return heroTypeResourceDTOFactory.create(getHeroType());
+        return HeroTypeResourceDTOFactory.create(getHeroType());
     }
 
     @NonNull abstract protected HeroType getHeroType();

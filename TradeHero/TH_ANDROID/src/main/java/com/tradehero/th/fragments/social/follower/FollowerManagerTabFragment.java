@@ -45,7 +45,6 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
             FollowerManagerTabFragment.class.getName() + ".heroId";
 
     @Inject protected CurrentUserId currentUserId;
-    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @InjectView(R.id.follower_list) ListView followerList;
@@ -168,7 +167,7 @@ abstract public class FollowerManagerTabFragment extends BasePurchaseManagerFrag
 
     protected HeroTypeResourceDTO getHeroTypeResource()
     {
-        return heroTypeResourceDTOFactory.create(getFollowerType());
+        return HeroTypeResourceDTOFactory.create(getFollowerType());
     }
 
     abstract protected HeroType getFollowerType();

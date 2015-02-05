@@ -44,7 +44,6 @@ public class LocationListFragment extends DashboardFragment
     @Inject Context context;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject ListedLocationDTOFactory listedLocationDTOFactory;
     @Inject UserProfileCacheRx userProfileCache;
 
     @InjectView(android.R.id.list) ListView listView;
@@ -55,7 +54,7 @@ public class LocationListFragment extends DashboardFragment
         mListAdapter = new LocationAdapter(
                 context,
                 R.layout.settings_location_list_item);
-        mListAdapter.addAll(listedLocationDTOFactory.createListToShow());
+        mListAdapter.addAll(ListedLocationDTOFactory.createListToShow());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

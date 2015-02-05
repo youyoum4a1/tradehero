@@ -139,7 +139,7 @@ public class TranslatableLanguageListFragment extends DashboardFragment
         }
         else
         {
-            handleLanguages(translatableLanguageDTOFactory.getTargetLanguages());
+            handleLanguages(translatableLanguageDTOFactory.getTargetLanguages(getResources()));
         }
     }
 

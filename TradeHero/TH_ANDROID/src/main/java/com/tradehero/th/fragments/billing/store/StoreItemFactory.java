@@ -10,7 +10,6 @@ import com.tradehero.th.fragments.alert.AlertManagerFragment;
 import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.persistence.system.SystemStatusCache;
-import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -22,16 +21,9 @@ public class StoreItemFactory
     public static final boolean WITH_INCLUDE_ALERTS = true;
     public static final boolean WITH_EXCLUDE_ALERTS = false;
 
-    @NonNull private final SystemStatusCache systemStatusCache;
-
-    //<editor-fold desc="Constructors">
-    @Inject public StoreItemFactory(@NonNull SystemStatusCache systemStatusCache)
-    {
-        this.systemStatusCache = systemStatusCache;
-    }
-    //</editor-fold>
-
-    @NonNull public Observable<StoreItemDTOList> createAll(final boolean ignoreSystemStatus)
+    @NonNull public static Observable<StoreItemDTOList> createAll(
+            @NonNull SystemStatusCache systemStatusCache,
+            final boolean ignoreSystemStatus)
     {
         return systemStatusCache.get(new SystemStatusKey())
                 .map(new Func1<Pair<SystemStatusKey, SystemStatusDTO>, StoreItemDTOList>()
@@ -45,7 +37,7 @@ public class StoreItemFactory
                 });
     }
 
-    @NonNull protected StoreItemDTOList createList(boolean includeAlerts)
+    @NonNull static StoreItemDTOList createList(boolean includeAlerts)
     {
         StoreItemDTOList created = new StoreItemDTOList();
 

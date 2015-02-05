@@ -58,8 +58,6 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Inject CompetitionPreseasonCacheRx competitionPreseasonCacheRx;
     @Inject DashboardNavigator navigator;
     @Inject ProviderServiceWrapper providerServiceWrapper;
-    @Inject Lazy<CompetitionPreseasonShareFormDTOFactory> competitionPreseasonShareFormDTOFactoryLazy;
-    @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
     @InjectView(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
@@ -123,7 +121,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
         if (!shareList.isEmpty())
         {
             shareSubscription = AppObservable.bindFragment(this,
-                    providerServiceWrapper.sharePreSeason(competitionPreseasonShareFormDTOFactoryLazy.get().createFrom(shareList, providerId)))
+                    providerServiceWrapper.sharePreSeason(CompetitionPreseasonShareFormDTOFactory.createFrom(shareList, providerId)))
                     .subscribe(new Observer<BaseResponseDTO>()
                     {
                         @Override public void onCompleted()
@@ -151,7 +149,7 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
 
     private void shareToWeChat()
     {
-        WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
+        WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), competitionPreSeasonDTO, providerDTO);
         subscriptions.add(socialSharerLazy.get().share(weChatDTO)
                 .subscribe(Actions.empty(), Actions.empty()));
     }

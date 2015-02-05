@@ -96,9 +96,7 @@ public class PositionListFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
-    @Inject GetPositionsDTOKeyFactory getPositionsDTOKeyFactory;
     @Inject GetPositionsCacheRx getPositionsCache;
-    @Inject PortfolioHeaderFactory headerFactory;
     @Inject Analytics analytics;
     @Inject PortfolioCacheRx portfolioCache;
     @Inject UserProfileCacheRx userProfileCache;
@@ -136,9 +134,9 @@ public class PositionListFragment
         args.putBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE, getPositionsDTOKey.getArgs());
     }
 
-    private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull GetPositionsDTOKeyFactory getPositionsDTOKeyFactory, @NonNull Bundle args)
+    @Nullable private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull Bundle args)
     {
-        return getPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
+        return GetPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
     }
 
     public static void putShownUser(@NonNull Bundle args, @NonNull UserBaseKey shownUser)
@@ -168,7 +166,7 @@ public class PositionListFragment
         }
         if (args.containsKey(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE))
         {
-            getPositionsDTOKey = getGetPositionsDTOKey(getPositionsDTOKeyFactory, args);
+            getPositionsDTOKey = getGetPositionsDTOKey(args);
         }
         else
         {
@@ -527,7 +525,7 @@ public class PositionListFragment
         if (portfolioHeaderView == null)
         {
             // portfolio header
-            int headerLayoutId = headerFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO);
+            int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
             headerStub.setLayoutResource(headerLayoutId);
             View inflatedHeader = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedHeader;

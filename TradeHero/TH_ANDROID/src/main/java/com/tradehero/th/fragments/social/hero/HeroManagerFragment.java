@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.social.hero;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -38,7 +39,8 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
     // TODO change it into something like R.id.... to help with identifying its unicity
     static final int FRAGMENT_LAYOUT_ID = 9999;
 
-    @Inject protected HeroTypeResourceDTOFactory heroTypeResourceDTOFactory;
+    @Inject Context doNotRemoveOrItFails;
+
     FragmentTabHost mTabHost;
     List<TabHost.TabSpec> tabSpecList;
 
@@ -63,7 +65,7 @@ public class HeroManagerFragment extends BasePurchaseManagerFragment
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), ((Fragment) this).getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
 
-        List<HeroTypeResourceDTO> resourceDTOs = heroTypeResourceDTOFactory.getListOfHeroType();
+        List<HeroTypeResourceDTO> resourceDTOs = HeroTypeResourceDTOFactory.getListOfHeroType();
         tabSpecList = new ArrayList<>(resourceDTOs.size());
         for (HeroTypeResourceDTO resourceDTO : resourceDTOs)
         {

@@ -72,11 +72,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject PositionDTOKeyFactory positionDTOKeyFactory;
     @Inject THRouter thRouter;
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject Analytics analytics;
-    @Inject SecurityActionDialogFactory securityActionDialogFactory;
 
     @InjectView(R.id.trade_list) protected ListView tradeListView;
 
@@ -107,9 +105,9 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     }
 
     @NonNull
-    private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKeyFactory positionDTOKeyFactory)
+    private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args)
     {
-        return positionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
+        return PositionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -122,7 +120,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         }
         else
         {
-            positionDTOKey = getPositionDTOKey(getArguments(), positionDTOKeyFactory);
+            positionDTOKey = getPositionDTOKey(getArguments());
         }
         adapter = createAdapter();
     }
@@ -383,7 +381,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         else
         {
             unsubscribe(actionDialogSubscription);
-            Pair<Dialog, SecurityActionListLinear> pair = securityActionDialogFactory.createSecurityActionDialog(getActivity(), securityCompactDTO);
+            Pair<Dialog, SecurityActionListLinear> pair = SecurityActionDialogFactory.createSecurityActionDialog(getActivity(), securityCompactDTO);
             securityActionDialog = pair.first;
             actionDialogSubscription = pair.second.getMenuActionObservable()
                     .subscribe(

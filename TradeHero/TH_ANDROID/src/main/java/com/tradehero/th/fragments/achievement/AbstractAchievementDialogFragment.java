@@ -123,11 +123,9 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Inject LevelDefListCacheRx levelDefListCache;
 
     @Inject AchievementServiceWrapper achievementServiceWrapper;
-    @Inject AchievementShareFormDTOFactory achievementShareFormDTOFactory;
 
     @Inject BroadcastUtils broadcastUtils;
     @Inject Lazy<SocialSharer> socialSharerLazy;
-    @Inject Lazy<WeChatDTOFactory> weChatDTOFactoryLazy;
 
     @NonNull protected UserAchievementId userAchievementId;
     @Nullable protected UserAchievementDTO userAchievementDTO;
@@ -327,7 +325,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             if (shareTos.contains(SocialNetworkEnum.WECHAT))
             {
                 shareTos.remove(SocialNetworkEnum.WECHAT);
-                WeChatDTO weChatDTO = weChatDTOFactoryLazy.get().createFrom(getActivity(), userAchievementDTOCopy);
+                WeChatDTO weChatDTO = WeChatDTOFactory.createFrom(getActivity(), userAchievementDTOCopy);
                 subscriptions.add(socialSharerLazy.get().share(weChatDTO)
                         .subscribe(
                                 new Action1<SocialShareResult>()
@@ -356,7 +354,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
                 AppObservable.bindFragment(
                         this,
                         achievementServiceWrapper.shareAchievementRx(
-                                achievementShareFormDTOFactory.createFrom(
+                                AchievementShareFormDTOFactory.createFrom(
                                         shareTos,
                                         userAchievementDTO)))
                         .subscribe(createShareAchievementObserver());

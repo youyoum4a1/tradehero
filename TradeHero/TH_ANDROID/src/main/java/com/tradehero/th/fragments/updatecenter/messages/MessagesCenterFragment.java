@@ -69,7 +69,6 @@ public class MessagesCenterFragment extends DashboardFragment
     @Inject Lazy<DiscussionListCacheRx> discussionListCache;
     @Inject Lazy<DiscussionCacheRx> discussionCache;
     @Inject CurrentUserId currentUserId;
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject THRouter thRouter;
 
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
@@ -274,7 +273,7 @@ public class MessagesCenterFragment extends DashboardFragment
         if (messageHeaderDTO != null)
         {
             pushMessageFragment(
-                    discussionKeyFactory.create(messageHeaderDTO),
+                    DiscussionKeyFactory.create(messageHeaderDTO),
                     messageHeaderDTO.getCorrespondentId(currentUserId.toUserBaseKey()));
         }
     }

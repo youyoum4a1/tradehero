@@ -10,18 +10,10 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
 import com.tradehero.th.api.trade.OwnedTradeId;
-import javax.inject.Inject;
 
 public class GetPositionsDTOKeyFactory
 {
-    //<editor-fold desc="Constructors">
-    @Inject public GetPositionsDTOKeyFactory()
-    {
-        super();
-    }
-    //</editor-fold>
-
-    @Nullable public GetPositionsDTOKey createFrom(@NonNull Bundle args)
+    @Nullable public static GetPositionsDTOKey createFrom(@NonNull Bundle args)
     {
         if (PerPagedOwnedPortfolioId.isPagedOwnedPortfolioId(args))
         {

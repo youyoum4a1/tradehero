@@ -101,7 +101,6 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         TIMELINE, PORTFOLIO_LIST, STATS
     }
 
-    @Inject DiscussionKeyFactory discussionKeyFactory;
     @Inject Analytics analytics;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
@@ -677,7 +676,7 @@ public class TimelineFragment extends BasePurchaseManagerFragment
         {
             Bundle args = new Bundle();
             ReplyPrivateMessageFragment.putCorrespondentUserBaseKey(args, shownUserBaseKey);
-            ReplyPrivateMessageFragment.putDiscussionKey(args, discussionKeyFactory.create(messageThreadHeaderDTO));
+            ReplyPrivateMessageFragment.putDiscussionKey(args, DiscussionKeyFactory.create(messageThreadHeaderDTO));
             navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
         }
         else

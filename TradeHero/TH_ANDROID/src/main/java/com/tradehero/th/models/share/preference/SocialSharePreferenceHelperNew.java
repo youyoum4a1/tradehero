@@ -12,16 +12,13 @@ import javax.inject.Inject;
 public class SocialSharePreferenceHelperNew
 {
     @NonNull private final SocialShareSetPreference socialShareSetPreference;
-    @NonNull private final SocialSharePreferenceDTOFactory socialSharePreferenceFactory;
     @NonNull private HashMap<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap;
 
     //<editor-fold desc="Constructors">
     @Inject public SocialSharePreferenceHelperNew(
-            @NonNull SocialShareSetPreference socialShareSetPreference,
-            @NonNull SocialSharePreferenceDTOFactory socialSharePreferenceDTOFactory)
+            @NonNull SocialShareSetPreference socialShareSetPreference)
     {
         super();
-        this.socialSharePreferenceFactory = socialSharePreferenceDTOFactory;
         this.socialShareSetPreference = socialShareSetPreference;
         sharePreferencesMap = new HashMap<>();
         load();
@@ -51,7 +48,7 @@ public class SocialSharePreferenceHelperNew
         }
         else
         {
-            sharePreferencesMap.put(socialNetworkEnum, socialSharePreferenceFactory.create(socialNetworkEnum, defaultValue));
+            sharePreferencesMap.put(socialNetworkEnum, SocialSharePreferenceDTOFactory.create(socialNetworkEnum, defaultValue));
             return defaultValue;
         }
     }
@@ -67,7 +64,7 @@ public class SocialSharePreferenceHelperNew
         else
         {
             //Create and add
-            sharePreferencesMap.put(networkEnum, socialSharePreferenceFactory.create(networkEnum, isShareEnabled));
+            sharePreferencesMap.put(networkEnum, SocialSharePreferenceDTOFactory.create(networkEnum, isShareEnabled));
         }
     }
 

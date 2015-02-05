@@ -21,19 +21,16 @@ public class LeaderboardDefListCacheRx extends BaseFetchDTOCacheRx<LeaderboardDe
 
     @NonNull private final LeaderboardServiceWrapper leaderboardServiceWrapper;
     @NonNull private final LeaderboardDefCacheRx leaderboardDefCache;
-    @NonNull private final LeaderboardDefDTOFactory leaderboardDefDTOFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefListCacheRx(
             @NonNull LeaderboardServiceWrapper leaderboardServiceWrapper,
             @NonNull LeaderboardDefCacheRx leaderboardDefCache,
-            @NonNull LeaderboardDefDTOFactory leaderboardDefDTOFactory,
             @NonNull DTOCacheUtilRx dtoCacheUtil)
     {
         super(DEFAULT_MAX_SIZE, dtoCacheUtil);
         this.leaderboardServiceWrapper = leaderboardServiceWrapper;
         this.leaderboardDefCache = leaderboardDefCache;
-        this.leaderboardDefDTOFactory = leaderboardDefDTOFactory;
     }
     //</editor-fold>
 
@@ -45,7 +42,7 @@ public class LeaderboardDefListCacheRx extends BaseFetchDTOCacheRx<LeaderboardDe
         }
         return leaderboardServiceWrapper.getLeaderboardDefinitionsRx()
                 .observeOn(Schedulers.computation())
-                .map(leaderboardDefDTOFactory::file)
+                .map(LeaderboardDefDTOFactory::file)
                 .doOnNext(this::put) // We have to do it here to avoid an infinite loop
                 .map(filed -> {
                     LeaderboardDefDTOList value = filed.get(listKey);

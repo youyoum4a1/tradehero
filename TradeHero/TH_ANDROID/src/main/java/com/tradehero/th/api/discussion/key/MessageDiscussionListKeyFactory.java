@@ -1,18 +1,14 @@
 package com.tradehero.th.api.discussion.key;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.th.api.discussion.DiscussionKeyList;
-import javax.inject.Inject;
 
 public class MessageDiscussionListKeyFactory
 {
-    @Inject public MessageDiscussionListKeyFactory()
-    {
-        super();
-    }
-
-    public MessageDiscussionListKey next(
-            MessageDiscussionListKey currentNext,
-            DiscussionKeyList currentNextValues)
+    @Nullable public static MessageDiscussionListKey next(
+            @NonNull MessageDiscussionListKey currentNext,
+            @Nullable DiscussionKeyList currentNextValues)
     {
         MessageDiscussionListKey next = null;
         if (currentNextValues != null && !currentNextValues.isEmpty())
@@ -33,9 +29,9 @@ public class MessageDiscussionListKeyFactory
         return next;
     }
 
-    public MessageDiscussionListKey prev(
-            MessageDiscussionListKey currentPrev,
-            DiscussionKeyList currentPrevValues)
+    @Nullable public static MessageDiscussionListKey prev(
+            @NonNull MessageDiscussionListKey currentPrev,
+            @Nullable DiscussionKeyList currentPrevValues)
     {
         MessageDiscussionListKey prev = null;
         if (currentPrevValues != null && !currentPrevValues.isEmpty())

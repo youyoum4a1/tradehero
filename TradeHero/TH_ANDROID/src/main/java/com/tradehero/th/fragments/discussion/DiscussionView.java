@@ -60,7 +60,6 @@ public class DiscussionView extends FrameLayout
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected DiscussionListCacheRx discussionListCache;
-    @Inject protected DiscussionListKeyFactory discussionListKeyFactory;
 
     @NonNull private List<Subscription> discussionListCacheSubscriptions;
     protected TextView discussionStatus;
@@ -252,7 +251,7 @@ public class DiscussionView extends FrameLayout
     {
         if (discussionKey != null)
         {
-            return new PaginatedDiscussionListKey(discussionListKeyFactory.create(discussionKey), 1);
+            return new PaginatedDiscussionListKey(DiscussionListKeyFactory.create(discussionKey), 1);
         }
         return null;
     }

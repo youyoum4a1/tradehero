@@ -1,6 +1,6 @@
 package com.tradehero.th.api.translation;
 
-import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -16,18 +16,15 @@ import timber.log.Timber;
 
 public class UserTranslationSettingDTOFactory
 {
-    @NonNull private final Context applicationContext;
     @NonNull private final ObjectMapper objectMapper;
     @NonNull private final TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory;
 
     //<editor-fold desc="Constructors">
     @Inject public UserTranslationSettingDTOFactory(
             @NonNull TranslatableLanguageDTOFactoryFactory translatableLanguageDTOFactoryFactory,
-            @NonNull Context applicationContext,
             @NonNull @ForApp ObjectMapper objectMapper)
     {
         this.translatableLanguageDTOFactoryFactory = translatableLanguageDTOFactoryFactory;
-        this.applicationContext = applicationContext;
         this.objectMapper = objectMapper;
     }
     //</editor-fold>
@@ -45,14 +42,17 @@ public class UserTranslationSettingDTOFactory
         return objectMapper.writeValueAsString(settingDTO);
     }
 
-    @Nullable public UserTranslationSettingDTO createDefaultPerType(@NonNull TranslationToken translationToken)
+    @Nullable public UserTranslationSettingDTO createDefaultPerType(
+            @NonNull Resources resources,
+            @NonNull TranslationToken translationToken)
     {
         TranslatableLanguageDTOFactory translatableLanguageDTOFactory = translatableLanguageDTOFactoryFactory.create(translationToken);
         String bestTranslatableMatch = UserTranslationSettingDTO.DEFAULT_LANGUAGE_CODE;
         if (translatableLanguageDTOFactory != null)
         {
             bestTranslatableMatch = translatableLanguageDTOFactory.getBestMatch(
-                    applicationContext.getResources().getConfiguration().locale.getLanguage(),
+                    resources,
+                    resources.getConfiguration().locale.getLanguage(),
                     bestTranslatableMatch)
                     .code;
         }

@@ -7,6 +7,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import javax.inject.Inject;
@@ -68,7 +69,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
         {
             if (getDiscussionKey() == null)
             {
-                linkWith(discussionKeyFactory.create(pair.second), true);
+                linkWith(DiscussionKeyFactory.create(pair.second), true);
             }
         }
 

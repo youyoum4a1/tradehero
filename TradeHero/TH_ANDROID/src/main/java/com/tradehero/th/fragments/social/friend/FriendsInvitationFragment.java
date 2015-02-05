@@ -66,8 +66,6 @@ public class FriendsInvitationFragment extends DashboardFragment
     @InjectView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @InjectView(R.id.social_search_friends_none) TextView friendsListEmptyView;
 
-    @Inject SocialTypeItemFactory socialTypeItemFactory;
-    @Inject SocialNetworkFactory socialNetworkFactory;
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
     SocialFriendHandler socialFriendHandler;
@@ -185,7 +183,7 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void bindSocialTypeData()
     {
-        List<SocialTypeItem> socialTypeItemList = socialTypeItemFactory.getSocialTypeList();
+        List<SocialTypeItem> socialTypeItemList = SocialTypeItemFactory.getSocialTypeList();
         SocialTypeListAdapter adapter = new SocialTypeListAdapter(getActivity(), 0, socialTypeItemList);
         socialListView.setAdapter(adapter);
         showSocialTypeList();
@@ -278,7 +276,7 @@ public class FriendsInvitationFragment extends DashboardFragment
 
     private void pushSocialInvitationFragment(SocialNetworkEnum socialNetwork)
     {
-        Class<? extends SocialFriendsFragment> target = socialNetworkFactory.findProperTargetFragment(socialNetwork);
+        Class<? extends SocialFriendsFragment> target = SocialNetworkFactory.findProperTargetFragment(socialNetwork);
         Bundle bundle = new Bundle();
         if (navigator != null)
         {

@@ -60,7 +60,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject Analytics analytics;
     @Inject CommunityPageDTOFactory communityPageDTOFactory;
     @Inject Lazy<LeaderboardDefDTOKnowledge> leaderboardDefDTOKnowledge;
-    @Inject LeaderboardCommunityTypeFactory leaderboardCommunityTypeFactory;
 
     @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
     @InjectView(R.id.leaderboard_community_list) StickyListHeadersListView leaderboardDefListView;
@@ -103,8 +102,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         leaderboardDefListAdapter = new LeaderboardCommunityAdapter(
                 getActivity(),
-                R.layout.leaderboard_definition_item_view,
-                leaderboardCommunityTypeFactory);
+                R.layout.leaderboard_definition_item_view);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

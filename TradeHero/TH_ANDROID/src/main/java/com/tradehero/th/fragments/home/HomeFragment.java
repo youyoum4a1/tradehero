@@ -67,7 +67,6 @@ public final class HomeFragment extends BaseWebViewFragment
     @Inject CurrentUserId currentUserId;
     @Inject HomeContentCacheRx homeContentCache;
     @Inject THRouter thRouter;
-    @Inject Lazy<UserFriendsDTOFactory> userFriendsDTOFactory;
 
     @RouteProperty(ROUTER_SOCIALID) String socialId;
     @RouteProperty(ROUTER_SOCIALUSERID) String socialUserId;
@@ -183,7 +182,7 @@ public final class HomeFragment extends BaseWebViewFragment
     //<editor-fold desc="Windy's stuff, to be refactored">
     private void createInviteInHomePage()
     {
-        userFriendsDTO = userFriendsDTOFactory.get().createFrom(socialId, socialUserId);
+        userFriendsDTO = UserFriendsDTOFactory.createFrom(socialId, socialUserId);
         invite();
     }
 

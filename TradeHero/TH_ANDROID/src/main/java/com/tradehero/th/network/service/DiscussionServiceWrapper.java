@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
 import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
 import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -34,8 +33,6 @@ import rx.Observable;
     private static final long RETRY_DELAY_MILLIS = 1000;
 
     @NonNull private final DiscussionServiceRx discussionServiceRx;
-    @NonNull private final DiscussionKeyFactory discussionKeyFactory;
-    @NonNull private final DiscussionDTOFactory discussionDTOFactory;
     @NonNull private final CurrentUserId currentUserId;
 
     // It has to be lazy to avoid infinite dependency
@@ -46,16 +43,12 @@ import rx.Observable;
     //<editor-fold desc="Constructors">
     @Inject public DiscussionServiceWrapper(
             @NonNull DiscussionServiceRx discussionServiceRx,
-            @NonNull DiscussionKeyFactory discussionKeyFactory,
-            @NonNull DiscussionDTOFactory discussionDTOFactory,
             @NonNull CurrentUserId currentUserId,
             @NonNull Lazy<DiscussionListCacheRx> discussionListCache,
             @NonNull Lazy<DiscussionCacheRx> discussionCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache)
     {
         this.discussionServiceRx = discussionServiceRx;
-        this.discussionKeyFactory = discussionKeyFactory;
-        this.discussionDTOFactory = discussionDTOFactory;
         this.currentUserId = currentUserId;
         this.discussionCache = discussionCache;
         this.discussionListCache = discussionListCache;
@@ -68,7 +61,6 @@ import rx.Observable;
             @Nullable DiscussionKey stubKey)
     {
         return new DTOProcessorDiscussionReply(
-                discussionDTOFactory,
                 currentUserId,
                 discussionCache.get(),
                 userMessagingRelationshipCache.get(),
@@ -85,7 +77,7 @@ import rx.Observable;
     @NonNull public Observable<DiscussionDTO> getCommentRx(@NonNull DiscussionKey discussionKey)
     {
         return discussionServiceRx.getComment(discussionKey.id)
-                .map(new DTOProcessorDiscussion(discussionDTOFactory));
+                .map(new DTOProcessorDiscussion());
     }
     //</editor-fold>
 
@@ -133,7 +125,7 @@ import rx.Observable;
                 discussionVoteKey.inReplyToId,
                 discussionVoteKey.voteDirection)
                 .map(createDiscussionReplyProcessor(
-                        discussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
+                        DiscussionKeyFactory.create(discussionVoteKey.inReplyToType, discussionVoteKey.inReplyToId),
                         null));
     }
     //</editor-fold>
@@ -159,7 +151,7 @@ import rx.Observable;
                 userBaseKey.key,
                 discussionFormDTO)
                 .retryWhen(new DelayRetriesOrFailFunc1(RETRY_COUNT, RETRY_DELAY_MILLIS))
-                .map(new DTOProcessorDiscussion(discussionDTOFactory));
+                .map(new DTOProcessorDiscussion());
     }
     //</editor-fold>
 }

@@ -7,6 +7,7 @@ import com.tradehero.TestConstants;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.tradehero.th.base.TestTHApp;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +22,6 @@ import static org.junit.Assume.assumeTrue;
 public class BingUserTranslationSettingDTOTest
 {
     @Inject @ForApp ObjectMapper objectMapper;
-    @Inject LanguageDTOFactory languageDTOFactory;
 
     //<editor-fold desc="De/Serialisation">
     @Test public void canSerialiseDTO() throws JsonProcessingException
@@ -81,7 +81,7 @@ public class BingUserTranslationSettingDTOTest
     @Test public void canCloneWithOtherLanguage()
     {
         UserTranslationSettingDTO settingDTO = new BingUserTranslationSettingDTO("en", false);
-        UserTranslationSettingDTO cloned = settingDTO.cloneForLanguage(languageDTOFactory.createFromCode("fr"));
+        UserTranslationSettingDTO cloned = settingDTO.cloneForLanguage(LanguageDTOFactory.createFromCode(TestTHApp.context().getResources(), "fr"));
 
         assertThat(cloned).isExactlyInstanceOf(BingUserTranslationSettingDTO.class);
         assertThat(cloned.languageCode).isEqualTo("fr");

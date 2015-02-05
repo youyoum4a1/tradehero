@@ -18,7 +18,6 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(THRobolectricTestRunner.class)
 public class StoreItemFactoryTest
 {
-    @Inject StoreItemFactory storeItemFactory;
     @Inject SystemStatusCache systemStatusCache;
     @Inject CurrentUserId currentUserId;
 
@@ -42,14 +41,14 @@ public class StoreItemFactoryTest
     //<editor-fold desc="Have alerts depending on SystemStatus">
     @Test public void testIgnoreSystemStatusShouldHaveAlerts()
     {
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
+        StoreItemDTOList list = StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
 
     @Test public void testFollowSystemStatusButNoStatusShouldHaveAlerts()
     {
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
+        StoreItemDTOList list = StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -60,7 +59,7 @@ public class StoreItemFactoryTest
         systemStatusDTO.alertsAreFree = false;
         systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
+        StoreItemDTOList list = StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -71,7 +70,7 @@ public class StoreItemFactoryTest
         systemStatusDTO.alertsAreFree = false;
         systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
+        StoreItemDTOList list = StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -82,7 +81,7 @@ public class StoreItemFactoryTest
         systemStatusDTO.alertsAreFree = true;
         systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
+        StoreItemDTOList list = StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_IGNORE_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNotNull();
     }
@@ -93,7 +92,7 @@ public class StoreItemFactoryTest
         systemStatusDTO.alertsAreFree = true;
         systemStatusCache.onNext(new SystemStatusKey(), systemStatusDTO);
 
-        StoreItemDTOList list = storeItemFactory.createAll(StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
+        StoreItemDTOList list = StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS).toBlocking().single();
         assertThat(list.findFirstWhere(createFindPerDomain(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)))
                 .isNull();
     }

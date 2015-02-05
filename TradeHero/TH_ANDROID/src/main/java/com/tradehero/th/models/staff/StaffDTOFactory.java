@@ -1,6 +1,7 @@
 package com.tradehero.th.models.staff;
 
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +11,7 @@ public class StaffDTOFactory
 {
     public static final String SEPARATOR_NAME_TITLE = "\\|";
 
-    @Inject public StaffDTOFactory()
-    {
-        super();
-    }
-
-    public List<StaffDTO> getTradeHeroStaffers(Resources resources)
+    @NonNull public static List<StaffDTO> getTradeHeroStaffers(@NonNull Resources resources)
     {
         String[] staffs = resources.getStringArray(R.array.staffs);
         List<StaffDTO> staffDTOs = new ArrayList<>(staffs.length);

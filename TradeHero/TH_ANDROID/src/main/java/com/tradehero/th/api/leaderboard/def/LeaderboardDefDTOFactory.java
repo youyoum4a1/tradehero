@@ -35,7 +35,7 @@ public class LeaderboardDefDTOFactory implements Func1<LeaderboardDefDTOList, Le
         return leaderboardDefDTOs;
     }
 
-    @NonNull public HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(
+    @NonNull public static HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> file(
             @NonNull LeaderboardDefDTOList leaderboardDefDTOs)
     {
         HashMap<LeaderboardDefListKey, LeaderboardDefDTOList> filed = new HashMap<>();
