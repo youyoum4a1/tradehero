@@ -8,7 +8,8 @@ import com.tradehero.chinabuild.fragment.*;
 import com.tradehero.chinabuild.fragment.competition.*;
 import com.tradehero.chinabuild.fragment.discovery.*;
 import com.tradehero.chinabuild.fragment.message.*;
-import com.tradehero.chinabuild.fragment.moreLeaderboard.*;
+import com.tradehero.chinabuild.fragment.moreLeaderboard.StockGodListBaseFragment;
+import com.tradehero.chinabuild.fragment.moreLeaderboard.StockGodListMoreFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
@@ -50,9 +51,8 @@ import com.tradehero.th.fragments.discussion.*;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.tradehero.th.fragments.home.HomeFragment;
 import com.tradehero.th.fragments.home.HomeWebView;
-import com.tradehero.th.fragments.leaderboard.*;
+import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserItemView;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.main.CommunityLeaderboardDefView;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.location.LocationListFragment;
 import com.tradehero.th.fragments.news.*;
@@ -235,24 +235,8 @@ import java.util.Locale;
 
                         LeaderboardCommunityFragment.class,
                         PeopleSearchFragment.class,
-                        LeaderboardDefListFragment.class,
-                        LeaderboardDefView.class,
-                        CommunityLeaderboardDefView.class,
-                        LeaderboardMarkUserLoader.class,
-                        LeaderboardMarkUserListFragment.class,
-                        BaseLeaderboardFragment.class,
                         LeaderboardMarkUserItemView.class,
-                        CompetitionLeaderboardMarkUserItemView.class,
-                        CompetitionLeaderboardMarkUserOwnRankingView.class,
-                        LeaderboardMarkUserListAdapter.class,
-                        LeaderboardMarkUserListView.class,
-                        LeaderboardMarkUserOwnRankingView.class,
-                        FriendLeaderboardMarkUserListFragment.class,
-                        CompetitionLeaderboardMarkUserListFragment.class,
-                        CompetitionLeaderboardMarkUserListClosedFragment.class,
-                        CompetitionLeaderboardMarkUserListOnGoingFragment.class,
                         LeaderboardFilterFragment.class,
-                        CompetitionLeaderboardTimedHeader.class,
 
                         WebViewFragment.class,
 
@@ -317,7 +301,6 @@ import java.util.Locale;
 
                         SecurityDiscussionFragment.class,
                         AlertDialogUtil.class,
-                        LeaderboardFriendsItemView.class,
                         FriendsInvitationFragment.class,
                         ContestCenterFragment.class,
                         ContestCenterBaseFragment.class,
@@ -372,10 +355,6 @@ import java.util.Locale;
                         SecurityTimeLineDiscussOrNewsAdapter.class,
                         TimeLineBaseAdapter.class,
                         PositionTradeListAdapter.class,
-
-                        AbsLeaderboardFragment.class,
-                        LeaderboardFromExchangeFragment.class,
-                        LeaderboardFromIndustryFragment.class,
 
                         SecurityDetailFragment.class,
                         DiscussSendFragment.class,

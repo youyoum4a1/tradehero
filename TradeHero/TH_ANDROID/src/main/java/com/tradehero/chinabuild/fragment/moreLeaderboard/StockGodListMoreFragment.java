@@ -16,17 +16,14 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.utils.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+
 import javax.inject.Inject;
-import timber.log.Timber;
 
 public class StockGodListMoreFragment extends DashboardFragment
 {
     @InjectView(R.id.rlMoreBangAll) RelativeLayout rlMoreBangAll;
     @InjectView(R.id.rlMoreBangSeason) RelativeLayout rlMoreBangSeason;
     @InjectView(R.id.rlMoreBang6Month) RelativeLayout rlMoreBang6Month;
-    //@InjectView(R.id.rlMoreBangExchange) RelativeLayout rlMoreBangExchange;
-    //@InjectView(R.id.rlMoreBangIndustry) RelativeLayout rlMoreBangIndustry;
-    //private AdapterStockGod adapterStockGod;
 
 
     @Inject Analytics analytics;
@@ -48,13 +45,7 @@ public class StockGodListMoreFragment extends DashboardFragment
     {
         View view = inflater.inflate(R.layout.stock_god_list_more, container, false);
         ButterKnife.inject(this, view);
-        initView();
         return view;
-    }
-
-    @Override public void onStop()
-    {
-        super.onStop();
     }
 
     @Override public void onDestroyView()
@@ -63,37 +54,13 @@ public class StockGodListMoreFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-        Timber.d("OnRusme: StockGodList More ");
-    }
-
-    private void initView()
-    {
-
-    }
-
-    @OnClick({R.id.rlMoreBangAll, R.id.rlMoreBangSeason, R.id.rlMoreBang6Month,
-            //R.id.rlMoreBangExchange, R.id.rlMoreBangIndustry
-            }
+    @OnClick({R.id.rlMoreBangAll, R.id.rlMoreBangSeason, R.id.rlMoreBang6Month}
     )
     public void onMoreBangClick(View view)
     {
         Bundle bundle = new Bundle();
         switch (view.getId())
         {
-            //case R.id.rlMoreBangIndustry://按行业类别
-            //    gotoDashboard(LeaderboardFromIndustryFragment.class.getName());
-            //    break;
-            //case R.id.rlMoreBangExchange://按交易所
-            //    gotoDashboard(LeaderboardFromExchangeFragment.class.getName());
-            //    break;
 
             case R.id.rlMoreBangAll://总盈利榜（英雄榜 MostSkill）
                 bundle.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);

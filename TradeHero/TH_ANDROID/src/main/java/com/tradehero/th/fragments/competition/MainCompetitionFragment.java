@@ -21,14 +21,8 @@ import com.tradehero.common.utils.SimpleCounterUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.api.competition.AdDTO;
-import com.tradehero.th.api.competition.CompetitionDTOList;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.*;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -37,17 +31,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Navigator;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisementDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDisplayCellDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLegalDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePortfolioDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneVideoDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListClosedFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserListOnGoingFragment;
+import com.tradehero.th.fragments.competition.zone.dto.*;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.web.BaseWebViewFragment;
@@ -58,9 +42,10 @@ import com.tradehero.th.persistence.competition.CompetitionListCache;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.GraphicUtil;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
 
 @Routable(
         "providers/:providerId"
@@ -449,26 +434,6 @@ public class MainCompetitionFragment extends CompetitionFragment
 
     private void pushLeaderboardElement(@NotNull CompetitionZoneLeaderboardDTO competitionZoneDTO)
     {
-        LeaderboardDefDTO leaderboardDefDTO = competitionZoneDTO.competitionDTO.leaderboard;
-        Bundle args = new Bundle();
-        CompetitionLeaderboardMarkUserListFragment.putProviderId(args, providerId);
-        CompetitionLeaderboardMarkUserListFragment.putCompetition(args, competitionZoneDTO.competitionDTO);
-
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        if (ownedPortfolioId != null)
-        {
-            CompetitionLeaderboardMarkUserListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-        }
-
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null && leaderboardDefDTO.isWithinUtcRestricted())
-        {
-            navigator.pushFragment(CompetitionLeaderboardMarkUserListOnGoingFragment.class, args);
-        }
-        else if (navigator != null)
-        {
-            navigator.pushFragment(CompetitionLeaderboardMarkUserListClosedFragment.class, args);
-        }
     }
 
     private void pushLegalElement(@NotNull CompetitionZoneLegalDTO competitionZoneDTO)

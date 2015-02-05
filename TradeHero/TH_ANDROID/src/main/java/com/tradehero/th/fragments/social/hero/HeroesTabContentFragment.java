@@ -13,18 +13,14 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.PremiumFollowUserAssistant;
@@ -32,10 +28,11 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCache;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
-import java.util.List;
-import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import javax.inject.Inject;
+import java.util.List;
 
 abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragment
         implements PullToRefreshBase.OnRefreshListener2<ListView>
@@ -334,25 +331,6 @@ abstract public class HeroesTabContentFragment extends BasePurchaseManagerFragme
 
     private void handleGoMostSkilled()
     {
-        // TODO this feels HACKy
-        //getDashboardNavigator().popFragment();
-
-        // TODO make it go to most skilled
-        //getDashboardNavigator().goToTab(DashboardTabType.COMMUNITY);
-
-        LeaderboardDefKey key =
-                new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID);
-        LeaderboardDefDTO dto = leaderboardDefCache.get().get(key);
-        Bundle bundle = new Bundle(getArguments());
-        if (dto != null)
-        {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-        }
-        else
-        {
-            LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, new LeaderboardDefKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID));
-        }
-        getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
     }
 
     public void display(UserProfileDTO userProfileDTO)

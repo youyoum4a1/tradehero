@@ -19,18 +19,13 @@ import com.tradehero.th.api.leaderboard.def.DrillDownLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.ExchangeContainerLeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.ExchangeLeaderboardDefListKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.leaderboard.key.SectorLeaderboardDefListKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardDefListFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserListFragment;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -288,9 +283,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     protected LeaderboardCommunityAdapter createAdapter()
     {
-        return new LeaderboardCommunityAdapter(
-                getActivity(),
-                R.layout.leaderboard_definition_item_view_community);
+        return null;
     }
 
     /**
@@ -356,20 +349,12 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                 pushFollowerFragment();
                 break;
             default:
-                Timber.d("LeaderboardMarkUserListFragment %s", bundle);
-                LeaderboardMarkUserListFragment.putLeaderboardDefKey(bundle, dto.getLeaderboardDefKey());
-                getDashboardNavigator().pushFragment(LeaderboardMarkUserListFragment.class, bundle);
                 break;
         }
     }
 
     protected void pushFriendsFragment(LeaderboardDefDTO dto)
     {
-        Bundle args = new Bundle();
-
-        FriendLeaderboardMarkUserListFragment.putLeaderboardDefKey(args, dto.getLeaderboardDefKey());
-
-        getDashboardNavigator().pushFragment(FriendLeaderboardMarkUserListFragment.class, args);
     }
 
     protected void pushHeroFragment()
@@ -398,24 +383,11 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void pushLeaderboardDefSector()
     {
-        Bundle bundle = new Bundle(getArguments());
-        (new SectorLeaderboardDefListKey()).putParameters(bundle);
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
-        }
+
     }
 
     private void pushLeaderboardDefExchange()
     {
-        Bundle bundle = new Bundle(getArguments());
-        (new ExchangeLeaderboardDefListKey()).putParameters(bundle);
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null)
-        {
-            navigator.pushFragment(LeaderboardDefListFragment.class, bundle);
-        }
     }
 
     private void pushSearchFragment()
