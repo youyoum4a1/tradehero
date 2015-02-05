@@ -709,7 +709,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
     protected void fetchSecurityApplicableOwnedPortfolioIds(@NonNull PortfolioCompactDTOList portfolioCompactDTOs)
     {
         unsubscribe(securityApplicableOwnedPortfolioIdListSubscription);
-        securityApplicableOwnedPortfolioIdListSubscription = AndroidObservable.bindFragment(
+        securityApplicableOwnedPortfolioIdListSubscription = AppObservable.bindFragment(
                 this,
                 ownedPortfolioIdListCache.get(securityId)
                         .map(pair -> pair.second))
@@ -722,7 +722,7 @@ abstract public class BuySellFragment extends AbstractBuySellFragment
                                 if (candidate != null)
                                 {
                                     mSelectedPortfolioContainer.addMenuOwnedPortfolioId(
-                                            new MenuOwnedPortfolioId(id, candidate));
+                                            new MenuOwnedPortfolioId(id.getUserBaseKey(), candidate));
                                 }
                             }
                             displayBuySellContainer();
